@@ -1,3 +1,5 @@
+<img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" width="125px" height="138px" />
+
 EO is an object-oriented programming language. It's still a prototype.
 It's the future of OOP. Please contribute!
 
