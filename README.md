@@ -20,6 +20,7 @@ These things we **don't tolerate**:
   * scalar types
   * garbage collection
   * annotations
+  * unchecked exceptions
   * operators (`for`, `while`, `if`, etc)
 
 These things we **want** to build in:
