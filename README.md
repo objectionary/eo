@@ -42,7 +42,7 @@ These things we **want** to build in:
 
 These things we are **not sure** about (please, help us):
 
-  * we don't need generics
+  * we don't need generics [not sure](https://github.com/yegor256/eo/issues/1)
   * we don't need private and protected methods
   * we don't need public and protected attributes
 
