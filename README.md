@@ -19,7 +19,7 @@ These things we **don't tolerate**:
   * constants
   * type casting
   * scalar types
-  * garbage collection
+  * garbage collection ([huh?](https://github.com/yegor256/eo/issues/4))
   * annotations
   * unchecked exceptions
   * operators (`for`, `while`, `if`, etc)
