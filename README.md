@@ -1,6 +1,7 @@
 <img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" height="100px" />
 
-EO is an object-oriented programming language. It's still a prototype.
+**EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html))
+is an object-oriented programming language. It's still a prototype.
 It's the future of OOP. Please contribute!
 
 If you want to contribute, please join our
