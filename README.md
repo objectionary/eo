@@ -110,3 +110,9 @@ create abc("The Alphabet") as Book {
 }
 ```
 
+This is how we create another object, copying an existing one:
+
+```
+copy abc("Object Thinking")
+```
+
