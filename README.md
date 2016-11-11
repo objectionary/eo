@@ -7,6 +7,8 @@ It's the future of OOP. Please contribute!
 If you want to contribute, please join our
 [Gitter chat](https://gitter.im/yegor256/elegantobjects) first.
 
+Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
+
 These things we **don't tolerate**:
 
   * static/class methods or attributes
