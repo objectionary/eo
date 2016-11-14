@@ -117,6 +117,6 @@ create abc("978-1-51916-691-3", "The Alphabet") as Book {
 This is how we create another object, copying an existing one:
 
 ```
-copy abc("Object Thinking")
+copy abc("978-0-73561-965-4", "Object Thinking")
 ```
 
