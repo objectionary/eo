@@ -90,28 +90,27 @@ Pay attention, we don't have:
 This is how we define a type (similar to Java `interface`):
 
 ```
-type Book {
-  String asText();
-}
+type Book:
+    String asText()
+
 ```
 
 This is how we create a new object:
 
 ```
-create abc("978-1-51916-691-3", "The Alphabet") as Book {
-  String isbn;
-  String title;
-  Book(ISBN i, String t):
-    isbn(i),
-    title(t);
-  String asText() {
-    copy sprintf(
-      "ISBN is %s, title is '%s'",
-      this.isbn,
-      this.title
-    )
-  }
-}
+create abc("978-1-51916-691-3", "The Alphabet") as Book:
+    String isbn
+    String title
+
+    constructor(ISBN i, String t):
+        @(isbn=i, title=t)
+
+    String asText():
+      copy sprintf(
+          "ISBN is %s, title is '%s'",
+          this.isbn,
+          this.title
+      )
 ```
 
 This is how we create another object, copying an existing one:
