@@ -59,11 +59,11 @@ Here is a classic "hello, world" example:
 ```
 import org.eolang.printed;
 import org.eolang.string;
-cli(
-  printed(
-    string("Hello, world!")
-  )
-)
+
+cli:
+  printed:
+    string:
+      "Hello, world!"
 ```
 
 This code will compile into a `.java` class that will compile into
