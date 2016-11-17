@@ -247,7 +247,7 @@ Int max(Int a, Int b):
     a
 ```
 
-A method must return something; there is no such thing as `void` as there is in Java/C++.
+A method must return something; there is no such thing as `void` like there is in Java/C++.
 
 A method may not exist in an object if it is not defined
 in one of its types.
