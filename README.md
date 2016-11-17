@@ -1,6 +1,7 @@
 <img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" height="100px" />
 
-**EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html))
+**EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
+ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language. It's still a prototype.
 It's the future of OOP. Please contribute!
 
@@ -81,9 +82,9 @@ type casting, generics, NULL, static methods, functions, lambdas.
 A type is a _contract_ an object must obey.
 
 A type is very similar to interfaces from Java 1.0. A type has
-a name (must start from a capital letter) and a list of method
+a name and a list of method
 declarations. Each method declaration has a name of the type of
-the return value, a name, and a list of arguments. Each method
+the return value, a method name, and a list of arguments. Each method
 declaration has to take exactly one line, without any terminating
 symbol at the end, for example:
 
