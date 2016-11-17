@@ -164,7 +164,7 @@ object zero(0, "USD") as Money:
 All attributes are private; there is no such thing as public or protected
 attributes.
 
-An object must have one to five attributes.
+An object may have up to five attributes.
 
 The attribute name must match `@[a-z][a-z0-9]{2,15}`.
 
