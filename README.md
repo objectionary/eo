@@ -25,7 +25,8 @@ These things we **don't tolerate**:
   * garbage collection ([huh?](https://github.com/yegor256/eo/issues/4))
   * annotations
   * unchecked exceptions
-  * operators (`for`, `while`, `if`, etc)
+  * operators
+  * flow control statements (`for`, `while`, `if`, etc)
 
 These things we **want** to build in:
 
