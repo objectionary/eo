@@ -56,9 +56,9 @@ already available.
 Here is a classic "hello, world" example:
 
 ```
-import org.eolang.cli;
-import org.eolang.printed;
-import org.eolang.string;
+import org.eolang.cli
+import org.eolang.printed
+import org.eolang.string
 cli:
   printed:
     string:
