@@ -165,7 +165,9 @@ Ticket ticket(Person passenger):
       if:
         @p.vip(),
         money("$50"),
-        object as Money
+        object m() as Money
+          Int value():
+            25
 ```
 
 The object name must match `[a-z][a-z0-9]{2,15}`.
