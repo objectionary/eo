@@ -71,7 +71,7 @@ a `.class` byte code that will run and print "Hello, world!".
 
 What exactly happens here? [a detailed explanation wanted]
 
-## The Language
+## Overview
 
 That's all we have in the language:
 
@@ -81,35 +81,31 @@ That's all we have in the language:
   * attributes
   * method arguments
 
-Pay attention, we don't have:
-
-  * classes
-  * statements
-  * variables
+Pay attention, we don't have: classes, statements, variables.
 
 This is how we define a type (similar to Java `interface`):
 
 ```
 type Book:
     String asText()
-
 ```
 
 This is how we create a new object:
 
 ```
 create abc("978-1-51916-691-3", "The Alphabet") as Book:
-    String isbn
-    String title
+    String @isbn
+    String @title
 
     constructor(ISBN i, String t):
-        @(isbn=i, title=t)
+        @isbn = i
+        @title = t
 
     String asText():
       copy sprintf(
           "ISBN is %s, title is '%s'",
-          this.isbn,
-          this.title
+          @isbn,
+          @title
       )
 ```
 
@@ -118,4 +114,3 @@ This is how we create another object, copying an existing one:
 ```
 copy abc("978-0-73561-965-4", "Object Thinking")
 ```
-
