@@ -126,7 +126,7 @@ object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
     @title = t
 
   String asText():
-    copy sprintf:
+    sprintf:
       "ISBN is %s, title is '%s'",
       @isbn,
       @title
