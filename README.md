@@ -123,11 +123,9 @@ all methods required by its types must be implemented, for example
 object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
   String @isbn
   String @title
-
   ctor(ISBN i, String t):
     @isbn = i
     @title = t
-
   String asText():
     sprintf:
       "ISBN is %s, title is '%s'",
@@ -271,6 +269,8 @@ Int power(? x, Int p):
 This code will lead to compile-time error if `x` doesn't implement `Int`.
 
 The method name must match `[a-z][a-z0-9]{2,15}`.
+
+A single empty line is allowed after the method body.
 
 ### Exceptions
 
