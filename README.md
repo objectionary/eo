@@ -68,7 +68,7 @@ cli:
 This code will compile into a `.java` class that will compile into
 a `.class` byte code that will run and print "Hello, world!".
 
-What exactly happens here? [a detailed explanation wanted]
+What exactly happens here? TBD
 
 ## Details
 
