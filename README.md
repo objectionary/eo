@@ -154,6 +154,8 @@ The object name must match `[a-z][a-z0-9]{2,15}`.
 
 ### Attributes
 
+An attribute is the coordinate of an encapsulated object.
+
 An object may have a number of attributes, listed right after the
 first line of object declaration:
 
@@ -171,6 +173,10 @@ An object may have up to five attributes.
 The attribute name must match `@[a-z][a-z0-9]{2,15}`.
 
 ### Constructors and Destructors
+
+A constructor is a ... TBD
+
+A destructor is a ... TBD
 
 An object must have a primary constructor and may have
 any number of secondary constructors and one destructor.
@@ -205,6 +211,8 @@ must be the last one. The destructor, if it is present, goes
 right after the primary constructor.
 
 ### Methods
+
+A method is a behavior exposing instrument of an object.
 
 Method body must create and return exactly one object, using a single
 "statement", for example:
@@ -256,7 +264,7 @@ Int price(Int total, Int amount):
     div: total, amount
 ```
 
-To catch an exception... _I don't know yet_
+To catch an exception... TBD
 
 ## Popular Types and Objects
 
