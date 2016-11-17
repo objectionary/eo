@@ -114,7 +114,7 @@ The type name must match `[A-Z][A-Za-z0-9]{2,15}`.
 
 ### Objects
 
-An object is a active entity that implements one or more types.
+An object is an active entity that implements one or more types.
 
 An object can be _created_ or _copied_. When an object is created
 all methods required by its types must be implemented, for example
@@ -124,7 +124,7 @@ all methods required by its types must be implemented, for example
 object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
   String @isbn
   String @title
-  ctor(ISBN i, String t):
+  alphabet(ISBN i, String t):
     @isbn = i
     @title = t
   String asText():
@@ -247,7 +247,7 @@ Int max(Int a, Int b):
     a
 ```
 
-A method must return something; there is no such thing as `void` in Java/C++.
+A method must return something; there is no such thing as `void` as there is in Java/C++.
 
 A method may not exist in an object if it is not defined
 in one of its types.
