@@ -94,23 +94,39 @@ This is how we create a new object:
 
 ```
 create abc("978-1-51916-691-3", "The Alphabet") as Book:
-    String @isbn
-    String @title
+  String @isbn
+  String @title
 
-    constructor(ISBN i, String t):
-        @isbn = i
-        @title = t
+  constructor(ISBN i, String t):
+    @isbn = i
+    @title = t
 
-    String asText():
-      copy sprintf(
-          "ISBN is %s, title is '%s'",
-          @isbn,
-          @title
-      )
+  String asText():
+    copy sprintf:
+      "ISBN is %s, title is '%s'",
+      @isbn,
+      @title
 ```
 
 This is how we create another object, copying an existing one:
 
 ```
 copy abc("978-0-73561-965-4", "Object Thinking")
+```
+
+## Examples
+
+Fibonacci number:
+
+```
+create fibonacci(1) as Number:
+  Number n
+  bytes asBytes():
+    if:
+      lessThan: @n, 2
+      1,
+      plus:
+        @n
+        fibonacci:
+          minus: @n, 1
 ```
