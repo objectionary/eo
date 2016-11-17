@@ -45,8 +45,6 @@ These things we **want** to build in:
 These things we are **not sure** about (please, help us):
 
   * we don't need generics ([not sure](https://github.com/yegor256/eo/issues/1))
-  * we don't need private and protected methods
-  * we don't need public and protected attributes
 
 We want EO to be compilable to Java. We want to stay as close to Java and JVM
 as possible, mostly in order to re-use the eco-system and libraries
@@ -59,11 +57,10 @@ Here is a classic "hello, world" example:
 ```
 import org.eolang.printed;
 import org.eolang.string;
-cli(
-  printed(
-    string("Hello, world!")
-  )
-)
+cli:
+  printed:
+    string:
+      "Hello, world!"
 ```
 
 This code will compile into a `.java` class that will compile into
@@ -71,57 +68,230 @@ a `.class` byte code that will run and print "Hello, world!".
 
 What exactly happens here? [a detailed explanation wanted]
 
-## Overview
+## Details
 
-That's all we have in the language:
+There are types, objects, constructors, destructors, methods,
+attributes, arguments, exceptions, decorators.
 
-  * objects
-  * types
-  * methods
-  * attributes
-  * method arguments
+There are _no_ classes, operators, statements, annotations, reflection,
+type casting, generics, NULL, static methods, functions, lambdas.
 
-Pay attention, we don't have: classes, statements, variables.
+### Types
 
-This is how we define a type (similar to Java `interface`):
+A type is a _contract_ an object must obey.
+
+A type is very similar to interfaces from Java 1.0. A type has
+a name (must start from a capital letter) and a list of method
+declarations. Each method declaration has a name of the type of
+the return value, a name, and a list of arguments. Each method
+declaration has to take exactly one line, without any terminating
+symbol at the end, for example:
 
 ```
 type Book:
-    String asText()
+  String asText()
+type Car:
+  Money cost()
+  Bytes picture()
+  Car moveTo(Coordinates coords)
+type Pixel extends Point:
+  Pixel moveTo(Int x, Int y)
+  Bytes drawTo(Canvas canvas)
 ```
 
-This is how we create a new object:
+There is only one built-in type `Bytes`, which is very similar
+to `byte[]` in Java.
+
+A type may become a subtype of another type by using keyword `extends`.
+
+A type may have one to four method declarations.
+
+The type name must match `[A-Z][A-Za-z0-9]{2,15}`.
+
+### Objects
+
+An object is a active entity that implements one or more types.
+
+An object can be _created_ or _copied_. When an object is created
+all methods required by its types must be implemented, for example
+(`alphabet` is the name of the object):
 
 ```
-create abc("978-1-51916-691-3", "The Alphabet") as Book:
+object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
   String @isbn
   String @title
 
-  constructor(ISBN i, String t):
+  ctor(ISBN i, String t):
     @isbn = i
     @title = t
 
   String asText():
-    copy sprintf:
+    sprintf:
       "ISBN is %s, title is '%s'",
       @isbn,
       @title
 ```
 
-This is how we create another object, copying an existing one:
+An object can be made as a copy of an existing object, but with a
+different (or similar) set of arguments for one of the constructors, for
+example (`ot` is the name of the object):
 
 ```
-copy abc("978-0-73561-965-4", "Object Thinking")
+ot: "978-0-73561-965-4", "Object Thinking"
+```
+
+The same can be written in a few lines (comma at the end is mandatory):
+
+```
+ot:
+  "978-0-73561-965-4",
+  "Object Thinking"
+```
+
+The object name must match `[a-z][a-z0-9]{2,15}`.
+
+### Attributes
+
+An object may have a number of attributes, listed right after the
+first line of object declaration:
+
+```
+object zero(0, "USD") as Money:
+  Int @amount
+  String @currency
+```
+
+All attributes are private; there is no such thing as public or protected
+attributes.
+
+An object may have up to five attributes.
+
+The attribute name must match `@[a-z][a-z0-9]{2,15}`.
+
+### Constructors and Destructors
+
+An object must have a primary constructor and may have
+any number of secondary constructors and one destructor.
+A primary constructor is the one that initializes object
+attributes and can't have a body, for example:
+
+```
+object zero() as Money, Int:
+  Int @amount
+  String @currency
+  zero(): # secondary constructor
+    zero: 0
+  zero(Int a): # secondary constructor
+    zero: a, "USD"
+  zero(Int amount, String currency) # primary constructor
+  ~zero(): # destructor
+    printed: "I'm dying..."
+```
+
+Obviously, parameter names in the primary constructor must match
+the names of object attributes.
+
+Secondary constructors must return objects that implement at least
+all types mentioned in the declaration of the current object.
+
+The destructor, if it is present in the object, will be called right
+before the object is destroyed. The object returned by the
+destructor is activated immediately after being returned.
+
+Constructors must be listed after attributes. The primary constructor
+must be the last one. The destructor, if it is present, goes
+right after the primary constructor.
+
+### Methods
+
+Method body must create and return exactly one object, using a single
+"statement", for example:
+
+```
+Int max(Int a, Int b):
+  if:
+    lessThan:
+      a,
+      b
+    b,
+    a
+```
+
+A method must return something; there is no such thing as `void` in Java/C++.
+
+All methods are public; there is no such thing as private or protected methods.
+
+A method may have zero to four arguments.
+
+Each argument must have an optional type and a name. If type is not provided
+it has to be replaced with `?` mark, for example:
+
+```
+Int power(? x, Int p):
+  if:
+    equals: p, 0
+    1
+    mul:
+      x,
+      power: x, minus: p, 1
+```
+
+This code will lead to compile-time error if `x` doesn't implement `Int`.
+
+The method name must match `[a-z][a-z0-9]{2,15}`.
+
+### Exceptions
+
+To raise an exception object `org.eolang.error` must be copied (imported by
+default):
+
+```
+import org.eolang.error # you can omit this line
+Int price(Int total, Int amount):
+  if:
+    equals: amount, 0
+    error: "Division by zero"
+    div: total, amount
+```
+
+To catch an exception... _I don't know yet_
+
+## Popular Types and Objects
+
+Some types are the most popular:
+
+```
+Int
+Boolean
+Double
+String
+```
+
+Some objects are popular as well:
+
+```
+if
+equals as Boolean
+not as Boolean
+lessThan as Boolean
+greaterThan as Boolean
+plus
+minus
+mul
+div
 ```
 
 ## Examples
 
-Fibonacci number:
+A Fibonacci number:
 
 ```
-create fibonacci(1) as Number:
-  Number n
-  bytes asBytes():
+object fibonacci(1) as Int:
+  Int @n
+  fibonacci():
+    fibonacci: 1
+  fibonacci(Int n)
+  Int int():
     if:
       lessThan: @n, 2
       1,
@@ -130,3 +300,5 @@ create fibonacci(1) as Number:
         fibonacci:
           minus: @n, 1
 ```
+
+Here, `if`, `lessThan`, `plus`, and `minus` are objects being copied.
