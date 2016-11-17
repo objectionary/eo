@@ -103,7 +103,8 @@ type Pixel extends Point:
 There is only one built-in type `Bytes`, which is very similar
 to `byte[]` in Java.
 
-A type may become a subtype of another type by using keyword `extends`.
+A type may become a [subtype](https://en.wikipedia.org/wiki/Subtyping)
+of another type by using keyword `extends`.
 
 A type may have one to four method declarations.
 
