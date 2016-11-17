@@ -151,6 +151,24 @@ ot:
   "Object Thinking"
 ```
 
+Object creating and copying may be combined in any possible way, for example:
+
+```
+Ticket ticket(Person passenger):
+  object x(passenger) as Ticket:
+    Person @p
+    x(Passenger p)
+    String name():
+      concat:
+        "506-",
+        @p.name()
+    Money price():
+      if:
+        @p.vip(),
+        money("$50"),
+        object as Money
+```
+
 The object name must match `[a-z][a-z0-9]{2,15}`.
 
 ### Attributes
@@ -229,6 +247,9 @@ Int max(Int a, Int b):
 ```
 
 A method must return something; there is no such thing as `void` in Java/C++.
+
+A method may not exist in an object if it is not defined
+in one of its types.
 
 All methods are public; there is no such thing as private or protected methods.
 
