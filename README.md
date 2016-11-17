@@ -74,7 +74,7 @@ What exactly happens here? [a detailed explanation wanted]
 There are types, objects, constructors, destructors, methods,
 attributes, arguments, exceptions, decorators.
 
-There are _no_ classes, operators, statements, annotations, reflection,
+There are _no_ classes, variables, operators, statements, annotations, reflection,
 type casting, generics, NULL, static methods, functions, lambdas.
 
 ### Types
