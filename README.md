@@ -26,7 +26,7 @@ These things we **don't tolerate**:
   * annotations
   * unchecked exceptions
   * operators
-  * execution flow keywords (`for`, `while`, `if`, etc)
+  * flow control statements (`for`, `while`, `if`, etc)
 
 These things we **want** to build in:
 
