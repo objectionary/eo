@@ -198,7 +198,8 @@ A constructor is a ... TBD
 
 A destructor is a ... TBD
 
-An object must have a primary constructor and may have
+An object must have a primary constructor (which must have at least one parameter,
+that is, the object must encapsulate something) and may have
 any number of secondary constructors and one destructor.
 A primary constructor is the one that initializes object
 attributes and can't have a body, for example:
