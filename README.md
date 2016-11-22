@@ -241,7 +241,7 @@ Method body must create and return exactly one object, using a single
 ```
 Int max(Int a, Int b):
   if:
-    lessThan:
+    firstIsLess:
       a,
       b
     b,
@@ -309,8 +309,8 @@ Some objects are popular as well:
 if
 equals as Boolean
 not as Boolean
-lessThan as Boolean
-greaterThan as Boolean
+firstIsLess as Boolean
+firstIsGreater as Boolean
 plus
 minus
 mul
@@ -329,7 +329,7 @@ object fibonacci(1) as Int:
   fibonacci(Int n)
   Int int():
     if:
-      lessThan: @n, 2
+      firstIsLess: @n, 2
       1,
       plus:
         @n
@@ -337,4 +337,4 @@ object fibonacci(1) as Int:
           minus: @n, 1
 ```
 
-Here, `if`, `lessThan`, `plus`, and `minus` are objects being copied.
+Here, `if`, `firstIsLess`, `plus`, and `minus` are objects being copied.
