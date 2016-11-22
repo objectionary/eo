@@ -124,7 +124,7 @@ all methods required by its types must be implemented, for example
 object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
   String @isbn
   String @title
-  alphabet(ISBN i, String t):
+  ctor(ISBN i, String t):
     @isbn = i
     @title = t
   String asText():
@@ -156,7 +156,7 @@ Object creating and copying may be combined in any possible way, for example:
 Ticket ticket(Person passenger):
   object x(passenger) as Ticket:
     Person @p
-    x(Passenger p)
+    ctor(Passenger p)
     String name():
       concat:
         "506-",
@@ -207,12 +207,12 @@ attributes and can't have a body, for example:
 object zero() as Money, Int:
   Int @amount
   String @currency
-  zero(): # secondary constructor
+  ctor(): # secondary constructor
     zero: 0
-  zero(Int a): # secondary constructor
+  ctor(Int a): # secondary constructor
     zero: a, "USD"
-  zero(Int amount, String currency) # primary constructor
-  ~zero(): # destructor
+  ctor(Int amount, String currency) # primary constructor
+  dtor(): # destructor
     printed: "I'm dying..."
 ```
 
@@ -229,6 +229,9 @@ destructor is activated immediately after being returned.
 Constructors must be listed after attributes. The primary constructor
 must be the last one. The destructor, if it is present, goes
 right after the primary constructor.
+
+For constructors the `ctor` keyword is used and for destructors,
+the keyword is `dtor`.
 
 ### Methods
 
@@ -323,9 +326,9 @@ A Fibonacci number:
 ```
 object fibonacci(1) as Int:
   Int @n
-  fibonacci():
+  ctor():
     fibonacci: 1
-  fibonacci(Int n)
+  ctor(Int n)
   Int int():
     if:
       lessThan: @n, 2
