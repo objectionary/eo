@@ -270,8 +270,8 @@ it has to be replaced with `?` mark, for example:
 ```
 Int power(? x, Int p):
   if:
-    equals: p, 0
-    1
+    equals: p, 0,
+    1,
     mul:
       x,
       power: x, minus: p, 1
