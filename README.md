@@ -52,6 +52,10 @@ We want EO to be compilable to Java. We want to stay as close to Java and JVM
 as possible, mostly in order to re-use the eco-system and libraries
 already available.
 
+We also want to have an ability to compile it to any other language, like
+Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
+independent.
+
 ## Quick Start
 
 Here is a classic "hello, world" example:
