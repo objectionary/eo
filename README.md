@@ -281,7 +281,7 @@ This code will lead to compile-time error if `x` doesn't implement `Int`.
 
 The method name must match `[a-z][a-z0-9]{2,15}`.
 
-A single empty line is allowed after the method body.
+A single empty line is allowed after the method body, nowhere else.
 
 ### Exceptions
 
