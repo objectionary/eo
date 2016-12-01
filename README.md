@@ -128,7 +128,7 @@ all methods required by its types must be implemented, for example
 object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
   String @isbn
   String @title
-  ctor(ISBN i, String t):
+  ctor(String i, String t):
     @isbn = i
     @title = t
   String asText():
