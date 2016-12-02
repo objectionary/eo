@@ -24,7 +24,7 @@ These things we **don't tolerate**:
   * scalar types
   * garbage collection ([huh?](https://github.com/yegor256/eo/issues/4))
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
-  * unchecked exceptions
+  * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/yegor256/eo/issues/51))
