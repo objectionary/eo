@@ -24,32 +24,30 @@
 grammar Program;
 
 @header {
-    // tbd
+    import org.eolang.compiler.syntax.Argument;
+    import org.eolang.compiler.syntax.Method;
+    import org.eolang.compiler.syntax.Tree;
+    import org.eolang.compiler.syntax.Type;
 }
 
-@parser::members {
-    // tbd
-}
-
-clauses
+tree returns [Tree ret]
     :
+    { Collection<Type> types = new LinkedList<Type>(); }
     (
-        clause
+        type_declaration
+        { types.add($type_declaration.ret); }
+        |
+        object_instantiation
+        |
+        object_copying
     )*
     EOF
+    { $ret = new Tree(types); }
     ;
 
-clause
+type_declaration returns [Type ret]
     :
-    type_declaration
-    |
-    object_instantiation
-    |
-    object_copying
-    ;
-
-type_declaration
-    :
+    { Collection<Method> methods = new LinkedList<Method>(); }
     TYPE
     SPACE
     HINAME
@@ -68,36 +66,43 @@ type_declaration
     (
         SPACE+
         method_declaration
+        { $methods.add($method_declaration.ret); }
         EOL
     )+
+    { $ret = new Type($TYPE.text, methods); }
     ;
 
-method_declaration
+method_declaration returns [Method ret]
     :
     HINAME
     SPACE
     LONAME
     arguments_declaration
+    { $ret = new Method($LONAME.text, $arguments_declaration.ret, $HINAME.text); }
     ;
 
-arguments_declaration
+arguments_declaration returns [List<Argument> ret]
     :
+    { $ret = new LinkedList<Argument>(); }
     LBRACKET
     (
-        argument_declaration
+        head=argument_declaration
+        { $ret.add($head.ret); }
         (
             COMMA
-            argument_declaration
+            tail=argument_declaration
+            { $ret.add($tail.ret); }
         )*
     )?
     RBRACKET
     ;
 
-argument_declaration
+argument_declaration returns [Argument ret]
     :
     HINAME
     SPACE
     LONAME
+    { $ret = new Argument($HINAME.text, $LONAME.text); }
     ;
 
 object_instantiation
