@@ -128,9 +128,13 @@ all methods required by its types must be implemented, for example
 (`alphabet` is the name of the object):
 
 ```
-object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
+object alphabet as Book:
   String @isbn
   String @title
+  ctor()
+    alphabet:
+      "978-1-51916-691-3",
+      "The Alphabet"
   ctor(String i, String t):
     @isbn = i
     @title = t
@@ -157,22 +161,11 @@ ot:
   "Object Thinking"
 ```
 
-
-Object can be anonymous (nameless):
-```
-Person person():
-  object ("John") as Person:
-    String @name
-    ctor(name)
-    String name():
-      @name
-```
-
 Object creating and copying may be combined in any possible way, for example:
 
 ```
 Ticket ticket(Person passenger):
-  object (passenger) as Ticket:
+  object as Ticket:
     Person @p
     ctor(Passenger p)
     String name():
