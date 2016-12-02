@@ -36,8 +36,8 @@ These things we **want** to build in:
   * build automation
   * aspects (AOP)
   * logging
-  * unit testing
-  * versioning
+  * TDD ([discuss](https://github.com/yegor256/eo/issues/34))
+  * versioning ([discuss](https://github.com/yegor256/eo/issues/22))
   * concurrency
   * object metadata
   * persistence
