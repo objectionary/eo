@@ -12,18 +12,18 @@ Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
 
 These things we **don't tolerate**:
 
-  * static/class methods or attributes
-  * classes (only types and objects)
-  * implementation inheritance
-  * mutability
-  * NULL
+  * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
+  * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
+  * implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
+  * mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html))
+  * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
   * global variables/procedures
   * reflection
   * constants
-  * type casting
+  * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
   * scalar types
   * garbage collection ([huh?](https://github.com/yegor256/eo/issues/4))
-  * annotations
+  * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
   * unchecked exceptions
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
