@@ -27,6 +27,7 @@ These things we **don't tolerate**:
   * unchecked exceptions
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
+  * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/yegor256/eo/issues/51))
 
 These things we **want** to build in:
 
