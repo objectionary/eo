@@ -21,57 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
-
-import java.io.PrintStream;
 
 /**
- * Main.
+ * EO Compiler.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @see <a href="http://www.eolang.org">project site www.eolang.org</a>
+ * @see <a href="https://github.com/yegor256/eo">GitHub project</a>
  */
-public final class Main {
-
-    /**
-     * Print stream for the output.
-     */
-    private final PrintStream stdout;
-
-    /**
-     * Arguments.
-     */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
-    }
-
-    /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
-     */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        if ("--help".equals(this.args[0])) {
-            this.stdout.append("It is just a skeleton");
-        } else {
-            this.stdout.append("Usage: --help");
-        }
-    }
-
-}
+package org.eolang.compiler;

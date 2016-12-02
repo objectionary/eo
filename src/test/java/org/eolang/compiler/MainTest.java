@@ -21,14 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.compiler;
+
+import java.io.PrintStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * EO Compiler.
- *
+ * Test case for {@link Main}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @see <a href="http://www.eolang.org">project site www.eolang.org</a>
- * @see <a href="https://github.com/yegor256/eo">GitHub project</a>
  */
-package org.eolang;
+public final class MainTest {
+
+    /**
+     * Main can print a simple text.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void printsSimpleResponse() throws Exception {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            new Main(new PrintStream(baos), "--help").exec();
+            MatcherAssert.assertThat(
+                new String(baos.toByteArray()),
+                Matchers.containsString("skeleton")
+            );
+        }
+    }
+
+}
