@@ -155,11 +155,22 @@ ot:
   "Object Thinking"
 ```
 
+
+Object can be anonymous (nameless):
+```
+Person person():
+  object ("John") as Person:
+    String @name
+    ctor(name)
+    String name():
+      @name
+```
+
 Object creating and copying may be combined in any possible way, for example:
 
 ```
 Ticket ticket(Person passenger):
-  object x(passenger) as Ticket:
+  object (passenger) as Ticket:
     Person @p
     ctor(Passenger p)
     String name():
@@ -170,7 +181,7 @@ Ticket ticket(Person passenger):
       if:
         @p.vip(),
         money("$50"),
-        object m() as Money
+        object () as Money
           Int value():
             25
 ```
