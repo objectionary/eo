@@ -97,7 +97,7 @@ symbol at the end, for example:
 
 ```
 type Book:
-  String asText()
+  Text asText()
 type Car:
   Money cost()
   Bytes picture()
@@ -132,7 +132,7 @@ object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
   ctor(String i, String t):
     @isbn = i
     @title = t
-  String asText():
+  Text asText():
     sprintf:
       "ISBN is %s, title is '%s'",
       @isbn,
