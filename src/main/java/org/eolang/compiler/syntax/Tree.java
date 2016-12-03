@@ -23,6 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public final class Tree {
      * Ctor.
      * @param tps All types found
      */
-    Tree(final Collection<Type> tps) {
+    public Tree(final Collection<Type> tps) {
         this.types = tps;
     }
 
@@ -53,11 +54,11 @@ public final class Tree {
      * Compile it to Java files.
      * @return Java files (path, content)
      */
-    public Map<String, String> java() {
-        final Map<String, String> map = new HashMap<>(0);
+    public Map<Path, String> java() {
+        final Map<Path, String> map = new HashMap<>(0);
         this.types.stream().forEach(
             type -> {
-                final Map.Entry<String, String> entry = type.java();
+                final Map.Entry<Path, String> entry = type.java();
                 map.put(entry.getKey(), entry.getValue());
             }
         );

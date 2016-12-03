@@ -1,3 +1,5 @@
+type Pixel:
+  Pixel moveTo(Int x, Int y)
 object fibonacci as Int:
   Int @n
   ctor():

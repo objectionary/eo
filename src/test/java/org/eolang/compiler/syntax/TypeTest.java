@@ -50,7 +50,7 @@ public final class TypeTest {
                         "drive",
                         Lists.newArrayList(
                             new Argument("x", "Integer"),
-                            new Argument("y", "Integer")
+                            new Argument("y", "Long")
                         ),
                         "Int"
                     )
@@ -58,7 +58,6 @@ public final class TypeTest {
             ).java().getValue(),
             Matchers.containsString("final Integer x")
         );
-
     }
 
 }

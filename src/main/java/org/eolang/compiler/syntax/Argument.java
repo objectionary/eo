@@ -47,7 +47,7 @@ public final class Argument {
      * @param arg Argument name
      * @param tpn Type name
      */
-    Argument(final String arg, final String tpn) {
+    public Argument(final String arg, final String tpn) {
         this.name = arg;
         this.type = tpn;
     }

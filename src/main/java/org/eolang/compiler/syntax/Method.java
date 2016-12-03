@@ -57,7 +57,8 @@ public final class Method {
      * @param args Arguments
      * @param rtp Return type
      */
-    Method(final String mtd, final Collection<Argument> args, final String rtp) {
+    public Method(final String mtd, final Collection<Argument> args,
+        final String rtp) {
         this.name = mtd;
         this.arguments = args;
         this.type = rtp;

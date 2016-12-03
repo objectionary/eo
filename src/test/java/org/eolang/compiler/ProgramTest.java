@@ -24,6 +24,9 @@
 package org.eolang.compiler;
 
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,9 +52,13 @@ public final class ProgramTest {
                 Charset.defaultCharset()
             )
         );
+        final Path dir = Files.createTempDirectory("");
+        program.save(dir);
         MatcherAssert.assertThat(
-            program.java(),
-            Matchers.containsString("done")
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("Pixel.java")))
+            ),
+            Matchers.containsString("final Int x, final Int y")
         );
     }
 

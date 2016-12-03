@@ -26,9 +26,12 @@ package org.eolang.compiler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
+import org.eolang.compiler.syntax.Tree;
 
 /**
  * Program.
@@ -53,11 +56,11 @@ final class Program {
     }
 
     /**
-     * Compile it to Java.
-     * @return Java code
+     * Compile it to Java and save to the directory.
+     * @param dir Directory to save to
      * @throws IOException If fails
      */
-    public String java() throws IOException {
+    public void save(final Path dir) throws IOException {
         final ProgramLexer lexer = new ProgramLexer(
             new ANTLRInputStream(
                 new ByteArrayInputStream(
@@ -67,8 +70,25 @@ final class Program {
         );
         final TokenStream tokens = new CommonTokenStream(lexer);
         final ProgramParser parser = new ProgramParser(tokens);
-        parser.clauses();
-        return "done";
+        final Tree tree = parser.program().ret;
+        tree.java().entrySet().stream().forEach(
+            entry -> Program.save(
+                dir.resolve(entry.getKey()), entry.getValue()
+            )
+        );
+    }
+
+    /**
+     * Save content.
+     * @param file File to save to
+     * @param content Java content
+     */
+    private static void save(final Path file, final String content) {
+        try {
+            Files.write(file, content.getBytes());
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
 }
