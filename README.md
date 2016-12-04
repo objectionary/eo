@@ -26,7 +26,7 @@ These things we **don't tolerate**:
   * scalar types
   * garbage collection ([huh?](https://github.com/yegor256/eo/issues/4))
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
-  * unchecked exceptions
+  * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/yegor256/eo/issues/51))
@@ -38,8 +38,8 @@ These things we **want** to build in:
   * build automation
   * aspects (AOP)
   * logging
-  * unit testing
-  * versioning
+  * TDD ([discuss](https://github.com/yegor256/eo/issues/34))
+  * versioning ([discuss](https://github.com/yegor256/eo/issues/22))
   * concurrency
   * object metadata
   * persistence
@@ -99,7 +99,7 @@ symbol at the end, for example:
 
 ```
 type Book:
-  String asText()
+  Text asText()
 type Car:
   Money cost()
   Bytes picture()
@@ -128,9 +128,10 @@ all methods required by its types must be implemented, for example
 (`alphabet` is the name of the object):
 
 ```
+<<<<<<< HEAD
 object alphabet as Book:
-  String @isbn
-  String @title
+  Text @isbn
+  Text @title
   ctor()
     alphabet:
       "978-1-51916-691-3",
@@ -138,7 +139,7 @@ object alphabet as Book:
   ctor(String i, String t):
     @isbn = i
     @title = t
-  String asText():
+  Text asText():
     sprintf:
       "ISBN is %s, title is '%s'",
       @isbn,
@@ -168,7 +169,7 @@ Ticket ticket(Person passenger):
   object as Ticket:
     Person @p
     ctor(Passenger p)
-    String name():
+    Text name():
       concat:
         "506-",
         @p.name()
@@ -193,7 +194,7 @@ first line of object declaration:
 ```
 object zero(0, "USD") as Money:
   Int @amount
-  String @currency
+  Text @currency
 ```
 
 All attributes are private; there is no such thing as public or protected
@@ -218,12 +219,12 @@ attributes and can't have a body, for example:
 ```
 object zero() as Money, Int:
   Int @amount
-  String @currency
+  Text @currency
   ctor(): # secondary constructor
     zero: 0
   ctor(Int a): # secondary constructor
     zero: a, "USD"
-  ctor(Int amount, String currency) # primary constructor
+  ctor(Int amount, Text currency) # primary constructor
   dtor(): # destructor
     printed: "I'm dying..."
 ```
