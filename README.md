@@ -97,7 +97,7 @@ symbol at the end, for example:
 
 ```
 type Book:
-  String asText()
+  Text asText()
 type Car:
   Money cost()
   Bytes picture()
@@ -127,12 +127,12 @@ all methods required by its types must be implemented, for example
 
 ```
 object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
-  String @isbn
-  String @title
-  ctor(String i, String t):
+  Text @isbn
+  Text @title
+  ctor(Text i, Text t):
     @isbn = i
     @title = t
-  String asText():
+  Text asText():
     sprintf:
       "ISBN is %s, title is '%s'",
       @isbn,
@@ -160,9 +160,9 @@ Object can be anonymous (nameless):
 ```
 Person person():
   object ("John") as Person:
-    String @name
+    Text @name
     ctor(name)
-    String name():
+    Text name():
       @name
 ```
 
@@ -173,7 +173,7 @@ Ticket ticket(Person passenger):
   object (passenger) as Ticket:
     Person @p
     ctor(Passenger p)
-    String name():
+    Text name():
       concat:
         "506-",
         @p.name()
@@ -198,7 +198,7 @@ first line of object declaration:
 ```
 object zero(0, "USD") as Money:
   Int @amount
-  String @currency
+  Text @currency
 ```
 
 All attributes are private; there is no such thing as public or protected
@@ -223,12 +223,12 @@ attributes and can't have a body, for example:
 ```
 object zero() as Money, Int:
   Int @amount
-  String @currency
+  Text @currency
   ctor(): # secondary constructor
     zero: 0
   ctor(Int a): # secondary constructor
     zero: a, "USD"
-  ctor(Int amount, String currency) # primary constructor
+  ctor(Int amount, Text currency) # primary constructor
   dtor(): # destructor
     printed: "I'm dying..."
 ```
