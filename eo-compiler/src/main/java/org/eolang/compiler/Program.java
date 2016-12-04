@@ -40,7 +40,7 @@ import org.eolang.compiler.syntax.Tree;
  * @version $Id$
  * @since 0.1
  */
-final class Program {
+public final class Program {
 
     /**
      * Text to parse.
@@ -51,7 +51,7 @@ final class Program {
      * Ctor.
      * @param input Input text
      */
-    Program(final String input) {
+    public Program(final String input) {
         this.text = input;
     }
 

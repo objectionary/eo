@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  * The MIT License (MIT)
  *
@@ -23,8 +23,8 @@
  * SOFTWARE.
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jcabi</groupId>
@@ -32,11 +32,15 @@
         <version>0.48</version>
     </parent>
     <groupId>org.eolang</groupId>
-    <artifactId>compiler</artifactId>
+    <artifactId>eo-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>compiler</name>
-    <description>EO-to-Java Compiler</description>
+    <packaging>pom</packaging>
+    <name>eo-parent</name>
+    <modules>
+        <module>eo-compiler</module>
+        <module>eo-maven-plugin</module>
+    </modules>
+    <description>EO Language</description>
     <url>https://github.com/yegor256/eo</url>
     <inceptionYear>2016</inceptionYear>
     <organization>
@@ -83,45 +87,18 @@
             <url>https://github.com/yegor256/eo</url>
         </site>
     </distributionManagement>
-    <properties>
-        <timestamp>${maven.build.timestamp}</timestamp>
-        <jdk.version>1.7</jdk.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-matchers</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-log</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <profiles>
         <profile>
