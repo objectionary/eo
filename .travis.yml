@@ -1,0 +1,15 @@
+language: java
+sudo: false
+cache:
+  directories:
+    - $HOME/.m2
+script:
+  - set -e
+  - mvn clean install -Pqulice --errors --batch-mode
+  - mvn clean
+env:
+  global:
+    - MAVEN_OPTS="-Xmx256m"
+    - JAVA_OPTS="-Xmx256m"
+jdk:
+  - oraclejdk8

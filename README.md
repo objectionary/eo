@@ -1,5 +1,7 @@
 <img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" height="100px" />
 
+[![Build Status](https://travis-ci.org/yegor256/eo.svg?branch=master)](https://travis-ci.org/yegor256/eo)
+
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language. It's still a prototype.
@@ -126,10 +128,15 @@ all methods required by its types must be implemented, for example
 (`alphabet` is the name of the object):
 
 ```
-object alphabet("978-1-51916-691-3", "The Alphabet") as Book:
+<<<<<<< HEAD
+object alphabet as Book:
   Text @isbn
   Text @title
-  ctor(Text i, Text t):
+  ctor()
+    alphabet:
+      "978-1-51916-691-3",
+      "The Alphabet"
+  ctor(String i, String t):
     @isbn = i
     @title = t
   Text asText():
@@ -155,22 +162,11 @@ ot:
   "Object Thinking"
 ```
 
-
-Object can be anonymous (nameless):
-```
-Person person():
-  object ("John") as Person:
-    Text @name
-    ctor(name)
-    Text name():
-      @name
-```
-
 Object creating and copying may be combined in any possible way, for example:
 
 ```
 Ticket ticket(Person passenger):
-  object (passenger) as Ticket:
+  object as Ticket:
     Person @p
     ctor(Passenger p)
     Text name():

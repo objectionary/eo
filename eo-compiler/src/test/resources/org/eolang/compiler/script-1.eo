@@ -1,0 +1,20 @@
+type Pixel:
+  Pixel moveTo(Int x, Int y)
+object fibonacci as Int:
+  Int @n
+  ctor():
+    fibonacci:
+      1
+  Int int():
+    if:
+      firstIsLess:
+        @n
+        2
+      1
+      plus:
+        @n
+        fibonacci:
+          minus:
+            @n
+            1
+
