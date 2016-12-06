@@ -128,7 +128,6 @@ all methods required by its types must be implemented, for example
 (`alphabet` is the name of the object):
 
 ```
-<<<<<<< HEAD
 object alphabet as Book:
   Text @isbn
   Text @title
