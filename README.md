@@ -358,5 +358,6 @@ Here, `if`, `firstIsLess`, `plus`, and `minus` are objects being copied.
 
 * Copyright (c) 2016 eolang.org [contributors](https://github.com/yegor256/eo/graphs/contributors)
 
-The EO documentation and [eo-compiler](eo-compiler) is distributed under 
-**The MIT License**. See [LICENSE](LICENSE) for details.
+This EO documentation, examples and the [eo-compiler](eo-compiler) 
+is distributed under [The MIT License](http://www.opensource.org/licenses/MIT). 
+See [LICENSE](LICENSE) for details.
