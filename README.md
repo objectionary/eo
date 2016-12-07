@@ -352,3 +352,11 @@ object fibonacci(1) as Int:
 ```
 
 Here, `if`, `firstIsLess`, `plus`, and `minus` are objects being copied.
+
+# License
+
+* Copyright (c) 2016 eolang.org [contributors](https://github.com/yegor256/eo/graphs/contributors)
+
+This EO documentation, examples and the [eo-compiler](eo-compiler) 
+is distributed under [The MIT License](http://www.opensource.org/licenses/MIT). 
+See [LICENSE](LICENSE) for details.
