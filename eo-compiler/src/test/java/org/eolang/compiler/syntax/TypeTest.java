@@ -56,7 +56,13 @@ public final class TypeTest {
                     )
                 )
             ).java().getValue(),
-            Matchers.containsString("final Integer x")
+            Matchers.stringContainsInOrder(
+                Lists.newArrayList(
+                    "public interface Car", "{",
+                        "Int drive(final Integer x, final Long y);",
+                    "}"
+                )
+            )
         );
     }
 
