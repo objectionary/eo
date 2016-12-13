@@ -353,6 +353,15 @@ object fibonacci(1) as Int:
 
 Here, `if`, `firstIsLess`, `plus`, and `minus` are objects being copied.
 
+# Troubleshooting
+## Intellij IDEA
+If after clean import from Maven, IDEA doesn't compile the project
+and shows errors about ProgramLexer is undefined:
+- Open Maven Projects window
+- Select eo-compiler
+- Right button
+- Generate Sources and Update Folders
+
 # License
 
 * Copyright (c) 2016 eolang.org [contributors](https://github.com/yegor256/eo/graphs/contributors)
