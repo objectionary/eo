@@ -1,6 +1,9 @@
 <img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" height="100px" />
 
+[![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/eo)](http://www.rultor.com/p/yegor256/eo)
+
 [![Build Status](https://travis-ci.org/yegor256/eo.svg?branch=master)](https://travis-ci.org/yegor256/eo)
+[![PDD status](http://www.0pdd.com/svg?name=yegor256/eo)](http://www.0pdd.com/p?name=yegor256/eo)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
@@ -366,6 +369,6 @@ and shows errors about ProgramLexer is undefined:
 
 * Copyright (c) 2016 eolang.org [contributors](https://github.com/yegor256/eo/graphs/contributors)
 
-This EO documentation, examples and the [eo-compiler](eo-compiler) 
-is distributed under [The MIT License](http://www.opensource.org/licenses/MIT). 
+This EO documentation, examples and the [eo-compiler](eo-compiler)
+is distributed under [The MIT License](http://www.opensource.org/licenses/MIT).
 See [LICENSE](LICENSE) for details.

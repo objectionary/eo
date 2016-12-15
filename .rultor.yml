@@ -1,0 +1,26 @@
+assets:
+  settings.xml: yegor256/home#assets/eo/settings.xml
+  pubring.gpg: yegor256/home#assets/pubring.gpg
+  secring.gpg: yegor256/home#assets/secring.gpg
+env:
+  MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
+  JAVA_OPTS: -XX:MaxPermSize=256m -Xmx1g
+install: |
+  sudo gem install --no-rdoc --no-ri pdd
+  sudo gem install --no-rdoc --no-ri est
+architect:
+- yegor256
+merge:
+  script: |
+    mvn clean install -Peo -Pqulice --errors --settings ../settings.xml
+    mvn clean
+    pdd --source=$(pwd) --verbose --file=/dev/null
+  commanders:
+  - yegor256
+release:
+  script: |-
+    mvn versions:set "-DnewVersion=${tag}"
+    git commit -am "${tag}"
+    mvn clean deploy -Peo -Psonatype --errors --settings ../settings.xml
+  commanders:
+  - yegor256
