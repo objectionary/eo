@@ -45,10 +45,10 @@ public final class MethodTest {
         MatcherAssert.assertThat(
             new Method(
                 "send",
-                 Lists.newArrayList(
-                     new Argument("receiver", "Person"),
-                     new Argument("content", "Content")
-                 ),
+                Lists.newArrayList(
+                    new Argument("receiver", "Person"),
+                    new Argument("content", "Content")
+                ),
                 "Message"
             ).java(),
             Matchers.is(
