@@ -1,3 +1,5 @@
+docker:
+  image: yegor256/java8
 assets:
   settings.xml: teamed/home#assets/eo/settings.xml
   pubring.gpg: teamed/home#assets/pubring.gpg
