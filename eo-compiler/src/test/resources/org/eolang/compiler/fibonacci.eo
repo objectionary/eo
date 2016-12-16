@@ -1,5 +1,3 @@
-type Pixel:
-  Pixel moveTo(Int x, Int y)
 object fibonacci as Int:
   Int @n
   ctor():
@@ -17,4 +15,3 @@ object fibonacci as Int:
           minus:
             @n
             1
-
