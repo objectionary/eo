@@ -56,10 +56,11 @@ public final class Tree {
      */
     public Map<Path, String> java() {
         return this.types.stream()
+            .map(Type::java)
             .collect(
                 Collectors.toMap(
-                    type -> type.java().getKey(),
-                    type -> type.java().getValue()
+                    entry -> entry.getKey(),
+                    entry -> entry.getValue()
                 )
             );
     }
