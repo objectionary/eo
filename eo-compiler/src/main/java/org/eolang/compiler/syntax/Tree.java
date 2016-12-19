@@ -25,8 +25,8 @@ package org.eolang.compiler.syntax;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * AST.
@@ -55,14 +55,14 @@ public final class Tree {
      * @return Java files (path, content)
      */
     public Map<Path, String> java() {
-        final Map<Path, String> map = new HashMap<>(0);
-        this.types.stream().forEach(
-            type -> {
-                final Map.Entry<Path, String> entry = type.java();
-                map.put(entry.getKey(), entry.getValue());
-            }
-        );
-        return map;
+        return this.types.stream()
+            .map(Type::java)
+            .collect(
+                Collectors.toMap(
+                    entry -> entry.getKey(),
+                    entry -> entry.getValue()
+                )
+            );
     }
 
 }
