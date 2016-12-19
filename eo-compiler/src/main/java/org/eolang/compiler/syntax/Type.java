@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler.syntax;
 
-import com.google.common.base.Joiner;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
@@ -70,7 +69,8 @@ public final class Type {
             String.format(
                 "public interface %s {\n    %s\n}",
                 this.name,
-                Joiner.on("\n    ").join(
+                String.join(
+                	"\n    ",
                     this.methods.stream().map(
                         Method::java
                     ).collect(Collectors.toList())

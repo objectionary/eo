@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler.syntax;
 
-import com.google.common.base.Joiner;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -73,8 +72,9 @@ public final class Method {
             "%s %s(%s);",
             this.type,
             this.name,
-            Joiner.on(", ").join(
-                this.arguments.stream().map(
+            String.join(
+            	", ",
+            	this.arguments.stream().map(
                     Argument::java
                 ).collect(Collectors.toList())
             )
