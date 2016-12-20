@@ -30,10 +30,12 @@ import java.nio.file.Paths;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test case for {@link Program}.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -42,13 +44,28 @@ public final class ProgramTest {
 
     /**
      * Program can parse a simple fibonacci example.
+     *
+     * @todo #70:30m Object parser is missing.
+     *  We need to implement it, but before we should decide
+     *  how to generate java code from EO object.
      * @throws Exception If some problem inside
      */
     @Test
+    @Ignore("object parsing is not implemented yet")
     public void parsesFibonacciExample() throws Exception {
+        //object parsing is not implemented yet
+    }
+
+    /**
+     * Program can parse a simple type with one method.
+     *
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void parsesSimpleType() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("script-1.eo"),
+                this.getClass().getResourceAsStream("book.eo"),
                 Charset.defaultCharset()
             )
         );
@@ -56,10 +73,72 @@ public final class ProgramTest {
         program.save(dir);
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("Pixel.java")))
+                Files.readAllBytes(dir.resolve(Paths.get("Book.java")))
             ),
-            Matchers.containsString("final Int x, final Int y")
+            Matchers.containsString("Text text()")
         );
     }
 
+    /**
+     * Program can parse a type with multiple methods.
+     *
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void parsesBigType() throws Exception {
+        final Program program = new Program(
+            IOUtils.toString(
+                this.getClass().getResourceAsStream("car.eo"),
+                Charset.defaultCharset()
+            )
+        );
+        final Path dir = Files.createTempDirectory("");
+        program.save(dir);
+        MatcherAssert.assertThat(
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("Car.java")))
+            ),
+            Matchers.allOf(
+                Matchers.containsString("Money cost()"),
+                Matchers.containsString("Bytes picture()"),
+                Matchers.containsString("Car moveTo(final Coordinates coords)")
+            )
+        );
+    }
+
+    /**
+     * Program can parse multiple types in one file.
+     * This test verifies indentation parsing.
+     *
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void parsesMultipleTypes() throws Exception {
+        final Program program = new Program(
+            IOUtils.toString(
+                this.getClass().getResourceAsStream("multitypes.eo"),
+                Charset.defaultCharset()
+            )
+        );
+        final Path dir = Files.createTempDirectory("");
+        program.save(dir);
+        MatcherAssert.assertThat(
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("Number.java")))
+            ),
+            Matchers.allOf(
+                Matchers.containsString("Decimal decimal()"),
+                Matchers.containsString("Integral integral()")
+            )
+        );
+        MatcherAssert.assertThat(
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("Text.java")))
+            ),
+            Matchers.allOf(
+                Matchers.containsString("Number length()"),
+                Matchers.containsString("Collection lines()")
+            )
+        );
+    }
 }
