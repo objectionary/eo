@@ -45,7 +45,9 @@ public final class ProgramTest {
     /**
      * Program can parse a simple fibonacci example.
      *
-     * @todo #70 We should decide how to generate java code from EO object.
+     * @todo #70:30m Object parser is missing.
+     *  We need to implement it, but before we should decide
+     *  how to generate java code from EO object.
      * @throws Exception If some problem inside
      */
     @Test
