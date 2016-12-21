@@ -75,7 +75,10 @@ public final class ProgramTest {
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Book.java")))
             ),
-            Matchers.containsString("Text text()")
+            Matchers.allOf(
+                Matchers.containsString("interface Book"),
+                Matchers.containsString("Text text()")
+            )
         );
     }
 
