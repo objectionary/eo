@@ -99,6 +99,7 @@ public final class ProgramTest {
                 Files.readAllBytes(dir.resolve(Paths.get("Car.java")))
             ),
             Matchers.allOf(
+                Matchers.containsString("interface Car"),
                 Matchers.containsString("Money cost()"),
                 Matchers.containsString("Bytes picture()"),
                 Matchers.containsString("Car moveTo(final Coordinates coords)")
@@ -127,6 +128,7 @@ public final class ProgramTest {
                 Files.readAllBytes(dir.resolve(Paths.get("Number.java")))
             ),
             Matchers.allOf(
+                Matchers.containsString("interface Number"),
                 Matchers.containsString("Decimal decimal()"),
                 Matchers.containsString("Integral integral()")
             )
@@ -136,6 +138,7 @@ public final class ProgramTest {
                 Files.readAllBytes(dir.resolve(Paths.get("Text.java")))
             ),
             Matchers.allOf(
+                Matchers.containsString("interface Text"),
                 Matchers.containsString("Number length()"),
                 Matchers.containsString("Collection lines()")
             )
