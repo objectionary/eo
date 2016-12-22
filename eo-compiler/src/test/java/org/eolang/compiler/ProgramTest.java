@@ -83,6 +83,34 @@ public final class ProgramTest {
     }
 
     /**
+     * Program can parse a type with one method with parameters.
+     *
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void parsesTypeWithParametrizedMethods() throws Exception {
+        final Program program = new Program(
+            IOUtils.toString(
+                this.getClass().getResourceAsStream("pixel.eo"),
+                Charset.defaultCharset()
+            )
+        );
+        final Path dir = Files.createTempDirectory("");
+        program.save(dir);
+        MatcherAssert.assertThat(
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("Pixel.java")))
+            ),
+            Matchers.allOf(
+                Matchers.containsString("interface Pixel"),
+                Matchers.containsString(
+                    "Pixel moveTo(final Integer x, final Integer y)"
+                )
+            )
+        );
+    }
+
+    /**
      * Program can parse a type with multiple methods.
      *
      * @throws Exception If some problem inside
