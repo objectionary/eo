@@ -27,8 +27,14 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+/**
+ * Hmm...
+ */
 public final class ArgumentTest {
 
+    /**
+     * Not sure I like these comments being enforced.
+     */
     @Test
     public void generatesJavaCode() throws Exception {
         MatcherAssert.assertThat(
@@ -41,5 +47,4 @@ public final class ArgumentTest {
                 )
         );
     }
-
 }
