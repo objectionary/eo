@@ -9,7 +9,7 @@
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language. It's still a prototype.
-It's the future of OOP. Please contribute!
+It's the future of OOP. Please [contribute](https://github.com/yegor256/eo#how-to-contribute)!
 
 If you want to contribute, please join our
 [Gitter chat](https://gitter.im/yegor256/elegantobjects) first.
