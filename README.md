@@ -10,7 +10,7 @@
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language. It's still a prototype.
 It's the future of OOP. Please [contribute](https://github.com/yegor256/eo#how-to-contribute)!
-By the way, we're awared of other semi-OOP languages and we don't think
+By the way, we're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
 [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29),
