@@ -21,6 +21,13 @@ they are good enough, including
 [C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29):
 all of them have something we don't tolerate.
 
+EO is not planning to become a mainstream language&mdash;this is not what
+we want. Our main goal is to prove to ourselves that true object-oriented
+programming is practically possible. Not just in books and abstract
+examples, but in real code that works. That's why EO is being created&mdash;to
+put all that "crazy" pure object-oriented ideas into practice and
+see whether they can work. It's an experiment, a prototype, a proof-of-concept.
+
 If you want to contribute, please join our
 [Gitter chat](https://gitter.im/yegor256/elegantobjects) first.
 
