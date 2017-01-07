@@ -23,6 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Collection;
 import org.eolang.compiler.java.JavaClass;
 import org.eolang.compiler.java.JavaFile;
 
@@ -45,23 +46,23 @@ public final class Object implements RootNode {
     private final String name;
 
     /**
-     * Object type.
+     * Object types.
      */
-    private final String type;
+    private final Collection<String> types;
 
     /**
      * Ctor.
      *
      * @param name Object name
-     * @param type Object type
+     * @param types Object types
      */
-    public Object(final String name, final String type) {
+    public Object(final String name, final Collection<String> types) {
         this.name = name;
-        this.type = type;
+        this.types = types;
     }
 
     @Override
     public JavaFile java() {
-        return new JavaClass(this.name, this.type);
+        return new JavaClass(this.name, this.types);
     }
 }

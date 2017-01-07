@@ -5,6 +5,7 @@ grammar Program;
     import org.eolang.compiler.syntax.Method;
     import org.eolang.compiler.syntax.Tree;
     import org.eolang.compiler.syntax.Type;
+    import org.eolang.compiler.syntax.Object;
     import org.eolang.compiler.syntax.RootNode;
     import java.util.Collection;
     import java.util.LinkedList;
@@ -114,6 +115,7 @@ program returns [Tree ret]
         { nodes.add($type_declaration.ret); }
         |
         object_instantiation
+        { nodes.add($object_instantiation.ret); }
         |
         object_copying
     )*
@@ -184,20 +186,34 @@ argument_declaration returns [Argument ret]
     { $ret = new Argument($LONAME.text, $HINAME.text); }
     ;
 
-object_instantiation
+object_types_declaration returns [Collection<String> ret]
     :
-    OBJECT
-    SPACE
-    LONAME
-    SPACE
-    AS
+    { $ret = new LinkedList<String>(); }
     SPACE
     HINAME
+    { $ret.add($HINAME.text); }
     (
         COMMA
         SPACE
         HINAME
+        { $ret.add($HINAME.text); }
     )*
+    ;
+
+object_name returns [String ret]
+    :
+    LONAME
+    { $ret = $LONAME.text; }
+    ;
+
+object_instantiation returns [Object ret]
+    :
+    OBJECT
+    SPACE
+    object_name
+    SPACE
+    AS
+    object_types_declaration
     COLON
     NEWLINE
     INDENT
@@ -214,6 +230,7 @@ object_instantiation
         NEWLINE
     )*
     DEDENT
+    { $ret = new Object($object_name.ret, $object_types_declaration.ret); }
     ;
 
 attribute_declaration
@@ -227,15 +244,17 @@ ctor_declaration
     :
     CTOR
     arguments_declaration
-    COLON
-    NEWLINE
-    INDENT
     (
-        object_instantiation
-        |
-        object_copying
-    )
-    DEDENT
+        COLON
+        NEWLINE
+        INDENT
+        (
+            object_instantiation
+            |
+            object_copying
+        )
+        DEDENT
+    )?
     ;
 
 method_implementation

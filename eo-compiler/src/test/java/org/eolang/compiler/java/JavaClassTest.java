@@ -24,6 +24,7 @@
 package org.eolang.compiler.java;
 
 import java.util.Arrays;
+import java.util.Collection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class JavaClassTest {
 
     /**
@@ -59,6 +61,33 @@ public final class JavaClassTest {
                     type,
                     "{",
                     "}"
+                )
+            )
+        );
+    }
+
+    /**
+     * Test class with multiple interfaces.
+     */
+    @Test
+    public void multiTypes() {
+        final String name = "pdf";
+        final Collection<String> types = Arrays.asList("Text", "Book");
+        MatcherAssert.assertThat(
+            new JavaClass(
+                name,
+                types
+            ).code(),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public",
+                    "final",
+                    "class",
+                    name,
+                    "implements",
+                    "Text", ",",
+                    "Book",
+                    "{", "}"
                 )
             )
         );

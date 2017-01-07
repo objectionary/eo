@@ -27,10 +27,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -40,20 +40,77 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ProgramTest {
+
+    /**
+     * Test zero example, this object implements two interfaces.
+     *
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void processZeroExample() throws Exception {
+        final Program program = new Program(
+            IOUtils.toString(
+                this.getClass().getResourceAsStream("zero.eo"),
+                Charset.defaultCharset()
+            )
+        );
+        final Path dir = Files.createTempDirectory("");
+        program.save(dir);
+        MatcherAssert.assertThat(
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("zero.java")))
+            ),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public",
+                    "final",
+                    "class",
+                    "zero",
+                    "implements",
+                    "Money",
+                    ",",
+                    "Int",
+                    "{",
+                    "}"
+                )
+            )
+        );
+    }
 
     /**
      * Program can parse a simple fibonacci example.
      *
-     * @todo #70:30m Object parser is missing.
-     *  We need to implement it, but before we should decide
-     *  how to generate java code from EO object.
      * @throws Exception If some problem inside
      */
     @Test
-    @Ignore("object parsing is not implemented yet")
     public void parsesFibonacciExample() throws Exception {
-        //object parsing is not implemented yet
+        final Program program = new Program(
+            IOUtils.toString(
+                this.getClass().getResourceAsStream("fibonacci.eo"),
+                Charset.defaultCharset()
+            )
+        );
+        final Path dir = Files.createTempDirectory("");
+        program.save(dir);
+        MatcherAssert.assertThat(
+            new String(
+                Files.readAllBytes(dir.resolve(Paths.get("fibonacci.java")))
+            ),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public",
+                    "final",
+                    "class",
+                    "fibonacci",
+                    "implements",
+                    "Int",
+                    "{",
+                    "}"
+                )
+            )
+        );
     }
 
     /**

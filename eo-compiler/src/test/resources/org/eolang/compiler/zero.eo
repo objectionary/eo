@@ -1,0 +1,4 @@
+object zero as Money, Int:
+    Int @amount
+    Text @currency
+    ctor(Int amount, Text currency)

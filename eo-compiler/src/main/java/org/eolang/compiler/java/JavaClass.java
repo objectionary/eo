@@ -25,6 +25,8 @@ package org.eolang.compiler.java;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * File with java class.
@@ -32,6 +34,15 @@ import java.nio.file.Paths;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
+ *
+ * @todo #95:30m Java class constructor generator is not implemented.
+ *  We may pass object constructor params as `JavaClass` constructor arguments.
+ *  Also we need to implement object instance as `public static final` variable
+ *  in generated java class, as described in #95.
+ *
+ * @todo #95:30m Java class method generator is not implemented.
+ *  We may pass collection of methods as `JavaClass` constructor arguments.
+ *  All methods should be public.
  */
 public final class JavaClass implements JavaFile {
 
@@ -43,7 +54,7 @@ public final class JavaClass implements JavaFile {
     /**
      * Implemented interface name.
      */
-    private final String iface;
+    private final Collection<String> ifaces;
 
     /**
      * Ctor.
@@ -52,8 +63,18 @@ public final class JavaClass implements JavaFile {
      * @param iface Implemented interface name
      */
     public JavaClass(final String name, final String iface) {
+        this(name, Collections.singleton(iface));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param name Class name
+     * @param ifaces Implemented interfaces name
+     */
+    public JavaClass(final String name, final Collection<String> ifaces) {
         this.name = name;
-        this.iface = iface;
+        this.ifaces = ifaces;
     }
 
     @Override
@@ -66,7 +87,7 @@ public final class JavaClass implements JavaFile {
         return String.format(
             "public final class %s implements %s {\n %s\n}",
             this.name,
-            this.iface,
+            String.join(", ", this.ifaces),
             "public static final "
         );
     }
