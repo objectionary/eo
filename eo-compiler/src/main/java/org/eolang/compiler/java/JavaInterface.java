@@ -21,48 +21,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.java;
 
+import com.google.common.base.Joiner;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Collectors;
-import org.eolang.compiler.java.JavaFile;
+import org.eolang.compiler.syntax.Method;
 
 /**
- * AST.
+ * File with java interface.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Tree {
+public final class JavaInterface implements JavaFile {
+    /**
+     * Interface name.
+     */
+    private final String name;
 
     /**
-     * Root nodes.
+     * Methods.
      */
-    private final Collection<RootNode> nodes;
+    private final Collection<Method> methods;
 
     /**
      * Ctor.
-     * @param nodes All AST root nodes.
+     *
+     * @param name Interface name
+     * @param methods Interface methods
      */
-    public Tree(final Collection<RootNode> nodes) {
-        this.nodes = nodes;
+    public JavaInterface(final String name, final Collection<Method> methods) {
+        this.name = name;
+        this.methods = methods;
     }
 
-    /**
-     * Compile it to Java files.
-     * @return Java files (path, content)
-     */
-    public Map<Path, String> java() {
-        return this.nodes.stream()
-            .map(RootNode::java)
-            .collect(
-                Collectors.toMap(
-                    JavaFile::path,
-                    JavaFile::code
-                )
-            );
+    @Override
+    public Path path() {
+        return Paths.get(String.format("%s.java", this.name));
+    }
+
+    @Override
+    public String code() {
+        return String.format(
+            "public interface %s {\n    %s\n}",
+            this.name,
+            Joiner.on("\n    ").join(
+                this.methods.stream().map(
+                    Method::java
+                ).collect(Collectors.toList())
+            )
+        );
     }
 }

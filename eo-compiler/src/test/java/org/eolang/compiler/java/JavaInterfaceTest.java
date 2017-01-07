@@ -21,48 +21,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.java;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.eolang.compiler.java.JavaFile;
+import java.util.Arrays;
+import java.util.Collections;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * AST.
+ * Java interface generator test.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Tree {
+public final class JavaInterfaceTest {
 
     /**
-     * Root nodes.
+     * Test interface code.
      */
-    private final Collection<RootNode> nodes;
-
-    /**
-     * Ctor.
-     * @param nodes All AST root nodes.
-     */
-    public Tree(final Collection<RootNode> nodes) {
-        this.nodes = nodes;
+    @Test
+    public void interfaceCode() {
+        final String name = "Cat";
+        MatcherAssert.assertThat(
+            new JavaInterface(
+                name,
+                Collections.emptyList()
+            ).code(),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public",
+                    "interface",
+                    name,
+                    "{",
+                    "}"
+                )
+            )
+        );
     }
 
     /**
-     * Compile it to Java files.
-     * @return Java files (path, content)
+     * Test interface path.
      */
-    public Map<Path, String> java() {
-        return this.nodes.stream()
-            .map(RootNode::java)
-            .collect(
-                Collectors.toMap(
-                    JavaFile::path,
-                    JavaFile::code
+    @Test
+    public void interfacePath() {
+        final String name = "Book";
+        MatcherAssert.assertThat(
+            new JavaInterface(
+                name,
+                Collections.emptyList()
+            ).path().toString(),
+            Matchers.equalTo(
+                String.format(
+                    "%s.java",
+                    name
                 )
-            );
+            )
+        );
     }
 }

@@ -21,48 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.java;
 
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.eolang.compiler.java.JavaFile;
+import java.nio.file.Paths;
 
 /**
- * AST.
+ * File with java class.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Tree {
+public final class JavaClass implements JavaFile {
 
     /**
-     * Root nodes.
+     * Class name.
      */
-    private final Collection<RootNode> nodes;
+    private final String name;
+
+    /**
+     * Implemented interface name.
+     */
+    private final String iface;
 
     /**
      * Ctor.
-     * @param nodes All AST root nodes.
+     *
+     * @param name Class name
+     * @param iface Implemented interface name
      */
-    public Tree(final Collection<RootNode> nodes) {
-        this.nodes = nodes;
+    public JavaClass(final String name, final String iface) {
+        this.name = name;
+        this.iface = iface;
     }
 
-    /**
-     * Compile it to Java files.
-     * @return Java files (path, content)
-     */
-    public Map<Path, String> java() {
-        return this.nodes.stream()
-            .map(RootNode::java)
-            .collect(
-                Collectors.toMap(
-                    JavaFile::path,
-                    JavaFile::code
-                )
-            );
+    @Override
+    public Path path() {
+        return Paths.get(String.format("%s.java", this.name));
+    }
+
+    @Override
+    public String code() {
+        return String.format(
+            "public final class %s implements %s {\n %s\n}",
+            this.name,
+            this.iface,
+            "public static final "
+        );
     }
 }

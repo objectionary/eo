@@ -55,7 +55,7 @@ public final class TypeTest {
                         "Int"
                     )
                 )
-            ).java().getValue(),
+            ).java().code(),
             Matchers.stringContainsInOrder(
                 Lists.newArrayList(
                     "public interface Car", "{",

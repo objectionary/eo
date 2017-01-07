@@ -21,48 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
-
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.eolang.compiler.java.JavaFile;
 
 /**
- * AST.
+ * Syntax AST classes, tests.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Tree {
-
-    /**
-     * Root nodes.
-     */
-    private final Collection<RootNode> nodes;
-
-    /**
-     * Ctor.
-     * @param nodes All AST root nodes.
-     */
-    public Tree(final Collection<RootNode> nodes) {
-        this.nodes = nodes;
-    }
-
-    /**
-     * Compile it to Java files.
-     * @return Java files (path, content)
-     */
-    public Map<Path, String> java() {
-        return this.nodes.stream()
-            .map(RootNode::java)
-            .collect(
-                Collectors.toMap(
-                    JavaFile::path,
-                    JavaFile::code
-                )
-            );
-    }
-}
+package org.eolang.compiler.java;

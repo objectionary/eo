@@ -23,46 +23,45 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.eolang.compiler.java.JavaClass;
 import org.eolang.compiler.java.JavaFile;
 
 /**
- * AST.
+ * EO Object.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Tree {
+public final class Object implements RootNode {
 
     /**
-     * Root nodes.
+     * Object name.
+     *
+     * @todo #95:30m Object name should be optional.
+     *  As described in #54, object can be anonymous.
+     *  I think we should generate some java class name in this case.
      */
-    private final Collection<RootNode> nodes;
+    private final String name;
+
+    /**
+     * Object type.
+     */
+    private final String type;
 
     /**
      * Ctor.
-     * @param nodes All AST root nodes.
+     *
+     * @param name Object name
+     * @param type Object type
      */
-    public Tree(final Collection<RootNode> nodes) {
-        this.nodes = nodes;
+    public Object(final String name, final String type) {
+        this.name = name;
+        this.type = type;
     }
 
-    /**
-     * Compile it to Java files.
-     * @return Java files (path, content)
-     */
-    public Map<Path, String> java() {
-        return this.nodes.stream()
-            .map(RootNode::java)
-            .collect(
-                Collectors.toMap(
-                    JavaFile::path,
-                    JavaFile::code
-                )
-            );
+    @Override
+    public JavaFile java() {
+        return new JavaClass(this.name, this.type);
     }
 }

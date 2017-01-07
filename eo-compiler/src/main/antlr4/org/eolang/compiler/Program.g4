@@ -5,6 +5,7 @@ grammar Program;
     import org.eolang.compiler.syntax.Method;
     import org.eolang.compiler.syntax.Tree;
     import org.eolang.compiler.syntax.Type;
+    import org.eolang.compiler.syntax.RootNode;
     import java.util.Collection;
     import java.util.LinkedList;
 }
@@ -107,17 +108,17 @@ tokens { INDENT, DEDENT }
 
 program returns [Tree ret]
     :
-    { Collection<Type> types = new LinkedList<Type>(); }
+    { Collection<RootNode> nodes = new LinkedList<RootNode>(); }
     (
         type_declaration
-        { types.add($type_declaration.ret); }
+        { nodes.add($type_declaration.ret); }
         |
         object_instantiation
         |
         object_copying
     )*
     EOF
-    { $ret = new Tree(types); }
+    { $ret = new Tree(nodes); }
     ;
 
 type_declaration returns [Type ret]

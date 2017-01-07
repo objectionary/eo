@@ -23,13 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
-import com.google.common.base.Joiner;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.eolang.compiler.java.JavaFile;
+import org.eolang.compiler.java.JavaInterface;
 
 /**
  * Type.
@@ -38,10 +34,10 @@ import java.util.stream.Collectors;
  * @version $Id$
  * @since 0.1
  */
-public final class Type {
+public final class Type implements RootNode {
 
     /**
-     * Text to parse.
+     * Type name.
      */
     private final String name;
 
@@ -52,6 +48,7 @@ public final class Type {
 
     /**
      * Ctor.
+     *
      * @param label Type name
      * @param mts Methods
      */
@@ -60,23 +57,8 @@ public final class Type {
         this.methods = mts;
     }
 
-    /**
-     * Convert it to Java file (path, content).
-     * @return Java code
-     */
-    public Map.Entry<Path, String> java() {
-        return new AbstractMap.SimpleEntry<>(
-            Paths.get(String.format("%s.java", this.name)),
-            String.format(
-                "public interface %s {\n    %s\n}",
-                this.name,
-                Joiner.on("\n    ").join(
-                    this.methods.stream().map(
-                        Method::java
-                    ).collect(Collectors.toList())
-                )
-            )
-        );
+    @Override
+    public JavaFile java() {
+        return new JavaInterface(this.name, this.methods);
     }
-
 }
