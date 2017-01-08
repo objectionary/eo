@@ -47,20 +47,20 @@ public final class Method {
     private final String type;
 
     /**
-     * Arguments.
+     * Parameters.
      */
-    private final Collection<Argument> arguments;
+    private final Collection<Parameter> parameters;
 
     /**
      * Ctor.
      * @param mtd Method name
-     * @param args Arguments
+     * @param params Parameters
      * @param rtp Return type
      */
-    public Method(final String mtd, final Collection<Argument> args,
+    public Method(final String mtd, final Collection<Parameter> params,
         final String rtp) {
         this.name = mtd;
-        this.arguments = args;
+        this.parameters = params;
         this.type = rtp;
     }
 
@@ -74,8 +74,8 @@ public final class Method {
             this.type,
             this.name,
             Joiner.on(", ").join(
-                this.arguments.stream().map(
-                    Argument::java
+                this.parameters.stream().map(
+                    Parameter::java
                 ).collect(Collectors.toList())
             )
         );
