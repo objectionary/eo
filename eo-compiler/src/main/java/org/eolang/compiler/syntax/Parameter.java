@@ -24,30 +24,30 @@
 package org.eolang.compiler.syntax;
 
 /**
- * Argument.
+ * Parameter.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Argument {
+public final class Parameter {
 
     /**
-     * Argument name.
+     * Parameter name.
      */
     private final String name;
 
     /**
-     * Argument type name.
+     * Parameter type name.
      */
     private final String type;
 
     /**
      * Ctor.
-     * @param arg Argument name
+     * @param arg Parameter name
      * @param tpn Type name
      */
-    public Argument(final String arg, final String tpn) {
+    public Parameter(final String arg, final String tpn) {
         this.name = arg;
         this.type = tpn;
     }

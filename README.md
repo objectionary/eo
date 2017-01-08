@@ -102,7 +102,7 @@ What exactly happens here? TBD
 ## Details
 
 There are types, objects, constructors, destructors, methods,
-attributes, arguments, exceptions, decorators.
+attributes, parameters, exceptions, decorators.
 
 There are _no_ classes, variables, operators, statements, annotations, reflection,
 type casting, generics, NULL, static methods, functions, lambdas.
@@ -114,7 +114,7 @@ A type is a _contract_ an object must obey.
 A type is very similar to interfaces from Java 1.0. A type has
 a name and a list of method
 declarations. Each method declaration has a name of the type of
-the return value, a method name, and a list of arguments. Each method
+the return value, a method name, and a list of parameters. Each method
 declaration has to take exactly one line, without any terminating
 symbol at the end, for example:
 
@@ -167,7 +167,7 @@ object alphabet as Book:
 ```
 
 An object can be made as a copy of an existing object, but with a
-different (or similar) set of arguments for one of the constructors, for
+different (or similar) set of parameters for one of the constructors, for
 example (`ot` is the name of the object):
 
 ```
@@ -290,9 +290,9 @@ in one of its types.
 
 All methods are public; there is no such thing as private or protected methods.
 
-A method may have zero to four arguments.
+A method may have zero to four parameters.
 
-Each argument must have an optional type and a name. If type is not provided
+Each parameter must have an optional type and a name. If type is not provided
 it has to be replaced with `?` mark, for example:
 
 ```

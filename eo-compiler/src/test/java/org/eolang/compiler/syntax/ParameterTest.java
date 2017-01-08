@@ -28,21 +28,21 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test class for {@link Argument}.
+ * Test class for {@link Parameter}.
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ArgumentTest {
+public final class ParameterTest {
 
     /**
-     * A test that checks that Argument generates Java code.
+     * A test that checks that Parameter generates Java code.
      * @throws Exception if, well, an exception occurs.
      */
     @Test
     public void generatesJavaCode() throws Exception {
         MatcherAssert.assertThat(
-            new Argument(
+            new Parameter(
                 "dollars",
                 "Cash"
             ).java(),

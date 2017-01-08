@@ -46,8 +46,8 @@ public final class MethodTest {
             new Method(
                 "send",
                 Lists.newArrayList(
-                    new Argument("receiver", "Person"),
-                    new Argument("content", "Content")
+                    new Parameter("receiver", "Person"),
+                    new Parameter("content", "Content")
                 ),
                 "Message"
             ).java(),

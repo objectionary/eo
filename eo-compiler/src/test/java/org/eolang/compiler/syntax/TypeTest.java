@@ -49,8 +49,8 @@ public final class TypeTest {
                     new Method(
                         "drive",
                         Lists.newArrayList(
-                            new Argument("x", "Integer"),
-                            new Argument("y", "Long")
+                            new Parameter("x", "Integer"),
+                            new Parameter("y", "Long")
                         ),
                         "Int"
                     )
