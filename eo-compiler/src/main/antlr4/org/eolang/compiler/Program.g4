@@ -1,7 +1,7 @@
 grammar Program;
 
 @header {
-    import org.eolang.compiler.syntax.Argument;
+    import org.eolang.compiler.syntax.Parameter;
     import org.eolang.compiler.syntax.Method;
     import org.eolang.compiler.syntax.Tree;
     import org.eolang.compiler.syntax.Type;
@@ -157,33 +157,33 @@ method_declaration returns [Method ret]
     HINAME
     SPACE
     LONAME
-    arguments_declaration
-    { $ret = new Method($LONAME.text, $arguments_declaration.ret, $HINAME.text); }
+    parameters_declaration
+    { $ret = new Method($LONAME.text, $parameters_declaration.ret, $HINAME.text); }
     ;
 
-arguments_declaration returns [List<Argument> ret]
+parameters_declaration returns [List<Parameter> ret]
     :
-    { $ret = new LinkedList<Argument>(); }
+    { $ret = new LinkedList<Parameter>(); }
     LBRACKET
     (
-        head=argument_declaration
+        head=parameter_declaration
         { $ret.add($head.ret); }
         (
             COMMA
             SPACE
-            tail=argument_declaration
+            tail=parameter_declaration
             { $ret.add($tail.ret); }
         )*
     )?
     RBRACKET
     ;
 
-argument_declaration returns [Argument ret]
+parameter_declaration returns [Parameter ret]
     :
     HINAME
     SPACE
     LONAME
-    { $ret = new Argument($LONAME.text, $HINAME.text); }
+    { $ret = new Parameter($LONAME.text, $HINAME.text); }
     ;
 
 object_types_declaration returns [Collection<String> ret]
@@ -243,7 +243,7 @@ attribute_declaration
 ctor_declaration
     :
     CTOR
-    arguments_declaration
+    parameters_declaration
     (
         COLON
         NEWLINE
@@ -279,17 +279,17 @@ object_copying
         COLON
         NEWLINE
         INDENT
-        object_argument
+        object_parameter
         (
             NEWLINE
             INDENT
-            object_argument
+            object_parameter
             DEDENT
         )*
     )?
     ;
 
-object_argument
+object_parameter
     :
     NUMBER
     |
