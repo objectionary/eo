@@ -25,6 +25,8 @@ package org.eolang.compiler.java;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import org.eolang.compiler.syntax.Attribute;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -76,7 +78,8 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                types
+                types,
+                Collections.emptyList()
             ).code(),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
@@ -88,6 +91,32 @@ public final class JavaClassTest {
                     "Text", ",",
                     "Book",
                     "{", "}"
+                )
+            )
+        );
+    }
+
+    /**
+     * Test class with fields.
+     */
+    @Test
+    public void fields() {
+        final String name = "error";
+        final Collection<String> types = Collections.singleton("Error");
+        MatcherAssert.assertThat(
+            new JavaClass(
+                name,
+                types,
+                Collections.singleton(new Attribute("Text", "msg"))
+            ).code(),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public final class",
+                    name,
+                    "implements Error",
+                    "{",
+                    "private final Text msg;",
+                    "}"
                 )
             )
         );

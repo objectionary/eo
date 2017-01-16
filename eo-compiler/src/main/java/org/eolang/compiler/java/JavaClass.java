@@ -27,6 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import org.eolang.compiler.syntax.Attribute;
 
 /**
  * File with java class.
@@ -57,13 +59,18 @@ public final class JavaClass implements JavaFile {
     private final Collection<String> ifaces;
 
     /**
+     * Class fields.
+     */
+    private final Collection<Attribute> fields;
+
+    /**
      * Ctor.
      *
      * @param name Class name
      * @param iface Implemented interface name
      */
     public JavaClass(final String name, final String iface) {
-        this(name, Collections.singleton(iface));
+        this(name, Collections.singleton(iface), Collections.emptyList());
     }
 
     /**
@@ -71,10 +78,16 @@ public final class JavaClass implements JavaFile {
      *
      * @param name Class name
      * @param ifaces Implemented interfaces name
+     * @param fields Class fields
      */
-    public JavaClass(final String name, final Collection<String> ifaces) {
+    public JavaClass(
+        final String name,
+        final Collection<String> ifaces,
+        final Collection<Attribute> fields
+    ) {
         this.name = name;
         this.ifaces = ifaces;
+        this.fields = fields;
     }
 
     @Override
@@ -88,7 +101,13 @@ public final class JavaClass implements JavaFile {
             "public final class %s implements %s {\n %s\n}",
             this.name,
             String.join(", ", this.ifaces),
-            "public static final "
+            String.join(
+                "\n",
+                this.fields
+                    .stream()
+                    .map(Attribute::java)
+                    .collect(Collectors.toList())
+            )
         );
     }
 }

@@ -73,6 +73,8 @@ public final class ProgramTest {
                     ",",
                     "Int",
                     "{",
+                    "private final Int amount;",
+                    "private final Text currency;",
                     "}"
                 )
             )

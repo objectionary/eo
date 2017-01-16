@@ -23,57 +23,30 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Collection;
-import org.eolang.compiler.java.JavaClass;
-import org.eolang.compiler.java.JavaFile;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * EO Object.
+ * Test for object's attribute.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Object implements RootNode {
+public final class AttributeTest {
 
     /**
-     * Object name.
-     *
-     * @todo #95:30m Object name should be optional.
-     *  As described in #54, object can be anonymous.
-     *  I think we should generate some java class name in this case.
+     * Attribute generates proper java code.
      */
-    private final String name;
-
-    /**
-     * Object types.
-     */
-    private final Collection<String> types;
-
-    /**
-     * Object attributes.
-     */
-    private final Collection<Attribute> attributes;
-
-    /**
-     * Ctor.
-     *
-     * @param name Object name
-     * @param types Object types
-     * @param attributes Object attributes
-     */
-    public Object(
-        final String name,
-        final Collection<String> types,
-        final Collection<Attribute> attributes
-    ) {
-        this.name = name;
-        this.types = types;
-        this.attributes = attributes;
-    }
-
-    @Override
-    public JavaFile java() {
-        return new JavaClass(this.name, this.types, this.attributes);
+    @Test
+    public void generatedJavaCode() {
+        MatcherAssert.assertThat(
+            new Attribute(
+                "Text",
+                "name"
+            ).java(),
+            Matchers.is("private final Text name;")
+        );
     }
 }

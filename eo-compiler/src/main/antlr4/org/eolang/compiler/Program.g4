@@ -7,6 +7,7 @@ grammar Program;
     import org.eolang.compiler.syntax.Type;
     import org.eolang.compiler.syntax.Object;
     import org.eolang.compiler.syntax.RootNode;
+    import org.eolang.compiler.syntax.Attribute;
     import java.util.Collection;
     import java.util.LinkedList;
 }
@@ -208,6 +209,7 @@ object_name returns [String ret]
 
 object_instantiation returns [Object ret]
     :
+    { Collection<Attribute> attrs = new LinkedList<Attribute>(); }
     OBJECT
     SPACE
     object_name
@@ -219,6 +221,7 @@ object_instantiation returns [Object ret]
     INDENT
     (
         attribute_declaration
+        { attrs.add($attribute_declaration.ret); }
         NEWLINE
     )+
     (
@@ -230,14 +233,15 @@ object_instantiation returns [Object ret]
         NEWLINE
     )*
     DEDENT
-    { $ret = new Object($object_name.ret, $object_types_declaration.ret); }
+    { $ret = new Object($object_name.ret, $object_types_declaration.ret, attrs); }
     ;
 
-attribute_declaration
+attribute_declaration returns [Attribute ret]
     :
     HINAME
     SPACE
     ATTRIBUTE
+    { $ret = new Attribute($HINAME.text, $ATTRIBUTE.text.substring(1)); }
     ;
 
 ctor_declaration

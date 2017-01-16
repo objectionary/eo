@@ -23,57 +23,46 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Collection;
-import org.eolang.compiler.java.JavaClass;
-import org.eolang.compiler.java.JavaFile;
-
 /**
- * EO Object.
+ * Object attribute.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Object implements RootNode {
+public final class Attribute {
 
     /**
-     * Object name.
-     *
-     * @todo #95:30m Object name should be optional.
-     *  As described in #54, object can be anonymous.
-     *  I think we should generate some java class name in this case.
+     * Attribute type name.
+     */
+    private final String type;
+
+    /**
+     * Attribute name.
      */
     private final String name;
 
     /**
-     * Object types.
-     */
-    private final Collection<String> types;
-
-    /**
-     * Object attributes.
-     */
-    private final Collection<Attribute> attributes;
-
-    /**
      * Ctor.
      *
-     * @param name Object name
-     * @param types Object types
-     * @param attributes Object attributes
+     * @param type Attribute type
+     * @param name Attribute name
      */
-    public Object(
-        final String name,
-        final Collection<String> types,
-        final Collection<Attribute> attributes
-    ) {
+    public Attribute(final String type, final String name) {
+        this.type = type;
         this.name = name;
-        this.types = types;
-        this.attributes = attributes;
     }
 
-    @Override
-    public JavaFile java() {
-        return new JavaClass(this.name, this.types, this.attributes);
+    /**
+     * Generate java code for object attribute.
+     *
+     * @return Generated java code.
+     */
+    public String java() {
+        return String.format(
+            "private final %s %s;",
+            this.type,
+            this.name
+        );
     }
 }
