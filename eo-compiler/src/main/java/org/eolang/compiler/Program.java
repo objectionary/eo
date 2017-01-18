@@ -31,8 +31,6 @@ import org.eolang.compiler.syntax.Tree;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Program.
@@ -58,10 +56,10 @@ public final class Program {
 
     /**
      * Compile it to Java and save to the directory.
-     * @param saver TODO
+     * @param output TODO
      * @throws IOException If fails
      */
-    public void save(final Saver saver) throws IOException {
+    public void save(final Output output) throws IOException {
         final ProgramLexer lexer = new ProgramLexer(
             new ANTLRInputStream(
                 new ByteArrayInputStream(
@@ -73,32 +71,10 @@ public final class Program {
         final ProgramParser parser = new ProgramParser(tokens);
         final Tree tree = parser.program().ret;
         tree.java().entrySet().forEach(
-            entry -> saver.save(
+            entry -> output.save(
                 entry.getKey(), entry.getValue()
             )
         );
-    }
-
-    public static class Saver {
-        private final Path dir;
-
-        public Saver(final Path path) {
-            this.dir = path;
-        }
-
-        /**
-         * Save content.
-         *
-         * @param file    File to save to
-         * @param content Java content
-         */
-        private void save(final Path file, final String content) {
-            try {
-                Files.write(dir.resolve(file), content.getBytes());
-            } catch (final IOException ex) {
-                throw new IllegalStateException(ex);
-            }
-        }
     }
 
 }
