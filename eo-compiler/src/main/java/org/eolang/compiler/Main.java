@@ -46,7 +46,7 @@ public final class Main {
 
     /**
      * Ctor.
-     * @param out Output stream
+     * @param out BasicOutput stream
      * @param input Input args
      */
     public Main(final PrintStream out, final String... input) {

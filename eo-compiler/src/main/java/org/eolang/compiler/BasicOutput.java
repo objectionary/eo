@@ -28,13 +28,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Output.
+ * BasicOutput.
  *
  * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
  * @version $Id$
  * @since 0.1
  */
-public final class Output {
+public final class BasicOutput implements Output {
 
     /**
      * Path to directory.
@@ -46,16 +46,11 @@ public final class Output {
      *
      * @param path Path to directory
      */
-    public Output(final Path path) {
+    public BasicOutput(final Path path) {
         this.dir = path;
     }
 
-    /**
-     * Save content.
-     *
-     * @param file File to save to
-     * @param content Java content
-     */
+    @Override
     public void save(final Path file, final String content) {
         try {
             Files.write(this.dir.resolve(file), content.getBytes());

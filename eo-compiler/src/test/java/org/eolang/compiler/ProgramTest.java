@@ -57,7 +57,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(new Output(dir));
+        program.save(new BasicOutput(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("zero.java")))
@@ -95,7 +95,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(new Output(dir));
+        program.save(new BasicOutput(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("fibonacci.java")))
@@ -129,7 +129,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(new Output(dir));
+        program.save(new BasicOutput(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Book.java")))
@@ -155,7 +155,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(new Output(dir));
+        program.save(new BasicOutput(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Pixel.java")))
@@ -183,7 +183,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(new Output(dir));
+        program.save(new BasicOutput(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Car.java")))
@@ -212,7 +212,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(new Output(dir));
+        program.save(new BasicOutput(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Number.java")))
