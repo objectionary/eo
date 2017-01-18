@@ -55,7 +55,7 @@ public final class Program {
 
     /**
      * Compile it to Java and save to the directory.
-     * @param output TODO
+     * @param output Output to save to
      * @throws IOException If fails
      */
     public void save(final Output output) throws IOException {
