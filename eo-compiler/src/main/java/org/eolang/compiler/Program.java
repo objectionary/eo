@@ -23,15 +23,16 @@
  */
 package org.eolang.compiler;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.eolang.compiler.syntax.Tree;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
-import org.eolang.compiler.syntax.Tree;
 
 /**
  * Program.
@@ -57,10 +58,10 @@ public final class Program {
 
     /**
      * Compile it to Java and save to the directory.
-     * @param dir Directory to save to
+     * @param saver TODO
      * @throws IOException If fails
      */
-    public void save(final Path dir) throws IOException {
+    public void save(final Saver saver) throws IOException {
         final ProgramLexer lexer = new ProgramLexer(
             new ANTLRInputStream(
                 new ByteArrayInputStream(
@@ -71,23 +72,32 @@ public final class Program {
         final TokenStream tokens = new CommonTokenStream(lexer);
         final ProgramParser parser = new ProgramParser(tokens);
         final Tree tree = parser.program().ret;
-        tree.java().entrySet().stream().forEach(
-            entry -> Program.save(
-                dir.resolve(entry.getKey()), entry.getValue()
+        tree.java().entrySet().forEach(
+            entry -> saver.save(
+                entry.getKey(), entry.getValue()
             )
         );
     }
 
-    /**
-     * Save content.
-     * @param file File to save to
-     * @param content Java content
-     */
-    private static void save(final Path file, final String content) {
-        try {
-            Files.write(file, content.getBytes());
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
+    public static class Saver {
+        private final Path dir;
+
+        public Saver(final Path path) {
+            this.dir = path;
+        }
+
+        /**
+         * Save content.
+         *
+         * @param file    File to save to
+         * @param content Java content
+         */
+        private void save(final Path file, final String content) {
+            try {
+                Files.write(dir.resolve(file), content.getBytes());
+            } catch (final IOException ex) {
+                throw new IllegalStateException(ex);
+            }
         }
     }
 

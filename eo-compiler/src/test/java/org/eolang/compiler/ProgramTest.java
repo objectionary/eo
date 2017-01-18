@@ -23,15 +23,16 @@
  */
 package org.eolang.compiler;
 
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
 
 /**
  * Test case for {@link Program}.
@@ -57,7 +58,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(dir);
+        program.save(new Program.Saver(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("zero.java")))
@@ -95,7 +96,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(dir);
+        program.save(new Program.Saver(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("fibonacci.java")))
@@ -129,7 +130,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(dir);
+        program.save(new Program.Saver(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Book.java")))
@@ -155,7 +156,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(dir);
+        program.save(new Program.Saver(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Pixel.java")))
@@ -183,7 +184,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(dir);
+        program.save(new Program.Saver(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Car.java")))
@@ -212,7 +213,7 @@ public final class ProgramTest {
             )
         );
         final Path dir = Files.createTempDirectory("");
-        program.save(dir);
+        program.save(new Program.Saver(dir));
         MatcherAssert.assertThat(
             new String(
                 Files.readAllBytes(dir.resolve(Paths.get("Number.java")))
