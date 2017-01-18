@@ -116,6 +116,10 @@ public final class JavaClassTest {
                     "implements Error",
                     "{",
                     "private final Text msg;",
+                    String.format("public %s(final Text msg)", name),
+                    "{",
+                    "this.msg = msg;",
+                    "}",
                     "}"
                 )
             )

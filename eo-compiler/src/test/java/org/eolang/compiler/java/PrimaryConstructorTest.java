@@ -21,60 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.java;
 
+import java.util.Arrays;
+import org.eolang.compiler.syntax.Attribute;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test for object's attribute.
+ * Java class primary constructor test.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class AttributeTest {
+public final class PrimaryConstructorTest {
 
     /**
-     * Attribute generates proper field java code.
+     * Generates constructor code with fields initialization.
      */
     @Test
-    public void generatedJavaField() {
+    public void generatesJavaCode() {
         MatcherAssert.assertThat(
-            new Attribute(
-                "Text",
-                "name"
-            ).asField(),
-            Matchers.is("private final Text name;")
-        );
-    }
-
-    /**
-     * Attribute generates constructor parameter java code.
-     */
-    @Test
-    public void generatedJavaCtorParam() {
-        MatcherAssert.assertThat(
-            new Attribute(
-                "Int",
-                "number"
-            ).asCtorParam(),
-            Matchers.is("final Int number")
-        );
-    }
-
-    /**
-     * Attribute generates constructor initializer java code.
-     */
-    @Test
-    public void generatesJavaCtorInitializer() {
-        MatcherAssert.assertThat(
-            new Attribute(
-                "Attribute",
-                "attr"
-            ).asCtorInitializer(),
-            Matchers.is("this.attr = attr;")
+            new PrimaryConstructor(
+                "color",
+                Arrays.asList(
+                    new Attribute("Byte", "alpha"),
+                    new Attribute("Int", "rgb")
+                )
+            ).code(),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public",
+                    "color(",
+                    "final Byte alpha",
+                    "final Int rgb",
+                    ")",
+                    "{",
+                    "this.alpha = alpha;",
+                    "this.rgb = rgb;",
+                    "}"
+                )
+            )
         );
     }
 }

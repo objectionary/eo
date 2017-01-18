@@ -64,6 +64,11 @@ public final class JavaClass implements JavaFile {
     private final Collection<Attribute> fields;
 
     /**
+     * Class primary constructor.
+     */
+    private final PrimaryConstructor pctor;
+
+    /**
      * Ctor.
      *
      * @param name Class name
@@ -78,16 +83,17 @@ public final class JavaClass implements JavaFile {
      *
      * @param name Class name
      * @param ifaces Implemented interfaces name
-     * @param fields Class fields
+     * @param attributes Object attributes
      */
     public JavaClass(
         final String name,
         final Collection<String> ifaces,
-        final Collection<Attribute> fields
+        final Collection<Attribute> attributes
     ) {
         this.name = name;
         this.ifaces = ifaces;
-        this.fields = fields;
+        this.fields = attributes;
+        this.pctor = new PrimaryConstructor(name, attributes);
     }
 
     @Override
@@ -98,16 +104,17 @@ public final class JavaClass implements JavaFile {
     @Override
     public String code() {
         return String.format(
-            "public final class %s implements %s {\n %s\n}",
+            "public final class %s implements %s {\n %s\n\n%s\n}",
             this.name,
             String.join(", ", this.ifaces),
             String.join(
                 "\n",
                 this.fields
                     .stream()
-                    .map(Attribute::java)
+                    .map(Attribute::asField)
                     .collect(Collectors.toList())
-            )
+            ),
+            this.pctor.code()
         );
     }
 }

@@ -21,74 +21,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.java;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
+import org.eolang.compiler.syntax.Attribute;
 
 /**
- * Object attribute.
+ * Java class primary constructor.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Attribute {
+public final class PrimaryConstructor {
 
     /**
-     * Attribute type name.
-     */
-    private final String type;
-
-    /**
-     * Attribute name.
+     * Java class name.
      */
     private final String name;
 
     /**
+     * Object attributes.
+     */
+    private final Collection<Attribute> attributes;
+
+    /**
      * Ctor.
      *
-     * @param type Attribute type
-     * @param name Attribute name
+     * @param name Class name.
+     * @param attributes Object attributes.
      */
-    public Attribute(final String type, final String name) {
-        this.type = type;
+    public PrimaryConstructor(
+        final String name,
+        final Collection<Attribute> attributes
+    ) {
+        this.attributes = attributes;
         this.name = name;
     }
 
     /**
-     * Generate java field code for object attribute.
+     * Generate constructor java code.
      *
-     * @return Generated java field code.
+     * @return Java code for constructor.
      */
-    public String asField() {
+    public String code() {
         return String.format(
-            "private final %s %s;",
-            this.type,
-            this.name
-        );
-    }
-
-    /**
-     * Generate java code for class constructor parameter.
-     *
-     * @return Generated constructor parameter.
-     */
-    public String asCtorParam() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
-    }
-
-    /**
-     * Generate java code for primary constructor initializer.
-     *
-     * @return Generated constructor initializer.
-     */
-    public String asCtorInitializer() {
-        return String.format(
-            "this.%s = %s;",
+            "public %s(%s) {\n %s \n}",
             this.name,
-            this.name
+            String.join(
+                ", ",
+                this.attributes
+                    .stream()
+                    .map(Attribute::asCtorParam)
+                    .collect(Collectors.toList())
+            ),
+            String.join(
+                "\n",
+                this.attributes
+                    .stream()
+                    .map(Attribute::asCtorInitializer)
+                    .collect(Collectors.toList())
+            )
         );
     }
 }
