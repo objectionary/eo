@@ -28,13 +28,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * BasicOutput.
+ * FileOutput.
  *
  * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
  * @version $Id$
  * @since 0.1
  */
-public final class BasicOutput implements Output {
+public final class FileOutput implements Output {
 
     /**
      * Path to directory.
@@ -46,7 +46,7 @@ public final class BasicOutput implements Output {
      *
      * @param path Path to directory
      */
-    public BasicOutput(final Path path) {
+    public FileOutput(final Path path) {
         this.dir = path;
     }
 

@@ -35,7 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.eolang.compiler.BasicOutput;
+import org.eolang.compiler.FileOutput;
 import org.eolang.compiler.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -115,7 +115,7 @@ public final class CompileMojo extends AbstractMojo {
     private void compile(final Path file) {
         try {
             new Program(new String(Files.readAllBytes(file))).save(
-                new BasicOutput(this.targetDirectory.toPath())
+                new FileOutput(this.targetDirectory.toPath())
             );
         } catch (final IOException ex) {
             throw new IllegalStateException(
