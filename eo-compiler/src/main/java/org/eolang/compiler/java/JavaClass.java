@@ -28,7 +28,9 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import org.eolang.compiler.syntax.AttrFieldFormat;
 import org.eolang.compiler.syntax.Attribute;
+import org.eolang.compiler.syntax.AttributeFormat;
 
 /**
  * File with java class.
@@ -47,6 +49,11 @@ import org.eolang.compiler.syntax.Attribute;
  *  All methods should be public.
  */
 public final class JavaClass implements JavaFile {
+
+    /**
+     * Attribute field format.
+     */
+    private static final AttributeFormat FIELD_FORMAT = new AttrFieldFormat();
 
     /**
      * Class name.
@@ -111,7 +118,7 @@ public final class JavaClass implements JavaFile {
                 "\n",
                 this.fields
                     .stream()
-                    .map(Attribute::asField)
+                    .map(attr -> attr.java(JavaClass.FIELD_FORMAT))
                     .collect(Collectors.toList())
             ),
             this.pctor.code()

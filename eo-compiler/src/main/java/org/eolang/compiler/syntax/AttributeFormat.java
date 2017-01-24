@@ -23,34 +23,21 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
 /**
- * Test for object's attribute.
+ * Object attribute java code format.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class AttributeTest {
+public interface AttributeFormat {
 
     /**
-     * Generates java code with provided format.
+     * Java code for attribute.
+     *
+     * @param type Attribute type
+     * @param name Attribute name
+     * @return Java code string.
      */
-    @Test
-    public void javaCode() {
-        MatcherAssert.assertThat(
-            new Attribute(
-                "Type",
-                "name"
-            ).java(
-                (type, name) -> String.format("%s:%s", type, name)
-            ),
-            Matchers.equalTo(
-                "Type:name"
-            )
-        );
-    }
+    String code(final String type, final String name);
 }

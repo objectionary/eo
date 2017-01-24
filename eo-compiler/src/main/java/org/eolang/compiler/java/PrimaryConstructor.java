@@ -25,7 +25,10 @@ package org.eolang.compiler.java;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.eolang.compiler.syntax.AttrCtorInitFormat;
+import org.eolang.compiler.syntax.AttrCtorParamFormat;
 import org.eolang.compiler.syntax.Attribute;
+import org.eolang.compiler.syntax.AttributeFormat;
 
 /**
  * Java class primary constructor.
@@ -35,6 +38,18 @@ import org.eolang.compiler.syntax.Attribute;
  * @since 0.1
  */
 public final class PrimaryConstructor {
+
+    /**
+     * Attribute constructor parameter format.
+     */
+    private static final AttributeFormat CTOR_PARAM_FORMAT =
+        new AttrCtorParamFormat();
+
+    /**
+     * Attribute constructor initializer format.
+     */
+    private static final AttributeFormat CTOR_INIT_FORMAT =
+        new AttrCtorInitFormat();
 
     /**
      * Java class name.
@@ -73,14 +88,22 @@ public final class PrimaryConstructor {
                 ", ",
                 this.attributes
                     .stream()
-                    .map(Attribute::asCtorParam)
+                    .map(
+                        attr -> attr.java(
+                            PrimaryConstructor.CTOR_PARAM_FORMAT
+                        )
+                    )
                     .collect(Collectors.toList())
             ),
             String.join(
                 "\n",
                 this.attributes
                     .stream()
-                    .map(Attribute::asCtorInitializer)
+                    .map(
+                        attr -> attr.java(
+                            PrimaryConstructor.CTOR_INIT_FORMAT
+                        )
+                    )
                     .collect(Collectors.toList())
             )
         );

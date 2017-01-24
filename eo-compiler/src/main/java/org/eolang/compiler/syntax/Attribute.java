@@ -54,41 +54,12 @@ public final class Attribute {
     }
 
     /**
-     * Generate java field code for object attribute.
+     * Generate java code with provided format.
      *
-     * @return Generated java field code.
+     * @param format Java code format
+     * @return Generated code
      */
-    public String asField() {
-        return String.format(
-            "private final %s %s;",
-            this.type,
-            this.name
-        );
-    }
-
-    /**
-     * Generate java code for class constructor parameter.
-     *
-     * @return Generated constructor parameter.
-     */
-    public String asCtorParam() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
-    }
-
-    /**
-     * Generate java code for primary constructor initializer.
-     *
-     * @return Generated constructor initializer.
-     */
-    public String asCtorInitializer() {
-        return String.format(
-            "this.%s = %s;",
-            this.name,
-            this.name
-        );
+    public String java(final AttributeFormat format) {
+        return format.code(this.type, this.name);
     }
 }
