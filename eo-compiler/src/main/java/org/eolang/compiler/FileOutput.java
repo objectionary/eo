@@ -23,57 +23,39 @@
  */
 package org.eolang.compiler;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
-import org.eolang.compiler.syntax.Tree;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * Program.
+ * FileOutput.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
  * @version $Id$
  * @since 0.1
  */
-public final class Program {
+public final class FileOutput implements Output {
 
     /**
-     * Text to parse.
+     * Path to directory.
      */
-    private final String text;
+    private final Path dir;
 
     /**
      * Ctor.
-     * @param input Input text
+     *
+     * @param path Path to directory
      */
-    public Program(final String input) {
-        this.text = input;
+    public FileOutput(final Path path) {
+        this.dir = path;
     }
 
-    /**
-     * Compile it to Java and save to the directory.
-     * @param output Output to save to
-     * @throws IOException If fails
-     */
-    public void save(final Output output) throws IOException {
-        final ProgramLexer lexer = new ProgramLexer(
-            new ANTLRInputStream(
-                new ByteArrayInputStream(
-                    this.text.getBytes(Charset.defaultCharset())
-                )
-            )
-        );
-        final TokenStream tokens = new CommonTokenStream(lexer);
-        final ProgramParser parser = new ProgramParser(tokens);
-        final Tree tree = parser.program().ret;
-        tree.java().entrySet().forEach(
-            entry -> output.save(
-                entry.getKey(), entry.getValue()
-            )
-        );
+    @Override
+    public void save(final Path file, final String content) {
+        try {
+            Files.write(this.dir.resolve(file), content.getBytes());
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
-
 }
