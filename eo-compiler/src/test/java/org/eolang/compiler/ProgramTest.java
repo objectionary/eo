@@ -109,6 +109,11 @@ public final class ProgramTest {
                     "implements",
                     "Int",
                     "{",
+                    "private final Int n;",
+                    "public fibonacci(final Int n)",
+                    "{",
+                    "this.n = n",
+                    "}",
                     "}"
                 )
             )

@@ -21,35 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.java;
 
+import java.util.Arrays;
+import org.eolang.compiler.syntax.Attribute;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test for object's attribute.
+ * Java class primary constructor test.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class AttributeTest {
+public final class PrimaryConstructorTest {
 
     /**
-     * Generates java code with provided format.
+     * Generates constructor code with fields initialization.
      */
     @Test
-    public void javaCode() {
+    public void generatesJavaCode() {
         MatcherAssert.assertThat(
-            new Attribute(
-                "Type",
-                "name"
-            ).java(
-                (type, name) -> String.format("%s:%s", type, name)
-            ),
-            Matchers.equalTo(
-                "Type:name"
+            new PrimaryConstructor(
+                "color",
+                Arrays.asList(
+                    new Attribute("Byte", "alpha"),
+                    new Attribute("Int", "rgb")
+                )
+            ).code(),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public",
+                    "color(",
+                    "final Byte alpha",
+                    "final Int rgb",
+                    ")",
+                    "{",
+                    "this.alpha = alpha;",
+                    "this.rgb = rgb;",
+                    "}"
+                )
             )
         );
     }

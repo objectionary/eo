@@ -28,7 +28,9 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import org.eolang.compiler.syntax.AttrFieldFormat;
 import org.eolang.compiler.syntax.Attribute;
+import org.eolang.compiler.syntax.AttributeFormat;
 
 /**
  * File with java class.
@@ -49,6 +51,11 @@ import org.eolang.compiler.syntax.Attribute;
 public final class JavaClass implements JavaFile {
 
     /**
+     * Attribute field format.
+     */
+    private static final AttributeFormat FIELD_FORMAT = new AttrFieldFormat();
+
+    /**
      * Class name.
      */
     private final String name;
@@ -62,6 +69,11 @@ public final class JavaClass implements JavaFile {
      * Class fields.
      */
     private final Collection<Attribute> fields;
+
+    /**
+     * Class primary constructor.
+     */
+    private final PrimaryConstructor pctor;
 
     /**
      * Ctor.
@@ -78,16 +90,17 @@ public final class JavaClass implements JavaFile {
      *
      * @param name Class name
      * @param ifaces Implemented interfaces name
-     * @param fields Class fields
+     * @param attributes Object attributes
      */
     public JavaClass(
         final String name,
         final Collection<String> ifaces,
-        final Collection<Attribute> fields
+        final Collection<Attribute> attributes
     ) {
         this.name = name;
         this.ifaces = ifaces;
-        this.fields = fields;
+        this.fields = attributes;
+        this.pctor = new PrimaryConstructor(name, attributes);
     }
 
     @Override
@@ -98,16 +111,17 @@ public final class JavaClass implements JavaFile {
     @Override
     public String code() {
         return String.format(
-            "public final class %s implements %s {\n %s\n}",
+            "public final class %s implements %s {\n %s\n\n%s\n}",
             this.name,
             String.join(", ", this.ifaces),
             String.join(
                 "\n",
                 this.fields
                     .stream()
-                    .map(Attribute::java)
+                    .map(attr -> attr.java(JavaClass.FIELD_FORMAT))
                     .collect(Collectors.toList())
-            )
+            ),
+            this.pctor.code()
         );
     }
 }

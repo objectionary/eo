@@ -54,15 +54,12 @@ public final class Attribute {
     }
 
     /**
-     * Generate java code for object attribute.
+     * Generate java code with provided format.
      *
-     * @return Generated java code.
+     * @param format Java code format
+     * @return Generated code
      */
-    public String java() {
-        return String.format(
-            "private final %s %s;",
-            this.type,
-            this.name
-        );
+    public String java(final AttributeFormat format) {
+        return format.code(this.type, this.name);
     }
 }

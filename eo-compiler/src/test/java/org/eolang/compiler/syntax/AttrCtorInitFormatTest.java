@@ -28,29 +28,25 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test for object's attribute.
+ * Test for constructor initializer attribute format.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class AttributeTest {
+public final class AttrCtorInitFormatTest {
 
     /**
-     * Generates java code with provided format.
+     * Generates constructor initializer java code.
      */
     @Test
     public void javaCode() {
         MatcherAssert.assertThat(
-            new Attribute(
-                "Type",
-                "name"
-            ).java(
-                (type, name) -> String.format("%s:%s", type, name)
+            new AttrCtorInitFormat().code(
+                "Attribute",
+                "attr"
             ),
-            Matchers.equalTo(
-                "Type:name"
-            )
+            Matchers.is("this.attr = attr;")
         );
     }
 }
