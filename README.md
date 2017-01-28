@@ -311,6 +311,30 @@ The method name must match `[a-z][a-z0-9]{2,15}`.
 
 A single empty line is allowed after the method body, nowhere else.
 
+### Decorators
+
+A [decorator](https://en.wikipedia.org/wiki/Decorator_pattern)
+is an object that encapsulates another object, implements
+the same set of methods, and passes all method calls to the encapsulated
+object.
+
+A decorator is created using keyword `decorates`, for example:
+
+```
+object zero as Money, Int:
+  # ...
+object one decorates zero:
+  # ...
+```
+
+Encapsulated object can be accessed through keyword `origin`, for example:
+
+```
+object one decorates zero:
+  Text print:
+    origin.asText() # here
+```
+
 ### Exceptions
 
 To raise an exception object `org.eolang.error` must be copied (imported by
