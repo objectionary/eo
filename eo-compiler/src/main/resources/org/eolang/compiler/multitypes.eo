@@ -1,0 +1,7 @@
+type Number:
+    Integral integral()
+    Decimal decimal()
+
+type Text:
+    Number length()
+    Collection lines()

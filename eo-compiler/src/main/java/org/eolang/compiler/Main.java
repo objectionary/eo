@@ -23,7 +23,10 @@
  */
 package org.eolang.compiler;
 
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Main.
@@ -66,12 +69,41 @@ public final class Main {
     /**
      * Entry point.
      */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void exec() {
-        if ("--help".equals(this.args[0])) {
-            this.stdout.append("It is just a skeleton");
-        } else {
+        if (this.args.length == 0) {
             this.stdout.append("Usage: --help");
+        } else if ("--help".equals(this.args[0])) {
+            this.stdout.append("This is just a skeleton, but ");
+            this.stdout.append("please use --demo for compilation examples.");
+        } else if ("--demo".equals(this.args[0])) {
+            try {
+                final String[] files = {
+                    "book.eo", "car.eo", "fibonacci.eo",
+                    "multitypes.eo", "pixel.eo", "zero.eo",
+                };
+                for (final String file : files) {
+                    this.stdout.append("\n=====================\n");
+                    this.stdout.append("EOLANG:\n");
+                    this.stdout.append(
+                        IOUtils.toString(
+                            this.getClass().getResourceAsStream(file),
+                            Charset.defaultCharset()
+                        )
+                    );
+                    this.stdout.append("\nJAVA:\n");
+                    final Program program = new Program(
+                        IOUtils.toString(
+                            this.getClass().getResourceAsStream(file),
+                            Charset.defaultCharset()
+                        )
+                    );
+                    program.save(new StreamOutput(this.stdout));
+                    this.stdout.append("\n=====================\n\n");
+                }
+            } catch (final IOException ex) {
+                this.stdout.append("Error reading resource file.");
+            }
         }
     }
-
 }
