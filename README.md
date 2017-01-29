@@ -230,9 +230,10 @@ A constructor is a ... TBD
 
 A destructor is a ... TBD
 
-An object must have a primary constructor (which must have at least
-one parameter, i.e. the object must encapsulate something) and may have
-any number of secondary constructors and one destructor.
+An object have a primary constructor by default, it save parameters into attributes.
+So object must have at least one attribute, i.e. the object must encapsulate something.
+Parameters order is same as order of attributes.
+Object may have any number of secondary constructors and one destructor.
 A primary constructor is the one that initializes object
 attributes and can't have a body, for example:
 
@@ -244,7 +245,6 @@ object zero() as Money, Int:
     zero: 0
   ctor(Int a): # secondary constructor
     zero: a, "USD"
-  ctor(Int amount, Text currency) # primary constructor
   dtor(): # destructor
     printed: "I'm dying..."
 ```
