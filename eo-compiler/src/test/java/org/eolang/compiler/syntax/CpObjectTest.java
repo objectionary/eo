@@ -23,76 +23,37 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Arrays;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
- * Simple argument: text or number.
+ * Test for object copying.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ArgSimple implements Argument {
+@Ignore
+public final class CpObjectTest {
 
     /**
-     * Argument text.
+     * Test generated java code.
      */
-    private final String text;
-
-    /**
-     * Ctor.
-     *
-     * @param number Long value
-     */
-    public ArgSimple(final long number) {
-        this(Long.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Int value
-     */
-    public ArgSimple(final int number) {
-        this(Integer.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Double value
-     */
-    public ArgSimple(final double number) {
-        this(Double.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Float value.
-     */
-    public ArgSimple(final float number) {
-        this(Float.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param bool Boolean value.
-     */
-    public ArgSimple(final boolean bool) {
-        this(Boolean.toString(bool));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param string Any string.
-     */
-    public ArgSimple(final String string) {
-        this.text = string;
-    }
-
-    @Override
-    public String java() {
-        return this.text;
+    @Test
+    public void java() {
+        MatcherAssert.assertThat(
+            new CpObject(
+                "if",
+                Arrays.asList(
+                    new Argument.Fake("true"),
+                    new Argument.Fake("1"),
+                    new Argument.Fake("2")
+                )
+            ).java(),
+            Matchers.equalTo("new if(true, 1, 2)")
+        );
     }
 }

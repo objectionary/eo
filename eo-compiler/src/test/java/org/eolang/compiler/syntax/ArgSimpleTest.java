@@ -23,76 +23,63 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
- * Simple argument: text or number.
+ * Test for simple constructor arguments, such as text, number, bool, etc.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ArgSimple implements Argument {
+public final class ArgSimpleTest {
 
     /**
-     * Argument text.
+     * Simple text.
      */
-    private final String text;
-
-    /**
-     * Ctor.
-     *
-     * @param number Long value
-     */
-    public ArgSimple(final long number) {
-        this(Long.toString(number));
+    @Test
+    public void text() {
+        final String text = "\"text\"";
+        MatcherAssert.assertThat(
+            new ArgSimple(text).java(),
+            Matchers.equalTo(text)
+        );
     }
 
     /**
-     * Ctor.
-     *
-     * @param number Int value
+     * Simple integer.
      */
-    public ArgSimple(final int number) {
-        this(Integer.toString(number));
+    @Test
+    public void integer() {
+        final int target = 42;
+        MatcherAssert.assertThat(
+            new ArgSimple(target).java(),
+            Matchers.equalTo("42")
+        );
     }
 
     /**
-     * Ctor.
-     *
-     * @param number Double value
+     * Simple float.
      */
-    public ArgSimple(final double number) {
-        this(Double.toString(number));
+    @Test
+    public void flt() {
+        final double target = 136.11;
+        MatcherAssert.assertThat(
+            new ArgSimple(target).java(),
+            Matchers.equalTo("136.11")
+        );
     }
 
     /**
-     * Ctor.
-     *
-     * @param number Float value.
+     * Simple bool.
      */
-    public ArgSimple(final float number) {
-        this(Float.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param bool Boolean value.
-     */
-    public ArgSimple(final boolean bool) {
-        this(Boolean.toString(bool));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param string Any string.
-     */
-    public ArgSimple(final String string) {
-        this.text = string;
-    }
-
-    @Override
-    public String java() {
-        return this.text;
+    @Test
+    public void bool() {
+        MatcherAssert.assertThat(
+            new ArgSimple(true).java(),
+            Matchers.equalTo("true")
+        );
     }
 }

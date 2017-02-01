@@ -23,76 +23,47 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Arrays;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
- * Simple argument: text or number.
+ * Test for object's constructor.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ArgSimple implements Argument {
+@Ignore
+public final class CtorTest {
 
     /**
-     * Argument text.
+     * Test generated java code.
      */
-    private final String text;
-
-    /**
-     * Ctor.
-     *
-     * @param number Long value
-     */
-    public ArgSimple(final long number) {
-        this(Long.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Int value
-     */
-    public ArgSimple(final int number) {
-        this(Integer.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Double value
-     */
-    public ArgSimple(final double number) {
-        this(Double.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Float value.
-     */
-    public ArgSimple(final float number) {
-        this(Float.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param bool Boolean value.
-     */
-    public ArgSimple(final boolean bool) {
-        this(Boolean.toString(bool));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param string Any string.
-     */
-    public ArgSimple(final String string) {
-        this.text = string;
-    }
-
-    @Override
-    public String java() {
-        return this.text;
+    @Test
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void java() {
+        MatcherAssert.assertThat(
+            new Ctor(
+                Arrays.asList(
+                    new Parameter("Text", "name"),
+                    new Parameter("Int", "age")
+                ),
+                Arrays.asList(
+                    new Argument.Fake("name"),
+                    new Argument.Fake("age"),
+                    new Argument.Fake("new color(\"black\")")
+                )
+            ).java("cat"),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "cat(", "final Text name,", "final Int age", ")", "{",
+                    "this(", "name,", "age,", "new color(\"black\")", ")",
+                    "}"
+                )
+            )
+        );
     }
 }

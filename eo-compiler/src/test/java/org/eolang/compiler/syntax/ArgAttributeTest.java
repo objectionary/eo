@@ -23,76 +23,28 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
- * Simple argument: text or number.
+ * Test for constructor argument references object attribute.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ArgSimple implements Argument {
+public final class ArgAttributeTest {
 
     /**
-     * Argument text.
+     * Test generated java code.
      */
-    private final String text;
-
-    /**
-     * Ctor.
-     *
-     * @param number Long value
-     */
-    public ArgSimple(final long number) {
-        this(Long.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Int value
-     */
-    public ArgSimple(final int number) {
-        this(Integer.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Double value
-     */
-    public ArgSimple(final double number) {
-        this(Double.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param number Float value.
-     */
-    public ArgSimple(final float number) {
-        this(Float.toString(number));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param bool Boolean value.
-     */
-    public ArgSimple(final boolean bool) {
-        this(Boolean.toString(bool));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param string Any string.
-     */
-    public ArgSimple(final String string) {
-        this.text = string;
-    }
-
-    @Override
-    public String java() {
-        return this.text;
+    @Test
+    public void java() {
+        final String name = "value";
+        MatcherAssert.assertThat(
+            new ArgAttribute(name).java(),
+            Matchers.equalTo(name)
+        );
     }
 }

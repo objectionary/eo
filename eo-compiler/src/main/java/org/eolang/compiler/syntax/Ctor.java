@@ -46,4 +46,14 @@ public final class Ctor {
         final Collection<Argument> arguments
     ) {
     }
+
+    /**
+     * Java code for constructor.
+     *
+     * @param name Object name
+     * @return Java code
+     */
+    public String java(final String name) {
+        throw new RuntimeException("STUB");
+    }
 }

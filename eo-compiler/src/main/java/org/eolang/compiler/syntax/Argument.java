@@ -31,4 +31,36 @@ package org.eolang.compiler.syntax;
  * @since 0.1
  */
 public interface Argument {
+
+    /**
+     * Java code for argument.
+     *
+     * @return Java code
+     */
+    String java();
+
+    /**
+     * Fake argument.
+     */
+    final class Fake implements Argument {
+
+        /**
+         * Java code.
+         */
+        private final String java;
+
+        /**
+         * Ctor.
+         *
+         * @param java Java code
+         */
+        public Fake(final String java) {
+            this.java = java;
+        }
+
+        @Override
+        public String java() {
+            return this.java;
+        }
+    }
 }

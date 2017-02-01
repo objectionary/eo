@@ -42,4 +42,13 @@ public final class CpObject {
      */
     public CpObject(final String name, final Collection<Argument> arguments) {
     }
+
+    /**
+     * Java code for object copying.
+     *
+     * @return Java code
+     */
+    public String java() {
+        throw new RuntimeException("STUB");
+    }
 }

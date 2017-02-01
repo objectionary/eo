@@ -39,4 +39,9 @@ public final class ArgCpObject implements Argument {
      */
     public ArgCpObject(final CpObject copy) {
     }
+
+    @Override
+    public String java() {
+        throw new RuntimeException("STUB");
+    }
 }

@@ -30,7 +30,7 @@ package org.eolang.compiler.syntax;
  * @version $Id$
  * @since 0.1
  */
-public class ArgAttribute implements Argument {
+public final class ArgAttribute implements Argument {
 
     /**
      * Attribute name.
@@ -44,5 +44,10 @@ public class ArgAttribute implements Argument {
      */
     public ArgAttribute(final String name) {
         this.name = name;
+    }
+
+    @Override
+    public String java() {
+        return this.name;
     }
 }
