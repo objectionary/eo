@@ -36,9 +36,14 @@ import java.util.stream.Collectors;
 public final class CpObject {
 
     /**
-     * Java code.
+     * Object name.
      */
-    private final String java;
+    private final String name;
+
+    /**
+     * Arguments.
+     */
+    private final Collection<Argument> arguments;
 
     /**
      * Ctor.
@@ -47,16 +52,8 @@ public final class CpObject {
      * @param arguments Arguments
      */
     public CpObject(final String name, final Collection<Argument> arguments) {
-        this.java = String.format(
-            "new %s(%s)",
-            name,
-            String.join(
-                ", ",
-                arguments.stream()
-                    .map(Argument::java)
-                    .collect(Collectors.toList())
-            )
-        );
+        this.name = name;
+        this.arguments = arguments;
     }
 
     /**
@@ -65,6 +62,15 @@ public final class CpObject {
      * @return Java code
      */
     public String java() {
-        return this.java;
+        return String.format(
+            "new %s(%s)",
+            this.name,
+            String.join(
+                ", ",
+                this.arguments.stream()
+                    .map(Argument::java)
+                    .collect(Collectors.toList())
+            )
+        );
     }
 }

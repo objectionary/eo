@@ -48,5 +48,6 @@ public final class ArgumentTest {
     @Test
     @Ignore
     public void objectInstantiation() {
+        // not implemented
     }
 }

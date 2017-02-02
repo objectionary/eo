@@ -57,8 +57,15 @@ public final class CtorTest {
             ).java("cat"),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
-                    "public", "cat(", "final Text name,", "final Int age", ")", "{",
-                    "this(", "name,", "age,", "new color(\"black\")", ")",
+                    "public", "cat(",
+                    "final Text name,",
+                    "final Int age",
+                    ")", "{",
+                    "this(",
+                    "name,",
+                    "age,",
+                    "new color(\"black\")",
+                    ")",
                     "}"
                 )
             )

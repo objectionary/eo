@@ -32,6 +32,9 @@ package org.eolang.compiler.syntax;
  */
 public final class ArgCpObject implements Argument {
 
+    /**
+     * Object copy.
+     */
     private final CpObject copy;
 
     /**
