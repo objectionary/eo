@@ -14,6 +14,7 @@ grammar Program;
     import org.eolang.compiler.syntax.ArgAttribute;
     import org.eolang.compiler.syntax.ArgCpObject;
     import org.eolang.compiler.syntax.Ctor;
+    import org.eolang.compiler.syntax.ObjectBody;
     import java.util.Collection;
     import java.util.LinkedList;
 }
@@ -240,7 +241,7 @@ object_instantiation returns [Object ret]
         NEWLINE
     )*
     DEDENT
-    { $ret = new Object($object_name.ret, $object_types_declaration.ret, attrs); }
+    { $ret = new Object($object_name.ret, $object_types_declaration.ret, new ObjectBody(attrs, ctors)); }
     ;
 
 attribute_declaration returns [Attribute ret]
