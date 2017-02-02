@@ -26,7 +26,6 @@ package org.eolang.compiler.syntax;
 import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,7 +35,6 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  */
-@Ignore
 public final class CtorTest {
 
     /**
@@ -48,8 +46,8 @@ public final class CtorTest {
         MatcherAssert.assertThat(
             new Ctor(
                 Arrays.asList(
-                    new Parameter("Text", "name"),
-                    new Parameter("Int", "age")
+                    new Parameter("name", "Text"),
+                    new Parameter("age", "Int")
                 ),
                 Arrays.asList(
                     new Argument.Fake("name"),
@@ -59,7 +57,7 @@ public final class CtorTest {
             ).java("cat"),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
-                    "cat(", "final Text name,", "final Int age", ")", "{",
+                    "public", "cat(", "final Text name,", "final Int age", ")", "{",
                     "this(", "name,", "age,", "new color(\"black\")", ")",
                     "}"
                 )

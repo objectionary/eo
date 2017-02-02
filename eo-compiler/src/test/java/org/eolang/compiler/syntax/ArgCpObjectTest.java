@@ -26,7 +26,6 @@ package org.eolang.compiler.syntax;
 import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,7 +35,6 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  */
-@Ignore
 public final class ArgCpObjectTest {
 
     /**
@@ -54,7 +52,7 @@ public final class ArgCpObjectTest {
                     )
                 )
             ).java(),
-            Matchers.equalTo("new car(42, 11)")
+            Matchers.equalTo("new point(42, 11)")
         );
     }
 }

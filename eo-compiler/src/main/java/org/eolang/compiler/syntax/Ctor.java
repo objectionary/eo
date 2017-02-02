@@ -25,6 +25,7 @@ package org.eolang.compiler.syntax;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Object secondary constructor.
@@ -36,6 +37,11 @@ import java.util.List;
 public final class Ctor {
 
     /**
+     * Java code template.
+     */
+    private final String template;
+
+    /**
      * Ctor.
      *
      * @param parameters Constructor parameters
@@ -45,6 +51,21 @@ public final class Ctor {
         final List<Parameter> parameters,
         final Collection<Argument> arguments
     ) {
+        this.template = String.format(
+            "public %%s(%s) {\n this(%s);\n}",
+            String.join(
+                ", ",
+                parameters.stream()
+                    .map(Parameter::java)
+                    .collect(Collectors.toList())
+            ),
+            String.join(
+                ", ",
+                arguments.stream()
+                    .map(Argument::java)
+                    .collect(Collectors.toList())
+            )
+        );
     }
 
     /**
@@ -54,6 +75,6 @@ public final class Ctor {
      * @return Java code
      */
     public String java(final String name) {
-        throw new RuntimeException("STUB");
+        return String.format(this.template, name);
     }
 }

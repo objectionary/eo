@@ -32,16 +32,19 @@ package org.eolang.compiler.syntax;
  */
 public final class ArgCpObject implements Argument {
 
+    private final CpObject copy;
+
     /**
      * Ctor.
      *
      * @param copy Object copy
      */
     public ArgCpObject(final CpObject copy) {
+        this.copy = copy;
     }
 
     @Override
     public String java() {
-        throw new RuntimeException("STUB");
+        return this.copy.java();
     }
 }

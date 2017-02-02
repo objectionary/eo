@@ -26,7 +26,6 @@ package org.eolang.compiler.syntax;
 import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,7 +35,6 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  */
-@Ignore
 public final class CpObjectTest {
 
     /**

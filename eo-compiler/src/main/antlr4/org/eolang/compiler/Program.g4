@@ -286,11 +286,12 @@ object_copying returns [CpObject ret]
         INDENT
         object_argument
         { arguments.add($object_argument.ret); }
+        NEWLINE
         (
-            NEWLINE
             object_argument
             { arguments.add($object_argument.ret); }
-        )+
+            NEWLINE
+        )*
         DEDENT
     )?
     { $ret = new CpObject($object_name.ret, arguments); }

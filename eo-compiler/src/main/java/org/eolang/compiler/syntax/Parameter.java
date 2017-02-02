@@ -45,11 +45,11 @@ public final class Parameter {
     /**
      * Ctor.
      * @param arg Parameter name
-     * @param tpn Type name
+     * @param type Type name
      */
-    public Parameter(final String arg, final String tpn) {
+    public Parameter(final String arg, final String type) {
         this.name = arg;
-        this.type = tpn;
+        this.type = type;
     }
 
     /**

@@ -24,6 +24,7 @@
 package org.eolang.compiler.syntax;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Object copying.
@@ -35,12 +36,27 @@ import java.util.Collection;
 public final class CpObject {
 
     /**
+     * Java code.
+     */
+    private final String java;
+
+    /**
      * Ctor.
      *
      * @param name Object name
      * @param arguments Arguments
      */
     public CpObject(final String name, final Collection<Argument> arguments) {
+        this.java = String.format(
+            "new %s(%s)",
+            name,
+            String.join(
+                ", ",
+                arguments.stream()
+                    .map(Argument::java)
+                    .collect(Collectors.toList())
+            )
+        );
     }
 
     /**
@@ -49,6 +65,6 @@ public final class CpObject {
      * @return Java code
      */
     public String java() {
-        throw new RuntimeException("STUB");
+        return this.java;
     }
 }
