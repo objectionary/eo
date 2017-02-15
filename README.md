@@ -335,6 +335,21 @@ object one decorates zero:
     origin.asText() # here
 ```
 
+A decorator has a single-argument primary constructor, which
+accepts what will be encapsulated as `origin`, for example:
+
+```
+object one decorates zero:
+  ctor()  # secondary ctor
+    one: 1
+  ctor(num)  # secondary ctor
+    one: # call one-arg primary ctor
+      zero:
+        num
+  Text print:
+    origin.asText()
+```
+
 ### Exceptions
 
 To raise an exception object `org.eolang.error` must be copied (imported by
