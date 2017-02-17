@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler;
 
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * Main.
@@ -67,11 +67,16 @@ public final class Main {
      * Entry point.
      */
     public void exec() {
-        if ("--help".equals(this.args[0])) {
-            this.stdout.append("It is just a skeleton");
-        } else {
-            this.stdout.append("Usage: --help");
+        try {
+            this.stdout.append(
+                new ParsedEOCCommand(new EOCCommandName(this.args))
+                    .withArgument(new EOCCommandArgument(this.args))
+                    .output()
+            );
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
+
 
 }

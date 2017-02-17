@@ -24,6 +24,8 @@
 package org.eolang.compiler;
 
 import java.io.PrintStream;
+import java.util.Arrays;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,14 +44,57 @@ public final class MainTest {
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsSimpleResponse() throws Exception {
+    public void printsHelpInstructions() throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--help").exec();
             MatcherAssert.assertThat(
                 new String(baos.toByteArray()),
-                Matchers.containsString("skeleton")
+                Matchers.containsString("Use --demo to list compilation examples.")
             );
         }
     }
 
+    @Test
+    public void printsDemoInstructions() throws Exception {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            new Main(new PrintStream(baos), "--demo").exec();
+            MatcherAssert.assertThat(
+                new String(baos.toByteArray()),
+                Matchers.containsString("Use --demo <filename>")
+            );
+        }
+    }
+
+    @Test
+    public void printsDemoFilenames() throws Exception {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            new Main(new PrintStream(baos), "--demo").exec();
+            MatcherAssert.assertThat(
+                new String(baos.toByteArray()),
+                Matchers.stringContainsInOrder(Arrays.asList("book.eo", "zero.eo"))
+            );
+        }
+    }
+
+    @Test
+    public void printsDemoFile() throws Exception {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            new Main(new PrintStream(baos), "--demo", "book.eo").exec();
+            MatcherAssert.assertThat(
+                new String(baos.toByteArray()),
+                Matchers.stringContainsInOrder(Arrays.asList("\nEOLANG:\n", "type Book:"))
+            );
+        }
+    }
+
+    @Test
+    public void printsParsedDemoFile() throws Exception {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            new Main(new PrintStream(baos), "--demo", "pixel.eo").exec();
+            MatcherAssert.assertThat(
+                new String(baos.toByteArray()),
+                Matchers.stringContainsInOrder(Arrays.asList("\n\nJAVA:\n", "Pixel moveTo"))
+            );
+        }
+    }
 }
