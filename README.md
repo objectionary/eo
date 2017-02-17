@@ -101,8 +101,8 @@ What exactly happens here? TBD
 
 ## Details
 
-There are types, objects, constructors, destructors, methods,
-attributes, parameters, exceptions, decorators.
+There are [types](#types), [objects](#objects), [constructors, destructors](#constructors-and-destructors), [methods](#methods),
+[attributes](#attributes), parameters, [exceptions](#exceptions), [decorators](#decorators).
 
 There are _no_ classes, variables, operators, statements, annotations, reflection,
 type casting, generics, NULL, static methods, functions, lambdas.
