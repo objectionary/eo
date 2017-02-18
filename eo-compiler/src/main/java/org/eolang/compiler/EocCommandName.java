@@ -23,60 +23,53 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Main.
+ * Represents an EO compiler command name passed in from
+ * the command line. (Can be empty.)
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Main {
+public final class EocCommandName {
 
     /**
-     * Print stream for the output.
+     * All of the command line args.
      */
-    private final PrintStream stdout;
+    private final List<String> args;
 
     /**
-     * Arguments.
+     * Constructs an EocCommandName from a list of all arguments
+     * passed in from the command line.
+     *
+     * @param args All of the command line args.
      */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
+    public EocCommandName(final String... args) {
+        this.args = Arrays.asList(args);
     }
 
     /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
+     * Requests the command name.
+     *
+     * @return The command name if this is one or an empty string.
      */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        try {
-            this.stdout.append(
-                new ParsedEocCommand(new EocCommandName(this.args))
-                    .withArgument(new EocCommandArgument(this.args))
-                    .output()
-            );
-        } catch (final IOException ex) {
-            this.stdout.append("Error reading resource file.");
+    public String string() {
+        String string = "";
+        if (!this.isEmpty()) {
+            string = this.args.get(0);
         }
+        return string;
+    }
+
+    /**
+     * Indicates whether or not a command name is present.
+     *
+     * @return True if empty.
+     */
+    public boolean isEmpty() {
+        return this.args.size() < 1;
     }
 }
-

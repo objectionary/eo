@@ -23,60 +23,37 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.nio.file.Path;
 
 /**
- * Main.
+ * Diverts output to a string rather than a file.
+ * Used for echoing compiled files to the command line etc.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Main {
+@SuppressWarnings("PMD.AvoidStringBufferField")
+public final class StringOutput implements Output {
 
     /**
-     * Print stream for the output.
+     * USe for builder the output string.
      */
-    private final PrintStream stdout;
+    private final StringBuilder output;
 
     /**
-     * Arguments.
+     * Constructs an output object that outputs to a string rather than
+     * a file.
+     *
+     * @param output The string builder.
      */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
+    public StringOutput(final StringBuilder output) {
+        this.output = output;
     }
 
-    /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
-     */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
+    @Override
+    public void save(final Path file, final String content) {
+        this.output.append(content);
     }
 
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        try {
-            this.stdout.append(
-                new ParsedEocCommand(new EocCommandName(this.args))
-                    .withArgument(new EocCommandArgument(this.args))
-                    .output()
-            );
-        } catch (final IOException ex) {
-            this.stdout.append("Error reading resource file.");
-        }
-    }
 }
-

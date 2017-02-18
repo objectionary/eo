@@ -23,60 +23,35 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.io.PrintStream;
-
 /**
- * Main.
+ * Represents an EocCommand that outputs a message to the command line.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Main {
+public final class SimpleCommand implements EocCommand {
 
     /**
-     * Print stream for the output.
+     * The message.
      */
-    private final PrintStream stdout;
+    private final String message;
 
     /**
-     * Arguments.
+     * Constructs the command that will output a message.
+     *
+     * @param message The message.
      */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
+    public SimpleCommand(final String message) {
+        this.message = message;
     }
 
     /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
+     * Requests the message output.
+     *
+     * @return Something.
      */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        try {
-            this.stdout.append(
-                new ParsedEocCommand(new EocCommandName(this.args))
-                    .withArgument(new EocCommandArgument(this.args))
-                    .output()
-            );
-        } catch (final IOException ex) {
-            this.stdout.append("Error reading resource file.");
-        }
+    public String output() {
+        return this.message;
     }
 }
-
