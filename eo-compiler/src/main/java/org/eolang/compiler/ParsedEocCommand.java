@@ -23,60 +23,55 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.io.PrintStream;
-
 /**
- * Main.
+ * Class comment.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Main {
+public final class ParsedEocCommand {
 
     /**
-     * Print stream for the output.
+     * Attribute comment.
      */
-    private final PrintStream stdout;
+    private final EocCommandName name;
 
     /**
-     * Arguments.
+     * Method comment.
+     *
+     * @param name N.
      */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
+    public ParsedEocCommand(final EocCommandName name) {
+        this.name = name;
     }
 
     /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
+     * Method comment.
+     *
+     * @param argument A.
+     * @return Something.
+     * @throws IllegalArgumentException If.
      */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        try {
-            this.stdout.append(
-                new ParsedEocCommand(new EocCommandName(this.args))
-                    .withArgument(new EocCommandArgument(this.args))
-                    .output()
-            );
-        } catch (final IOException ex) {
-            this.stdout.append("Error reading resource file.");
+    public EocCommand withArgument(
+        final EocCommandArgument argument
+    ) throws IllegalArgumentException {
+        final EocCommand command;
+        switch (this.name.string()) {
+            case "":
+                command = new SimpleCommand("Usage: --help");
+                break;
+            case "--help":
+                command = new SimpleCommand(
+                    "Use --demo to list compilation examples."
+                );
+                break;
+            case "--demo":
+                command = new DemoCommand(argument);
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
+        return command;
     }
 }
-

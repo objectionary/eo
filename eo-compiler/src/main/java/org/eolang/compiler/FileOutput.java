@@ -24,7 +24,6 @@
 package org.eolang.compiler;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -60,5 +59,3 @@ public final class FileOutput implements Output {
         }
     }
 }
-
-
