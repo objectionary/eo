@@ -33,7 +33,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Class comment.
+ * Represents all the example EO resource files.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -42,24 +42,24 @@ import org.apache.commons.io.IOUtils;
 public final class EoResourceFiles {
 
     /**
-     * Attribute comment.
+     * The path for the resource files.
      */
     private final String path;
 
     /**
-     * Method comment.
+     * Constructs an EoResourceFiles object.
      *
-     * @param path P.
+     * @param path The path for the resource files.
      */
     public EoResourceFiles(final String path) {
         this.path = path;
     }
 
     /**
-     * Method comment.
+     * Requests a formatted list of all the EO file names.
      *
-     * @return Something.
-     * @throws IOException If.
+     * @return A formatted string of all the file names.
+     * @throws IOException If there is a problem reading the files.
      */
     public String formattedNames() throws IOException {
         final List<String> filenames = new ArrayList<>(0);
@@ -82,11 +82,11 @@ public final class EoResourceFiles {
     }
 
     /**
-     * Method comment.
+     * Requests the contents of an EO file.
      *
-     * @param filename F.
-     * @return Something.
-     * @throws IOException If.
+     * @param filename The name of the file.
+     * @return A string of the contents of the file.
+     * @throws IOException If this is some problem reading the file.
      */
     public String eolang(final String filename) throws IOException {
         return String.format(
@@ -98,11 +98,11 @@ public final class EoResourceFiles {
     }
 
     /**
-     * Method comment.
+     * Requests the contents of a EO file compiled into Java.
      *
-     * @param filename F.
-     * @return Something.
-     * @throws IOException If.
+     * @param filename The name of the file.
+     * @return A string of the compiled contents.
+     * @throws IOException If this is some problem reading the file.
      */
     public String java(final String filename) throws IOException {
         final StringBuilder java = new StringBuilder(0);

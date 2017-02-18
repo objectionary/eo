@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Class comment.
+ * Decorates an InputStream of a Java resource.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -36,15 +36,15 @@ import java.io.InputStream;
 public final class ResourceStream extends InputStream {
 
     /**
-     * Attribute comment.
+     * The original InputStream.
      */
     private final InputStream origin;
 
     /**
-     * Method comment.
+     * Constructs the decorated resource.
      *
-     * @param resource R.
-     * @throws IOException If.
+     * @param resource The path of the resource.
+     * @throws IOException If there is a problem finding the resource.
      */
     @SuppressWarnings("PMD.CallSuperInConstructor")
     public ResourceStream(final String resource) throws IOException {
@@ -52,9 +52,9 @@ public final class ResourceStream extends InputStream {
     }
 
     /**
-     * Method comment.
+     * A private constructor.
      *
-     * @param origin O.
+     * @param origin The stream.
      */
     @SuppressWarnings("PMD.CallSuperInConstructor")
     private ResourceStream(final InputStream origin) {
@@ -83,11 +83,11 @@ public final class ResourceStream extends InputStream {
     }
 
     /**
-     * Method comment.
+     * Gets the resource as a stream.
      *
-     * @param resource O.
-     * @return Something.
-     * @throws IOException If.
+     * @param resource Resource path.
+     * @return The InputStream.
+     * @throws IOException If there is a problem finding the resource.
      */
     private static InputStream stream(final String resource)
         throws IOException {

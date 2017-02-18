@@ -24,7 +24,7 @@
 package org.eolang.compiler;
 
 /**
- * Class comment.
+ * Builder for EocCommands parsed from the command line input.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -33,12 +33,12 @@ package org.eolang.compiler;
 public final class ParsedEocCommand {
 
     /**
-     * Attribute comment.
+     * Name of the command.
      */
     private final EocCommandName name;
 
     /**
-     * Method comment.
+     * Constructs a builder for the named command.
      *
      * @param name N.
      */
@@ -47,11 +47,11 @@ public final class ParsedEocCommand {
     }
 
     /**
-     * Method comment.
+     * Adds an argument for the command.
      *
-     * @param argument A.
-     * @return Something.
-     * @throws IllegalArgumentException If.
+     * @param argument The argument for the command.
+     * @return The command object.
+     * @throws IllegalArgumentException If the command is not recognised.
      */
     public EocCommand withArgument(
         final EocCommandArgument argument

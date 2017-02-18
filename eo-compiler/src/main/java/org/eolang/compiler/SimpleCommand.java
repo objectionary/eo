@@ -24,7 +24,7 @@
 package org.eolang.compiler;
 
 /**
- * Class comment.
+ * Represents an EocCommand that outputs a message to the command line.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -33,21 +33,21 @@ package org.eolang.compiler;
 public final class SimpleCommand implements EocCommand {
 
     /**
-     * Attribute comment.
+     * The message.
      */
     private final String message;
 
     /**
-     * Method comment.
+     * Constructs the command that will output a message.
      *
-     * @param message M.
+     * @param message The message.
      */
     public SimpleCommand(final String message) {
         this.message = message;
     }
 
     /**
-     * Method comment.
+     * Requests the message output.
      *
      * @return Something.
      */

@@ -40,9 +40,9 @@ import org.junit.Test;
 public final class DemoCommandTest {
 
     /**
-     * Test.
+     * A DemoCommand with no command argument outputs instructions.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void withNoCommandArgumentOutputsInstructions() throws Exception {
@@ -61,9 +61,9 @@ public final class DemoCommandTest {
     }
 
     /**
-     * Test.
+     * A DemoCommand with no command argument outputs the list of EO files.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void withNoCommandArgumentOutputsTheListOfEoFiles()
@@ -83,9 +83,9 @@ public final class DemoCommandTest {
     }
 
     /**
-     * Test.
+     * A DemoCommand with a command argument for a non-existent file throws.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test(expected = IOException.class)
     public void withACommandArgumentForANonexistentFileThrows()

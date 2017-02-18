@@ -57,12 +57,13 @@ public final class MainTest {
     }
 
     /**
-     * Test.
+     * Main prints instructions in response to the demo command.
      *
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsDemoInstructions() throws Exception {
+    public void printsInstructionsInResponseToTheDemoCommand()
+        throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--demo").exec();
             MatcherAssert.assertThat(
@@ -73,12 +74,12 @@ public final class MainTest {
     }
 
     /**
-     * Test.
+     * Main prints filenames in response to the demo command.
      *
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsDemoFilenames() throws Exception {
+    public void printsFilenamesInResponseToTheDemoCommand() throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--demo").exec();
             MatcherAssert.assertThat(
@@ -91,12 +92,13 @@ public final class MainTest {
     }
 
     /**
-     * Test.
+     * Main prints the EO file in response to the demo command with a filename.
      *
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsDemoFile() throws Exception {
+    public void printsEoFilenameInResponseToDemoCommandWithAFilename()
+        throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--demo", "book.eo").exec();
             MatcherAssert.assertThat(
@@ -109,12 +111,14 @@ public final class MainTest {
     }
 
     /**
-     * Test.
+     * Main prints the compiled file in response to the demo command
+     * with a filename.
      *
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsParsedDemoFile() throws Exception {
+    public void printsCompiledFileInResponseToTheDemoCommmand()
+        throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--demo", "pixel.eo").exec();
             MatcherAssert.assertThat(

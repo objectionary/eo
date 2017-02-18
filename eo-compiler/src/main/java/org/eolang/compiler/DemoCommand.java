@@ -26,32 +26,34 @@ package org.eolang.compiler;
 import java.io.IOException;
 
 /**
- * Class comment.
+ * Represents an EocCommand that demos EO file compilation to the command line.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
 public final class DemoCommand implements EocCommand {
+
     /**
-     * Attribute comment.
+     * The argument which is the name of the demo file to output as a string.
      */
     private final EocCommandArgument filename;
 
     /**
-     * Method comment.
+     * Constructs the command that will demo the compilation of the file .
      *
-     * @param filename F.
+     * @param filename File to be compiled and turned into a string.
      */
     public DemoCommand(final EocCommandArgument filename) {
         this.filename = filename;
     }
 
     /**
-     * Method comment.
+     * Requests a formatted string that represents a demonstration of
+     * an EO file and its compilation to Java.
      *
-     * @return Something.
-     * @throws IOException If.
+     * @return The file contents and its compilation.
+     * @throws IOException If there is a problem reading the file.
      */
     public String output() throws IOException {
         final String output;

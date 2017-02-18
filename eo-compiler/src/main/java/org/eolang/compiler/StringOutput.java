@@ -26,7 +26,8 @@ package org.eolang.compiler;
 import java.nio.file.Path;
 
 /**
- * Class comment.
+ * Diverts output to a string rather than a file.
+ * Used for echoing compiled files to the command line etc.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -36,14 +37,15 @@ import java.nio.file.Path;
 public final class StringOutput implements Output {
 
     /**
-     * Attribute comment.
+     * USe for builder the output string.
      */
     private final StringBuilder output;
 
     /**
-     * Method comment.
+     * Constructs an output object that outputs to a string rather than
+     * a file.
      *
-     * @param output O.
+     * @param output The string builder.
      */
     public StringOutput(final StringBuilder output) {
         this.output = output;

@@ -38,9 +38,10 @@ import org.junit.Test;
 public final class EocCommandArgumentTest {
 
     /**
-     * Test.
+     * An EocCommandArgument does not exist when there is
+     * no second input argument.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void doesNotExistWhenThereIsNoSecondInputArgument()
@@ -52,9 +53,9 @@ public final class EocCommandArgumentTest {
     }
 
     /**
-     * Test.
+     * An EocCommandArgument does exist when there is a second input argument.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void doesExistWhenThereIsASecondInputArgument() throws Exception {
@@ -67,9 +68,9 @@ public final class EocCommandArgumentTest {
     }
 
     /**
-     * Test.
+     * An EocCommandArgument matches the value of the second input argument.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void matchesTheValueOfTheSecondInputArgument() throws Exception {
@@ -83,9 +84,10 @@ public final class EocCommandArgumentTest {
     }
 
     /**
-     * Test.
+     * An EocCommandArgument is an empty string when there are no input
+     * arguments at all.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void isAnEmptyStringWhenThereAreNoInputArgumentsAtAll()
@@ -97,9 +99,10 @@ public final class EocCommandArgumentTest {
     }
 
     /**
-     * Test.
+     * An EocCommandArgument is an empty string when there is no second
+     * input argument.
      *
-     * @throws Exception If some problem inside
+     * @throws Exception If there's an exception.
      */
     @Test
     public void isAnEmptyStringWhenThereIsNoSecondInputArgument()

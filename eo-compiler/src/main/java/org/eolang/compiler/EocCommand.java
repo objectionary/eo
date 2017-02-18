@@ -26,7 +26,9 @@ package org.eolang.compiler;
 import java.io.IOException;
 
 /**
- * Class comment.
+ * Represents the behaviour of an EO compiler command that can be
+ * requested as an argument from the command line.
+ * e.g. --help, --demo, etc.
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -35,9 +37,10 @@ import java.io.IOException;
 public interface EocCommand {
 
     /**
-     * Method comment.
+     * Executes the command and requests the output that will be echoed
+     * to the command line.
      *
-     * @return Something.
+     * @return Output string representing the result of the command.
      * @throws IOException If.
      */
     String output() throws IOException;

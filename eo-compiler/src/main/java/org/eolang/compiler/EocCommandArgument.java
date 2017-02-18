@@ -27,7 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Class comment.
+ * Represents an EO compiler command argument passed in from
+ * the command line. (Can be empty.)
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -36,23 +37,24 @@ import java.util.List;
 public final class EocCommandArgument {
 
     /**
-     * Attribute comment.
+     * All of the command line args.
      */
     private final List<String> args;
 
     /**
-     * Method comment.
+     * Constructs an EocCommandArgument from a list of all arguments
+     * passed in from the command line.
      *
-     * @param args A.
+     * @param args All of the command line args.
      */
     public EocCommandArgument(final String... args) {
         this.args = Arrays.asList(args);
     }
 
     /**
-     * Method comment.
+     * Requests the argument.
      *
-     * @return Something.
+     * @return The argument if this is one or an empty string.
      */
     public String string() {
         String string = "";
@@ -63,9 +65,9 @@ public final class EocCommandArgument {
     }
 
     /**
-     * Method comment.
+     * Indicates whether or not an argument is present.
      *
-     * @return Something.
+     * @return True if empty.
      */
     public boolean isEmpty() {
         return this.args.size() < 2;

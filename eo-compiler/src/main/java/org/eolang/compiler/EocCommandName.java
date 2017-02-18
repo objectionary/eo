@@ -23,8 +23,12 @@
  */
 package org.eolang.compiler;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * Class comment.
+ * Represents an EO compiler command name passed in from
+ * the command line. (Can be empty.)
  *
  * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
@@ -33,38 +37,39 @@ package org.eolang.compiler;
 public final class EocCommandName {
 
     /**
-     * Attribute comment.
+     * All of the command line args.
      */
-    private final String[] args;
+    private final List<String> args;
 
     /**
-     * Method comment.
+     * Constructs an EocCommandName from a list of all arguments
+     * passed in from the command line.
      *
-     * @param args A.
+     * @param args All of the command line args.
      */
     public EocCommandName(final String... args) {
-        this.args = args.clone();
+        this.args = Arrays.asList(args);
     }
 
     /**
-     * Method comment.
+     * Requests the command name.
      *
-     * @return Something.
+     * @return The command name if this is one or an empty string.
      */
     public String string() {
         String string = "";
         if (!this.isEmpty()) {
-            string = this.args[0];
+            string = this.args.get(0);
         }
         return string;
     }
 
     /**
-     * Method comment.
+     * Indicates whether or not a command name is present.
      *
-     * @return Something.
+     * @return True if empty.
      */
     public boolean isEmpty() {
-        return this.args.length < 1;
+        return this.args.size() < 1;
     }
 }
