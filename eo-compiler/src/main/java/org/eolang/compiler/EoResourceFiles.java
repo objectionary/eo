@@ -66,7 +66,7 @@ public final class EoResourceFiles {
         try (
             BufferedReader br =
                 new BufferedReader(
-                    new InputStreamReader(new Resource(this.path).asStream())
+                    new InputStreamReader(new ResourceStream(this.path))
                 )
         ) {
             String resource;
@@ -92,7 +92,7 @@ public final class EoResourceFiles {
         return String.format(
             "\nEOLANG:\n%s",
             IOUtils.toString(
-                new Resource(this.path + filename).asStream(),
+                new ResourceStream(this.path + filename),
                 Charset.defaultCharset()
             ));
     }
@@ -109,7 +109,7 @@ public final class EoResourceFiles {
         java.append("\nJAVA:\n");
         final Program program = new Program(
             IOUtils.toString(
-                new Resource(this.path + filename).asStream(),
+                new ResourceStream(this.path + filename),
                 Charset.defaultCharset()
             )
         );

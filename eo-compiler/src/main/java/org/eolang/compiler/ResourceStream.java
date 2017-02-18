@@ -33,39 +33,72 @@ import java.io.InputStream;
  * @version $Id$
  * @since 0.1
  */
-public final class Resource {
+public final class ResourceStream extends InputStream {
 
     /**
      * Attribute comment.
      */
-    private final String path;
+    private final InputStream origin;
 
     /**
      * Method comment.
      *
-     * @param path R.
+     * @param resource R.
+     * @throws IOException If.
      */
-    public Resource(final String path) {
-        this.path = path;
+    @SuppressWarnings("PMD.CallSuperInConstructor")
+    public ResourceStream(final String resource) throws IOException {
+        this(stream(resource));
     }
 
     /**
      * Method comment.
      *
+     * @param origin O.
+     */
+    @SuppressWarnings("PMD.CallSuperInConstructor")
+    private ResourceStream(final InputStream origin) {
+        this.origin = origin;
+    }
+
+    @Override
+    public int read() throws IOException {
+        return this.origin.read();
+    }
+
+    @Override
+    public int read(final byte[] bytes) throws IOException {
+        return this.origin.read(bytes);
+    }
+
+    @Override
+    public int read(final byte[] bytes, final int off, final int len)
+        throws IOException {
+        return this.origin.read(bytes, off, len);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
+
+    /**
+     * Method comment.
+     *
+     * @param resource O.
      * @return Something.
      * @throws IOException If.
      */
-    public InputStream asStream() throws IOException {
-        InputStream input =
-            Thread.currentThread()
-                .getContextClassLoader().getResourceAsStream(this.path);
+    private static InputStream stream(final String resource)
+        throws IOException {
+        InputStream input = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream(resource);
         if (input == null) {
-            input = this.getClass().getResourceAsStream(this.path);
+            input = ResourceStream.class.getResourceAsStream(resource);
         }
         if (input == null) {
             throw new IOException();
         }
         return input;
     }
-
 }

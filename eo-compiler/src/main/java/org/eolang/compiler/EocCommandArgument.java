@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Class comment.
  *
@@ -35,7 +38,7 @@ public final class EocCommandArgument {
     /**
      * Attribute comment.
      */
-    private final String[] args;
+    private final List<String> args;
 
     /**
      * Method comment.
@@ -43,7 +46,7 @@ public final class EocCommandArgument {
      * @param args A.
      */
     public EocCommandArgument(final String... args) {
-        this.args = args.clone();
+        this.args = Arrays.asList(args);
     }
 
     /**
@@ -54,7 +57,7 @@ public final class EocCommandArgument {
     public String string() {
         String string = "";
         if (!this.isEmpty()) {
-            string = this.args[1];
+            string = this.args.get(1);
         }
         return string;
     }
@@ -65,6 +68,6 @@ public final class EocCommandArgument {
      * @return Something.
      */
     public boolean isEmpty() {
-        return this.args.length < 2;
+        return this.args.size() < 2;
     }
 }
