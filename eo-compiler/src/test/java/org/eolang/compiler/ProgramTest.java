@@ -52,7 +52,7 @@ public final class ProgramTest {
     public void processZeroExample() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("eo\\zero.eo"),
+                this.getClass().getResourceAsStream("eo/zero.eo"),
                 Charset.defaultCharset()
             )
         );
@@ -90,7 +90,7 @@ public final class ProgramTest {
     public void parsesFibonacciExample() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("eo\\fibonacci.eo"),
+                this.getClass().getResourceAsStream("eo/fibonacci.eo"),
                 Charset.defaultCharset()
             )
         );
@@ -129,7 +129,7 @@ public final class ProgramTest {
     public void parsesSimpleType() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("eo\\book.eo"),
+                this.getClass().getResourceAsStream("eo/book.eo"),
                 Charset.defaultCharset()
             )
         );
@@ -155,7 +155,7 @@ public final class ProgramTest {
     public void parsesTypeWithParametrizedMethods() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("eo\\pixel.eo"),
+                this.getClass().getResourceAsStream("eo/pixel.eo"),
                 Charset.defaultCharset()
             )
         );
@@ -183,7 +183,7 @@ public final class ProgramTest {
     public void parsesBigType() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("eo\\car.eo"),
+                this.getClass().getResourceAsStream("eo/car.eo"),
                 Charset.defaultCharset()
             )
         );
@@ -212,7 +212,7 @@ public final class ProgramTest {
     public void parsesMultipleTypes() throws Exception {
         final Program program = new Program(
             IOUtils.toString(
-                this.getClass().getResourceAsStream("eo\\multitypes.eo"),
+                this.getClass().getResourceAsStream("eo/multitypes.eo"),
                 Charset.defaultCharset()
             )
         );

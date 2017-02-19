@@ -57,7 +57,7 @@ public final class DemoCommand implements EocCommand {
      */
     public String output() throws IOException {
         final String output;
-        final String path = "org\\eolang\\compiler\\eo\\";
+        final String path = "org/eolang/compiler/eo/";
         if (this.filename.isEmpty()) {
             output = String.format(
                 "%s %s%s",
