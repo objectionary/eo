@@ -97,7 +97,7 @@ public final class MainTest {
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsEoFilenameInResponseToDemoCommandWithAFilename()
+    public void printsEoFileInResponseToDemoCommandWithAFilename()
         throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--demo", "book.eo").exec();
