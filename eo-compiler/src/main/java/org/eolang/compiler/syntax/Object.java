@@ -40,8 +40,8 @@ public final class Object implements RootNode {
      * Object name.
      *
      * @todo #95:30m Object name should be optional.
-     * As described in #54, object can be anonymous.
-     * I think we should generate some java class name in this case.
+     *  As described in #54, object can be anonymous.
+     *  I think we should generate some java class name in this case.
      */
     private final String name;
 
