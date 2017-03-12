@@ -56,10 +56,12 @@ public final class ObjectBody {
      *
      * @param attrs Object attributes
      * @param ctors Object secondary constructors
+     * @param methods Method implementations
      */
     public ObjectBody(
         final Collection<Attribute> attrs,
-        final Collection<Ctor> ctors
+        final Collection<Ctor> ctors,
+        final Collection<MethodImpl> methods
     ) {
         this.attrs = attrs;
         this.ctors = ctors;
