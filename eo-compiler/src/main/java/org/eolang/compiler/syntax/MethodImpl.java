@@ -38,6 +38,16 @@ package org.eolang.compiler.syntax;
 public final class MethodImpl {
 
     /**
+     * Method declaration.
+     */
+    private final Method declaration;
+
+    /**
+     * Object copying - method body.
+     */
+    private final CpObject copying;
+
+    /**
      * Ctor.
      *
      * @param declaration Method declaration
@@ -47,6 +57,8 @@ public final class MethodImpl {
         final Method declaration,
         final CpObject copying
     ) {
+        this.declaration = declaration;
+        this.copying = copying;
     }
 
     /**
@@ -55,6 +67,10 @@ public final class MethodImpl {
      * @return Java code.
      */
     public String java() {
-        throw new RuntimeException("not implemented");
+        return String.format(
+            "public %s {\n  return %s;\n}",
+            this.declaration.java(),
+            this.copying.java()
+        );
     }
 }

@@ -270,11 +270,9 @@ ctor_declaration returns [Ctor ret]
     (
         object_argument
         { arguments.add($object_argument.ret); }
-        NEWLINE
     )*
     object_argument
     { arguments.add($object_argument.ret); }
-    NEWLINE
     DEDENT
     DEDENT
     { $ret = new Ctor($parameters_declaration.ret, arguments); }
@@ -288,14 +286,10 @@ object_copying returns [CpObject ret]
         COLON
         NEWLINE
         INDENT
-        object_argument
-        { arguments.add($object_argument.ret); }
-        NEWLINE
         (
             object_argument
             { arguments.add($object_argument.ret); }
-            NEWLINE
-        )*
+        )+
         DEDENT
     )?
     { $ret = new CpObject($object_name.ret, arguments); }
@@ -319,12 +313,15 @@ object_argument returns [Argument ret]
     :
     NUMBER
     { $ret = new ArgSimple($NUMBER.text); }
+    NEWLINE
     |
     TEXT
     { $ret = new ArgSimple($TEXT.text); }
+    NEWLINE
     |
     ATTRIBUTE
     { $ret = new ArgAttribute($ATTRIBUTE.text.substring(1)); }
+    NEWLINE
     |
     object_copying
     { $ret = new ArgCpObject($object_copying.ret); }

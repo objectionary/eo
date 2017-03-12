@@ -70,7 +70,7 @@ public final class Method {
      */
     public String java() {
         return String.format(
-            "%s %s(%s);",
+            "%s %s(%s)",
             this.type,
             this.name,
             Joiner.on(", ").join(

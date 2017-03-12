@@ -41,10 +41,9 @@ public final class ArgAttributeTest {
      */
     @Test
     public void java() {
-        final String name = "value";
         MatcherAssert.assertThat(
-            new ArgAttribute(name).java(),
-            Matchers.equalTo(name)
+            new ArgAttribute("value").java(),
+            Matchers.equalTo("this.value")
         );
     }
 }

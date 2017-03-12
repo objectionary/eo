@@ -52,7 +52,7 @@ public final class MethodTest {
                 "Message"
             ).java(),
             Matchers.is(
-                "Message send(final Person receiver, final Content content);"
+                "Message send(final Person receiver, final Content content)"
             )
         );
     }

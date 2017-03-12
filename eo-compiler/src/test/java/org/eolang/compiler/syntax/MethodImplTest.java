@@ -38,6 +38,9 @@ import org.junit.Test;
  */
 public final class MethodImplTest {
 
+    /**
+     * Test generated java code for method.
+     */
     @Test
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void javaCode() {
@@ -47,8 +50,8 @@ public final class MethodImplTest {
                     "text",
                     Collections.singleton(
                         new Parameter(
-                            "Locale",
-                            "locale"
+                            "locale",
+                            "Locale"
                         )
                     ),
                     "Text"
