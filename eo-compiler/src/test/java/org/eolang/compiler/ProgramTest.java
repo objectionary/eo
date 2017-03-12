@@ -111,6 +111,22 @@ public final class ProgramTest {
                     "public fibonacci(final Int n)", "{",
                     "this.n = n",
                     "}",
+                    "public", "Int", "int", "()", "{",
+                    "return", "new", "if", "(",
+                    "new", "firstIsLess", "(",
+                    "this.n", ",", "2",
+                    ")", ",",
+                    "1", ",",
+                    "new", "plus", "(",
+                    "this.n", ",",
+                    "new", "fibonacci", "(",
+                    "new", "minus", "(",
+                    "this.n", ",", "1",
+                    ")",
+                    ")",
+                    ")",
+                    ");",
+                    "}",
                     "}"
                 )
             )

@@ -48,4 +48,13 @@ public final class MethodImpl {
         final CpObject copying
     ) {
     }
+
+    /**
+     * Method declaration and body code.
+     *
+     * @return Java code.
+     */
+    public String java() {
+        throw new RuntimeException("not implemented");
+    }
 }
