@@ -24,44 +24,75 @@
 package org.eolang.compiler.syntax;
 
 /**
- * Parameter.
+ * Simple argument: text or number.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class ArgSimple implements Argument {
 
     /**
-     * Parameter name.
+     * Argument text.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
+    private final String text;
 
     /**
      * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
+     *
+     * @param number Long value
      */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
+    public ArgSimple(final long number) {
+        this(Long.toString(number));
     }
 
     /**
-     * Convert it to Java.
-     * @return Java code
+     * Ctor.
+     *
+     * @param number Int value
      */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
+    public ArgSimple(final int number) {
+        this(Integer.toString(number));
     }
 
+    /**
+     * Ctor.
+     *
+     * @param number Double value
+     */
+    public ArgSimple(final double number) {
+        this(Double.toString(number));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param number Float value.
+     */
+    public ArgSimple(final float number) {
+        this(Float.toString(number));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param bool Boolean value.
+     */
+    public ArgSimple(final boolean bool) {
+        this(Boolean.toString(bool));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param string Any string.
+     */
+    public ArgSimple(final String string) {
+        this.text = string;
+    }
+
+    @Override
+    public String java() {
+        return this.text;
+    }
 }

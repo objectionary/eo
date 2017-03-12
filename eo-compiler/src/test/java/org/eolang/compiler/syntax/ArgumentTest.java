@@ -23,45 +23,31 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
- * Parameter.
+ * Tests for object's constructor arguments.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class ArgumentTest {
 
     /**
-     * Parameter name.
+     * New object as argument.
+     *
+     * @todo #104:1h Object instantiation as constructor argument.
+     *  We should be able to pass new object as constructor argument.
+     *  This is not implemented now because it's not so simple to save
+     *  constructing object and argument object
+     *  to different java classes (different files).
+     *  Maybe we can save argument object as nested java class.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
-
-    /**
-     * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
-     */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
+    @Test
+    @Ignore
+    public void objectInstantiation() {
+        // not implemented
     }
-
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
-    }
-
 }

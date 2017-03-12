@@ -23,45 +23,58 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
- * Parameter.
+ * Object secondary constructor.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class Ctor {
 
     /**
-     * Parameter name.
+     * Java code template.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
+    private final String template;
 
     /**
      * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
+     *
+     * @param parameters Constructor parameters
+     * @param arguments Super constructor arguments.
      */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
-    }
-
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
+    public Ctor(
+        final List<Parameter> parameters,
+        final Collection<Argument> arguments
+    ) {
+        this.template = String.format(
+            "public %%s(%s) {\n this(%s);\n}",
+            String.join(
+                ", ",
+                parameters.stream()
+                    .map(Parameter::java)
+                    .collect(Collectors.toList())
+            ),
+            String.join(
+                ", ",
+                arguments.stream()
+                    .map(Argument::java)
+                    .collect(Collectors.toList())
+            )
         );
     }
 
+    /**
+     * Java code for constructor.
+     *
+     * @param name Object name
+     * @return Java code
+     */
+    public String java(final String name) {
+        return String.format(this.template, name);
+    }
 }
