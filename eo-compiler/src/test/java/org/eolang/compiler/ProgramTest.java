@@ -102,16 +102,13 @@ public final class ProgramTest {
             ),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
-                    "public",
-                    "final",
-                    "class",
-                    "fibonacci",
-                    "implements",
-                    "Int",
-                    "{",
+                    "public", "final", "class",
+                    "fibonacci", "implements", "Int", "{",
                     "private final Int n;",
-                    "public fibonacci(final Int n)",
-                    "{",
+                    "public fibonacci()", "{",
+                    "this(1);",
+                    "}",
+                    "public fibonacci(final Int n)", "{",
                     "this.n = n",
                     "}",
                     "}"

@@ -8,6 +8,13 @@ grammar Program;
     import org.eolang.compiler.syntax.Object;
     import org.eolang.compiler.syntax.RootNode;
     import org.eolang.compiler.syntax.Attribute;
+    import org.eolang.compiler.syntax.CpObject;
+    import org.eolang.compiler.syntax.Argument;
+    import org.eolang.compiler.syntax.ArgSimple;
+    import org.eolang.compiler.syntax.ArgAttribute;
+    import org.eolang.compiler.syntax.ArgCpObject;
+    import org.eolang.compiler.syntax.Ctor;
+    import org.eolang.compiler.syntax.ObjectBody;
     import java.util.Collection;
     import java.util.LinkedList;
 }
@@ -210,6 +217,7 @@ object_name returns [String ret]
 object_instantiation returns [Object ret]
     :
     { Collection<Attribute> attrs = new LinkedList<Attribute>(); }
+    { Collection<Ctor> ctors = new LinkedList<Ctor>(); }
     OBJECT
     SPACE
     object_name
@@ -226,14 +234,14 @@ object_instantiation returns [Object ret]
     )+
     (
         ctor_declaration
-        NEWLINE
-    )+
+        { ctors.add($ctor_declaration.ret); }
+    )*
     (
         method_implementation
         NEWLINE
     )*
     DEDENT
-    { $ret = new Object($object_name.ret, $object_types_declaration.ret, attrs); }
+    { $ret = new Object($object_name.ret, $object_types_declaration.ret, new ObjectBody(attrs, ctors)); }
     ;
 
 attribute_declaration returns [Attribute ret]
@@ -244,21 +252,50 @@ attribute_declaration returns [Attribute ret]
     { $ret = new Attribute($HINAME.text, $ATTRIBUTE.text.substring(1)); }
     ;
 
-ctor_declaration
+ctor_declaration returns [Ctor ret]
     :
+    { Collection<Argument> arguments = new LinkedList<Argument>(); }
     CTOR
     parameters_declaration
+    COLON
+    NEWLINE
+    INDENT
+    object_name
+    COLON
+    NEWLINE
+    INDENT
+    (
+        object_argument
+        { arguments.add($object_argument.ret); }
+        NEWLINE
+    )*
+    object_argument
+    { arguments.add($object_argument.ret); }
+    NEWLINE
+    DEDENT
+    DEDENT
+    { $ret = new Ctor($parameters_declaration.ret, arguments); }
+    ;
+
+object_copying returns [CpObject ret]
+    :
+    { Collection<Argument> arguments = new LinkedList<Argument>(); }
+    object_name
     (
         COLON
         NEWLINE
         INDENT
+        object_argument
+        { arguments.add($object_argument.ret); }
+        NEWLINE
         (
-            object_instantiation
-            |
-            object_copying
-        )
+            object_argument
+            { arguments.add($object_argument.ret); }
+            NEWLINE
+        )*
         DEDENT
     )?
+    { $ret = new CpObject($object_name.ret, arguments); }
     ;
 
 method_implementation
@@ -276,32 +313,19 @@ method_implementation
     DEDENT
     ;
 
-object_copying
-    :
-    LONAME
-    (
-        COLON
-        NEWLINE
-        INDENT
-        object_parameter
-        (
-            NEWLINE
-            INDENT
-            object_parameter
-            DEDENT
-        )*
-    )?
-    ;
-
-object_parameter
+object_argument returns [Argument ret]
     :
     NUMBER
+    { $ret = new ArgSimple($NUMBER.text); }
     |
     TEXT
+    { $ret = new ArgSimple($TEXT.text); }
     |
     ATTRIBUTE
+    { $ret = new ArgAttribute($ATTRIBUTE.text.substring(1)); }
     |
     object_copying
+    { $ret = new ArgCpObject($object_copying.ret); }
     |
     object_instantiation
     ;

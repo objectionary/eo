@@ -23,45 +23,63 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
- * Parameter.
+ * Test for simple constructor arguments, such as text, number, bool, etc.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class ArgSimpleTest {
 
     /**
-     * Parameter name.
+     * Simple text.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
-
-    /**
-     * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
-     */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
-    }
-
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
+    @Test
+    public void text() {
+        final String text = "\"text\"";
+        MatcherAssert.assertThat(
+            new ArgSimple(text).java(),
+            Matchers.equalTo(text)
         );
     }
 
+    /**
+     * Simple integer.
+     */
+    @Test
+    public void integer() {
+        final int target = 42;
+        MatcherAssert.assertThat(
+            new ArgSimple(target).java(),
+            Matchers.equalTo("42")
+        );
+    }
+
+    /**
+     * Simple float.
+     */
+    @Test
+    public void flt() {
+        final double target = 136.11;
+        MatcherAssert.assertThat(
+            new ArgSimple(target).java(),
+            Matchers.equalTo("136.11")
+        );
+    }
+
+    /**
+     * Simple bool.
+     */
+    @Test
+    public void bool() {
+        MatcherAssert.assertThat(
+            new ArgSimple(true).java(),
+            Matchers.equalTo("true")
+        );
+    }
 }

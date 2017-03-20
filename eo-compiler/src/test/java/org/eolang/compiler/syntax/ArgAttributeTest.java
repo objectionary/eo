@@ -23,45 +23,28 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
- * Parameter.
+ * Test for constructor argument references object attribute.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class ArgAttributeTest {
 
     /**
-     * Parameter name.
+     * Test generated java code.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
-
-    /**
-     * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
-     */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
-    }
-
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
+    @Test
+    public void java() {
+        final String name = "value";
+        MatcherAssert.assertThat(
+            new ArgAttribute(name).java(),
+            Matchers.equalTo(name)
         );
     }
-
 }

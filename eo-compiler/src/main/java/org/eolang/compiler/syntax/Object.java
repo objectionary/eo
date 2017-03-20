@@ -51,29 +51,33 @@ public final class Object implements RootNode {
     private final Collection<String> types;
 
     /**
-     * Object attributes.
+     * Object body.
      */
-    private final Collection<Attribute> attributes;
+    private final ObjectBody body;
 
     /**
      * Ctor.
      *
      * @param name Object name
      * @param types Object types
-     * @param attributes Object attributes
+     * @param body Object body
      */
     public Object(
         final String name,
         final Collection<String> types,
-        final Collection<Attribute> attributes
+        final ObjectBody body
     ) {
         this.name = name;
         this.types = types;
-        this.attributes = attributes;
+        this.body = body;
     }
 
     @Override
     public JavaFile java() {
-        return new JavaClass(this.name, this.types, this.attributes);
+        return new JavaClass(
+            this.name,
+            this.types,
+            this.body
+        );
     }
 }

@@ -24,44 +24,43 @@
 package org.eolang.compiler.syntax;
 
 /**
- * Parameter.
+ * Object copying argument.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public interface Argument {
 
     /**
-     * Parameter name.
-     */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
-
-    /**
-     * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
-     */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
-    }
-
-    /**
-     * Convert it to Java.
+     * Java code for argument.
+     *
      * @return Java code
      */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
-    }
+    String java();
 
+    /**
+     * Fake argument.
+     */
+    final class Fake implements Argument {
+
+        /**
+         * Java code.
+         */
+        private final String java;
+
+        /**
+         * Ctor.
+         *
+         * @param java Java code
+         */
+        public Fake(final String java) {
+            this.java = java;
+        }
+
+        @Override
+        public String java() {
+            return this.java;
+        }
+    }
 }

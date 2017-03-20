@@ -24,44 +24,30 @@
 package org.eolang.compiler.syntax;
 
 /**
- * Parameter.
+ * Attribute argument.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class ArgAttribute implements Argument {
 
     /**
-     * Parameter name.
+     * Attribute name.
      */
     private final String name;
 
     /**
-     * Parameter type name.
-     */
-    private final String type;
-
-    /**
      * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
+     *
+     * @param name Attribute name
      */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
+    public ArgAttribute(final String name) {
+        this.name = name;
     }
 
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
+    @Override
     public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
+        return this.name;
     }
-
 }

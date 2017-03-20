@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eolang.compiler.syntax.Attribute;
+import org.eolang.compiler.syntax.ObjectBody;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -51,7 +52,11 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                type
+                Collections.singleton(type),
+                new ObjectBody(
+                    Collections.emptyList(),
+                    Collections.emptyList()
+                )
             ).code(),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
@@ -79,7 +84,10 @@ public final class JavaClassTest {
             new JavaClass(
                 name,
                 types,
-                Collections.emptyList()
+                new ObjectBody(
+                    Collections.emptyList(),
+                    Collections.emptyList()
+                )
             ).code(),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
@@ -107,7 +115,10 @@ public final class JavaClassTest {
             new JavaClass(
                 name,
                 types,
-                Collections.singleton(new Attribute("Text", "msg"))
+                new ObjectBody(
+                    Collections.singleton(new Attribute("Text", "msg")),
+                    Collections.emptyList()
+                )
             ).code(),
             Matchers.stringContainsInOrder(
                 Arrays.asList(
@@ -135,7 +146,11 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                "Text"
+                Collections.singleton("Text"),
+                new ObjectBody(
+                    Collections.emptyList(),
+                    Collections.emptyList()
+                )
             ).path().toString(),
             Matchers.equalTo(
                 String.format(
