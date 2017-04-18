@@ -26,11 +26,7 @@ package org.eolang.compiler.java;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
-import org.eolang.compiler.syntax.AttrFieldFormat;
-import org.eolang.compiler.syntax.Attribute;
-import org.eolang.compiler.syntax.AttributeFormat;
+import org.eolang.compiler.syntax.ObjectBody;
 
 /**
  * File with java class.
@@ -39,21 +35,11 @@ import org.eolang.compiler.syntax.AttributeFormat;
  * @version $Id$
  * @since 0.1
  *
- * @todo #95:30m Java class constructor generator is not implemented.
- *  We may pass object constructor params as `JavaClass` constructor arguments.
- *  Also we need to implement object instance as `public static final` variable
- *  in generated java class, as described in #95.
- *
  * @todo #95:30m Java class method generator is not implemented.
  *  We may pass collection of methods as `JavaClass` constructor arguments.
  *  All methods should be public.
  */
 public final class JavaClass implements JavaFile {
-
-    /**
-     * Attribute field format.
-     */
-    private static final AttributeFormat FIELD_FORMAT = new AttrFieldFormat();
 
     /**
      * Class name.
@@ -66,41 +52,26 @@ public final class JavaClass implements JavaFile {
     private final Collection<String> ifaces;
 
     /**
-     * Class fields.
+     * Object body: constructors, attributes, methods.
      */
-    private final Collection<Attribute> fields;
-
-    /**
-     * Class primary constructor.
-     */
-    private final PrimaryConstructor pctor;
-
-    /**
-     * Ctor.
-     *
-     * @param name Class name
-     * @param iface Implemented interface name
-     */
-    public JavaClass(final String name, final String iface) {
-        this(name, Collections.singleton(iface), Collections.emptyList());
-    }
+    private final ObjectBody body;
 
     /**
      * Ctor.
      *
      * @param name Class name
      * @param ifaces Implemented interfaces name
-     * @param attributes Object attributes
+     * @param body Object body
      */
+    @SuppressWarnings("checkstyle:parameternumbercheck")
     public JavaClass(
         final String name,
         final Collection<String> ifaces,
-        final Collection<Attribute> attributes
+        final ObjectBody body
     ) {
         this.name = name;
         this.ifaces = ifaces;
-        this.fields = attributes;
-        this.pctor = new PrimaryConstructor(name, attributes);
+        this.body = body;
     }
 
     @Override
@@ -111,17 +82,10 @@ public final class JavaClass implements JavaFile {
     @Override
     public String code() {
         return String.format(
-            "public final class %s implements %s {\n %s\n\n%s\n}",
+            "public final class %s implements %s {\n%s\n}",
             this.name,
             String.join(", ", this.ifaces),
-            String.join(
-                "\n",
-                this.fields
-                    .stream()
-                    .map(attr -> attr.java(JavaClass.FIELD_FORMAT))
-                    .collect(Collectors.toList())
-            ),
-            this.pctor.code()
+            this.body.java(this.name)
         );
     }
 }

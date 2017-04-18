@@ -23,45 +23,54 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 /**
- * Parameter.
+ * Object copying.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class CpObject {
 
     /**
-     * Parameter name.
+     * Object name.
      */
     private final String name;
 
     /**
-     * Parameter type name.
+     * Arguments.
      */
-    private final String type;
+    private final Collection<Argument> arguments;
 
     /**
      * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
+     *
+     * @param name Object name
+     * @param arguments Arguments
      */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
+    public CpObject(final String name, final Collection<Argument> arguments) {
+        this.name = name;
+        this.arguments = arguments;
     }
 
     /**
-     * Convert it to Java.
+     * Java code for object copying.
+     *
      * @return Java code
      */
     public String java() {
         return String.format(
-            "final %s %s",
-            this.type,
-            this.name
+            "new %s(%s)",
+            this.name,
+            String.join(
+                ", ",
+                this.arguments.stream()
+                    .map(Argument::java)
+                    .collect(Collectors.toList())
+            )
         );
     }
-
 }

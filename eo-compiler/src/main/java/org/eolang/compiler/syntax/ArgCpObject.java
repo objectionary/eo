@@ -24,44 +24,30 @@
 package org.eolang.compiler.syntax;
 
 /**
- * Parameter.
+ * Object copying as argument.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class ArgCpObject implements Argument {
 
     /**
-     * Parameter name.
+     * Object copy.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
+    private final CpObject copy;
 
     /**
      * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
+     *
+     * @param copy Object copy
      */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
+    public ArgCpObject(final CpObject copy) {
+        this.copy = copy;
     }
 
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
+    @Override
     public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
+        return this.copy.java();
     }
-
 }

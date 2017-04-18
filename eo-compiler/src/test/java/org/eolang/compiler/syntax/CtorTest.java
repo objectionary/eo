@@ -23,45 +23,52 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Arrays;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
- * Parameter.
+ * Test for object's constructor.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Parameter {
+public final class CtorTest {
 
     /**
-     * Parameter name.
+     * Test generated java code.
      */
-    private final String name;
-
-    /**
-     * Parameter type name.
-     */
-    private final String type;
-
-    /**
-     * Ctor.
-     * @param arg Parameter name
-     * @param type Type name
-     */
-    public Parameter(final String arg, final String type) {
-        this.name = arg;
-        this.type = type;
-    }
-
-    /**
-     * Convert it to Java.
-     * @return Java code
-     */
-    public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
+    @Test
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void java() {
+        MatcherAssert.assertThat(
+            new Ctor(
+                Arrays.asList(
+                    new Parameter("name", "Text"),
+                    new Parameter("age", "Int")
+                ),
+                Arrays.asList(
+                    new Argument.Fake("name"),
+                    new Argument.Fake("age"),
+                    new Argument.Fake("new color(\"black\")")
+                )
+            ).java("cat"),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public", "cat(",
+                    "final Text name,",
+                    "final Int age",
+                    ")", "{",
+                    "this(",
+                    "name,",
+                    "age,",
+                    "new color(\"black\")",
+                    ")",
+                    "}"
+                )
+            )
         );
     }
-
 }

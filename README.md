@@ -101,8 +101,8 @@ What exactly happens here? TBD
 
 ## Details
 
-There are types, objects, constructors, destructors, methods,
-attributes, parameters, exceptions, decorators.
+There are [types](#types), [objects](#objects), [constructors, destructors](#constructors-and-destructors), [methods](#methods),
+[attributes](#attributes), parameters, [exceptions](#exceptions), [decorators](#decorators).
 
 There are _no_ classes, variables, operators, statements, annotations, reflection,
 type casting, generics, NULL, static methods, functions, lambdas.
@@ -230,7 +230,7 @@ A constructor is a ... TBD
 
 A destructor is a ... TBD
 
-An object have a primary constructor by default, it save parameters into attributes.
+An object has a primary constructor by default, it saves parameters into attributes.
 So object must have at least one attribute, i.e. the object must encapsulate something.
 Parameters order is same as order of attributes.
 Object may have any number of secondary constructors and one destructor.
