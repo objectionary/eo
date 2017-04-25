@@ -23,27 +23,58 @@
  */
 package org.eolang.compiler.syntax;
 
+import java.util.Arrays;
+import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test for constructor argument references object attribute.
+ * Test for method implementation.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ArgAttributeTest {
+public final class MethodImplTest {
 
     /**
-     * Test generated java code.
+     * Test generated java code for method.
      */
     @Test
-    public void java() {
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void javaCode() {
         MatcherAssert.assertThat(
-            new ArgAttribute("value").java(),
-            Matchers.equalTo("this.value")
+            new MethodImpl(
+                new Method(
+                    "text",
+                    Collections.singleton(
+                        new Parameter(
+                            "locale",
+                            "Locale"
+                        )
+                    ),
+                    "Text"
+                ),
+                new CpObject(
+                    "textEncoded",
+                    Arrays.asList(
+                        new Argument.Fake("this.bytes"),
+                        new Argument.Fake("locale")
+                    )
+                )
+            ).java(),
+            Matchers.stringContainsInOrder(
+                Arrays.asList(
+                    "public", "Text", "text", "(",
+                    "final", "Locale", "locale",
+                    ")", "{",
+                    "return", "new", "textEncoded", "(",
+                    "this.bytes", "locale",
+                    ")", ";",
+                    "}"
+                )
+            )
         );
     }
 }

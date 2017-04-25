@@ -15,6 +15,7 @@ grammar Program;
     import org.eolang.compiler.syntax.ArgCpObject;
     import org.eolang.compiler.syntax.Ctor;
     import org.eolang.compiler.syntax.ObjectBody;
+    import org.eolang.compiler.syntax.MethodImpl;
     import java.util.Collection;
     import java.util.LinkedList;
 }
@@ -218,6 +219,7 @@ object_instantiation returns [Object ret]
     :
     { Collection<Attribute> attrs = new LinkedList<Attribute>(); }
     { Collection<Ctor> ctors = new LinkedList<Ctor>(); }
+    { Collection<MethodImpl> methods = new LinkedList<MethodImpl>(); }
     OBJECT
     SPACE
     object_name
@@ -238,10 +240,11 @@ object_instantiation returns [Object ret]
     )*
     (
         method_implementation
+        { methods.add($method_implementation.ret); }
         NEWLINE
     )*
     DEDENT
-    { $ret = new Object($object_name.ret, $object_types_declaration.ret, new ObjectBody(attrs, ctors)); }
+    { $ret = new Object($object_name.ret, $object_types_declaration.ret, new ObjectBody(attrs, ctors, methods)); }
     ;
 
 attribute_declaration returns [Attribute ret]
@@ -267,11 +270,9 @@ ctor_declaration returns [Ctor ret]
     (
         object_argument
         { arguments.add($object_argument.ret); }
-        NEWLINE
     )*
     object_argument
     { arguments.add($object_argument.ret); }
-    NEWLINE
     DEDENT
     DEDENT
     { $ret = new Ctor($parameters_declaration.ret, arguments); }
@@ -285,44 +286,42 @@ object_copying returns [CpObject ret]
         COLON
         NEWLINE
         INDENT
-        object_argument
-        { arguments.add($object_argument.ret); }
-        NEWLINE
         (
             object_argument
             { arguments.add($object_argument.ret); }
-            NEWLINE
-        )*
+        )+
         DEDENT
     )?
     { $ret = new CpObject($object_name.ret, arguments); }
     ;
 
-method_implementation
+method_implementation returns [MethodImpl ret]
     :
     method_declaration
     COLON
     NEWLINE
     INDENT
     (
-        object_instantiation
-        |
         object_copying
     )
     NEWLINE
     DEDENT
+    { $ret = new MethodImpl($method_declaration.ret, $object_copying.ret); }
     ;
 
 object_argument returns [Argument ret]
     :
     NUMBER
     { $ret = new ArgSimple($NUMBER.text); }
+    NEWLINE
     |
     TEXT
     { $ret = new ArgSimple($TEXT.text); }
+    NEWLINE
     |
     ATTRIBUTE
     { $ret = new ArgAttribute($ATTRIBUTE.text.substring(1)); }
+    NEWLINE
     |
     object_copying
     { $ret = new ArgCpObject($object_copying.ret); }

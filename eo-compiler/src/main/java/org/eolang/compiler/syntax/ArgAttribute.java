@@ -48,6 +48,6 @@ public final class ArgAttribute implements Argument {
 
     @Override
     public String java() {
-        return this.name;
+        return String.format("this.%s", this.name);
     }
 }
