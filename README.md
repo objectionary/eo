@@ -400,7 +400,6 @@ object fibonacci(1) as Int:
   Int @n
   ctor():
     fibonacci: 1
-  ctor(Int n)
   Int int():
     if:
       firstIsLess: @n, 2
