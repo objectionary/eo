@@ -21,59 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.java;
 
-import com.google.common.base.Joiner;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import org.eolang.compiler.syntax.Method;
+import eo.Bool;
 
 /**
- * File with java interface.
+ * EO equals object.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class JavaInterface implements JavaFile {
-    /**
-     * Interface name.
-     */
-    private final String name;
+public final class equals implements Bool {
 
-    /**
-     * Methods.
-     */
-    private final Collection<Method> methods;
+    private final Object left;
+    private final Object right;
 
-    /**
-     * Ctor.
-     *
-     * @param name Interface name
-     * @param methods Interface methods
-     */
-    public JavaInterface(final String name, final Collection<Method> methods) {
-        this.name = name;
-        this.methods = methods;
+    public equals(final Object left, final Object right) {
+        this.left = left;
+        this.right = right;
     }
 
     @Override
-    public Path path() {
-        return Paths.get(String.format("%s.java", this.name));
-    }
-
-    @Override
-    public String code() {
-        return String.format(
-            "package eo;\n\npublic interface %s {\n    %s\n}",
-            this.name,
-            Joiner.on("\n    ").join(
-                this.methods.stream().map(
-                    Method::java
-                ).collect(Collectors.toList())
-            )
-        );
+    public Boolean asBoolean() {
+        return this.left.equals(this.right);
     }
 }

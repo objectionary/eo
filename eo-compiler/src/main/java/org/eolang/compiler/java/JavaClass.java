@@ -82,7 +82,7 @@ public final class JavaClass implements JavaFile {
     @Override
     public String code() {
         return String.format(
-            "public final class %s implements %s {\n%s\n}",
+            "package eo;\n\npublic final class %s implements %s {\n%s\n}",
             this.name,
             String.join(", ", this.ifaces),
             this.body.java(this.name)

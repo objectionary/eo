@@ -21,59 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.java;
 
-import com.google.common.base.Joiner;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import org.eolang.compiler.syntax.Method;
+import eo.Int;
 
 /**
- * File with java interface.
+ * EO diff object.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class JavaInterface implements JavaFile {
-    /**
-     * Interface name.
-     */
-    private final String name;
+public final class diff implements Int {
 
-    /**
-     * Methods.
-     */
-    private final Collection<Method> methods;
+    private final Int left;
+    private final Int right;
 
-    /**
-     * Ctor.
-     *
-     * @param name Interface name
-     * @param methods Interface methods
-     */
-    public JavaInterface(final String name, final Collection<Method> methods) {
-        this.name = name;
-        this.methods = methods;
+    public diff(final Int left, final Int right) {
+        this.left = left;
+        this.right = right;
     }
 
     @Override
-    public Path path() {
-        return Paths.get(String.format("%s.java", this.name));
-    }
-
-    @Override
-    public String code() {
-        return String.format(
-            "package eo;\n\npublic interface %s {\n    %s\n}",
-            this.name,
-            Joiner.on("\n    ").join(
-                this.methods.stream().map(
-                    Method::java
-                ).collect(Collectors.toList())
-            )
-        );
+    public Integer asInteger() {
+        return this.left.asInteger() - this.right.asInteger();
     }
 }
