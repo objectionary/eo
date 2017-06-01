@@ -23,4 +23,4 @@
  */
 
 assert new File(basedir, 'target/generated-sources/eo/Pixel.java').exists()
-assert new File(basedir, 'target/classes/Pixel.class').exists()
+assert new File(basedir, 'target/classes/eo/Pixel.class').exists()
