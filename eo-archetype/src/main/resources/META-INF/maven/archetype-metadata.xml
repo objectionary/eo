@@ -1,0 +1,16 @@
+<archetype-descriptor name="eo-archetype">
+    <fileSets>
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>src/main/eo</directory>
+            <includes>
+                <include>**/*.eo</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true">
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</archetype-descriptor>
