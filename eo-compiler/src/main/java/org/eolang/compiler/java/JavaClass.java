@@ -34,10 +34,6 @@ import org.eolang.compiler.syntax.ObjectBody;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
- *
- * @todo #95:30m Java class method generator is not implemented.
- *  We may pass collection of methods as `JavaClass` constructor arguments.
- *  All methods should be public.
  */
 public final class JavaClass implements JavaFile {
 

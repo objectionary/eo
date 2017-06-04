@@ -55,6 +55,7 @@ public final class JavaClassTest {
                 Collections.singleton(type),
                 new ObjectBody(
                     Collections.emptyList(),
+                    Collections.emptyList(),
                     Collections.emptyList()
                 )
             ).code(),
@@ -85,6 +86,7 @@ public final class JavaClassTest {
                 name,
                 types,
                 new ObjectBody(
+                    Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList()
                 )
@@ -117,6 +119,7 @@ public final class JavaClassTest {
                 types,
                 new ObjectBody(
                     Collections.singleton(new Attribute("Text", "msg")),
+                    Collections.emptyList(),
                     Collections.emptyList()
                 )
             ).code(),
@@ -148,6 +151,7 @@ public final class JavaClassTest {
                 name,
                 Collections.singleton("Text"),
                 new ObjectBody(
+                    Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList()
                 )

@@ -49,6 +49,7 @@ public final class ObjectBodyTest {
                     new Attribute("Number", "amount"),
                     new Attribute("Decimal", "price")
                 ),
+                Collections.emptyList(),
                 Collections.emptyList()
             ).java("product"),
             Matchers.stringContainsInOrder(
@@ -84,7 +85,8 @@ public final class ObjectBodyTest {
                             new Argument.Fake("title")
                         )
                     )
-                )
+                ),
+                Collections.emptyList()
             ).java("book"),
             Matchers.stringContainsInOrder(
                 Arrays.asList(

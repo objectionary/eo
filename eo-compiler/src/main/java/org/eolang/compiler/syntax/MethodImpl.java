@@ -23,27 +23,54 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
 /**
- * Test for constructor argument references object attribute.
+ * Method implementation.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
+ *
+ * @todo #105:30m Object instantiation in method body is not implemented
+ *  We should be able to create new object inside methods.
+ *  It may be implemented as java nested class
+ *  in same object-class (just to my mind).
  */
-public final class ArgAttributeTest {
+public final class MethodImpl {
 
     /**
-     * Test generated java code.
+     * Method declaration.
      */
-    @Test
-    public void java() {
-        MatcherAssert.assertThat(
-            new ArgAttribute("value").java(),
-            Matchers.equalTo("this.value")
+    private final Method declaration;
+
+    /**
+     * Object copying - method body.
+     */
+    private final CpObject copying;
+
+    /**
+     * Ctor.
+     *
+     * @param declaration Method declaration
+     * @param copying Object copying
+     */
+    public MethodImpl(
+        final Method declaration,
+        final CpObject copying
+    ) {
+        this.declaration = declaration;
+        this.copying = copying;
+    }
+
+    /**
+     * Method declaration and body code.
+     *
+     * @return Java code.
+     */
+    public String java() {
+        return String.format(
+            "public %s {\n  return %s;\n}",
+            this.declaration.java(),
+            this.copying.java()
         );
     }
 }

@@ -71,7 +71,7 @@ public final class JavaInterface implements JavaFile {
             this.name,
             Joiner.on("\n    ").join(
                 this.methods.stream().map(
-                    Method::java
+                    m -> String.format("%s;", m.java())
                 ).collect(Collectors.toList())
             )
         );

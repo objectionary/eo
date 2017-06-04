@@ -52,17 +52,25 @@ public final class ObjectBody {
     private final Collection<Ctor> ctors;
 
     /**
+     * Object methods.
+     */
+    private final Collection<MethodImpl> methods;
+
+    /**
      * Ctor.
      *
      * @param attrs Object attributes
      * @param ctors Object secondary constructors
+     * @param methods Method implementations
      */
     public ObjectBody(
         final Collection<Attribute> attrs,
-        final Collection<Ctor> ctors
+        final Collection<Ctor> ctors,
+        final Collection<MethodImpl> methods
     ) {
         this.attrs = attrs;
         this.ctors = ctors;
+        this.methods = methods;
     }
 
     /**
@@ -81,6 +89,8 @@ public final class ObjectBody {
                 "// secondary constructors",
                 "%s\n",
                 "// primary constructor",
+                "%s\n",
+                "// methods",
                 "%s"
             ),
             String.join(
@@ -97,7 +107,14 @@ public final class ObjectBody {
                     .map(ctor -> ctor.java(name))
                     .collect(Collectors.toList())
             ),
-            new PrimaryConstructor(name, this.attrs).code()
+            new PrimaryConstructor(name, this.attrs).code(),
+            String.join(
+                "\n",
+                this.methods
+                    .stream()
+                    .map(MethodImpl::java)
+                    .collect(Collectors.toList())
+            )
         );
     }
 }
