@@ -23,6 +23,10 @@
  */
 package org.eolang.compiler.syntax;
 
+import com.google.common.collect.Lists;
+import java.nio.file.Paths;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -39,7 +43,31 @@ public final class TreeTest {
      */
     @Test
     public void generatesJavaFiles() throws Exception {
-        // tbd
+        MatcherAssert.assertThat(
+            new Tree(
+                Lists.newArrayList(
+                    new Type(
+                        "Car",
+                        Lists.newArrayList(
+                            new Method(
+                                "drive",
+                                Lists.newArrayList(
+                                    new Parameter("x", "Integer"),
+                                    new Parameter("y", "Long")
+                                ),
+                                "Int"
+                            )
+                        )
+                    )
+                )
+            ).java(),
+            Matchers.hasEntry(
+                Paths.get("Car.java"),
+                new StringBuilder("public interface Car {\n    ")
+                    .append("Int drive(final Integer x, final Long y);")
+                    .append("\n}").toString()
+            )
+        );
     }
 
 }
