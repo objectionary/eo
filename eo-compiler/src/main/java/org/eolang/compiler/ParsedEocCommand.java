@@ -23,60 +23,55 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.io.PrintStream;
-
 /**
- * Main.
+ * Builder for EocCommands parsed from the command line input.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Main {
+public final class ParsedEocCommand {
 
     /**
-     * Print stream for the output.
+     * Name of the command.
      */
-    private final PrintStream stdout;
+    private final EocCommandName name;
 
     /**
-     * Arguments.
+     * Constructs a builder for the named command.
+     *
+     * @param name N.
      */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
+    public ParsedEocCommand(final EocCommandName name) {
+        this.name = name;
     }
 
     /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
+     * Adds an argument for the command.
+     *
+     * @param argument The argument for the command.
+     * @return The command object.
+     * @throws IllegalArgumentException If the command is not recognised.
      */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        try {
-            this.stdout.append(
-                new ParsedEocCommand(new EocCommandName(this.args))
-                    .withArgument(new EocCommandArgument(this.args))
-                    .output()
-            );
-        } catch (final IOException ex) {
-            this.stdout.append("Error reading resource file.");
+    public EocCommand withArgument(
+        final EocCommandArgument argument
+    ) throws IllegalArgumentException {
+        final EocCommand command;
+        switch (this.name.string()) {
+            case "":
+                command = new SimpleCommand("Usage: --help");
+                break;
+            case "--help":
+                command = new SimpleCommand(
+                    "Use --demo to list compilation examples."
+                );
+                break;
+            case "--demo":
+                command = new DemoCommand(argument);
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
+        return command;
     }
 }
-

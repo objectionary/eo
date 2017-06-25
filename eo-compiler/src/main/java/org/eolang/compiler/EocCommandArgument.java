@@ -23,60 +23,53 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Main.
+ * Represents an EO compiler command argument passed in from
+ * the command line. (Can be empty.)
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author John Page (johnpagedev@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Main {
+public final class EocCommandArgument {
 
     /**
-     * Print stream for the output.
+     * All of the command line args.
      */
-    private final PrintStream stdout;
+    private final List<String> args;
 
     /**
-     * Arguments.
+     * Constructs an EocCommandArgument from a list of all arguments
+     * passed in from the command line.
+     *
+     * @param args All of the command line args.
      */
-    private final String[] args;
-
-    /**
-     * Ctor.
-     * @param out Output stream
-     * @param input Input args
-     */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = input;
+    public EocCommandArgument(final String... args) {
+        this.args = Arrays.asList(args);
     }
 
     /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
+     * Requests the argument.
+     *
+     * @return The argument if this is one or an empty string.
      */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        try {
-            this.stdout.append(
-                new ParsedEocCommand(new EocCommandName(this.args))
-                    .withArgument(new EocCommandArgument(this.args))
-                    .output()
-            );
-        } catch (final IOException ex) {
-            this.stdout.append("Error reading resource file.");
+    public String string() {
+        String string = "";
+        if (!this.isEmpty()) {
+            string = this.args.get(1);
         }
+        return string;
+    }
+
+    /**
+     * Indicates whether or not an argument is present.
+     *
+     * @return True if empty.
+     */
+    public boolean isEmpty() {
+        return this.args.size() < 2;
     }
 }
-
