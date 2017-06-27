@@ -25,12 +25,14 @@ package org.eolang.compiler.syntax;
 
 import com.google.common.collect.Lists;
 import java.nio.file.Paths;
+import org.cactoos.list.ArrayAsIterable;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
  * Test case for {@link Tree}.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -39,6 +41,7 @@ public final class TreeTest {
 
     /**
      * Tree can generate Java files.
+     *
      * @throws Exception If some problem inside
      */
     @Test
@@ -62,12 +65,16 @@ public final class TreeTest {
                 )
             ).java(),
             Matchers.hasEntry(
-                Paths.get("Car.java"),
-                new StringBuilder("public interface Car {\n    ")
-                    .append("Int drive(final Integer x, final Long y);")
-                    .append("\n}").toString()
+                Matchers.equalTo(Paths.get("Car.java")),
+                Matchers.stringContainsInOrder(
+                    new ArrayAsIterable<>(
+                        "package eo;",
+                        "public interface Car {",
+                        "Int drive(final Integer x, final Long y);",
+                        "}"
+                    )
+                )
             )
         );
     }
-
 }
