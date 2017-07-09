@@ -31,12 +31,10 @@
         <artifactId>eo-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>eo-core</artifactId>
     <packaging>jar</packaging>
-    <name>eo-compiler</name>
-    <description>EO-lang core library</description>
-
+    <name>eo-core</name>
+    <description>eolang core library</description>
     <build>
         <plugins>
             <plugin>
@@ -53,4 +51,23 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>qulice</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.qulice</groupId>
+                        <artifactId>qulice-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>checkstyle:.*</exclude>
+                                <exclude>pmd:.*</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

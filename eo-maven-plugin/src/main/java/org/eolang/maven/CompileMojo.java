@@ -89,7 +89,9 @@ public final class CompileMojo extends AbstractMojo {
             Logger.info(this, "Directory created: %s", this.targetDirectory);
         }
         try {
-            Files.list(this.sourceDirectory.toPath()).forEach(this::compile);
+            Files.walk(this.sourceDirectory.toPath())
+                .filter(file -> !file.toFile().isDirectory())
+                .forEach(this::compile);
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
