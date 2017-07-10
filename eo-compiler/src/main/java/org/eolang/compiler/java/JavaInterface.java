@@ -23,11 +23,10 @@
  */
 package org.eolang.compiler.java;
 
-import com.google.common.base.Joiner;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import org.cactoos.Input;
+import org.cactoos.io.BytesAsInput;
+import org.cactoos.list.MappedIterable;
 import org.eolang.compiler.syntax.Method;
 
 /**
@@ -60,19 +59,23 @@ public final class JavaInterface implements JavaFile {
     }
 
     @Override
-    public Path path() {
-        return Paths.get(String.format("%s.java", this.name));
+    public String path() {
+        return String.format("%s.java", this.name);
     }
 
     @Override
-    public String code() {
-        return String.format(
-            "package eo;\n\npublic interface %s {\n    %s\n}",
-            this.name,
-            Joiner.on("\n    ").join(
-                this.methods.stream().map(
-                    m -> String.format("%s;", m.java())
-                ).collect(Collectors.toList())
+    public Input code() {
+        return new BytesAsInput(
+            String.format(
+                "package eo;\n\npublic interface %s {\n    %s\n}",
+                this.name,
+                String.join(
+                    "\n    ",
+                    new MappedIterable<>(
+                        this.methods,
+                        mtd -> String.format("%s;", mtd.java())
+                    )
+                )
             )
         );
     }

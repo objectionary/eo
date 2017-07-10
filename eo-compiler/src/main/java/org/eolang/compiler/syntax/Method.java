@@ -23,9 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
-import com.google.common.base.Joiner;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import org.cactoos.list.MappedIterable;
 
 /**
  * Method.
@@ -73,10 +72,12 @@ public final class Method {
             "%s %s(%s)",
             this.type,
             this.name,
-            Joiner.on(", ").join(
-                this.parameters.stream().map(
+            String.join(
+                ", ",
+                new MappedIterable<>(
+                    this.parameters,
                     Parameter::java
-                ).collect(Collectors.toList())
+                )
             )
         );
     }

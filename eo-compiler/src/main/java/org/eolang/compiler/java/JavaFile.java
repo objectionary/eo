@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.java;
 
-import java.nio.file.Path;
+import org.cactoos.Input;
 
 /**
  * Java file representation.
@@ -36,15 +36,13 @@ public interface JavaFile {
 
     /**
      * Java file path.
-     *
      * @return File path
      */
-    Path path();
+    String path();
 
     /**
      * Java file content.
-     *
      * @return Java code
      */
-    String code();
+    Input code();
 }

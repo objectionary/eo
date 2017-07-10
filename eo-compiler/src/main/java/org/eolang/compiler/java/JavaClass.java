@@ -23,9 +23,9 @@
  */
 package org.eolang.compiler.java;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
+import org.cactoos.Input;
+import org.cactoos.io.BytesAsInput;
 import org.eolang.compiler.syntax.ObjectBody;
 
 /**
@@ -60,28 +60,27 @@ public final class JavaClass implements JavaFile {
      * @param body Object body
      */
     @SuppressWarnings("checkstyle:parameternumbercheck")
-    public JavaClass(
-        final String name,
-        final Collection<String> ifaces,
-        final ObjectBody body
-    ) {
+    public JavaClass(final String name, final Collection<String> ifaces,
+        final ObjectBody body) {
         this.name = name;
         this.ifaces = ifaces;
         this.body = body;
     }
 
     @Override
-    public Path path() {
-        return Paths.get(String.format("%s.java", this.name));
+    public String path() {
+        return String.format("%s.java", this.name);
     }
 
     @Override
-    public String code() {
-        return String.format(
-            "package eo;\n\npublic final class %s implements %s {\n%s\n}",
-            this.name,
-            String.join(", ", this.ifaces),
-            this.body.java(this.name)
+    public Input code() {
+        return new BytesAsInput(
+            String.format(
+                "package eo;\n\npublic final class %s implements %s {\n%s\n}",
+                this.name,
+                String.join(", ", this.ifaces),
+                this.body.java(this.name)
+            )
         );
     }
 }

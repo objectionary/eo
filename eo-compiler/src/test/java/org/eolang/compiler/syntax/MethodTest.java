@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import com.google.common.collect.Lists;
+import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public final class MethodTest {
         MatcherAssert.assertThat(
             new Method(
                 "send",
-                Lists.newArrayList(
+                Arrays.asList(
                     new Parameter("receiver", "Person"),
                     new Parameter("content", "Content")
                 ),

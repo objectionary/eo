@@ -23,8 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
-import com.google.common.collect.Lists;
-import java.nio.file.Paths;
+import java.util.Arrays;
+import org.cactoos.InputHasContent;
 import org.cactoos.list.ArrayAsIterable;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -48,13 +48,13 @@ public final class TreeTest {
     public void generatesJavaFiles() throws Exception {
         MatcherAssert.assertThat(
             new Tree(
-                Lists.newArrayList(
+                Arrays.asList(
                     new Type(
                         "Car",
-                        Lists.newArrayList(
+                        Arrays.asList(
                             new Method(
                                 "drive",
-                                Lists.newArrayList(
+                                Arrays.asList(
                                     new Parameter("x", "Integer"),
                                     new Parameter("y", "Long")
                                 ),
@@ -65,13 +65,15 @@ public final class TreeTest {
                 )
             ).java(),
             Matchers.hasEntry(
-                Matchers.equalTo(Paths.get("Car.java")),
-                Matchers.stringContainsInOrder(
-                    new ArrayAsIterable<>(
-                        "package eo;",
-                        "public interface Car {",
-                        "Int drive(final Integer x, final Long y);",
-                        "}"
+                Matchers.equalTo("Car.java"),
+                new InputHasContent(
+                    Matchers.stringContainsInOrder(
+                        new ArrayAsIterable<>(
+                            "package eo;",
+                            "public interface Car {",
+                            "Int drive(final Integer x, final Long y);",
+                            "}"
+                        )
                     )
                 )
             )

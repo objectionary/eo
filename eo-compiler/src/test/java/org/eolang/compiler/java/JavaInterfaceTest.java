@@ -25,6 +25,7 @@ package org.eolang.compiler.java;
 
 import java.util.Arrays;
 import java.util.Collections;
+import org.cactoos.InputHasContent;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -49,13 +50,15 @@ public final class JavaInterfaceTest {
                 name,
                 Collections.emptyList()
             ).code(),
-            Matchers.stringContainsInOrder(
-                Arrays.asList(
-                    "public",
-                    "interface",
-                    name,
-                    "{",
-                    "}"
+            new InputHasContent(
+                Matchers.stringContainsInOrder(
+                    Arrays.asList(
+                        "public",
+                        "interface",
+                        name,
+                        "{",
+                        "}"
+                    )
                 )
             )
         );

@@ -26,6 +26,7 @@ package org.eolang.compiler.java;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import org.cactoos.InputHasContent;
 import org.eolang.compiler.syntax.Attribute;
 import org.eolang.compiler.syntax.ObjectBody;
 import org.hamcrest.MatcherAssert;
@@ -59,16 +60,18 @@ public final class JavaClassTest {
                     Collections.emptyList()
                 )
             ).code(),
-            Matchers.stringContainsInOrder(
-                Arrays.asList(
-                    "public",
-                    "final",
-                    "class",
-                    name,
-                    "implements",
-                    type,
-                    "{",
-                    "}"
+            new InputHasContent(
+                Matchers.stringContainsInOrder(
+                    Arrays.asList(
+                        "public",
+                        "final",
+                        "class",
+                        name,
+                        "implements",
+                        type,
+                        "{",
+                        "}"
+                    )
                 )
             )
         );
@@ -91,16 +94,18 @@ public final class JavaClassTest {
                     Collections.emptyList()
                 )
             ).code(),
-            Matchers.stringContainsInOrder(
-                Arrays.asList(
-                    "public",
-                    "final",
-                    "class",
-                    name,
-                    "implements",
-                    "Text", ",",
-                    "Book",
-                    "{", "}"
+            new InputHasContent(
+                Matchers.stringContainsInOrder(
+                    Arrays.asList(
+                        "public",
+                        "final",
+                        "class",
+                        name,
+                        "implements",
+                        "Text", ",",
+                        "Book",
+                        "{", "}"
+                    )
                 )
             )
         );
@@ -123,18 +128,20 @@ public final class JavaClassTest {
                     Collections.emptyList()
                 )
             ).code(),
-            Matchers.stringContainsInOrder(
-                Arrays.asList(
-                    "public final class",
-                    name,
-                    "implements Error",
-                    "{",
-                    "private final Text msg;",
-                    String.format("public %s(final Text msg)", name),
-                    "{",
-                    "this.msg = msg;",
-                    "}",
-                    "}"
+            new InputHasContent(
+                Matchers.stringContainsInOrder(
+                    Arrays.asList(
+                        "public final class",
+                        name,
+                        "implements Error",
+                        "{",
+                        "private final Text msg;",
+                        String.format("public %s(final Text msg)", name),
+                        "{",
+                        "this.msg = msg;",
+                        "}",
+                        "}"
+                    )
                 )
             )
         );
@@ -155,7 +162,7 @@ public final class JavaClassTest {
                     Collections.emptyList(),
                     Collections.emptyList()
                 )
-            ).path().toString(),
+            ).path(),
             Matchers.equalTo(
                 String.format(
                     "%s.java",

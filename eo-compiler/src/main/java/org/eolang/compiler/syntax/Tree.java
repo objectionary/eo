@@ -23,11 +23,12 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.eolang.compiler.java.JavaFile;
+import org.cactoos.Input;
+import org.cactoos.list.IterableAsMap;
+import org.cactoos.list.MapEntry;
+import org.cactoos.list.MappedIterable;
 
 /**
  * AST.
@@ -55,14 +56,14 @@ public final class Tree {
      * Compile it to Java files.
      * @return Java files (path, content)
      */
-    public Map<Path, String> java() {
-        return this.nodes.stream()
-            .map(RootNode::java)
-            .collect(
-                Collectors.toMap(
-                    JavaFile::path,
-                    JavaFile::code
+    public Map<String, Input> java() {
+        return new IterableAsMap<>(
+            new MappedIterable<>(
+                new MappedIterable<>(this.nodes, RootNode::java),
+                javaFile -> new MapEntry<>(
+                    javaFile.path(), javaFile.code()
                 )
-            );
+            )
+        );
     }
 }

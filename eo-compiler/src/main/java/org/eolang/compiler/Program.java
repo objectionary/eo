@@ -23,12 +23,23 @@
  */
 package org.eolang.compiler;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.file.Path;
+import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.cactoos.Func;
+import org.cactoos.Input;
+import org.cactoos.Output;
+import org.cactoos.func.And;
+import org.cactoos.func.IoCheckedScalar;
+import org.cactoos.io.FileAsOutput;
+import org.cactoos.io.LengthOfInput;
+import org.cactoos.io.TeeInput;
 import org.eolang.compiler.syntax.Tree;
 
 /**
@@ -37,43 +48,81 @@ import org.eolang.compiler.syntax.Tree;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Program {
 
     /**
      * Text to parse.
      */
-    private final String text;
+    private final Input input;
+
+    /**
+     * Target to save to.
+     */
+    private final Func<String, Output> target;
 
     /**
      * Ctor.
-     * @param input Input text
+     * @param ipt Input text
+     * @param dir Directory to write to
      */
-    public Program(final String input) {
-        this.text = input;
+    public Program(final Input ipt, final Path dir) {
+        this(
+            ipt,
+            path -> new FileAsOutput(
+                new File(dir.toFile(), path)
+            )
+        );
     }
 
     /**
-     * Compile it to Java and save to the directory.
-     * @param output Output to save to
+     * Ctor.
+     * @param ipt Input text
+     * @param tgt Target
+     */
+    public Program(final Input ipt, final Func<String, Output> tgt) {
+        this.input = ipt;
+        this.target = tgt;
+    }
+
+    /**
+     * Compile it to Java and save.
      * @throws IOException If fails
      */
-    public void save(final Output output) throws IOException {
+    public void compile() throws IOException {
+        final ANTLRErrorListener errors = new BaseErrorListener() {
+            // @checkstyle ParameterNumberCheck (10 lines)
+            @Override
+            public void syntaxError(final Recognizer<?, ?> recognizer,
+                final Object symbol, final int line,
+                final int position, final String msg,
+                final RecognitionException error) {
+                throw new CompileException(error);
+            }
+        };
         final ProgramLexer lexer = new ProgramLexer(
-            new ANTLRInputStream(
-                new ByteArrayInputStream(
-                    this.text.getBytes(Charset.defaultCharset())
-                )
-            )
+            new ANTLRInputStream(this.input.stream())
         );
-        final TokenStream tokens = new CommonTokenStream(lexer);
-        final ProgramParser parser = new ProgramParser(tokens);
+        lexer.addErrorListener(errors);
+        final ProgramParser parser = new ProgramParser(
+            new CommonTokenStream(lexer)
+        );
+        parser.addErrorListener(errors);
         final Tree tree = parser.program().ret;
-        tree.java().entrySet().forEach(
-            entry -> output.save(
-                entry.getKey(), entry.getValue()
+        new IoCheckedScalar<>(
+            new And(
+                tree.java().entrySet(),
+                path -> {
+                    new LengthOfInput(
+                        new TeeInput(
+                            path.getValue(),
+                            this.target.apply(path.getKey())
+                        )
+                    ).value();
+                }
             )
-        );
+        ).value();
     }
 
 }

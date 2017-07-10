@@ -27,6 +27,7 @@ import java.io.File;
 import java.nio.file.Files;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.eolang.compiler.CompileException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.rules.TemporaryFolder;
@@ -37,6 +38,7 @@ import org.junit.rules.TemporaryFolder;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class CompileMojoTest extends AbstractMojoTestCase {
 
     /**
@@ -66,6 +68,30 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
             new File(target, "Pixel.java").exists(),
             Matchers.is(true)
         );
+    }
+
+    /**
+     * Main can print a simple text.
+     * @throws Exception If some problem inside
+     */
+    public void testCrashOnInvalidSyntax() throws Exception {
+        final CompileMojo mojo = new CompileMojo();
+        this.temp.create();
+        final File src = this.temp.newFolder();
+        this.setVariableValueToObject(mojo, "sourceDirectory", src);
+        this.setVariableValueToObject(
+            mojo, "targetDirectory", this.temp.newFolder()
+        );
+        Files.write(
+            new File(src, "f.eo").toPath(),
+            "something is wrong here".getBytes()
+        );
+        try {
+            mojo.execute();
+            throw new IllegalArgumentException("exception is not here, why?");
+        } catch (final CompileException ex) {
+            assert ex != null;
+        }
     }
 
 }

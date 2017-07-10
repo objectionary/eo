@@ -23,39 +23,26 @@
  */
 package org.eolang.compiler;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 /**
- * FileOutput.
+ * When compilation fails.
  *
- * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class FileOutput implements Output {
+public final class CompileException extends RuntimeException {
 
     /**
-     * Path to directory.
+     * Serialization marker.
      */
-    private final Path dir;
+    private static final long serialVersionUID = -3043426132301042201L;
 
     /**
      * Ctor.
-     *
-     * @param path Path to directory
+     * @param cause Cause of failure
      */
-    public FileOutput(final Path path) {
-        this.dir = path;
+    public CompileException(final Exception cause) {
+        super(cause);
     }
 
-    @Override
-    public void save(final Path file, final String content) {
-        try {
-            Files.write(this.dir.resolve(file), content.getBytes());
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
 }
