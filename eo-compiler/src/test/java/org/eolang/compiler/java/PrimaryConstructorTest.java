@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.java;
 
-import java.util.Arrays;
+import org.cactoos.list.IterableAsList;
 import org.eolang.compiler.syntax.Attribute;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -46,13 +46,13 @@ public final class PrimaryConstructorTest {
         MatcherAssert.assertThat(
             new PrimaryConstructor(
                 "color",
-                Arrays.asList(
+                new IterableAsList<>(
                     new Attribute("Byte", "alpha"),
                     new Attribute("Int", "rgb")
                 )
             ).code(),
             Matchers.stringContainsInOrder(
-                Arrays.asList(
+                new IterableAsList<>(
                     "public",
                     "color(",
                     "final Byte alpha",

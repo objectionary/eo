@@ -36,6 +36,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.io.PathAsInput;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -94,10 +96,12 @@ public final class CompileMojo extends AbstractMojo {
                 .forEach(this::compile);
         } catch (final IOException ex) {
             throw new MojoFailureException(
-                String.format(
-                    "Can't list EO files in %s",
-                    this.sourceDirectory
-                ),
+                new UncheckedText(
+                    new FormattedText(
+                        "Can't list EO files in %s",
+                        this.sourceDirectory
+                    )
+                ).asString(),
                 ex
             );
         }
@@ -122,10 +126,12 @@ public final class CompileMojo extends AbstractMojo {
             ).compile();
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                String.format(
-                    "Can't compile %s into %s",
-                    file, this.targetDirectory
-                ),
+                new UncheckedText(
+                    new FormattedText(
+                        "Can't compile %s into %s",
+                        file, this.targetDirectory
+                    )
+                ).asString(),
                 ex
             );
         }

@@ -27,6 +27,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.cactoos.InputHasContent;
+import org.cactoos.list.IterableAsList;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.syntax.Attribute;
 import org.eolang.compiler.syntax.ObjectBody;
 import org.hamcrest.MatcherAssert;
@@ -89,14 +92,14 @@ public final class JavaClassTest {
                 name,
                 types,
                 new ObjectBody(
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    Collections.emptyList()
+                    new IterableAsList<>(),
+                    new IterableAsList<>(),
+                    new IterableAsList<>()
                 )
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    Arrays.asList(
+                    new IterableAsList<>(
                         "public",
                         "final",
                         "class",
@@ -117,26 +120,28 @@ public final class JavaClassTest {
     @Test
     public void fields() {
         final String name = "error";
-        final Collection<String> types = Collections.singleton("Error");
+        final Collection<String> types = new IterableAsList<>("Error");
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
                 types,
                 new ObjectBody(
-                    Collections.singleton(new Attribute("Text", "msg")),
-                    Collections.emptyList(),
-                    Collections.emptyList()
+                    new IterableAsList<>(new Attribute("Text", "msg")),
+                    new IterableAsList<>(),
+                    new IterableAsList<>()
                 )
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    Arrays.asList(
+                    new IterableAsList<>(
                         "public final class",
                         name,
                         "implements Error",
                         "{",
                         "private final Text msg;",
-                        String.format("public %s(final Text msg)", name),
+                        new UncheckedText(
+                            new FormattedText("public %s(final Text msg)", name)
+                        ).asString(),
                         "{",
                         "this.msg = msg;",
                         "}",
@@ -156,18 +161,20 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                Collections.singleton("Text"),
+                new IterableAsList<>("Text"),
                 new ObjectBody(
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    Collections.emptyList()
+                    new IterableAsList<>(),
+                    new IterableAsList<>(),
+                    new IterableAsList<>()
                 )
             ).path(),
             Matchers.equalTo(
-                String.format(
-                    "%s.java",
-                    name
-                )
+                new UncheckedText(
+                    new FormattedText(
+                        "%s.java",
+                        name
+                    )
+                ).asString()
             )
         );
     }

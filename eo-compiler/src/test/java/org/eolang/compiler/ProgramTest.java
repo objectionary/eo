@@ -26,9 +26,9 @@ package org.eolang.compiler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import org.cactoos.io.BytesAsInput;
 import org.cactoos.io.ResourceAsInput;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -61,7 +61,7 @@ public final class ProgramTest {
                 Files.readAllBytes(dir.resolve(Paths.get("zero.java")))
             ),
             Matchers.stringContainsInOrder(
-                Arrays.asList(
+                new IterableAsList<>(
                     "public",
                     "final",
                     "class",
@@ -99,7 +99,7 @@ public final class ProgramTest {
                 Files.readAllBytes(dir.resolve(Paths.get("fibonacci.java")))
             ),
             Matchers.stringContainsInOrder(
-                Arrays.asList(
+                new IterableAsList<>(
                     "public", "final", "class",
                     "fibonacci", "implements", "Int", "{",
                     "private final Int n;",

@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Arrays;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public final class CpObjectTest {
         MatcherAssert.assertThat(
             new CpObject(
                 "if",
-                Arrays.asList(
+                new IterableAsList<>(
                     new Argument.Fake("true"),
                     new Argument.Fake("1"),
                     new Argument.Fake("2")

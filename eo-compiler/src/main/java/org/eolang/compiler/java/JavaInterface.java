@@ -27,6 +27,9 @@ import java.util.Collection;
 import org.cactoos.Input;
 import org.cactoos.io.BytesAsInput;
 import org.cactoos.list.MappedIterable;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.syntax.Method;
 
 /**
@@ -66,16 +69,18 @@ public final class JavaInterface implements JavaFile {
     @Override
     public Input code() {
         return new BytesAsInput(
-            String.format(
+            new FormattedText(
                 "package eo;\n\npublic interface %s {\n    %s\n}",
                 this.name,
-                String.join(
-                    "\n    ",
-                    new MappedIterable<>(
-                        this.methods,
-                        mtd -> String.format("%s;", mtd.java())
+                new UncheckedText(
+                    new JoinedText(
+                        "\n    ",
+                        new MappedIterable<>(
+                            this.methods,
+                            mtd -> String.format("%s;", mtd.java())
+                        )
                     )
-                )
+                ).asString()
             )
         );
     }

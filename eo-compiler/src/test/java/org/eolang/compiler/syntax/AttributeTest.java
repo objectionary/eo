@@ -23,6 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -46,7 +48,10 @@ public final class AttributeTest {
                 "Type",
                 "name"
             ).java(
-                (type, name) -> String.format("%s:%s", type, name)
+                (type, name) ->
+                    new UncheckedText(
+                        new FormattedText("%s:%s", type, name)
+                    ).asString()
             ),
             Matchers.equalTo(
                 "Type:name"

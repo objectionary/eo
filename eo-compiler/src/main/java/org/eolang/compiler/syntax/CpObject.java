@@ -25,6 +25,9 @@ package org.eolang.compiler.syntax;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Object copying.
@@ -62,15 +65,19 @@ public final class CpObject {
      * @return Java code
      */
     public String java() {
-        return String.format(
-            "new %s(%s)",
-            this.name,
-            String.join(
-                ", ",
-                this.arguments.stream()
-                    .map(Argument::java)
-                    .collect(Collectors.toList())
+        return new UncheckedText(
+            new FormattedText(
+                "new %s(%s)",
+                this.name,
+                new UncheckedText(
+                    new JoinedText(
+                        ", ",
+                        this.arguments.stream()
+                            .map(Argument::java)
+                            .collect(Collectors.toList())
+                    )
+                ).asString()
             )
-        );
+        ).asString();
     }
 }

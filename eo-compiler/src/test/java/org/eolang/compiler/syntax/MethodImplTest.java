@@ -23,8 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Arrays;
 import java.util.Collections;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -58,14 +58,14 @@ public final class MethodImplTest {
                 ),
                 new CpObject(
                     "textEncoded",
-                    Arrays.asList(
+                    new IterableAsList<>(
                         new Argument.Fake("this.bytes"),
                         new Argument.Fake("locale")
                     )
                 )
             ).java(),
             Matchers.stringContainsInOrder(
-                Arrays.asList(
+                new IterableAsList<>(
                     "public", "Text", "text", "(",
                     "final", "Locale", "locale",
                     ")", "{",

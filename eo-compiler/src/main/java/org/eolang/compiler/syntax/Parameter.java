@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
+
 /**
  * Parameter.
  *
@@ -57,11 +60,13 @@ public final class Parameter {
      * @return Java code
      */
     public String java() {
-        return String.format(
-            "final %s %s",
-            this.type,
-            this.name
-        );
+        return new UncheckedText(
+            new FormattedText(
+                "final %s %s",
+                this.type,
+                this.name
+            )
+        ).asString();
     }
 
 }

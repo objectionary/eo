@@ -26,6 +26,9 @@ package org.eolang.compiler.syntax;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Object secondary constructor.
@@ -51,21 +54,27 @@ public final class Ctor {
         final List<Parameter> parameters,
         final Collection<Argument> arguments
     ) {
-        this.template = String.format(
-            "public %%s(%s) {\n this(%s);\n}",
-            String.join(
-                ", ",
-                parameters.stream()
-                    .map(Parameter::java)
-                    .collect(Collectors.toList())
-            ),
-            String.join(
-                ", ",
-                arguments.stream()
-                    .map(Argument::java)
-                    .collect(Collectors.toList())
+        this.template = new UncheckedText(
+            new FormattedText(
+                "public %%s(%s) {\n this(%s);\n}",
+                new UncheckedText(
+                    new JoinedText(
+                        ", ",
+                        parameters.stream()
+                            .map(Parameter::java)
+                            .collect(Collectors.toList())
+                    )
+                ).asString(),
+                new UncheckedText(
+                    new JoinedText(
+                        ", ",
+                        arguments.stream()
+                            .map(Argument::java)
+                            .collect(Collectors.toList())
+                    )
+                ).asString()
             )
-        );
+        ).asString();
     }
 
     /**
@@ -75,6 +84,8 @@ public final class Ctor {
      * @return Java code
      */
     public String java(final String name) {
-        return String.format(this.template, name);
+        return new UncheckedText(
+            new FormattedText(this.template, name)
+        ).asString();
     }
 }

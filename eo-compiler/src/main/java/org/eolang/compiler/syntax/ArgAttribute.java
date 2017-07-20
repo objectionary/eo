@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
+
 /**
  * Attribute argument.
  *
@@ -48,6 +51,8 @@ public final class ArgAttribute implements Argument {
 
     @Override
     public String java() {
-        return String.format("this.%s", this.name);
+        return new UncheckedText(
+            new FormattedText("this.%s", this.name)
+        ).asString();
     }
 }

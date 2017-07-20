@@ -23,9 +23,9 @@
  */
 package org.eolang.compiler.java;
 
-import java.util.Arrays;
 import java.util.Collections;
 import org.cactoos.InputHasContent;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public final class JavaInterfaceTest {
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    Arrays.asList(
+                    new IterableAsList<>(
                         "public",
                         "interface",
                         name,

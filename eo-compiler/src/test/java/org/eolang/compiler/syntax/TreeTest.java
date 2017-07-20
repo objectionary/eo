@@ -23,9 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Arrays;
 import org.cactoos.InputHasContent;
 import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -48,13 +48,13 @@ public final class TreeTest {
     public void generatesJavaFiles() throws Exception {
         MatcherAssert.assertThat(
             new Tree(
-                Arrays.asList(
+                new IterableAsList<>(
                     new Type(
                         "Car",
-                        Arrays.asList(
+                        new IterableAsList<>(
                             new Method(
                                 "drive",
-                                Arrays.asList(
+                                new IterableAsList<>(
                                     new Parameter("x", "Integer"),
                                     new Parameter("y", "Long")
                                 ),

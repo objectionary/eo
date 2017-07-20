@@ -25,6 +25,9 @@ package org.eolang.compiler.java;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.syntax.AttrCtorInitFormat;
 import org.eolang.compiler.syntax.AttrCtorParamFormat;
 import org.eolang.compiler.syntax.Attribute;
@@ -81,31 +84,37 @@ public final class PrimaryConstructor {
      * @return Java code for constructor.
      */
     public String code() {
-        return String.format(
-            "public %s(%s) {\n %s \n}",
-            this.name,
-            String.join(
-                ", ",
-                this.attributes
-                    .stream()
-                    .map(
-                        attr -> attr.java(
-                            PrimaryConstructor.CTOR_PARAM_FORMAT
-                        )
+        return new UncheckedText(
+            new FormattedText(
+                "public %s(%s) {\n %s \n}",
+                this.name,
+                new UncheckedText(
+                    new JoinedText(
+                        ", ",
+                        this.attributes
+                            .stream()
+                            .map(
+                                attr -> attr.java(
+                                    PrimaryConstructor.CTOR_PARAM_FORMAT
+                                )
+                            )
+                            .collect(Collectors.toList())
                     )
-                    .collect(Collectors.toList())
-            ),
-            String.join(
-                "\n",
-                this.attributes
-                    .stream()
-                    .map(
-                        attr -> attr.java(
-                            PrimaryConstructor.CTOR_INIT_FORMAT
-                        )
+                ).asString(),
+                new UncheckedText(
+                    new JoinedText(
+                        "\n",
+                        this.attributes
+                            .stream()
+                            .map(
+                                attr -> attr.java(
+                                    PrimaryConstructor.CTOR_INIT_FORMAT
+                                )
+                            )
+                            .collect(Collectors.toList())
                     )
-                    .collect(Collectors.toList())
+                ).asString()
             )
-        );
+        ).asString();
     }
 }

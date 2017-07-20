@@ -25,6 +25,9 @@ package org.eolang.compiler.syntax;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.java.PrimaryConstructor;
 
 /**
@@ -81,40 +84,50 @@ public final class ObjectBody {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public String java(final String name) {
-        return String.format(
-            String.join(
-                "\n",
-                "// fields",
-                "%s\n",
-                "// secondary constructors",
-                "%s\n",
-                "// primary constructor",
-                "%s\n",
-                "// methods",
-                "%s"
-            ),
-            String.join(
-                "\n",
-                this.attrs
-                    .stream()
-                    .map(attr -> attr.java(ObjectBody.FIELD_FORMAT))
-                    .collect(Collectors.toList())
-            ),
-            String.join(
-                "\n",
-                this.ctors
-                    .stream()
-                    .map(ctor -> ctor.java(name))
-                    .collect(Collectors.toList())
-            ),
-            new PrimaryConstructor(name, this.attrs).code(),
-            String.join(
-                "\n",
-                this.methods
-                    .stream()
-                    .map(MethodImpl::java)
-                    .collect(Collectors.toList())
+        return new UncheckedText(
+            new FormattedText(
+                new UncheckedText(
+                    new JoinedText(
+                        "\n",
+                        "// fields",
+                        "%s\n",
+                        "// secondary constructors",
+                        "%s\n",
+                        "// primary constructor",
+                        "%s\n",
+                        "// methods",
+                        "%s"
+                    )
+                ).asString(),
+                new UncheckedText(
+                    new JoinedText(
+                        "\n",
+                        this.attrs
+                            .stream()
+                            .map(attr -> attr.java(ObjectBody.FIELD_FORMAT))
+                            .collect(Collectors.toList())
+                    )
+                ).asString(),
+                new UncheckedText(
+                    new JoinedText(
+                        "\n",
+                        this.ctors
+                            .stream()
+                            .map(ctor -> ctor.java(name))
+                            .collect(Collectors.toList())
+                    )
+                ).asString(),
+                new PrimaryConstructor(name, this.attrs).code(),
+                new UncheckedText(
+                    new JoinedText(
+                        "\n",
+                        this.methods
+                            .stream()
+                            .map(MethodImpl::java)
+                            .collect(Collectors.toList())
+                    )
+                ).asString()
             )
-        );
+        ).asString();
     }
 }

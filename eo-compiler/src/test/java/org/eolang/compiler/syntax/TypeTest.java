@@ -23,8 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Arrays;
 import org.cactoos.InputHasContent;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -46,10 +46,10 @@ public final class TypeTest {
         MatcherAssert.assertThat(
             new Type(
                 "Car",
-                Arrays.asList(
+                new IterableAsList<>(
                     new Method(
                         "drive",
-                        Arrays.asList(
+                        new IterableAsList<>(
                             new Parameter("x", "Integer"),
                             new Parameter("y", "Long")
                         ),
@@ -59,7 +59,7 @@ public final class TypeTest {
             ).java().code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    Arrays.asList(
+                    new IterableAsList<>(
                         "public interface Car", "{",
                             "Int drive(final Integer x, final Long y);",
                         "}"

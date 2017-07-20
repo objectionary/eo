@@ -23,8 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Arrays;
 import java.util.Collections;
+import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,15 +45,15 @@ public final class ObjectBodyTest {
     public void fieldsAndPrimaryCtorTest() {
         MatcherAssert.assertThat(
             new ObjectBody(
-                Arrays.asList(
+                new IterableAsList<>(
                     new Attribute("Number", "amount"),
                     new Attribute("Decimal", "price")
                 ),
-                Collections.emptyList(),
-                Collections.emptyList()
+                new IterableAsList<>(),
+                new IterableAsList<>()
             ).java("product"),
             Matchers.stringContainsInOrder(
-                Arrays.asList(
+                new IterableAsList<>(
                     "private final Number amount;",
                     "private final Decimal price;",
                     "public product(final Number amount, final Decimal price)",
@@ -77,19 +77,19 @@ public final class ObjectBodyTest {
                 Collections.emptyList(),
                 Collections.singleton(
                     new Ctor(
-                        Collections.singletonList(
+                        new IterableAsList<>(
                             new Parameter("title", "Text")
                         ),
-                        Arrays.asList(
+                        new IterableAsList<>(
                             new Argument.Fake("0"),
                             new Argument.Fake("title")
                         )
                     )
                 ),
-                Collections.emptyList()
+                new IterableAsList<>()
             ).java("book"),
             Matchers.stringContainsInOrder(
-                Arrays.asList(
+                new IterableAsList<>(
                     "public book(final Text title)", "{",
                     "this(0, title);",
                     "}"

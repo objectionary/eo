@@ -26,6 +26,9 @@ package org.eolang.compiler.java;
 import java.util.Collection;
 import org.cactoos.Input;
 import org.cactoos.io.BytesAsInput;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.syntax.ObjectBody;
 
 /**
@@ -69,16 +72,20 @@ public final class JavaClass implements JavaFile {
 
     @Override
     public String path() {
-        return String.format("%s.java", this.name);
+        return new UncheckedText(
+            new FormattedText("%s.java", this.name)
+        ).asString();
     }
 
     @Override
     public Input code() {
         return new BytesAsInput(
-            String.format(
+            new FormattedText(
                 "package eo;\n\npublic final class %s implements %s {\n%s\n}",
                 this.name,
-                String.join(", ", this.ifaces),
+                new UncheckedText(
+                    new JoinedText(", ", this.ifaces)
+                ).asString(),
                 this.body.java(this.name)
             )
         );

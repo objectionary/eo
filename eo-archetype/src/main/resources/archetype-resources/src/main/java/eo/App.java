@@ -23,7 +23,6 @@
  */
 package eo;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,7 +66,7 @@ public final class App implements Runnable {
         }
     )
     public static void main(final String[] args) {
-        final Thread thread = new Thread(new App(Arrays.asList(args)));
+        final Thread thread = new Thread(new App(new Iterable<>(args)));
         thread.start();
         try {
             thread.join();

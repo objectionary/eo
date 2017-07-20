@@ -25,6 +25,9 @@ package org.eolang.compiler.syntax;
 
 import java.util.Collection;
 import org.cactoos.list.MappedIterable;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Method.
@@ -68,18 +71,22 @@ public final class Method {
      * @return Java code
      */
     public String java() {
-        return String.format(
-            "%s %s(%s)",
-            this.type,
-            this.name,
-            String.join(
-                ", ",
-                new MappedIterable<>(
-                    this.parameters,
-                    Parameter::java
-                )
+        return new UncheckedText(
+            new FormattedText(
+                "%s %s(%s)",
+                this.type,
+                this.name,
+                new UncheckedText(
+                    new JoinedText(
+                        ", ",
+                        new MappedIterable<>(
+                            this.parameters,
+                            Parameter::java
+                        )
+                    )
+                ).asString()
             )
-        );
+        ).asString();
     }
 
 }
