@@ -26,6 +26,8 @@ package org.eolang.compiler.java;
 import java.util.Collections;
 import org.cactoos.InputHasContent;
 import org.cactoos.list.IterableAsList;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -76,10 +78,12 @@ public final class JavaInterfaceTest {
                 Collections.emptyList()
             ).path().toString(),
             Matchers.equalTo(
-                String.format(
-                    "%s.java",
-                    name
-                )
+                new UncheckedText(
+                    new FormattedText(
+                        "%s.java",
+                        name
+                    )
+                ).asString()
             )
         );
     }

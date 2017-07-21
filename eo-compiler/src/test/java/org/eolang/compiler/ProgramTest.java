@@ -27,6 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.BytesAsInput;
+import org.cactoos.io.InputAsBytes;
+import org.cactoos.io.PathAsInput;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
@@ -58,7 +60,9 @@ public final class ProgramTest {
         program.compile();
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("zero.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("zero.java")))
+                ).asBytes()
             ),
             Matchers.stringContainsInOrder(
                 new IterableAsList<>(
@@ -96,7 +100,9 @@ public final class ProgramTest {
         program.compile();
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("fibonacci.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("fibonacchi.java")))
+                ).asBytes()
             ),
             Matchers.stringContainsInOrder(
                 new IterableAsList<>(
@@ -145,7 +151,9 @@ public final class ProgramTest {
         program.compile();
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("Book.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("Book.java")))
+                ).asBytes()
             ),
             Matchers.allOf(
                 Matchers.containsString("interface Book"),
@@ -168,7 +176,9 @@ public final class ProgramTest {
         program.compile();
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("Pixel.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("Pixel.java")))
+                ).asBytes()
             ),
             Matchers.allOf(
                 Matchers.containsString("interface Pixel"),
@@ -193,7 +203,9 @@ public final class ProgramTest {
         program.compile();
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("Car.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("Car.java")))
+                ).asBytes()
             ),
             Matchers.allOf(
                 Matchers.containsString("interface Car"),
@@ -219,7 +231,9 @@ public final class ProgramTest {
         program.compile();
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("Number.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("Number.java")))
+                ).asBytes()
             ),
             Matchers.allOf(
                 Matchers.containsString("interface Number"),
@@ -229,7 +243,9 @@ public final class ProgramTest {
         );
         MatcherAssert.assertThat(
             new String(
-                Files.readAllBytes(dir.resolve(Paths.get("Text.java")))
+                new InputAsBytes(
+                    new PathAsInput(dir.resolve(Paths.get("Text.java")))
+                ).asBytes()
             ),
             Matchers.allOf(
                 Matchers.containsString("interface Text"),

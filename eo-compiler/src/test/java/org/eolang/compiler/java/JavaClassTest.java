@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler.java;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.cactoos.InputHasContent;
@@ -58,14 +57,14 @@ public final class JavaClassTest {
                 name,
                 Collections.singleton(type),
                 new ObjectBody(
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    Collections.emptyList()
+                    new IterableAsList<>(),
+                    new IterableAsList<>(),
+                    new IterableAsList<>()
                 )
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    Arrays.asList(
+                    new IterableAsList<>(
                         "public",
                         "final",
                         "class",
@@ -86,7 +85,7 @@ public final class JavaClassTest {
     @Test
     public void multiTypes() {
         final String name = "pdf";
-        final Collection<String> types = Arrays.asList("Text", "Book");
+        final Collection<String> types = new IterableAsList<>("Text", "Book");
         MatcherAssert.assertThat(
             new JavaClass(
                 name,

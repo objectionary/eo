@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
+
 /**
  * Method implementation.
  *
@@ -67,10 +70,12 @@ public final class MethodImpl {
      * @return Java code.
      */
     public String java() {
-        return String.format(
-            "public %s {\n  return %s;\n}",
-            this.declaration.java(),
-            this.copying.java()
-        );
+        return new UncheckedText(
+            new FormattedText(
+                "public %s {\n  return %s;\n}",
+                this.declaration.java(),
+                this.copying.java()
+            )
+        ).asString();
     }
 }

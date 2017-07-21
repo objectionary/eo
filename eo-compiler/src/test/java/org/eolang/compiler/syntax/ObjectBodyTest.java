@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Collections;
 import org.cactoos.list.IterableAsList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -74,8 +73,8 @@ public final class ObjectBodyTest {
     public void secondaryConstructorTest() {
         MatcherAssert.assertThat(
             new ObjectBody(
-                Collections.emptyList(),
-                Collections.singleton(
+                new IterableAsList<>(),
+                new IterableAsList<>(
                     new Ctor(
                         new IterableAsList<>(
                             new Parameter("title", "Text")

@@ -48,10 +48,9 @@ public final class AttributeTest {
                 "Type",
                 "name"
             ).java(
-                (type, name) ->
-                    new UncheckedText(
-                        new FormattedText("%s:%s", type, name)
-                    ).asString()
+                (type, name) -> new UncheckedText(
+                    new FormattedText("%s:%s", type, name)
+                ).asString()
             ),
             Matchers.equalTo(
                 "Type:name"

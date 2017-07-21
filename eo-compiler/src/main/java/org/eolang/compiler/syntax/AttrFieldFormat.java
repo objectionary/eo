@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
+
 /**
  * Attribute as java class field.
  *
@@ -34,6 +37,8 @@ public final class AttrFieldFormat implements AttributeFormat {
 
     @Override
     public String code(final String type, final String name) {
-        return String.format("private final %s %s;", type, name);
+        return new UncheckedText(
+            new FormattedText("private final %s %s;", type, name)
+        ).asString();
     }
 }

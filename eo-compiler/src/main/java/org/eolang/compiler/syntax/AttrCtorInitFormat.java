@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
+
 /**
  * Attribute as java constructor initializer.
  *
@@ -34,6 +37,8 @@ public final class AttrCtorInitFormat implements AttributeFormat {
 
     @Override
     public String code(final String type, final String name) {
-        return String.format("this.%s = %s;", name, name);
+        return new UncheckedText(
+            new FormattedText("this.%s = %s;", name, name)
+        ).asString();
     }
 }

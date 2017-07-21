@@ -63,7 +63,9 @@ public final class JavaInterface implements JavaFile {
 
     @Override
     public String path() {
-        return String.format("%s.java", this.name);
+        return new UncheckedText(
+            new FormattedText("%s.java", this.name)
+        ).asString();
     }
 
     @Override
@@ -77,7 +79,9 @@ public final class JavaInterface implements JavaFile {
                         "\n    ",
                         new MappedIterable<>(
                             this.methods,
-                            mtd -> String.format("%s;", mtd.java())
+                            mtd -> new UncheckedText(
+                                new FormattedText("%s;", mtd.java())
+                            ).asString()
                         )
                     )
                 ).asString()
