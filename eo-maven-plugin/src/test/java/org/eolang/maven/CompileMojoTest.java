@@ -24,19 +24,25 @@
 package org.eolang.maven;
 
 import java.io.File;
-import java.nio.file.Files;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.cactoos.io.BytesAsInput;
+import org.cactoos.io.FileAsOutput;
+import org.cactoos.io.LengthOfInput;
+import org.cactoos.io.TeeInput;
+import org.cactoos.text.StringAsText;
+import org.cactoos.text.TextAsBytes;
 import org.eolang.compiler.CompileException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Test case for {@link Main}.
+ * Test case for {@link CompileMojo}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class CompileMojoTest extends AbstractMojoTestCase {
@@ -56,10 +62,20 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         this.temp.create();
         final File src = this.temp.newFolder();
         this.setVariableValueToObject(mojo, "sourceDirectory", src);
-        Files.write(
-            new File(src, "main.eo").toPath(),
-            "type Pixel:\n  Pixel moveTo(Integer x, Integer y)".getBytes()
-        );
+        new LengthOfInput(
+            new TeeInput(
+                new BytesAsInput(
+                    new TextAsBytes(
+                        new StringAsText(
+                            "type Pixel:\n  Pixel moveTo(Integer x, Integer y)"
+                        )
+                    )
+                ),
+                new FileAsOutput(
+                    new File(src, "main.eo")
+                )
+            )
+        ).value();
         final File target = this.temp.newFolder();
         this.setVariableValueToObject(mojo, "targetDirectory", target);
         this.setVariableValueToObject(mojo, "project", new MavenProjectStub());
@@ -82,10 +98,20 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         this.setVariableValueToObject(
             mojo, "targetDirectory", this.temp.newFolder()
         );
-        Files.write(
-            new File(src, "f.eo").toPath(),
-            "something is wrong here".getBytes()
-        );
+        new LengthOfInput(
+            new TeeInput(
+                new BytesAsInput(
+                    new TextAsBytes(
+                        new StringAsText(
+                            "something is wrong here"
+                        )
+                    )
+                ),
+                new FileAsOutput(
+                    new File(src, "f.eo")
+                )
+            )
+        ).value();
         try {
             mojo.execute();
             throw new IllegalArgumentException("exception is not here, why?");

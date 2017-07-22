@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler.java;
 
-import java.util.Collections;
 import org.cactoos.InputHasContent;
 import org.cactoos.list.IterableAsList;
 import org.cactoos.text.FormattedText;
@@ -50,7 +49,7 @@ public final class JavaInterfaceTest {
         MatcherAssert.assertThat(
             new JavaInterface(
                 name,
-                Collections.emptyList()
+                new IterableAsList<>()
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
@@ -75,7 +74,7 @@ public final class JavaInterfaceTest {
         MatcherAssert.assertThat(
             new JavaInterface(
                 name,
-                Collections.emptyList()
+                new IterableAsList<>()
             ).path().toString(),
             Matchers.equalTo(
                 new UncheckedText(

@@ -24,7 +24,6 @@
 package org.eolang.compiler.java;
 
 import java.util.Collection;
-import java.util.Collections;
 import org.cactoos.InputHasContent;
 import org.cactoos.list.IterableAsList;
 import org.cactoos.text.FormattedText;
@@ -55,7 +54,7 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                Collections.singleton(type),
+                new IterableAsList<>(type),
                 new ObjectBody(
                     new IterableAsList<>(),
                     new IterableAsList<>(),
