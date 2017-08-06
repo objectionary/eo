@@ -86,7 +86,6 @@ public final class ObjectBody {
         return new UncheckedText(
             new JoinedText(
                 "\n",
-                "// fields",
                 new UncheckedText(
                     new JoinedText(
                         "\n",
@@ -96,16 +95,13 @@ public final class ObjectBody {
                         )
                     )
                 ).asString(),
-                "// secondary constructors",
                 new UncheckedText(
                     new JoinedText(
                         "\n",
                         new Mapped<>(this.ctors, ctor -> ctor.java(name))
                     )
                 ).asString(),
-                "// primary constructor",
                 new PrimaryConstructor(name, this.attrs).code(),
-                "// methods",
                 new UncheckedText(
                     new JoinedText(
                         "\n",

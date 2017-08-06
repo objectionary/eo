@@ -81,12 +81,12 @@ public final class JavaClass implements JavaFile {
     public Input code() {
         return new InputOf(
             new FormattedText(
-                "package eo;\n\npublic final class %s implements %s {\n%s\n}",
+                "public final class %s implements %s {\n  %s\n}\n",
                 this.name,
                 new UncheckedText(
                     new JoinedText(", ", this.ifaces)
                 ).asString(),
-                this.body.java(this.name)
+                this.body.java(this.name).replace("\n", "\n  ")
             )
         );
     }

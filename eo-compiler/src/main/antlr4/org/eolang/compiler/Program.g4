@@ -301,12 +301,10 @@ method_implementation returns [MethodImpl ret]
     COLON
     NEWLINE
     INDENT
-    (
-        object_copying
-    )
+    object_argument
     NEWLINE
     DEDENT
-    { $ret = new MethodImpl($method_declaration.ret, $object_copying.ret); }
+    { $ret = new MethodImpl($method_declaration.ret, $object_argument.ret); }
     ;
 
 object_argument returns [Argument ret]

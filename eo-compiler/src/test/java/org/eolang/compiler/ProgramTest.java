@@ -23,12 +23,19 @@
  */
 package org.eolang.compiler;
 
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import groovy.lang.GroovyShell;
+import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.StickyList;
+import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -41,9 +48,65 @@ import org.junit.Test;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #144:30min Two tests are disabled here because there is
+ *  something wrong with our ANTLR syntax. We should be able
+ *  to parse the files provided, but they fail. Let's find out
+ *  and fix.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ProgramTest {
+
+    /**
+     * Compiles long EO syntax.
+     * @throws Exception If some problem inside
+     */
+    @Ignore
+    @Test
+    public void compilesLongSyntax() throws Exception {
+        final Program program = new Program(
+            new ResourceOf("org/eolang/compiler/long-program.eo"),
+            s -> new DeadOutput()
+        );
+        program.compile();
+    }
+
+    /**
+     * Creates Java code that really works.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    @Ignore
+    public void compilesExecutableJava() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Program program = new Program(
+            new InputOf(
+                new JoinedText(
+                    "\n",
+                    "object car as Serializable:",
+                    "  Integer @vin",
+                    "  String name():",
+                    "    \"Mercedes-Benz\""
+                ).asString()
+            ),
+            s -> new OutputTo(baos)
+        );
+        program.compile();
+        try (final GroovyClassLoader loader = new GroovyClassLoader()) {
+            final Class<?> type = loader.parseClass(
+                new GroovyCodeSource(
+                    new TextOf(baos.toByteArray()).asString(),
+                    "car", GroovyShell.DEFAULT_CODE_BASE
+                )
+            );
+            MatcherAssert.assertThat(
+                type.getMethod("name").invoke(
+                    type.getConstructor(Integer.class).newInstance(0)
+                ),
+                Matchers.equalTo("Mercedes-Benz")
+            );
+        }
+    }
 
     /**
      * Test zero example, this object implements two interfaces.

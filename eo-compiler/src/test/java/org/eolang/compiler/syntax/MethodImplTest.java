@@ -55,22 +55,14 @@ public final class MethodImplTest {
                     ),
                     "Text"
                 ),
-                new CpObject(
-                    "textEncoded",
-                    new StickyList<>(
-                        new Argument.Fake("this.bytes"),
-                        new Argument.Fake("locale")
-                    )
-                )
+                new Argument.Fake("textEncoded")
             ).java(),
             Matchers.stringContainsInOrder(
                 new StickyList<>(
                     "public", "Text", "text", "(",
                     "final", "Locale", "locale",
                     ")", "{",
-                    "return", "new", "textEncoded", "(",
-                    "this.bytes", "locale",
-                    ")", ";",
+                    "return", "textEncoded", ";",
                     "}"
                 )
             )

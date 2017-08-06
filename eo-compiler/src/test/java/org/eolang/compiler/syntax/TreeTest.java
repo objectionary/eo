@@ -68,7 +68,6 @@ public final class TreeTest {
                 new InputHasContent(
                     Matchers.stringContainsInOrder(
                         new StickyList<>(
-                            "package eo;",
                             "public interface Car {",
                             "Int drive(final Integer x, final Long y);",
                             "}"

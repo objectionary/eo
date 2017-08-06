@@ -40,6 +40,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.text.TextOf;
 import org.eolang.compiler.syntax.Tree;
 
 /**
@@ -91,6 +92,7 @@ public final class Program {
      * @throws IOException If fails
      */
     public void compile() throws IOException {
+        final String[] lines = new TextOf(this.input).asString().split("\n");
         final ANTLRErrorListener errors = new BaseErrorListener() {
             // @checkstyle ParameterNumberCheck (10 lines)
             @Override
@@ -98,16 +100,24 @@ public final class Program {
                 final Object symbol, final int line,
                 final int position, final String msg,
                 final RecognitionException error) {
-                throw new CompileException(error);
+                throw new CompileException(
+                    String.format(
+                        "[%d:%d] %s: \"%s\"",
+                        line, position, msg, lines[line - 1]
+                    ),
+                    error
+                );
             }
         };
         final ProgramLexer lexer = new ProgramLexer(
             new ANTLRInputStream(this.input.stream())
         );
+        lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
         final ProgramParser parser = new ProgramParser(
             new CommonTokenStream(lexer)
         );
+        parser.removeErrorListeners();
         parser.addErrorListener(errors);
         final Tree tree = parser.program().ret;
         new IoCheckedScalar<>(

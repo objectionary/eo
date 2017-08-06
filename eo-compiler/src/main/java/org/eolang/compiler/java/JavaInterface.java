@@ -72,7 +72,7 @@ public final class JavaInterface implements JavaFile {
     public Input code() {
         return new InputOf(
             new FormattedText(
-                "package eo;\n\npublic interface %s {\n    %s\n}",
+                "public interface %s {\n  %s\n}\n",
                 this.name,
                 new UncheckedText(
                     new JoinedText(
@@ -84,7 +84,7 @@ public final class JavaInterface implements JavaFile {
                             ).asString()
                         )
                     )
-                ).asString()
+                ).asString().replace("\n", "\n  ")
             )
         );
     }

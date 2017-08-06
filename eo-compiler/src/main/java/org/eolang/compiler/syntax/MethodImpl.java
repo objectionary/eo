@@ -46,22 +46,19 @@ public final class MethodImpl {
     private final Method declaration;
 
     /**
-     * Object copying - method body.
+     * The argument.
      */
-    private final CpObject copying;
+    private final Argument argument;
 
     /**
      * Ctor.
      *
-     * @param declaration Method declaration
-     * @param copying Object copying
+     * @param dcr Method declaration
+     * @param arg The argument
      */
-    public MethodImpl(
-        final Method declaration,
-        final CpObject copying
-    ) {
-        this.declaration = declaration;
-        this.copying = copying;
+    public MethodImpl(final Method dcr, final Argument arg) {
+        this.declaration = dcr;
+        this.argument = arg;
     }
 
     /**
@@ -74,7 +71,7 @@ public final class MethodImpl {
             new FormattedText(
                 "public %s {\n  return %s;\n}",
                 this.declaration.java(),
-                this.copying.java()
+                this.argument.java()
             )
         ).asString();
     }
