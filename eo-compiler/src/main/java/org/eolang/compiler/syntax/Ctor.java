@@ -25,7 +25,7 @@ package org.eolang.compiler.syntax;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -60,17 +60,13 @@ public final class Ctor {
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        parameters.stream()
-                            .map(Parameter::java)
-                            .collect(Collectors.toList())
+                        new Mapped<>(parameters, Parameter::java)
                     )
                 ).asString(),
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        arguments.stream()
-                            .map(Argument::java)
-                            .collect(Collectors.toList())
+                        new Mapped<>(arguments, Argument::java)
                     )
                 ).asString()
             )

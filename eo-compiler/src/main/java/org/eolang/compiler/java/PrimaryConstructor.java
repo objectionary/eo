@@ -23,8 +23,7 @@
  */
 package org.eolang.compiler.java;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -62,20 +61,18 @@ public final class PrimaryConstructor {
     /**
      * Object attributes.
      */
-    private final Collection<Attribute> attributes;
+    private final Iterable<Attribute> attributes;
 
     /**
      * Ctor.
      *
-     * @param name Class name.
-     * @param attributes Object attributes.
+     * @param ctor Class name.
+     * @param attrs Object attributes.
      */
-    public PrimaryConstructor(
-        final String name,
-        final Collection<Attribute> attributes
-    ) {
-        this.attributes = attributes;
-        this.name = name;
+    public PrimaryConstructor(final String ctor,
+        final Iterable<Attribute> attrs) {
+        this.attributes = attrs;
+        this.name = ctor;
     }
 
     /**
@@ -91,27 +88,23 @@ public final class PrimaryConstructor {
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        this.attributes
-                            .stream()
-                            .map(
-                                attr -> attr.java(
-                                    PrimaryConstructor.CTOR_PARAM_FORMAT
-                                )
+                        new Mapped<>(
+                            this.attributes,
+                            attr -> attr.java(
+                                PrimaryConstructor.CTOR_PARAM_FORMAT
                             )
-                            .collect(Collectors.toList())
+                        )
                     )
                 ).asString(),
                 new UncheckedText(
                     new JoinedText(
                         "\n",
-                        this.attributes
-                            .stream()
-                            .map(
-                                attr -> attr.java(
-                                    PrimaryConstructor.CTOR_INIT_FORMAT
-                                )
+                        new Mapped<>(
+                            this.attributes,
+                            attr -> attr.java(
+                                PrimaryConstructor.CTOR_INIT_FORMAT
                             )
-                            .collect(Collectors.toList())
+                        )
                     )
                 ).asString()
             )

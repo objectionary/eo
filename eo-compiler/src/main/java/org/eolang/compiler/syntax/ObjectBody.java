@@ -24,7 +24,7 @@
 package org.eolang.compiler.syntax;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -102,29 +102,23 @@ public final class ObjectBody {
                 new UncheckedText(
                     new JoinedText(
                         "\n",
-                        this.attrs
-                            .stream()
-                            .map(attr -> attr.java(ObjectBody.FIELD_FORMAT))
-                            .collect(Collectors.toList())
+                        new Mapped<>(
+                            this.attrs,
+                            attr -> attr.java(ObjectBody.FIELD_FORMAT)
+                        )
                     )
                 ).asString(),
                 new UncheckedText(
                     new JoinedText(
                         "\n",
-                        this.ctors
-                            .stream()
-                            .map(ctor -> ctor.java(name))
-                            .collect(Collectors.toList())
+                        new Mapped<>(this.ctors, ctor -> ctor.java(name))
                     )
                 ).asString(),
                 new PrimaryConstructor(name, this.attrs).code(),
                 new UncheckedText(
                     new JoinedText(
                         "\n",
-                        this.methods
-                            .stream()
-                            .map(MethodImpl::java)
-                            .collect(Collectors.toList())
+                        new Mapped<>(this.methods, MethodImpl::java)
                     )
                 ).asString()
             )

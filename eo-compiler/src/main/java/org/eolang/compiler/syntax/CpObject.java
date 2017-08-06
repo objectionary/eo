@@ -23,8 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -46,17 +45,17 @@ public final class CpObject {
     /**
      * Arguments.
      */
-    private final Collection<Argument> arguments;
+    private final Iterable<Argument> arguments;
 
     /**
      * Ctor.
      *
-     * @param name Object name
-     * @param arguments Arguments
+     * @param obj Object name
+     * @param args Arguments
      */
-    public CpObject(final String name, final Collection<Argument> arguments) {
-        this.name = name;
-        this.arguments = arguments;
+    public CpObject(final String obj, final Iterable<Argument> args) {
+        this.name = obj;
+        this.arguments = args;
     }
 
     /**
@@ -72,9 +71,7 @@ public final class CpObject {
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        this.arguments.stream()
-                            .map(Argument::java)
-                            .collect(Collectors.toList())
+                        new Mapped<>(this.arguments, Argument::java)
                     )
                 ).asString()
             )
