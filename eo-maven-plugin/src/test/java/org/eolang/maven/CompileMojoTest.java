@@ -26,12 +26,10 @@ package org.eolang.maven;
 import java.io.File;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.cactoos.io.BytesAsInput;
-import org.cactoos.io.FileAsOutput;
-import org.cactoos.io.LengthOfInput;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.text.StringAsText;
-import org.cactoos.text.TextAsBytes;
 import org.eolang.compiler.CompileException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -62,18 +60,12 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         this.temp.create();
         final File src = this.temp.newFolder();
         this.setVariableValueToObject(mojo, "sourceDirectory", src);
-        new LengthOfInput(
+        new LengthOf(
             new TeeInput(
-                new BytesAsInput(
-                    new TextAsBytes(
-                        new StringAsText(
-                            "type Pixel:\n  Pixel moveTo(Integer x, Integer y)"
-                        )
-                    )
+                new InputOf(
+                    "type Pixel:\n  Pixel moveTo(Integer x, Integer y)"
                 ),
-                new FileAsOutput(
-                    new File(src, "main.eo")
-                )
+                new OutputTo(new File(src, "main.eo"))
             )
         ).value();
         final File target = this.temp.newFolder();
@@ -98,18 +90,10 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         this.setVariableValueToObject(
             mojo, "targetDirectory", this.temp.newFolder()
         );
-        new LengthOfInput(
+        new LengthOf(
             new TeeInput(
-                new BytesAsInput(
-                    new TextAsBytes(
-                        new StringAsText(
-                            "something is wrong here"
-                        )
-                    )
-                ),
-                new FileAsOutput(
-                    new File(src, "f.eo")
-                )
+                new InputOf("something is wrong here"),
+                new OutputTo(new File(src, "f.eo"))
             )
         ).value();
         try {

@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public final class MethodImplTest {
             new MethodImpl(
                 new Method(
                     "text",
-                    new IterableAsList<>(
+                    new StickyList<>(
                         new Parameter(
                             "locale",
                             "Locale"
@@ -57,14 +57,14 @@ public final class MethodImplTest {
                 ),
                 new CpObject(
                     "textEncoded",
-                    new IterableAsList<>(
+                    new StickyList<>(
                         new Argument.Fake("this.bytes"),
                         new Argument.Fake("locale")
                     )
                 )
             ).java(),
             Matchers.stringContainsInOrder(
-                new IterableAsList<>(
+                new StickyList<>(
                     "public", "Text", "text", "(",
                     "final", "Locale", "locale",
                     ")", "{",

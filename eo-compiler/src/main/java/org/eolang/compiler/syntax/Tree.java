@@ -26,9 +26,9 @@ package org.eolang.compiler.syntax;
 import java.util.Collection;
 import java.util.Map;
 import org.cactoos.Input;
-import org.cactoos.list.IterableAsMap;
-import org.cactoos.list.MapEntry;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.MapEntry;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.StickyMap;
 
 /**
  * AST.
@@ -46,10 +46,10 @@ public final class Tree {
 
     /**
      * Ctor.
-     * @param nodes All AST root nodes.
+     * @param list All AST root nodes.
      */
-    public Tree(final Collection<RootNode> nodes) {
-        this.nodes = nodes;
+    public Tree(final Collection<RootNode> list) {
+        this.nodes = list;
     }
 
     /**
@@ -57,9 +57,9 @@ public final class Tree {
      * @return Java files (path, content)
      */
     public Map<String, Input> java() {
-        return new IterableAsMap<>(
-            new MappedIterable<>(
-                new MappedIterable<>(this.nodes, RootNode::java),
+        return new StickyMap<>(
+            new Mapped<>(
+                new Mapped<>(this.nodes, RootNode::java),
                 javaFile -> new MapEntry<>(
                     javaFile.path(), javaFile.code()
                 )

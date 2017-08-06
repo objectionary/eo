@@ -26,11 +26,10 @@ package org.eolang.compiler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.io.BytesAsInput;
-import org.cactoos.io.InputAsBytes;
-import org.cactoos.io.PathAsInput;
-import org.cactoos.io.ResourceAsInput;
-import org.cactoos.list.IterableAsList;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.StickyList;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -55,17 +54,13 @@ public final class ProgramTest {
     public void processZeroExample() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
-            new ResourceAsInput("org/eolang/compiler/zero.eo"), dir
+            new ResourceOf("org/eolang/compiler/zero.eo"), dir
         );
         program.compile();
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("zero.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("zero.java"))).asString(),
             Matchers.stringContainsInOrder(
-                new IterableAsList<>(
+                new StickyList<>(
                     "public",
                     "final",
                     "class",
@@ -95,17 +90,13 @@ public final class ProgramTest {
     public void parsesFibonacciExample() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
-            new ResourceAsInput("org/eolang/compiler/fibonacci.eo"), dir
+            new ResourceOf("org/eolang/compiler/fibonacci.eo"), dir
         );
         program.compile();
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("fibonacchi.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("fibonacchi.java"))).asString(),
             Matchers.stringContainsInOrder(
-                new IterableAsList<>(
+                new StickyList<>(
                     "public", "final", "class",
                     "fibonacci", "implements", "Int", "{",
                     "private final Int n;",
@@ -146,15 +137,11 @@ public final class ProgramTest {
     public void parsesSimpleType() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
-            new ResourceAsInput("org/eolang/compiler/book.eo"), dir
+            new ResourceOf("org/eolang/compiler/book.eo"), dir
         );
         program.compile();
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("Book.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("Book.java"))).asString(),
             Matchers.allOf(
                 Matchers.containsString("interface Book"),
                 Matchers.containsString("Text text()")
@@ -171,15 +158,11 @@ public final class ProgramTest {
     public void parsesTypeWithParametrizedMethods() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
-            new ResourceAsInput("org/eolang/compiler/pixel.eo"), dir
+            new ResourceOf("org/eolang/compiler/pixel.eo"), dir
         );
         program.compile();
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("Pixel.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("Pixel.java"))).asString(),
             Matchers.allOf(
                 Matchers.containsString("interface Pixel"),
                 Matchers.containsString(
@@ -198,15 +181,11 @@ public final class ProgramTest {
     public void parsesBigType() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
-            new ResourceAsInput("org/eolang/compiler/car.eo"), dir
+            new ResourceOf("org/eolang/compiler/car.eo"), dir
         );
         program.compile();
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("Car.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("Car.java"))).asString(),
             Matchers.allOf(
                 Matchers.containsString("interface Car"),
                 Matchers.containsString("Money cost()"),
@@ -226,15 +205,11 @@ public final class ProgramTest {
     public void parsesMultipleTypes() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
-            new ResourceAsInput("org/eolang/compiler/multitypes.eo"), dir
+            new ResourceOf("org/eolang/compiler/multitypes.eo"), dir
         );
         program.compile();
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("Number.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("Number.java"))).asString(),
             Matchers.allOf(
                 Matchers.containsString("interface Number"),
                 Matchers.containsString("Decimal decimal()"),
@@ -242,11 +217,7 @@ public final class ProgramTest {
             )
         );
         MatcherAssert.assertThat(
-            new String(
-                new InputAsBytes(
-                    new PathAsInput(dir.resolve(Paths.get("Text.java")))
-                ).asBytes()
-            ),
+            new TextOf(dir.resolve(Paths.get("Text.java"))).asString(),
             Matchers.allOf(
                 Matchers.containsString("interface Text"),
                 Matchers.containsString("Number length()"),
@@ -262,7 +233,7 @@ public final class ProgramTest {
     @Test(expected = CompileException.class)
     public void failsOnBrokenSyntax() throws Exception {
         final Program program = new Program(
-            new BytesAsInput("this code is definitely wrong"),
+            new InputOf("this code is definitely wrong"),
             Files.createTempDirectory("")
         );
         program.compile();

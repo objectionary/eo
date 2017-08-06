@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,18 +45,18 @@ public final class CtorTest {
     public void java() {
         MatcherAssert.assertThat(
             new Ctor(
-                new IterableAsList<>(
+                new StickyList<>(
                     new Parameter("name", "Text"),
                     new Parameter("age", "Int")
                 ),
-                new IterableAsList<>(
+                new StickyList<>(
                     new Argument.Fake("name"),
                     new Argument.Fake("age"),
                     new Argument.Fake("new color(\"black\")")
                 )
             ).java("cat"),
             Matchers.stringContainsInOrder(
-                new IterableAsList<>(
+                new StickyList<>(
                     "public", "cat(",
                     "final Text name,",
                     "final Int age",

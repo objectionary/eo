@@ -24,7 +24,7 @@
 package org.eolang.compiler.java;
 
 import org.cactoos.InputHasContent;
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
@@ -49,11 +49,11 @@ public final class JavaInterfaceTest {
         MatcherAssert.assertThat(
             new JavaInterface(
                 name,
-                new IterableAsList<>()
+                new StickyList<>()
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    new IterableAsList<>(
+                    new StickyList<>(
                         "public",
                         "interface",
                         name,
@@ -74,8 +74,8 @@ public final class JavaInterfaceTest {
         MatcherAssert.assertThat(
             new JavaInterface(
                 name,
-                new IterableAsList<>()
-            ).path().toString(),
+                new StickyList<>()
+            ).path(),
             Matchers.equalTo(
                 new UncheckedText(
                     new FormattedText(

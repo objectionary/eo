@@ -25,7 +25,7 @@ package org.eolang.compiler.java;
 
 import java.util.Collection;
 import org.cactoos.Input;
-import org.cactoos.io.BytesAsInput;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -79,7 +79,7 @@ public final class JavaClass implements JavaFile {
 
     @Override
     public Input code() {
-        return new BytesAsInput(
+        return new InputOf(
             new FormattedText(
                 "package eo;\n\npublic final class %s implements %s {\n%s\n}",
                 this.name,

@@ -24,7 +24,7 @@
 package org.eolang.compiler.syntax;
 
 import org.cactoos.InputHasContent;
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -46,10 +46,10 @@ public final class TypeTest {
         MatcherAssert.assertThat(
             new Type(
                 "Car",
-                new IterableAsList<>(
+                new StickyList<>(
                     new Method(
                         "drive",
-                        new IterableAsList<>(
+                        new StickyList<>(
                             new Parameter("x", "Integer"),
                             new Parameter("y", "Long")
                         ),
@@ -59,7 +59,7 @@ public final class TypeTest {
             ).java().code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    new IterableAsList<>(
+                    new StickyList<>(
                         "public interface Car", "{",
                             "Int drive(final Integer x, final Long y);",
                         "}"

@@ -25,7 +25,7 @@ package org.eolang.compiler.java;
 
 import java.util.Collection;
 import org.cactoos.InputHasContent;
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.syntax.Attribute;
@@ -54,16 +54,16 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                new IterableAsList<>(type),
+                new StickyList<>(type),
                 new ObjectBody(
-                    new IterableAsList<>(),
-                    new IterableAsList<>(),
-                    new IterableAsList<>()
+                    new StickyList<>(),
+                    new StickyList<>(),
+                    new StickyList<>()
                 )
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    new IterableAsList<>(
+                    new StickyList<>(
                         "public",
                         "final",
                         "class",
@@ -84,20 +84,20 @@ public final class JavaClassTest {
     @Test
     public void multiTypes() {
         final String name = "pdf";
-        final Collection<String> types = new IterableAsList<>("Text", "Book");
+        final Collection<String> types = new StickyList<>("Text", "Book");
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
                 types,
                 new ObjectBody(
-                    new IterableAsList<>(),
-                    new IterableAsList<>(),
-                    new IterableAsList<>()
+                    new StickyList<>(),
+                    new StickyList<>(),
+                    new StickyList<>()
                 )
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    new IterableAsList<>(
+                    new StickyList<>(
                         "public",
                         "final",
                         "class",
@@ -118,20 +118,20 @@ public final class JavaClassTest {
     @Test
     public void fields() {
         final String name = "error";
-        final Collection<String> types = new IterableAsList<>("Error");
+        final Collection<String> types = new StickyList<>("Error");
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
                 types,
                 new ObjectBody(
-                    new IterableAsList<>(new Attribute("Text", "msg")),
-                    new IterableAsList<>(),
-                    new IterableAsList<>()
+                    new StickyList<>(new Attribute("Text", "msg")),
+                    new StickyList<>(),
+                    new StickyList<>()
                 )
             ).code(),
             new InputHasContent(
                 Matchers.stringContainsInOrder(
-                    new IterableAsList<>(
+                    new StickyList<>(
                         "public final class",
                         name,
                         "implements Error",
@@ -159,11 +159,11 @@ public final class JavaClassTest {
         MatcherAssert.assertThat(
             new JavaClass(
                 name,
-                new IterableAsList<>("Text"),
+                new StickyList<>("Text"),
                 new ObjectBody(
-                    new IterableAsList<>(),
-                    new IterableAsList<>(),
-                    new IterableAsList<>()
+                    new StickyList<>(),
+                    new StickyList<>(),
+                    new StickyList<>()
                 )
             ).path(),
             Matchers.equalTo(

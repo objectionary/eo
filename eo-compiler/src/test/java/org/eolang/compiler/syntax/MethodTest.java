@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public final class MethodTest {
         MatcherAssert.assertThat(
             new Method(
                 "send",
-                new IterableAsList<>(
+                new StickyList<>(
                     new Parameter("receiver", "Person"),
                     new Parameter("content", "Content")
                 ),

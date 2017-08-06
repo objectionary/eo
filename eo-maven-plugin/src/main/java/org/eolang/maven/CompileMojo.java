@@ -35,7 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.cactoos.io.PathAsInput;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.Program;
@@ -121,7 +121,7 @@ public final class CompileMojo extends AbstractMojo {
     private void compile(final Path file) {
         try {
             new Program(
-                new PathAsInput(file),
+                new InputOf(file),
                 this.targetDirectory.toPath()
             ).compile();
         } catch (final IOException ex) {

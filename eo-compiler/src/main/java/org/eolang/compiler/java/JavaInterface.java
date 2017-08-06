@@ -25,8 +25,8 @@ package org.eolang.compiler.java;
 
 import java.util.Collection;
 import org.cactoos.Input;
-import org.cactoos.io.BytesAsInput;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.io.InputOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -70,14 +70,14 @@ public final class JavaInterface implements JavaFile {
 
     @Override
     public Input code() {
-        return new BytesAsInput(
+        return new InputOf(
             new FormattedText(
                 "package eo;\n\npublic interface %s {\n    %s\n}",
                 this.name,
                 new UncheckedText(
                     new JoinedText(
                         "\n    ",
-                        new MappedIterable<>(
+                        new Mapped<>(
                             this.methods,
                             mtd -> new UncheckedText(
                                 new FormattedText("%s;", mtd.java())

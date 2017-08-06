@@ -24,8 +24,7 @@
 package org.eolang.compiler.syntax;
 
 import org.cactoos.InputHasContent;
-import org.cactoos.list.ArrayAsIterable;
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -48,13 +47,13 @@ public final class TreeTest {
     public void generatesJavaFiles() throws Exception {
         MatcherAssert.assertThat(
             new Tree(
-                new IterableAsList<>(
+                new StickyList<>(
                     new Type(
                         "Car",
-                        new IterableAsList<>(
+                        new StickyList<>(
                             new Method(
                                 "drive",
-                                new IterableAsList<>(
+                                new StickyList<>(
                                     new Parameter("x", "Integer"),
                                     new Parameter("y", "Long")
                                 ),
@@ -68,7 +67,7 @@ public final class TreeTest {
                 Matchers.equalTo("Car.java"),
                 new InputHasContent(
                     Matchers.stringContainsInOrder(
-                        new ArrayAsIterable<>(
+                        new StickyList<>(
                             "package eo;",
                             "public interface Car {",
                             "Int drive(final Integer x, final Long y);",

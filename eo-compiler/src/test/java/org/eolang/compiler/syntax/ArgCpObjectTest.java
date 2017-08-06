@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public final class ArgCpObjectTest {
             new ArgCpObject(
                 new CpObject(
                     "point",
-                    new IterableAsList<>(
+                    new StickyList<>(
                         new Argument.Fake("42"),
                         new Argument.Fake("11")
                     )

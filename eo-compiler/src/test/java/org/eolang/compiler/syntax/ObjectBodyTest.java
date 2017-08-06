@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.cactoos.list.IterableAsList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -44,15 +44,15 @@ public final class ObjectBodyTest {
     public void fieldsAndPrimaryCtorTest() {
         MatcherAssert.assertThat(
             new ObjectBody(
-                new IterableAsList<>(
+                new StickyList<>(
                     new Attribute("Number", "amount"),
                     new Attribute("Decimal", "price")
                 ),
-                new IterableAsList<>(),
-                new IterableAsList<>()
+                new StickyList<>(),
+                new StickyList<>()
             ).java("product"),
             Matchers.stringContainsInOrder(
-                new IterableAsList<>(
+                new StickyList<>(
                     "private final Number amount;",
                     "private final Decimal price;",
                     "public product(final Number amount, final Decimal price)",
@@ -73,22 +73,22 @@ public final class ObjectBodyTest {
     public void secondaryConstructorTest() {
         MatcherAssert.assertThat(
             new ObjectBody(
-                new IterableAsList<>(),
-                new IterableAsList<>(
+                new StickyList<>(),
+                new StickyList<>(
                     new Ctor(
-                        new IterableAsList<>(
+                        new StickyList<>(
                             new Parameter("title", "Text")
                         ),
-                        new IterableAsList<>(
+                        new StickyList<>(
                             new Argument.Fake("0"),
                             new Argument.Fake("title")
                         )
                     )
                 ),
-                new IterableAsList<>()
+                new StickyList<>()
             ).java("book"),
             Matchers.stringContainsInOrder(
-                new IterableAsList<>(
+                new StickyList<>(
                     "public book(final Text title)", "{",
                     "this(0, title);",
                     "}"

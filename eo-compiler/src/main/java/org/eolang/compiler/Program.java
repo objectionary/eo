@@ -35,11 +35,11 @@ import org.antlr.v4.runtime.Recognizer;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.Output;
-import org.cactoos.func.And;
-import org.cactoos.func.IoCheckedScalar;
-import org.cactoos.io.FileAsOutput;
-import org.cactoos.io.LengthOfInput;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.And;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.eolang.compiler.syntax.Tree;
 
 /**
@@ -70,7 +70,7 @@ public final class Program {
     public Program(final Input ipt, final Path dir) {
         this(
             ipt,
-            path -> new FileAsOutput(
+            path -> new OutputTo(
                 new File(dir.toFile(), path)
             )
         );
@@ -114,7 +114,7 @@ public final class Program {
             new And(
                 tree.java().entrySet(),
                 path -> {
-                    new LengthOfInput(
+                    new LengthOf(
                         new TeeInput(
                             path.getValue(),
                             this.target.apply(path.getKey())

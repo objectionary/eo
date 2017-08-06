@@ -24,7 +24,7 @@
 package org.eolang.compiler.syntax;
 
 import java.util.Collection;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
@@ -79,7 +79,7 @@ public final class Method {
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        new MappedIterable<>(
+                        new Mapped<>(
                             this.parameters,
                             Parameter::java
                         )
