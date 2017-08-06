@@ -25,7 +25,6 @@ package org.eolang.compiler.syntax;
 
 import java.util.Collection;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.java.PrimaryConstructor;
@@ -85,20 +84,9 @@ public final class ObjectBody {
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public String java(final String name) {
         return new UncheckedText(
-            new FormattedText(
-                new UncheckedText(
-                    new JoinedText(
-                        "\n",
-                        "// fields",
-                        "%s\n",
-                        "// secondary constructors",
-                        "%s\n",
-                        "// primary constructor",
-                        "%s\n",
-                        "// methods",
-                        "%s"
-                    )
-                ).asString(),
+            new JoinedText(
+                "\n",
+                "// fields",
                 new UncheckedText(
                     new JoinedText(
                         "\n",
@@ -108,13 +96,16 @@ public final class ObjectBody {
                         )
                     )
                 ).asString(),
+                "// secondary constructors",
                 new UncheckedText(
                     new JoinedText(
                         "\n",
                         new Mapped<>(this.ctors, ctor -> ctor.java(name))
                     )
                 ).asString(),
+                "// primary constructor",
                 new PrimaryConstructor(name, this.attrs).code(),
+                "// methods",
                 new UncheckedText(
                     new JoinedText(
                         "\n",
