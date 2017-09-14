@@ -72,7 +72,8 @@ public final class JavaInterface implements JavaFile {
     public Input code() {
         return new InputOf(
             new FormattedText(
-                "public interface %s {\n  %s\n}\n",
+                "%s\n\npublic interface %s {\n  %s\n}\n",
+                "package eo;",
                 this.name,
                 new UncheckedText(
                     new JoinedText(

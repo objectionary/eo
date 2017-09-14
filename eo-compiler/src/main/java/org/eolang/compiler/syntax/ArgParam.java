@@ -23,67 +23,31 @@
  */
 package org.eolang.compiler.syntax;
 
-import java.util.List;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.JoinedText;
-import org.cactoos.text.UncheckedText;
-
 /**
- * Object copying.
+ * Method parameter as object argument.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class CpObject {
+public final class ArgParam implements Argument {
 
     /**
-     * Object name.
+     * Parameter name.
      */
     private final String name;
 
     /**
-     * Arguments.
-     */
-    private final List<Argument> args;
-
-    /**
      * Ctor.
      *
-     * @param obj Object name
-     * @param args Arguments
+     * @param name Attribute name
      */
-    public CpObject(final String obj, final List<Argument> args) {
-        this.name = obj;
-        this.args = args;
+    public ArgParam(final String name) {
+        this.name = name;
     }
 
-    /**
-     * Object copying arguments.
-     * @return An argument list
-     */
-    public List<Argument> arguments() {
-        return this.args;
-    }
-
-    /**
-     * Java code for object copying.
-     *
-     * @return Java code
-     */
+    @Override
     public String java() {
-        return new UncheckedText(
-            new FormattedText(
-                "new %s(%s)",
-                this.name,
-                new UncheckedText(
-                    new JoinedText(
-                        ", ",
-                        new Mapped<>(this.args, Argument::java)
-                    )
-                ).asString()
-            )
-        ).asString();
+        return this.name;
     }
 }

@@ -39,7 +39,6 @@ import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -49,10 +48,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #144:30min Two tests are disabled here because there is
- *  something wrong with our ANTLR syntax. We should be able
- *  to parse the files provided, but they fail. Let's find out
- *  and fix.
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ProgramTest {
@@ -61,7 +57,6 @@ public final class ProgramTest {
      * Compiles long EO syntax.
      * @throws Exception If some problem inside
      */
-    @Ignore
     @Test
     public void compilesLongSyntax() throws Exception {
         final Program program = new Program(
@@ -76,7 +71,6 @@ public final class ProgramTest {
      * @throws Exception If some problem inside
      */
     @Test
-    @Ignore
     public void compilesExecutableJava() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
@@ -141,15 +135,7 @@ public final class ProgramTest {
         );
     }
 
-    /**
-     * Program can parse a simple fibonacci example.
-     * @throws Exception If some problem inside
-     * @todo #138:30min For some reason this test doesn't work. Let's
-     *  investigate and fix. It stopped to work after I introduced
-     *  strict error checking in ANTLR.
-     */
     @Test
-    @Ignore
     public void parsesFibonacciExample() throws Exception {
         final Path dir = Files.createTempDirectory("");
         final Program program = new Program(
@@ -157,7 +143,7 @@ public final class ProgramTest {
         );
         program.compile();
         MatcherAssert.assertThat(
-            new TextOf(dir.resolve(Paths.get("fibonacchi.java"))).asString(),
+            new TextOf(dir.resolve(Paths.get("fibonacci.java"))).asString(),
             Matchers.stringContainsInOrder(
                 new StickyList<>(
                     "public", "final", "class",

@@ -81,7 +81,8 @@ public final class JavaClass implements JavaFile {
     public Input code() {
         return new InputOf(
             new FormattedText(
-                "public final class %s implements %s {\n  %s\n}\n",
+                "%s\n\npublic final class %s implements %s {\n  %s\n}\n",
+                "package eo;",
                 this.name,
                 new UncheckedText(
                     new JoinedText(", ", this.ifaces)
