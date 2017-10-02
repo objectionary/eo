@@ -27,8 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -110,7 +110,7 @@ public final class Program {
             }
         };
         final ProgramLexer lexer = new ProgramLexer(
-            new ANTLRInputStream(this.input.stream())
+            CharStreams.fromStream(this.input.stream())
         );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
