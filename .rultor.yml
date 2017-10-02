@@ -10,6 +10,7 @@ env:
 install: |
   sudo gem install --no-rdoc --no-ri pdd
   sudo gem install --no-rdoc --no-ri est
+  sudo gem install --no-rdoc --no-ri xcop
 architect:
 - yegor256
 merge:
