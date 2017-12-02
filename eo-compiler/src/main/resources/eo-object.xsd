@@ -22,121 +22,112 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="SNAPSHOT"
-           elementFormDefault="qualified">
-    <xs:simpleType name="objectName">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="[a-z][A-Za-z]{2,}"/>
-        </xs:restriction>
-    </xs:simpleType>
-    <xs:simpleType name="methodName">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="[a-z][A-Za-z]{2,}"/>
-        </xs:restriction>
-    </xs:simpleType>
-    <xs:simpleType name="typeName">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="[A-Z][a-z]{2,}"/>
-        </xs:restriction>
-    </xs:simpleType>
-    <xs:simpleType name="attributeName">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="[a-z]{3,}"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:complexType name="type">
-        <xs:attribute name="name" use="required" type="typeName"/>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="SNAPSHOT" elementFormDefault="qualified">
+  <xs:simpleType name="objectName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z][A-Za-z]{2,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="methodName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z][A-Za-z]{2,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="typeName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Z][a-z]{2,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="attributeName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z]{3,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="type">
+    <xs:attribute name="name" use="required" type="typeName"/>
+  </xs:complexType>
+  <xs:complexType name="types">
+    <xs:sequence>
+      <xs:element name="type" type="type" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="attribute">
+    <xs:sequence>
+      <xs:element name="type" type="type"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="attributeName"/>
+  </xs:complexType>
+  <xs:complexType name="attributes">
+    <xs:sequence>
+      <xs:element name="attribute" type="attribute" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="argumentScalar">
+    <xs:simpleContent>
+      <xs:extension base="argumentScalar">
+        <xs:attribute name="type" type="typeName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="argumentAttribute">
+    <xs:attribute name="name" type="attributeName"/>
+  </xs:complexType>
+  <xs:complexType name="arguments">
+    <xs:all>
+      <xs:element name="scalar" type="argumentScalar"/>
+      <xs:element name="attribute" type="argumentAttribute"/>
+      <xs:element name="copy" type="copy"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="copy">
+    <xs:sequence>
+      <xs:element name="arguments" type="arguments"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="objectName"/>
+  </xs:complexType>
+  <xs:complexType name="constructor">
+    <xs:sequence>
+      <xs:element name="copy" type="copy"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="constructors">
+    <xs:sequence>
+      <xs:element name="constructor" type="constructor" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="method">
+    <xs:sequence>
+      <xs:element name="type" type="type"/>
+      <xs:element name="copy" type="copy"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="methodName"/>
+  </xs:complexType>
+  <xs:complexType name="methods">
+    <xs:sequence>
+      <xs:element name="method" type="method" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="object">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="types" type="types"/>
+        <xs:element name="attributes" type="attributes"/>
+        <xs:element name="constructors" type="constructors"/>
+        <xs:element name="methods" type="methods"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required"/>
     </xs:complexType>
-    <xs:complexType name="types">
-        <xs:sequence>
-            <xs:element name="type" type="type" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="attribute">
-        <xs:sequence>
-            <xs:element name="type" type="type"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="attributeName"/>
-    </xs:complexType>
-    <xs:complexType name="attributes">
-        <xs:sequence>
-            <xs:element name="attribute" type="attribute"
-                        maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="argumentScalar">
-        <xs:simpleContent>
-            <xs:extension base="argumentScalar">
-                <xs:attribute name="type" type="typeName"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="argumentAttribute">
-        <xs:attribute name="name" type="attributeName"/>
-    </xs:complexType>
-    <xs:complexType name="arguments">
-        <xs:all>
-            <xs:element name="scalar" type="argumentScalar"/>
-            <xs:element name="attribute" type="argumentAttribute"/>
-            <xs:element name="copy" type="copy"/>
-        </xs:all>
-    </xs:complexType>
-    <xs:complexType name="copy">
-        <xs:sequence>
-            <xs:element name="arguments" type="arguments"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="objectName"/>
-    </xs:complexType>
-
-    <xs:complexType name="constructor">
-        <xs:sequence>
-            <xs:element name="copy" type="copy"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="constructors">
-        <xs:sequence>
-            <xs:element name="constructor" type="constructor"
-                        maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="method">
-        <xs:sequence>
-            <xs:element name="type" type="type"/>
-            <xs:element name="copy" type="copy"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="methodName"/>
-    </xs:complexType>
-    <xs:complexType name="methods">
-        <xs:sequence>
-            <xs:element name="method" type="method" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:element name="object">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="types" type="types"/>
-                <xs:element name="attributes" type="attributes" />
-                <xs:element name="constructors" type="constructors" />
-                <xs:element name="methods" type="methods" />
-            </xs:sequence>
-            <xs:attribute name="name" use="required"/>
-        </xs:complexType>
-        <xs:unique name="uniqueTypes">
-            <xs:selector xpath="types/type"/>
-            <xs:field xpath="@name"/>
-        </xs:unique>
-        <xs:unique name="uniqueAttributes">
-            <xs:selector xpath="attributes/attribute"/>
-            <xs:field xpath="@name"/>
-        </xs:unique>
-        <xs:unique name="uniqueMethods">
-            <xs:selector xpath="methods/method"/>
-            <xs:field xpath="@name"/>
-        </xs:unique>
-    </xs:element>
+    <xs:unique name="uniqueTypes">
+      <xs:selector xpath="types/type"/>
+      <xs:field xpath="@name"/>
+    </xs:unique>
+    <xs:unique name="uniqueAttributes">
+      <xs:selector xpath="attributes/attribute"/>
+      <xs:field xpath="@name"/>
+    </xs:unique>
+    <xs:unique name="uniqueMethods">
+      <xs:selector xpath="methods/method"/>
+      <xs:field xpath="@name"/>
+    </xs:unique>
+  </xs:element>
 </xs:schema>
