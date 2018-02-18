@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler.syntax;
 
+import org.eolang.compiler.xml.XmlAttribute;
+import org.xembly.Directive;
+
 /**
  * Object attribute.
  *
@@ -61,5 +64,13 @@ public final class Attribute {
      */
     public String java(final AttributeFormat format) {
         return format.code(this.type, this.name);
+    }
+
+    /**
+     * As XML.
+     * @return Directives
+     */
+    public Iterable<Directive> xml() {
+        return new XmlAttribute(this.name, this.type);
     }
 }

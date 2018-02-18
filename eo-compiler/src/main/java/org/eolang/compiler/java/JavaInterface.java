@@ -79,10 +79,10 @@ public final class JavaInterface implements JavaFile {
                     new JoinedText(
                         "\n    ",
                         new Mapped<>(
-                            this.methods,
                             mtd -> new UncheckedText(
                                 new FormattedText("%s;", mtd.java())
-                            ).asString()
+                            ).asString(),
+                            this.methods
                         )
                     )
                 ).asString().replace("\n", "\n  ")

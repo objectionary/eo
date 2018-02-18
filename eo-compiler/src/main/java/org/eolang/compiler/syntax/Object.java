@@ -26,6 +26,8 @@ package org.eolang.compiler.syntax;
 import java.util.Collection;
 import org.eolang.compiler.java.JavaClass;
 import org.eolang.compiler.java.JavaFile;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * EO Object.
@@ -40,8 +42,8 @@ public final class Object implements RootNode {
      * Object name.
      *
      * @todo #95:30m Object name should be optional.
-     *  As described in #54, object can be anonymous.
-     *  I think we should generate some java class name in this case.
+     * As described in #54, object can be anonymous.
+     * I think we should generate some java class name in this case.
      */
     private final String name;
 
@@ -79,5 +81,20 @@ public final class Object implements RootNode {
             this.types,
             this.body
         );
+    }
+
+    @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public Iterable<Directive> xml() {
+        final Directives dir = new Directives()
+            .add("object")
+            .attr("name", this.name);
+        dir.add("types");
+        for (final String type : this.types) {
+            dir.add("type").attr("name", type).up();
+        }
+        dir.up();
+        dir.append(this.body.xml());
+        return dir.up();
     }
 }

@@ -24,8 +24,11 @@
 package org.eolang.compiler.syntax;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eolang.compiler.java.JavaFile;
 import org.eolang.compiler.java.JavaInterface;
+import org.eolang.compiler.xml.XmlTypeDef;
+import org.xembly.Directive;
 
 /**
  * Type.
@@ -60,5 +63,10 @@ public final class Type implements RootNode {
     @Override
     public JavaFile java() {
         return new JavaInterface(this.name, this.methods);
+    }
+
+    @Override
+    public Iterable<Directive> xml() {
+        return new XmlTypeDef(this.name, Collections.emptyList(), this.methods);
     }
 }

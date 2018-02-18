@@ -21,70 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.xml;
 
-import java.util.List;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.JoinedText;
-import org.cactoos.text.UncheckedText;
+import java.util.Iterator;
+import org.eolang.compiler.syntax.Method;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * Object copying.
- *
+ * Type def as XML.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class CpObject {
-
+public final class XmlTypeDef implements Iterable<Directive> {
     /**
-     * Object name.
+     * Type name.
      */
     private final String name;
-
     /**
-     * Arguments.
+     * Type supertypes.
      */
-    private final List<Argument> args;
-
+    private final Iterable<String> spr;
+    /**
+     * Type methods.
+     */
+    private final Iterable<Method> methods;
     /**
      * Ctor.
-     *
-     * @param obj Object name
-     * @param args Arguments
+     * @param name Name
+     * @param spr Supertypes
+     * @param methods Methods
      */
-    public CpObject(final String obj, final List<Argument> args) {
-        this.name = obj;
-        this.args = args;
+    public XmlTypeDef(final String name,
+        final Iterable<String> spr, final Iterable<Method> methods) {
+        this.name = name;
+        this.spr = spr;
+        this.methods = methods;
     }
 
-    /**
-     * Object copying arguments.
-     *
-     * @return An argument list
-     */
-    public List<Argument> arguments() {
-        return this.args;
-    }
-
-    /**
-     * Java code for object copying.
-     *
-     * @return Java code
-     */
-    public String java() {
-        return new UncheckedText(
-            new FormattedText(
-                "new %s(%s)",
-                this.name,
-                new UncheckedText(
-                    new JoinedText(
-                        ", ",
-                        new Mapped<>(Argument::java, this.args)
-                    )
-                ).asString()
-            )
-        ).asString();
+    @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public Iterator<Directive> iterator() {
+        final Directives dir = new Directives().add("type")
+            .attr("name", this.name);
+        dir.add("super");
+        for (final String type : this.spr) {
+            dir.add("type").attr("name", type).up();
+        }
+        dir.up();
+        dir.add("methods");
+        for (final Method method : this.methods) {
+            dir.append(method.xml());
+        }
+        dir.up();
+        return dir.up().iterator();
     }
 }

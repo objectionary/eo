@@ -23,8 +23,8 @@
  */
 package org.eolang.compiler.java;
 
-import org.cactoos.InputHasContent;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
+import org.cactoos.matchers.InputHasContent;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;

@@ -21,70 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.xml;
 
-import java.util.List;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.JoinedText;
-import org.cactoos.text.UncheckedText;
+import java.util.Collection;
+import java.util.Iterator;
+import org.eolang.compiler.syntax.Parameter;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * Object copying.
- *
+ * Method def as XML.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class CpObject {
-
+public final class XmlMethodDef implements Iterable<Directive> {
     /**
-     * Object name.
+     * Parameters.
+     */
+    private final Collection<Parameter> params;
+    /**
+     * Method type.
+     */
+    private final String type;
+    /**
+     * Method name.
      */
     private final String name;
-
-    /**
-     * Arguments.
-     */
-    private final List<Argument> args;
-
     /**
      * Ctor.
-     *
-     * @param obj Object name
-     * @param args Arguments
+     * @param name Name
+     * @param type Type
+     * @param parameters Parameters
      */
-    public CpObject(final String obj, final List<Argument> args) {
-        this.name = obj;
-        this.args = args;
+    public XmlMethodDef(final String name,
+        final String type, final Collection<Parameter> parameters) {
+        this.name = name;
+        this.type = type;
+        this.params = parameters;
     }
 
-    /**
-     * Object copying arguments.
-     *
-     * @return An argument list
-     */
-    public List<Argument> arguments() {
-        return this.args;
-    }
-
-    /**
-     * Java code for object copying.
-     *
-     * @return Java code
-     */
-    public String java() {
-        return new UncheckedText(
-            new FormattedText(
-                "new %s(%s)",
-                this.name,
-                new UncheckedText(
-                    new JoinedText(
-                        ", ",
-                        new Mapped<>(Argument::java, this.args)
-                    )
-                ).asString()
-            )
-        ).asString();
+    @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public Iterator<Directive> iterator() {
+        final Directives dir = new Directives()
+            .add("method")
+            .attr("name", this.name)
+            .add("type")
+            .attr("name", this.type)
+            .up();
+        dir.add("params");
+        for (final Parameter param : this.params) {
+            dir.append(param.xml());
+        }
+        dir.up();
+        return dir.up().iterator();
     }
 }

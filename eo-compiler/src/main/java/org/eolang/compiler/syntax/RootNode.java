@@ -24,6 +24,7 @@
 package org.eolang.compiler.syntax;
 
 import org.eolang.compiler.java.JavaFile;
+import org.xembly.Directive;
 
 /**
  * AST root node. A part of {@link Tree}.
@@ -40,4 +41,10 @@ public interface RootNode {
      * @return Java code and path
      */
     JavaFile java();
+
+    /**
+     * As xml.
+     * @return Directives
+     */
+    Iterable<Directive> xml();
 }

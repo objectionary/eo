@@ -21,40 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.xml;
 
-import org.cactoos.list.StickyList;
+import com.jcabi.matchers.XhtmlMatchers;
+import org.cactoos.list.ListOf;
+import org.eolang.compiler.syntax.Parameter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Xembler;
 
 /**
- * Test case for {@link Method}.
- * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
+ * Test case for {@link XmlMethodDef}.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class MethodTest {
-
-    /**
-     * Method can generate Java file.
-     * @throws Exception If some problem inside
-     */
+public final class XmlMethodDefTest {
     @Test
-    public void generatesJavaFile() throws Exception {
+    public void compileToXml() throws Exception {
         MatcherAssert.assertThat(
-            new Method(
-                "send",
-                new StickyList<>(
-                    new Parameter("receiver", "Person"),
-                    new Parameter("content", "Content")
-                ),
-                "Message"
-            ).java(),
-            Matchers.is(
-                "Message send(final Person receiver, final Content content)"
+            XhtmlMatchers.xhtml(
+                new Xembler(
+                    new XmlMethodDef(
+                        "printf",
+                        "Text",
+                        new ListOf<>(
+                            new Parameter(
+                                "format",
+                                "String"
+                            ),
+                            new Parameter(
+                                "args",
+                                "List"
+                            )
+                        )
+                    )
+                ).xml()
+            ),
+            Matchers.allOf(
+                XhtmlMatchers.hasXPath("/method[@name = 'printf']"),
+                XhtmlMatchers.hasXPath("/method/type[@name = 'Text']"),
+                XhtmlMatchers.hasXPath("/method/params[count(param) = 2]")
             )
         );
     }
-
 }

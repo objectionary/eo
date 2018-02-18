@@ -23,7 +23,7 @@
  */
 package org.eolang.compiler.java;
 
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
 import org.eolang.compiler.syntax.Attribute;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

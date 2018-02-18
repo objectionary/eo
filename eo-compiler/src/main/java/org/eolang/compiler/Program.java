@@ -65,6 +65,7 @@ public final class Program {
 
     /**
      * Ctor.
+     *
      * @param ipt Input text
      * @param dir Directory to write to
      */
@@ -79,6 +80,7 @@ public final class Program {
 
     /**
      * Ctor.
+     *
      * @param ipt Input text
      * @param tgt Target
      */
@@ -89,6 +91,7 @@ public final class Program {
 
     /**
      * Compile it to Java and save.
+     *
      * @throws IOException If fails
      */
     public void compile() throws IOException {
@@ -109,20 +112,21 @@ public final class Program {
                 );
             }
         };
-        final ProgramLexer lexer = new ProgramLexer(
-            CharStreams.fromStream(this.input.stream())
-        );
+        final org.eolang.compiler.ProgramLexer lexer =
+            new org.eolang.compiler.ProgramLexer(
+                CharStreams.fromStream(this.input.stream())
+            );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
-        final ProgramParser parser = new ProgramParser(
-            new CommonTokenStream(lexer)
-        );
+        final org.eolang.compiler.ProgramParser parser =
+            new org.eolang.compiler.ProgramParser(
+                new CommonTokenStream(lexer)
+            );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
         final Tree tree = parser.program().ret;
         new IoCheckedScalar<>(
             new And(
-                tree.java().entrySet(),
                 path -> {
                     new LengthOf(
                         new TeeInput(
@@ -130,7 +134,8 @@ public final class Program {
                             this.target.apply(path.getKey())
                         )
                     ).value();
-                }
+                },
+                tree.java().entrySet()
             )
         ).value();
     }

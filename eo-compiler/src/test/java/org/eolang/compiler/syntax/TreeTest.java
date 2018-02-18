@@ -23,8 +23,8 @@
  */
 package org.eolang.compiler.syntax;
 
-import org.cactoos.InputHasContent;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
+import org.cactoos.matchers.InputHasContent;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

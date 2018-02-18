@@ -21,40 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.xml;
 
-import org.cactoos.list.StickyList;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import java.util.Iterator;
+import org.eolang.compiler.syntax.RootNode;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * Test case for {@link Method}.
- * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
+ * Module XML.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class MethodTest {
-
+public final class XmlModule implements Iterable<Directive> {
     /**
-     * Method can generate Java file.
-     * @throws Exception If some problem inside
+     * Module nodes.
      */
-    @Test
-    public void generatesJavaFile() throws Exception {
-        MatcherAssert.assertThat(
-            new Method(
-                "send",
-                new StickyList<>(
-                    new Parameter("receiver", "Person"),
-                    new Parameter("content", "Content")
-                ),
-                "Message"
-            ).java(),
-            Matchers.is(
-                "Message send(final Person receiver, final Content content)"
-            )
-        );
+    private final Iterable<RootNode> nodes;
+    /**
+     * Ctor.
+     *
+     * @param nodes Module nodes
+     */
+    public XmlModule(final Iterable<RootNode> nodes) {
+        this.nodes = nodes;
     }
 
+    @Override
+    public Iterator<Directive> iterator() {
+        final Directives dir = new Directives().add("module");
+        for (final RootNode node : this.nodes) {
+            dir.append(node.xml());
+        }
+        return dir.up().iterator();
+    }
 }

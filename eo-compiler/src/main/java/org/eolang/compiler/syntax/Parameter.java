@@ -25,6 +25,8 @@ package org.eolang.compiler.syntax;
 
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
+import org.eolang.compiler.xml.XmlParam;
+import org.xembly.Directive;
 
 /**
  * Parameter.
@@ -69,4 +71,11 @@ public final class Parameter {
         ).asString();
     }
 
+    /**
+     * As XML.
+     * @return Directives
+     */
+    public Iterable<Directive> xml() {
+        return new XmlParam(this.name, this.type);
+    }
 }

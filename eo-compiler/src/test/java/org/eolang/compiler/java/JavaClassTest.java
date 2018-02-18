@@ -24,8 +24,8 @@
 package org.eolang.compiler.java;
 
 import java.util.Collection;
-import org.cactoos.InputHasContent;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
+import org.cactoos.matchers.InputHasContent;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.syntax.Attribute;

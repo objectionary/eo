@@ -21,40 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.xml;
 
-import org.cactoos.list.StickyList;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import java.util.Iterator;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * Test case for {@link Method}.
- * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
+ * Attribute as XML.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class MethodTest {
+public final class XmlAttribute implements Iterable<Directive> {
+    /**
+     * Name.
+     */
+    private final String name;
+    /**
+     * Type.
+     */
+    private final String type;
 
     /**
-     * Method can generate Java file.
-     * @throws Exception If some problem inside
+     * Ctor.
+     * @param name Name
+     * @param type Type
      */
-    @Test
-    public void generatesJavaFile() throws Exception {
-        MatcherAssert.assertThat(
-            new Method(
-                "send",
-                new StickyList<>(
-                    new Parameter("receiver", "Person"),
-                    new Parameter("content", "Content")
-                ),
-                "Message"
-            ).java(),
-            Matchers.is(
-                "Message send(final Person receiver, final Content content)"
-            )
-        );
+    public XmlAttribute(final String name, final String type) {
+        this.name = name;
+        this.type = type;
     }
 
+    @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public Iterator<Directive> iterator() {
+        return new Directives()
+            .add("attribute")
+            .attr("name", this.name)
+            .add("type").attr("name", this.type).up()
+            .up().iterator();
+    }
 }

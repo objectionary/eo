@@ -26,9 +26,11 @@ package org.eolang.compiler.syntax;
 import java.util.Collection;
 import java.util.Map;
 import org.cactoos.Input;
-import org.cactoos.iterable.MapEntry;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.StickyMap;
+import org.eolang.compiler.xml.XmlModule;
+import org.xembly.Directive;
 
 /**
  * AST.
@@ -46,6 +48,7 @@ public final class Tree {
 
     /**
      * Ctor.
+     *
      * @param list All AST root nodes.
      */
     public Tree(final Collection<RootNode> list) {
@@ -54,16 +57,26 @@ public final class Tree {
 
     /**
      * Compile it to Java files.
+     *
      * @return Java files (path, content)
      */
     public Map<String, Input> java() {
         return new StickyMap<>(
             new Mapped<>(
-                new Mapped<>(this.nodes, RootNode::java),
                 javaFile -> new MapEntry<>(
                     javaFile.path(), javaFile.code()
-                )
+                ),
+                new Mapped<>(RootNode::java, this.nodes)
             )
         );
+    }
+
+    /**
+     * Compile syntax tree to xml.
+     *
+     * @return XML
+     */
+    public Iterable<Directive> xml() {
+        return new XmlModule(this.nodes);
     }
 }

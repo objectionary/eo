@@ -89,10 +89,10 @@ public final class PrimaryConstructor {
                     new JoinedText(
                         ", ",
                         new Mapped<>(
-                            this.attributes,
                             attr -> attr.java(
                                 PrimaryConstructor.CTOR_PARAM_FORMAT
-                            )
+                            ),
+                            this.attributes
                         )
                     )
                 ).asString(),
@@ -100,10 +100,10 @@ public final class PrimaryConstructor {
                     new JoinedText(
                         "\n",
                         new Mapped<>(
-                            this.attributes,
                             attr -> attr.java(
                                 PrimaryConstructor.CTOR_INIT_FORMAT
-                            )
+                            ),
+                            this.attributes
                         )
                     )
                 ).asString()

@@ -21,40 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
+package org.eolang.compiler.xml;
 
-import org.cactoos.list.StickyList;
+import com.jcabi.matchers.XhtmlMatchers;
+import java.util.Collections;
+import org.cactoos.list.ListOf;
+import org.eolang.compiler.syntax.Method;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Xembler;
 
 /**
- * Test case for {@link Method}.
- * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
+ * Test case for {@link XmlTypeDef}.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class MethodTest {
-
-    /**
-     * Method can generate Java file.
-     * @throws Exception If some problem inside
-     */
+public final class XmlTypeDefTest {
     @Test
-    public void generatesJavaFile() throws Exception {
+    public void compileToXml() throws Exception {
         MatcherAssert.assertThat(
-            new Method(
-                "send",
-                new StickyList<>(
-                    new Parameter("receiver", "Person"),
-                    new Parameter("content", "Content")
-                ),
-                "Message"
-            ).java(),
-            Matchers.is(
-                "Message send(final Person receiver, final Content content)"
+            XhtmlMatchers.xhtml(
+                new Xembler(
+                    new XmlTypeDef(
+                        "Book",
+                        new ListOf<>(
+                            "Text"
+                        ),
+                        new ListOf<>(
+                            new Method(
+                                "page",
+                                Collections.emptyList(),
+                                "Page"
+                            )
+                        )
+                    )
+                ).xml()
+            ),
+            Matchers.allOf(
+                XhtmlMatchers.hasXPath("/type[@name = 'Book']"),
+                XhtmlMatchers.hasXPath("/type/super/type[@name = 'Text']"),
+                XhtmlMatchers.hasXPath("/type/methods[count(method) = 1]")
             )
         );
     }
-
 }

@@ -28,6 +28,8 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.java.PrimaryConstructor;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Object body.
@@ -90,25 +92,38 @@ public final class ObjectBody {
                     new JoinedText(
                         "\n",
                         new Mapped<>(
-                            this.attrs,
-                            attr -> attr.java(ObjectBody.FIELD_FORMAT)
+                            attr -> attr.java(ObjectBody.FIELD_FORMAT),
+                            this.attrs
                         )
                     )
                 ).asString(),
                 new UncheckedText(
                     new JoinedText(
                         "\n",
-                        new Mapped<>(this.ctors, ctor -> ctor.java(name))
+                        new Mapped<>(ctor -> ctor.java(name), this.ctors)
                     )
                 ).asString(),
                 new PrimaryConstructor(name, this.attrs).code(),
                 new UncheckedText(
                     new JoinedText(
                         "\n",
-                        new Mapped<>(this.methods, MethodImpl::java)
+                        new Mapped<>(MethodImpl::java, this.methods)
                     )
                 ).asString()
             )
         ).asString();
+    }
+
+    /**
+     * As XML.
+     * @return Directives
+     */
+    public Iterable<Directive> xml() {
+        final Directives dir = new Directives();
+        dir.add("attributes");
+        for (final Attribute attr : this.attrs) {
+            dir.append(attr.xml());
+        }
+        return dir;
     }
 }

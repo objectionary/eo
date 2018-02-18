@@ -60,13 +60,13 @@ public final class Ctor {
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        new Mapped<>(parameters, Parameter::java)
+                        new Mapped<>(Parameter::java, parameters)
                     )
                 ).asString(),
                 new UncheckedText(
                     new JoinedText(
                         ", ",
-                        new Mapped<>(arguments, Argument::java)
+                        new Mapped<>(Argument::java, arguments)
                     )
                 ).asString()
             )

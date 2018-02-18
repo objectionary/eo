@@ -28,6 +28,8 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.UncheckedText;
+import org.eolang.compiler.xml.XmlMethodDef;
+import org.xembly.Directive;
 
 /**
  * Method.
@@ -55,6 +57,7 @@ public final class Method {
 
     /**
      * Ctor.
+     *
      * @param mtd Method name
      * @param params Parameters
      * @param rtp Return type
@@ -68,6 +71,7 @@ public final class Method {
 
     /**
      * Convert it to Java.
+     *
      * @return Java code
      */
     public String java() {
@@ -80,8 +84,8 @@ public final class Method {
                     new JoinedText(
                         ", ",
                         new Mapped<>(
-                            this.parameters,
-                            Parameter::java
+                            Parameter::java,
+                            this.parameters
                         )
                     )
                 ).asString()
@@ -89,4 +93,11 @@ public final class Method {
         ).asString();
     }
 
+    /**
+     * As XML.
+     * @return Directives
+     */
+    public Iterable<Directive> xml() {
+        return new XmlMethodDef(this.name, this.type, this.parameters);
+    }
 }

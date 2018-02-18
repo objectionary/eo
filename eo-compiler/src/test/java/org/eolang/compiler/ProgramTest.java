@@ -34,7 +34,7 @@ import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;

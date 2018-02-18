@@ -21,40 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler.syntax;
-
-import org.cactoos.list.StickyList;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
 /**
- * Test case for {@link Method}.
- * @author Piotr Chmielowski (piotrek.chmielowski@interia.pl)
+ * XML eo objects.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class MethodTest {
-
-    /**
-     * Method can generate Java file.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void generatesJavaFile() throws Exception {
-        MatcherAssert.assertThat(
-            new Method(
-                "send",
-                new StickyList<>(
-                    new Parameter("receiver", "Person"),
-                    new Parameter("content", "Content")
-                ),
-                "Message"
-            ).java(),
-            Matchers.is(
-                "Message send(final Person receiver, final Content content)"
-            )
-        );
-    }
-
-}
+package org.eolang.compiler.xml;
