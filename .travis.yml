@@ -12,7 +12,7 @@ env:
     - MAVEN_OPTS="-Xmx256m"
     - JAVA_OPTS="-Xmx256m"
 install:
-  - gem install pdd
+  - gem install pdd -v 0.20.5
   - gem install est
   - gem install xcop
 jdk:
