@@ -9,6 +9,7 @@
 
 [![Build Status](https://travis-ci.org/yegor256/eo.svg?branch=master)](https://travis-ci.org/yegor256/eo)
 [![PDD status](http://www.0pdd.com/svg?name=yegor256/eo)](http://www.0pdd.com/p?name=yegor256/eo)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e4f7ed144919f7f0d58c/maintainability)](https://codeclimate.com/github/yegor256/eo/maintainability)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/eo)](https://hitsofcode.com/view/github/yegor256/eo)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/eo/blob/master/LICENSE.txt)
 
