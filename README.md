@@ -1,11 +1,16 @@
 <img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" height="100px" />
 
-[![Managed by Zerocracy](http://www.zerocracy.com/badge.svg)](http://www.zerocracy.com)
+[![Donate via Zerocracy](https://www.0crat.com/contrib-badge/C63314D6Z.svg)](https://www.0crat.com/contrib/C63314D6Z)
+
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![Managed by Zerocracy](https://www.0crat.com/badge/C63314D6Z.svg)](https://www.0crat.com/p/C63314D6Z)
 [![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/eo)](http://www.rultor.com/p/yegor256/eo)
+[![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
 [![Build Status](https://travis-ci.org/yegor256/eo.svg?branch=master)](https://travis-ci.org/yegor256/eo)
 [![PDD status](http://www.0pdd.com/svg?name=yegor256/eo)](http://www.0pdd.com/p?name=yegor256/eo)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/takes/blob/master/LICENSE.txt)
+[![Hits-of-Code](https://hitsofcode.com/github/yegor256/eo)](https://hitsofcode.com/view/github/yegor256/eo)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/eo/blob/master/LICENSE.txt)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
@@ -413,7 +418,7 @@ object fibonacci(1) as Int:
 
 Here, `if`, `firstIsLess`, `plus`, and `minus` are objects being copied.
 
-# How to contribute
+## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review your changes and apply them to the master branch shortly, provided they don't violate our quality standards. To avoid frustration, before sending us your pull request please run full Maven build:
 
@@ -427,11 +432,3 @@ and shows errors about ProgramLexer is undefined:
 - Select eo-compiler
 - Right button
 - Generate Sources and Update Folders
-
-# License
-
-* Copyright (c) 2016 eolang.org [contributors](https://github.com/yegor256/eo/graphs/contributors)
-
-This EO documentation, examples and the [eo-compiler](eo-compiler)
-is distributed under [The MIT License](http://www.opensource.org/licenses/MIT).
-See [LICENSE](LICENSE) for details.
