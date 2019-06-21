@@ -36,7 +36,7 @@ put all that "crazy" pure object-oriented ideas into practice and
 see whether they can work. It's an experiment, a prototype, a proof-of-concept.
 
 If you want to contribute, please join our
-[Gitter chat](https://gitter.im/yegor256/elegantobjects) first.
+[Telegram chat](https://t.me/elegantobjects) first.
 
 Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
 
