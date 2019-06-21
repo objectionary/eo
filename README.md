@@ -424,8 +424,8 @@ Fork repository, make changes, send us a pull request. We will review your chang
 
 `$ mvn clean install -Pqulice`
 
-# Troubleshooting
-## Intellij IDEA
+## Troubleshooting
+
 If after clean import from Maven, IDEA doesn't compile the project
 and shows errors about ProgramLexer is undefined:
 - Open Maven Projects window
