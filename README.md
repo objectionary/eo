@@ -12,6 +12,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e4f7ed144919f7f0d58c/maintainability)](https://codeclimate.com/github/yegor256/eo/maintainability)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/eo)](https://hitsofcode.com/view/github/yegor256/eo)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/eo/blob/master/LICENSE.txt)
+![Lines of code](https://img.shields.io/tokei/lines/github/yegor256/eo)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
