@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016 eolang.org
@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler;
 
-import java.nio.file.Files;
 import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
@@ -41,7 +40,7 @@ public final class ProgramTest {
     public void compilesSimpleCode() throws Exception {
         final Program program = new Program(
             new ResourceOf("org/eolang/compiler/fibonacci.eo"),
-            s -> new DeadOutput()
+            new DeadOutput()
         );
         program.compile();
     }
@@ -53,7 +52,7 @@ public final class ProgramTest {
             () -> {
                 final Program program = new Program(
                     new InputOf("this code is definitely wrong"),
-                    Files.createTempDirectory("")
+                    new DeadOutput()
                 );
                 program.compile();
             }

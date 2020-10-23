@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016 eolang.org
@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -32,12 +31,16 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.Output;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.io.UncheckedInput;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
-import org.xembly.Directive;
+import org.xembly.Xembler;
 
 /**
  * Program.
@@ -53,23 +56,18 @@ public final class Program {
     private final Input input;
 
     /**
-     * Target to save to.
+     * Target to save XML to.
      */
-    private final Func<String, Output> target;
+    private final Output target;
 
     /**
      * Ctor.
      *
      * @param ipt Input text
-     * @param dir Directory to write to
+     * @param file The file to write the XML to
      */
-    public Program(final Input ipt, final Path dir) {
-        this(
-            ipt,
-            path -> new OutputTo(
-                new File(dir.toFile(), path)
-            )
-        );
+    public Program(final Input ipt, final Path file) {
+        this(ipt, new OutputTo(file));
     }
 
     /**
@@ -78,7 +76,7 @@ public final class Program {
      * @param ipt Input text
      * @param tgt Target
      */
-    public Program(final Input ipt, final Func<String, Output> tgt) {
+    public Program(final Input ipt, final Output tgt) {
         this.input = ipt;
         this.target = tgt;
     }
@@ -108,7 +106,9 @@ public final class Program {
         };
         final ProgramLexer lexer =
             new ProgramLexer(
-                CharStreams.fromStream(this.input.stream())
+                CharStreams.fromStream(
+                    new UncheckedInput(this.input).stream()
+                )
             );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
@@ -118,18 +118,18 @@ public final class Program {
             );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        final Iterable<Directive> tree = parser.program().ret;
-//        new IoCheckedScalar<>(
-//            new And(
-//                path -> new LengthOf(
-//                    new TeeInput(
-//                        path.getValue(),
-//                        this.target.apply(path.getKey())
-//                    )
-//                ).value(),
-//                tree.java().entrySet()
-//            )
-//        ).value();
+        new Unchecked<Double>(
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(
+                        new Xembler(
+                            parser.program().ret
+                        ).xmlQuietly()
+                    ),
+                    this.target
+                )
+            )
+        ).value();
     }
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016 eolang.org
@@ -37,7 +37,7 @@ public final class MainTest {
 
     @Test
     public void printsSimpleResponse() throws Exception {
-        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             new Main(new PrintStream(baos), "--help").exec();
             MatcherAssert.assertThat(
                 new String(baos.toByteArray()),

@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016 eolang.org
@@ -24,6 +24,7 @@
 package org.eolang.compiler;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Main.
@@ -49,7 +50,7 @@ public final class Main {
      */
     public Main(final PrintStream out, final String... input) {
         this.stdout = out;
-        this.args = input;
+        this.args = Arrays.copyOf(input, input.length);
     }
 
     /**
