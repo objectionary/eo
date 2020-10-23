@@ -1,17 +1,13 @@
-object fibonacci as Int:
-  Int @n
-  ctor():
-    fibonacci:
-      1
-  Int int():
-    if:
-      firstIsLess:
-        @n
-        2
-      1
-      plus:
-        @n
-        fibonacci:
-          minus:
-            @n
-            1
+# This is the header comment of this simple EO
+# program, to be ignored.
+
++meta This is just a test META
++meta2 And yet another one
+
+fibo (n) =
+  if
+    less n 2
+    n
+    add
+      fibo (sub n 1)
+      fibo (sub n 2)

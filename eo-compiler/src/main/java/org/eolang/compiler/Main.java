@@ -28,8 +28,6 @@ import java.io.PrintStream;
 /**
  * Main.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public final class Main {

@@ -26,8 +26,6 @@ package org.eolang.compiler;
 /**
  * When compilation fails.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public final class CompileException extends RuntimeException {

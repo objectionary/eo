@@ -27,20 +27,14 @@ import java.io.PrintStream;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Main}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public final class MainTest {
 
-    /**
-     * Main can print a simple text.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void printsSimpleResponse() throws Exception {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {

@@ -35,19 +35,13 @@ import org.antlr.v4.runtime.Recognizer;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.Output;
-import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.And;
-import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.text.TextOf;
-import org.eolang.compiler.syntax.Tree;
+import org.xembly.Directive;
 
 /**
  * Program.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -90,7 +84,7 @@ public final class Program {
     }
 
     /**
-     * Compile it to Java and save.
+     * Compile it to XML and save.
      *
      * @throws IOException If fails
      */
@@ -112,32 +106,30 @@ public final class Program {
                 );
             }
         };
-        final org.eolang.compiler.ProgramLexer lexer =
-            new org.eolang.compiler.ProgramLexer(
+        final ProgramLexer lexer =
+            new ProgramLexer(
                 CharStreams.fromStream(this.input.stream())
             );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
-        final org.eolang.compiler.ProgramParser parser =
-            new org.eolang.compiler.ProgramParser(
+        final ProgramParser parser =
+            new ProgramParser(
                 new CommonTokenStream(lexer)
             );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        final Tree tree = parser.program().ret;
-        new IoCheckedScalar<>(
-            new And(
-                path -> {
-                    new LengthOf(
-                        new TeeInput(
-                            path.getValue(),
-                            this.target.apply(path.getKey())
-                        )
-                    ).value();
-                },
-                tree.java().entrySet()
-            )
-        ).value();
+        final Iterable<Directive> tree = parser.program().ret;
+//        new IoCheckedScalar<>(
+//            new And(
+//                path -> new LengthOf(
+//                    new TeeInput(
+//                        path.getValue(),
+//                        this.target.apply(path.getKey())
+//                    )
+//                ).value(),
+//                tree.java().entrySet()
+//            )
+//        ).value();
     }
 
 }
