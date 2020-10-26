@@ -31,6 +31,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
@@ -40,7 +41,6 @@ import org.cactoos.io.UncheckedInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
-import org.xembly.Xembler;
 
 /**
  * Program.
@@ -118,14 +118,12 @@ public final class Program {
             );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        new Unchecked<Double>(
+        final XeListener xel = new XeListener();
+        new ParseTreeWalker().walk(xel, parser.program());
+        new Unchecked<>(
             new LengthOf(
                 new TeeInput(
-                    new InputOf(
-                        new Xembler(
-                            parser.program().ret
-                        ).xmlQuietly()
-                    ),
+                    new InputOf(xel.xml()),
                     this.target
                 )
             )

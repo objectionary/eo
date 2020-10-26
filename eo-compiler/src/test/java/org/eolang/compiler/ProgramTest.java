@@ -23,9 +23,13 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import java.io.ByteArrayOutputStream;
 import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,11 +42,34 @@ public final class ProgramTest {
 
     @Test
     public void compilesSimpleCode() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
             new ResourceOf("org/eolang/compiler/fibonacci.eo"),
-            new DeadOutput()
+            new OutputTo(baos)
         );
         program.compile();
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new String(baos.toByteArray())
+            ),
+            XhtmlMatchers.hasXPath("//abstraction[name='fibo']")
+        );
+    }
+
+    @Test
+    public void compilesLargeCode() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Program program = new Program(
+            new ResourceOf("org/eolang/compiler/leap-year.eo"),
+            new OutputTo(baos)
+        );
+        program.compile();
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new String(baos.toByteArray())
+            ),
+            XhtmlMatchers.hasXPath("/program")
+        );
     }
 
     @Test

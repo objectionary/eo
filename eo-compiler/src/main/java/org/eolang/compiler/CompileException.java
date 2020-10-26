@@ -38,6 +38,14 @@ public final class CompileException extends RuntimeException {
     /**
      * Ctor.
      * @param msg Message
+     */
+    public CompileException(final String msg) {
+        super(msg);
+    }
+
+    /**
+     * Ctor.
+     * @param msg Message
      * @param cause Cause of failure
      */
     public CompileException(final String msg, final Exception cause) {

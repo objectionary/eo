@@ -1,0 +1,169 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016 eolang.org
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package org.eolang.compiler;
+
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.TerminalNode;
+import org.xembly.Directives;
+import org.xembly.Xembler;
+
+/**
+ * Program.
+ *
+ * @since 0.1
+ */
+public final class XeListener implements ProgramListener {
+
+    private final Directives dirs = new Directives();
+
+    public String xml() {
+        return new Xembler(this.dirs).xmlQuietly();
+    }
+
+    @Override
+    public void enterProgram(final ProgramParser.ProgramContext ctx) {
+        this.dirs.add("program");
+    }
+
+    @Override
+    public void exitProgram(final ProgramParser.ProgramContext ctx) {
+        this.dirs.up();
+    }
+
+    @Override
+    public void enterLicense(final ProgramParser.LicenseContext ctx) {
+        this.dirs.add("license");
+    }
+
+    @Override
+    public void exitLicense(final ProgramParser.LicenseContext ctx) {
+        this.dirs.up();
+    }
+
+    @Override
+    public void enterMetas(final ProgramParser.MetasContext ctx) {
+        this.dirs.add("metas");
+        for (TerminalNode node : ctx.META()) {
+            final String[] parts = node.getText().split(" ", 2);
+            this.dirs.add("meta")
+                .add("head").set(parts[0]).up()
+                .add("tail").set(parts[1]).up()
+                .up();
+        }
+        this.dirs.up();
+    }
+
+    @Override
+    public void exitMetas(final ProgramParser.MetasContext ctx) {
+    }
+
+    @Override
+    public void enterObject(final ProgramParser.ObjectContext ctx) {
+        this.dirs.add("object");
+    }
+
+    @Override
+    public void exitObject(final ProgramParser.ObjectContext ctx) {
+        this.dirs.up();
+    }
+
+    @Override
+    public void enterVobject(final ProgramParser.VobjectContext ctx) {
+    }
+
+    @Override
+    public void exitVobject(final ProgramParser.VobjectContext ctx) {
+    }
+
+    @Override
+    public void enterPrefix(final ProgramParser.PrefixContext ctx) {
+    }
+
+    @Override
+    public void exitPrefix(final ProgramParser.PrefixContext ctx) {
+    }
+
+    @Override
+    public void enterAttributes(final ProgramParser.AttributesContext ctx) {
+    }
+
+    @Override
+    public void exitAttributes(final ProgramParser.AttributesContext ctx) {
+    }
+
+    @Override
+    public void enterSuffix(final ProgramParser.SuffixContext ctx) {
+        if (ctx.NAME() != null) {
+            this.dirs.attr("name", ctx.NAME().getText());
+        }
+    }
+
+    @Override
+    public void exitSuffix(final ProgramParser.SuffixContext ctx) {
+    }
+
+    @Override
+    public void enterHobject(final ProgramParser.HobjectContext ctx) {
+    }
+
+    @Override
+    public void exitHobject(final ProgramParser.HobjectContext ctx) {
+    }
+
+    @Override
+    public void enterTerm(final ProgramParser.TermContext ctx) {
+        if (ctx.NAME())
+        this.dirs.attr("name", ctx.)
+    }
+
+    @Override
+    public void exitTerm(final ProgramParser.TermContext ctx) {
+    }
+
+    @Override
+    public void enterPrimitive(final ProgramParser.PrimitiveContext ctx) {
+    }
+
+    @Override
+    public void exitPrimitive(final ProgramParser.PrimitiveContext ctx) {
+    }
+
+    @Override
+    public void visitTerminal(final TerminalNode terminalNode) {
+    }
+
+    @Override
+    public void visitErrorNode(final ErrorNode errorNode) {
+        throw new CompileException(errorNode.getText());
+    }
+
+    @Override
+    public void enterEveryRule(final ParserRuleContext parserRuleContext) {
+    }
+
+    @Override
+    public void exitEveryRule(final ParserRuleContext parserRuleContext) {
+    }
+}

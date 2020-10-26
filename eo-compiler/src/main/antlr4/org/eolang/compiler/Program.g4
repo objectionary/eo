@@ -23,108 +23,92 @@ tokens { TAB, UNTAB }
     }
 }
 
-program returns [Iterable<Directive> ret]
+program
     :
-    header?
+    license?
     metas?
     object
     EOL
-    { $ret = new Directives(); }
     ;
 
-header
+license
     :
     (COMMENT EOL)+
     EOL
     ;
 
-metas returns [Iterable<Directive> ret]
+metas
     :
-    { Directives dirs = new Directives(); }
     (
         META
-        { dirs.add("meta").set($META.text).up(); }
         EOL
     )+
     EOL
-    { $ret = dirs; }
     ;
 
-object returns [Iterable<Directive> ret]
+object
+    :
+    vobject
+    |
+    hobject
+    ;
+
+vobject
     :
     COMMENT*
-    (
-        abstraction
-        { $ret = $abstraction.ret; }
-        |
-        application
-        { $ret = $application.ret; }
-    )
-    ;
-
-abstraction returns [Iterable<Directive> ret]
-    :
-    (
-        NAME
-        (
-            SPACE
-            attributes
-        )?
-        SPACE
-    )?
-    EQ
-    kids
-    { $ret = new Directives(); }
-    ;
-
-attributes returns [Iterable<Directive> ret]
-    :
-    { Directives dirs = new Directives(); }
-    LB
-    NAME
-    { dirs.add("attribute").set($NAME.text).up(); }
-    (
-        SPACE
-        NAME
-        { dirs.add("attribute").set($NAME.text).up(); }
-    )*
-    RB
-    { $ret = dirs; }
-    ;
-
-kids returns [Iterable<Directive> ret]
-    :
-    { Directives dirs = new Directives(); }
+    prefix
+    suffix?
     EOL
     TAB
-    object
-    { dirs.append($object.ret); }
+    head=object
     (
         EOL
-        object
-        { dirs.append($object.ret); }
+        tail=object
     )*
-    { $ret = dirs; }
+    |
+    vobject
+    EOL
+    DOT
+    NAME
     ;
 
-application returns [Iterable<Directive> ret]
+prefix
     :
-    (
-        NAME
-        SPACE
-        EQ
-        SPACE
-    )?
-    (
-        term
-        |
-        NAME
-        kids
-    )
-    { $ret = new Directives(); }
+    attributes
+    |
+    NAME
     ;
 
-term returns [Iterable<Directive> ret]
+attributes
+    :
+    LSQ
+    head=NAME
+    (
+        SPACE
+        tail=NAME
+    )*
+    RSQ
+    ;
+
+suffix
+    :
+    SPACE
+    ARROW
+    SPACE
+    NAME
+    ;
+
+hobject
+    :
+    term
+    (
+        SPACE
+        xterm
+    )?
+    suffix?
+    ;
+
+term
     :
     NAME
     |
@@ -135,20 +119,26 @@ term returns [Iterable<Directive> ret]
     NAME
     |
     AT
-    |
+    ;
+
+xterm
+    :
     term
+    |
+    head=term
     (
         SPACE
-        term
+        tail=term
     )+
     |
     LB
+    NAME
+    SPACE
     term
     RB
-    { $ret = new Directives(); }
     ;
 
-primitive returns [Iterable<Directive> ret]
+primitive
     :
     (
         STRING
@@ -161,13 +151,17 @@ primitive returns [Iterable<Directive> ret]
         |
         CHAR
     )
-    { $ret = new Directives(); }
     ;
 
-EQ: '=';
+COMMENT: HASH ~[\r\n]*;
+META: PLUS NAME (SPACE ~[\r\n]+)?;
+
+ARROW: '>';
 PLUS: '+';
 SPACE: ' ';
 DOT: '.';
+LSQ: '[';
+RSQ: ']';
 LB: '(';
 RB: ')';
 AT: '@';
@@ -201,6 +195,3 @@ HEX: '0x' DIGIT+;
 
 LETTER: [a-zA-Z];
 DIGIT: [0-9];
-
-COMMENT: HASH ~[\r\n]*;
-META: PLUS NAME (SPACE ~[\r\n]+)?;
