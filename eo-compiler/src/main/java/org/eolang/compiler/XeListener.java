@@ -81,28 +81,20 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterObject(final ProgramParser.ObjectContext ctx) {
-        this.dirs.add("object");
     }
 
     @Override
     public void exitObject(final ProgramParser.ObjectContext ctx) {
-        this.dirs.up();
     }
 
     @Override
     public void enterVobject(final ProgramParser.VobjectContext ctx) {
+        this.dirs.add("o").attr("name", "");
     }
 
     @Override
     public void exitVobject(final ProgramParser.VobjectContext ctx) {
-    }
-
-    @Override
-    public void enterPrefix(final ProgramParser.PrefixContext ctx) {
-    }
-
-    @Override
-    public void exitPrefix(final ProgramParser.PrefixContext ctx) {
+        this.dirs.up();
     }
 
     @Override
@@ -126,28 +118,39 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterHobject(final ProgramParser.HobjectContext ctx) {
+        this.dirs.add("o").attr("name", "");
     }
 
     @Override
     public void exitHobject(final ProgramParser.HobjectContext ctx) {
+        this.dirs.up();
     }
 
     @Override
-    public void enterTerm(final ProgramParser.TermContext ctx) {
-        if (ctx.NAME())
-        this.dirs.attr("name", ctx.)
+    public void enterData(final ProgramParser.DataContext ctx) {
+        final String type;
+        final String data;
+        if (ctx.CHAR() != null) {
+            type = "char";
+            data = ctx.getText().substring(1, 1);
+        } else if (ctx.FLOAT() != null) {
+            type = "float";
+            data = Float.toString(Float.parseFloat(ctx.getText()));
+        } else if (ctx.INTEGER() != null) {
+            type = "float";
+            data = Integer.toString(Integer.parseInt(ctx.getText()));
+        } else if (ctx.STRING() != null) {
+            type = "string";
+            data = ctx.getText().substring(1, ctx.getText().length() - 1);
+        } else {
+            throw new CompileException("Unknown data type");
+        }
+        this.dirs.attr("atom", type);
+        this.dirs.set(data);
     }
 
     @Override
-    public void exitTerm(final ProgramParser.TermContext ctx) {
-    }
-
-    @Override
-    public void enterPrimitive(final ProgramParser.PrimitiveContext ctx) {
-    }
-
-    @Override
-    public void exitPrimitive(final ProgramParser.PrimitiveContext ctx) {
+    public void exitData(final ProgramParser.DataContext ctx) {
     }
 
     @Override

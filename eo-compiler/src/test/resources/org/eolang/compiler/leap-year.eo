@@ -5,14 +5,9 @@
 +alias stdin org.eolang.io.Stdin
 +alias scanner org.eolang.txt.Scanner
 
-[y] > leap
-  or
-    and
-      eq (mod y 4) 0
-      not (eq (mod y 100) 0)
-    eq (mod y 400) 0
-
 [args] > main
+  stdout > help
+    "Just run it and see the output"
   and
     stdout
       "Enter a year:"
@@ -25,3 +20,11 @@
         " is a leap year?"
         leap year
       .println
+
+[y] > leap
+  or
+    and
+      eq (mod y 4) 0
+      not (eq (mod y 100) 0)
+    eq (mod y 400) 0
+

@@ -68,7 +68,7 @@ public final class ProgramTest {
             XhtmlMatchers.xhtml(
                 new String(baos.toByteArray())
             ),
-            XhtmlMatchers.hasXPath("/program")
+            XhtmlMatchers.hasXPath("/program/xx")
         );
     }
 

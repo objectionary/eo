@@ -1,10 +1,7 @@
 grammar Program;
 
 @header {
-    import org.xembly.Directive;
-    import org.xembly.Directives;
     import java.util.LinkedList;
-    import java.util.Collection;
 }
 
 tokens { TAB, UNTAB }
@@ -27,8 +24,7 @@ program
     :
     license?
     metas?
-    object
-    EOL
+    (object EOL)+
     ;
 
 license
@@ -39,10 +35,7 @@ license
 
 metas
     :
-    (
-        META
-        EOL
-    )+
+    (META EOL)+
     EOL
     ;
 
@@ -56,15 +49,11 @@ object
 vobject
     :
     COMMENT*
-    prefix
+    (attributes | NAME)
     suffix?
     EOL
     TAB
-    head=object
-    (
-        EOL
-        tail=object
-    )*
+    head=object (EOL tail=object)*
     |
     vobject
     EOL
@@ -72,21 +61,10 @@ vobject
     NAME
     ;
 
-prefix
-    :
-    attributes
-    |
-    NAME
-    ;
-
 attributes
     :
     LSQ
-    head=NAME
-    (
-        SPACE
-        tail=NAME
-    )*
+    head=NAME (SPACE tail=NAME)*
     RSQ
     ;
 
@@ -100,57 +78,37 @@ suffix
 
 hobject
     :
-    term
-    (
-        SPACE
-        xterm
-    )?
-    suffix?
-    ;
-
-term
-    :
+    AT
+    |
     NAME
     |
-    primitive
+    data
     |
-    term
+    hobject
     DOT
     NAME
     |
-    AT
-    ;
-
-xterm
-    :
-    term
-    |
-    head=term
-    (
-        SPACE
-        tail=term
-    )+
-    |
     LB
-    NAME
-    SPACE
-    term
+    hobject
     RB
+    |
+    hobject
+    suffix
+    |
+    head=hobject (SPACE tail=hobject)
     ;
 
-primitive
+data
     :
-    (
-        STRING
-        |
-        INTEGER
-        |
-        FLOAT
-        |
-        HEX
-        |
-        CHAR
-    )
+    STRING
+    |
+    INTEGER
+    |
+    FLOAT
+    |
+    HEX
+    |
+    CHAR
     ;
 
 COMMENT: HASH ~[\r\n]*;
