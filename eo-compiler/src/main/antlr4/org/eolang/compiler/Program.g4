@@ -50,17 +50,29 @@ object
 vobject
     :
     COMMENT*
-    (attributes | NAME)
+    vhead
+    vtail
+    |
+    vobject
+    EOL
+    method
+    vtail?
+    ;
+
+vhead
+    :
+    attributes
+    |
+    NAME
+    ;
+
+vtail
+    :
     suffix?
     EOL
     TAB
     (object EOL)+
     UNTAB
-    |
-    vobject
-    EOL
-    DOT
-    object
     ;
 
 attributes
@@ -78,26 +90,43 @@ suffix
     NAME
     ;
 
-hobject
+method
     :
-    AT
-    |
-    NAME
-    |
-    data
-    |
-    hobject
     DOT
     NAME
+    ;
+
+hobject
+    :
+    hhead
+    |
+    hobject
+    method
     |
     LB
     hobject
     RB
     |
     hobject
-    suffix
+    hsuffix
     |
-    head=hobject (SPACE tail=hobject)
+    hobject htail
+    ;
+
+hsuffix: suffix;
+
+hhead
+    :
+    AT
+    |
+    NAME
+    |
+    data
+    ;
+
+htail
+    :
+    (SPACE hobject)+
     ;
 
 data
@@ -136,21 +165,15 @@ EOL
             for (int i = 0; i < this.currentTabs - tabs; ++i) {
                 this.emitToken(ProgramParser.UNTAB, getLine() + 1);
                 this.emitToken(ProgramParser.EOL, getLine() + 1);
-                System.out.println("UNTAB");
             }
         } else if (tabs > this.currentTabs) {
             for (int i = 0; i < tabs - this.currentTabs; ++i) {
                 this.emitToken(ProgramParser.TAB, getLine() + 1);
-                System.out.println("TAB");
             }
         }
         this.currentTabs = tabs;
-        System.out.println("tabs: " + this.currentTabs);
     }
     ;
-
-//TAB: '~';
-//UNTAB: '-';
 
 NAME: LETTER (LETTER | DIGIT)*;
 

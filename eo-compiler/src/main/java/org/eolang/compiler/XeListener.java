@@ -54,12 +54,11 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterLicense(final ProgramParser.LicenseContext ctx) {
-        this.dirs.add("license");
+        this.dirs.add("license").up();
     }
 
     @Override
     public void exitLicense(final ProgramParser.LicenseContext ctx) {
-        this.dirs.up();
     }
 
     @Override
@@ -89,11 +88,32 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterVobject(final ProgramParser.VobjectContext ctx) {
-        this.dirs.add("o").attr("name", "");
     }
 
     @Override
     public void exitVobject(final ProgramParser.VobjectContext ctx) {
+    }
+
+    @Override
+    public void enterVhead(final ProgramParser.VheadContext ctx) {
+        this.dirs.add("o");
+        if (ctx.NAME() != null) {
+            this.dirs.attr("base", ctx.NAME().getText());
+        }
+        this.dirs.up();
+    }
+
+    @Override
+    public void exitVhead(final ProgramParser.VheadContext ctx) {
+    }
+
+    @Override
+    public void enterVtail(final ProgramParser.VtailContext ctx) {
+        this.dirs.xpath("o[last()]").strict(1);
+    }
+
+    @Override
+    public void exitVtail(final ProgramParser.VtailContext ctx) {
         this.dirs.up();
     }
 
@@ -117,12 +137,54 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    public void enterMethod(final ProgramParser.MethodContext ctx) {
+        this.dirs.add("o").attr("base", ctx.getText()).up();
+    }
+
+    @Override
+    public void exitMethod(final ProgramParser.MethodContext ctx) {
+    }
+
+    @Override
+    public void enterHhead(final ProgramParser.HheadContext ctx) {
+        this.dirs.add("o");
+        if (ctx.NAME() != null) {
+            this.dirs.attr("base", ctx.NAME().getText());
+        }
+        if (ctx.AT() != null) {
+            this.dirs.attr("base", "@");
+        }
+    }
+
+    @Override
+    public void exitHhead(final ProgramParser.HheadContext ctx) {
+        this.dirs.up();
+    }
+
+    @Override
     public void enterHobject(final ProgramParser.HobjectContext ctx) {
-        this.dirs.add("o").attr("name", "");
     }
 
     @Override
     public void exitHobject(final ProgramParser.HobjectContext ctx) {
+    }
+
+    @Override
+    public void enterHsuffix(final ProgramParser.HsuffixContext ctx) {
+        this.dirs.xpath("o[last()]").strict(1);
+    }
+
+    @Override
+    public void exitHsuffix(final ProgramParser.HsuffixContext ctx) {
+    }
+
+    @Override
+    public void enterHtail(final ProgramParser.HtailContext ctx) {
+        this.dirs.xpath("o[last()]").strict(1);
+    }
+
+    @Override
+    public void exitHtail(final ProgramParser.HtailContext ctx) {
         this.dirs.up();
     }
 
