@@ -23,6 +23,7 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -98,7 +99,8 @@ public final class Program {
                 throw new CompileException(
                     String.format(
                         "[%d:%d] %s: \"%s\"",
-                        line, position, msg, lines[line - 1]
+                        line, position, msg,
+                        lines.length < line ? "EOF" : lines[line - 1]
                     ),
                     error
                 );
@@ -128,6 +130,7 @@ public final class Program {
                 )
             )
         ).value();
+        Logger.info(this, "EO program parsed successfully!");
     }
 
 }

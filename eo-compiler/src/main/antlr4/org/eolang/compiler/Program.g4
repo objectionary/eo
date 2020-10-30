@@ -24,7 +24,8 @@ program
     :
     license?
     metas?
-    (object EOL)+
+    (object EOL EOL?)+
+    EOF
     ;
 
 license
@@ -53,12 +54,13 @@ vobject
     suffix?
     EOL
     TAB
-    head=object (EOL tail=object)*
+    (object EOL)+
+    UNTAB
     |
     vobject
     EOL
     DOT
-    NAME
+    object
     ;
 
 attributes
@@ -133,15 +135,22 @@ EOL
         if (tabs < this.currentTabs) {
             for (int i = 0; i < this.currentTabs - tabs; ++i) {
                 this.emitToken(ProgramParser.UNTAB, getLine() + 1);
+                this.emitToken(ProgramParser.EOL, getLine() + 1);
+                System.out.println("UNTAB");
             }
         } else if (tabs > this.currentTabs) {
             for (int i = 0; i < tabs - this.currentTabs; ++i) {
                 this.emitToken(ProgramParser.TAB, getLine() + 1);
+                System.out.println("TAB");
             }
         }
         this.currentTabs = tabs;
+        System.out.println("tabs: " + this.currentTabs);
     }
     ;
+
+//TAB: '~';
+//UNTAB: '-';
 
 NAME: LETTER (LETTER | DIGIT)*;
 
