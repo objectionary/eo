@@ -1,9 +1,14 @@
 # This program is from the EOLANG original paper
+# and must produce a working command line tool
+#
+# License is MIT
 
 +alias org.eolang.*
 +alias stdout org.eolang.io.Stdout
 +alias stdin org.eolang.io.Stdin
 +alias scanner org.eolang.txt.Scanner
+
+a b c d
 
 [y] > leap
   or
@@ -30,5 +35,3 @@
       test
         test2
           test4
-
-a > test

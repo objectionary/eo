@@ -1,5 +1,18 @@
 grammar test;
 
 text: foo EOF;
-foo: 'X' tail;
-tail: (' ' 'X')*;
+
+foo:
+    'X'
+    |
+    foo
+    '!'
+    |
+    foo
+    '?'
+    |
+    foo
+    tail
+    ;
+
+tail: (' ' foo)+;

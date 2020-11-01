@@ -26,6 +26,8 @@ package org.eolang.compiler;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.cactoos.list.Mapped;
+import org.cactoos.text.Joined;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -54,7 +56,15 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterLicense(final ProgramParser.LicenseContext ctx) {
-        this.dirs.add("license").up();
+        this.dirs.add("license").set(
+            new Joined(
+                "\n",
+                new Mapped<>(
+                    cmt -> cmt.getText().substring(1).trim(),
+                    ctx.COMMENT()
+                )
+            )
+        ).up();
     }
 
     @Override
@@ -138,7 +148,10 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterMethod(final ProgramParser.MethodContext ctx) {
-        this.dirs.add("o").attr("base", ctx.getText()).up();
+        this.dirs
+            .xpath("o[last()]").strict(1).attr("anonymous", "").up()
+            .add("o")
+            .attr("base", ctx.getText()).up();
     }
 
     @Override
@@ -176,6 +189,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitHsuffix(final ProgramParser.HsuffixContext ctx) {
+        this.dirs.up();
     }
 
     @Override

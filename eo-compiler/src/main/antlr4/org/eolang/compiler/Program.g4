@@ -110,7 +110,8 @@ hobject
     hobject
     hsuffix
     |
-    hobject htail
+    hobject
+    htail
     ;
 
 hsuffix: suffix;
