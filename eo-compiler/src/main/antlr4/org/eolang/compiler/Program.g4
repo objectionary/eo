@@ -114,6 +114,11 @@ hobject
     htail
     ;
 
+htail
+    :
+    (SPACE hobject)+
+    ;
+
 hsuffix: suffix;
 
 hhead
@@ -123,11 +128,6 @@ hhead
     NAME
     |
     data
-    ;
-
-htail
-    :
-    (SPACE hobject)+
     ;
 
 data
