@@ -77,8 +77,8 @@ public final class XeListener implements ProgramListener {
         for (TerminalNode node : ctx.META()) {
             final String[] parts = node.getText().split(" ", 2);
             this.dirs.add("meta")
-                .add("head").set(parts[0]).up()
-                .add("tail").set(parts[1]).up()
+                .add("head").set(parts[0].substring(1)).up()
+                .add("tail").set(parts[1].trim()).up()
                 .up();
         }
         this.dirs.up();
@@ -110,11 +110,11 @@ public final class XeListener implements ProgramListener {
         if (ctx.NAME() != null) {
             this.dirs.attr("base", ctx.NAME().getText());
         }
-        this.dirs.up();
     }
 
     @Override
     public void exitVhead(final ProgramParser.VheadContext ctx) {
+        this.dirs.up();
     }
 
     @Override
@@ -129,6 +129,11 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterAttributes(final ProgramParser.AttributesContext ctx) {
+        for (TerminalNode attr : ctx.NAME()) {
+            this.dirs.add("o")
+                .attr("name", attr.getText())
+                .up();
+        }
     }
 
     @Override
