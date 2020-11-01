@@ -121,7 +121,8 @@ htail
 
 hsuffix
     :
-    suffix;
+    suffix
+    ;
 
 hhead
     :
