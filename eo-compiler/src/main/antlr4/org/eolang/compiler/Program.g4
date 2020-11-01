@@ -119,7 +119,9 @@ htail
     (SPACE hobject)+
     ;
 
-hsuffix: suffix;
+hsuffix
+    :
+    suffix;
 
 hhead
     :
