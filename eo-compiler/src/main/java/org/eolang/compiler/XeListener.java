@@ -142,8 +142,9 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
-        if (ctx.NAME() != null) {
-            this.dirs.attr("name", ctx.NAME().getText());
+        this.dirs.attr("name", ctx.NAME().getText());
+        if (ctx.EXCLAIM() != null) {
+            this.dirs.attr("sticky", "");
         }
     }
 

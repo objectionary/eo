@@ -87,6 +87,7 @@ suffix
   SPACE
   ARROW
   SPACE
+  EXCLAIM?
   NAME
   ;
 
@@ -166,6 +167,7 @@ data
 COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
+EXCLAIM: '!';
 ARROW: '>';
 PLUS: '+';
 SPACE: ' ';

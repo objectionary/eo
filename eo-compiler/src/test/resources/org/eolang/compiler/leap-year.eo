@@ -20,6 +20,6 @@
     (stdout "Enter a year:").print
     stdout
       concat
-        (scanner stdin).nextInt > year
+        (scanner stdin).nextInt > !year
         " is a leap year?"
         leap year
