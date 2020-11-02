@@ -78,7 +78,7 @@ vtail
 attributes
   :
   LSQ
-  head=NAME (SPACE tail=NAME)*
+  NAME (SPACE NAME)*
   RSQ
   ;
 
