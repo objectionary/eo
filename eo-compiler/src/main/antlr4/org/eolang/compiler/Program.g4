@@ -87,7 +87,7 @@ suffix
   SPACE
   ARROW
   SPACE
-  EXCLAIM?
+  CONST?
   NAME
   ;
 
@@ -167,9 +167,10 @@ data
 COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
-EXCLAIM: '!';
+CONST: '!';
 ARROW: '>';
 PLUS: '+';
+MINUS: '-';
 SPACE: ' ';
 DOT: '.';
 LSQ: '[';
@@ -198,13 +199,15 @@ EOL
   }
   ;
 
-NAME: LETTER (LETTER | DIGIT)*;
+NAME: LO (LETTER | DIGIT)*;
 
-CHAR: '\'' () '\'';
+CHAR: '\'' (LETTER | DIGIT) '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
-INTEGER: (PLUS | '-')? DIGIT+;
-FLOAT: (PLUS | '-')? DIGIT+ DOT DIGIT+;
+INTEGER: (PLUS | MINUS)? DIGIT+;
+FLOAT: (PLUS | MINUS)? DIGIT+ DOT DIGIT+;
 HEX: '0x' DIGIT+;
 
-LETTER: [a-zA-Z];
+LETTER: (HI | LO);
+HI: [A-Z];
+LO: [a-z];
 DIGIT: [0-9];
