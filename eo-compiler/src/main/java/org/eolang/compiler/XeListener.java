@@ -154,7 +154,7 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterMethod(final ProgramParser.MethodContext ctx) {
         this.dirs
-            .xpath("o[last()]").strict(1).attr("anonymous", "").up()
+            .xpath("o[last()]").strict(1).attr("name", "").up()
             .add("o")
             .attr("base", ctx.getText()).up();
     }
@@ -220,6 +220,9 @@ public final class XeListener implements ProgramListener {
         } else if (ctx.INTEGER() != null) {
             type = "float";
             data = Integer.toString(Integer.parseInt(ctx.getText()));
+        } else if (ctx.FLOAT() != null) {
+            type = "hex";
+            data = ctx.getText();
         } else if (ctx.STRING() != null) {
             type = "string";
             data = ctx.getText().substring(1, ctx.getText().length() - 1);

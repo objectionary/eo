@@ -5,11 +5,12 @@ text: foo EOF;
 foo:
     'X'
     |
+    '('
     foo
-    '!'
+    ')'
     |
     foo
-    '?'
+    '!'
     |
     foo
     tail

@@ -19,20 +19,10 @@
     eq (mod y 400) 0
 
 [args] > main
-  stdout > help
-    "Just run it and see the output"
   and
-    stdout
-      "Enter a year:"
-    .print
+    (stdout "Enter a year:").print
     stdout
       concat
-        scanner > year
-          stdin
-        .nextInt
+        (scanner stdin).nextInt > year
         " is a leap year?"
         leap year
-    .println
-      test
-        test2
-          test4

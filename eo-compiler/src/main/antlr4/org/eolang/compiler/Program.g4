@@ -56,7 +56,7 @@ vobject
     vobject
     EOL
     method
-    vtail?
+    (suffix | vtail)?
     ;
 
 vhead
