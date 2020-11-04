@@ -23,10 +23,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="@base">
-    <xsl:attribute name="base">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
+  <xsl:template match="/program/errors">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select="//o[@name]">
+        <xsl:apply-templates select="." mode="check"/>
+      </xsl:for-each>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o" mode="check">
+    <xsl:variable name="x" select="."/>
+    <xsl:for-each select=".//o[@base=$x/@name]">
+      <error>
+        <xsl:attribute name="line">
+          <xsl:value-of select="@line"/>
+        </xsl:attribute>
+        <xsl:text>The name "</xsl:text>
+        <xsl:value-of select="@base"/>
+        <xsl:text>" can't be used inside the object "</xsl:text>
+        <xsl:value-of select="$x/@name"/>
+        <xsl:text>" declared at the line #</xsl:text>
+        <xsl:value-of select="$x/@line"/>
+      </error>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

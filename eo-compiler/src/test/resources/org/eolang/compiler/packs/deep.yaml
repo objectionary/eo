@@ -4,7 +4,7 @@ tests:
   - /program[count(o)=3]
   - /program/o[not(@base) and @name='first']
   - /program/o[not(@base)]
-eo: >
+eo: |
   [x] > first
     [a b] > second
       [t u f] > third

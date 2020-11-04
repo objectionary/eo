@@ -2,7 +2,7 @@ xsls: []
 tests:
   - /program
   - /program/o[not(@name) and @base='a']
-eo:
+eo: |
   a
     b
       c
