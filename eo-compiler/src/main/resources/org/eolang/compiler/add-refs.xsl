@@ -24,9 +24,16 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:template match="o[@base]">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
-      <xsl:attribute name="base">t</xsl:attribute>
-      <xsl:apply-templates select="node()|@* except @base"/>
+      <xsl:variable name="p" select="ancestor::o[o[@name=$o/@base]][1]"/>
+      <xsl:variable name="x" select="$p/o[@name=$o/@base]"/>
+      <xsl:if test="$p">
+        <xsl:attribute name="ref">
+          <xsl:value-of select="$x/@line"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
