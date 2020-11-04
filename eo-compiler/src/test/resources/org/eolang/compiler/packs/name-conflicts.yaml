@@ -1,0 +1,12 @@
+xsls:
+  - rename-inner-objects.xsl
+tests:
+  - /program[count(o)=5]
+eo: >
+  [x] > first
+    (stdout x)
+    second > x
+      (stdout x)
+      third > x
+        (stdout x)
+    (stdout x)

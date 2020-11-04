@@ -1,0 +1,12 @@
+xsls:
+  - extract-methods.xsl
+tests:
+  - /program[count(o)=3]
+  - /program/o[not(@base) and @name='first']
+  - /program/o[not(@base)]
+eo: >
+  [x] > first
+    [a b] > second
+      [t u f] > third
+        hello
+          (stdout "Hello, world!").print

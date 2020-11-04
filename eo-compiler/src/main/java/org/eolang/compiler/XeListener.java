@@ -46,7 +46,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.add("program");
+        this.dirs.add("program").add("errors").up();
     }
 
     @Override
@@ -89,6 +89,16 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    public void enterObjects(final ProgramParser.ObjectsContext ctx) {
+        this.dirs.add("objects");
+    }
+
+    @Override
+    public void exitObjects(final ProgramParser.ObjectsContext ctx) {
+        this.dirs.up();
+    }
+
+    @Override
     public void enterObject(final ProgramParser.ObjectContext ctx) {
     }
 
@@ -106,7 +116,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterVhead(final ProgramParser.VheadContext ctx) {
-        this.dirs.add("o");
+        this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.NAME() != null) {
             this.dirs.attr("base", ctx.NAME().getText());
         }
@@ -131,6 +141,7 @@ public final class XeListener implements ProgramListener {
     public void enterAttributes(final ProgramParser.AttributesContext ctx) {
         for (TerminalNode attr : ctx.NAME()) {
             this.dirs.add("o")
+                .attr("line", ctx.getStart().getLine())
                 .attr("name", attr.getText())
                 .up();
         }
@@ -157,6 +168,7 @@ public final class XeListener implements ProgramListener {
         this.dirs
             .xpath("o[last()]").strict(1).attr("name", "").up()
             .add("o")
+            .attr("line", ctx.getStart().getLine())
             .attr("base", ctx.getText()).up();
     }
 
@@ -166,7 +178,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterHhead(final ProgramParser.HheadContext ctx) {
-        this.dirs.add("o");
+        this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.NAME() != null) {
             this.dirs.attr("base", ctx.NAME().getText());
         }

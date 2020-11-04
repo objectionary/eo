@@ -24,7 +24,7 @@ program
   :
   license?
   metas?
-  (object EOL EOL?)+
+  objects
   EOF
   ;
 
@@ -38,6 +38,11 @@ metas
   :
   (META EOL)+
   EOL
+  ;
+
+objects
+  :
+  (object EOL EOL?)+
   ;
 
 object

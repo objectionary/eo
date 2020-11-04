@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016 eolang.org
+Copyright (c) 2017-2019 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +22,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="SNAPSHOT" elementFormDefault="qualified">
-  <xs:simpleType name="methodName">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z][A-Za-z]{2,}"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="typeName">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[A-Z][a-z]{2,}"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="attributeName">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z]{3,}"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="paramName">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z{3,}]"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="objectName">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z][A-Za-z]{2,}"/>
-    </xs:restriction>
-  </xs:simpleType>
-</xs:schema>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xsl:template match="o[@name]">
+    <xsl:apply-templates select="node()|@*"/>
+  </xsl:template>
+  <xsl:template match="node()|@*">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>
