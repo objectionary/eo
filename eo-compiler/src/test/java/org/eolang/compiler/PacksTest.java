@@ -51,6 +51,7 @@ public final class PacksTest {
         return new ListOf<>(
             "name-dups.yaml",
             "self-name.yaml",
+            "same-line-name.yaml",
             "recursive-copy.yaml",
             "name-conflicts.yaml"
 //            "simple.yaml",
