@@ -50,6 +50,7 @@ public final class PacksTest {
     private static Collection<String> yamlPacks() {
         return new ListOf<>(
             "name-dups.yaml",
+            "self-name.yaml",
             "recursive-copy.yaml",
             "name-conflicts.yaml"
 //            "simple.yaml",

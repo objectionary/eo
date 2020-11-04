@@ -1,12 +1,18 @@
 xsls:
-  - rename-inner-objects.xsl
+  - errors/duplicate-names.xsl
+  - errors/recursive-copies.xsl
+  - add-name-suffixes.xsl
 tests:
   - /program[count(o)=5]
 eo: |
   [x] > first
     (stdout x)
-    second > y
-      (stdout x)
+    second > hello
       third > x
-        (stdout x)
-    (stdout x)
+        (stdout "Hi")
+      one
+        x
+        two
+          x
+          three
+            x
