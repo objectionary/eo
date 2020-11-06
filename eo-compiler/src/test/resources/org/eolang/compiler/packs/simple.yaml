@@ -1,7 +1,10 @@
 xsls: []
 tests:
-  - /program
-  - /program/o[not(@name) and @base='a']
+  - /program/objects
+  - //o[not(@name) and @base='a']
+  - //o[@base='a' and @line='1']
+  - //o[@base='b' and @line='2']
+  - //o[@base='c' and @line='3']
 eo: |
   a
     b

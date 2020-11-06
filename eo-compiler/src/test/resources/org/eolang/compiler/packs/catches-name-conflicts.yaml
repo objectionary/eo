@@ -8,6 +8,7 @@ tests:
   - /program/objects[count(o)=1]
   - //o[@base='x' and @ref='1']
   - //o[@base='x' and @ref='4']
+  - //o[@base='x' and @line='11' and @ref='4']
 eo: |
   [x] > first
     (stdout x)

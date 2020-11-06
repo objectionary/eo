@@ -49,13 +49,13 @@ public final class PacksTest {
 
     private static Collection<String> yamlPacks() {
         return new ListOf<>(
-            "name-dups.yaml",
-            "self-name.yaml",
-            "same-line-name.yaml",
-            "recursive-copy.yaml",
-            "name-conflicts.yaml"
-//            "simple.yaml",
-//            "deep.yaml"
+            "catches-name-duplicates.yaml",
+            "catches-self-naming.yaml",
+            "catches-same-line-name.yaml",
+            "catches-recursive-copy.yaml",
+            "catches-name-conflicts.yaml",
+            "simple.yaml",
+            "extracts-all-methods.yaml"
         );
     }
 

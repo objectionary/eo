@@ -54,7 +54,7 @@ SOFTWARE.
           <xsl:value-of select="@name"/>
         </xsl:attribute>
         <xsl:for-each select="../o[@name and not(o) and not(@base)]">
-          <xsl:element name=""/>
+          <xsl:element name="x"/>
         </xsl:for-each>
         <xsl:apply-templates select="node()|@* except @name"/>
       </xsl:copy>
