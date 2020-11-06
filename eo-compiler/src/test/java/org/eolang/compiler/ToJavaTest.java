@@ -51,7 +51,7 @@ public final class ToJavaTest {
     public void compilesSimpleCodeToJava() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
-            new ResourceOf("org/eolang/compiler/leap-year.eo"),
+            new ResourceOf("org/eolang/compiler/fibonacci.eo"),
             new OutputTo(baos)
         );
         program.compile();

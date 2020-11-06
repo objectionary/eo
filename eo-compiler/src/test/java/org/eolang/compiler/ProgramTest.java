@@ -57,22 +57,6 @@ public final class ProgramTest {
     }
 
     @Test
-    public void compilesLargeCode() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Program program = new Program(
-            new ResourceOf("org/eolang/compiler/leap-year.eo"),
-            new OutputTo(baos)
-        );
-        program.compile();
-        MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new String(baos.toByteArray())
-            ),
-            XhtmlMatchers.hasXPath("/program/xx")
-        );
-    }
-
-    @Test
     public void failsOnBrokenSyntax() {
         Assertions.assertThrows(
             CompileException.class,

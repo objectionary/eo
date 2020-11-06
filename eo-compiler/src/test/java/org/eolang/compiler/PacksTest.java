@@ -51,11 +51,12 @@ public final class PacksTest {
         return new ListOf<>(
             "catches-name-duplicates.yaml",
             "catches-self-naming.yaml",
+            "catches-two-bodies.yaml",
             "catches-same-line-name.yaml",
             "catches-recursive-copy.yaml",
-            "catches-name-conflicts.yaml",
+            "adds-refs.yaml",
             "simple.yaml",
-            "extracts-all-methods.yaml"
+            "leap-year.yaml"
         );
     }
 

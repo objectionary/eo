@@ -130,7 +130,7 @@ public final class Program {
                 )
             )
         ).value();
-        Logger.info(this, "EO program parsed successfully!");
+        Logger.info(this, "EO program parsed:\n%s", xel.xml());
     }
 
 }

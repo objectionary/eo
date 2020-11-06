@@ -83,7 +83,7 @@ vtail
 attributes
   :
   LSQ
-  NAME (SPACE NAME)*
+  (NAME (SPACE NAME)*)?
   RSQ
   ;
 

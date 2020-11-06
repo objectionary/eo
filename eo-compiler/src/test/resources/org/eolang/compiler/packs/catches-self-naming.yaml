@@ -5,5 +5,5 @@ tests:
   - /program/errors/error[@line='2']
   - /program/objects/o[@name='first']/o[@name='a']
 eo: |
-  test > first
+  [] > first
     a > a

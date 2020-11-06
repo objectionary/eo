@@ -9,8 +9,10 @@ tests:
   - //o[@base='x' and @ref='1']
   - //o[@base='x' and @ref='4']
   - //o[@base='x' and @line='11' and @ref='4']
+  - //o[@base='a' and @line='9' and @ref='12']
+  - //o[@base='something' and @line='12' and @name='a' and not(@ref)]
 eo: |
-  [x] > first
+  [x a] > first
     (stdout x)
     second > hello
       third > x
@@ -18,6 +20,7 @@ eo: |
       one
         x
         two
-          x
+          a
           three
             x
+      something > a
