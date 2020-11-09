@@ -23,42 +23,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xsl:strip-space elements="*"/>
   <xsl:function name="eo:abstract" as="xs:boolean">
     <xsl:param name="object" as="element()"/>
     <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
   </xsl:function>
-  <xsl:template match="/">
-    <xsl:apply-templates select="node()|@*"/>
-  </xsl:template>
-  <xsl:template match="/program/o[eo:abstract(.) and exists(./o[eo:abstract(.)])]">
+  <xsl:template match="o[@base and @ref]">
+    <xsl:variable name="o" select="."/>
+    <xsl:variable name="a" select="ancestor::o[eo:abstract(.)][1]"/>
+    <xsl:if test="not($a)">
+      <xsl:message terminate="yes">
+        <xsl:text>Can't find ancestor of "</xsl:text>
+        <xsl:value-of select="$o/@base"/>
+        <xsl:text>" at line </xsl:text>
+        <xsl:value-of select="$o/@ref"/>
+      </xsl:message>
+    </xsl:if>
+    <xsl:variable name="v" select="$a/o[@line=$o/@ref and (starts-with(@name, concat($o/@base, '+')) or $o/@base = @name)]"/>
+    <xsl:if test="not($v)">
+      <xsl:message terminate="yes">
+        <xsl:text>Can't find declaration of "</xsl:text>
+        <xsl:value-of select="$o/@base"/>
+        <xsl:text>" at line </xsl:text>
+        <xsl:value-of select="$o/@ref"/>
+      </xsl:message>
+    </xsl:if>
     <xsl:copy>
-      <xsl:apply-templates select="o[not(eo:abstract(.))]|@*"/>
-      <xsl:for-each select="o[eo:abstract(.)]">
-        <xsl:element name="o">
-          <xsl:attribute name="name">
-            <xsl:value-of select="@name"/>
-          </xsl:attribute>
-          <xsl:attribute name="base">
-            <xsl:value-of select="../@name"/>
-            <xsl:text>$</xsl:text>
-            <xsl:value-of select="@name"/>
-          </xsl:attribute>
-        </xsl:element>
-      </xsl:for-each>
+      <xsl:apply-templates select="node()|@* except @base"/>
+      <xsl:attribute name="base">
+        <xsl:value-of select="$v/@name"/>
+      </xsl:attribute>
     </xsl:copy>
-    <xsl:for-each select="o[eo:abstract(.)]">
-      <xsl:copy>
-        <xsl:attribute name="name">
-          <xsl:value-of select="../@name"/>
-          <xsl:text>$</xsl:text>
-          <xsl:value-of select="@name"/>
-        </xsl:attribute>
-        <xsl:for-each select="../o[@name and not(o) and not(@base)]">
-          <xsl:element name="x"/>
-        </xsl:for-each>
-        <xsl:apply-templates select="node()|@* except @name"/>
-      </xsl:copy>
-    </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

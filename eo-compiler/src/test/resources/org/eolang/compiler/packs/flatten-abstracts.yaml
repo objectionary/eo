@@ -1,0 +1,18 @@
+xsls:
+  - add-refs.xsl
+  - abstracts-float-up.xsl
+  - rename-bases.xsl
+tests:
+  - /program/objects[count(o)=3]
+  - //o[@name='first']
+  - //o[@name='first$second']
+  - //o[@name='first$second$third']
+  - //o[@name='first$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
+eo: |
+  [a b] > first
+    test
+      a > yes
+      [x b] > second
+        a > no
+        [b c] > third
+          (stdout a b c x).print
