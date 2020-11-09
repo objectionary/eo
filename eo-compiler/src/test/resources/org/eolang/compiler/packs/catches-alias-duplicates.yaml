@@ -1,0 +1,13 @@
+xsls:
+  - errors/duplicate-aliases.xsl
+tests:
+  - /program/errors[count(error)=1]
+  - /program/errors/error[@line='2']
+  - /program/metas/meta[head='alias' and tail='stdout org.eolang.io.Stdout']
+eo: |
+  +alias stdout org.eolang.io.Stdout
+  +alias stdout org.eolang.io.Stdout
+  +alias stding org.eolang.io.Stdin
+
+  [] > main
+    (stdout "Hello, world!").print

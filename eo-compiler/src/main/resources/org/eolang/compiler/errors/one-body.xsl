@@ -33,12 +33,12 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o" mode="dups">
     <xsl:if test="count(o[not(@name)]) &gt; 1">
-      <error>
+      <xsl:element name="error">
         <xsl:attribute name="line">
           <xsl:value-of select="@line"/>
         </xsl:attribute>
         <xsl:text>The object may have only one body</xsl:text>
-      </error>
+      </xsl:element>
     </xsl:if>
   </xsl:template>
   <xsl:template match="node()|@*">

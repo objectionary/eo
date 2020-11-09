@@ -27,14 +27,14 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="//o[@name and @base and @base=@name]">
-        <error>
+        <xsl:element name="error">
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
           <xsl:text>The object "</xsl:text>
           <xsl:value-of select="@base"/>
           <xsl:text>" can't copy itself</xsl:text>
-        </error>
+        </xsl:element>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>

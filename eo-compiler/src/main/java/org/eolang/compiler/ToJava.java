@@ -72,7 +72,7 @@ public final class ToJava {
             new ListOf<>(
                 new XSLDocument(
                     ToJava.class.getResourceAsStream(
-                        "resolve-names.xsl"
+                        "resolve-aliases.xsl"
                     )
                 ),
                 new XSLDocument(

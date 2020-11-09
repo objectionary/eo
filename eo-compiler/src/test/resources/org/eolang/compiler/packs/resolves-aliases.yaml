@@ -1,0 +1,15 @@
+xsls:
+  - add-refs.xsl
+  - resolve-aliases.xsl
+tests:
+  - /program/objects[count(o)=1]
+  - //o[@base='x' and @ref='1']
+eo: |
+  +alias stdout org.eolang.io.Stdout
+  +alias stdin org.eolang.io.Stdin
+  +alias scanner org.eolang.txt.Scanner
+
+  [args] > main
+    and
+      (scanner stdin).nextLine > !line
+      (stdout "You entered" line).print

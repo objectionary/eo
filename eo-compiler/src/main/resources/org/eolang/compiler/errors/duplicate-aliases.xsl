@@ -22,29 +22,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xsl:function name="eo:name" as="xs:string">
+    <xsl:param name="object" as="element()"/>
+    <xsl:sequence select="tokenize($object/tail, ' ')[1]"/>
+  </xsl:function>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@name]">
-        <xsl:apply-templates select="." mode="check"/>
+      <xsl:for-each select="/program/metas/meta[head='alias']">
+        <xsl:variable name="name" select="eo:name(.)"/>
+        <xsl:if test="preceding-sibling::meta[head='alias' and eo:name(.)=$name]">
+          <xsl:element name="error">
+            <xsl:attribute name="line">
+              <xsl:value-of select="@line"/>
+            </xsl:attribute>
+            <xsl:text>The alias "</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>" is duplicated</xsl:text>
+          </xsl:element>
+        </xsl:if>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="check">
-    <xsl:variable name="x" select="."/>
-    <xsl:for-each select=".//o[@base=$x/@name]">
-      <xsl:element name="error">
-        <xsl:attribute name="line">
-          <xsl:value-of select="@line"/>
-        </xsl:attribute>
-        <xsl:text>The name "</xsl:text>
-        <xsl:value-of select="@base"/>
-        <xsl:text>" can't be used inside the object "</xsl:text>
-        <xsl:value-of select="$x/@name"/>
-        <xsl:text>" declared at the line #</xsl:text>
-        <xsl:value-of select="$x/@line"/>
-      </xsl:element>
+  <xsl:template match="meta" mode="dups">
+    <xsl:for-each select="/program/metas/meta[head='alias']">
+      <xsl:variable name="x" select="."/>
+      <xsl:if test="preceding-sibling::o/@name = $x/@name">
+        <error>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>The name "</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>" is already in use</xsl:text>
+        </error>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">

@@ -35,14 +35,14 @@ SOFTWARE.
     <xsl:for-each select="o[@name]">
       <xsl:variable name="x" select="."/>
       <xsl:if test="preceding-sibling::o/@name = $x/@name">
-        <error>
+        <xsl:element name="error">
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
           <xsl:text>The name "</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>" is already in use</xsl:text>
-        </error>
+        </xsl:element>
       </xsl:if>
     </xsl:for-each>
   </xsl:template>

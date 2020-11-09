@@ -77,6 +77,7 @@ public final class XeListener implements ProgramListener {
         for (TerminalNode node : ctx.META()) {
             final String[] parts = node.getText().split(" ", 2);
             this.dirs.add("meta")
+                .attr("line", node.getSymbol().getLine())
                 .add("head").set(parts[0].substring(1)).up()
                 .add("tail").set(parts[1].trim()).up()
                 .up();

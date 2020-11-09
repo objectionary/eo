@@ -34,14 +34,14 @@ SOFTWARE.
   <xsl:template match="o" mode="check">
     <xsl:variable name="x" select="."/>
     <xsl:for-each select="preceding::o[@name=$x/@name and @line=$x/@line] | ancestor::o[@name=$x/@name and @line=$x/@line]">
-      <error>
+      <xsl:element name="error">
         <xsl:attribute name="line">
           <xsl:value-of select="@line"/>
         </xsl:attribute>
         <xsl:text>The name "</xsl:text>
         <xsl:value-of select="@name"/>
         <xsl:text>" was already used on the same line</xsl:text>
-      </error>
+      </xsl:element>
     </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">

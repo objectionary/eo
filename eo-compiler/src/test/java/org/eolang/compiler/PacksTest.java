@@ -49,13 +49,15 @@ public final class PacksTest {
 
     private static Collection<String> yamlPacks() {
         return new ListOf<>(
+            "simple.yaml",
             "catches-name-duplicates.yaml",
+            "catches-alias-duplicates.yaml",
             "catches-self-naming.yaml",
             "catches-two-bodies.yaml",
             "catches-same-line-name.yaml",
             "catches-recursive-copy.yaml",
             "adds-refs.yaml",
-            "simple.yaml",
+            "resolves-aliases.yaml",
             "leap-year.yaml"
         );
     }
