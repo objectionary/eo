@@ -29,19 +29,13 @@ SOFTWARE.
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
-  <xsl:function name="eo:abstract" as="xs:boolean">
-    <xsl:param name="object" as="element()"/>
-    <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
-  </xsl:function>
-  <xsl:function name="eo:attributes">
-    <xsl:param name="object" as="element()"/>
-    <xsl:sequence select="$object/o[@name and not(@base) and not(./o)]"/>
-  </xsl:function>
-  <xsl:function name="eo:methods">
-    <xsl:param name="object" as="element()"/>
-    <xsl:sequence select="$object/o[not(@name and not(@base) and not(./o))]"/>
+  <xsl:function name="eo:name" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:sequence select="replace($n, '\+', '_')"/>
   </xsl:function>
   <xsl:template match="/program/objects/o[@name and not(@base)]">
+    <xsl:variable name="attributes" select="./o[@name and not(@base) and not(./o)]"/>
+    <xsl:variable name="methods" select="./o[not(@name and not(@base) and not(./o))]"/>
     <xsl:copy>
       <xsl:element name="java">
         <xsl:value-of select="$EOL"/>
@@ -52,10 +46,10 @@ SOFTWARE.
         </xsl:if>
         <xsl:text> {</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:for-each select="eo:attributes(.)">
+        <xsl:for-each select="$attributes">
           <xsl:value-of select="$TAB"/>
           <xsl:text>private final Object </xsl:text>
-          <xsl:value-of select="@name"/>
+          <xsl:value-of select="eo:name(@name)"/>
           <xsl:text>;</xsl:text>
           <xsl:value-of select="$EOL"/>
         </xsl:for-each>
@@ -63,65 +57,82 @@ SOFTWARE.
         <xsl:text>public </xsl:text>
         <xsl:value-of select="@name"/>
         <xsl:text>(</xsl:text>
-        <xsl:for-each select="eo:attributes(.)">
+        <xsl:for-each select="$attributes">
           <xsl:if test="position()!=1">
             <xsl:text>, </xsl:text>
           </xsl:if>
           <xsl:text>final Object </xsl:text>
-          <xsl:value-of select="@name"/>
+          <xsl:value-of select="eo:name(@name)"/>
         </xsl:for-each>
         <xsl:text>) {</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:for-each select="eo:attributes(.)">
+        <xsl:for-each select="$attributes">
           <xsl:value-of select="$TAB"/>
           <xsl:value-of select="$TAB"/>
           <xsl:text>this.</xsl:text>
-          <xsl:value-of select="@name"/>
+          <xsl:value-of select="eo:name(@name)"/>
           <xsl:text> = </xsl:text>
-          <xsl:value-of select="@name"/>
+          <xsl:value-of select="eo:name(@name)"/>
           <xsl:text>;</xsl:text>
           <xsl:value-of select="$EOL"/>
         </xsl:for-each>
         <xsl:value-of select="$TAB"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:for-each select="eo:methods(.)">
-          <xsl:value-of select="$TAB"/>
-          <xsl:if test="not(@name)">
-            <xsl:text>@Override</xsl:text>
-            <xsl:value-of select="$EOL"/>
-            <xsl:value-of select="$TAB"/>
-            <xsl:text>public Object call() throws Exception</xsl:text>
-            <xsl:value-of select="@name"/>
-          </xsl:if>
-          <xsl:if test="@name">
-            <xsl:text>public Object </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text>()</xsl:text>
-          </xsl:if>
-          <xsl:text> {</xsl:text>
-          <xsl:value-of select="$EOL"/>
-          <xsl:value-of select="$TAB"/>
-          <xsl:value-of select="$TAB"/>
-          <xsl:text>return </xsl:text>
-          <xsl:apply-templates select=".">
-            <xsl:with-param name="indent">
-              <xsl:value-of select="$TAB"/>
-              <xsl:value-of select="$TAB"/>
-            </xsl:with-param>
-          </xsl:apply-templates>
-          <xsl:text>;</xsl:text>
-          <xsl:value-of select="$EOL"/>
-          <xsl:value-of select="$TAB"/>
-          <xsl:text>}</xsl:text>
-          <xsl:value-of select="$EOL"/>
+        <xsl:for-each select="$methods">
+          <xsl:apply-templates select="." mode="method"/>
         </xsl:for-each>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base]" name="instance">
+  <xsl:template match="o" mode="method">
+    <xsl:value-of select="$TAB"/>
+    <xsl:if test="not(@name)">
+      <xsl:text>@Override</xsl:text>
+      <xsl:value-of select="$EOL"/>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>public Object call() throws Exception</xsl:text>
+      <xsl:value-of select="@name"/>
+    </xsl:if>
+    <xsl:if test="@name">
+      <xsl:text>public Object </xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>()</xsl:text>
+    </xsl:if>
+    <xsl:text> {</xsl:text>
+    <xsl:value-of select="$EOL"/>
+    <xsl:apply-templates select=".//o[@name]" mode="variable"/>
+    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>return </xsl:text>
+    <xsl:apply-templates select=".">
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$TAB"/>
+        <xsl:value-of select="$TAB"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:text>;</xsl:text>
+    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <xsl:template match="o[@base and @ref]">
+    <xsl:text>this.</xsl:text>
+    <xsl:value-of select="@base"/>
+  </xsl:template>
+  <xsl:template match="o[@name]" mode="variable">
+    <xsl:value-of select="@name"/>
+    <xsl:text> = </xsl:text>
+    <xsl:apply-templates select="."/>
+    <xsl:text>;</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[@base and @name]">
+    <xsl:value-of select="@name"/>
+  </xsl:template>
+  <xsl:template match="o[@base and not(@ref) and not(@name) and not(text())]">
     <xsl:param name="indent"/>
     <xsl:variable name="newindent">
       <xsl:value-of select="$indent"/>
@@ -152,15 +163,15 @@ SOFTWARE.
     </xsl:if>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.float' or @base='org.eolang.integer' or @base='org.eolang.hex']">
+  <xsl:template match="o[text() and @base='org.eolang.float' or @base='org.eolang.integer' or @base='org.eolang.hex']">
     <xsl:value-of select="text()"/>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.string']">
+  <xsl:template match="o[text() and @base='org.eolang.string']">
     <xsl:text>"</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>"</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.char']">
+  <xsl:template match="o[text() and @base='org.eolang.char']">
     <xsl:text>'</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>'</xsl:text>
