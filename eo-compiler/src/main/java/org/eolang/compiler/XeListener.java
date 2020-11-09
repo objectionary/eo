@@ -244,7 +244,7 @@ public final class XeListener implements ProgramListener {
         } else {
             throw new CompileException("Unknown data type");
         }
-        this.dirs.attr("atom", type);
+        this.dirs.attr("base", type);
         this.dirs.set(data);
     }
 

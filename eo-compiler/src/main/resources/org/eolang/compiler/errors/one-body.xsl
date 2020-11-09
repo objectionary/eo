@@ -26,7 +26,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o">
+      <xsl:for-each select="//o[not(@base) and o]">
         <xsl:apply-templates select="." mode="dups"/>
       </xsl:for-each>
     </xsl:copy>
@@ -37,7 +37,13 @@ SOFTWARE.
         <xsl:attribute name="line">
           <xsl:value-of select="@line"/>
         </xsl:attribute>
-        <xsl:text>The object may have only one body</xsl:text>
+        <xsl:text>The object </xsl:text>
+        <xsl:if test="@name">
+          <xsl:text>"</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>" </xsl:text>
+        </xsl:if>
+        <xsl:text>may have only one body</xsl:text>
       </xsl:element>
     </xsl:if>
   </xsl:template>
