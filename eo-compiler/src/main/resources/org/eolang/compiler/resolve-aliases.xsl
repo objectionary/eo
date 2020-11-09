@@ -23,16 +23,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+  <xsl:strip-space elements="*"/>
+  <xsl:template match="/program/metas">
+    <xsl:copy>
+      <xsl:apply-templates select="node() except meta[head='alias']|@*"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="o[not(@ref) and @base and not(starts-with(@base, '.')) and not(contains(@base, '.'))]">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
-        <xsl:for-each select="/program/metas/meta[head='alias']">
-          <xsl:variable name="head" select="tokenize(tail,' ')[1]"/>
-          <xsl:variable name="tail" select="tokenize(tail,' ')[2]"/>
-          <xsl:if test="$head = @base">
-            <xsl:value-of select="$tail"/>
-          </xsl:if>
-        </xsl:for-each>
+        <xsl:variable name="meta" select="/program/metas/meta[head='alias' and tokenize(tail,' ')[1] = $o/@base]"/>
+        <xsl:if test="$meta">
+          <xsl:value-of select="tokenize($meta/tail,' ')[2]"/>
+        </xsl:if>
+        <xsl:if test="not($meta)">
+          <xsl:value-of select="$o/@base"/>
+        </xsl:if>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
