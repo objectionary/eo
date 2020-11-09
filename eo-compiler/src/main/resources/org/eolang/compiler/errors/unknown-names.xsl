@@ -23,26 +23,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:strip-space elements="*"/>
-  <xsl:template match="/program/metas">
+  <xsl:template match="/program/errors">
     <xsl:copy>
-      <xsl:apply-templates select="node() except meta[head='alias']|@*"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[not(@ref) and @base and not(starts-with(@base, '.')) and not(contains(@base, '.'))]">
-    <xsl:variable name="o" select="."/>
-    <xsl:copy>
-      <xsl:attribute name="base">
-        <xsl:variable name="meta" select="/program/metas/meta[head='alias' and tokenize(tail,' ')[1] = $o/@base]"/>
-        <xsl:if test="$meta">
-          <xsl:value-of select="tokenize($meta/tail,' ')[2]"/>
-        </xsl:if>
-        <xsl:if test="not($meta)">
-          <xsl:text>org.eolang.</xsl:text>
-          <xsl:value-of select="$o/@base"/>
-        </xsl:if>
-      </xsl:attribute>
-      <xsl:apply-templates select="node()|@* except @base"/>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select="//o[@base and not(@ref) and not(contains(@base, '.'))]">
+        <xsl:element name="error">
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>The object "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>" is not defined anywhere</xsl:text>
+        </xsl:element>
+      </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

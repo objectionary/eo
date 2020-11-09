@@ -46,7 +46,8 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.add("program").add("errors").up();
+        this.dirs.add("program")
+            .add("errors").up();
     }
 
     @Override

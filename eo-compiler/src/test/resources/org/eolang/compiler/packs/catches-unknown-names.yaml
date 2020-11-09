@@ -1,0 +1,9 @@
+xsls:
+  - errors/unknown-names.xsl
+tests:
+  - /program/errors[count(error)=1]
+  - /program/errors/error[@line='2']
+  - //o[@base='test' and @line='2']
+eo: |
+  []
+    test
