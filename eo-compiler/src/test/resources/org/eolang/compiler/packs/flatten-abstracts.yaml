@@ -15,4 +15,5 @@ eo: |
       [x b] > second
         a > no
         [b c] > third
+          no > yes
           (stdout a b c x).print

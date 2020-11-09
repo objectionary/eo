@@ -40,18 +40,15 @@ SOFTWARE.
       </xsl:message>
     </xsl:if>
     <xsl:variable name="v" select="$a/o[@line=$o/@ref and (starts-with(@name, concat($o/@base, '+')) or $o/@base = @name)]"/>
-    <xsl:if test="not($v)">
-      <xsl:message terminate="yes">
-        <xsl:text>Can't find declaration of "</xsl:text>
-        <xsl:value-of select="$o/@base"/>
-        <xsl:text>" at line </xsl:text>
-        <xsl:value-of select="$o/@ref"/>
-      </xsl:message>
-    </xsl:if>
     <xsl:copy>
       <xsl:apply-templates select="node()|@* except @base"/>
       <xsl:attribute name="base">
-        <xsl:value-of select="$v/@name"/>
+        <xsl:if test="$v">
+          <xsl:value-of select="$v/@name"/>
+        </xsl:if>
+        <xsl:if test="not($v)">
+          <xsl:value-of select="@base"/>
+        </xsl:if>
       </xsl:attribute>
     </xsl:copy>
   </xsl:template>

@@ -8,6 +8,8 @@ xsls:
   - add-refs.xsl
   - resolve-aliases.xsl
   - errors/unknown-names.xsl
+  - abstracts-float-up.xsl
+  - rename-bases.xsl
   - to-java.xsl
 tests:
   - /program/objects[count(o)=1]

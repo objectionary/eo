@@ -28,6 +28,28 @@ SOFTWARE.
     <xsl:param name="object" as="element()"/>
     <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
   </xsl:function>
+  <xsl:function name="eo:vars">
+    <xsl:param name="bottom" as="element()"/>
+    <xsl:param name="top" as="element()"/>
+    <xsl:for-each select="$bottom/ancestor::o">
+      <xsl:variable name="a" select="."/>
+      <xsl:if test="$top/descendant-or-self::o[generate-id() = generate-id($a)]">
+        <xsl:for-each select="$a/o[@name and generate-id() != generate-id($bottom)]">
+          <xsl:variable name="o" select="."/>
+          <xsl:if test="not($bottom/ancestor-or-self::o[generate-id() = generate-id($o)])">
+            <xsl:copy-of select="$o"/>
+          </xsl:if>
+        </xsl:for-each>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:function>
+  <xsl:function name="eo:ancestors">
+    <xsl:param name="object" as="element()"/>
+    <xsl:for-each select="$object/ancestor-or-self::o[eo:abstract(.)]">
+      <xsl:sort data-type="number" select="position()" order="descending"/>
+      <xsl:copy-of select="."/>
+    </xsl:for-each>
+  </xsl:function>
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
       <xsl:attribute name="base">
@@ -43,10 +65,10 @@ SOFTWARE.
       <xsl:attribute name="line">
         <xsl:value-of select="@line"/>
       </xsl:attribute>
-      <xsl:for-each select="ancestor::o[eo:abstract(.)]">
-        <xsl:sort data-type="number" select="position()" order="descending"/>
+      <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
+      <xsl:for-each select="1 to count($ancestors) - 1">
         <xsl:variable name="level" select="position()"/>
-        <xsl:for-each select="./o[not(@base) and @name and not(./o)]">
+        <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $level + 1], $ancestors[count($ancestors) - $level])">
           <xsl:element name="o">
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
@@ -80,10 +102,10 @@ SOFTWARE.
         </xsl:for-each>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @name"/>
-      <xsl:for-each select="ancestor::o[eo:abstract(.)]">
-        <xsl:sort data-type="number" select="position()" order="descending"/>
+      <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
+      <xsl:for-each select="1 to count($ancestors) - 1">
         <xsl:variable name="level" select="position()"/>
-        <xsl:for-each select="./o[not(@base) and @name and not(./o) and generate-id(.)!=generate-id($o)]">
+        <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $level + 1], $ancestors[count($ancestors) - $level])">
           <xsl:element name="o">
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
