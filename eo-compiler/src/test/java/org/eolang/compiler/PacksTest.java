@@ -54,6 +54,7 @@ public final class PacksTest {
             "catches-alias-duplicates.yaml",
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",
+            "catches-reserved-atoms.yaml",
             "catches-two-bodies.yaml",
             "catches-same-line-name.yaml",
             "catches-recursive-copy.yaml",

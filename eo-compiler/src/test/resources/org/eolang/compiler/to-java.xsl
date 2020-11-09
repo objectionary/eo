@@ -152,15 +152,15 @@ SOFTWARE.
     </xsl:if>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@atom='float' or @atom='integer' or @atom='hex']">
+  <xsl:template match="o[@base='org.eolang.float' or @base='org.eolang.integer' or @base='org.eolang.hex']">
     <xsl:value-of select="text()"/>
   </xsl:template>
-  <xsl:template match="o[@atom='string']">
+  <xsl:template match="o[@base='org.eolang.string']">
     <xsl:text>"</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>"</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@atom='char']">
+  <xsl:template match="o[@base='org.eolang.char']">
     <xsl:text>'</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>'</xsl:text>

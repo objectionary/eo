@@ -22,34 +22,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xsl:strip-space elements="*"/>
-  <xsl:function name="eo:abstract" as="xs:boolean">
-    <xsl:param name="object" as="element()"/>
-    <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
-  </xsl:function>
-  <xsl:template match="o[@base and @ref]">
-    <xsl:variable name="o" select="."/>
-    <xsl:variable name="a" select="ancestor::o[eo:abstract(.)][1]"/>
-    <xsl:if test="not($a)">
-      <xsl:message terminate="yes">
-        <xsl:text>Can't find ancestor of "</xsl:text>
-        <xsl:value-of select="$o/@base"/>
-        <xsl:text>" at line </xsl:text>
-        <xsl:value-of select="$o/@ref"/>
-      </xsl:message>
-    </xsl:if>
-    <xsl:variable name="v" select="$a/o[@line=$o/@ref and (starts-with(@name, concat($o/@base, '+')) or $o/@base = @name)]"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+  <xsl:template match="/program/errors">
+    <xsl:variable name="atoms" select="tokenize('string char float integer hex', '\s+')" />
     <xsl:copy>
-      <xsl:attribute name="base">
-        <xsl:if test="$v">
-          <xsl:value-of select="$v/@name"/>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select="//o[@base and not(contains(@base, '.'))]">
+        <xsl:if test="index-of($atoms, @base) and not(text())">
+          <xsl:element name="error">
+            <xsl:attribute name="line">
+              <xsl:value-of select="@line"/>
+            </xsl:attribute>
+            <xsl:text>You can't copy "</xsl:text>
+            <xsl:value-of select="@base"/>
+            <xsl:text>" as a normal object</xsl:text>
+          </xsl:element>
         </xsl:if>
-        <xsl:if test="not($v)">
-          <xsl:value-of select="@base"/>
-        </xsl:if>
-      </xsl:attribute>
-      <xsl:apply-templates select="node()|@* except @base"/>
+      </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
