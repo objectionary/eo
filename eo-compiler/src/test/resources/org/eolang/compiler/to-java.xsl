@@ -103,7 +103,6 @@ SOFTWARE.
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
-    <xsl:apply-templates select=".//o[@name]" mode="variable"/>
     <xsl:value-of select="$TAB"/>
     <xsl:value-of select="$TAB"/>
     <xsl:text>return </xsl:text>
@@ -123,16 +122,23 @@ SOFTWARE.
     <xsl:text>this.</xsl:text>
     <xsl:value-of select="@base"/>
   </xsl:template>
-  <xsl:template match="o[@name]" mode="variable">
-    <xsl:value-of select="@name"/>
-    <xsl:text> = </xsl:text>
-    <xsl:apply-templates select="."/>
-    <xsl:text>;</xsl:text>
+  <xsl:template match="o[starts-with(@base, '.') and ./o]">
+    <xsl:param name="indent"/>
+    <xsl:apply-templates select="./o[1]">
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:value-of select="@base"/>
+    <xsl:text>(</xsl:text>
+    <xsl:apply-templates select="./o[position() &gt; 1]">
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o/o//o[@base and @name]">
-    <xsl:value-of select="@name"/>
-  </xsl:template>
-  <xsl:template match="o[@base and not(@ref) and not(text())]">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(@ref) and not(text())]">
     <xsl:param name="indent"/>
     <xsl:variable name="newindent">
       <xsl:value-of select="$indent"/>

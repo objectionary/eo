@@ -11,6 +11,7 @@ xsls:
   - errors/unknown-names.xsl
   - abstracts-float-up.xsl
   - rename-bases.xsl
+  - wrap-method-calls.xsl
   - to-java.xsl
 tests:
   - /program/objects[count(o)=1]
