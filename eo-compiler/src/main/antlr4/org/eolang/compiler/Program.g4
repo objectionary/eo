@@ -68,8 +68,8 @@ vhead
   :
   attributes
   |
-  has?
   NAME
+  has?
   ;
 
 vtail
@@ -117,8 +117,8 @@ hobject
   RB
   htail?
   |
-  has
   hobject
+  has
   htail?
   |
   hobject
@@ -142,8 +142,8 @@ htail
     RB
     |
     SPACE
-    has
     hobject
+    has
     |
     SPACE
     hobject
@@ -167,8 +167,8 @@ hhead
 
 has
   :
-  NAME
   COLON
+  NAME
   ;
 
 data

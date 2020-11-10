@@ -43,4 +43,4 @@ eo: |
         concat
           (scanner stdin).nextInt > !year
           " is a leap year?"
-          leap y:year
+          leap year:y

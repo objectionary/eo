@@ -11,7 +11,7 @@ tests:
   - //o[@name='first$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
 eo: |
   [a b] > first
-    foo:test
+    test:foo
       a > yes
       [x b] > second
         a > no
