@@ -34,10 +34,11 @@ SOFTWARE.
     <xsl:sequence select="replace($n, '\+', '_')"/>
   </xsl:function>
   <xsl:template match="/program/objects/o[@name and not(@base)]">
-    <xsl:variable name="attributes" select="./o[@name and not(@base) and not(./o)]"/>
     <xsl:variable name="methods" select="./o[not(@name and not(@base) and not(./o))]"/>
     <xsl:copy>
       <xsl:element name="java">
+        <xsl:value-of select="$EOL"/>
+        <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:text>public final class </xsl:text>
         <xsl:value-of select="@name"/>
@@ -46,36 +47,26 @@ SOFTWARE.
         </xsl:if>
         <xsl:text> {</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:for-each select="$attributes">
-          <xsl:value-of select="$TAB"/>
-          <xsl:text>private final Object </xsl:text>
-          <xsl:value-of select="eo:name(@name)"/>
-          <xsl:text>;</xsl:text>
-          <xsl:value-of select="$EOL"/>
-        </xsl:for-each>
+        <xsl:value-of select="$TAB"/>
+        <xsl:text>private final Map args;</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>public </xsl:text>
         <xsl:value-of select="@name"/>
-        <xsl:text>(</xsl:text>
-        <xsl:for-each select="$attributes">
-          <xsl:if test="position()!=1">
-            <xsl:text>, </xsl:text>
-          </xsl:if>
-          <xsl:text>final Object </xsl:text>
-          <xsl:value-of select="eo:name(@name)"/>
-        </xsl:for-each>
-        <xsl:text>) {</xsl:text>
+        <xsl:text>(final Map a) {</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:for-each select="$attributes">
+        <xsl:for-each select="./o[@name and not(@base)]">
           <xsl:value-of select="$TAB"/>
           <xsl:value-of select="$TAB"/>
-          <xsl:text>this.</xsl:text>
-          <xsl:value-of select="eo:name(@name)"/>
-          <xsl:text> = </xsl:text>
-          <xsl:value-of select="eo:name(@name)"/>
-          <xsl:text>;</xsl:text>
+          <xsl:text>assert a.containsKey("</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>");</xsl:text>
           <xsl:value-of select="$EOL"/>
         </xsl:for-each>
+        <xsl:value-of select="$TAB"/>
+        <xsl:value-of select="$TAB"/>
+        <xsl:text>this.args = java.utils.Collections.unmodifiableMap(a);</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
@@ -99,7 +90,7 @@ SOFTWARE.
     <xsl:if test="@name">
       <xsl:text>public Object </xsl:text>
       <xsl:value-of select="@name"/>
-      <xsl:text>()</xsl:text>
+      <xsl:text>(final Map _args)</xsl:text>
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
@@ -119,8 +110,9 @@ SOFTWARE.
     <xsl:value-of select="$EOL"/>
   </xsl:template>
   <xsl:template match="o[@base and @ref]">
-    <xsl:text>this.</xsl:text>
+    <xsl:text>this.args.get("</xsl:text>
     <xsl:value-of select="@base"/>
+    <xsl:text>")</xsl:text>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and ./o]">
     <xsl:param name="indent"/>
@@ -145,18 +137,27 @@ SOFTWARE.
       <xsl:value-of select="$TAB"/>
     </xsl:variable>
     <xsl:text>new </xsl:text>
-    <xsl:value-of select="@base"/>
-    <xsl:text>(</xsl:text>
+    <xsl:value-of select="replace(@base, '^org\.eolang\.', '')"/>
+    <xsl:text>(new MapOf(</xsl:text>
     <xsl:if test="./o">
       <xsl:value-of select="$EOL"/>
       <xsl:value-of select="$newindent"/>
     </xsl:if>
-    <xsl:for-each select="./o[not(@anonymous)]">
+    <xsl:for-each select="./o">
+      <xsl:text>new Entry("</xsl:text>
+      <xsl:if test="@as">
+        <xsl:value-of select="@as"/>
+      </xsl:if>
+      <xsl:if test="not(@as)">
+        <xsl:value-of select="format-number(position(), '00')"/>
+      </xsl:if>
+      <xsl:text>", </xsl:text>
       <xsl:apply-templates select=".">
         <xsl:with-param name="indent">
           <xsl:value-of select="$newindent"/>
         </xsl:with-param>
       </xsl:apply-templates>
+      <xsl:text>)</xsl:text>
       <xsl:if test="position() != last()">
         <xsl:text>,</xsl:text>
         <xsl:value-of select="$EOL"/>
@@ -167,7 +168,7 @@ SOFTWARE.
       <xsl:value-of select="$EOL"/>
       <xsl:value-of select="$indent"/>
     </xsl:if>
-    <xsl:text>)</xsl:text>
+    <xsl:text>))</xsl:text>
   </xsl:template>
   <xsl:template match="o[text() and @base='org.eolang.float' or @base='org.eolang.integer' or @base='org.eolang.hex']">
     <xsl:value-of select="text()"/>

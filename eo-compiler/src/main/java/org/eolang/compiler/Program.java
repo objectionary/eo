@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -130,7 +129,7 @@ public final class Program {
                 )
             )
         ).value();
-        Logger.info(this, "EO program parsed:\n%s", xel.xml());
+//        Logger.info(this, "EO program parsed:\n%s", xel.xml());
     }
 
 }
