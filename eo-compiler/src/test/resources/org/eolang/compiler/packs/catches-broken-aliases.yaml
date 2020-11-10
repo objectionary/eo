@@ -1,0 +1,12 @@
+xsls:
+  - errors/broken-aliases.xsl
+tests:
+  - /program/errors[count(error)=3]
+  - /program/errors/error[@line='2']
+eo: |
+  +alias org.eolang.io.Stdout
+  +alias this is some mistake
+  +alias
+
+  [] > main
+    (stdout "Hello, world!").print

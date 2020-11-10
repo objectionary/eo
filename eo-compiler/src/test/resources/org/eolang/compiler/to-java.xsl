@@ -94,6 +94,14 @@ SOFTWARE.
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
+    <xsl:for-each select=".//o[@name]">
+      <xsl:value-of select="$TAB"/>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>Object </xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>;</xsl:text>
+      <xsl:value-of select="$EOL"/>
+    </xsl:for-each>
     <xsl:value-of select="$TAB"/>
     <xsl:value-of select="$TAB"/>
     <xsl:text>return </xsl:text>
@@ -116,6 +124,10 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and ./o]">
     <xsl:param name="indent"/>
+    <xsl:if test="@name">
+      <xsl:value-of select="@name"/>
+      <xsl:text> = </xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="./o[1]">
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
@@ -136,8 +148,12 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="$TAB"/>
     </xsl:variable>
+    <xsl:if test="@name">
+      <xsl:value-of select="@name"/>
+      <xsl:text> = </xsl:text>
+    </xsl:if>
     <xsl:text>new </xsl:text>
-    <xsl:value-of select="replace(@base, '^org\.eolang\.', '')"/>
+    <xsl:value-of select="replace(@base, '^org\.eolang\.([A-Za-z]+)$', '$1')"/>
     <xsl:text>(new MapOf(</xsl:text>
     <xsl:if test="./o">
       <xsl:value-of select="$EOL"/>

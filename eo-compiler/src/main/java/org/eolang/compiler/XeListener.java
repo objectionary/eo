@@ -80,8 +80,11 @@ public final class XeListener implements ProgramListener {
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
                 .add("head").set(parts[0].substring(1)).up()
-                .add("tail").set(parts[1].trim()).up()
-                .up();
+                .add("tail");
+            if (parts.length > 1) {
+                this.dirs.set(parts[1].trim());
+            }
+            this.dirs.up().up();
         }
         this.dirs.up();
     }

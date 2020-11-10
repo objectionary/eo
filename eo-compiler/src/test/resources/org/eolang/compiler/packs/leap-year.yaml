@@ -5,6 +5,7 @@ xsls:
   - errors/same-line-names.xsl
   - errors/one-body.xsl
   - errors/duplicate-aliases.xsl
+  - errors/broken-aliases.xsl
   - errors/duplicate-names.xsl
   - add-refs.xsl
   - resolve-aliases.xsl
@@ -26,10 +27,9 @@ eo: |
   #
   # License is MIT
 
-  +alias org.eolang.*
-  +alias org.eolang.io.stdout
-  +alias org.eolang.io.stdin
-  +alias org.eolang.txt.scanner
+  +alias stdout org.eolang.io.Stdout
+  +alias stdin org.eolang.io.Stdin
+  +alias scanner org.eolang.txt.Scanner
 
   [args] > main
     [y] > leap
