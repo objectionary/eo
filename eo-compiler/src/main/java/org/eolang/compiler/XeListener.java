@@ -195,6 +195,15 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    public void enterHas(final ProgramParser.HasContext ctx) {
+        this.dirs.attr("as", ctx.NAME().getText());
+    }
+
+    @Override
+    public void exitHas(final ProgramParser.HasContext ctx) {
+    }
+
+    @Override
     public void enterHobject(final ProgramParser.HobjectContext ctx) {
     }
 

@@ -70,7 +70,7 @@ SOFTWARE.
         <xsl:variable name="level" select="position()"/>
         <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $level + 1], $ancestors[count($ancestors) - $level])">
           <xsl:element name="o">
-            <xsl:attribute name="name">
+            <xsl:attribute name="as">
               <xsl:value-of select="@name"/>
               <xsl:for-each select="1 to $level">
                 <xsl:text>+</xsl:text>
@@ -91,7 +91,6 @@ SOFTWARE.
     </xsl:element>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]" mode="top">
-    <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="name">
         <xsl:for-each select="ancestor-or-self::o[eo:abstract(.)]">

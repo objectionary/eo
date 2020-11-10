@@ -116,6 +116,10 @@ hobject
   RB
   htail?
   |
+  has
+  hobject
+  htail?
+  |
   hobject
   hsuffix
   htail?
@@ -137,6 +141,10 @@ htail
     RB
     |
     SPACE
+    has
+    hobject
+    |
+    SPACE
     hobject
     hsuffix
   )+
@@ -156,6 +164,12 @@ hhead
   data
   ;
 
+has
+  :
+  NAME
+  COLON
+  ;
+
 data
   :
   STRING
@@ -173,6 +187,7 @@ COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 CONST: '!';
+COLON: ':';
 ARROW: '>';
 PLUS: '+';
 MINUS: '-';
