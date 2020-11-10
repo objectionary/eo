@@ -68,6 +68,7 @@ vhead
   :
   attributes
   |
+  has?
   NAME
   ;
 

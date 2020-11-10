@@ -129,10 +129,10 @@ SOFTWARE.
     <xsl:apply-templates select="."/>
     <xsl:text>;</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base and @name]">
+  <xsl:template match="o/o//o[@base and @name]">
     <xsl:value-of select="@name"/>
   </xsl:template>
-  <xsl:template match="o[@base and not(@ref) and not(@name) and not(text())]">
+  <xsl:template match="o[@base and not(@ref) and not(text())]">
     <xsl:param name="indent"/>
     <xsl:variable name="newindent">
       <xsl:value-of select="$indent"/>

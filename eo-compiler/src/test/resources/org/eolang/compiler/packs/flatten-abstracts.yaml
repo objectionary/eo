@@ -5,12 +5,13 @@ xsls:
 tests:
   - /program/objects[count(o)=3]
   - //o[@name='first']
+  - //o[@name='first']/o[@base='test' and @as='foo']
   - //o[@name='first$second']
   - //o[@name='first$second$third']
   - //o[@name='first$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
 eo: |
   [a b] > first
-    test
+    foo:test
       a > yes
       [x b] > second
         a > no
