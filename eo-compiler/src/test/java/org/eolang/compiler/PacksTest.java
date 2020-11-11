@@ -50,6 +50,7 @@ public final class PacksTest {
     private static Collection<String> yamlPacks() {
         return new ListOf<>(
             "simple.yaml",
+            "full-syntax.yaml",
             "catches-name-duplicates.yaml",
             "catches-alias-duplicates.yaml",
             "catches-broken-aliases.yaml",

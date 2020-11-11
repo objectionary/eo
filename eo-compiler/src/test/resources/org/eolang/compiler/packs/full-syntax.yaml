@@ -1,0 +1,22 @@
+xsls: []
+tests:
+  - /program/objects[count(o)=4]
+eo: |
+  500.43 > one
+
+  "Hello, world!" > !hello
+
+  [x] > first
+    second > hello
+      third:foo > x
+        f 12
+          (((t 22) r:t 8.54 "yes").print 88):hey > !a
+      f:u
+        z
+          z 5
+            z
+    oops
+
+  test
+    me
+      now:i (f (f (f (f 1)))).f

@@ -124,6 +124,9 @@ hobject
   hobject
   hsuffix
   htail?
+  |
+  hobject
+  vtail
   ;
 
 htail
