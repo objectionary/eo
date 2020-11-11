@@ -41,9 +41,14 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ToJava}.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ToJavaTest {
 
+    /**
+     * Temp dir for tests.
+     * @checkstyle VisibilityModifierCheck (4 lines)
+     */
     @TempDir
     public Path temp;
 

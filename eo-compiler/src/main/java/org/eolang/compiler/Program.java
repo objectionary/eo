@@ -99,6 +99,7 @@ public final class Program {
                     String.format(
                         "[%d:%d] %s: \"%s\"",
                         line, position, msg,
+                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
                         lines.length < line ? "EOF" : lines[line - 1]
                     ),
                     error
@@ -129,7 +130,6 @@ public final class Program {
                 )
             )
         ).value();
-//        Logger.info(this, "EO program parsed:\n%s", xel.xml());
     }
 
 }

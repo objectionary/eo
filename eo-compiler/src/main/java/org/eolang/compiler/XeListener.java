@@ -36,18 +36,25 @@ import org.xembly.Xembler;
  *
  * @since 0.1
  */
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class XeListener implements ProgramListener {
 
+    /**
+     * Xembly directives we are building (mutable).
+     */
     private final Directives dirs = new Directives();
 
+    /**
+     * To get the XML ready to be used.
+     * @return XML
+     */
     public String xml() {
         return new Xembler(this.dirs).xmlQuietly();
     }
 
     @Override
     public void enterProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.add("program")
-            .add("errors").up();
+        this.dirs.add("program").add("errors").up();
     }
 
     @Override
@@ -70,12 +77,13 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitLicense(final ProgramParser.LicenseContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
     public void enterMetas(final ProgramParser.MetasContext ctx) {
         this.dirs.add("metas");
-        for (TerminalNode node : ctx.META()) {
+        for (final TerminalNode node : ctx.META()) {
             final String[] parts = node.getText().split(" ", 2);
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
@@ -91,6 +99,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitMetas(final ProgramParser.MetasContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
@@ -105,16 +114,18 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterObject(final ProgramParser.ObjectContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
     public void exitObject(final ProgramParser.ObjectContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
-        for (TerminalNode attr : ctx.NAME()) {
+        for (final TerminalNode attr : ctx.NAME()) {
             this.dirs.add("o")
                 .attr("line", ctx.getStart().getLine())
                 .attr("name", attr.getText())
@@ -125,11 +136,12 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
     public void enterTail(final ProgramParser.TailContext ctx) {
-        this.dirs.xpath("o[last()]").strict(1);
+        this.enter();
     }
 
     @Override
@@ -139,8 +151,8 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
-        this.dirs.xpath("o[last()]").strict(1)
-            .attr("name", ctx.NAME().getText());
+        this.enter();
+        this.dirs.attr("name", ctx.NAME().getText());
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
         }
@@ -153,15 +165,14 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterMethod(final ProgramParser.MethodContext ctx) {
-        this.dirs
-            .xpath("o[last()]").strict(1).up()
-            .add("o")
+        this.dirs.add("o")
             .attr("line", ctx.getStart().getLine())
             .attr("base", ctx.getText()).up();
     }
 
     @Override
     public void exitMethod(final ProgramParser.MethodContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
@@ -182,7 +193,8 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterHas(final ProgramParser.HasContext ctx) {
-        this.dirs.xpath("o[last()]").strict(1).attr("as", ctx.NAME().getText());
+        this.enter();
+        this.dirs.attr("as", ctx.NAME().getText());
     }
 
     @Override
@@ -192,15 +204,17 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterApplication(final ProgramParser.ApplicationContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
     public void exitApplication(final ProgramParser.ApplicationContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
     public void enterHtail(final ProgramParser.HtailContext ctx) {
-        this.dirs.xpath("o[last()]").strict(1);
+        this.enter();
     }
 
     @Override
@@ -209,6 +223,7 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
@@ -236,22 +251,34 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitData(final ProgramParser.DataContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
-    public void visitTerminal(final TerminalNode terminalNode) {
+    public void visitTerminal(final TerminalNode node) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
-    public void visitErrorNode(final ErrorNode errorNode) {
-        throw new CompileException(errorNode.getText());
+    public void visitErrorNode(final ErrorNode node) {
+        throw new CompileException(node.getText());
     }
 
     @Override
-    public void enterEveryRule(final ParserRuleContext parserRuleContext) {
+    public void enterEveryRule(final ParserRuleContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
-    public void exitEveryRule(final ParserRuleContext parserRuleContext) {
+    public void exitEveryRule(final ParserRuleContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
+
+    /**
+     * Help method.
+     */
+    private void enter() {
+        this.dirs.xpath("o[last()]").strict(1);
+    }
+
 }

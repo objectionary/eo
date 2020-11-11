@@ -91,7 +91,6 @@ public final class ToJava {
                 )
             )
         ).transform(this.xml);
-        Logger.info(this, out.toString());
         for (final XML error : out.nodes("/program/errors/error")) {
             Logger.error(
                 this,
@@ -114,6 +113,11 @@ public final class ToJava {
         }
     }
 
+    /**
+     * Save one Java file.
+     * @param path The path
+     * @param content The content
+     */
     private static void save(final Path path, final String content) {
         new Unchecked<>(
             new LengthOf(

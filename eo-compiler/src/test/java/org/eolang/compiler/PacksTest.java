@@ -44,33 +44,15 @@ import org.yaml.snakeyaml.Yaml;
  * Test case for packs.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class PacksTest {
-
-    private static Collection<String> yamlPacks() {
-        return new ListOf<>(
-            "simple.yaml",
-            "full-syntax.yaml",
-            "catches-name-duplicates.yaml",
-            "catches-alias-duplicates.yaml",
-            "catches-broken-aliases.yaml",
-            "catches-unknown-names.yaml",
-            "catches-self-naming.yaml",
-            "catches-reserved-atoms.yaml",
-            "catches-two-bodies.yaml",
-            "catches-same-line-name.yaml",
-            "adds-refs.yaml",
-            "flatten-abstracts.yaml",
-            "resolves-aliases.yaml",
-            "leap-year.yaml"
-        );
-    }
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
     @SuppressWarnings("unchecked")
     public void testPacks(final String pack) throws Exception {
-        Yaml yaml = new Yaml();
+        final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             PacksTest.class.getResourceAsStream(
                 String.format("packs/%s", pack)
@@ -90,12 +72,32 @@ public final class PacksTest {
                 (Collection<String>) map.get("xsls")
             )
         ).transform(new XMLDocument(baos.toString()));
-        for (String xpath : (Collection<String>) map.get("tests")) {
+        for (final String xpath : (Collection<String>) map.get("tests")) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(out.toString()),
                 XhtmlMatchers.hasXPath(xpath)
             );
         }
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Collection<String> yamlPacks() {
+        return new ListOf<>(
+            "simple.yaml",
+            "full-syntax.yaml",
+            "catches-name-duplicates.yaml",
+            "catches-alias-duplicates.yaml",
+            "catches-broken-aliases.yaml",
+            "catches-unknown-names.yaml",
+            "catches-self-naming.yaml",
+            "catches-reserved-atoms.yaml",
+            "catches-two-bodies.yaml",
+            "catches-same-line-name.yaml",
+            "adds-refs.yaml",
+            "flatten-abstracts.yaml",
+            "resolves-aliases.yaml",
+            "leap-year.yaml"
+        );
     }
 
 }
