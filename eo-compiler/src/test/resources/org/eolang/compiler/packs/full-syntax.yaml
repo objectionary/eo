@@ -20,12 +20,14 @@ eo: |
       third:foo > x
         f 12
           (((t 22) r:t 8.54 "yes").print 88):hey > !a
+            kid
       f:u
         z
           z 5
             z
     oops
 
+  # Comments are allowed only in front of top-level objects
   []
     one.two.three.four.five
       t
