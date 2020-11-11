@@ -120,11 +120,11 @@ public final class XeListener implements ProgramListener {
                 .attr("name", attr.getText())
                 .up();
         }
+        this.dirs.up();
     }
 
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
-        this.dirs.up();
     }
 
     @Override
@@ -139,7 +139,8 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
-        this.dirs.attr("name", ctx.NAME().getText());
+        this.dirs.xpath("o[last()]").strict(1)
+            .attr("name", ctx.NAME().getText());
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
         }
@@ -147,6 +148,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitSuffix(final ProgramParser.SuffixContext ctx) {
+        this.dirs.up();
     }
 
     @Override
@@ -203,16 +205,6 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitHtail(final ProgramParser.HtailContext ctx) {
-        this.dirs.up();
-    }
-
-    @Override
-    public void enterHsuffix(final ProgramParser.HsuffixContext ctx) {
-        this.dirs.xpath("o[last()]").strict(1);
-    }
-
-    @Override
-    public void exitHsuffix(final ProgramParser.HsuffixContext ctx) {
         this.dirs.up();
     }
 

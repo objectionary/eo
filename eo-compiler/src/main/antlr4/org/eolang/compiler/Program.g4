@@ -110,7 +110,7 @@ application
   htail?
   |
   application
-  hsuffix
+  suffix
   htail?
   ;
 
@@ -135,13 +135,8 @@ htail
     |
     SPACE
     application
-    hsuffix
+    suffix
   )+
-  ;
-
-hsuffix
-  :
-  suffix
   ;
 
 hhead
