@@ -165,7 +165,7 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    public void enterHhead(final ProgramParser.HheadContext ctx) {
+    public void enterHead(final ProgramParser.HeadContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.NAME() != null) {
             this.dirs.attr("base", ctx.NAME().getText());
@@ -176,7 +176,7 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    public void exitHhead(final ProgramParser.HheadContext ctx) {
+    public void exitHead(final ProgramParser.HeadContext ctx) {
         this.dirs.up();
     }
 

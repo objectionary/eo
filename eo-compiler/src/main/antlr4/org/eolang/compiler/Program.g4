@@ -53,9 +53,9 @@ objects
 object
   :
   (
-    application
-    |
     abstraction
+    |
+    application
   )
   tail?
   (
@@ -98,7 +98,7 @@ method
 
 application
   :
-  hhead
+  head
   htail?
   |
   application
@@ -123,7 +123,7 @@ htail
   :
   (
     SPACE
-    hhead
+    head
     |
     SPACE
     application
@@ -144,7 +144,7 @@ htail
   )+
   ;
 
-hhead
+head
   :
   AT
   |
