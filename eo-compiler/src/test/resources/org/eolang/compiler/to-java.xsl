@@ -90,11 +90,11 @@ SOFTWARE.
     <xsl:if test="@name">
       <xsl:text>public Object </xsl:text>
       <xsl:value-of select="@name"/>
-      <xsl:text>(final Map _args)</xsl:text>
+      <xsl:text>(final Map a)</xsl:text>
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
-    <xsl:for-each select=".//o[@name]">
+    <xsl:for-each select="descendant-or-self::o[@name]">
       <xsl:value-of select="$TAB"/>
       <xsl:value-of select="$TAB"/>
       <xsl:text>Object </xsl:text>
@@ -155,7 +155,11 @@ SOFTWARE.
     <xsl:text>new </xsl:text>
     <xsl:value-of select="replace(@base, '^org\.eolang\.([A-Za-z]+)$', '$1')"/>
     <xsl:text>(new MapOf(</xsl:text>
+    <xsl:if test="ancestor-or-self::o[parent::o/parent::objects and @name]">
+      <xsl:text>a</xsl:text>
+    </xsl:if>
     <xsl:if test="./o">
+      <xsl:text>,</xsl:text>
       <xsl:value-of select="$EOL"/>
       <xsl:value-of select="$newindent"/>
     </xsl:if>
