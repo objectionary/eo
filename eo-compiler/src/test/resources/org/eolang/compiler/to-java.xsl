@@ -36,6 +36,7 @@ SOFTWARE.
   <xsl:template match="/program/objects/o[@name and not(@base)]">
     <xsl:variable name="methods" select="./o[not(@name and not(@base) and not(./o))]"/>
     <xsl:copy>
+      <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
         <xsl:value-of select="$EOL"/>
         <xsl:text>import org.eolang.*;</xsl:text>

@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.ListOf;
+import org.cactoos.list.Mapped;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 
@@ -69,30 +70,51 @@ public final class ToJava {
      */
     public void compile() {
         final XML out = new XSLChain(
-            new ListOf<>(
-                new XSLDocument(
-                    ToJava.class.getResourceAsStream(
-                        "resolve-aliases.xsl"
-                    )
+            new Mapped<>(
+                node -> new XSLDocument(
+                    ToJava.class.getResourceAsStream(node)
                 ),
-                new XSLDocument(
-                    ToJava.class.getResourceAsStream(
-                        "to-java.xsl"
-                    )
+                new ListOf<>(
+                    "errors/broken-aliases.xsl",
+                    "errors/duplicate-aliases.xsl",
+                    "errors/one-body.xsl",
+                    "errors/reserved-atoms.xsl",
+                    "errors/same-line-names.xsl",
+                    "errors/self-naming.xsl",
+                    "01-add-refs.xsl",
+                    "02-resolve-aliases.xsl",
+                    "errors/unknown-names.xsl",
+                    "03-abstracts-float-up.xsl",
+                    "04-rename-bases.xsl",
+                    "05-wrap-method-calls.xsl",
+                    "to-java.xsl"
                 )
             )
         ).transform(this.xml);
         Logger.info(this, out.toString());
-        for (final XML file : out.nodes("/package/file")) {
+        for (final XML error : out.nodes("/program/errors/error")) {
+            Logger.error(
+                this,
+                "[%s] %s",
+                error.xpath("@line").get(0),
+                error.xpath("text()").get(0)
+            );
+        }
+        for (final XML file : out.nodes("/program/objects/o[java]")) {
             ToJava.save(
-                this.dir.resolve(Paths.get(file.xpath("@name").get(0))),
-                file.xpath("text()").get(0)
+                this.dir.resolve(
+                    Paths.get(
+                        String.format(
+                            "%s.java", file.xpath("@name").get(0)
+                        )
+                    )
+                ),
+                file.xpath("java/text()").get(0)
             );
         }
     }
 
     private static void save(final Path path, final String content) {
-        Logger.info(ToJava.class, "Saving to %s", path.toAbsolutePath());
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
@@ -101,6 +123,12 @@ public final class ToJava {
                 )
             )
         ).value();
+        Logger.info(
+            ToJava.class,
+            "Saved %d chars to %s",
+            content.length(),
+            path.toAbsolutePath()
+        );
     }
 
 }

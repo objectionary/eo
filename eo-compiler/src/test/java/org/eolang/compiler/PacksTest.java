@@ -59,7 +59,6 @@ public final class PacksTest {
             "catches-reserved-atoms.yaml",
             "catches-two-bodies.yaml",
             "catches-same-line-name.yaml",
-            "catches-recursive-copy.yaml",
             "adds-refs.yaml",
             "flatten-abstracts.yaml",
             "resolves-aliases.yaml",

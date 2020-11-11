@@ -1,7 +1,7 @@
 xsls:
-  - add-refs.xsl
-  - abstracts-float-up.xsl
-  - rename-bases.xsl
+  - 01-add-refs.xsl
+  - 03-abstracts-float-up.xsl
+  - 04-rename-bases.xsl
 tests:
   - /program/objects[count(o)=3]
   - //o[@name='first']

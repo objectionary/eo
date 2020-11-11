@@ -60,14 +60,14 @@ public final class ToJavaTest {
             this.temp
         );
         tojava.compile();
-        final Path file = this.temp.resolve(Paths.get("leap.java"));
+        final Path file = this.temp.resolve(Paths.get("fibo.java"));
         MatcherAssert.assertThat(
             Files.exists(file),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             new TextOf(new InputOf(file)).asString(),
-            Matchers.containsString("test")
+            Matchers.containsString("public final class fibo")
         );
     }
 

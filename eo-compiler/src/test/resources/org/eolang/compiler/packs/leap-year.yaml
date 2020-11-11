@@ -1,26 +1,20 @@
 xsls:
   - errors/reserved-atoms.xsl
   - errors/self-naming.xsl
-  - errors/recursive-copies.xsl
   - errors/same-line-names.xsl
   - errors/one-body.xsl
   - errors/duplicate-aliases.xsl
   - errors/broken-aliases.xsl
   - errors/duplicate-names.xsl
-  - add-refs.xsl
-  - resolve-aliases.xsl
+  - 01-add-refs.xsl
+  - 02-resolve-aliases.xsl
   - errors/unknown-names.xsl
-  - abstracts-float-up.xsl
-  - rename-bases.xsl
-  - wrap-method-calls.xsl
+  - 03-abstracts-float-up.xsl
+  - 04-rename-bases.xsl
+  - 05-wrap-method-calls.xsl
   - to-java.xsl
 tests:
-  - /program/objects[count(o)=1]
-  - //o[@base='x' and @ref='1']
-  - //o[@base='x' and @ref='4']
-  - //o[@base='x' and @line='11' and @ref='4']
-  - //o[@base='a' and @line='9' and @ref='12']
-  - //o[@base='something' and @line='12' and @name='a' and not(@ref)]
+  - /program/objects[count(o)=2]
 eo: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool

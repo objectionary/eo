@@ -52,7 +52,7 @@ public final class ProgramTest {
             XhtmlMatchers.xhtml(
                 new String(baos.toByteArray())
             ),
-            XhtmlMatchers.hasXPath("//abstraction[name='fibo']")
+            XhtmlMatchers.hasXPath("/program/objects/o[@name='fibo']")
         );
     }
 
