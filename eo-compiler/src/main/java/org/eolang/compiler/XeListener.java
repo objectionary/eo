@@ -112,33 +112,22 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    public void enterVobject(final ProgramParser.VobjectContext ctx) {
-    }
-
-    @Override
-    public void exitVobject(final ProgramParser.VobjectContext ctx) {
-    }
-
-    @Override
-    public void enterVhead(final ProgramParser.VheadContext ctx) {
+    public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
-        if (ctx.NAME() != null) {
-            this.dirs.attr("base", ctx.NAME().getText());
-        }
     }
 
     @Override
-    public void exitVhead(final ProgramParser.VheadContext ctx) {
+    public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.up();
     }
 
     @Override
-    public void enterVtail(final ProgramParser.VtailContext ctx) {
+    public void enterTail(final ProgramParser.TailContext ctx) {
         this.dirs.xpath("o[last()]").strict(1);
     }
 
     @Override
-    public void exitVtail(final ProgramParser.VtailContext ctx) {
+    public void exitTail(final ProgramParser.TailContext ctx) {
         this.dirs.up();
     }
 
@@ -199,29 +188,20 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterHas(final ProgramParser.HasContext ctx) {
-        this.dirs.attr("as", ctx.NAME().getText());
+        this.dirs.xpath("o[last()]").strict(1).attr("as", ctx.NAME().getText());
     }
 
     @Override
     public void exitHas(final ProgramParser.HasContext ctx) {
-    }
-
-    @Override
-    public void enterHobject(final ProgramParser.HobjectContext ctx) {
-    }
-
-    @Override
-    public void exitHobject(final ProgramParser.HobjectContext ctx) {
-    }
-
-    @Override
-    public void enterHsuffix(final ProgramParser.HsuffixContext ctx) {
-        this.dirs.xpath("o[last()]").strict(1);
-    }
-
-    @Override
-    public void exitHsuffix(final ProgramParser.HsuffixContext ctx) {
         this.dirs.up();
+    }
+
+    @Override
+    public void enterApplication(final ProgramParser.ApplicationContext ctx) {
+    }
+
+    @Override
+    public void exitApplication(final ProgramParser.ApplicationContext ctx) {
     }
 
     @Override
@@ -231,6 +211,16 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitHtail(final ProgramParser.HtailContext ctx) {
+        this.dirs.up();
+    }
+
+    @Override
+    public void enterHsuffix(final ProgramParser.HsuffixContext ctx) {
+        this.dirs.xpath("o[last()]").strict(1);
+    }
+
+    @Override
+    public void exitHsuffix(final ProgramParser.HsuffixContext ctx) {
         this.dirs.up();
     }
 

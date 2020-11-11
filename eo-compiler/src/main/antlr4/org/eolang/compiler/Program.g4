@@ -47,34 +47,27 @@ objects
 
 object
   :
-  vobject
-  |
-  hobject
+  (
+    application
+    |
+    abstraction
+  )
+  tail?
+  (
+    EOL
+    method
+    suffix?
+  )*
   ;
 
-vobject
-  :
-  COMMENT*
-  vhead
-  vtail
-  |
-  vobject
-  EOL
-  method
-  (suffix | vtail)?
-  ;
-
-vhead
+abstraction
   :
   attributes
-  |
-  NAME
-  has?
+  suffix?
   ;
 
-vtail
+tail
   :
-  suffix?
   EOL
   TAB
   (object EOL)+
@@ -103,30 +96,27 @@ method
   NAME
   ;
 
-hobject
+application
   :
   hhead
   htail?
   |
-  hobject
+  application
   method
   htail?
   |
   LB
-  hobject
+  application
   RB
   htail?
   |
-  hobject
+  application
   has
   htail?
   |
-  hobject
+  application
   hsuffix
   htail?
-  |
-  hobject
-  vtail
   ;
 
 htail
@@ -136,20 +126,20 @@ htail
     hhead
     |
     SPACE
-    hobject
+    application
     method
     |
     SPACE
     LB
-    hobject
+    application
     RB
     |
     SPACE
-    hobject
+    application
     has
     |
     SPACE
-    hobject
+    application
     hsuffix
   )+
   ;
