@@ -2,8 +2,17 @@ xsls: []
 tests:
   - /program/objects[count(o)=5]
 eo: |
+  # The purpose of this test case is to make
+  # sure all possible syntax scenarios can
+  # be parsed by the ANTLR
+
+  +alias Test Test
+  +foo
+  +bar Some text
+
   500.43 > one
 
+  # This is just a simple string
   "Hello, world!" > !hello
 
   [x] > first

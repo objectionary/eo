@@ -42,7 +42,12 @@ metas
 
 objects
   :
-  (object EOL EOL?)+
+  (
+    (COMMENT EOL)*
+    object
+    EOL
+    EOL?
+  )+
   ;
 
 object
