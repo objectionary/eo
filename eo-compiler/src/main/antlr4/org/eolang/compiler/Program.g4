@@ -62,7 +62,9 @@ object
 
 abstraction
   :
-  attributes
+  LSQ
+  (NAME (SPACE NAME)*)?
+  RSQ
   suffix?
   ;
 
@@ -72,13 +74,6 @@ tail
   TAB
   (object EOL)+
   UNTAB
-  ;
-
-attributes
-  :
-  LSQ
-  (NAME (SPACE NAME)*)?
-  RSQ
   ;
 
 suffix

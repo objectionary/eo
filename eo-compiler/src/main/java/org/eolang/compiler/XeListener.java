@@ -114,6 +114,12 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        for (TerminalNode attr : ctx.NAME()) {
+            this.dirs.add("o")
+                .attr("line", ctx.getStart().getLine())
+                .attr("name", attr.getText())
+                .up();
+        }
     }
 
     @Override
@@ -129,20 +135,6 @@ public final class XeListener implements ProgramListener {
     @Override
     public void exitTail(final ProgramParser.TailContext ctx) {
         this.dirs.up();
-    }
-
-    @Override
-    public void enterAttributes(final ProgramParser.AttributesContext ctx) {
-        for (TerminalNode attr : ctx.NAME()) {
-            this.dirs.add("o")
-                .attr("line", ctx.getStart().getLine())
-                .attr("name", attr.getText())
-                .up();
-        }
-    }
-
-    @Override
-    public void exitAttributes(final ProgramParser.AttributesContext ctx) {
     }
 
     @Override
