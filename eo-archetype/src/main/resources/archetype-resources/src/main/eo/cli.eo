@@ -1,7 +1,0 @@
-type App:
-    Int run()
-
-object cli as App:
-    Object @args
-    Int run():
-        0

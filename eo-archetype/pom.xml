@@ -31,4 +31,23 @@ SOFTWARE.
   </parent>
   <artifactId>eo-archetype</artifactId>
   <packaging>jar</packaging>
+  <profiles>
+    <profile>
+      <id>qulice</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.qulice</groupId>
+            <artifactId>qulice-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>checkstyle:.*</exclude>
+                <exclude>pmd:.*</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
