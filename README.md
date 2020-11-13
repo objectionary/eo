@@ -50,9 +50,8 @@ These things we **don't tolerate**:
   * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
   * global variables/procedures
   * reflection
-  * constants
   * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
-  * scalar types
+  * scalar types and data primitives
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
   * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
   * operators
@@ -69,20 +68,29 @@ independent.
 
 ## Quick Start
 
-Here is a classic "Hello, world!" example:
+Here is a simple program that asks for a year and tells you
+whether it's leap or not:
 
 ```
-import org.eolang.cli
-import org.eolang.printed
-import org.eolang.string
-cli:
-  printed:
-    string:
-      "Hello, world!"
-```
++alias stdout org.eolang.io.Stdout
++alias stdin org.eolang.io.Stdin
++alias scanner org.eolang.txt.Scanner
 
-This code will compile into a `.java` class that will compile into
-a `.class` byte code that will run and print "Hello, world!".
+[args] > main
+  [y] > leap
+    or
+      and
+        eq (mod y 4) 0
+        not (eq (mod y 100) 0)
+      eq (mod y 400) 0
+  and
+    stdout "Enter a year:"
+    stdout
+      concat
+        (scanner stdin).nextInt > !year
+        " is a leap year?"
+        leap year:y
+```
 
 ## How to contribute
 

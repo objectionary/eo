@@ -1,0 +1,42 @@
+xsls:
+  - errors/reserved-atoms.xsl
+  - errors/self-naming.xsl
+  - errors/same-line-names.xsl
+  - errors/one-body.xsl
+  - errors/duplicate-aliases.xsl
+  - errors/broken-aliases.xsl
+  - errors/duplicate-names.xsl
+  - 01-add-refs.xsl
+  - 02-resolve-aliases.xsl
+  - errors/unknown-names.xsl
+  - 03-abstracts-float-up.xsl
+  - 04-rename-bases.xsl
+  - 05-wrap-method-calls.xsl
+  - 06-to-java.xsl
+tests:
+  - /program/objects[count(o)=2]
+  - //o[@name='main$leap']
+eo: |
+  # This program is from the EOLANG original paper
+  # and must produce a working command line tool
+  #
+  # License is MIT
+
+  +alias stdout org.eolang.io.Stdout
+  +alias stdin org.eolang.io.Stdin
+  +alias scanner org.eolang.txt.Scanner
+
+  [args] > main
+    [y] > leap
+      or
+        and
+          eq (mod y 4) 0
+          not (eq (mod y 100) 0)
+        eq (mod y 400) 0
+    and
+      stdout "Enter a year:"
+      stdout
+        concat
+          (scanner stdin).nextInt > !year
+          " is a leap year?"
+          leap year:y

@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XMLDocument;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,17 +38,18 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.Program;
+import org.eolang.compiler.ToJava;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Compile.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "compile",
@@ -120,10 +123,16 @@ public final class CompileMojo extends AbstractMojo {
      */
     private void compile(final Path file) {
         try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             new Program(
                 new InputOf(file),
-                this.targetDirectory.toPath()
+                new OutputTo(baos)
             ).compile();
+            final ToJava tojava = new ToJava(
+                new XMLDocument(baos.toString()),
+                this.targetDirectory.toPath()
+            );
+            tojava.compile();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(

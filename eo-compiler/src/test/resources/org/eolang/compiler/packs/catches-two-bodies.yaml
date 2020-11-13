@@ -1,0 +1,14 @@
+xsls:
+  - errors/one-body.xsl
+tests:
+  - /program/errors[count(error)=1]
+  - /program/errors/error[@line='1']
+  - //o[@base='first' and @line='2']
+  - //o[@base='second' and @line='3']
+eo: |
+  []
+    first
+    second:f
+    third > hey
+      23
+      33

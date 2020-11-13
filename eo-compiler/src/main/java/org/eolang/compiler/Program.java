@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package org.eolang.compiler;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -32,22 +31,20 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.cactoos.Func;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Output;
-import org.cactoos.io.LengthOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.And;
-import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.io.UncheckedInput;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
-import org.eolang.compiler.syntax.Tree;
 
 /**
  * Program.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -59,23 +56,18 @@ public final class Program {
     private final Input input;
 
     /**
-     * Target to save to.
+     * Target to save XML to.
      */
-    private final Func<String, Output> target;
+    private final Output target;
 
     /**
      * Ctor.
      *
      * @param ipt Input text
-     * @param dir Directory to write to
+     * @param file The file to write the XML to
      */
-    public Program(final Input ipt, final Path dir) {
-        this(
-            ipt,
-            path -> new OutputTo(
-                new File(dir.toFile(), path)
-            )
-        );
+    public Program(final Input ipt, final Path file) {
+        this(ipt, new OutputTo(file));
     }
 
     /**
@@ -84,13 +76,13 @@ public final class Program {
      * @param ipt Input text
      * @param tgt Target
      */
-    public Program(final Input ipt, final Func<String, Output> tgt) {
+    public Program(final Input ipt, final Output tgt) {
         this.input = ipt;
         this.target = tgt;
     }
 
     /**
-     * Compile it to Java and save.
+     * Compile it to XML and save.
      *
      * @throws IOException If fails
      */
@@ -106,36 +98,36 @@ public final class Program {
                 throw new CompileException(
                     String.format(
                         "[%d:%d] %s: \"%s\"",
-                        line, position, msg, lines[line - 1]
+                        line, position, msg,
+                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
+                        lines.length < line ? "EOF" : lines[line - 1]
                     ),
                     error
                 );
             }
         };
-        final org.eolang.compiler.ProgramLexer lexer =
-            new org.eolang.compiler.ProgramLexer(
-                CharStreams.fromStream(this.input.stream())
+        final ProgramLexer lexer =
+            new ProgramLexer(
+                CharStreams.fromStream(
+                    new UncheckedInput(this.input).stream()
+                )
             );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
-        final org.eolang.compiler.ProgramParser parser =
-            new org.eolang.compiler.ProgramParser(
+        final ProgramParser parser =
+            new ProgramParser(
                 new CommonTokenStream(lexer)
             );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        final Tree tree = parser.program().ret;
-        new IoCheckedScalar<>(
-            new And(
-                path -> {
-                    new LengthOf(
-                        new TeeInput(
-                            path.getValue(),
-                            this.target.apply(path.getKey())
-                        )
-                    ).value();
-                },
-                tree.java().entrySet()
+        final XeListener xel = new XeListener();
+        new ParseTreeWalker().walk(xel, parser.program());
+        new Unchecked<>(
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(xel.xml()),
+                    this.target
+                )
             )
         ).value();
     }

@@ -1,0 +1,41 @@
+xsls: []
+tests:
+  - /program/objects[count(o)=5]
+eo: |
+  # The purpose of this test case is to make
+  # sure all possible syntax scenarios can
+  # be parsed by the ANTLR
+
+  +alias Test Test
+  +foo
+  +bar Some text
+
+  500.43 > one
+
+  # This is just a simple string
+  "Hello, world!" > !hello
+
+  [x] > first
+    second > hello
+      third:foo > x
+        f 12
+          (((t 22) r:t 8.54 "yes").print 88):hey > !a
+            kid
+      f:u
+        z
+          z 5
+            z
+    oops
+
+  # Comments are allowed only in front of top-level objects
+  []
+    one.two.three.four.five
+      t
+    .two
+    .three > a1
+    .four > a2
+    .five > a3
+
+  test
+    me
+      now:i (f (f (f (f 1)))).f

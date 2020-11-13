@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,11 @@
 package org.eolang.compiler;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Main.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public final class Main {
@@ -51,7 +50,7 @@ public final class Main {
      */
     public Main(final PrintStream out, final String... input) {
         this.stdout = out;
-        this.args = input;
+        this.args = Arrays.copyOf(input, input.length);
     }
 
     /**

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,5 +22,7 @@
  * SOFTWARE.
  */
 
-assert new File(basedir, 'target/generated-sources/eo/Pixel.java').exists()
-assert new File(basedir, 'target/classes/eo/Pixel.class').exists()
+assert new File(basedir, 'target/generated-sources/eo/pixel.java').exists()
+assert new File(basedir, 'target/generated-sources/eo/pixel$hello.java').exists()
+assert new File(basedir, 'target/classes/pixel.class').exists()
+assert new File(basedir, 'target/classes/pixel$hello.class').exists()

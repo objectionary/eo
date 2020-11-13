@@ -1,0 +1,19 @@
+xsls:
+  - 01-add-refs.xsl
+  - 02-resolve-aliases.xsl
+tests:
+  - /program/objects[count(o)=1]
+  - /program/metas/meta[head='foo' and @line='4']
+  - /program/metas[count(meta)=1]
+  - //o[@base='org.eolang.io.Stdout' and @line='9']
+  - //o[@base='org.eolang.And' and @line='7']
+eo: |
+  +alias stdout org.eolang.io.Stdout
+  +alias stdin org.eolang.io.Stdin
+  +alias scanner org.eolang.txt.Scanner
+  +foo Some other meta
+
+  [args] > main
+    and
+      (scanner stdin).nextLine > !line
+      (stdout "You entered" line).print

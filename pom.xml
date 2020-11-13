@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016 eolang.org
+Copyright (c) 2016-2020 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.49.2</version>
+    <version>0.50.9</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -38,7 +38,7 @@ SOFTWARE.
     <module>eo-compiler</module>
     <module>eo-maven-plugin</module>
     <module>eo-archetype</module>
-    <module>eo-core</module>
+    <module>eo-runtime</module>
   </modules>
   <description>EO Language</description>
   <url>https://github.com/yegor256/eo</url>
@@ -60,7 +60,7 @@ SOFTWARE.
       <name>Yegor Bugayenko</name>
       <email>yegor256@gmail.com</email>
       <organization>yegor256.com</organization>
-      <organizationUrl>http://www.yegor256.com</organizationUrl>
+      <organizationUrl>https://www.yegor256.com</organizationUrl>
       <roles>
         <role>Architect</role>
         <role>Developer</role>
@@ -79,7 +79,7 @@ SOFTWARE.
   </scm>
   <ciManagement>
     <system>rultor</system>
-    <url>http://www.rultor.com/s/eo</url>
+    <url>https://www.rultor.com/s/eo</url>
   </ciManagement>
   <distributionManagement>
     <site>
@@ -92,23 +92,10 @@ SOFTWARE.
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.29</version>
+        <version>0.46</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
   <profiles>
     <profile>
       <id>qulice</id>
@@ -121,6 +108,7 @@ SOFTWARE.
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>
                 <exclude>findbugs:.*</exclude>
+                <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>
           </plugin>

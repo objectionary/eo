@@ -1,0 +1,5 @@
++alias stdout org.eolang.io.Stdout
+
+[] > hello
+  [] > say
+    stdout "Hello, world!"
