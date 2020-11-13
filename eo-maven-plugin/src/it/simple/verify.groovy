@@ -22,5 +22,7 @@
  * SOFTWARE.
  */
 
-assert new File(basedir, 'target/generated-sources/eo/Pixel.java').exists()
-assert new File(basedir, 'target/classes/eo/Pixel.class').exists()
+assert new File(basedir, 'target/generated-sources/eo/pixel.java').exists()
+assert new File(basedir, 'target/generated-sources/eo/pixel$hello.java').exists()
+assert new File(basedir, 'target/classes/pixel.class').exists()
+assert new File(basedir, 'target/classes/pixel$hello.class').exists()

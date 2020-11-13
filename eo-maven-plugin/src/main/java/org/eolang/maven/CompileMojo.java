@@ -49,6 +49,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Compile.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "compile",

@@ -22,35 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
-
-import org.eolang.Args;
-import org.eolang.Phi;
-
 /**
- * Stdout.
+ * EO runtime, IO.
  *
  * @since 0.1
  */
-public final class Stdout implements Phi {
-
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public Stdout(final Args arg) {
-        this.args = arg;
-    }
-
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() {
-        System.out.print(String.class.cast(this.args.get("01")));
-        return true;
-    }
-}
+package org.eolang.io;

@@ -15,6 +15,7 @@ xsls:
   - 06-to-java.xsl
 tests:
   - /program/objects[count(o)=2]
+  - //o[@name='main$leap']
 eo: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool
