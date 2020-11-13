@@ -7,9 +7,9 @@ env:
   JAVA_OPTS: -XX:MaxPermSize=256m -Xmx1g
 install: |
   sudo update-java-alternatives -s java-1.8.0-openjdk-amd64
-  sudo gem install --no-rdoc --no-ri pdd
-  sudo gem install --no-rdoc --no-ri xcop
-  pdd --source=$(pwd) --verbose --file=/dev/null
+  sudo gem install pdd
+  sudo gem install xcop
+  pdd --file=/dev/null
 merge:
   script: |
     mvn clean install -Peo -Pqulice --errors --settings ../settings.xml
