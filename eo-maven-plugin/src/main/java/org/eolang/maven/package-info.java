@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -25,8 +25,6 @@
 /**
  * EO Maven Plugin.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @see <a href="http://www.eolang.org">project site www.eolang.org</a>
  * @see <a href="https://github.com/yegor256/eo">GitHub project</a>

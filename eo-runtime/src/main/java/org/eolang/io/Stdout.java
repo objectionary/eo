@@ -22,11 +22,35 @@
  * SOFTWARE.
  */
 
+package org.eolang.io;
+
+import org.eolang.Args;
+import org.eolang.Phi;
+
 /**
- * EO Maven Plugin, tests.
+ * Stdout.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  */
-package org.eolang.maven;
+public final class Stdout implements Phi {
+
+    /**
+     * Args.
+     */
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param arg Args
+     */
+    public Stdout(final Args arg) {
+        this.args = arg;
+    }
+
+    @Override
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    public Object call() {
+        System.out.print(String.class.cast(this.args.get("01")));
+        return true;
+    }
+}

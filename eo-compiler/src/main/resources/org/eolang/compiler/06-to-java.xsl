@@ -159,9 +159,11 @@ SOFTWARE.
     <xsl:text>(new ArgsOf(</xsl:text>
     <xsl:if test="ancestor-or-self::o[parent::o/parent::objects and @name]">
       <xsl:text>a</xsl:text>
+      <xsl:if test="./o">
+        <xsl:text>,</xsl:text>
+      </xsl:if>
     </xsl:if>
     <xsl:if test="./o">
-      <xsl:text>,</xsl:text>
       <xsl:value-of select="$EOL"/>
       <xsl:value-of select="$newindent"/>
     </xsl:if>
