@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2017-2019 Yegor Bugayenko
+Copyright (c) 2016-2020 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:template match="/program/errors">
-    <xsl:variable name="atoms" select="tokenize('string char float integer hex', '\s+')" />
+    <xsl:variable name="atoms" select="tokenize('string char float integer hex', '\s+')"/>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="//o[@base and not(contains(@base, '.'))]">

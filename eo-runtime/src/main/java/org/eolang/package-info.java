@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,57 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package eo;
-
-import java.util.List;
 
 /**
- * Eo entry point.
+ * EO runtime.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id $
  * @since 0.1
+ * @see <a href="http://www.eolang.org">project site www.eolang.org</a>
+ * @see <a href="https://github.com/yegor256/eo">GitHub project</a>
  */
-public final class App implements Runnable {
-
-    /**
-     * Eo client.
-     */
-    private final cli cli;
-
-    /**
-     * Ctor.
-     *
-     * @param args Command line args
-     */
-    private App(final List<String> args) {
-        this.cli = new cli(args);
-    }
-
-    @Override
-    public void run() {
-        this.cli.run();
-    }
-
-    /**
-     * Java app entry point.
-     *
-     * @param args Command line args
-     */
-    @SuppressWarnings(
-        {
-            "PMD.SystemPrintln",
-            "PMD.ProhibitPublicStaticMethods",
-            "PMD.UseVarargs"
-        }
-    )
-    public static void main(final String[] args) {
-        final Thread thread = new Thread(new App(new Iterable<>(args)));
-        thread.start();
-        try {
-            thread.join();
-        } catch (final InterruptedException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
-    }
-}
+package org.eolang;

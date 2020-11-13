@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,32 @@
  * SOFTWARE.
  */
 
-import eo.Bool;
+package org.eolang;
 
 /**
- * EO equals object.
+ * Arguments of an object.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.1
  */
-public final class equals implements Bool {
+public interface Args {
 
-    private final Object left;
-    private final Object right;
+    /**
+     * Get one argument.
+     * @param key The name
+     * @return The argument
+     */
+    Object get(String key);
 
-    public equals(final Object left, final Object right) {
-        this.left = left;
-        this.right = right;
-    }
+    /**
+     * This one exists?
+     * @param key The name
+     * @return TRUE if exists
+     */
+    boolean has(String key);
 
-    @Override
-    public Boolean asBoolean() {
-        return this.left.equals(this.right);
-    }
+    /**
+     * Get all keys.
+     * @return All keys
+     */
+    Iterable<String> keys();
 }

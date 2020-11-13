@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2017-2019 Yegor Bugayenko
+Copyright (c) 2016-2020 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"  xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
   <xsl:variable name="EOL">
-    <xsl:text>&#x0a;</xsl:text>
+    <xsl:text>
+</xsl:text>
   </xsl:variable>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
@@ -49,24 +50,24 @@ SOFTWARE.
         <xsl:text> {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
-        <xsl:text>private final Map args;</xsl:text>
+        <xsl:text>private final Args args;</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>public </xsl:text>
         <xsl:value-of select="@name"/>
-        <xsl:text>(final Map a) {</xsl:text>
+        <xsl:text>(final Args a) {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:for-each select="./o[@name and not(@base)]">
           <xsl:value-of select="$TAB"/>
           <xsl:value-of select="$TAB"/>
-          <xsl:text>assert a.containsKey("</xsl:text>
+          <xsl:text>assert a.has("</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>");</xsl:text>
           <xsl:value-of select="$EOL"/>
         </xsl:for-each>
         <xsl:value-of select="$TAB"/>
         <xsl:value-of select="$TAB"/>
-        <xsl:text>this.args = java.utils.Collections.unmodifiableMap(a);</xsl:text>
+        <xsl:text>this.args = a;</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>}</xsl:text>
@@ -91,7 +92,7 @@ SOFTWARE.
     <xsl:if test="@name">
       <xsl:text>public Object </xsl:text>
       <xsl:value-of select="@name"/>
-      <xsl:text>(final Map a)</xsl:text>
+      <xsl:text>(final Args a)</xsl:text>
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
@@ -155,7 +156,7 @@ SOFTWARE.
     </xsl:if>
     <xsl:text>new </xsl:text>
     <xsl:value-of select="replace(@base, '^org\.eolang\.([A-Za-z]+)$', '$1')"/>
-    <xsl:text>(new MapOf(</xsl:text>
+    <xsl:text>(new ArgsOf(</xsl:text>
     <xsl:if test="ancestor-or-self::o[parent::o/parent::objects and @name]">
       <xsl:text>a</xsl:text>
     </xsl:if>

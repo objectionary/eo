@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016 eolang.org
+Copyright (c) 2016-2020 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,6 @@ SOFTWARE.
     <artifactId>eo-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.eolang</groupId>
   <artifactId>eo-compiler</artifactId>
   <packaging>jar</packaging>
   <name>eo-compiler</name>
@@ -59,6 +58,10 @@ SOFTWARE.
       <artifactId>jcabi-xml</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-log</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
       <version>0.24.0</version>
@@ -71,9 +74,10 @@ SOFTWARE.
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
       <version>3.0.1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-    <groupId>org.junit.jupiter</groupId>
+      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <version>5.6.2</version>
       <scope>test</scope>

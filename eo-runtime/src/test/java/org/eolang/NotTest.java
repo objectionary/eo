@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-import eo.Int;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * EO sum object.
+ * Test case for {@link Not}.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.1
  */
-public final class sum implements Int {
+public final class NotTest {
 
-    private final Int left;
-    private final Int right;
-
-    public sum(final Int left, final Int right) {
-        this.left = left;
-        this.right = right;
+    @Test
+    public void inverses() {
+        MatcherAssert.assertThat(
+            new Not(new ArgsOf(new Entry("01", false))).call(),
+            Matchers.equalTo(true)
+        );
     }
 
-    @Override
-    public Integer asInteger() {
-        return this.left.asInteger() + this.right.asInteger();
+    @Test
+    public void inversesString() {
+        MatcherAssert.assertThat(
+            new Not(new ArgsOf(new Entry("01", "Hello, world!"))).call(),
+            Matchers.equalTo(true)
+        );
     }
+
 }

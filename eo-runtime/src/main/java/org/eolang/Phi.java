@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,14 @@
  * SOFTWARE.
  */
 
-import eo.Int;
+package org.eolang;
+
+import java.util.concurrent.Callable;
 
 /**
- * EO diff object.
+ * Object with body.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.1
  */
-public final class diff implements Int {
-
-    private final Int left;
-    private final Int right;
-
-    public diff(final Int left, final Int right) {
-        this.left = left;
-        this.right = right;
-    }
-
-    @Override
-    public Integer asInteger() {
-        return this.left.asInteger() - this.right.asInteger();
-    }
+public interface Phi extends Callable<Object> {
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,57 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package eo;
+package org.eolang;
 
-import java.util.List;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Eo entry point.
- *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id $
+ * Test case for {@link ArgsOf}.
  * @since 0.1
  */
-public final class App implements Runnable {
+public final class ArgsOfTest {
 
-    /**
-     * Eo client.
-     */
-    private final cli cli;
-
-    /**
-     * Ctor.
-     *
-     * @param args Command line args
-     */
-    private App(final List<String> args) {
-        this.cli = new cli(args);
+    @Test
+    public void createsArgs() {
+        final String key = "hey";
+        MatcherAssert.assertThat(
+            new ArgsOf(new Entry(key, 1)).get(key),
+            Matchers.equalTo(1)
+        );
     }
 
-    @Override
-    public void run() {
-        this.cli.run();
+    @Test
+    public void createsArgsWithBefore() {
+        final String key = "hello";
+        MatcherAssert.assertThat(
+            new ArgsOf(
+                new ArgsOf(new Entry(key, 0)),
+                new Entry(key, -1)
+            ).get(key),
+            Matchers.equalTo(-1)
+        );
     }
 
-    /**
-     * Java app entry point.
-     *
-     * @param args Command line args
-     */
-    @SuppressWarnings(
-        {
-            "PMD.SystemPrintln",
-            "PMD.ProhibitPublicStaticMethods",
-            "PMD.UseVarargs"
-        }
-    )
-    public static void main(final String[] args) {
-        final Thread thread = new Thread(new App(new Iterable<>(args)));
-        thread.start();
-        try {
-            thread.join();
-        } catch (final InterruptedException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
-    }
 }

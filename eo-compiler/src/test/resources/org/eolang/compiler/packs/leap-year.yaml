@@ -12,7 +12,7 @@ xsls:
   - 03-abstracts-float-up.xsl
   - 04-rename-bases.xsl
   - 05-wrap-method-calls.xsl
-  - to-java.xsl
+  - 06-to-java.xsl
 tests:
   - /program/objects[count(o)=2]
 eo: |

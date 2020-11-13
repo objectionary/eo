@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,57 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package eo;
 
-import java.util.List;
+package org.eolang;
 
 /**
- * Eo entry point.
+ * NOT.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id $
  * @since 0.1
  */
-public final class App implements Runnable {
+public final class Not implements Phi {
 
     /**
-     * Eo client.
+     * Args.
      */
-    private final cli cli;
+    private final Args args;
 
     /**
      * Ctor.
-     *
-     * @param args Command line args
+     * @param arg Args
      */
-    private App(final List<String> args) {
-        this.cli = new cli(args);
+    public Not(final Args arg) {
+        this.args = arg;
     }
 
     @Override
-    public void run() {
-        this.cli.run();
-    }
-
-    /**
-     * Java app entry point.
-     *
-     * @param args Command line args
-     */
-    @SuppressWarnings(
-        {
-            "PMD.SystemPrintln",
-            "PMD.ProhibitPublicStaticMethods",
-            "PMD.UseVarargs"
-        }
-    )
-    public static void main(final String[] args) {
-        final Thread thread = new Thread(new App(new Iterable<>(args)));
-        thread.start();
-        try {
-            thread.join();
-        } catch (final InterruptedException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
+    public Object call() {
+        return !this.args.get("01").equals(Boolean.TRUE);
     }
 }

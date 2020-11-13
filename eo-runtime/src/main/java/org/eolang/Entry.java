@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 eolang.org
+ * Copyright (c) 2016-2020 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,49 @@
  * SOFTWARE.
  */
 
-import eo.Bool;
+package org.eolang;
 
 /**
- * EO not object.
+ * Entry.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.1
  */
-public final class not implements Bool {
+public final class Entry {
 
-    private final Bool source;
+    /**
+     * The key.
+     */
+    private final String akey;
 
-    public not(final Bool source) {
-        this.source = source;
+    /**
+     * The value.
+     */
+    private final Object avalue;
+
+    /**
+     * Ctor.
+     * @param key The key
+     * @param value The value
+     */
+    public Entry(final String key, final Object value) {
+        this.akey = key;
+        this.avalue = value;
     }
 
-    @Override
-    public Boolean asBoolean() {
-        return !source.asBoolean();
+    /**
+     * Get key.
+     * @return The key
+     */
+    public String key() {
+        return this.akey;
     }
+
+    /**
+     * Get value.
+     * @return The value
+     */
+    public Object value() {
+        return this.avalue;
+    }
+
 }
