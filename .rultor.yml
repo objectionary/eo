@@ -1,5 +1,3 @@
-docker:
-  image: yegor256/java8
 assets:
   settings.xml: yegor256/home#assets/eo/settings.xml
   pubring.gpg: yegor256/home#assets/pubring.gpg
@@ -8,22 +6,15 @@ env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
   JAVA_OPTS: -XX:MaxPermSize=256m -Xmx1g
 install: |
+  sudo update-java-alternatives -s java-1.8.0-openjdk-amd64
   sudo gem install --no-rdoc --no-ri pdd
-  sudo gem install --no-rdoc --no-ri est
   sudo gem install --no-rdoc --no-ri xcop
-architect:
-- yegor256
+  pdd --source=$(pwd) --verbose --file=/dev/null
 merge:
   script: |
     mvn clean install -Peo -Pqulice --errors --settings ../settings.xml
-    mvn clean
-    pdd --source=$(pwd) --verbose --file=/dev/null
-  commanders:
-  - yegor256
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}"
     git commit -am "${tag}"
     mvn clean deploy -Peo -Psonatype --errors --settings ../settings.xml
-  commanders:
-  - yegor256
