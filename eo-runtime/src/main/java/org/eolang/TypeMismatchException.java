@@ -21,33 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link Not}.
+ * TypeMismatch Exception.
  *
  * @since 0.1
  */
-public final class NotTest {
+public final class TypeMismatchException extends RuntimeException {
 
-    @Test
-    public void inverses() {
-        MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", false))).call(),
-            Matchers.equalTo(true)
-        );
-    }
+    /**
+     * Serial ID.
+     */
+    private static final long serialVersionUID = -6643350804302660951L;
 
-    @Test
-    public void inversesString() {
-        MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", "Hello, world!"))).call(),
-            Matchers.equalTo(true)
-        );
+    /**
+     * Ctor.
+     * @param reason The reason
+     */
+    public TypeMismatchException(final String reason) {
+        super(reason);
     }
 
 }

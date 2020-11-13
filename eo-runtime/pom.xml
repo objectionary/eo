@@ -33,4 +33,10 @@ SOFTWARE.
   <packaging>jar</packaging>
   <name>eo-core</name>
   <description>eolang runtime library</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+    </dependency>
+  </dependencies>
 </project>

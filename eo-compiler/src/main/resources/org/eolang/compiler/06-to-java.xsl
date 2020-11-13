@@ -192,7 +192,11 @@ SOFTWARE.
     </xsl:if>
     <xsl:text>))</xsl:text>
   </xsl:template>
-  <xsl:template match="o[text() and @base='org.eolang.float' or @base='org.eolang.integer' or @base='org.eolang.hex']">
+  <xsl:template match="o[text() and @base='org.eolang.integer']">
+    <xsl:value-of select="text()"/>
+    <xsl:text>L</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[text() and @base='org.eolang.float']">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="o[text() and @base='org.eolang.string']">

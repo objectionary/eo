@@ -234,11 +234,14 @@ public final class XeListener implements ProgramListener {
             type = "float";
             data = Float.toString(Float.parseFloat(ctx.getText()));
         } else if (ctx.INTEGER() != null) {
-            type = "float";
-            data = Integer.toString(Integer.parseInt(ctx.getText()));
-        } else if (ctx.FLOAT() != null) {
+            type = "integer";
+            data = Long.toString(Long.parseLong(ctx.getText()));
+        } else if (ctx.HEX() != null) {
             type = "hex";
-            data = ctx.getText();
+            data = Long.toString(
+                // @checkstyle MagicNumberCheck (1 line)
+                Long.parseLong(ctx.getText().substring(2), 16)
+            );
         } else if (ctx.STRING() != null) {
             type = "string";
             data = ctx.getText().substring(1, ctx.getText().length() - 1);

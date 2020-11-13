@@ -21,33 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.cactoos.iterable.Sorted;
 
 /**
- * Test case for {@link Not}.
+ * AND.
  *
  * @since 0.1
  */
-public final class NotTest {
+public final class And implements Phi {
 
-    @Test
-    public void inverses() {
-        MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", false))).call(),
-            Matchers.equalTo(true)
-        );
+    /**
+     * Args.
+     */
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param arg Args
+     */
+    public And(final Args arg) {
+        this.args = arg;
     }
 
-    @Test
-    public void inversesString() {
-        MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", "Hello, world!"))).call(),
-            Matchers.equalTo(true)
-        );
+    @Override
+    public Object call() {
+        boolean result = false;
+        for (final String key : new Sorted<>(this.args.keys())) {
+            if (key.charAt(0) != '0') {
+                continue;
+            }
+            result &= this.args.get(key).equals(Boolean.TRUE);
+            if (!result) {
+                break;
+            }
+        }
+        return result;
     }
-
 }

@@ -28,25 +28,19 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Not}.
+ * Test case for {@link AddOf}.
  *
  * @since 0.1
  */
-public final class NotTest {
+public final class AddTest {
 
     @Test
-    public void inverses() {
+    public void addsTwo() {
         MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", false))).call(),
-            Matchers.equalTo(true)
-        );
-    }
-
-    @Test
-    public void inversesString() {
-        MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", "Hello, world!"))).call(),
-            Matchers.equalTo(true)
+            new Add(
+                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
+            ).call(),
+            Matchers.equalTo(0L)
         );
     }
 
