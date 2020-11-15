@@ -23,6 +23,9 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -38,6 +41,8 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.io.UncheckedInput;
+import org.cactoos.list.ListOf;
+import org.cactoos.list.Mapped;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
@@ -49,6 +54,11 @@ import org.cactoos.text.TextOf;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Program {
+
+    /**
+     * The name of it.
+     */
+    private final String name;
 
     /**
      * Text to parse.
@@ -63,30 +73,58 @@ public final class Program {
     /**
      * Ctor.
      *
+     * @param nme The name of it
      * @param ipt Input text
      * @param file The file to write the XML to
      */
-    public Program(final Input ipt, final Path file) {
-        this(ipt, new OutputTo(file));
+    public Program(final String nme, final Input ipt, final Path file) {
+        this(nme, ipt, new OutputTo(file));
     }
 
     /**
      * Ctor.
      *
+     * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
      */
-    public Program(final Input ipt, final Output tgt) {
+    public Program(final String nme, final Input ipt, final Output tgt) {
+        this.name = nme;
         this.input = ipt;
         this.target = tgt;
     }
 
     /**
-     * Compile it to XML and save.
+     * Compile it to XML and save (with default set of XSLs).
      *
      * @throws IOException If fails
      */
     public void compile() throws IOException {
+        this.compile(
+            new ListOf<>(
+                "errors/broken-aliases.xsl",
+                "errors/duplicate-aliases.xsl",
+                "errors/one-body.xsl",
+                "errors/reserved-atoms.xsl",
+                "errors/same-line-names.xsl",
+                "errors/self-naming.xsl",
+                "01-add-refs.xsl",
+                "02-resolve-aliases.xsl",
+                "errors/unknown-names.xsl",
+                "03-abstracts-float-up.xsl",
+                "04-rename-bases.xsl",
+                "05-wrap-method-calls.xsl"
+            )
+        );
+    }
+
+    /**
+     * Compile it to XML and save.
+     *
+     * @param xsls List of XSLs to apply
+     * @throws IOException If fails
+     */
+    public void compile(final Iterable<String> xsls) throws IOException {
         final String[] lines = new TextOf(this.input).asString().split("\n");
         final ANTLRErrorListener errors = new BaseErrorListener() {
             // @checkstyle ParameterNumberCheck (10 lines)
@@ -120,16 +158,26 @@ public final class Program {
             );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        final XeListener xel = new XeListener();
+        final XeListener xel = new XeListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
-                    new InputOf(xel.xml()),
+                    new InputOf(
+                        new XSLChain(
+                            new Mapped<>(
+                                node -> new XSLDocument(
+                                    Program.class.getResourceAsStream(node)
+                                ),
+                                xsls
+                            )
+                        ).transform(xel.xml()).toString()
+                    ),
                     this.target
                 )
             )
         ).value();
+        Logger.debug(this, "Input of %d EO lines compiled", lines.length);
     }
 
 }

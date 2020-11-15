@@ -39,10 +39,12 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.Program;
-import org.eolang.compiler.ToJava;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -74,6 +76,17 @@ public final class CompileMojo extends AbstractMojo {
         readonly = false,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
+    private transient File generatedDirectory;
+
+    /**
+     * Target directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        required = false,
+        readonly = false,
+        defaultValue = "${project.build.directory}"
+    )
     private transient File targetDirectory;
 
     /**
@@ -85,16 +98,16 @@ public final class CompileMojo extends AbstractMojo {
         readonly = false,
         defaultValue = "${project.basedir}/src/main/eo"
     )
-    private transient File sourceDirectory;
+    private transient File sourcesDirectory;
 
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        if (this.targetDirectory.mkdirs()) {
-            Logger.info(this, "Directory created: %s", this.targetDirectory);
+        if (this.generatedDirectory.mkdirs()) {
+            Logger.info(this, "Directory created: %s", this.generatedDirectory);
         }
         try {
-            Files.walk(this.sourceDirectory.toPath())
+            Files.walk(this.sourcesDirectory.toPath())
                 .filter(file -> !file.toFile().isDirectory())
                 .forEach(this::compile);
         } catch (final IOException ex) {
@@ -102,18 +115,18 @@ public final class CompileMojo extends AbstractMojo {
                 new UncheckedText(
                     new FormattedText(
                         "Can't list EO files in %s",
-                        this.sourceDirectory
+                        this.sourcesDirectory
                     )
                 ).asString(),
                 ex
             );
         }
         this.project.addCompileSourceRoot(
-            this.targetDirectory.getAbsolutePath()
+            this.generatedDirectory.getAbsolutePath()
         );
         Logger.info(
             this, "Directory added to sources: %s",
-            this.targetDirectory
+            this.generatedDirectory
         );
     }
 
@@ -125,26 +138,45 @@ public final class CompileMojo extends AbstractMojo {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             new Program(
+                file.toString().substring(
+                    this.sourcesDirectory.toString().length() + 1
+                ),
                 new InputOf(file),
                 new OutputTo(baos)
             ).compile();
-            final ToJava tojava = new ToJava(
+            new IoChecked<>(
+                new LengthOf(
+                    new TeeInput(
+                        new InputOf(baos.toString()),
+                        new OutputTo(
+                            this.targetDirectory.toPath()
+                                .resolve("eo-compiler")
+                                .resolve(
+                                    String.format(
+                                        "%s.xml",
+                                        file.getFileName().toString()
+                                    )
+                                )
+                        )
+                    )
+                )
+            ).value();
+            new ToJava(
                 new XMLDocument(baos.toString()),
-                this.targetDirectory.toPath()
-            );
-            tojava.compile();
+                this.generatedDirectory.toPath()
+            ).compile();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(
                     new FormattedText(
                         "Can't compile %s into %s",
-                        file, this.targetDirectory
+                        file, this.generatedDirectory
                     )
                 ).asString(),
                 ex
             );
         }
-        Logger.info(this, "%s compiled to %s", file, this.targetDirectory);
+        Logger.info(this, "%s compiled to %s", file, this.generatedDirectory);
     }
 
 }

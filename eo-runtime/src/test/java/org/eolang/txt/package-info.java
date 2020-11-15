@@ -23,19 +23,8 @@
  */
 
 /**
- * EO entry point.
+ * EO runtime, texts.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Main {
-
-    /**
-     * Java app entry point.
-     * @param args Command line args
-     * @throws Exception In case of failure
-     */
-    public static void main(final String... args) throws Exception {
-        new hello().say().call();
-    }
-
-}
+package org.eolang.txt;

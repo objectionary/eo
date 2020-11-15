@@ -57,7 +57,7 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
     public void testSimpleCompilation() throws Exception {
         final CompileMojo mojo = new CompileMojo();
         final Path src = this.temp.resolve("src");
-        this.setVariableValueToObject(mojo, "sourceDirectory", src.toFile());
+        this.setVariableValueToObject(mojo, "sourcesDirectory", src.toFile());
         new LengthOf(
             new TeeInput(
                 new InputOf(
@@ -67,11 +67,17 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
             )
         ).value();
         final Path target = this.temp.resolve("target");
-        this.setVariableValueToObject(mojo, "targetDirectory", target.toFile());
+        this.setVariableValueToObject(
+            mojo, "targetDirectory", target.toFile()
+        );
+        final Path generated = this.temp.resolve("generated");
+        this.setVariableValueToObject(
+            mojo, "generatedDirectory", generated.toFile()
+        );
         this.setVariableValueToObject(mojo, "project", new MavenProjectStub());
         mojo.execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("main.java")),
+            Files.exists(generated.resolve("main.java")),
             Matchers.is(true)
         );
     }
@@ -80,9 +86,9 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
     public void testCrashOnInvalidSyntax() throws Exception {
         final CompileMojo mojo = new CompileMojo();
         final Path src = this.temp.resolve("src");
-        this.setVariableValueToObject(mojo, "sourceDirectory", src.toFile());
+        this.setVariableValueToObject(mojo, "sourcesDirectory", src.toFile());
         this.setVariableValueToObject(
-            mojo, "targetDirectory", this.temp.resolve("target").toFile()
+            mojo, "generatedDirectory", this.temp.resolve("target").toFile()
         );
         new LengthOf(
             new TeeInput(

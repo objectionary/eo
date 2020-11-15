@@ -12,10 +12,8 @@ xsls:
   - 03-abstracts-float-up.xsl
   - 04-rename-bases.xsl
   - 05-wrap-method-calls.xsl
-  - 06-to-java.xsl
 tests:
   - /program/objects[count(o)=2]
-  - //o[@name='main$leap']
 eo: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool

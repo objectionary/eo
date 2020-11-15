@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler;
+package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +32,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.compiler.Program;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,8 @@ public final class ToJavaTest {
     public void compilesSimpleCodeToJava() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
-            new ResourceOf("org/eolang/compiler/fibonacci.eo"),
+            "test",
+            new ResourceOf("org/eolang/maven/fibo.eo"),
             new OutputTo(baos)
         );
         program.compile();

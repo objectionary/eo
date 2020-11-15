@@ -21,56 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler;
 
-import java.io.PrintStream;
-import java.util.Arrays;
+package org.eolang.txt;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import org.cactoos.iterable.Sorted;
+import org.eolang.Args;
+import org.eolang.Phi;
 
 /**
- * Main.
+ * Sprintf.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Main {
+public final class Sprintf implements Phi {
 
     /**
-     * Print stream for the output.
+     * Args.
      */
-    private final PrintStream stdout;
-
-    /**
-     * Arguments.
-     */
-    private final String[] args;
+    private final Args args;
 
     /**
      * Ctor.
-     * @param out Output stream
-     * @param input Input args
+     * @param arg Args
      */
-    public Main(final PrintStream out, final String... input) {
-        this.stdout = out;
-        this.args = Arrays.copyOf(input, input.length);
+    public Sprintf(final Args arg) {
+        this.args = arg;
     }
 
-    /**
-     * Entry point.
-     * @param input Command line arguments
-     * @checkstyle ProhibitPublicStaticMethods (3 lines)
-     */
-    public static void main(final String... input) {
-        new Main(System.out, input).exec();
-    }
-
-    /**
-     * Entry point.
-     */
-    public void exec() {
-        if ("--help".equals(this.args[0])) {
-            this.stdout.append("It is just a skeleton");
-        } else {
-            this.stdout.append("Usage: --help");
+    @Override
+    @SuppressWarnings("PMD.SystemPrintln")
+    public Object call() {
+        Collection<Object> items = new LinkedList<>();
+        for (final String key : new Sorted<>(this.args.keys())) {
+            if (key.charAt(0) != '0') {
+                continue;
+            }
+            if ("01".equals(key)) {
+                continue;
+            }
+            items.add(this.args.get(key));
         }
+        return String.format(
+            String.class.cast(this.args.get("01")),
+            items.toArray()
+        );
     }
-
 }

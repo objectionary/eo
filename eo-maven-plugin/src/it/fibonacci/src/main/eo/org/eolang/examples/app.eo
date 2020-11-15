@@ -1,0 +1,12 @@
+# This is the app
+
++package org.eolang.examples
++alias stdout org.eolang.io.Stdout
++alias sprintf org.eolang.txt.Sprintf
+
+[args] > app
+  stdout
+    sprintf
+      "%dth Fibonacci number is %d"
+      (args.get 1) > !n
+      fibo n

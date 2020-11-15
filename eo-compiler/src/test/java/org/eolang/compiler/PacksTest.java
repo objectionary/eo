@@ -24,17 +24,12 @@
 package org.eolang.compiler;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLChain;
-import com.jcabi.xml.XSLDocument;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Map;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -60,21 +55,14 @@ public final class PacksTest {
         );
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
+            pack,
             new InputOf(String.format("%s\n", map.get("eo"))),
             new OutputTo(baos)
         );
-        program.compile();
-        final XML out = new XSLChain(
-            new Mapped<>(
-                node -> new XSLDocument(
-                    ToJava.class.getResourceAsStream(node)
-                ),
-                (Collection<String>) map.get("xsls")
-            )
-        ).transform(new XMLDocument(baos.toString()));
-        for (final String xpath : (Collection<String>) map.get("tests")) {
+        program.compile((Iterable<String>) map.get("xsls"));
+        for (final String xpath : (Iterable<String>) map.get("tests")) {
             MatcherAssert.assertThat(
-                XhtmlMatchers.xhtml(out.toString()),
+                XhtmlMatchers.xhtml(baos.toString()),
                 XhtmlMatchers.hasXPath(xpath)
             );
         }

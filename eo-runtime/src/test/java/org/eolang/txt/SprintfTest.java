@@ -21,21 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.txt;
+
+import org.eolang.ArgsOf;
+import org.eolang.Entry;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * EO entry point.
+ * Test case for {@link Sprintf}.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Main {
+public final class SprintfTest {
 
-    /**
-     * Java app entry point.
-     * @param args Command line args
-     * @throws Exception In case of failure
-     */
-    public static void main(final String... args) throws Exception {
-        new hello().say().call();
+    @Test
+    public void printsSimpleText() {
+        MatcherAssert.assertThat(
+            new Sprintf(
+                new ArgsOf(
+                    new Entry("01", "Hello, %s %d!"),
+                    new Entry("02", "John"),
+                    new Entry("03", 2)
+                )
+            ).call(),
+            Matchers.equalTo("Hello, John 2!")
+        );
     }
 
 }

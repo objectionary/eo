@@ -1,5 +1,6 @@
 xsls: []
 tests:
+  - /program[@name='simple.yaml']
   - /program/objects
   - //o[not(@name) and @base='a']
   - //o[@base='a' and @line='1']

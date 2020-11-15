@@ -93,6 +93,8 @@ whether it's leap or not:
         leap year:y
 ```
 
+More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it).
+
 ## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review your changes and apply them to the master branch shortly, provided they don't violate our quality standards. To avoid frustration, before sending us your pull request please run full Maven build:

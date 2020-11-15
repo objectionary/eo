@@ -22,20 +22,24 @@
  * SOFTWARE.
  */
 
+package org.eolang.examples;
+
+import org.eolang.Array;
+
 /**
- * EO entry point.
+ * Eo entry point.
  *
  * @since 0.1
  */
 public final class Main {
 
     /**
-     * Java app entry point.
+     * Main entry point.
      * @param args Command line args
      * @throws Exception In case of failure
      */
     public static void main(final String... args) throws Exception {
-        new hello().say().call();
+        new app(new Array(args)).call();
     }
 
 }

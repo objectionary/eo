@@ -21,29 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler;
-
-import java.io.PrintStream;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Main}.
- * @since 0.1
+ * EO runtime, texts.
+ *
+ * @since 0.2
  */
-public final class MainTest {
-
-    @Test
-    public void printsSimpleResponse() throws Exception {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            new Main(new PrintStream(baos), "--help").exec();
-            MatcherAssert.assertThat(
-                new String(baos.toByteArray()),
-                Matchers.containsString("skeleton")
-            );
-        }
-    }
-
-}
+package org.eolang.txt;

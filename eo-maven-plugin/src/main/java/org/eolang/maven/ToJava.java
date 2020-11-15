@@ -21,20 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.compiler;
+package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
+import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
 
 /**
  * ToJava.
@@ -67,30 +66,27 @@ public final class ToJava {
 
     /**
      * Compile it to XML and save.
+     * @throws IOException If fails
      */
-    public void compile() {
-        final XML out = new XSLChain(
-            new Mapped<>(
-                node -> new XSLDocument(
-                    ToJava.class.getResourceAsStream(node)
-                ),
-                new ListOf<>(
-                    "errors/broken-aliases.xsl",
-                    "errors/duplicate-aliases.xsl",
-                    "errors/one-body.xsl",
-                    "errors/reserved-atoms.xsl",
-                    "errors/same-line-names.xsl",
-                    "errors/self-naming.xsl",
-                    "01-add-refs.xsl",
-                    "02-resolve-aliases.xsl",
-                    "errors/unknown-names.xsl",
-                    "03-abstracts-float-up.xsl",
-                    "04-rename-bases.xsl",
-                    "05-wrap-method-calls.xsl",
-                    "06-to-java.xsl"
+    public void compile() throws IOException {
+        final XML out = new XSLDocument(
+            ToJava.class.getResourceAsStream("to-java.xsl")
+        ).transform(this.xml);
+        new IoChecked<>(
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(out.toString()),
+                    new OutputTo(
+                        this.dir.resolve(
+                            String.format(
+                                "%s.xml",
+                                this.xml.xpath("/program/@name").get(0)
+                            )
+                        )
+                    )
                 )
             )
-        ).transform(this.xml);
+        ).value();
         for (final XML error : out.nodes("/program/errors/error")) {
             Logger.error(
                 this,
@@ -117,9 +113,11 @@ public final class ToJava {
      * Save one Java file.
      * @param path The path
      * @param content The content
+     * @throws IOException If fails
      */
-    private static void save(final Path path, final String content) {
-        new Unchecked<>(
+    private static void save(final Path path, final String content)
+        throws IOException {
+        new IoChecked<>(
             new LengthOf(
                 new TeeInput(
                     new InputOf(content),

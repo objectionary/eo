@@ -23,6 +23,8 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -40,21 +42,35 @@ import org.xembly.Xembler;
 public final class XeListener implements ProgramListener {
 
     /**
+     * The name of it.
+     */
+    private final String name;
+
+    /**
      * Xembly directives we are building (mutable).
      */
-    private final Directives dirs = new Directives();
+    private final Directives dirs;
+
+    /**
+     * Ctor.
+     * @param nme Tha name of it
+     */
+    public XeListener(final String nme) {
+        this.name = nme;
+        this.dirs = new Directives();
+    }
 
     /**
      * To get the XML ready to be used.
      * @return XML
      */
-    public String xml() {
-        return new Xembler(this.dirs).xmlQuietly();
+    public XML xml() {
+        return new XMLDocument(new Xembler(this.dirs).domQuietly());
     }
 
     @Override
     public void enterProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.add("program").add("errors").up();
+        this.dirs.add("program").attr("name", this.name).add("errors").up();
     }
 
     @Override

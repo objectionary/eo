@@ -44,6 +44,7 @@ public final class ProgramTest {
     public void compilesSimpleCode() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
+            "test-works",
             new ResourceOf("org/eolang/compiler/fibonacci.eo"),
             new OutputTo(baos)
         );
@@ -62,6 +63,7 @@ public final class ProgramTest {
             CompileException.class,
             () -> {
                 final Program program = new Program(
+                    "broken-test",
                     new InputOf("this code is definitely wrong"),
                     new DeadOutput()
                 );
