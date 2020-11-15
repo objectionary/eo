@@ -64,10 +64,11 @@ public final class ToJavaTest {
         program.compile();
         final ToJava tojava = new ToJava(
             new XMLDocument(baos.toString()),
-            this.temp
+            this.temp.resolve("generated"),
+            this.temp.resolve("eo-to-java")
         );
         tojava.compile();
-        final Path file = this.temp.resolve(Paths.get("fibo.java"));
+        final Path file = this.temp.resolve(Paths.get("generated/fibo.java"));
         MatcherAssert.assertThat(
             Files.exists(file),
             Matchers.is(true)

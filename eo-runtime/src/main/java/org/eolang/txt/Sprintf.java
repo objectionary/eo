@@ -53,7 +53,7 @@ public final class Sprintf implements Phi {
     @Override
     @SuppressWarnings("PMD.SystemPrintln")
     public Object call() {
-        Collection<Object> items = new LinkedList<>();
+        final Collection<Object> items = new LinkedList<>();
         for (final String key : new Sorted<>(this.args.keys())) {
             if (key.charAt(0) != '0') {
                 continue;

@@ -106,6 +106,9 @@ public final class CompileMojo extends AbstractMojo {
         if (this.generatedDirectory.mkdirs()) {
             Logger.info(this, "Directory created: %s", this.generatedDirectory);
         }
+        if (this.targetDirectory.mkdirs()) {
+            Logger.info(this, "Directory created: %s", this.targetDirectory);
+        }
         try {
             Files.walk(this.sourcesDirectory.toPath())
                 .filter(file -> !file.toFile().isDirectory())
@@ -163,7 +166,8 @@ public final class CompileMojo extends AbstractMojo {
             ).value();
             new ToJava(
                 new XMLDocument(baos.toString()),
-                this.generatedDirectory.toPath()
+                this.generatedDirectory.toPath(),
+                this.targetDirectory.toPath().resolve("eo-to-java")
             ).compile();
         } catch (final IOException ex) {
             throw new IllegalStateException(

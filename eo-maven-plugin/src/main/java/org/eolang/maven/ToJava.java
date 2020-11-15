@@ -54,14 +54,20 @@ public final class ToJava {
     private final Path dir;
 
     /**
+     * Directory to save temp files to.
+     */
+    private final Path temp;
+
+    /**
      * Ctor.
      *
      * @param input Input text
      * @param file The file to write the XML to
      */
-    public ToJava(final XML input, final Path file) {
+    public ToJava(final XML input, final Path file, final Path tmp) {
         this.xml = input;
         this.dir = file;
+        this.temp = tmp;
     }
 
     /**
@@ -77,7 +83,7 @@ public final class ToJava {
                 new TeeInput(
                     new InputOf(out.toString()),
                     new OutputTo(
-                        this.dir.resolve(
+                        this.temp.resolve(
                             String.format(
                                 "%s.xml",
                                 this.xml.xpath("/program/@name").get(0)
