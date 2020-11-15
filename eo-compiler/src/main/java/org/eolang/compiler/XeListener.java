@@ -243,7 +243,10 @@ public final class XeListener implements ProgramListener {
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
-        if (ctx.CHAR() != null) {
+        if (ctx.BOOL() != null) {
+            type = "bool";
+            data = Boolean.toString(Boolean.parseBoolean(ctx.getText()));
+        } else if (ctx.CHAR() != null) {
             type = "char";
             data = ctx.getText().substring(1, 1);
         } else if (ctx.FLOAT() != null) {

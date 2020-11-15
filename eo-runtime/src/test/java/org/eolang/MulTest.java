@@ -21,31 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 /**
- * NOT.
+ * Test case for {@link AddOf}.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Not implements Phi {
+public final class MulTest {
 
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public Not(final Args arg) {
-        this.args = arg;
+    @Test
+    public void mulsTwo() {
+        MatcherAssert.assertThat(
+            new Mul(
+                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
+            ).call(),
+            Matchers.equalTo(-1L)
+        );
     }
 
-    @Override
-    public Object call() {
-        return !this.args.get("01").equals(Boolean.TRUE);
+    @Test
+    public void mulsOneArg() {
+        MatcherAssert.assertThat(
+            new Mul(
+                new ArgsOf(new Entry("01", 1L))
+            ).call(),
+            Matchers.equalTo(1L)
+        );
     }
+
+    @Test
+    public void mulsNoArgs() {
+        Assertions.assertThrows(
+            ArgsException.class,
+            () -> new Mul(new ArgsOf()).call()
+        );
+    }
+
 }

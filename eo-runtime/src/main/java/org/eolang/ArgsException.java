@@ -21,46 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link AddOf}.
+ * Args Exception.
  *
  * @since 0.1
  */
-public final class AddTest {
+public final class ArgsException extends RuntimeException {
 
-    @Test
-    public void addsTwo() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(0L)
-        );
-    }
+    /**
+     * Serial ID.
+     */
+    private static final long serialVersionUID = -6643350804302660951L;
 
-    @Test
-    public void addsOneArg() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Add(new ArgsOf()).call()
-        );
+    /**
+     * Ctor.
+     * @param reason The reason
+     */
+    public ArgsException(final String reason) {
+        super(reason);
     }
 
 }

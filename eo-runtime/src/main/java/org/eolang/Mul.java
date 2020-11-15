@@ -27,11 +27,11 @@ package org.eolang;
 import org.cactoos.iterable.Sorted;
 
 /**
- * ADD.
+ * MUL.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Add implements Phi {
+public final class Mul implements Phi {
 
     /**
      * Args.
@@ -42,7 +42,7 @@ public final class Add implements Phi {
      * Ctor.
      * @param arg Args
      */
-    public Add(final Args arg) {
+    public Mul(final Args arg) {
         this.args = arg;
     }
 
@@ -58,7 +58,7 @@ public final class Add implements Phi {
             if (!(nxt instanceof Long) && !(nxt instanceof Float)) {
                 throw new TypeMismatchException(
                     String.format(
-                        "Can't use ADD with %s",
+                        "Can't use MUL with %s",
                         nxt.getClass()
                     )
                 );
@@ -66,7 +66,7 @@ public final class Add implements Phi {
             if (result != null && !nxt.getClass().equals(result.getClass())) {
                 throw new TypeMismatchException(
                     String.format(
-                        "Can't ADD %s to %s",
+                        "Can't MUL %s to %s",
                         result.getClass(),
                         nxt.getClass()
                     )
@@ -76,15 +76,15 @@ public final class Add implements Phi {
                 result = nxt;
             } else {
                 if (result instanceof Long) {
-                    result = Long.class.cast(result) + Long.class.cast(nxt);
+                    result = Long.class.cast(result) * Long.class.cast(nxt);
                 } else {
-                    result = Float.class.cast(result) + Float.class.cast(nxt);
+                    result = Float.class.cast(result) * Float.class.cast(nxt);
                 }
             }
         }
         if (result == null) {
             throw new ArgsException(
-                "At least one argument required by ADD"
+                "At least one argument required by MUL"
             );
         }
         return result;

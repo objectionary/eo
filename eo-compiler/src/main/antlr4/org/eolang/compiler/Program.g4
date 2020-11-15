@@ -161,6 +161,8 @@ has
 
 data
   :
+  BOOL
+  |
   STRING
   |
   INTEGER
@@ -210,6 +212,7 @@ EOL
 
 NAME: LO (LETTER | DIGIT)*;
 
+BOOL: 'true' | 'false';
 CHAR: '\'' (LETTER | DIGIT) '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
 INTEGER: (PLUS | MINUS)? DIGIT+;

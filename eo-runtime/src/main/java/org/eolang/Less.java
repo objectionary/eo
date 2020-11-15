@@ -21,46 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link AddOf}.
+ * LESS.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class AddTest {
+public final class Less implements Phi {
 
-    @Test
-    public void addsTwo() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(0L)
-        );
+    /**
+     * Args.
+     */
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param arg Args
+     */
+    public Less(final Args arg) {
+        this.args = arg;
     }
 
-    @Test
-    public void addsOneArg() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
+    @Override
+    public Object call() {
+        final Object left = this.args.get("01");
+        final Object right = this.args.get("02");
+        final boolean result;
+        if (left instanceof Long && right instanceof Long) {
+            result = Long.class.cast(left).compareTo(
+                Long.class.cast(right)
+            ) < 0;
+        } else if (left instanceof Float && right instanceof Float) {
+            result = Float.class.cast(left).compareTo(
+                Float.class.cast(right)
+            ) < 0;
+        } else {
+            throw new TypeMismatchException(
+                String.format(
+                    "Can't compare %s with %s",
+                    left.getClass(),
+                    right.getClass()
+                )
+            );
+        }
+        return result;
     }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Add(new ArgsOf()).call()
-        );
-    }
-
 }

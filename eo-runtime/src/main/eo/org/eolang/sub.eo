@@ -1,0 +1,8 @@
+# Calculates algebraic difference between x and y
+
++package org.eolang
+
+[x y] > sub
+  add
+    x
+    mul y -1

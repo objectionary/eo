@@ -224,6 +224,9 @@ SOFTWARE.
     <xsl:value-of select="text()"/>
     <xsl:text>'</xsl:text>
   </xsl:template>
+  <xsl:template match="o[text() and @base='org.eolang.Bool']">
+    <xsl:value-of select="text()"/>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

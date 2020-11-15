@@ -76,7 +76,7 @@ public final class CompileMojo extends AbstractMojo {
         readonly = false,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
-    private transient File generatedDirectory;
+    private transient File generatedDir;
 
     /**
      * Target directory.
@@ -87,7 +87,7 @@ public final class CompileMojo extends AbstractMojo {
         readonly = false,
         defaultValue = "${project.build.directory}"
     )
-    private transient File targetDirectory;
+    private transient File targetDir;
 
     /**
      * Directory in which .eo files are located.
@@ -103,11 +103,11 @@ public final class CompileMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        if (this.generatedDirectory.mkdirs()) {
-            Logger.info(this, "Directory created: %s", this.generatedDirectory);
+        if (this.generatedDir.mkdirs()) {
+            Logger.info(this, "Gen directory created: %s", this.generatedDir);
         }
-        if (this.targetDirectory.mkdirs()) {
-            Logger.info(this, "Directory created: %s", this.targetDirectory);
+        if (this.targetDir.mkdirs()) {
+            Logger.info(this, "Target directory created: %s", this.targetDir);
         }
         try {
             Files.walk(this.sourcesDirectory.toPath())
@@ -125,11 +125,11 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         this.project.addCompileSourceRoot(
-            this.generatedDirectory.getAbsolutePath()
+            this.generatedDir.getAbsolutePath()
         );
         Logger.info(
             this, "Directory added to sources: %s",
-            this.generatedDirectory
+            this.generatedDir
         );
     }
 
@@ -152,7 +152,7 @@ public final class CompileMojo extends AbstractMojo {
                     new TeeInput(
                         new InputOf(baos.toString()),
                         new OutputTo(
-                            this.targetDirectory.toPath()
+                            this.targetDir.toPath()
                                 .resolve("eo-compiler")
                                 .resolve(
                                     String.format(
@@ -166,21 +166,21 @@ public final class CompileMojo extends AbstractMojo {
             ).value();
             new ToJava(
                 new XMLDocument(baos.toString()),
-                this.generatedDirectory.toPath(),
-                this.targetDirectory.toPath().resolve("eo-to-java")
+                this.generatedDir.toPath(),
+                this.targetDir.toPath().resolve("eo-to-java")
             ).compile();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(
                     new FormattedText(
                         "Can't compile %s into %s",
-                        file, this.generatedDirectory
+                        file, this.generatedDir
                     )
                 ).asString(),
                 ex
             );
         }
-        Logger.info(this, "%s compiled to %s", file, this.generatedDirectory);
+        Logger.info(this, "%s compiled to %s", file, this.generatedDir);
     }
 
 }

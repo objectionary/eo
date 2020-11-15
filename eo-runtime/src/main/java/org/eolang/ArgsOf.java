@@ -73,7 +73,13 @@ public final class ArgsOf implements Args {
 
     @Override
     public Object get(final String key) {
-        return this.map.get(key);
+        final Object result = this.map.get(key);
+        if (result == null) {
+            throw new ArgsException(
+                String.format("The argument \"%s\" is absent", key)
+            );
+        }
+        return result;
     }
 
     @Override

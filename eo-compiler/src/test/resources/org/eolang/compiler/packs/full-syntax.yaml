@@ -18,8 +18,8 @@ eo: |
   [x] > first
     second > hello
       third:foo > x
-        f 12
-          (((t 22) r:t 8.54 "yes").print 88):hey > !a
+        f 12 false
+          (((t 22) r:t 8.54 "yes" 'e').print 88):hey true > !a
             kid
       f:u
         z

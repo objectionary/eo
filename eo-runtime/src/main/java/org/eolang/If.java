@@ -21,46 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link AddOf}.
+ * IF.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class AddTest {
+public final class If implements Phi {
 
-    @Test
-    public void addsTwo() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(0L)
-        );
+    /**
+     * Args.
+     */
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param arg Args
+     */
+    public If(final Args arg) {
+        this.args = arg;
     }
 
-    @Test
-    public void addsOneArg() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
+    @Override
+    public Object call() {
+        Object result = false;
+        if (this.args.get("01").equals(Boolean.TRUE)) {
+            result = this.args.get("02");
+        } else if (this.args.has("03")) {
+            result = this.args.get("03");
+        }
+        return result;
     }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Add(new ArgsOf()).call()
-        );
-    }
-
 }

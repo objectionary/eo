@@ -68,11 +68,11 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         ).value();
         final Path target = this.temp.resolve("target");
         this.setVariableValueToObject(
-            mojo, "targetDirectory", target.toFile()
+            mojo, "targetDir", target.toFile()
         );
         final Path generated = this.temp.resolve("generated");
         this.setVariableValueToObject(
-            mojo, "generatedDirectory", generated.toFile()
+            mojo, "generatedDir", generated.toFile()
         );
         this.setVariableValueToObject(mojo, "project", new MavenProjectStub());
         mojo.execute();
@@ -88,10 +88,10 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         final Path src = this.temp.resolve("src");
         this.setVariableValueToObject(mojo, "sourcesDirectory", src.toFile());
         this.setVariableValueToObject(
-            mojo, "generatedDirectory", this.temp.resolve("generated").toFile()
+            mojo, "generatedDir", this.temp.resolve("generated").toFile()
         );
         this.setVariableValueToObject(
-            mojo, "targetDirectory", this.temp.resolve("target").toFile()
+            mojo, "targetDir", this.temp.resolve("target").toFile()
         );
         new LengthOf(
             new TeeInput(

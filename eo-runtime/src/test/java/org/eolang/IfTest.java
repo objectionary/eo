@@ -28,25 +28,36 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Not}.
+ * Test case for {@link If}.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class NotTest {
+public final class IfTest {
 
     @Test
-    public void inverses() {
+    public void compares() {
         MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", false))).call(),
-            Matchers.equalTo(true)
+            new If(
+                new ArgsOf(
+                    new Entry("01", true),
+                    new Entry("02", -1),
+                    new Entry("03", 0)
+                )
+            ).call(),
+            Matchers.equalTo(-1)
         );
     }
 
     @Test
-    public void inversesString() {
+    public void comparesWithoutElse() {
         MatcherAssert.assertThat(
-            new Not(new ArgsOf(new Entry("01", "Hello, world!"))).call(),
-            Matchers.equalTo(true)
+            new If(
+                new ArgsOf(
+                    new Entry("01", false),
+                    new Entry("02", -1)
+                )
+            ).call(),
+            Matchers.equalTo(false)
         );
     }
 

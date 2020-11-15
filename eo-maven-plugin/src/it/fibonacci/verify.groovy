@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,46 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-/**
- * Test case for {@link AddOf}.
- *
- * @since 0.1
- */
-public final class AddTest {
-
-    @Test
-    public void addsTwo() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(0L)
-        );
-    }
-
-    @Test
-    public void addsOneArg() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Add(new ArgsOf()).call()
-        );
-    }
-
-}
+// assert new File(basedir, 'target/generated-sources/eo/pixel.java').exists()
+// assert new File(basedir, 'target/generated-sources/eo/pixel$hello.java').exists()
+// assert new File(basedir, 'target/classes/pixel.class').exists()
+// assert new File(basedir, 'target/classes/pixel$hello.class').exists()

@@ -63,6 +63,7 @@ public final class ToJava {
      *
      * @param input Input text
      * @param file The file to write the XML to
+     * @param tmp Temp dir
      */
     public ToJava(final XML input, final Path file, final Path tmp) {
         this.xml = input;

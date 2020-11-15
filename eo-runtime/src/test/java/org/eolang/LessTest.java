@@ -25,41 +25,25 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AddOf}.
+ * Test case for {@link Less}.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class AddTest {
+public final class LessTest {
 
     @Test
-    public void addsTwo() {
+    public void compares() {
         MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
+            new Less(
+                new ArgsOf(
+                    new Entry("01", -1L),
+                    new Entry("02", 1L)
+                )
             ).call(),
-            Matchers.equalTo(0L)
-        );
-    }
-
-    @Test
-    public void addsOneArg() {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Add(new ArgsOf()).call()
+            Matchers.equalTo(true)
         );
     }
 
