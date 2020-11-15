@@ -210,14 +210,14 @@ EOL
   }
   ;
 
-NAME: LO (LETTER | DIGIT)*;
-
 BOOL: 'true' | 'false';
 CHAR: '\'' (LETTER | DIGIT) '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
 INTEGER: (PLUS | MINUS)? DIGIT+;
 FLOAT: (PLUS | MINUS)? DIGIT+ DOT DIGIT+;
-HEX: '0x' DIGIT+;
+HEX: '0x' (DIGIT | 'a'..'f')+;
+
+NAME: LO (LETTER | DIGIT)*;
 
 LETTER: (HI | LO);
 HI: [A-Z];

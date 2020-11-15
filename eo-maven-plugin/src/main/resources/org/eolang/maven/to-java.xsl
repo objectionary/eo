@@ -50,6 +50,12 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
         <xsl:text> * your changes will be discarded on the next build.</xsl:text>
         <xsl:value-of select="$EOL"/>
+        <xsl:text> * The sources were compiled to XML on </xsl:text>
+        <xsl:value-of select="/program/@time"/>
+        <xsl:text> by the compiler v.</xsl:text>
+        <xsl:value-of select="/program/@version"/>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:text> */</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$EOL"/>

@@ -1,6 +1,11 @@
 xsls: []
 tests:
   - /program/objects[count(o)=5]
+  - //o[@base='bool']
+  - //o[@base='string']
+  - //o[@base='char']
+  - //o[@base='float']
+  - //o[@base='hex']
 eo: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
@@ -19,7 +24,7 @@ eo: |
     second > hello
       third:foo > x
         f 12 false
-          (((t 22) r:t 8.54 "yes" 'e').print 88):hey true > !a
+          (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey true > !a
             kid
       f:u
         z

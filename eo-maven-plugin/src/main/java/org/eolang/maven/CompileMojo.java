@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -138,12 +139,32 @@ public final class CompileMojo extends AbstractMojo {
      * @param file EO file
      */
     private void compile(final Path file) {
+        final String name = file.toString().substring(
+            this.sourcesDirectory.toString().length() + 1
+        );
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             new Program(
-                file.toString().substring(
-                    this.sourcesDirectory.toString().length() + 1
-                ),
+                name,
+                new InputOf(file),
+                new OutputTo(baos)
+            ).compile(new ArrayList<>(0));
+            final String xml = String.format("%s.xml", name);
+            new IoChecked<>(
+                new LengthOf(
+                    new TeeInput(
+                        new InputOf(baos.toString()),
+                        new OutputTo(
+                            this.targetDir.toPath()
+                                .resolve("eo-compiler-raw")
+                                .resolve(xml)
+                        )
+                    )
+                )
+            ).value();
+            baos.reset();
+            new Program(
+                name,
                 new InputOf(file),
                 new OutputTo(baos)
             ).compile();
@@ -154,12 +175,7 @@ public final class CompileMojo extends AbstractMojo {
                         new OutputTo(
                             this.targetDir.toPath()
                                 .resolve("eo-compiler")
-                                .resolve(
-                                    String.format(
-                                        "%s.xml",
-                                        file.getFileName().toString()
-                                    )
-                                )
+                                .resolve(xml)
                         )
                     )
                 )
