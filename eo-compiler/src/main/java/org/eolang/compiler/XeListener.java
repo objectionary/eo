@@ -23,8 +23,12 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -70,7 +74,16 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.add("program").attr("name", this.name).add("errors").up();
+        this.dirs.add("program")
+            .attr("name", this.name)
+            .attr("version", Manifests.read("EO-Version"))
+            .attr(
+                "time",
+                ZonedDateTime.now(ZoneOffset.UTC).format(
+                    DateTimeFormatter.ISO_INSTANT
+                )
+            )
+            .add("errors").up();
     }
 
     @Override
