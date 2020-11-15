@@ -84,6 +84,7 @@ public final class PacksTest {
             "adds-refs.yaml",
             "flatten-abstracts.yaml",
             "resolves-aliases.yaml",
+            "wraps-methods.yaml",
             "leap-year.yaml"
         );
     }

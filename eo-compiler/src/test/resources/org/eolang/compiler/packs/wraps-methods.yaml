@@ -1,0 +1,15 @@
+xsls:
+  - 05-wrap-method-calls.xsl
+tests:
+  - /program/objects[count(o)=1]
+  - //o[@base='sprintf' and count(./o)=3]
+  - //o[@base='.get' and count(./o)=2]
+  - //o[@base='.get']/o[1][@base='args']
+  - //o[@base='.get']/o[2][@base='integer']
+eo: |
+  [args] > app
+    stdout
+      sprintf
+        "%dth Fibonacci number is %d"
+        (args.get 1) > !n
+        fibo n

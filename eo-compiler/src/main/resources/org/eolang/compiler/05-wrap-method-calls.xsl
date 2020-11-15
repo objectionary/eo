@@ -26,11 +26,12 @@ SOFTWARE.
   <xsl:strip-space elements="*"/>
   <xsl:template match="o[starts-with(@base, '.')]">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:copy-of select="preceding-sibling::o"/>
+      <xsl:apply-templates select="@*"/>
+      <xsl:copy-of select="preceding-sibling::o[1]"/>
+      <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[following-sibling::o[starts-with(@base, '.')]]">
+  <xsl:template match="o[following-sibling::o[1][starts-with(@base, '.')]]">
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
