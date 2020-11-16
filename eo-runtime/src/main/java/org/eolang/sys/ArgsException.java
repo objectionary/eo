@@ -22,35 +22,26 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
-
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+package org.eolang.sys;
 
 /**
- * Stdout.
+ * Args Exception.
  *
  * @since 0.1
  */
-public final class Stdout implements Phi {
+public final class ArgsException extends RuntimeException {
 
     /**
-     * Args.
+     * Serial ID.
      */
-    private final Args args;
+    private static final long serialVersionUID = -6643350804302660951L;
 
     /**
      * Ctor.
-     * @param arg Args
+     * @param reason The reason
      */
-    public Stdout(final Args arg) {
-        this.args = arg;
+    public ArgsException(final String reason) {
+        super(reason);
     }
 
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
-        System.out.print(this.args.call("01", String.class));
-        return true;
-    }
 }

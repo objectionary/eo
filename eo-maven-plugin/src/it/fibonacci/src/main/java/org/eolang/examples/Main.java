@@ -43,7 +43,7 @@ public final class Main {
     public static void main(final String... args) throws Exception {
         new app(
             new ArgsOf(
-                new Entry("args", Arrays.asList(args))
+                new Entry("args", Array.asList(args))
             )
         ).call();
     }

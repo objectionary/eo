@@ -22,35 +22,14 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
+package org.eolang.sys;
 
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+import java.util.concurrent.Callable;
 
 /**
- * Stdout.
+ * Object with body.
  *
  * @since 0.1
  */
-public final class Stdout implements Phi {
-
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public Stdout(final Args arg) {
-        this.args = arg;
-    }
-
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
-        System.out.print(this.args.call("01", String.class));
-        return true;
-    }
+public interface Phi extends Callable<Object> {
 }

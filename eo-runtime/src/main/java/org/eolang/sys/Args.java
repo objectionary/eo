@@ -22,14 +22,42 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
-import java.util.concurrent.Callable;
+package org.eolang.sys;
 
 /**
- * Object with body.
+ * Arguments of an object.
  *
  * @since 0.1
  */
-public interface Phi extends Callable<Object> {
+public interface Args {
+
+    /**
+     * Get one argument.
+     * @param key The name
+     * @return The argument
+     */
+    Object get(String key);
+
+    /**
+     * Get one argument and call it.
+     * @param key The name
+     * @param type The type of expected result
+     * @return The argument
+     * @param <T> The type of result
+     * @throws Exception If fails
+     */
+    <T> T call(String key, Class<T> type) throws Exception;
+
+    /**
+     * This one exists?
+     * @param key The name
+     * @return TRUE if exists
+     */
+    boolean has(String key);
+
+    /**
+     * Get all keys.
+     * @return All keys
+     */
+    Iterable<String> keys();
 }

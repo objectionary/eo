@@ -25,6 +25,10 @@
 package org.eolang;
 
 import org.cactoos.iterable.Sorted;
+import org.eolang.sys.Args;
+import org.eolang.sys.ArgsException;
+import org.eolang.sys.Phi;
+import org.eolang.sys.TypeMismatchException;
 
 /**
  * MUL.
@@ -48,13 +52,13 @@ public final class Mul implements Phi {
 
     @Override
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    public Object call() {
+    public Object call() throws Exception {
         Object result = null;
         for (final String key : new Sorted<>(this.args.keys())) {
             if (key.charAt(0) != '0') {
                 continue;
             }
-            final Object nxt = this.args.get(key);
+            final Number nxt = this.args.call(key, Number.class);
             if (!(nxt instanceof Long) && !(nxt instanceof Float)) {
                 throw new TypeMismatchException(
                     String.format(

@@ -21,36 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.sys;
 
-package org.eolang.io;
-
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Stdout.
- *
+ * Test case for {@link ArgsOf}.
  * @since 0.1
  */
-public final class Stdout implements Phi {
+public final class ArgsOfTest {
 
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public Stdout(final Args arg) {
-        this.args = arg;
+    @Test
+    public void createsArgs() {
+        final String key = "hey";
+        MatcherAssert.assertThat(
+            new ArgsOf(new Entry(key, 1)).get(key),
+            Matchers.equalTo(1)
+        );
     }
 
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
-        System.out.print(this.args.call("01", String.class));
-        return true;
+    @Test
+    public void createsArgsWithBefore() {
+        final String key = "hello";
+        MatcherAssert.assertThat(
+            new ArgsOf(
+                new ArgsOf(new Entry(key, 0)),
+                new Entry(key, -1)
+            ).get(key),
+            Matchers.equalTo(-1)
+        );
     }
+
 }

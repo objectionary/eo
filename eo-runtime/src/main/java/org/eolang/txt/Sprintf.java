@@ -27,8 +27,8 @@ package org.eolang.txt;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.iterable.Sorted;
-import org.eolang.Args;
-import org.eolang.Phi;
+import org.eolang.sys.Args;
+import org.eolang.sys.Phi;
 
 /**
  * Sprintf.
@@ -52,7 +52,7 @@ public final class Sprintf implements Phi {
 
     @Override
     @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() {
+    public Object call() throws Exception {
         final Collection<Object> items = new LinkedList<>();
         for (final String key : new Sorted<>(this.args.keys())) {
             if (key.charAt(0) != '0') {
@@ -61,10 +61,10 @@ public final class Sprintf implements Phi {
             if ("01".equals(key)) {
                 continue;
             }
-            items.add(this.args.get(key));
+            items.add(this.args.call(key, Object.class));
         }
         return String.format(
-            String.class.cast(this.args.get("01")),
+            this.args.call("01", String.class),
             items.toArray()
         );
     }

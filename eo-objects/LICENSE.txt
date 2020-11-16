@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
 The MIT License (MIT)
 
 Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,22 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.eolang</groupId>
-    <artifactId>eo-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>eo-runtime</artifactId>
-  <packaging>jar</packaging>
-  <name>eo-runtime</name>
-  <description>eolang runtime library</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.cactoos</groupId>
-      <artifactId>cactoos</artifactId>
-    </dependency>
-  </dependencies>
-</project>

@@ -24,6 +24,10 @@
 
 package org.eolang;
 
+import org.eolang.sys.Args;
+import org.eolang.sys.Phi;
+import org.eolang.sys.TypeMismatchException;
+
 /**
  * LESS.
  *
@@ -45,9 +49,9 @@ public final class Less implements Phi {
     }
 
     @Override
-    public Object call() {
-        final Object left = this.args.get("01");
-        final Object right = this.args.get("02");
+    public Object call() throws Exception {
+        final Object left = this.args.call("01", Number.class);
+        final Object right = this.args.call("02", Number.class);
         final boolean result;
         if (left instanceof Long && right instanceof Long) {
             result = Long.class.cast(left).compareTo(

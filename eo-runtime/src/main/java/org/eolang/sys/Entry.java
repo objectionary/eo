@@ -22,35 +22,49 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
-
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+package org.eolang.sys;
 
 /**
- * Stdout.
+ * Entry.
  *
  * @since 0.1
  */
-public final class Stdout implements Phi {
+public final class Entry {
 
     /**
-     * Args.
+     * The key.
      */
-    private final Args args;
+    private final String akey;
+
+    /**
+     * The value.
+     */
+    private final Object avalue;
 
     /**
      * Ctor.
-     * @param arg Args
+     * @param key The key
+     * @param value The value
      */
-    public Stdout(final Args arg) {
-        this.args = arg;
+    public Entry(final String key, final Object value) {
+        this.akey = key;
+        this.avalue = value;
     }
 
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
-        System.out.print(this.args.call("01", String.class));
-        return true;
+    /**
+     * Get key.
+     * @return The key
+     */
+    public String key() {
+        return this.akey;
     }
+
+    /**
+     * Get value.
+     * @return The value
+     */
+    public Object value() {
+        return this.avalue;
+    }
+
 }

@@ -23,8 +23,8 @@
  */
 package org.eolang.txt;
 
-import org.eolang.ArgsOf;
-import org.eolang.Entry;
+import org.eolang.sys.ArgsOf;
+import org.eolang.sys.Entry;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public final class SprintfTest {
 
     @Test
-    public void printsSimpleText() {
+    public void printsSimpleText() throws Exception {
         MatcherAssert.assertThat(
             new Sprintf(
                 new ArgsOf(

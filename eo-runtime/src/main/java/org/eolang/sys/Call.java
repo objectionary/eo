@@ -22,32 +22,49 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.sys;
+
+import java.lang.reflect.Method;
 
 /**
- * Arguments of an object.
+ * Call.
  *
  * @since 0.1
  */
-public interface Args {
+public final class Call implements Phi {
 
     /**
-     * Get one argument.
-     * @param key The name
-     * @return The argument
+     * The name of the method to call.
      */
-    Object get(String key);
+    private final String method;
 
     /**
-     * This one exists?
-     * @param key The name
-     * @return TRUE if exists
+     * The object.
      */
-    boolean has(String key);
+    private final Object object;
 
     /**
-     * Get all keys.
-     * @return All keys
+     * Arguments to pass.
      */
-    Iterable<String> keys();
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param mtd The method to call
+     * @param obj The object
+     * @param input Input arguments
+     */
+    public Call(final String mtd, final Object obj, final Args input) {
+        this.method = mtd;
+        this.object = obj;
+        this.args = input;
+    }
+
+    @Override
+    public Object call() throws Exception {
+        final Method mtd = this.object.getClass().getDeclaredMethod(
+            this.method, Args.class
+        );
+        return mtd.invoke(this.object, this.args);
+    }
 }

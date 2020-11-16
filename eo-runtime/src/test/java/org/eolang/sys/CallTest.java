@@ -21,36 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package org.eolang.sys;
 
+import org.eolang.Array;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link ArgsOf}.
+ * Test case for {@link Call}.
+ *
  * @since 0.1
  */
-public final class ArgsOfTest {
+public final class CallTest {
 
     @Test
-    public void createsArgs() {
-        final String key = "hey";
+    public void makesCall() throws Exception {
         MatcherAssert.assertThat(
-            new ArgsOf(new Entry(key, 1)).get(key),
+            new Call(
+                "length",
+                new Array(
+                    new ArgsOf(new Entry("01", 1))
+                ),
+                new ArgsOf()
+            ).call(),
             Matchers.equalTo(1)
-        );
-    }
-
-    @Test
-    public void createsArgsWithBefore() {
-        final String key = "hello";
-        MatcherAssert.assertThat(
-            new ArgsOf(
-                new ArgsOf(new Entry(key, 0)),
-                new Entry(key, -1)
-            ).get(key),
-            Matchers.equalTo(-1)
         );
     }
 

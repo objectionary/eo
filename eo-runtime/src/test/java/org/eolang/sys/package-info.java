@@ -22,49 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
 /**
- * Entry.
+ * EO system objects.
  *
  * @since 0.1
  */
-public final class Entry {
-
-    /**
-     * The key.
-     */
-    private final String akey;
-
-    /**
-     * The value.
-     */
-    private final Object avalue;
-
-    /**
-     * Ctor.
-     * @param key The key
-     * @param value The value
-     */
-    public Entry(final String key, final Object value) {
-        this.akey = key;
-        this.avalue = value;
-    }
-
-    /**
-     * Get key.
-     * @return The key
-     */
-    public String key() {
-        return this.akey;
-    }
-
-    /**
-     * Get value.
-     * @return The value
-     */
-    public Object value() {
-        return this.avalue;
-    }
-
-}
+package org.eolang.sys;

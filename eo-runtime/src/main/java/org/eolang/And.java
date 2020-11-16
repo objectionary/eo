@@ -25,6 +25,8 @@
 package org.eolang;
 
 import org.cactoos.iterable.Sorted;
+import org.eolang.sys.Args;
+import org.eolang.sys.Phi;
 
 /**
  * AND.
@@ -47,13 +49,13 @@ public final class And implements Phi {
     }
 
     @Override
-    public Object call() {
-        boolean result = false;
+    public Object call() throws Exception {
+        boolean result = true;
         for (final String key : new Sorted<>(this.args.keys())) {
             if (key.charAt(0) != '0') {
                 continue;
             }
-            result &= this.args.get(key).equals(Boolean.TRUE);
+            result &= this.args.call(key, Boolean.class).equals(Boolean.TRUE);
             if (!result) {
                 break;
             }

@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import org.eolang.sys.ArgsOf;
+import org.eolang.sys.Entry;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public final class LessTest {
 
     @Test
-    public void compares() {
+    public void compares() throws Exception {
         MatcherAssert.assertThat(
             new Less(
                 new ArgsOf(

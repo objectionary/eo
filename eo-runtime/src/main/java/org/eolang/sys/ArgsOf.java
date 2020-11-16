@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.sys;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +80,15 @@ public final class ArgsOf implements Args {
             );
         }
         return result;
+    }
+
+    @Override
+    public <T> T call(final String key, final Class<T> type) throws Exception {
+        Object result = this.get(key);
+        if (result instanceof Phi) {
+            result = Phi.class.cast(result).call();
+        }
+        return type.cast(result);
     }
 
     @Override

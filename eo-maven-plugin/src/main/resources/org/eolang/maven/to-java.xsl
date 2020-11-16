@@ -44,6 +44,8 @@ SOFTWARE.
         <xsl:apply-templates select="/program/metas/meta[head='package']"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="$EOL"/>
+        <xsl:text>import org.eolang.sys.*;</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$EOL"/>
         <xsl:text>public final class </xsl:text>
         <xsl:apply-templates select="." mode="class-name"/>
@@ -174,16 +176,21 @@ SOFTWARE.
       <xsl:value-of select="@name"/>
       <xsl:text> = </xsl:text>
     </xsl:if>
+    <xsl:text>new Call("</xsl:text>
+    <xsl:value-of select="substring(@base, 2)"/>
+    <xsl:text>", </xsl:text>
     <xsl:apply-templates select="./o[1]">
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
       </xsl:with-param>
     </xsl:apply-templates>
-    <xsl:value-of select="@base"/>
-    <xsl:text>(</xsl:text>
-    <xsl:apply-templates select="./o[position() &gt; 1]">
+    <xsl:text>, new ArgsOf(</xsl:text>
+    <xsl:apply-templates select="." mode="args">
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+      <xsl:with-param name="since">
+        <xsl:value-of select="2"/>
       </xsl:with-param>
     </xsl:apply-templates>
     <xsl:text>)</xsl:text>
@@ -219,7 +226,21 @@ SOFTWARE.
       <xsl:value-of select="$EOL"/>
       <xsl:value-of select="$newindent"/>
     </xsl:if>
-    <xsl:for-each select="./o">
+    <xsl:apply-templates select="." mode="args">
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:if test="./o">
+      <xsl:value-of select="$EOL"/>
+      <xsl:value-of select="$indent"/>
+    </xsl:if>
+    <xsl:text>))</xsl:text>
+  </xsl:template>
+  <xsl:template match="o" mode="args">
+    <xsl:param name="indent"/>
+    <xsl:param name="since" select="2"/>
+    <xsl:for-each select="./o[position() &gt;= $since]">
       <xsl:text>new Entry("</xsl:text>
       <xsl:if test="@as">
         <xsl:value-of select="@as"/>
@@ -230,21 +251,18 @@ SOFTWARE.
       <xsl:text>", </xsl:text>
       <xsl:apply-templates select=".">
         <xsl:with-param name="indent">
-          <xsl:value-of select="$newindent"/>
+          <xsl:value-of select="$indent"/>
+          <xsl:value-of select="$TAB"/>
         </xsl:with-param>
       </xsl:apply-templates>
       <xsl:text>)</xsl:text>
       <xsl:if test="position() != last()">
         <xsl:text>,</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:value-of select="$newindent"/>
+        <xsl:value-of select="$indent"/>
+        <xsl:value-of select="$TAB"/>
       </xsl:if>
     </xsl:for-each>
-    <xsl:if test="./o">
-      <xsl:value-of select="$EOL"/>
-      <xsl:value-of select="$indent"/>
-    </xsl:if>
-    <xsl:text>))</xsl:text>
   </xsl:template>
   <xsl:template match="o[text() and @base='org.eolang.integer']">
     <xsl:value-of select="text()"/>

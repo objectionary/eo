@@ -24,24 +24,61 @@
 
 package org.eolang;
 
+import org.eolang.sys.Args;
+import org.eolang.sys.ArgsException;
+
 /**
- * Args Exception.
+ * ARRAY.
  *
  * @since 0.1
  */
-public final class ArgsException extends RuntimeException {
+public final class Array {
 
     /**
-     * Serial ID.
+     * Args.
      */
-    private static final long serialVersionUID = -6643350804302660951L;
+    private final Args args;
 
     /**
      * Ctor.
-     * @param reason The reason
+     * @param arg Args
      */
-    public ArgsException(final String reason) {
-        super(reason);
+    public Array(final Args arg) {
+        this.args = arg;
     }
 
+    /**
+     * The length of it.
+     * @param input Input args
+     * @return Length
+     */
+    public Object length(final Args input) {
+        int size = 0;
+        for (final String key : this.args.keys()) {
+            if (key.charAt(0) != '0') {
+                continue;
+            }
+            ++size;
+        }
+        return size;
+    }
+
+    /**
+     * Get element by index.
+     * @param input Input args
+     * @return The object
+     * @throws Exception If fails
+     */
+    public Object get(final Args input) throws Exception {
+        final int index = input.call("01", Integer.class);
+        final Object result = this.args.call(
+            String.format("%02d", index), Object.class
+        );
+        if (result == null) {
+            throw new ArgsException(
+                String.format("The item #%d is absent in the array", index)
+            );
+        }
+        return result;
+    }
 }

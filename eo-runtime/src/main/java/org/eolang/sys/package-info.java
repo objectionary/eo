@@ -22,26 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
 /**
- * TypeMismatch Exception.
+ * EO runtime, system.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class TypeMismatchException extends RuntimeException {
-
-    /**
-     * Serial ID.
-     */
-    private static final long serialVersionUID = -6643350804302660951L;
-
-    /**
-     * Ctor.
-     * @param reason The reason
-     */
-    public TypeMismatchException(final String reason) {
-        super(reason);
-    }
-
-}
+package org.eolang.sys;

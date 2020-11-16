@@ -24,6 +24,9 @@
 
 package org.eolang;
 
+import org.eolang.sys.Args;
+import org.eolang.sys.Phi;
+
 /**
  * IF.
  *
@@ -45,9 +48,9 @@ public final class If implements Phi {
     }
 
     @Override
-    public Object call() {
+    public Object call() throws Exception {
         Object result = false;
-        if (this.args.get("01").equals(Boolean.TRUE)) {
+        if (this.args.call("01", Boolean.class).equals(Boolean.TRUE)) {
             result = this.args.get("02");
         } else if (this.args.has("03")) {
             result = this.args.get("03");

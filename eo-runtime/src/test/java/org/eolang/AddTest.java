@@ -23,6 +23,9 @@
  */
 package org.eolang;
 
+import org.eolang.sys.ArgsException;
+import org.eolang.sys.ArgsOf;
+import org.eolang.sys.Entry;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +39,7 @@ import org.junit.jupiter.api.Test;
 public final class AddTest {
 
     @Test
-    public void addsTwo() {
+    public void addsTwo() throws Exception {
         MatcherAssert.assertThat(
             new Add(
                 new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
@@ -46,7 +49,7 @@ public final class AddTest {
     }
 
     @Test
-    public void addsOneArg() {
+    public void addsOneArg() throws Exception {
         MatcherAssert.assertThat(
             new Add(
                 new ArgsOf(new Entry("01", 1L))
