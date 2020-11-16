@@ -193,7 +193,7 @@ SOFTWARE.
         <xsl:value-of select="2"/>
       </xsl:with-param>
     </xsl:apply-templates>
-    <xsl:text>)</xsl:text>
+    <xsl:text>))</xsl:text>
   </xsl:template>
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(@ref) and not(. instance of xs:string)]">
     <xsl:param name="indent"/>
@@ -239,7 +239,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o" mode="args">
     <xsl:param name="indent"/>
-    <xsl:param name="since" select="2"/>
+    <xsl:param name="since" select="1"/>
     <xsl:for-each select="./o[position() &gt;= $since]">
       <xsl:text>new Entry("</xsl:text>
       <xsl:if test="@as">
