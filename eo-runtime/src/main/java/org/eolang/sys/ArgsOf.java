@@ -48,6 +48,14 @@ public final class ArgsOf implements Args {
 
     /**
      * Ctor.
+     * @param items Items
+     */
+    public ArgsOf(final Object... items) {
+        this(new ArgsOf(), ArgsOf.toEntries(items));
+    }
+
+    /**
+     * Ctor.
      * @param entries Entries
      */
     public ArgsOf(final Entry... entries) {
@@ -117,6 +125,19 @@ public final class ArgsOf implements Args {
             after.put(entry.key(), entry.value());
         }
         return after;
+    }
+
+    /**
+     * Array of objects to entries.
+     * @param items The items
+     * @return Array of entries
+     */
+    private static Entry[] toEntries(final Object... items) {
+        final Entry[] array = new Entry[items.length];
+        for (int idx = 0; idx < items.length; ++idx) {
+            array[idx] = new Entry(String.format("%02d", idx), items[idx]);
+        }
+        return array;
     }
 
 }

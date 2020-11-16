@@ -24,9 +24,9 @@
 
 package org.eolang.examples;
 
-import java.util.Arrays;
-import org.eolang.ArgsOf;
-import org.eolang.Entry;
+import org.eolang.Array;
+import org.eolang.sys.ArgsOf;
+import org.eolang.sys.Entry;
 
 /**
  * Eo entry point.
@@ -43,7 +43,7 @@ public final class Main {
     public static void main(final String... args) throws Exception {
         new app(
             new ArgsOf(
-                new Entry("args", Array.asList(args))
+                new Entry("args", new Array(new ArgsOf((Object[]) args)))
             )
         ).call();
     }
