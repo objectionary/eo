@@ -50,7 +50,7 @@ SOFTWARE.
         </xsl:if>
         <xsl:if test="not($meta)">
           <xsl:text>org.eolang.</xsl:text>
-          <xsl:value-of select="concat(upper-case(substring($o/@base, 1, 1)), substring($o/@base, 2))"/>
+          <xsl:value-of select="$o/@base"/>
         </xsl:if>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
