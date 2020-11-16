@@ -39,13 +39,12 @@ SOFTWARE.
       <artifactId>cactoos</artifactId>
     </dependency>
   </dependencies>
-  <!--
   <build>
     <plugins>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.3</version>
         <executions>
           <execution>
             <goals>
@@ -56,5 +55,4 @@ SOFTWARE.
       </plugin>
     </plugins>
   </build>
-  -->
 </project>
