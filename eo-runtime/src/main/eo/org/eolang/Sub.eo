@@ -1,8 +1,9 @@
 # Calculates algebraic difference between x and y
 
 +package org.eolang
++export sub Sub
 
-[x y] > Sub
+[x y] > sub
   add
     x
     mul y -1

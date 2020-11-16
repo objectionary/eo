@@ -26,7 +26,7 @@ SOFTWARE.
   <xsl:template match="o[@base]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
-      <xsl:variable name="p" select="ancestor::o[o[@name=$o/@base]][1]"/>
+      <xsl:variable name="p" select="ancestor::*[o[@name=$o/@base]][1]"/>
       <xsl:variable name="x" select="$p/o[@name=$o/@base]"/>
       <xsl:if test="$p">
         <xsl:attribute name="ref">

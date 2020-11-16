@@ -34,24 +34,26 @@ SOFTWARE.
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:variable name="meta" select="/program/metas/meta[head='alias' and tokenize(tail,' ')[1] = $o/@base]"/>
-        <xsl:if test="$meta">
-          <xsl:variable name="tail" select="tokenize($meta/tail,' ')[2]"/>
-          <xsl:if test="$tail = ''">
-            <xsl:message terminate="yes">
-              <xsl:text>The alias "</xsl:text>
-              <xsl:value-of select="$meta/head"/>
-              <xsl:text>" doesn't have the tail part: "</xsl:text>
-              <xsl:value-of select="$meta/tail"/>
-              <xsl:text>" at line </xsl:text>
-              <xsl:value-of select="$meta/@line"/>
-            </xsl:message>
-          </xsl:if>
-          <xsl:value-of select="$tail"/>
-        </xsl:if>
-        <xsl:if test="not($meta)">
-          <xsl:text>org.eolang.</xsl:text>
-          <xsl:value-of select="concat(upper-case(substring($o/@base, 1, 1)), substring($o/@base, 2))"/>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$meta">
+            <xsl:variable name="tail" select="tokenize($meta/tail,' ')[2]"/>
+            <xsl:if test="$tail = ''">
+              <xsl:message terminate="yes">
+                <xsl:text>The alias "</xsl:text>
+                <xsl:value-of select="$meta/head"/>
+                <xsl:text>" doesn't have the tail part: "</xsl:text>
+                <xsl:value-of select="$meta/tail"/>
+                <xsl:text>" at line </xsl:text>
+                <xsl:value-of select="$meta/@line"/>
+              </xsl:message>
+            </xsl:if>
+            <xsl:value-of select="$tail"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>org.eolang.</xsl:text>
+            <xsl:value-of select="$o/@base"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>

@@ -34,6 +34,7 @@ import org.cactoos.scalar.LengthOf;
 import org.eolang.compiler.CompileException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -99,12 +100,10 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
                 new OutputTo(src.resolve("f.eo"))
             )
         ).value();
-        try {
-            mojo.execute();
-            throw new IllegalArgumentException("exception is not here, why?");
-        } catch (final CompileException ex) {
-            assert ex != null;
-        }
+        Assertions.assertThrows(
+            CompileException.class,
+            mojo::execute
+        );
     }
 
 }
