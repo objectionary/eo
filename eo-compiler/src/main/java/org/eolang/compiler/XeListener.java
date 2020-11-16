@@ -261,7 +261,7 @@ public final class XeListener implements ProgramListener {
             data = Boolean.toString(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.CHAR() != null) {
             type = "char";
-            data = ctx.getText().substring(1, 1);
+            data = ctx.getText().substring(1, 2);
         } else if (ctx.FLOAT() != null) {
             type = "float";
             data = Float.toString(Float.parseFloat(ctx.getText()));
@@ -270,9 +270,13 @@ public final class XeListener implements ProgramListener {
             data = Long.toString(Long.parseLong(ctx.getText()));
         } else if (ctx.HEX() != null) {
             type = "hex";
-            data = Long.toString(
-                // @checkstyle MagicNumberCheck (1 line)
-                Long.parseLong(ctx.getText().substring(2), 16)
+            data = String.format(
+                "0x%s",
+                Long.toString(
+                    // @checkstyle MagicNumberCheck (2 line)
+                    Long.parseLong(ctx.getText().substring(2), 16),
+                    16
+                )
             );
         } else if (ctx.STRING() != null) {
             type = "string";
