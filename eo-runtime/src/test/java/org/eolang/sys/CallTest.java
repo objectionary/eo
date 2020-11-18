@@ -23,7 +23,7 @@
  */
 package org.eolang.sys;
 
-import org.eolang.Array;
+import org.eolang.EOarray;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ public final class CallTest {
         MatcherAssert.assertThat(
             new Call(
                 "length",
-                new Array(
+                new EOarray(
                     new ArgsOf(new Entry("01", 1))
                 ),
                 new ArgsOf()

@@ -30,36 +30,22 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link If}.
+ * Test case for {@link EOless}.
  *
  * @since 0.2
  */
-public final class IfTest {
+public final class EOlessTest {
 
     @Test
     public void compares() throws Exception {
         MatcherAssert.assertThat(
-            new If(
+            new EOless(
                 new ArgsOf(
-                    new Entry("01", true),
-                    new Entry("02", -1),
-                    new Entry("03", 0)
+                    new Entry("01", -1L),
+                    new Entry("02", 1L)
                 )
             ).call(),
-            Matchers.equalTo(-1)
-        );
-    }
-
-    @Test
-    public void comparesWithoutElse() throws Exception {
-        MatcherAssert.assertThat(
-            new If(
-                new ArgsOf(
-                    new Entry("01", false),
-                    new Entry("02", -1)
-                )
-            ).call(),
-            Matchers.equalTo(false)
+            Matchers.equalTo(true)
         );
     }
 

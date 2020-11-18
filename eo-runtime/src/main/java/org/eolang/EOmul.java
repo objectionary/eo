@@ -35,7 +35,7 @@ import org.eolang.sys.TypeMismatchException;
  *
  * @since 0.2
  */
-public final class Mul implements Phi {
+public final class EOmul implements Phi {
 
     /**
      * Args.
@@ -46,7 +46,7 @@ public final class Mul implements Phi {
      * Ctor.
      * @param arg Args
      */
-    public Mul(final Args arg) {
+    public EOmul(final Args arg) {
         this.args = arg;
     }
 

@@ -1,7 +1,6 @@
 # Returns TRUE if argument is FALSE and the other way around
 
 +package org.eolang
-+export not Not
 
 [x] > not
   if x false true

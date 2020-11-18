@@ -35,7 +35,7 @@ import org.eolang.sys.TypeMismatchException;
  *
  * @since 0.1
  */
-public final class Add implements Phi {
+public final class EOadd implements Phi {
 
     /**
      * Args.
@@ -46,7 +46,7 @@ public final class Add implements Phi {
      * Ctor.
      * @param arg Args
      */
-    public Add(final Args arg) {
+    public EOadd(final Args arg) {
         this.args = arg;
     }
 

@@ -2,8 +2,8 @@
 # program, to be ignored.
 
 +package org.eolang.examples
-+alias stdout org.eolang.io.Stdout
-+alias sprintf org.eolang.txt.Sprintf
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 +meta This is just a test META
 +meta2 And yet another one
 

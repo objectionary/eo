@@ -73,9 +73,9 @@ Here is a simple program that asks for a year and tells you
 whether it's leap or not:
 
 ```
-+alias stdout org.eolang.io.Stdout
-+alias stdin org.eolang.io.Stdin
-+alias scanner org.eolang.txt.Scanner
++alias stdout org.eolang.io.stdout
++alias stdin org.eolang.io.stdin
++alias scanner org.eolang.txt.scanner
 
 [args] > main
   [y] > leap

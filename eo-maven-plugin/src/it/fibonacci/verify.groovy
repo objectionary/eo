@@ -22,7 +22,8 @@
  * SOFTWARE.
  */
 
-// assert new File(basedir, 'target/generated-sources/eo/pixel.java').exists()
-// assert new File(basedir, 'target/generated-sources/eo/pixel$hello.java').exists()
-// assert new File(basedir, 'target/classes/pixel.class').exists()
-// assert new File(basedir, 'target/classes/pixel$hello.class').exists()
+assert new File(basedir, 'target/generated-sources/eo/EOapp.java').exists()
+assert new File(basedir, 'target/eo-to-java/org/eolang/examples/app.eo.xml').exists()
+assert new File(basedir, 'target/eo-compiler/org/eolang/examples/app.eo.xml').exists()
+assert new File(basedir, 'target/eo-compiler-raw/org/eolang/examples/app.eo.xml').exists()
+assert new File(basedir, 'target/classes/org/eolang/examples/EOapp.class').exists()

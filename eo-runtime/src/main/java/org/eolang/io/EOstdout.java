@@ -21,49 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.eolang.sys.ArgsException;
-import org.eolang.sys.ArgsOf;
-import org.eolang.sys.Entry;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package org.eolang.io;
+
+import org.eolang.sys.Args;
+import org.eolang.sys.Phi;
 
 /**
- * Test case for {@link AddOf}.
+ * Stdout.
  *
  * @since 0.1
  */
-public final class AddTest {
+public final class EOstdout implements Phi {
 
-    @Test
-    public void addsTwo() throws Exception {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(0L)
-        );
+    /**
+     * Args.
+     */
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param arg Args
+     */
+    public EOstdout(final Args arg) {
+        this.args = arg;
     }
 
-    @Test
-    public void addsOneArg() throws Exception {
-        MatcherAssert.assertThat(
-            new Add(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
+    @Override
+    @SuppressWarnings("PMD.SystemPrintln")
+    public Object call() throws Exception {
+        System.out.print(this.args.call("01", String.class));
+        return true;
     }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Add(new ArgsOf()).call()
-        );
-    }
-
 }

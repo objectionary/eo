@@ -22,8 +22,8 @@
 
 +package org.eolang.examples
 +alias fibo org.eolang.examples.fibonacci
-+alias stdout org.eolang.io.Stdout
-+alias sprintf org.eolang.txt.Sprintf
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 
 [args] > app
   stdout

@@ -21,49 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.eolang.sys.ArgsException;
-import org.eolang.sys.ArgsOf;
-import org.eolang.sys.Entry;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package org.eolang.txt;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import org.cactoos.iterable.Sorted;
+import org.eolang.sys.Args;
+import org.eolang.sys.Phi;
 
 /**
- * Test case for {@link AddOf}.
+ * Sprintf.
  *
  * @since 0.2
  */
-public final class MulTest {
+public final class EOsprintf implements Phi {
 
-    @Test
-    public void mulsTwo() throws Exception {
-        MatcherAssert.assertThat(
-            new Mul(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(-1L)
-        );
+    /**
+     * Args.
+     */
+    private final Args args;
+
+    /**
+     * Ctor.
+     * @param arg Args
+     */
+    public EOsprintf(final Args arg) {
+        this.args = arg;
     }
 
-    @Test
-    public void mulsOneArg() throws Exception {
-        MatcherAssert.assertThat(
-            new Mul(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
+    @Override
+    @SuppressWarnings("PMD.SystemPrintln")
+    public Object call() throws Exception {
+        final Collection<Object> items = new LinkedList<>();
+        for (final String key : new Sorted<>(this.args.keys())) {
+            if (key.charAt(0) != '0') {
+                continue;
+            }
+            if ("01".equals(key)) {
+                continue;
+            }
+            items.add(this.args.call(key, Object.class));
+        }
+        return String.format(
+            this.args.call("01", String.class),
+            items.toArray()
         );
     }
-
-    @Test
-    public void mulsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new Mul(new ArgsOf()).call()
-        );
-    }
-
 }

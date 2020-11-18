@@ -22,20 +22,17 @@
  * SOFTWARE.
  */
 
-package org.eolang.txt;
+package org.eolang;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import org.cactoos.iterable.Sorted;
 import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+import org.eolang.sys.ArgsException;
 
 /**
- * Sprintf.
+ * ARRAY.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class Sprintf implements Phi {
+public final class EOarray {
 
     /**
      * Args.
@@ -46,26 +43,42 @@ public final class Sprintf implements Phi {
      * Ctor.
      * @param arg Args
      */
-    public Sprintf(final Args arg) {
+    public EOarray(final Args arg) {
         this.args = arg;
     }
 
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
-        final Collection<Object> items = new LinkedList<>();
-        for (final String key : new Sorted<>(this.args.keys())) {
+    /**
+     * The length of it.
+     * @param input Input args
+     * @return Length
+     */
+    public Object length(final Args input) {
+        int size = 0;
+        for (final String key : this.args.keys()) {
             if (key.charAt(0) != '0') {
                 continue;
             }
-            if ("01".equals(key)) {
-                continue;
-            }
-            items.add(this.args.call(key, Object.class));
+            ++size;
         }
-        return String.format(
-            this.args.call("01", String.class),
-            items.toArray()
+        return size;
+    }
+
+    /**
+     * Get element by index.
+     * @param input Input args
+     * @return The object
+     * @throws Exception If fails
+     */
+    public Object get(final Args input) throws Exception {
+        final int index = input.call("01", Integer.class);
+        final Object result = this.args.call(
+            String.format("%02d", index), Object.class
         );
+        if (result == null) {
+            throw new ArgsException(
+                String.format("The item #%d is absent in the array", index)
+            );
+        }
+        return result;
     }
 }

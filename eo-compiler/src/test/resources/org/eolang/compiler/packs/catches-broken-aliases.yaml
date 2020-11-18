@@ -4,7 +4,7 @@ tests:
   - /program/errors[count(error)=3]
   - /program/errors/error[@line='2']
 eo: |
-  +alias org.eolang.io.Stdout
+  +alias org.eolang.io.stdout
   +alias this is some mistake
   +alias
 

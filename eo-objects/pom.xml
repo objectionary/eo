@@ -35,8 +35,9 @@ SOFTWARE.
   <description>eolang supplementary objects</description>
   <dependencies>
     <dependency>
-      <groupId>org.cactoos</groupId>
-      <artifactId>cactoos</artifactId>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -44,7 +45,7 @@ SOFTWARE.
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.1.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>

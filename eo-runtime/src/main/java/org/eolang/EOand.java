@@ -22,17 +22,18 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
+package org.eolang;
 
+import org.cactoos.iterable.Sorted;
 import org.eolang.sys.Args;
 import org.eolang.sys.Phi;
 
 /**
- * Stdout.
+ * AND.
  *
  * @since 0.1
  */
-public final class Stdout implements Phi {
+public final class EOand implements Phi {
 
     /**
      * Args.
@@ -43,14 +44,22 @@ public final class Stdout implements Phi {
      * Ctor.
      * @param arg Args
      */
-    public Stdout(final Args arg) {
+    public EOand(final Args arg) {
         this.args = arg;
     }
 
     @Override
-    @SuppressWarnings("PMD.SystemPrintln")
     public Object call() throws Exception {
-        System.out.print(this.args.call("01", String.class));
-        return true;
+        boolean result = true;
+        for (final String key : new Sorted<>(this.args.keys())) {
+            if (key.charAt(0) != '0') {
+                continue;
+            }
+            result &= this.args.call(key, Boolean.class).equals(Boolean.TRUE);
+            if (!result) {
+                break;
+            }
+        }
+        return result;
     }
 }

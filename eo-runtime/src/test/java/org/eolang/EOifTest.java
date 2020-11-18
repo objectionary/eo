@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.txt;
+package org.eolang;
 
 import org.eolang.sys.ArgsOf;
 import org.eolang.sys.Entry;
@@ -30,23 +30,36 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Sprintf}.
+ * Test case for {@link EOif}.
  *
  * @since 0.2
  */
-public final class SprintfTest {
+public final class EOifTest {
 
     @Test
-    public void printsSimpleText() throws Exception {
+    public void compares() throws Exception {
         MatcherAssert.assertThat(
-            new Sprintf(
+            new EOif(
                 new ArgsOf(
-                    new Entry("01", "Hello, %s %d!"),
-                    new Entry("02", "John"),
-                    new Entry("03", 2)
+                    new Entry("01", true),
+                    new Entry("02", -1),
+                    new Entry("03", 0)
                 )
             ).call(),
-            Matchers.equalTo("Hello, John 2!")
+            Matchers.equalTo(-1)
+        );
+    }
+
+    @Test
+    public void comparesWithoutElse() throws Exception {
+        MatcherAssert.assertThat(
+            new EOif(
+                new ArgsOf(
+                    new Entry("01", false),
+                    new Entry("02", -1)
+                )
+            ).call(),
+            Matchers.equalTo(false)
         );
     }
 

@@ -78,7 +78,7 @@ public final class CompileMojoTest extends AbstractMojoTestCase {
         this.setVariableValueToObject(mojo, "project", new MavenProjectStub());
         mojo.execute();
         MatcherAssert.assertThat(
-            Files.exists(generated.resolve("main.java")),
+            Files.exists(generated.resolve("EOmain.java")),
             Matchers.is(true)
         );
     }

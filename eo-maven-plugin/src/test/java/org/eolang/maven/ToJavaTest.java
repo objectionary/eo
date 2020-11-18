@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
@@ -62,20 +63,23 @@ public final class ToJavaTest {
             new OutputTo(baos)
         );
         program.compile();
+        Logger.info(this, "XML output: %s\n", baos.toString());
         final ToJava tojava = new ToJava(
             new XMLDocument(baos.toString()),
             this.temp.resolve("generated"),
             this.temp.resolve("eo-to-java")
         );
         tojava.compile();
-        final Path file = this.temp.resolve(Paths.get("generated/fibo.java"));
+        final Path file = this.temp.resolve(Paths.get("generated/EOfibo.java"));
         MatcherAssert.assertThat(
             Files.exists(file),
             Matchers.is(true)
         );
+        final String java = new TextOf(new InputOf(file)).asString();
+        Logger.info(this, "Java output: %s\n", java);
         MatcherAssert.assertThat(
-            new TextOf(new InputOf(file)).asString(),
-            Matchers.containsString("public final class fibo")
+            java,
+            Matchers.containsString("public final class EOfibo")
         );
     }
 

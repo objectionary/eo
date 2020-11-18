@@ -24,7 +24,7 @@
 
 package org.eolang.examples;
 
-import org.eolang.Array;
+import org.eolang.EOarray;
 import org.eolang.sys.ArgsOf;
 import org.eolang.sys.Entry;
 
@@ -41,9 +41,9 @@ public final class Main {
      * @throws Exception In case of failure
      */
     public static void main(final String... args) throws Exception {
-        new app(
+        new EOapp(
             new ArgsOf(
-                new Entry("args", new Array(new ArgsOf((Object[]) args)))
+                new Entry("args", new EOarray(new ArgsOf((Object[]) args)))
             )
         ).call();
     }

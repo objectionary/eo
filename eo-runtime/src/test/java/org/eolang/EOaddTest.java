@@ -21,55 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
-import org.eolang.sys.TypeMismatchException;
+import org.eolang.sys.ArgsException;
+import org.eolang.sys.ArgsOf;
+import org.eolang.sys.Entry;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * LESS.
+ * Test case for {@link AddOf}.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class Less implements Phi {
+public final class EOaddTest {
 
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public Less(final Args arg) {
-        this.args = arg;
+    @Test
+    public void addsTwo() throws Exception {
+        MatcherAssert.assertThat(
+            new EOadd(
+                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
+            ).call(),
+            Matchers.equalTo(0L)
+        );
     }
 
-    @Override
-    public Object call() throws Exception {
-        final Object left = this.args.call("01", Number.class);
-        final Object right = this.args.call("02", Number.class);
-        final boolean result;
-        if (left instanceof Long && right instanceof Long) {
-            result = Long.class.cast(left).compareTo(
-                Long.class.cast(right)
-            ) < 0;
-        } else if (left instanceof Float && right instanceof Float) {
-            result = Float.class.cast(left).compareTo(
-                Float.class.cast(right)
-            ) < 0;
-        } else {
-            throw new TypeMismatchException(
-                String.format(
-                    "Can't compare %s with %s",
-                    left.getClass(),
-                    right.getClass()
-                )
-            );
-        }
-        return result;
+    @Test
+    public void addsOneArg() throws Exception {
+        MatcherAssert.assertThat(
+            new EOadd(
+                new ArgsOf(new Entry("01", 1L))
+            ).call(),
+            Matchers.equalTo(1L)
+        );
     }
+
+    @Test
+    public void addsNoArgs() {
+        Assertions.assertThrows(
+            ArgsException.class,
+            () -> new EOadd(new ArgsOf()).call()
+        );
+    }
+
 }

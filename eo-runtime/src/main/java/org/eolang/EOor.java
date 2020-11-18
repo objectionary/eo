@@ -24,15 +24,16 @@
 
 package org.eolang;
 
+import org.cactoos.iterable.Sorted;
 import org.eolang.sys.Args;
 import org.eolang.sys.Phi;
 
 /**
- * IF.
+ * OR.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class If implements Phi {
+public final class EOor implements Phi {
 
     /**
      * Args.
@@ -43,17 +44,18 @@ public final class If implements Phi {
      * Ctor.
      * @param arg Args
      */
-    public If(final Args arg) {
+    public EOor(final Args arg) {
         this.args = arg;
     }
 
     @Override
     public Object call() throws Exception {
-        Object result = false;
-        if (this.args.call("01", Boolean.class).equals(Boolean.TRUE)) {
-            result = this.args.get("02");
-        } else if (this.args.has("03")) {
-            result = this.args.get("03");
+        boolean result = false;
+        for (final String key : new Sorted<>(this.args.keys())) {
+            if (key.charAt(0) != '0') {
+                continue;
+            }
+            result |= this.args.call(key, Boolean.class).equals(Boolean.TRUE);
         }
         return result;
     }

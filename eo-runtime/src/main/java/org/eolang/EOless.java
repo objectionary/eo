@@ -25,14 +25,15 @@
 package org.eolang;
 
 import org.eolang.sys.Args;
-import org.eolang.sys.ArgsException;
+import org.eolang.sys.Phi;
+import org.eolang.sys.TypeMismatchException;
 
 /**
- * ARRAY.
+ * LESS.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Array {
+public final class EOless implements Phi {
 
     /**
      * Args.
@@ -43,40 +44,30 @@ public final class Array {
      * Ctor.
      * @param arg Args
      */
-    public Array(final Args arg) {
+    public EOless(final Args arg) {
         this.args = arg;
     }
 
-    /**
-     * The length of it.
-     * @param input Input args
-     * @return Length
-     */
-    public Object length(final Args input) {
-        int size = 0;
-        for (final String key : this.args.keys()) {
-            if (key.charAt(0) != '0') {
-                continue;
-            }
-            ++size;
-        }
-        return size;
-    }
-
-    /**
-     * Get element by index.
-     * @param input Input args
-     * @return The object
-     * @throws Exception If fails
-     */
-    public Object get(final Args input) throws Exception {
-        final int index = input.call("01", Integer.class);
-        final Object result = this.args.call(
-            String.format("%02d", index), Object.class
-        );
-        if (result == null) {
-            throw new ArgsException(
-                String.format("The item #%d is absent in the array", index)
+    @Override
+    public Object call() throws Exception {
+        final Object left = this.args.call("01", Number.class);
+        final Object right = this.args.call("02", Number.class);
+        final boolean result;
+        if (left instanceof Long && right instanceof Long) {
+            result = Long.class.cast(left).compareTo(
+                Long.class.cast(right)
+            ) < 0;
+        } else if (left instanceof Float && right instanceof Float) {
+            result = Float.class.cast(left).compareTo(
+                Float.class.cast(right)
+            ) < 0;
+        } else {
+            throw new TypeMismatchException(
+                String.format(
+                    "Can't compare %s with %s",
+                    left.getClass(),
+                    right.getClass()
+                )
             );
         }
         return result;

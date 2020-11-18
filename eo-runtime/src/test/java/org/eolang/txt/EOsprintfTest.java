@@ -21,42 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.txt;
 
-package org.eolang;
-
-import org.cactoos.iterable.Sorted;
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+import org.eolang.sys.ArgsOf;
+import org.eolang.sys.Entry;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * OR.
+ * Test case for {@link EOsprintf}.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class Or implements Phi {
+public final class EOsprintfTest {
 
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public Or(final Args arg) {
-        this.args = arg;
+    @Test
+    public void printsSimpleText() throws Exception {
+        MatcherAssert.assertThat(
+            new EOsprintf(
+                new ArgsOf(
+                    new Entry("01", "Hello, %s %d!"),
+                    new Entry("02", "John"),
+                    new Entry("03", 2)
+                )
+            ).call(),
+            Matchers.equalTo("Hello, John 2!")
+        );
     }
 
-    @Override
-    public Object call() throws Exception {
-        boolean result = false;
-        for (final String key : new Sorted<>(this.args.keys())) {
-            if (key.charAt(0) != '0') {
-                continue;
-            }
-            result |= this.args.call(key, Boolean.class).equals(Boolean.TRUE);
-        }
-        return result;
-    }
 }

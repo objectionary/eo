@@ -30,14 +30,36 @@ SOFTWARE.
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
-  <xsl:function name="eo:name" as="xs:string">
+  <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:sequence select="replace($n, '\+', '_')"/>
+    <xsl:variable name="parts" select="tokenize($n, '\.')"/>
+    <xsl:variable name="p">
+      <xsl:for-each select="$parts">
+        <xsl:if test="position()!=last()">
+          <xsl:value-of select="."/>
+          <xsl:text>.</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="c">
+      <xsl:choose>
+        <xsl:when test="$parts[last()]">
+          <xsl:value-of select="$parts[last()]"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$parts"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="concat($p, 'EO', $c)"/>
   </xsl:function>
   <xsl:template match="/program/objects/o[@name and not(@base)]">
     <xsl:variable name="methods" select="./o[not(@name and not(@base) and not(./o))]"/>
     <xsl:copy>
-      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="@* except name"/>
+      <xsl:attribute name="name">
+        <xsl:value-of select="eo:class-name(@name)"/>
+      </xsl:attribute>
       <xsl:element name="java">
         <xsl:value-of select="$EOL"/>
         <xsl:apply-templates select="/program" mode="license"/>
@@ -48,7 +70,7 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$EOL"/>
         <xsl:text>public final class </xsl:text>
-        <xsl:apply-templates select="." mode="class-name"/>
+        <xsl:value-of select="eo:class-name(@name)"/>
         <xsl:if test="o[not(@name)]">
           <xsl:text> implements Phi</xsl:text>
         </xsl:if>
@@ -59,7 +81,7 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="@name"/>
+        <xsl:value-of select="eo:class-name(@name)"/>
         <xsl:text>(final Args a) {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:for-each select="./o[@name and not(@base)]">
@@ -84,17 +106,6 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
       </xsl:element>
     </xsl:copy>
-  </xsl:template>
-  <xsl:template match="objects/o" mode="class-name">
-    <xsl:variable name="meta" select="/program/metas/meta[head='export' and starts-with(tail, concat(@name, ' '))]"/>
-    <xsl:choose>
-      <xsl:when test="$meta">
-        <xsl:value-of select="tokenize($meta/tail, ' ')[2]"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="@name"/>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
   <xsl:template match="/program" mode="license">
     <xsl:text>/*</xsl:text>
@@ -128,18 +139,19 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o" mode="method">
     <xsl:value-of select="$TAB"/>
-    <xsl:if test="not(@name)">
-      <xsl:text>@Override</xsl:text>
-      <xsl:value-of select="$EOL"/>
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>public Object call() throws Exception</xsl:text>
-      <xsl:value-of select="@name"/>
-    </xsl:if>
-    <xsl:if test="@name">
-      <xsl:text>public Object </xsl:text>
-      <xsl:value-of select="@name"/>
-      <xsl:text>(final Args a)</xsl:text>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@name">
+        <xsl:text>public Object </xsl:text>
+        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:text>(final Args a)</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>@Override</xsl:text>
+        <xsl:value-of select="$EOL"/>
+        <xsl:value-of select="$TAB"/>
+        <xsl:text>public Object call() throws Exception</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
     <xsl:for-each select="descendant-or-self::o[@name]">
@@ -195,7 +207,7 @@ SOFTWARE.
     </xsl:apply-templates>
     <xsl:text>))</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(@ref) and not(. instance of xs:string)]">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(@ref) and (* or not(normalize-space()))]">
     <xsl:param name="indent"/>
     <xsl:variable name="newindent">
       <xsl:value-of select="$indent"/>
@@ -206,15 +218,7 @@ SOFTWARE.
       <xsl:text> = </xsl:text>
     </xsl:if>
     <xsl:text>new </xsl:text>
-    <xsl:choose>
-      <xsl:when test="matches(@base, '^org\.eolang\.([A-Za-z]+)$')">
-        <xsl:variable name="class" select="replace(@base, '^org\.eolang\.([A-Za-z]+)$', '$1')"/>
-        <xsl:value-of select="concat(upper-case(substring($class, 1, 1)), substring($class, 2))"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="@base"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="eo:class-name(@base)"/>
     <xsl:text>(new ArgsOf(</xsl:text>
     <xsl:if test="ancestor-or-self::o[parent::o/parent::objects and @name]">
       <xsl:text>a</xsl:text>
@@ -264,24 +268,28 @@ SOFTWARE.
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
-  <xsl:template match="o[text() and @base='org.eolang.integer']">
+  <xsl:template match="o[@base='org.eolang.integer' and not(*) and normalize-space()]">
     <xsl:value-of select="text()"/>
     <xsl:text>L</xsl:text>
   </xsl:template>
-  <xsl:template match="o[text() and @base='org.eolang.float']">
+  <xsl:template match="o[@base='org.eolang.hex' and not(*) and normalize-space()]">
+    <xsl:value-of select="text()"/>
+    <xsl:text>L</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[@base='org.eolang.float' and not(*) and normalize-space()]">
     <xsl:value-of select="text()"/>
   </xsl:template>
-  <xsl:template match="o[text() and @base='org.eolang.string']">
+  <xsl:template match="o[@base='org.eolang.string' and not(*) and normalize-space()]">
     <xsl:text>"</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>"</xsl:text>
   </xsl:template>
-  <xsl:template match="o[text() and @base='org.eolang.char']">
+  <xsl:template match="o[@base='org.eolang.char' and not(*) and normalize-space()]">
     <xsl:text>'</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>'</xsl:text>
   </xsl:template>
-  <xsl:template match="o[text() and @base='org.eolang.bool']">
+  <xsl:template match="o[@base='org.eolang.bool' and not(*) and normalize-space()]">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="node()|@*">
