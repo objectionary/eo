@@ -71,10 +71,7 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
         <xsl:text>public final class </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:if test="o[not(@name)]">
-          <xsl:text> implements Phi</xsl:text>
-        </xsl:if>
-        <xsl:text> {</xsl:text>
+        <xsl:text> implements Phi {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>private final Args args;</xsl:text>
@@ -99,6 +96,37 @@ SOFTWARE.
         <xsl:value-of select="$TAB"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
+        <xsl:if test="not(o[not(@name)])">
+          <xsl:text>@Override</xsl:text>
+          <xsl:value-of select="$EOL"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:text>public Object call() throws Exception {</xsl:text>
+          <xsl:value-of select="$EOL"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:text>throw new RuntimeException(</xsl:text>
+          <xsl:value-of select="$EOL"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:choose>
+            <xsl:when test="o[@name='msg']">
+              <xsl:text>this.msg().call().toString()</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>String.format("Runtime exception at %s", this.getClass())</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:value-of select="$EOL"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:text>);</xsl:text>
+          <xsl:value-of select="$EOL"/>
+          <xsl:value-of select="$TAB"/>
+          <xsl:text>}</xsl:text>
+          <xsl:value-of select="$EOL"/>
+        </xsl:if>
         <xsl:for-each select="$methods">
           <xsl:apply-templates select="." mode="method"/>
         </xsl:for-each>
@@ -141,8 +169,8 @@ SOFTWARE.
     <xsl:value-of select="$TAB"/>
     <xsl:choose>
       <xsl:when test="@name">
-        <xsl:text>public Object </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:text>public Phi </xsl:text>
+        <xsl:value-of select="@name"/>
         <xsl:text>(final Args a)</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -157,7 +185,7 @@ SOFTWARE.
     <xsl:for-each select="descendant-or-self::o[@name]">
       <xsl:value-of select="$TAB"/>
       <xsl:value-of select="$TAB"/>
-      <xsl:text>Object </xsl:text>
+      <xsl:text>Phi </xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>;</xsl:text>
       <xsl:value-of select="$EOL"/>

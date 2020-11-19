@@ -99,6 +99,7 @@ public final class Program {
      *
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void compile() throws IOException {
         this.compile(
             new ListOf<>(
