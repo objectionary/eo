@@ -53,7 +53,7 @@ public final class Main {
                     )
                 )
             )
-        ).call()
+        ).call();
     }
 
 }

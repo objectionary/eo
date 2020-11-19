@@ -32,9 +32,14 @@ SOFTWARE.
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">
       <xsl:for-each select="$object/ancestor-or-self::o">
-        <xsl:if test="eo:abstract(.)">
-          <xsl:value-of select="@name"/>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="eo:abstract(.)">
+            <xsl:value-of select="@name"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="count(preceding-sibling::o)"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:if test="position() != last()">
           <xsl:text>$</xsl:text>
         </xsl:if>
@@ -69,9 +74,11 @@ SOFTWARE.
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>
-      <xsl:attribute name="name">
-        <xsl:value-of select="@name"/>
-      </xsl:attribute>
+      <xsl:if test="@name">
+        <xsl:attribute name="name">
+          <xsl:value-of select="@name"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:attribute name="line">
         <xsl:value-of select="@line"/>
       </xsl:attribute>

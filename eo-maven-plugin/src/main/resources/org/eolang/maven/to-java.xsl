@@ -97,9 +97,9 @@ SOFTWARE.
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:if test="not(o[not(@name)])">
+          <xsl:value-of select="$TAB"/>
           <xsl:text>@Override</xsl:text>
           <xsl:value-of select="$EOL"/>
-          <xsl:value-of select="$TAB"/>
           <xsl:value-of select="$TAB"/>
           <xsl:text>public Object call() throws Exception {</xsl:text>
           <xsl:value-of select="$EOL"/>

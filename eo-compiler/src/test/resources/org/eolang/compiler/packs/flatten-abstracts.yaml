@@ -4,13 +4,14 @@ xsls:
   - 04-rename-bases.xsl
   - errors/duplicate-names.xsl
 tests:
-  - /program/objects[count(o)=4]
+  - /program/objects[count(o)=6]
   - /program/errors[count(*)=0]
+  - //objects[not(.//o[@name=''])]
   - //o[@name='first']
   - //o[@name='first']/o[@base='test' and @as='foo']
-  - //o[@name='first$$second']
-  - //o[@name='first$$second$third']
-  - //o[@name='first$$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
+  - //o[@name='first$2$second']
+  - //o[@name='first$2$second$third']
+  - //o[@name='first$2$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
 eo: |
   [a b] > first
     test:foo
@@ -23,3 +24,8 @@ eo: |
         t
           [] > third
             "hello, world!" > msg
+        f
+          [] > third
+            "hello, world!" > msg
+        []
+          "Failure"

@@ -13,6 +13,7 @@ tests:
   - //o[@name='hello' and @const]
   - //o[@as='i']
   - //o[@base='.five']
+  - //objects[not(.//o[@name=''])]
 eo: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
