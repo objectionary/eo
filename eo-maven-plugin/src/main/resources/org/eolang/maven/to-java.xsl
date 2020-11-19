@@ -178,9 +178,17 @@ SOFTWARE.
     <xsl:value-of select="$EOL"/>
   </xsl:template>
   <xsl:template match="o[@base and @ref]">
-    <xsl:text>this.args.get("</xsl:text>
-    <xsl:value-of select="@base"/>
-    <xsl:text>")</xsl:text>
+    <xsl:variable name="o" select="."/>
+    <xsl:choose>
+      <xsl:when test="//o[@name=$o/@base and @line=$o/@ref and @base]">
+        <xsl:value-of select="@base"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>this.args.get("</xsl:text>
+        <xsl:value-of select="@base"/>
+        <xsl:text>")</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and ./o]">
     <xsl:param name="indent"/>

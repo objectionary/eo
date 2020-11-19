@@ -29,7 +29,7 @@ import org.eolang.sys.ArgsOf;
 import org.eolang.sys.Entry;
 
 /**
- * Eo entry point.
+ * EO entry point.
  *
  * @since 0.1
  */
@@ -43,9 +43,17 @@ public final class Main {
     public static void main(final String... args) throws Exception {
         new EOapp(
             new ArgsOf(
-                new Entry("args", new EOarray(new ArgsOf((Object[]) args)))
+                new Entry(
+                    "args",
+                    new EOarray(
+                        new ArgsOf(
+                            new Entry("01", Long.parseLong(args[0])),
+                            new Entry("02", Long.parseLong(args[1]))
+                        )
+                    )
+                )
             )
-        ).call();
+        ).call()
     }
 
 }

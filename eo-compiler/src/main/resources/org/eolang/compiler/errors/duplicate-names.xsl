@@ -26,12 +26,12 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o">
+      <xsl:for-each select="//o|/program/objects">
         <xsl:apply-templates select="." mode="dups"/>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="dups">
+  <xsl:template match="o|objects" mode="dups">
     <xsl:for-each select="o[@name]">
       <xsl:variable name="x" select="."/>
       <xsl:if test="preceding-sibling::o/@name = $x/@name">

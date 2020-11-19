@@ -2,13 +2,15 @@ xsls:
   - 01-add-refs.xsl
   - 03-abstracts-float-up.xsl
   - 04-rename-bases.xsl
+  - errors/duplicate-names.xsl
 tests:
-  - /program/objects[count(o)=3]
+  - /program/objects[count(o)=4]
+  - /program/errors[count(*)=0]
   - //o[@name='first']
   - //o[@name='first']/o[@base='test' and @as='foo']
-  - //o[@name='first$second']
-  - //o[@name='first$second$third']
-  - //o[@name='first$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
+  - //o[@name='first$$second']
+  - //o[@name='first$$second$third']
+  - //o[@name='first$$second$third']/o[@base='stdout']/o[@base='a++' and @ref='1']
 eo: |
   [a b] > first
     test:foo
@@ -18,3 +20,6 @@ eo: |
         [b c] > third
           no > yes
           (stdout a b c x).print
+        t
+          [] > third
+            "hello, world!" > msg

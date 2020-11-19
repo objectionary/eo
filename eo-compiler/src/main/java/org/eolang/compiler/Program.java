@@ -102,6 +102,7 @@ public final class Program {
     public void compile() throws IOException {
         this.compile(
             new ListOf<>(
+                "errors/duplicate-names.xsl",
                 "errors/broken-aliases.xsl",
                 "errors/duplicate-aliases.xsl",
                 "errors/one-body.xsl",
@@ -113,7 +114,8 @@ public final class Program {
                 "errors/unknown-names.xsl",
                 "03-abstracts-float-up.xsl",
                 "04-rename-bases.xsl",
-                "05-wrap-method-calls.xsl"
+                "05-wrap-method-calls.xsl",
+                "errors/duplicate-names.xsl"
             )
         );
     }

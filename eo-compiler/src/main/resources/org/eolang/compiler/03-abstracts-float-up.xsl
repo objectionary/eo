@@ -28,6 +28,25 @@ SOFTWARE.
     <xsl:param name="object" as="element()"/>
     <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
   </xsl:function>
+  <xsl:function name="eo:name-of" as="xs:string">
+    <xsl:param name="object" as="element()"/>
+    <xsl:param name="self" as="xs:boolean"/>
+    <xsl:variable name="n">
+      <xsl:for-each select="$object/ancestor-or-self::o">
+        <xsl:if test="eo:abstract(.)">
+          <xsl:value-of select="@name"/>
+        </xsl:if>
+        <xsl:if test="position() != last()">
+          <xsl:text>$</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:if test="$self">
+        <xsl:text>$</xsl:text>
+        <xsl:value-of select="$object/@name"/>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:value-of select="$n"/>
+  </xsl:function>
   <xsl:function name="eo:vars">
     <xsl:param name="bottom" as="element()"/>
     <xsl:param name="top" as="element()"/>
@@ -53,11 +72,7 @@ SOFTWARE.
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
       <xsl:attribute name="base">
-        <xsl:for-each select="ancestor::o[eo:abstract(.)]">
-          <xsl:value-of select="@name"/>
-          <xsl:text>$</xsl:text>
-        </xsl:for-each>
-        <xsl:value-of select="@name"/>
+        <xsl:value-of select="eo:name-of(., true())"/>
       </xsl:attribute>
       <xsl:attribute name="name">
         <xsl:value-of select="@name"/>
@@ -93,12 +108,7 @@ SOFTWARE.
   <xsl:template match="o[eo:abstract(.)]" mode="top">
     <xsl:copy>
       <xsl:attribute name="name">
-        <xsl:for-each select="ancestor-or-self::o[eo:abstract(.)]">
-          <xsl:value-of select="@name"/>
-          <xsl:if test="position() != last()">
-            <xsl:text>$</xsl:text>
-          </xsl:if>
-        </xsl:for-each>
+        <xsl:value-of select="eo:name-of(., false())"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @name"/>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>

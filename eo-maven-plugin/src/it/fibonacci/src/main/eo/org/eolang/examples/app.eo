@@ -26,8 +26,19 @@
 +alias sprintf org.eolang.txt.sprintf
 
 [args] > app
-  stdout
-    sprintf
-      "%dth Fibonacci number is %d"
-      (args.get 1) > !n
-      fibo n
+  and
+    stdout
+      sprintf
+        "%dth Fibonacci number is %d"
+        (args.get 0) > !n
+        fibo n
+    if
+      not
+        eq
+          args.get 1 > e
+          n
+      []
+        sprintf > msg
+          "%d not equal to %d"
+          n
+          e
