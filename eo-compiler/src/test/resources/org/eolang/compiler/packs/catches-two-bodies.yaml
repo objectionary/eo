@@ -12,3 +12,7 @@ eo: |
     third > hey
       23
       33
+
+  [args] > main
+    (stdout "Hello!").print
+

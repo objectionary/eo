@@ -1,5 +1,6 @@
 xsls: []
 tests:
+  - /program/errors[count(*)=0]
   - /program[@name='simple.yaml']
   - /program[@version != '']
   - /program[@time != '']

@@ -59,7 +59,12 @@ public final class PacksTest {
             new InputOf(String.format("%s\n", map.get("eo"))),
             new OutputTo(baos)
         );
-        program.compile((Iterable<String>) map.get("xsls"));
+        final Collection<String> xsls = (Collection<String>) map.get("xsls");
+        if (xsls == null) {
+            program.compile();
+        } else {
+            program.compile(xsls);
+        }
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(baos.toString()),
@@ -82,6 +87,7 @@ public final class PacksTest {
             "catches-two-bodies.yaml",
             "catches-same-line-name.yaml",
             "adds-refs.yaml",
+            "float-vars.yaml",
             "flatten-abstracts.yaml",
             "resolves-aliases.yaml",
             "wraps-methods.yaml",

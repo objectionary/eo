@@ -1,7 +1,8 @@
 xsls:
-  - 01-add-refs.xsl
-  - 02-resolve-aliases.xsl
+  - 20-add-refs.xsl
+  - 30-resolve-aliases.xsl
 tests:
+  - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
   - /program/metas/meta[head='foo' and @line='4']
   - /program/metas[count(meta)=1]

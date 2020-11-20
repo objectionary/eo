@@ -1,7 +1,7 @@
 xsls:
-  - 01-add-refs.xsl
-  - 03-abstracts-float-up.xsl
-  - 04-rename-bases.xsl
+  - 20-add-refs.xsl
+  - 40-abstracts-float-up.xsl
+  - 50-rename-bases.xsl
   - errors/duplicate-names.xsl
 tests:
   - /program/objects[count(o)=6]

@@ -22,30 +22,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="/program/errors">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+  <xsl:strip-space elements="*"/>
+  <xsl:function name="eo:abstract" as="xs:boolean">
+    <xsl:param name="object" as="element()"/>
+    <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
+  </xsl:function>
+  <xsl:function name="eo:var-name" as="xs:string">
+    <xsl:param name="object" as="element()"/>
+    <xsl:variable name="n">
+      <xsl:value-of select="$object/@name"/>
+    </xsl:variable>
+    <xsl:value-of select="$n"/>
+  </xsl:function>
+  <xsl:template match="o[eo:abstract(.)]">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[not(@base) and o]">
-        <xsl:apply-templates select="." mode="dups"/>
+      <xsl:apply-templates select="@*"/>
+      <xsl:for-each select="./o//o[@name]">
+        <xsl:copy>
+          <xsl:apply-templates select="@* except @name"/>
+          <xsl:attribute name="name">
+            <xsl:value-of select="eo:var-name(.)"/>
+          </xsl:attribute>
+          <xsl:apply-templates select="node()"/>
+        </xsl:copy>
       </xsl:for-each>
+      <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="dups">
-    <xsl:if test="count(o[not(@name) and not(starts-with(@base, '.'))]) &gt; 1">
-      <xsl:element name="error">
-        <xsl:attribute name="line">
-          <xsl:value-of select="@line"/>
-        </xsl:attribute>
-        <xsl:text>The object </xsl:text>
-        <xsl:if test="@name">
-          <xsl:text>"</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>" </xsl:text>
-        </xsl:if>
-        <xsl:text>may have only one body</xsl:text>
-      </xsl:element>
-    </xsl:if>
+  <xsl:template match="o[eo:abstract(.)]/o//o[@name]">
+    <xsl:copy>
+      <xsl:apply-templates select="@* except (@name|@const)"/>
+      <xsl:attribute name="base">
+        <xsl:value-of select="eo:var-name(.)"/>
+      </xsl:attribute>
+    </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

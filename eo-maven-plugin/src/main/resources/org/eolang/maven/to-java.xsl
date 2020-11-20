@@ -56,7 +56,7 @@ SOFTWARE.
   <xsl:template match="/program/objects/o[@name and not(@base)]">
     <xsl:variable name="methods" select="./o[not(@name and not(@base) and not(./o))]"/>
     <xsl:copy>
-      <xsl:apply-templates select="@* except name"/>
+      <xsl:apply-templates select="@* except @name"/>
       <xsl:attribute name="name">
         <xsl:value-of select="eo:class-name(@name)"/>
       </xsl:attribute>

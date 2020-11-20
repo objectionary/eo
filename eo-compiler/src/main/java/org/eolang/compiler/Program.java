@@ -110,12 +110,15 @@ public final class Program {
                 "errors/reserved-atoms.xsl",
                 "errors/same-line-names.xsl",
                 "errors/self-naming.xsl",
-                "01-add-refs.xsl",
-                "02-resolve-aliases.xsl",
+                "20-add-refs.xsl",
+                "30-resolve-aliases.xsl",
+                "40-abstracts-float-up.xsl",
+                "50-rename-bases.xsl",
+                "60-wrap-method-calls.xsl",
+                "42-vars-float-up.xsl",
+                "20-add-refs.xsl",
+                "50-rename-bases.xsl",
                 "errors/unknown-names.xsl",
-                "03-abstracts-float-up.xsl",
-                "04-rename-bases.xsl",
-                "05-wrap-method-calls.xsl",
                 "errors/duplicate-names.xsl"
             )
         );

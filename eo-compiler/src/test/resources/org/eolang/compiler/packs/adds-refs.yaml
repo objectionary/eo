@@ -2,8 +2,9 @@ xsls:
   - errors/duplicate-names.xsl
   - errors/self-naming.xsl
   - errors/same-line-names.xsl
-  - 01-add-refs.xsl
+  - 20-add-refs.xsl
 tests:
+  - /program/errors[count(*)=0]
   - /program/objects[count(o)=2]
   - //o[@base='x' and @ref='1']
   - //o[@base='x' and @ref='4']

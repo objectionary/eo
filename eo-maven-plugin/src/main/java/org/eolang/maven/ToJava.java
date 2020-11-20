@@ -29,6 +29,7 @@ import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -94,12 +95,21 @@ public final class ToJava {
                 )
             )
         ).value();
-        for (final XML error : out.nodes("/program/errors/error")) {
+        final List<XML> errors = out.nodes("/program/errors/error");
+        for (final XML error : errors) {
             Logger.error(
                 this,
                 "[%s] %s",
                 error.xpath("@line").get(0),
                 error.xpath("text()").get(0)
+            );
+        }
+        if (!errors.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "There are %d errors, see log above",
+                    errors.size()
+                )
             );
         }
         for (final XML file : out.nodes("/program/objects/o[java]")) {

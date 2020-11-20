@@ -1,0 +1,15 @@
+xsls:
+  - 42-vars-float-up.xsl
+  - errors/duplicate-names.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - /program/objects[count(o)=1]
+  - //o[@base='input' and @name='t' and @line='4' and @const and count(o)=1]
+  - //objects[count(.//o[@base='string'])=1]
+eo: |
+  [] > x
+    one
+      two
+        input > !t
+          "Hello, world!"
+    three t
