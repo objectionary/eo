@@ -116,7 +116,7 @@ SOFTWARE.
           <xsl:value-of select="$TAB"/>
           <xsl:choose>
             <xsl:when test="o[@name='msg']">
-              <xsl:text>this.msg().call().toString()</xsl:text>
+              <xsl:text>this.msg(new ArgsOf()).call().toString()</xsl:text>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>String.format("Runtime exception at %s", this.getClass())</xsl:text>
@@ -186,14 +186,6 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="$EOL"/>
-    <xsl:for-each select="descendant-or-self::o[@name]">
-      <xsl:value-of select="$TAB"/>
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>Phi </xsl:text>
-      <xsl:value-of select="@name"/>
-      <xsl:text>;</xsl:text>
-      <xsl:value-of select="$EOL"/>
-    </xsl:for-each>
     <xsl:value-of select="$TAB"/>
     <xsl:value-of select="$TAB"/>
     <xsl:text>return </xsl:text>
@@ -226,10 +218,6 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and ./o]">
     <xsl:param name="indent"/>
-    <xsl:if test="@name">
-      <xsl:value-of select="@name"/>
-      <xsl:text> = </xsl:text>
-    </xsl:if>
     <xsl:text>new Call("</xsl:text>
     <xsl:value-of select="substring(@base, 2)"/>
     <xsl:text>", </xsl:text>
@@ -255,10 +243,6 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="$TAB"/>
     </xsl:variable>
-    <xsl:if test="@name">
-      <xsl:value-of select="@name"/>
-      <xsl:text> = </xsl:text>
-    </xsl:if>
     <xsl:text>new </xsl:text>
     <xsl:value-of select="eo:class-name(@base)"/>
     <xsl:text>(new ArgsOf(</xsl:text>
