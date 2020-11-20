@@ -23,6 +23,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+  <xsl:function name="eo:abstract" as="xs:boolean">
+    <xsl:param name="object" as="element()"/>
+    <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
+  </xsl:function>
   <xsl:variable name="EOL">
     <xsl:text>
 </xsl:text>
@@ -53,7 +57,7 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="concat($p, 'EO', $c)"/>
   </xsl:function>
-  <xsl:template match="/program/objects/o[@name and not(@base)]">
+  <xsl:template match="o[eo:abstract(.)]">
     <xsl:variable name="methods" select="./o[not(@name and not(@base) and not(./o))]"/>
     <xsl:copy>
       <xsl:apply-templates select="@* except @name"/>
@@ -209,7 +213,9 @@ SOFTWARE.
     <xsl:variable name="o" select="."/>
     <xsl:choose>
       <xsl:when test="//o[@name=$o/@base and @line=$o/@ref and @base]">
+        <xsl:text>this.</xsl:text>
         <xsl:value-of select="@base"/>
+        <xsl:text>(args)</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>this.args.get("</xsl:text>

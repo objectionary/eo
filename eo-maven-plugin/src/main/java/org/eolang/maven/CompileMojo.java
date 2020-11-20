@@ -43,6 +43,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.compiler.Program;
@@ -163,11 +164,27 @@ public final class CompileMojo extends AbstractMojo {
                 )
             ).value();
             baos.reset();
-            new Program(
-                name,
-                new InputOf(file),
-                new OutputTo(baos)
-            ).compile();
+            new Program(name, new InputOf(file), new OutputTo(baos)).compile(
+                (index, xsl, dom) -> new Unchecked<>(
+                    new LengthOf(
+                        new TeeInput(
+                            new InputOf(dom.toString()),
+                            new OutputTo(
+                                this.targetDir.toPath()
+                                    .resolve("eo-compiler-steps")
+                                    .resolve(xml)
+                                    .resolve(
+                                        String.format(
+                                            "%02d-%s.xml",
+                                            index,
+                                            xsl.replaceAll("[^a-z0-9]", "-")
+                                        )
+                                    )
+                            )
+                        )
+                    )
+                ).value()
+            );
             new IoChecked<>(
                 new LengthOf(
                     new TeeInput(

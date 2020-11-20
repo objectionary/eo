@@ -24,7 +24,8 @@
 package org.eolang.compiler;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,7 +43,6 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.io.UncheckedInput;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
@@ -96,11 +96,20 @@ public final class Program {
 
     /**
      * Compile it to XML and save (with default set of XSLs).
+     * @throws IOException If fails
+     */
+    public void compile() throws IOException {
+        this.compile(new Program.Spy.None());
+    }
+
+    /**
+     * Compile it to XML and save (with default set of XSLs).
      *
+     * @param spy The spy
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public void compile() throws IOException {
+    public void compile(final Program.Spy spy) throws IOException {
         this.compile(
             new ListOf<>(
                 "errors/duplicate-names.xsl",
@@ -111,16 +120,16 @@ public final class Program {
                 "errors/same-line-names.xsl",
                 "errors/self-naming.xsl",
                 "20-add-refs.xsl",
-                "30-resolve-aliases.xsl",
                 "40-abstracts-float-up.xsl",
-                "50-rename-bases.xsl",
                 "60-wrap-method-calls.xsl",
                 "42-vars-float-up.xsl",
                 "20-add-refs.xsl",
                 "50-rename-bases.xsl",
+                "30-resolve-aliases.xsl",
                 "errors/unknown-names.xsl",
                 "errors/duplicate-names.xsl"
-            )
+            ),
+            spy
         );
     }
 
@@ -131,6 +140,18 @@ public final class Program {
      * @throws IOException If fails
      */
     public void compile(final Iterable<String> xsls) throws IOException {
+        this.compile(xsls, new Program.Spy.None());
+    }
+
+    /**
+     * Compile it to XML and save.
+     *
+     * @param xsls List of XSLs to apply
+     * @param spy The spy
+     * @throws IOException If fails
+     */
+    public void compile(final Iterable<String> xsls,
+        final Program.Spy spy) throws IOException {
         final String[] lines = new TextOf(this.input).asString().split("\n");
         final ANTLRErrorListener errors = new BaseErrorListener() {
             // @checkstyle ParameterNumberCheck (10 lines)
@@ -166,24 +187,53 @@ public final class Program {
         parser.addErrorListener(errors);
         final XeListener xel = new XeListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
+        XML dom = xel.xml();
+        int index = 0;
+        for (final String doc : xsls) {
+            final XSL xsl = new XSLDocument(
+                Program.class.getResourceAsStream(doc)
+            );
+            final XML after = xsl.transform(dom);
+            spy.push(index, doc, after);
+            ++index;
+            dom = after;
+        }
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
-                    new InputOf(
-                        new XSLChain(
-                            new Mapped<>(
-                                node -> new XSLDocument(
-                                    Program.class.getResourceAsStream(node)
-                                ),
-                                xsls
-                            )
-                        ).transform(xel.xml()).toString()
-                    ),
+                    new InputOf(dom.toString()),
                     this.target
                 )
             )
         ).value();
         Logger.debug(this, "Input of %d EO lines compiled", lines.length);
+    }
+
+    /**
+     * Spy.
+     *
+     * @since 0.1
+     */
+    public interface Spy {
+        /**
+         * New XSL produced.
+         * @param index The index of the XSL
+         * @param xsl The name of XSL
+         * @param xml The XML produced
+         */
+        void push(int index, String xsl, XML xml);
+
+        /**
+         * Empty spy.
+         *
+         * @since 0.1
+         */
+        final class None implements Program.Spy {
+            @Override
+            public void push(final int index, final String xsl, final XML xml) {
+                Logger.debug(this, "Parsed #%d via %s", index, xsl);
+            }
+        }
     }
 
 }
