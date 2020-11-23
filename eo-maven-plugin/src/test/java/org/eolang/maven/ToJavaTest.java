@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
@@ -63,6 +64,10 @@ public final class ToJavaTest {
             new OutputTo(baos)
         );
         program.compile();
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(baos.toString()),
+            Matchers.not(XhtmlMatchers.hasXPath("/program/errors/error"))
+        );
         Logger.info(this, "XML output: %s\n", baos.toString());
         final ToJava tojava = new ToJava(
             new XMLDocument(baos.toString()),

@@ -23,6 +23,7 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import java.util.Collection;
@@ -81,10 +82,10 @@ public final class Pack implements Iterable<XSL> {
 
     @Override
     public Iterator<XSL> iterator() {
-        return new Mapped<String, XSL>(
+        return new Mapped<>(
             doc -> new XSLDocument(
                 Program.class.getResourceAsStream(doc)
-            ),
+            ).with(new ClasspathSources()),
             this.sheets
         ).iterator();
     }

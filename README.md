@@ -88,7 +88,7 @@ whether it's leap or not:
     stdout "Enter a year:"
     stdout
       concat
-        (scanner stdin).nextInt > !year
+        (scanner stdin).nextInt > year!
         " is a leap year?"
         leap year:y
 ```

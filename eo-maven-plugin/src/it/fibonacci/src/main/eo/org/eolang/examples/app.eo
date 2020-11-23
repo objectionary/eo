@@ -30,7 +30,7 @@
     stdout
       sprintf
         "%dth Fibonacci number is %d"
-        (args.get 0) > !n
+        (args.get 0) > n!
         fibo n
     if
       not

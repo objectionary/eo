@@ -24,10 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="abstracts-float-up" version="2.0">
   <xsl:strip-space elements="*"/>
-  <xsl:function name="eo:abstract" as="xs:boolean">
-    <xsl:param name="object" as="element()"/>
-    <xsl:sequence select="not(exists($object/@base)) and exists($object/o)"/>
-  </xsl:function>
+  <xsl:import href="/org/eolang/compiler/funcs.xsl"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">
