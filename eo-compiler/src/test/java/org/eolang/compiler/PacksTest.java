@@ -80,6 +80,7 @@ public final class PacksTest {
             "full-syntax.yaml",
             "catches-name-duplicates.yaml",
             "catches-alias-duplicates.yaml",
+            "catches-global-nonames.yaml",
             "catches-broken-aliases.yaml",
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",

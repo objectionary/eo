@@ -10,9 +10,12 @@
   a pi 666 > x
     one
     two.f1.f2 x
-  body
-    "Hello, world!" > f!
+  stdout
+    sprintf > f!
+      "Hello, "
+      x
+      0x1fff
 
 []
   alpha
-    "I love you"
+    'Z'

@@ -27,6 +27,7 @@ import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.cactoos.list.ListOf;
@@ -54,6 +55,7 @@ public final class Pack implements Iterable<XSL> {
                 "errors/duplicate-names.xsl",
                 "errors/broken-aliases.xsl",
                 "errors/duplicate-aliases.xsl",
+                "errors/global-nonames.xsl",
                 "errors/one-body.xsl",
                 "errors/reserved-atoms.xsl",
                 "errors/same-line-names.xsl",
@@ -77,7 +79,7 @@ public final class Pack implements Iterable<XSL> {
      * @param names Names of them in classpath
      */
     public Pack(final Collection<String> names) {
-        this.sheets = names;
+        this.sheets = Collections.unmodifiableCollection(names);
     }
 
     @Override

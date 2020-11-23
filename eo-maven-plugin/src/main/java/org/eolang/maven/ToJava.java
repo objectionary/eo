@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public final class ToJava {
     public void compile() throws IOException {
         final XML out = new XSLDocument(
             ToJava.class.getResourceAsStream("to-java.xsl")
-        ).transform(this.xml);
+        ).with(new ClasspathSources()).transform(this.xml);
         new IoChecked<>(
             new LengthOf(
                 new TeeInput(

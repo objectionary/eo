@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
@@ -60,9 +61,12 @@ public final class ToJavaTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
             "test",
-            new ResourceOf("org/eolang/maven/test.eo"),
+            new ResourceOf("org/eolang/maven/mess.eo"),
             new OutputTo(baos)
         );
+        program.compile(new ArrayList<>(0));
+        Logger.info(this, "Parser output: %s\n", baos.toString());
+        baos.reset();
         program.compile();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(baos.toString()),
