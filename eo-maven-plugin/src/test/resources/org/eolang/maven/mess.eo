@@ -18,3 +18,24 @@
 alpha > beta
   alpha
     'Z'
+
+
+
+[n+] > alpha$x
+  a pi 666
+    n+
+    two.f1.f2 alpha$x
+
+[n+] > alpha$f!
+  sprintf
+    "Hello, "
+    alpha$x 0x1fff n+
+
+[n] > alpha
+  alpha$x n:n+
+  stdout
+    alpha$f n:n+
+
+alpha > beta
+  alpha
+    'Z'
