@@ -24,13 +24,16 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -165,25 +168,7 @@ public final class CompileMojo extends AbstractMojo {
             ).value();
             baos.reset();
             new Program(name, new InputOf(file), new OutputTo(baos)).compile(
-                (index, xsl, dom) -> new Unchecked<>(
-                    new LengthOf(
-                        new TeeInput(
-                            new InputOf(dom.toString()),
-                            new OutputTo(
-                                this.targetDir.toPath()
-                                    .resolve("eo-compiler-steps")
-                                    .resolve(xml)
-                                    .resolve(
-                                        String.format(
-                                            "%02d-%s.xml",
-                                            index,
-                                            xsl.replaceAll("[^a-z0-9]", "-")
-                                        )
-                                    )
-                            )
-                        )
-                    )
-                ).value()
+                new CompileMojo.TargetSpy(xml)
             );
             new IoChecked<>(
                 new LengthOf(
@@ -214,6 +199,42 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+    }
+
+    /**
+     * The spy to log all results.
+     */
+    private final class TargetSpy implements Program.Spy {
+        private final Path dir;
+        private TargetSpy(final String xml) {
+            this.dir = CompileMojo.this.targetDir.toPath()
+                .resolve("eo-compiler-steps")
+                .resolve(xml);
+        }
+        @Override
+        public void push(final int index, final XSL xsl, final XML xml) {
+            final List<String> names = new XMLDocument(
+                xsl.toString()
+            ).xpath("/*/@id");
+            final String file;
+            if (names.isEmpty()) {
+                file = String.format("%d", index);
+            } else {
+                file = names.get(0).replaceAll("[^a-z0-9]", "-");
+            }
+            new Unchecked<>(
+                new LengthOf(
+                    new TeeInput(
+                        new InputOf(xml.toString()),
+                        new OutputTo(
+                            this.dir.resolve(
+                                String.format("%02d-%s.xml", index, file)
+                            )
+                        )
+                    )
+                )
+            ).value();
+        }
     }
 
 }
