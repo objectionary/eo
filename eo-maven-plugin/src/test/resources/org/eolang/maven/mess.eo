@@ -8,14 +8,13 @@
 
 [n] > alpha
   a pi 666 > x
-    one
+    n
     two.f1.f2 x
   stdout
     sprintf > f!
       "Hello, "
-      x
-      0x1fff
+      x 0x1fff n
 
-[]
+alpha > beta
   alpha
     'Z'
