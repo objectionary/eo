@@ -12,5 +12,5 @@ eo: |
     stdout
       sprintf
         "%dth Fibonacci number is %d"
-        (args.get 1) > !n
+        (args.get 1) > n!
         fibo n

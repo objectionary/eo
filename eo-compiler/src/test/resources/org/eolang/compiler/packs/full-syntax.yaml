@@ -26,13 +26,13 @@ eo: |
   500.43 > one
 
   # This is just a simple string
-  "Hello, world!" > !hello
+  "Hello, world!" > hello!
 
   [x] > first
     second > hello
       third:foo > x
         f 12 false
-          (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey true > !a
+          (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey true > a!
             kid
       f:u
         z

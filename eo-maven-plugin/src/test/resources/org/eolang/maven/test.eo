@@ -1,0 +1,18 @@
+# This is the header comment of this simple EO
+# program, to be ignored.
+
++package org.eolang.examples
++alias stdout org.eolang.io.stdout
+
+3.14 > pi
+
+[n] > alpha
+  a pi 666 > x
+    one
+    two x
+  body
+    "Hello, world!" > f!
+
+[]
+  alpha
+    "I love you"

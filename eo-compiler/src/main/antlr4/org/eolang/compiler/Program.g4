@@ -86,8 +86,8 @@ suffix
   SPACE
   ARROW
   SPACE
-  CONST?
   NAME
+  CONST?
   ;
 
 method

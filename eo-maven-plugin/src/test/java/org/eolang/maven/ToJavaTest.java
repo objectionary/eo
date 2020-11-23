@@ -59,7 +59,7 @@ public final class ToJavaTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Program program = new Program(
             "test",
-            new ResourceOf("org/eolang/maven/fibo.eo"),
+            new ResourceOf("org/eolang/maven/test.eo"),
             new OutputTo(baos)
         );
         program.compile();
@@ -70,7 +70,7 @@ public final class ToJavaTest {
             this.temp.resolve("eo-to-java")
         );
         tojava.compile();
-        final Path file = this.temp.resolve(Paths.get("generated/EOfibo.java"));
+        final Path file = this.temp.resolve(Paths.get("eo-to-java/test.xml"));
         MatcherAssert.assertThat(
             Files.exists(file),
             Matchers.is(true)

@@ -16,5 +16,5 @@ eo: |
 
   [args] > main
     and
-      (scanner stdin).nextLine > !line
+      (scanner stdin).nextLine > line!
       (stdout "You entered" line).print
