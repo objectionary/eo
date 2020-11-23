@@ -26,7 +26,6 @@ package org.eolang.compiler;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -42,7 +41,6 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.io.UncheckedInput;
-import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
@@ -110,27 +108,7 @@ public final class Program {
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void compile(final Program.Spy spy) throws IOException {
-        this.compile(
-            new ListOf<>(
-                "errors/duplicate-names.xsl",
-                "errors/broken-aliases.xsl",
-                "errors/duplicate-aliases.xsl",
-                "errors/one-body.xsl",
-                "errors/reserved-atoms.xsl",
-                "errors/same-line-names.xsl",
-                "errors/self-naming.xsl",
-                "20-add-refs.xsl",
-                "40-abstracts-float-up.xsl",
-                "60-wrap-method-calls.xsl",
-                "42-vars-float-up.xsl",
-                "20-add-refs.xsl",
-                "50-rename-bases.xsl",
-                "30-resolve-aliases.xsl",
-                "errors/unknown-names.xsl",
-                "errors/duplicate-names.xsl"
-            ),
-            spy
-        );
+        this.compile(new Pack(), spy);
     }
 
     /**
@@ -139,7 +117,7 @@ public final class Program {
      * @param xsls List of XSLs to apply
      * @throws IOException If fails
      */
-    public void compile(final Iterable<String> xsls) throws IOException {
+    public void compile(final Iterable<XSL> xsls) throws IOException {
         this.compile(xsls, new Program.Spy.None());
     }
 
@@ -150,7 +128,7 @@ public final class Program {
      * @param spy The spy
      * @throws IOException If fails
      */
-    public void compile(final Iterable<String> xsls,
+    public void compile(final Iterable<XSL> xsls,
         final Program.Spy spy) throws IOException {
         final String[] lines = new TextOf(this.input).asString().split("\n");
         final ANTLRErrorListener errors = new BaseErrorListener() {
@@ -189,12 +167,9 @@ public final class Program {
         new ParseTreeWalker().walk(xel, parser.program());
         XML dom = xel.xml();
         int index = 0;
-        for (final String doc : xsls) {
-            final XSL xsl = new XSLDocument(
-                Program.class.getResourceAsStream(doc)
-            );
+        for (final XSL xsl : xsls) {
             final XML after = xsl.transform(dom);
-            spy.push(index, doc, after);
+            spy.push(index, xsl, after);
             ++index;
             dom = after;
         }
@@ -218,10 +193,10 @@ public final class Program {
         /**
          * New XSL produced.
          * @param index The index of the XSL
-         * @param xsl The name of XSL
+         * @param xsl The XSL used
          * @param xml The XML produced
          */
-        void push(int index, String xsl, XML xml);
+        void push(int index, XSL xsl, XML xml);
 
         /**
          * Empty spy.
@@ -230,7 +205,7 @@ public final class Program {
          */
         final class None implements Program.Spy {
             @Override
-            public void push(final int index, final String xsl, final XML xml) {
+            public void push(final int index, final XSL xsl, final XML xml) {
                 Logger.debug(this, "Parsed #%d via %s", index, xsl);
             }
         }

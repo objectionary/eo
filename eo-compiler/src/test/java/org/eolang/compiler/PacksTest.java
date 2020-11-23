@@ -63,7 +63,7 @@ public final class PacksTest {
         if (xsls == null) {
             program.compile();
         } else {
-            program.compile(xsls);
+            program.compile(new Pack(xsls));
         }
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             MatcherAssert.assertThat(
