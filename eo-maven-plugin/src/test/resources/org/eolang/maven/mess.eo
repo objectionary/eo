@@ -7,11 +7,11 @@
 3.14 > pi
 
 [n] > alpha
-  [n+] > x
+  [] > x
     a pi 666
-      n+
+      [] > n
+        wild
       two.f1.f2 x
-  x n:n+
   stdout
     sprintf > f!
       "Hello, "
@@ -21,19 +21,3 @@ alpha > beta
   alpha
     'Z'
 
-
-
-
-[n+] > alpha$f!
-  sprintf
-    "Hello, "
-    alpha$x 0x1fff n+
-
-[n] > alpha
-  alpha$x n:n+
-  stdout
-    alpha$f n:n+
-
-alpha > beta
-  alpha
-    'Z'
