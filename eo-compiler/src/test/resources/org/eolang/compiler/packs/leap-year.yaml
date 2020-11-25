@@ -1,6 +1,6 @@
 tests:
   - /program/errors[count(*)=0]
-  - /program/objects[count(o)=2]
+  - /program/objects[count(o)=1]
 eo: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool
