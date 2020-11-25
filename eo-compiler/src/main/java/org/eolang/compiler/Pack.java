@@ -63,7 +63,7 @@ public final class Pack implements Iterable<XSL> {
                 "add-refs.xsl",
                 "40-abstracts-float-up.xsl",
                 "wrap-method-calls.xsl",
-                "42-vars-float-up.xsl",
+                "vars-float-up.xsl",
                 "add-refs.xsl",
                 "50-rename-bases.xsl",
                 "resolve-aliases.xsl",

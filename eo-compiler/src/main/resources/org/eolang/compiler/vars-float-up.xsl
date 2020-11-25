@@ -22,40 +22,53 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="vars-float-up" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="vars-float-up" version="2.0">
+  <!--
+  If we see this code, where a name is defined inside
+  an abstract objects:
+
+  [] > test
+    hello
+      foo > x
+        15
+
+  We move "x" declaration to the nearest abstract object
+  and make it its attribute:
+
+  [] > test
+    foo > x
+      15
+    hello
+      x
+  -->
   <xsl:strip-space elements="*"/>
-  <xsl:import href="/org/eolang/compiler/funcs.xsl"/>
-  <xsl:function name="eo:var-name" as="xs:string">
-    <xsl:param name="object" as="element()"/>
-    <xsl:variable name="n">
-      <xsl:value-of select="$object/@name"/>
-    </xsl:variable>
-    <xsl:value-of select="$n"/>
-  </xsl:function>
+  <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
   <xsl:template match="o[eo:abstract(.)]">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:for-each select="./o//o[@name]">
-        <xsl:copy>
-          <xsl:apply-templates select="@* except @name"/>
-          <xsl:attribute name="name">
-            <xsl:value-of select="eo:var-name(.)"/>
-          </xsl:attribute>
-          <xsl:apply-templates select="node()"/>
-        </xsl:copy>
+      <xsl:for-each select="descendant::o[not(eo:abstract(.)) and @name]">
+        <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
+          <xsl:apply-templates select="." mode="copy"/>
+        </xsl:if>
       </xsl:for-each>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[eo:abstract(.)]/o//o[@name]">
-    <xsl:copy>
-      <xsl:apply-templates select="@* except (@name|@const)"/>
+  <xsl:template match="o[not(eo:abstract(.)) and @name]" mode="#default">
+    <xsl:element name="o">
       <xsl:attribute name="base">
-        <xsl:value-of select="eo:var-name(.)"/>
+        <xsl:value-of select="@name"/>
       </xsl:attribute>
-    </xsl:copy>
+      <xsl:attribute name="line">
+        <xsl:value-of select="@line"/>
+      </xsl:attribute>
+      <xsl:attribute name="ref">
+        <xsl:value-of select="@line"/>
+      </xsl:attribute>
+    </xsl:element>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

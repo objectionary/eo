@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="abstracts-float-up" version="2.0">
   <xsl:strip-space elements="*"/>
-  <xsl:import href="/org/eolang/compiler/funcs.xsl"/>
+  <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">
