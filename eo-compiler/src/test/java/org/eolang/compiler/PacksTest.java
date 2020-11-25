@@ -89,7 +89,6 @@ public final class PacksTest {
             "catches-same-line-name.yaml",
             "adds-refs.yaml",
             "float-vars.yaml",
-            "flatten-abstracts.yaml",
             "resolves-aliases.yaml",
             "wraps-methods.yaml",
             "leap-year.yaml"
