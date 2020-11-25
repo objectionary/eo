@@ -22,16 +22,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-method-calls" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-refs" version="2.0">
+  <!--
+  Here we go through all objects and find what their @base
+  are referring to. If we find the object they refer to,
+  we add a new @ref attribute to the object. Those objects
+  which are not getting @ref attributes after this transformation
+  are not visible in the current scope. Maybe they are
+  global or just a mistake.
+  -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="o[starts-with(@base, '.')]">
+  <xsl:template match="o[@base]">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
-      <xsl:apply-templates select="@*"/>
-      <xsl:copy-of select="preceding-sibling::o[1]"/>
-      <xsl:apply-templates select="node()"/>
+      <xsl:variable name="p" select="ancestor::*[o[@name=$o/@base]][1]"/>
+      <xsl:variable name="x" select="$p/o[@name=$o/@base]"/>
+      <xsl:if test="$p">
+        <xsl:attribute name="ref">
+          <xsl:value-of select="$x/@line"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[following-sibling::o[1][starts-with(@base, '.')]]">
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

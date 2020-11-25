@@ -1,6 +1,6 @@
 xsls:
-  - 20-add-refs.xsl
-  - 30-resolve-aliases.xsl
+  - add-refs.xsl
+  - resolve-aliases.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]

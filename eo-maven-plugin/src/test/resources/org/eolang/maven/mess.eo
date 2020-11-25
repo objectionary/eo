@@ -7,9 +7,11 @@
 3.14 > pi
 
 [n] > alpha
-  a pi 666 > x
-    n
-    two.f1.f2 x
+  [n+] > x
+    a pi 666
+      n+
+      two.f1.f2 x
+  x n:n+
   stdout
     sprintf > f!
       "Hello, "
@@ -21,10 +23,6 @@ alpha > beta
 
 
 
-[n+] > alpha$x
-  a pi 666
-    n+
-    two.f1.f2 alpha$x
 
 [n+] > alpha$f!
   sprintf

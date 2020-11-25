@@ -60,13 +60,13 @@ public final class Pack implements Iterable<XSL> {
                 "errors/reserved-atoms.xsl",
                 "errors/same-line-names.xsl",
                 "errors/self-naming.xsl",
-                "20-add-refs.xsl",
+                "add-refs.xsl",
                 "40-abstracts-float-up.xsl",
-                "60-wrap-method-calls.xsl",
+                "wrap-method-calls.xsl",
                 "42-vars-float-up.xsl",
-                "20-add-refs.xsl",
+                "add-refs.xsl",
                 "50-rename-bases.xsl",
-                "30-resolve-aliases.xsl",
+                "resolve-aliases.xsl",
                 "errors/unknown-names.xsl",
                 "errors/duplicate-names.xsl"
             )

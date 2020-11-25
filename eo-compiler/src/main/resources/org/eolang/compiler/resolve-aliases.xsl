@@ -23,6 +23,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-aliases" version="2.0">
+  <!--
+  Here we go through all objects that DON'T have @ref attributes
+  and try to find their references in aliases. If we find them,
+  we change their @base attributes. If not, we decide that they
+  are in org.eolang package and also change the @base attribute.
+
+  At the end of this transformation all aliases are deleted.
+
+  If some alias is badly formatted, a runtime error is issued.
+  -->
   <xsl:strip-space elements="*"/>
   <xsl:template match="/program/metas">
     <xsl:copy>

@@ -22,21 +22,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-refs" version="2.0">
-  <xsl:template match="o[@base]">
-    <xsl:variable name="o" select="."/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-method-calls" version="2.0">
+  <!--
+  When we see this structure:
+
+  <o base="foo"/>
+  <o base=".bar"/>
+  <o base=".test"/>
+
+  We transfer it to this one:
+
+  <o base=".test"/>
+    <o base=".bar"/>
+      <o base="foo"/>
+    </o>
+  </o>
+  -->
+  <xsl:strip-space elements="*"/>
+  <xsl:template match="o[starts-with(@base, '.')]" mode="#all">
     <xsl:copy>
-      <xsl:variable name="p" select="ancestor::*[o[@name=$o/@base]][1]"/>
-      <xsl:variable name="x" select="$p/o[@name=$o/@base]"/>
-      <xsl:if test="$p">
-        <xsl:attribute name="ref">
-          <xsl:value-of select="$x/@line"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="preceding-sibling::o[1]" mode="inside"/>
+      <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="o[following-sibling::o[1][starts-with(@base, '.')]]">
+    <!-- We delete the original one -->
+  </xsl:template>
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
