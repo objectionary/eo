@@ -25,7 +25,9 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,7 +69,14 @@ public final class ToJavaTest {
         program.compile(new ArrayList<>(0));
         Logger.info(this, "Parser output: %s\n", baos.toString());
         baos.reset();
-        program.compile();
+        program.compile(
+            new Program.Spy() {
+                @Override
+                public void push(final int idx, final XSL xsl, final XML xml) {
+                    Logger.debug(this, "Output:%s", xml);
+                }
+            }
+        );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(baos.toString()),
             Matchers.not(XhtmlMatchers.hasXPath("/program/errors/error"))

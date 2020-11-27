@@ -59,7 +59,7 @@ SOFTWARE.
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@name]">
+  <xsl:template match="o[@name and ancestor::o[not(eo:abstract(.))]]">
     <xsl:element name="o">
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
