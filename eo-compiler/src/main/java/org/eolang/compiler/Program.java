@@ -166,6 +166,7 @@ public final class Program {
         final XeListener xel = new XeListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         XML dom = xel.xml();
+        Logger.debug(this, "Raw XML:\n%s", dom.toString());
         int index = 0;
         for (final XSL xsl : xsls) {
             final XML after = xsl.transform(dom);

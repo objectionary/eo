@@ -43,19 +43,23 @@ SOFTWARE.
   -->
   <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
-  <xsl:template match="o[eo:abstract(.)]">
-    <xsl:variable name="o" select="."/>
+  <xsl:template match="objects">
     <xsl:copy>
-      <xsl:apply-templates select="@*"/>
-      <xsl:for-each select="descendant::o[not(eo:abstract(.)) and @name]">
-        <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
-          <xsl:apply-templates select="." mode="copy"/>
-        </xsl:if>
-      </xsl:for-each>
-      <xsl:apply-templates select="node()"/>
+      <xsl:apply-templates select="@*|node()" mode="full"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[not(eo:abstract(.)) and @name]" mode="#default">
+  <xsl:template match="o[eo:abstract(.)]" mode="full">
+    <xsl:variable name="o" select="."/>
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+      <xsl:for-each select="o/descendant::o[@name]">
+        <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
+          <xsl:apply-templates select="." mode="full"/>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@name]">
     <xsl:element name="o">
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
@@ -65,6 +69,9 @@ SOFTWARE.
       </xsl:attribute>
       <xsl:attribute name="ref">
         <xsl:value-of select="@line"/>
+      </xsl:attribute>
+      <xsl:attribute name="cut">
+        <xsl:value-of select="count(descendant::o)"/>
       </xsl:attribute>
     </xsl:element>
   </xsl:template>
