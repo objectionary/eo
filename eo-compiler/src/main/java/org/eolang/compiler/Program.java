@@ -25,6 +25,7 @@ package org.eolang.compiler;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -207,7 +208,12 @@ public final class Program {
         final class None implements Program.Spy {
             @Override
             public void push(final int index, final XSL xsl, final XML xml) {
-                Logger.debug(this, "Parsed #%d via %s", index, xsl);
+                Logger.debug(
+                    this,
+                    "Parsed #%d via %s",
+                    index,
+                    new XMLDocument(xsl.toString()).xpath("/*/@id").get(0)
+                );
             }
         }
     }

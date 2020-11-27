@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-method-calls" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="wrap-method-calls" version="2.0">
   <!--
   When we see this structure:
 
@@ -39,14 +39,15 @@ SOFTWARE.
   </o>
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="o[starts-with(@base, '.')]" mode="#all">
+  <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
+  <xsl:template match="o[eo:method(.)]" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="preceding-sibling::o[1]" mode="inside"/>
+      <xsl:apply-templates select="preceding-sibling::o[1]" mode="full"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[following-sibling::o[1][starts-with(@base, '.')]]">
+  <xsl:template match="o[following-sibling::o[1][eo:method(.)]]">
     <!-- We delete the original one -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">

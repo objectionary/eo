@@ -27,4 +27,8 @@ SOFTWARE.
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="not(exists($o/@base)) and exists($o/o)"/>
   </xsl:function>
+  <xsl:function name="eo:method" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="starts-with($o/@base, '.')"/>
+  </xsl:function>
 </xsl:stylesheet>
