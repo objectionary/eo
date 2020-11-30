@@ -24,7 +24,6 @@
 
 package org.eolang;
 
-import org.eolang.sys.Args;
 import org.eolang.sys.Phi;
 import org.eolang.sys.TypeMismatchException;
 

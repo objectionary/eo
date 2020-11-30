@@ -25,8 +25,6 @@
 package org.eolang.examples;
 
 import org.eolang.EOarray;
-import org.eolang.sys.ArgsOf;
-import org.eolang.sys.Entry;
 
 /**
  * EO entry point.

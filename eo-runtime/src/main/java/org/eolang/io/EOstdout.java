@@ -24,7 +24,6 @@
 
 package org.eolang.io;
 
-import org.eolang.sys.Args;
 import org.eolang.sys.Phi;
 
 /**

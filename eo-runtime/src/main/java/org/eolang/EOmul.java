@@ -25,8 +25,6 @@
 package org.eolang;
 
 import org.cactoos.iterable.Sorted;
-import org.eolang.sys.Args;
-import org.eolang.sys.ArgsException;
 import org.eolang.sys.Phi;
 import org.eolang.sys.TypeMismatchException;
 

@@ -27,7 +27,6 @@ package org.eolang.txt;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.iterable.Sorted;
-import org.eolang.sys.Args;
 import org.eolang.sys.Phi;
 
 /**
