@@ -24,7 +24,6 @@
 
 package org.eolang;
 
-import org.cactoos.iterable.Sorted;
 import org.eolang.sys.Phi;
 import org.eolang.sys.TypeMismatchException;
 
@@ -38,25 +37,30 @@ public final class EOadd implements Phi {
     /**
      * Args.
      */
-    private final Args args;
+    private final Phi[] args;
 
     /**
      * Ctor.
-     * @param arg Args
+     * @param items Args
      */
-    public EOadd(final Args arg) {
-        this.args = arg;
+    public EOadd(final Phi... items) {
+        this.args = items;
     }
 
     @Override
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     public Object call() throws Exception {
         Object result = null;
-        for (final String key : new Sorted<>(this.args.keys())) {
-            if (key.charAt(0) != '0') {
-                continue;
+        for (final Phi arg : this.args) {
+            final Object val = arg.𝜑();
+            if (!(val instanceof org.eolang.Primitive)) {
+                throw new TypeMismatchException(
+                    String.format(
+                        "Can't use ADD with non-data object %s",
+                        val.getClass()
+                    )
+                );
             }
-            final Object nxt = this.args.call(key, Object.class);
+            final org.eolang.Primitive
             if (!(nxt instanceof Long) && !(nxt instanceof Float)) {
                 throw new TypeMismatchException(
                     String.format(

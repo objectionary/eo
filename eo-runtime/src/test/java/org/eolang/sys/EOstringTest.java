@@ -23,34 +23,24 @@
  */
 package org.eolang.sys;
 
+import org.eolang.Primitive;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link ArgsOf}.
+ * Test case for {@link EOstring}.
+ *
  * @since 0.1
  */
-public final class ArgsOfTest {
+public final class EOstringTest {
 
     @Test
-    public void createsArgs() {
+    public void encapsulatesString() {
         final String key = "hey";
         MatcherAssert.assertThat(
-            new ArgsOf(new Entry(key, 1)).get(key),
-            Matchers.equalTo(1)
-        );
-    }
-
-    @Test
-    public void createsArgsWithBefore() {
-        final String key = "hello";
-        MatcherAssert.assertThat(
-            new ArgsOf(
-                new ArgsOf(new Entry(key, 0)),
-                new Entry(key, -1)
-            ).get(key),
-            Matchers.equalTo(-1)
+            new Primitive.End(new EOstring(key)).take(EOstring.class).data(),
+            Matchers.equalTo(key)
         );
     }
 

@@ -24,12 +24,15 @@
 
 package org.eolang.sys;
 
-import java.util.concurrent.Callable;
-
 /**
  * Object with body.
  *
  * @since 0.1
  */
-public interface Phi extends Callable<Object> {
+public interface Phi {
+    /**
+     * Take the result.
+     * @return The result
+     */
+    Phi 𝜑();
 }

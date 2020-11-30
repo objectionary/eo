@@ -21,32 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang.sys;
 
-import org.eolang.EOarray;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.Primitive;
 
 /**
- * Test case for {@link Call}.
+ * FLOAT.
  *
  * @since 0.1
  */
-public final class CallTest {
+public final class EOfloat implements Primitive<Double> {
 
-    @Test
-    public void makesCall() throws Exception {
-        MatcherAssert.assertThat(
-            new Call(
-                "length",
-                new EOarray(
-                    new ArgsOf(new Entry("01", 1))
-                ),
-                new ArgsOf()
-            ).call(),
-            Matchers.equalTo(1)
-        );
+    /**
+     * The value.
+     */
+    private final double value;
+
+    /**
+     * Ctor.
+     * @param val The value
+     */
+    public EOfloat(final double val) {
+        this.value = val;
     }
 
+    @Override
+    public Phi 𝜑() {
+        throw new UnsupportedOperationException("#𝜑()");
+    }
+
+    @Override
+    public Double data() {
+        return this.value;
+    }
 }

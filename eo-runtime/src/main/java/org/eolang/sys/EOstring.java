@@ -22,38 +22,37 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
+package org.eolang.sys;
 
 import org.eolang.Primitive;
-import org.eolang.sys.EObool;
-import org.eolang.sys.EOstring;
-import org.eolang.sys.Phi;
 
 /**
- * Stdout.
+ * STRING.
  *
  * @since 0.1
  */
-public final class EOstdout implements Phi {
+public final class EOstring implements Primitive<String> {
 
     /**
-     * The text to print.
+     * The value.
      */
-    private final Phi text;
+    private final String value;
 
     /**
      * Ctor.
-     * @param txt The text to print
+     * @param val The value
      */
-    public EOstdout(final Phi txt) {
-        this.text = txt;
+    public EOstring(final String val) {
+        this.value = val;
     }
 
     @Override
     public Phi 𝜑() {
-        System.out.print(
-            new Primitive.End(this.text).take(EOstring.class).data()
-        );
-        return new EObool(true);
+        throw new UnsupportedOperationException("#𝜑()");
+    }
+
+    @Override
+    public String data() {
+        return this.value;
     }
 }

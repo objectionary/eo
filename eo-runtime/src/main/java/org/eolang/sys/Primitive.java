@@ -22,38 +22,42 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
+package org.eolang;
 
-import org.eolang.Primitive;
-import org.eolang.sys.EObool;
-import org.eolang.sys.EOstring;
 import org.eolang.sys.Phi;
+import org.eolang.sys.TypeMismatchException;
 
 /**
- * Stdout.
+ * Data primitive.
  *
  * @since 0.1
  */
-public final class EOstdout implements Phi {
+public interface Primitive<T> extends Phi {
 
     /**
-     * The text to print.
+     * Take the take out.
+     * @return The take
      */
-    private final Phi text;
+    T data();
 
     /**
-     * Ctor.
-     * @param txt The text to print
+     * End point.
+     *
+     * @since 0.1
      */
-    public EOstdout(final Phi txt) {
-        this.text = txt;
+    final class End {
+        private final Phi phi;
+        public End(final Phi src) {
+            this.phi = src;
+        }
+        public <X extends Primitive<?>> X take(final Class<X> type) {
+            final Phi result = this.phi.𝜑();
+            if (result instanceof Primitive) {
+                return type.cast(result);
+            } else {
+                throw new TypeMismatchException("");
+            }
+        }
     }
 
-    @Override
-    public Phi 𝜑() {
-        System.out.print(
-            new Primitive.End(this.text).take(EOstring.class).data()
-        );
-        return new EObool(true);
-    }
 }

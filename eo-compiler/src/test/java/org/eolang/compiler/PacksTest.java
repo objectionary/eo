@@ -90,6 +90,7 @@ public final class PacksTest {
             "fixes-globals.yaml",
             "adds-refs.yaml",
             "float-vars.yaml",
+            "float-abstracts.yaml",
             "resolves-aliases.yaml",
             "wraps-methods.yaml",
             "leap-year.yaml"

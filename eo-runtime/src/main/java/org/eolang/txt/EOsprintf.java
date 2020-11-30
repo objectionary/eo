@@ -26,7 +26,8 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.cactoos.iterable.Sorted;
+import org.eolang.Primitive;
+import org.eolang.sys.EOstring;
 import org.eolang.sys.Phi;
 
 /**
@@ -37,34 +38,36 @@ import org.eolang.sys.Phi;
 public final class EOsprintf implements Phi {
 
     /**
-     * Args.
+     * The format.
      */
-    private final Args args;
+    private final Phi format;
+
+    /**
+     * Arguments.
+     */
+    private final Phi[] arguments;
 
     /**
      * Ctor.
-     * @param arg Args
+     * @param fmt Format
+     * @param args Args
      */
-    public EOsprintf(final Args arg) {
-        this.args = arg;
+    public EOsprintf(final Phi fmt, final Phi... args) {
+        this.format = fmt;
+        this.arguments = args;
     }
 
     @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
+    public Phi 𝜑() {
         final Collection<Object> items = new LinkedList<>();
-        for (final String key : new Sorted<>(this.args.keys())) {
-            if (key.charAt(0) != '0') {
-                continue;
-            }
-            if ("01".equals(key)) {
-                continue;
-            }
-            items.add(this.args.call(key, Object.class));
+        for (final Phi arg : this.arguments) {
+            items.add(new Primitive.End(arg).take(EOstring.class).data());
         }
-        return String.format(
-            this.args.call("01", String.class),
-            items.toArray()
+        return new EOstring(
+            String.format(
+                new Primitive.End(this.format).take(EOstring.class).data(),
+                items.toArray()
+            )
         );
     }
 }

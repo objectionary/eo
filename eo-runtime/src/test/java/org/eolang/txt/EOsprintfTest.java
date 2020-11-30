@@ -23,6 +23,9 @@
  */
 package org.eolang.txt;
 
+import org.eolang.Primitive;
+import org.eolang.sys.EOinteger;
+import org.eolang.sys.EOstring;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,15 +38,15 @@ import org.junit.jupiter.api.Test;
 public final class EOsprintfTest {
 
     @Test
-    public void printsSimpleText() throws Exception {
+    public void printsSimpleText() {
         MatcherAssert.assertThat(
-            new EOsprintf(
-                new ArgsOf(
-                    new Entry("01", "Hello, %s %d!"),
-                    new Entry("02", "John"),
-                    new Entry("03", 2)
+            new Primitive.End(
+                new EOsprintf(
+                    new EOstring("Hello, %s %d!"),
+                    new EOstring("John"),
+                    new EOinteger(2L)
                 )
-            ).call(),
+            ).take(EOstring.class).data(),
             Matchers.equalTo("Hello, John 2!")
         );
     }
