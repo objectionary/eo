@@ -230,9 +230,25 @@ SOFTWARE.
     <xsl:value-of select="$EOL"/>
   </xsl:template>
   <xsl:template match="o[@base and @ref]">
-    <xsl:text>this.</xsl:text>
-    <xsl:value-of select="@base"/>
-    <xsl:text>()</xsl:text>
+    <xsl:param name="indent"/>
+    <xsl:variable name="o" select="."/>
+    <xsl:variable name="b" select="//o[@line=$o/@ref and @name=$o/@base]"/>
+    <xsl:choose>
+      <xsl:when test="eo:abstract($b)">
+        <xsl:value-of select="eo:class-name($b/@name)"/>
+        <xsl:text>.𝑥</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>this.</xsl:text>
+        <xsl:value-of select="@base"/>
+        <xsl:text>()</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates select="." mode="copy">
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and o]">
     <xsl:param name="indent"/>
@@ -249,7 +265,16 @@ SOFTWARE.
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(@ref) and (* or not(normalize-space()))]">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:class-name(@base)"/>
-    <xsl:text>.𝑥.cp(</xsl:text>
+    <xsl:text>.𝑥</xsl:text>
+    <xsl:apply-templates select="." mode="copy">
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+  <xsl:template match="o[o]" mode="copy">
+    <xsl:param name="indent"/>
+    <xsl:text>.cp(</xsl:text>
     <xsl:value-of select="$EOL"/>
     <xsl:value-of select="$indent"/>
     <xsl:for-each select="o">

@@ -14,7 +14,7 @@
       two.f1.f2 x
   stdout
     sprintf > f!
-      "Hello, "
+      "Hello, ".trim
       x 0x1fff n
 
 alpha > beta
