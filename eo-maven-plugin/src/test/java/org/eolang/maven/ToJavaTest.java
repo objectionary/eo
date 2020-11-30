@@ -73,7 +73,7 @@ public final class ToJavaTest {
             new Program.Spy() {
                 @Override
                 public void push(final int idx, final XSL xsl, final XML xml) {
-                    Logger.debug(this, "Output:%s", xml);
+                    Logger.trace(this, "Output:%s", xml);
                 }
             }
         );

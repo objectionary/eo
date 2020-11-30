@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,6 +35,8 @@ import java.util.List;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
+import org.cactoos.list.ListOf;
+import org.cactoos.list.Mapped;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 
@@ -78,9 +81,17 @@ public final class ToJava {
      * @throws IOException If fails
      */
     public void compile() throws IOException {
-        final XML out = new XSLDocument(
-            ToJava.class.getResourceAsStream("to-java.xsl")
-        ).with(new ClasspathSources()).transform(this.xml);
+        final XML out = new XSLChain(
+            new Mapped<>(
+                doc -> new XSLDocument(
+                    ToJava.class.getResourceAsStream(doc)
+                ).with(new ClasspathSources()),
+                new ListOf<>(
+                    "/org/eolang/compiler/globals-to-abstracts.xsl",
+                    "to-java.xsl"
+                )
+            )
+        ).transform(this.xml);
         new IoChecked<>(
             new LengthOf(
                 new TeeInput(

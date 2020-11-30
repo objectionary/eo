@@ -87,6 +87,7 @@ public final class PacksTest {
             "catches-reserved-atoms.yaml",
             "catches-two-bodies.yaml",
             "catches-same-line-name.yaml",
+            "fixes-globals.yaml",
             "adds-refs.yaml",
             "float-vars.yaml",
             "resolves-aliases.yaml",
