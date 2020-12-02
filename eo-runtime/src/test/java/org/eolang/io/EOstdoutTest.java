@@ -25,9 +25,9 @@ package org.eolang.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.eolang.Primitive;
-import org.eolang.sys.EObool;
-import org.eolang.sys.EOstring;
+import org.eolang.Data;
+import org.eolang.EObool;
+import org.eolang.EOstring;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ public final class EOstdoutTest {
     public void printsString() {
         final String text = "Hello, друг!";
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Primitive.End(
+        new Data.End(
             new EOstdout(
                 new EOstring(text),
                 new PrintStream(baos)

@@ -21,36 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-package org.eolang.sys;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * BOOLEAN.
+ * Test case for {@link EOinteger}.
  *
  * @since 0.1
  */
-public final class EObool implements Primitive<Boolean> {
+public final class EOintegerTest {
 
-    /**
-     * The value.
-     */
-    private final boolean value;
-
-    /**
-     * Ctor.
-     * @param val The value
-     */
-    public EObool(final boolean val) {
-        this.value = val;
+    @Test
+    public void addsNumbers() {
+        MatcherAssert.assertThat(
+            new Data.End(
+                new EOinteger(1L).add().cp(
+                    new EOinteger(5L), new EOinteger(-1L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(5L)
+        );
     }
 
-    @Override
-    public Phi 𝜑() {
-        return new EObool(this.data());
+    @Test
+    public void multipliesNumbers() {
+        MatcherAssert.assertThat(
+            new Data.End(
+                new EOinteger(2L).mul().cp(
+                    new EOinteger(4L), new EOinteger(-2L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(-16L)
+        );
     }
 
-    @Override
-    public Boolean data() {
-        return this.value;
-    }
 }

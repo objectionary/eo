@@ -24,54 +24,29 @@
 
 package org.eolang;
 
-import org.eolang.sys.EObool;
-import org.eolang.sys.Phi;
-import org.eolang.sys.Primitive;
-
 /**
- * IF.
+ * BOOLEAN.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class EOif implements Phi {
+public final class EObool implements Data<Boolean> {
 
     /**
-     * The condition.
+     * The value.
      */
-    private final Phi term;
-
-    /**
-     * When TRUE.
-     */
-    private final Phi positive;
-
-    /**
-     * When FALSE.
-     */
-    private final Phi negative;
+    private final boolean value;
 
     /**
      * Ctor.
-     * @param trm The term
-     * @param pos The positive
-     * @param neg The negative
+     * @param val The value
      */
-    public EOif(final Phi trm, final Phi pos, final Phi neg) {
-        this.term = trm;
-        this.positive = pos;
-        this.negative = neg;
+    public EObool(final boolean val) {
+        this.value = val;
     }
 
     @Override
-    public Phi 𝜑() {
-        final boolean yes = new Primitive.End(this.term)
-            .take(EObool.class).data();
-        final Phi result;
-        if (yes) {
-            result = this.positive;
-        } else {
-            result = this.negative;
-        }
-        return result;
+    public Boolean take() {
+        return this.value;
     }
+
 }

@@ -22,9 +22,30 @@
  * SOFTWARE.
  */
 
+package org.eolang;
+
 /**
- * EO system objects.
+ * FLOAT.
  *
  * @since 0.1
  */
-package org.eolang.sys;
+public final class EOfloat implements Data<Double> {
+
+    /**
+     * The value.
+     */
+    private final double value;
+
+    /**
+     * Ctor.
+     * @param val The value
+     */
+    public EOfloat(final double val) {
+        this.value = val;
+    }
+
+    @Override
+    public Double take() {
+        return this.value;
+    }
+}

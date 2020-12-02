@@ -21,54 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.eolang.sys.EObool;
-import org.eolang.sys.Primitive;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link EOand}.
+ * TypeMismatch Exception.
  *
  * @since 0.1
  */
-public final class EOandTest {
+public final class TypeMismatchException extends RuntimeException {
 
-    @Test
-    public void checksTwo() {
-        MatcherAssert.assertThat(
-            new Primitive.End(
-                new EOadd(
-                    new EObool(true),
-                    new EObool(false)
-                )
-            ).take(EObool.class).data(),
-            Matchers.equalTo(false)
-        );
-    }
+    /**
+     * Serial ID.
+     */
+    private static final long serialVersionUID = -6643350804302660951L;
 
-    @Test
-    public void checksOneArg() {
-        MatcherAssert.assertThat(
-            new Primitive.End(
-                new EOadd(
-                    new EObool(false)
-                )
-            ).take(EObool.class).data(),
-            Matchers.equalTo(false)
-        );
-    }
-
-    @Test
-    public void checksNoArgs() {
-        MatcherAssert.assertThat(
-            new Primitive.End(
-                new EOadd()
-            ).take(EObool.class).data(),
-            Matchers.equalTo(true)
-        );
+    /**
+     * Ctor.
+     * @param reason The reason
+     */
+    public TypeMismatchException(final String reason) {
+        super(reason);
     }
 
 }

@@ -24,40 +24,24 @@
 
 package org.eolang;
 
-import org.eolang.sys.EObool;
-import org.eolang.sys.Phi;
-import org.eolang.sys.Primitive;
-
 /**
- * AND.
+ * Something is wrong with arguments.
  *
  * @since 0.1
  */
-public final class EOand implements Phi {
+public final class ArgsException extends RuntimeException {
 
     /**
-     * Args.
+     * Serial ID.
      */
-    private final Phi[] args;
+    private static final long serialVersionUID = -6643350804302660951L;
 
     /**
      * Ctor.
-     * @param items The items
+     * @param reason The reason
      */
-    public EOand(final Phi... items) {
-        this.args = items;
-    }
-
-    @Override
-    public Phi 𝜑() {
-        boolean result = true;
-        for (final Phi arg : this.args) {
-            if (!new Primitive.End(arg).take(EObool.class).data()) {
-                result = false;
-                break;
-            }
-        }
-        return new EObool(result);
+    public ArgsException(final String reason) {
+        super(reason);
     }
 
 }

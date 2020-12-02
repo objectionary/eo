@@ -21,36 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-package org.eolang.sys;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * FLOAT.
+ * Test case for {@link EOstring}.
  *
  * @since 0.1
  */
-public final class EOfloat implements Primitive<Double> {
+public final class EOstringTest {
 
-    /**
-     * The value.
-     */
-    private final double value;
-
-    /**
-     * Ctor.
-     * @param val The value
-     */
-    public EOfloat(final double val) {
-        this.value = val;
+    @Test
+    public void encapsulatesString() {
+        final String key = "hey";
+        MatcherAssert.assertThat(
+            new Data.End(new EOstring(key)).take(String.class),
+            Matchers.equalTo(key)
+        );
     }
 
-    @Override
-    public Phi 𝜑() {
-        return new EOfloat(this.data());
-    }
-
-    @Override
-    public Double data() {
-        return this.value;
-    }
 }

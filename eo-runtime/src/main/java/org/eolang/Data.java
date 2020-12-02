@@ -22,9 +22,45 @@
  * SOFTWARE.
  */
 
+package org.eolang;
+
 /**
- * EO runtime, system.
+ * Data primitive.
  *
- * @since 0.2
+ * @since 0.1
  */
-package org.eolang.sys;
+public interface Data<T> {
+
+    /**
+     * Take the take out.
+     * @return The take
+     */
+    T take();
+
+    /**
+     * End point.
+     *
+     * @since 0.1
+     */
+    final class End {
+        private final Object object;
+        public End(final Object src) {
+            this.object = src;
+        }
+        @SuppressWarnings("unchecked")
+        public <X> X take(final Class<X> type) {
+            if (this.object instanceof Data) {
+                return ((Data<X>) this.object).take();
+            } else {
+                throw new TypeMismatchException(
+                    String.format(
+                        "Can't cast from %s to Data<%s>",
+                        this.object.getClass(),
+                        type
+                    )
+                );
+            }
+        }
+    }
+
+}

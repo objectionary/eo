@@ -26,48 +26,45 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.sys.EOstring;
-import org.eolang.sys.Phi;
-import org.eolang.sys.Primitive;
+import org.eolang.Data;
 
 /**
  * Sprintf.
  *
  * @since 0.2
  */
-public final class EOsprintf implements Phi {
+public final class EOsprintf implements Data<String> {
 
     /**
      * The format.
      */
-    private final Phi format;
+    private final Data<String> format;
 
     /**
      * Arguments.
      */
-    private final Phi[] arguments;
+    private final Data<?>[] arguments;
 
     /**
      * Ctor.
      * @param fmt Format
      * @param args Args
      */
-    public EOsprintf(final Phi fmt, final Phi... args) {
+    public EOsprintf(final Data<String> fmt,
+        final Data<?>... args) {
         this.format = fmt;
         this.arguments = args;
     }
 
     @Override
-    public Phi 𝜑() {
+    public String take() {
         final Collection<Object> items = new LinkedList<>();
-        for (final Phi arg : this.arguments) {
-            items.add(new Primitive.End(arg).take(EOstring.class).data());
+        for (final Data<?> arg : this.arguments) {
+            items.add(new Data.End(arg).take(Object.class));
         }
-        return new EOstring(
-            String.format(
-                new Primitive.End(this.format).take(EOstring.class).data(),
-                items.toArray()
-            )
+        return String.format(
+            new Data.End(this.format).take(String.class),
+            items.toArray()
         );
     }
 }

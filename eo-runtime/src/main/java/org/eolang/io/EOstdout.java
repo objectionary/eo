@@ -25,22 +25,19 @@
 package org.eolang.io;
 
 import java.io.PrintStream;
-import org.eolang.sys.EObool;
-import org.eolang.sys.EOstring;
-import org.eolang.sys.Phi;
-import org.eolang.sys.Primitive;
+import org.eolang.Data;
 
 /**
  * Stdout.
  *
  * @since 0.1
  */
-public final class EOstdout implements Phi {
+public final class EOstdout implements Data<Boolean> {
 
     /**
      * The text to print.
      */
-    private final Phi text;
+    private final Data<String> text;
 
     /**
      * The print stream to print to.
@@ -51,7 +48,7 @@ public final class EOstdout implements Phi {
      * Ctor.
      * @param txt The text to print
      */
-    public EOstdout(final Phi txt) {
+    public EOstdout(final Data<String> txt) {
         this(txt, System.out);
     }
 
@@ -60,16 +57,16 @@ public final class EOstdout implements Phi {
      * @param txt The text to print
      * @param out The output stream
      */
-    public EOstdout(final Phi txt, final PrintStream out) {
+    public EOstdout(final Data<String> txt, final PrintStream out) {
         this.text = txt;
         this.stream = out;
     }
 
     @Override
-    public Phi 𝜑() {
+    public Boolean take() {
         this.stream.print(
-            new Primitive.End(this.text).take(EOstring.class).data()
+            new Data.End(this.text).take(String.class)
         );
-        return new EObool(true);
+        return true;
     }
 }

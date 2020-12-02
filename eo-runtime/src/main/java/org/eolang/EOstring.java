@@ -22,26 +22,30 @@
  * SOFTWARE.
  */
 
-package org.eolang.sys;
+package org.eolang;
 
 /**
- * Something is wrong with arguments.
+ * STRING.
  *
  * @since 0.1
  */
-public final class ArgsException extends RuntimeException {
+public final class EOstring implements Data<String> {
 
     /**
-     * Serial ID.
+     * The value.
      */
-    private static final long serialVersionUID = -6643350804302660951L;
+    private final String value;
 
     /**
      * Ctor.
-     * @param reason The reason
+     * @param val The value
      */
-    public ArgsException(final String reason) {
-        super(reason);
+    public EOstring(final String val) {
+        this.value = val;
     }
 
+    @Override
+    public String take() {
+        return this.value;
+    }
 }
