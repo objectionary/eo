@@ -22,18 +22,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="one-body" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="one-body" version="2.0">
+  <xsl:strip-space elements="*"/>
+  <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[not(@base) and o]">
-        <xsl:apply-templates select="." mode="dups"/>
+      <xsl:for-each select="//o[eo:abstract(.)]">
+        <xsl:apply-templates select="." mode="abstract"/>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="dups">
-    <xsl:if test="count(o[not(@name) and not(starts-with(@base, '.'))]) &gt; 1">
+  <xsl:template match="o" mode="abstract">
+    <xsl:if test="o[not(@name)]">
       <xsl:element name="error">
+        <xsl:attribute name="check">
+          <xsl:text>noname-attributes</xsl:text>
+        </xsl:attribute>
         <xsl:attribute name="line">
           <xsl:value-of select="@line"/>
         </xsl:attribute>
@@ -43,7 +48,7 @@ SOFTWARE.
           <xsl:value-of select="@name"/>
           <xsl:text>" </xsl:text>
         </xsl:if>
-        <xsl:text>may have only one body</xsl:text>
+        <xsl:text>has attribute without a name</xsl:text>
       </xsl:element>
     </xsl:if>
   </xsl:template>

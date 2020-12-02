@@ -1,6 +1,7 @@
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
+  - //o[@base='.and']
 eo: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool
@@ -13,15 +14,15 @@ eo: |
 
   [args] > main
     [y] > leap
-      or
-        and
-          eq (mod y 4) 0
-          not (eq (mod y 100) 0)
-        eq (mod y 400) 0
-    and
+      or. > @
+        and.
+          eq. (mod. y 4) 0
+          not. (eq. (mod. y 100) 0)
+        eq. (mod. y 400) 0
+    and > @
       stdout "Enter a year:"
       stdout
-        concat
+        sprintf
+          "%s is %sa leap year!"
           (scanner stdin).nextInt > year!
-          " is a leap year?"
-          leap year:y
+          if (leap year:y) "" "not "

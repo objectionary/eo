@@ -35,6 +35,9 @@ SOFTWARE.
     <xsl:variable name="x" select="."/>
     <xsl:for-each select="preceding::o[@name=$x/@name and @line=$x/@line] | ancestor::o[@name=$x/@name and @line=$x/@line]">
       <xsl:element name="error">
+        <xsl:attribute name="check">
+          <xsl:text>same-line-names</xsl:text>
+        </xsl:attribute>
         <xsl:attribute name="line">
           <xsl:value-of select="@line"/>
         </xsl:attribute>

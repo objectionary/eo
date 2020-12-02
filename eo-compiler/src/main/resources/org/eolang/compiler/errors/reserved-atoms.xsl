@@ -27,9 +27,12 @@ SOFTWARE.
     <xsl:variable name="atoms" select="tokenize('string char float integer hex', '\s+')"/>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@base and not(contains(@base, '.'))]">
+      <xsl:for-each select="//o[@base and not(contains(@base, '.')) and not(@data)]">
         <xsl:if test="index-of($atoms, @base) and not(text())">
           <xsl:element name="error">
+            <xsl:attribute name="check">
+              <xsl:text>reserved-atoms</xsl:text>
+            </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
             </xsl:attribute>

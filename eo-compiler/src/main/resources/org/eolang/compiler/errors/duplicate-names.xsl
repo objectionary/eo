@@ -36,6 +36,9 @@ SOFTWARE.
       <xsl:variable name="x" select="."/>
       <xsl:if test="preceding-sibling::o/@name = $x/@name">
         <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>duplicate-names</xsl:text>
+          </xsl:attribute>
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>

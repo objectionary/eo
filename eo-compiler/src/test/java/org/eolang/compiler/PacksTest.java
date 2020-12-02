@@ -85,7 +85,7 @@ public final class PacksTest {
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",
             "catches-reserved-atoms.yaml",
-            "catches-two-bodies.yaml",
+            "catches-noname-attrs.yaml",
             "catches-same-line-name.yaml",
             "fixes-globals.yaml",
             "adds-refs.yaml",

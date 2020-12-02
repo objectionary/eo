@@ -34,6 +34,9 @@ SOFTWARE.
         <xsl:variable name="name" select="eo:name(.)"/>
         <xsl:if test="preceding-sibling::meta[head='alias' and eo:name(.)=$name]">
           <xsl:element name="error">
+            <xsl:attribute name="check">
+              <xsl:text>duplicate-aliases</xsl:text>
+            </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
             </xsl:attribute>

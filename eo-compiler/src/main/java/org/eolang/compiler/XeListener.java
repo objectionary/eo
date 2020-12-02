@@ -181,7 +181,7 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
         this.enter();
-        this.dirs.attr("name", ctx.NAME().getText());
+        this.dirs.attr("name", ctx.name.getText());
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
         }
@@ -208,7 +208,11 @@ public final class XeListener implements ProgramListener {
     public void enterHead(final ProgramParser.HeadContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.NAME() != null) {
-            this.dirs.attr("base", ctx.NAME().getText());
+            String base = ctx.NAME().getText();
+            if (ctx.DOT() != null) {
+                base = String.format(".%s", base);
+            }
+            this.dirs.attr("base", base);
         }
         if (ctx.AT() != null) {
             this.dirs.attr("base", "@");
@@ -284,6 +288,7 @@ public final class XeListener implements ProgramListener {
         } else {
             throw new CompileException("Unknown data type");
         }
+        this.dirs.attr("data", type);
         this.dirs.attr("base", type);
         this.dirs.set(data);
     }

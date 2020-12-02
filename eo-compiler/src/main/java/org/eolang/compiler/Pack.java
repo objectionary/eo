@@ -56,7 +56,7 @@ public final class Pack implements Iterable<XSL> {
                 "errors/broken-aliases.xsl",
                 "errors/duplicate-aliases.xsl",
                 "errors/global-nonames.xsl",
-                "errors/one-body.xsl",
+                "errors/noname-attributes.xsl",
                 "errors/reserved-atoms.xsl",
                 "errors/same-line-names.xsl",
                 "errors/self-naming.xsl",

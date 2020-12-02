@@ -86,7 +86,7 @@ suffix
   SPACE
   ARROW
   SPACE
-  NAME
+  name=( NAME | AT )
   CONST?
   ;
 
@@ -149,6 +149,8 @@ head
   AT
   |
   NAME
+  |
+  NAME DOT
   |
   data
   ;

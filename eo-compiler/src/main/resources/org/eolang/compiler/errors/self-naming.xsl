@@ -28,6 +28,9 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="//o[@name and @base and @base=@name]">
         <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>self-naming</xsl:text>
+          </xsl:attribute>
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>

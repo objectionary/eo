@@ -84,7 +84,7 @@ whether it's leap or not:
         eq. (mod. y 4) 0
         not. (eq. (mod. y 100) 0)
       eq. (mod. y 400) 0
-  and > @
+  and. > @
     stdout "Enter a year:"
     stdout
       sprintf

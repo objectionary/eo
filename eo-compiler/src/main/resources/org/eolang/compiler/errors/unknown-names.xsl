@@ -28,6 +28,9 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="//o[@base and not(@ref) and not(contains(@base, '.'))]">
         <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>unknown-names</xsl:text>
+          </xsl:attribute>
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
