@@ -24,8 +24,6 @@
 
 package org.eolang.sys;
 
-import org.eolang.Primitive;
-
 /**
  * FLOAT.
  *
@@ -48,7 +46,7 @@ public final class EOfloat implements Primitive<Double> {
 
     @Override
     public Phi 𝜑() {
-        throw new UnsupportedOperationException("#𝜑()");
+        return new EOfloat(this.data());
     }
 
     @Override

@@ -21,46 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AddOf}.
+ * EO system objects.
  *
  * @since 0.1
  */
-public final class EOaddTest {
-
-    @Test
-    public void addsTwo() throws Exception {
-        MatcherAssert.assertThat(
-            new EOadd(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(0L)
-        );
-    }
-
-    @Test
-    public void addsOneArg() throws Exception {
-        MatcherAssert.assertThat(
-            new EOadd(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
-    public void addsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new EOadd(new ArgsOf()).call()
-        );
-    }
-
-}
+package org.eolang.io;

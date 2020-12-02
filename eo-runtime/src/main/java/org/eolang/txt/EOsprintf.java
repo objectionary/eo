@@ -26,9 +26,9 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.Primitive;
 import org.eolang.sys.EOstring;
 import org.eolang.sys.Phi;
+import org.eolang.sys.Primitive;
 
 /**
  * Sprintf.

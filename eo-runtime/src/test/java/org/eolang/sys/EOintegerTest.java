@@ -21,43 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.sys;
 
-package org.eolang;
-
-import org.eolang.sys.EObool;
-import org.eolang.sys.Phi;
-import org.eolang.sys.Primitive;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * AND.
+ * Test case for {@link EOinteger}.
  *
  * @since 0.1
  */
-public final class EOand implements Phi {
+public final class EOintegerTest {
 
-    /**
-     * Args.
-     */
-    private final Phi[] args;
-
-    /**
-     * Ctor.
-     * @param items The items
-     */
-    public EOand(final Phi... items) {
-        this.args = items;
-    }
-
-    @Override
-    public Phi 𝜑() {
-        boolean result = true;
-        for (final Phi arg : this.args) {
-            if (!new Primitive.End(arg).take(EObool.class).data()) {
-                result = false;
-                break;
-            }
-        }
-        return new EObool(result);
+    @Test
+    public void addsNumbers() {
+        MatcherAssert.assertThat(
+            new Primitive.End(
+                new EOinteger(1L)
+            ).take(EOstring.class).data(),
+            Matchers.equalTo(key)
+        );
     }
 
 }

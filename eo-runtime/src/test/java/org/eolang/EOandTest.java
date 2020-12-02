@@ -23,43 +23,51 @@
  */
 package org.eolang;
 
+import org.eolang.sys.EObool;
+import org.eolang.sys.Primitive;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AddOf}.
+ * Test case for {@link EOand}.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class EOmulTest {
+public final class EOandTest {
 
     @Test
-    public void mulsTwo() throws Exception {
+    public void checksTwo() {
         MatcherAssert.assertThat(
-            new EOmul(
-                new ArgsOf(new Entry("01", 1L), new Entry("02", -1L))
-            ).call(),
-            Matchers.equalTo(-1L)
+            new Primitive.End(
+                new EOadd(
+                    new EObool(true),
+                    new EObool(false)
+                )
+            ).take(EObool.class).data(),
+            Matchers.equalTo(false)
         );
     }
 
     @Test
-    public void mulsOneArg() throws Exception {
+    public void checksOneArg() {
         MatcherAssert.assertThat(
-            new EOmul(
-                new ArgsOf(new Entry("01", 1L))
-            ).call(),
-            Matchers.equalTo(1L)
+            new Primitive.End(
+                new EOadd(
+                    new EObool(false)
+                )
+            ).take(EObool.class).data(),
+            Matchers.equalTo(false)
         );
     }
 
     @Test
-    public void mulsNoArgs() {
-        Assertions.assertThrows(
-            ArgsException.class,
-            () -> new EOmul(new ArgsOf()).call()
+    public void checksNoArgs() {
+        MatcherAssert.assertThat(
+            new Primitive.End(
+                new EOadd()
+            ).take(EObool.class).data(),
+            Matchers.equalTo(true)
         );
     }
 

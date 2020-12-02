@@ -21,30 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.sys;
 
 /**
- * Test case for {@link EOless}.
+ * Something is wrong with arguments.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class EOlessTest {
+public final class ArgsException extends RuntimeException {
 
-    @Test
-    public void compares() throws Exception {
-        MatcherAssert.assertThat(
-            new EOless(
-                new ArgsOf(
-                    new Entry("01", -1L),
-                    new Entry("02", 1L)
-                )
-            ).call(),
-            Matchers.equalTo(true)
-        );
+    /**
+     * Serial ID.
+     */
+    private static final long serialVersionUID = -6643350804302660951L;
+
+    /**
+     * Ctor.
+     * @param reason The reason
+     */
+    public ArgsException(final String reason) {
+        super(reason);
     }
 
 }

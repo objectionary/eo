@@ -23,7 +23,6 @@
  */
 package org.eolang.sys;
 
-import org.eolang.Primitive;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

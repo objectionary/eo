@@ -24,8 +24,6 @@
 
 package org.eolang.sys;
 
-import org.eolang.Primitive;
-
 /**
  * BOOLEAN.
  *
@@ -48,7 +46,7 @@ public final class EObool implements Primitive<Boolean> {
 
     @Override
     public Phi 𝜑() {
-        throw new UnsupportedOperationException("#𝜑()");
+        return new EObool(this.data());
     }
 
     @Override

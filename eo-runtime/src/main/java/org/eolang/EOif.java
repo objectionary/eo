@@ -24,7 +24,9 @@
 
 package org.eolang;
 
+import org.eolang.sys.EObool;
 import org.eolang.sys.Phi;
+import org.eolang.sys.Primitive;
 
 /**
  * IF.
@@ -34,25 +36,41 @@ import org.eolang.sys.Phi;
 public final class EOif implements Phi {
 
     /**
-     * Args.
+     * The condition.
      */
-    private final Args args;
+    private final Phi term;
+
+    /**
+     * When TRUE.
+     */
+    private final Phi positive;
+
+    /**
+     * When FALSE.
+     */
+    private final Phi negative;
 
     /**
      * Ctor.
-     * @param arg Args
+     * @param trm The term
+     * @param pos The positive
+     * @param neg The negative
      */
-    public EOif(final Args arg) {
-        this.args = arg;
+    public EOif(final Phi trm, final Phi pos, final Phi neg) {
+        this.term = trm;
+        this.positive = pos;
+        this.negative = neg;
     }
 
     @Override
-    public Object call() throws Exception {
-        Object result = false;
-        if (this.args.call("01", Boolean.class).equals(Boolean.TRUE)) {
-            result = this.args.get("02");
-        } else if (this.args.has("03")) {
-            result = this.args.get("03");
+    public Phi 𝜑() {
+        final boolean yes = new Primitive.End(this.term)
+            .take(EObool.class).data();
+        final Phi result;
+        if (yes) {
+            result = this.positive;
+        } else {
+            result = this.negative;
         }
         return result;
     }

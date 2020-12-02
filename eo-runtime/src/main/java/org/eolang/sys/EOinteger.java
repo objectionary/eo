@@ -24,8 +24,6 @@
 
 package org.eolang.sys;
 
-import org.eolang.Primitive;
-
 /**
  * INTEGER.
  *
@@ -48,11 +46,65 @@ public final class EOinteger implements Primitive<Long> {
 
     @Override
     public Phi 𝜑() {
-        throw new UnsupportedOperationException("#𝜑()");
+        return new EOinteger(this.data());
     }
 
     @Override
     public Long data() {
         return this.value;
     }
+
+    /**
+     * Add a number.
+     * @param val The number
+     * @return New number
+     */
+    public EOinteger add(final EOinteger val) {
+        return new EOinteger(this.value + val.data());
+    }
+
+    /**
+     * Subtract a number.
+     * @param val The number
+     * @return New number
+     */
+    public EOinteger sub(final EOinteger val) {
+        return new EOinteger(this.value - val.data());
+    }
+
+    /**
+     * Multiply by the number.
+     * @param val The number
+     * @return New number
+     */
+    public EOinteger mul(final EOinteger val) {
+        return new EOinteger(this.value * val.data());
+    }
+
+    /**
+     * Divide by the number.
+     * @param val The number
+     * @return New number
+     */
+    public EOinteger div(final EOinteger val) {
+        return new EOinteger(this.value / val.data());
+    }
+
+    /**
+     * Inverse the sign.
+     * @return New number
+     */
+    public EOinteger neg() {
+        return new EOinteger(-this.value);
+    }
+
+    /**
+     * MOD operation.
+     * @param val The number
+     * @return New number
+     */
+    public EOinteger mod(final EOinteger val) {
+        return new EOinteger(this.value + val.data());
+    }
+
 }

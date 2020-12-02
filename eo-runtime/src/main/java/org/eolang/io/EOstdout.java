@@ -24,10 +24,11 @@
 
 package org.eolang.io;
 
-import org.eolang.Primitive;
+import java.io.PrintStream;
 import org.eolang.sys.EObool;
 import org.eolang.sys.EOstring;
 import org.eolang.sys.Phi;
+import org.eolang.sys.Primitive;
 
 /**
  * Stdout.
@@ -42,16 +43,31 @@ public final class EOstdout implements Phi {
     private final Phi text;
 
     /**
+     * The print stream to print to.
+     */
+    private final PrintStream stream;
+
+    /**
      * Ctor.
      * @param txt The text to print
      */
     public EOstdout(final Phi txt) {
+        this(txt, System.out);
+    }
+
+    /**
+     * Ctor.
+     * @param txt The text to print
+     * @param out The output stream
+     */
+    public EOstdout(final Phi txt, final PrintStream out) {
         this.text = txt;
+        this.stream = out;
     }
 
     @Override
     public Phi 𝜑() {
-        System.out.print(
+        this.stream.print(
             new Primitive.End(this.text).take(EOstring.class).data()
         );
         return new EObool(true);

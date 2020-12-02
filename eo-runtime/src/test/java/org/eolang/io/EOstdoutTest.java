@@ -21,43 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.io;
 
-package org.eolang;
-
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.eolang.Primitive;
 import org.eolang.sys.EObool;
-import org.eolang.sys.Phi;
-import org.eolang.sys.Primitive;
+import org.eolang.sys.EOstring;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * AND.
+ * Test case for {@link EOstdout}.
  *
  * @since 0.1
  */
-public final class EOand implements Phi {
+public final class EOstdoutTest {
 
-    /**
-     * Args.
-     */
-    private final Phi[] args;
-
-    /**
-     * Ctor.
-     * @param items The items
-     */
-    public EOand(final Phi... items) {
-        this.args = items;
-    }
-
-    @Override
-    public Phi 𝜑() {
-        boolean result = true;
-        for (final Phi arg : this.args) {
-            if (!new Primitive.End(arg).take(EObool.class).data()) {
-                result = false;
-                break;
-            }
-        }
-        return new EObool(result);
+    @Test
+    public void printsString() {
+        final String text = "Hello, друг!";
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new Primitive.End(
+            new EOstdout(
+                new EOstring(text),
+                new PrintStream(baos)
+            )
+        ).take(EObool.class);
+        MatcherAssert.assertThat(
+            baos.toString(),
+            Matchers.equalTo(text)
+        );
     }
 
 }

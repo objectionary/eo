@@ -22,10 +22,7 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
-import org.eolang.sys.Phi;
-import org.eolang.sys.TypeMismatchException;
+package org.eolang.sys;
 
 /**
  * Data primitive.
@@ -55,7 +52,13 @@ public interface Primitive<T> extends Phi {
             if (result instanceof Primitive) {
                 return type.cast(result);
             } else {
-                throw new TypeMismatchException("");
+                throw new TypeMismatchException(
+                    String.format(
+                        "Can't cast from %s to %s",
+                        result.getClass(),
+                        type
+                    )
+                );
             }
         }
     }

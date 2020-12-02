@@ -24,8 +24,6 @@
 
 package org.eolang.sys;
 
-import org.eolang.Primitive;
-
 /**
  * STRING.
  *
@@ -48,7 +46,7 @@ public final class EOstring implements Primitive<String> {
 
     @Override
     public Phi 𝜑() {
-        throw new UnsupportedOperationException("#𝜑()");
+        return new EOstring(this.data());
     }
 
     @Override
