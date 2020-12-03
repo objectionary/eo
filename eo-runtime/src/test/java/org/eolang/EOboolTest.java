@@ -44,12 +44,13 @@ public final class EOboolTest {
 
     @Test
     public void makesFork() {
+        final String left = "Hello!";
         MatcherAssert.assertThat(
-            new EObool(true).eoif().cp(
-                new EOstring("Hello"),
+            new EObool(true).eoif().copy(
+                new EOstring(left),
                 new EOstring("world")
             ).get(),
-            Matchers.equalTo("Hello")
+            Matchers.equalTo(left)
         );
     }
 

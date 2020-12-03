@@ -45,8 +45,8 @@ public final class EOstdout extends EObool {
 
     /**
      * Ctor.
-     * @param stream The text to print
      * @param text The output stream
+     * @param stream The text to print
      */
     public EOstdout(final Data<String> text, final PrintStream stream) {
         super(

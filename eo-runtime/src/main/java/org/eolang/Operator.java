@@ -32,9 +32,11 @@ import org.cactoos.list.ListOf;
 /**
  * One operation.
  *
+ * @param <D> Type of result
+ * @param <T> Type of data
  * @since 0.1
  */
-public final class Operator <D, T extends Data<D>> {
+public final class Operator<D, T extends Data<D>> {
 
     /**
      * The start.
@@ -66,11 +68,12 @@ public final class Operator <D, T extends Data<D>> {
 
     /**
      * Make a copy of it.
+     *
      * @param args The args
      * @return Copy
      */
     @SafeVarargs
-    public final T cp(final Data<D>... args) {
+    public final T copy(final Data<D>... args) {
         try {
             return this.type.getConstructor(Scalar.class).newInstance(
                 (Scalar<D>) () -> this.reduce.calc(
@@ -78,7 +81,7 @@ public final class Operator <D, T extends Data<D>> {
                     new ListOf<>(args)
                 )
             );
-        } catch (InstantiationException | IllegalAccessException
+        } catch (final InstantiationException | IllegalAccessException
             | InvocationTargetException | NoSuchMethodException ex) {
             throw new IllegalStateException(ex);
         }
@@ -87,11 +90,13 @@ public final class Operator <D, T extends Data<D>> {
     /**
      * Reduce action.
      *
+     * @param <D> Type of result
      * @since 0.1
      */
-    public interface Reduce <D> {
+    public interface Reduce<D> {
         /**
          * Do it.
+         *
          * @param first First value
          * @param args The args
          * @return Result

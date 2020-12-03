@@ -63,7 +63,7 @@ public final class EOint implements Data<Long> {
     /**
      * Add a number.
      *
-     * new EOinteger(5).add().cp(5, 7, 7)
+     * new EOinteger(5).add().copy(5, 7, 7)
      *
      * @return New number
      */

@@ -31,13 +31,14 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOint}.
  *
  * @since 0.1
+ * @checkstyle MagicNumberCheck (500 lines)
  */
 public final class EOintTest {
 
     @Test
     public void addsNumbers() {
         MatcherAssert.assertThat(
-            new EOint(1L).eoadd().cp(
+            new EOint(1L).eoadd().copy(
                 new EOint(5L), new EOint(-1L)
             ).get(),
             Matchers.equalTo(5L)
@@ -47,7 +48,7 @@ public final class EOintTest {
     @Test
     public void multipliesNumbers() {
         MatcherAssert.assertThat(
-            new EOint(2L).eomul().cp(
+            new EOint(2L).eomul().copy(
                 new EOint(4L), new EOint(-2L)
             ).get(),
             Matchers.equalTo(-16L)

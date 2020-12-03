@@ -27,12 +27,14 @@ package org.eolang;
 /**
  * Data primitive.
  *
+ * @param <T> Type of return
  * @since 0.1
  */
 public interface Data<T> {
 
     /**
      * Take the take out.
+     *
      * @return The take
      */
     T get();

@@ -65,11 +65,13 @@ public class EObool implements Data<Boolean> {
     /**
      * Makes a fork.
      *
-     * new EObool(true).if().cp("left", "right")
+     * new EObool(true).if().copy("left", "right")
      *
+     * @param <T> Type of result
      * @return Result
+     * @checkstyle NonStaticMethodCheck (3 lines)
      */
-    public <T> EObool.OpIf<T> eoif() {
+    public final <T> EObool.OpIf<T> eoif() {
         return new EObool.OpIf<>();
     }
 
@@ -80,8 +82,16 @@ public class EObool implements Data<Boolean> {
      * @since 0.1
      */
     @SuppressWarnings("unchecked")
-    public final class OpIf <T> {
-        public Data<T> cp(final Data<?> left, final Data<?> right) {
+    public final class OpIf<T> {
+        /**
+         * Make a copy.
+         *
+         * @param left Left branch (positive)
+         * @param right Right branch (negative)
+         * @return Data with result
+         * @checkstyle MethodNameCheck (3 lines)
+         */
+        public Data<T> copy(final Data<?> left, final Data<?> right) {
             try {
                 final Constructor<Data<T>> ctor =
                     (Constructor<Data<T>>) left.getClass()
@@ -97,9 +107,15 @@ public class EObool implements Data<Boolean> {
                         return result;
                     }
                 );
-            } catch (NoSuchMethodException | IllegalAccessException
+            } catch (final NoSuchMethodException | IllegalAccessException
                 | InstantiationException | InvocationTargetException ex) {
-                throw new IllegalStateException(ex);
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't make a copy of %s",
+                        left.getClass()
+                    ),
+                    ex
+                );
             }
         }
     }
