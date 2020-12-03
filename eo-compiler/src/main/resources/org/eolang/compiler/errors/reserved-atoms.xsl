@@ -24,23 +24,34 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="reserved-atoms" version="2.0">
   <xsl:template match="/program/errors">
-    <xsl:variable name="atoms" select="tokenize('string char float integer hex', '\s+')"/>
+    <xsl:variable name="atoms" select="tokenize('bytes string char float integer', '\s+')"/>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@base and not(contains(@base, '.')) and not(@data)]">
-        <xsl:if test="index-of($atoms, @base) and not(text())">
-          <xsl:element name="error">
-            <xsl:attribute name="check">
-              <xsl:text>reserved-atoms</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:text>You can't copy "</xsl:text>
-            <xsl:value-of select="@base"/>
-            <xsl:text>" as a normal object</xsl:text>
-          </xsl:element>
-        </xsl:if>
+      <xsl:for-each select="//o[@base and not(contains(@base, '.')) and not(@data) and index-of($atoms, @base) &gt; 0]">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>reserved-atoms</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>You can't copy "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>" as a normal object</xsl:text>
+        </xsl:element>
+      </xsl:for-each>
+      <xsl:for-each select="//o[@name and index-of($atoms, @name) &gt; 0]">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>reserved-atoms</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>You can't use "</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>" as a name of your object, it's a reserved name</xsl:text>
+        </xsl:element>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>

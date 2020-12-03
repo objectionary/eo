@@ -46,7 +46,7 @@ public final class EOsprintfTest {
                     new EOstring("John"),
                     new EOinteger(2L)
                 )
-            ).take(String.class),
+            ).𝜑(String.class),
             Matchers.equalTo("Hello, John 2!")
         );
     }

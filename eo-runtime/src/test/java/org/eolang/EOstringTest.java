@@ -38,7 +38,7 @@ public final class EOstringTest {
     public void encapsulatesString() {
         final String key = "hey";
         MatcherAssert.assertThat(
-            new Data.End(new EOstring(key)).take(String.class),
+            new Data.End(new EOstring(key)).𝜑(String.class),
             Matchers.equalTo(key)
         );
     }

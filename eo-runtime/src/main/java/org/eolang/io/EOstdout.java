@@ -63,9 +63,9 @@ public final class EOstdout implements Data<Boolean> {
     }
 
     @Override
-    public Boolean take() {
+    public Boolean 𝜑() {
         this.stream.print(
-            new Data.End(this.text).take(String.class)
+            new Data.End(this.text).𝜑(String.class)
         );
         return true;
     }

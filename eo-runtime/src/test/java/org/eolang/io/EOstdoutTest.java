@@ -26,7 +26,6 @@ package org.eolang.io;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.eolang.Data;
-import org.eolang.EObool;
 import org.eolang.EOstring;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -48,7 +47,7 @@ public final class EOstdoutTest {
                 new EOstring(text),
                 new PrintStream(baos)
             )
-        ).take(EObool.class);
+        ).𝜑(Boolean.class);
         MatcherAssert.assertThat(
             baos.toString(),
             Matchers.equalTo(text)

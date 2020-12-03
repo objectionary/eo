@@ -56,7 +56,7 @@ public final class EOinteger implements Data<Long> {
     }
 
     @Override
-    public Long take() {
+    public Long 𝜑() {
         return this.value.value();
     }
 
@@ -67,14 +67,14 @@ public final class EOinteger implements Data<Long> {
      *
      * @return New number
      */
-    public Operator<Long, EOinteger> add() {
+    public Operator<Long, EOinteger> eoadd() {
         return new Operator<>(
             this,
             EOinteger.class,
             (start, args) -> {
                 long sum = start;
                 for (final Data<Long> arg : args) {
-                    sum += arg.take();
+                    sum += arg.𝜑();
                 }
                 return sum;
             }
@@ -85,11 +85,11 @@ public final class EOinteger implements Data<Long> {
      * Subtract a number.
      * @return New number
      */
-    public Operator<Long, EOinteger> sub() {
+    public Operator<Long, EOinteger> eosub() {
         return new Operator<>(
             this,
             EOinteger.class,
-            (start, args) -> start - args.get(0).take()
+            (start, args) -> start - args.get(0).𝜑()
         );
     }
 
@@ -97,14 +97,14 @@ public final class EOinteger implements Data<Long> {
      * Multiply by the number.
      * @return New number
      */
-    public Operator<Long, EOinteger> mul() {
+    public Operator<Long, EOinteger> eomul() {
         return new Operator<>(
             this,
             EOinteger.class,
             (start, args) -> {
                 long sum = start;
                 for (final Data<Long> arg : args) {
-                    sum *= arg.take();
+                    sum *= arg.𝜑();
                 }
                 return sum;
             }
@@ -115,11 +115,11 @@ public final class EOinteger implements Data<Long> {
      * Divide by the number.
      * @return New number
      */
-    public Operator<Long, EOinteger> div() {
+    public Operator<Long, EOinteger> eodiv() {
         return new Operator<>(
             this,
             EOinteger.class,
-            (start, args) -> start - args.get(0).take()
+            (start, args) -> start - args.get(0).𝜑()
         );
     }
 
@@ -127,7 +127,7 @@ public final class EOinteger implements Data<Long> {
      * Inverse the sign.
      * @return New number
      */
-    public Operator<Long, EOinteger> neg() {
+    public Operator<Long, EOinteger> eoneg() {
         return new Operator<>(
             this,
             EOinteger.class,
@@ -139,7 +139,7 @@ public final class EOinteger implements Data<Long> {
      * MOD operation.
      * @return New number
      */
-    public Operator<Long, EOinteger> mod() {
+    public Operator<Long, EOinteger> eomod() {
         return new Operator<>(
             this,
             EOinteger.class,

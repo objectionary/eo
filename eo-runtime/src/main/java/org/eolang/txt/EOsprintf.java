@@ -57,13 +57,13 @@ public final class EOsprintf implements Data<String> {
     }
 
     @Override
-    public String take() {
+    public String 𝜑() {
         final Collection<Object> items = new LinkedList<>();
         for (final Data<?> arg : this.arguments) {
-            items.add(new Data.End(arg).take(Object.class));
+            items.add(new Data.End(arg).𝜑(Object.class));
         }
         return String.format(
-            new Data.End(this.format).take(String.class),
+            new Data.End(this.format).𝜑(String.class),
             items.toArray()
         );
     }

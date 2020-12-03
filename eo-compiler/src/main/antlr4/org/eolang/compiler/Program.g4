@@ -163,11 +163,13 @@ has
 
 data
   :
+  BYTES
+  |
   BOOL
   |
   STRING
   |
-  INTEGER
+  INT
   |
   FLOAT
   |
@@ -212,10 +214,11 @@ EOL
   }
   ;
 
+BYTES: (('0'..'9' | 'A'..'F') '-')+;
 BOOL: 'true' | 'false';
 CHAR: '\'' (LETTER | DIGIT) '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
-INTEGER: (PLUS | MINUS)? DIGIT+;
+INT: (PLUS | MINUS)? DIGIT+;
 FLOAT: (PLUS | MINUS)? DIGIT+ DOT DIGIT+;
 HEX: '0x' (DIGIT | 'a'..'f')+;
 

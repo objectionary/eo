@@ -35,7 +35,7 @@ public interface Data<T> {
      * Take the take out.
      * @return The take
      */
-    T take();
+    T 𝜑();
 
     /**
      * End point.
@@ -48,9 +48,9 @@ public interface Data<T> {
             this.object = src;
         }
         @SuppressWarnings("unchecked")
-        public <X> X take(final Class<X> type) {
+        public <X> X 𝜑(final Class<X> type) {
             if (this.object instanceof Data) {
-                return ((Data<X>) this.object).take();
+                return ((Data<X>) this.object).𝜑();
             } else {
                 throw new TypeMismatchException(
                     String.format(

@@ -45,7 +45,7 @@ public final class EOfloat implements Data<Double> {
     }
 
     @Override
-    public Double take() {
+    public Double 𝜑() {
         return this.value;
     }
 }

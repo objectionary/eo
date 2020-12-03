@@ -255,12 +255,16 @@ public final class XeListener implements ProgramListener {
         this.dirs.up();
     }
 
+    // @checkstyle ExecutableStatementCountCheck (100 lines)
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
-        if (ctx.BOOL() != null) {
+        if (ctx.BYTES() != null) {
+            type = "bytes";
+            data = ctx.getText().replace("-", " ").trim();
+        } else if (ctx.BOOL() != null) {
             type = "bool";
             data = Boolean.toString(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.CHAR() != null) {
@@ -269,18 +273,14 @@ public final class XeListener implements ProgramListener {
         } else if (ctx.FLOAT() != null) {
             type = "float";
             data = Float.toString(Float.parseFloat(ctx.getText()));
-        } else if (ctx.INTEGER() != null) {
+        } else if (ctx.INT() != null) {
             type = "integer";
             data = Long.toString(Long.parseLong(ctx.getText()));
         } else if (ctx.HEX() != null) {
-            type = "hex";
-            data = String.format(
-                "0x%s",
-                Long.toString(
-                    // @checkstyle MagicNumberCheck (2 line)
-                    Long.parseLong(ctx.getText().substring(2), 16),
-                    16
-                )
+            type = "integer";
+            data = Long.toString(
+                // @checkstyle MagicNumberCheck (1 line)
+                Long.parseLong(ctx.getText().substring(2), 16)
             );
         } else if (ctx.STRING() != null) {
             type = "string";

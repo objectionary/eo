@@ -45,8 +45,64 @@ public final class EObool implements Data<Boolean> {
     }
 
     @Override
-    public Boolean take() {
+    public Boolean 𝜑() {
         return this.value;
     }
+
+    /**
+     * Makes a fork.
+     *
+     * new EObool(true).if().cp("left", "right")
+     *
+     * @return Result
+     */
+    public <T> EObool.OpIf<T> eoif() {
+        return new EObool.OpIf<>();
+    }
+
+    /**
+     * Operator IF.
+     *
+     * @param <T> The type of return
+     * @since 0.1
+     */
+    public final class OpIf <T> {
+        public T cp(final T left, final T right) {
+            final T result;
+            if (EObool.this.𝜑()) {
+                result = left;
+            } else {
+                result =right;
+            }
+            return result;
+        }
+    }
+
+//    /**
+//     * Makes a WHILE.
+//     *
+//     * new EObool(true).while().cp("result")
+//     *
+//     * @return Result
+//     */
+//    public <T> EObool.OpIf<T> eowhile() {
+//        return new EObool.OpWhile<>();
+//    }
+//
+//    /**
+//     * Operator WHILE.
+//     *
+//     * @param <T> The type of return
+//     * @since 0.1
+//     */
+//    public final class OpWhile <Data<T>> {
+//        public T cp(final T body) {
+//            final T result;
+//            while (EObool.this.𝜑()) {
+//                result = body.𝜑;
+//            }
+//            return result;
+//        }
+//    }
 
 }

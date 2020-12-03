@@ -45,7 +45,7 @@ public final class EOstring implements Data<String> {
     }
 
     @Override
-    public String take() {
+    public String 𝜑() {
         return this.value;
     }
 }
