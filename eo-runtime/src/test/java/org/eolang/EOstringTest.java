@@ -38,8 +38,16 @@ public final class EOstringTest {
     public void encapsulatesString() {
         final String key = "hey";
         MatcherAssert.assertThat(
-            new Data.End(new EOstring(key)).𝜑(String.class),
+            new EOstring(key).get(),
             Matchers.equalTo(key)
+        );
+    }
+
+    @Test
+    public void instanceWithScalar() {
+        MatcherAssert.assertThat(
+            new EOstring(() -> "Hi").get(),
+            Matchers.equalTo("Hi")
         );
     }
 

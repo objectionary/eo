@@ -27,44 +27,29 @@ package org.eolang.txt;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eolang.Data;
+import org.eolang.EOstring;
 
 /**
  * Sprintf.
  *
  * @since 0.2
  */
-public final class EOsprintf implements Data<String> {
-
-    /**
-     * The format.
-     */
-    private final Data<String> format;
-
-    /**
-     * Arguments.
-     */
-    private final Data<?>[] arguments;
+public final class EOsprintf extends EOstring {
 
     /**
      * Ctor.
-     * @param fmt Format
+     * @param format Format
      * @param args Args
      */
-    public EOsprintf(final Data<String> fmt,
-        final Data<?>... args) {
-        this.format = fmt;
-        this.arguments = args;
-    }
-
-    @Override
-    public String 𝜑() {
-        final Collection<Object> items = new LinkedList<>();
-        for (final Data<?> arg : this.arguments) {
-            items.add(new Data.End(arg).𝜑(Object.class));
-        }
-        return String.format(
-            new Data.End(this.format).𝜑(String.class),
-            items.toArray()
+    public EOsprintf(final Data<String> format, final Data<?>... args) {
+        super(
+            () -> {
+                final Collection<Object> items = new LinkedList<>();
+                for (final Data<?> arg : args) {
+                    items.add(arg.get());
+                }
+                return String.format(format.get(), items.toArray());
+            }
         );
     }
 }

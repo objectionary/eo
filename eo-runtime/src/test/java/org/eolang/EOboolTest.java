@@ -35,14 +35,20 @@ import org.junit.jupiter.api.Test;
 public final class EOboolTest {
 
     @Test
+    public void instanceWithScalar() {
+        MatcherAssert.assertThat(
+            new EObool(() -> true).get(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     public void makesFork() {
         MatcherAssert.assertThat(
-            new Data.End(
-                new EObool(true).eoif().cp(
-                    new EOstring("Hello"),
-                    new EOstring("world")
-                )
-            ).take(String.class),
+            new EObool(true).eoif().cp(
+                new EOstring("Hello"),
+                new EOstring("world")
+            ).get(),
             Matchers.equalTo("Hello")
         );
     }

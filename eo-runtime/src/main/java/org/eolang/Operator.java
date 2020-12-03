@@ -74,7 +74,7 @@ public final class Operator <D, T extends Data<D>> {
         try {
             return this.type.getConstructor(Scalar.class).newInstance(
                 (Scalar<D>) () -> this.reduce.calc(
-                    this.start.take(),
+                    this.start.get(),
                     new ListOf<>(args)
                 )
             );

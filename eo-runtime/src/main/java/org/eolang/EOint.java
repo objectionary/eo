@@ -32,7 +32,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.1
  */
-public final class EOinteger implements Data<Long> {
+public final class EOint implements Data<Long> {
 
     /**
      * The value.
@@ -43,7 +43,7 @@ public final class EOinteger implements Data<Long> {
      * Ctor.
      * @param val The value
      */
-    public EOinteger(final long val) {
+    public EOint(final long val) {
         this(() -> val);
     }
 
@@ -51,12 +51,12 @@ public final class EOinteger implements Data<Long> {
      * Ctor.
      * @param val The value
      */
-    public EOinteger(final Scalar<Long> val) {
+    public EOint(final Scalar<Long> val) {
         this.value = new Unchecked<>(val);
     }
 
     @Override
-    public Long 𝜑() {
+    public Long get() {
         return this.value.value();
     }
 
@@ -67,14 +67,14 @@ public final class EOinteger implements Data<Long> {
      *
      * @return New number
      */
-    public Operator<Long, EOinteger> eoadd() {
+    public Operator<Long, EOint> eoadd() {
         return new Operator<>(
             this,
-            EOinteger.class,
+            EOint.class,
             (start, args) -> {
                 long sum = start;
                 for (final Data<Long> arg : args) {
-                    sum += arg.𝜑();
+                    sum += arg.get();
                 }
                 return sum;
             }
@@ -85,11 +85,11 @@ public final class EOinteger implements Data<Long> {
      * Subtract a number.
      * @return New number
      */
-    public Operator<Long, EOinteger> eosub() {
+    public Operator<Long, EOint> eosub() {
         return new Operator<>(
             this,
-            EOinteger.class,
-            (start, args) -> start - args.get(0).𝜑()
+            EOint.class,
+            (start, args) -> start - args.get(0).get()
         );
     }
 
@@ -97,14 +97,14 @@ public final class EOinteger implements Data<Long> {
      * Multiply by the number.
      * @return New number
      */
-    public Operator<Long, EOinteger> eomul() {
+    public Operator<Long, EOint> eomul() {
         return new Operator<>(
             this,
-            EOinteger.class,
+            EOint.class,
             (start, args) -> {
                 long sum = start;
                 for (final Data<Long> arg : args) {
-                    sum *= arg.𝜑();
+                    sum *= arg.get();
                 }
                 return sum;
             }
@@ -115,11 +115,11 @@ public final class EOinteger implements Data<Long> {
      * Divide by the number.
      * @return New number
      */
-    public Operator<Long, EOinteger> eodiv() {
+    public Operator<Long, EOint> eodiv() {
         return new Operator<>(
             this,
-            EOinteger.class,
-            (start, args) -> start - args.get(0).𝜑()
+            EOint.class,
+            (start, args) -> start - args.get(0).get()
         );
     }
 
@@ -127,10 +127,10 @@ public final class EOinteger implements Data<Long> {
      * Inverse the sign.
      * @return New number
      */
-    public Operator<Long, EOinteger> eoneg() {
+    public Operator<Long, EOint> eoneg() {
         return new Operator<>(
             this,
-            EOinteger.class,
+            EOint.class,
             (start, args) -> -start
         );
     }
@@ -139,10 +139,10 @@ public final class EOinteger implements Data<Long> {
      * MOD operation.
      * @return New number
      */
-    public Operator<Long, EOinteger> eomod() {
+    public Operator<Long, EOint> eomod() {
         return new Operator<>(
             this,
-            EOinteger.class,
+            EOint.class,
             (start, args) -> -start
         );
     }

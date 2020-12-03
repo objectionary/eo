@@ -24,28 +24,39 @@
 
 package org.eolang;
 
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
+
 /**
  * STRING.
  *
  * @since 0.1
  */
-public final class EOstring implements Data<String> {
+public class EOstring implements Data<String> {
 
     /**
      * The value.
      */
-    private final String value;
+    private final Unchecked<String> value;
 
     /**
      * Ctor.
      * @param val The value
      */
     public EOstring(final String val) {
-        this.value = val;
+        this(() -> val);
+    }
+
+    /**
+     * Ctor.
+     * @param val The value
+     */
+    public EOstring(final Scalar<String> val) {
+        this.value = new Unchecked<>(val);
     }
 
     @Override
-    public String 𝜑() {
-        return this.value;
+    public final String get() {
+        return this.value.value();
     }
 }

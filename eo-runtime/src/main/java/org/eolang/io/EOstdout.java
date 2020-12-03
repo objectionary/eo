@@ -26,23 +26,14 @@ package org.eolang.io;
 
 import java.io.PrintStream;
 import org.eolang.Data;
+import org.eolang.EObool;
 
 /**
  * Stdout.
  *
  * @since 0.1
  */
-public final class EOstdout implements Data<Boolean> {
-
-    /**
-     * The text to print.
-     */
-    private final Data<String> text;
-
-    /**
-     * The print stream to print to.
-     */
-    private final PrintStream stream;
+public final class EOstdout extends EObool {
 
     /**
      * Ctor.
@@ -54,19 +45,16 @@ public final class EOstdout implements Data<Boolean> {
 
     /**
      * Ctor.
-     * @param txt The text to print
-     * @param out The output stream
+     * @param stream The text to print
+     * @param text The output stream
      */
-    public EOstdout(final Data<String> txt, final PrintStream out) {
-        this.text = txt;
-        this.stream = out;
+    public EOstdout(final Data<String> text, final PrintStream stream) {
+        super(
+            () -> {
+                stream.print(text.get());
+                return true;
+            }
+        );
     }
 
-    @Override
-    public Boolean 𝜑() {
-        this.stream.print(
-            new Data.End(this.text).𝜑(String.class)
-        );
-        return true;
-    }
 }

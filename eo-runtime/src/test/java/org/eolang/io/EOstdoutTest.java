@@ -25,7 +25,6 @@ package org.eolang.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.eolang.Data;
 import org.eolang.EOstring;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,12 +41,10 @@ public final class EOstdoutTest {
     public void printsString() {
         final String text = "Hello, друг!";
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Data.End(
-            new EOstdout(
-                new EOstring(text),
-                new PrintStream(baos)
-            )
-        ).𝜑(Boolean.class);
+        new EOstdout(
+            new EOstring(text),
+            new PrintStream(baos)
+        ).get();
         MatcherAssert.assertThat(
             baos.toString(),
             Matchers.equalTo(text)

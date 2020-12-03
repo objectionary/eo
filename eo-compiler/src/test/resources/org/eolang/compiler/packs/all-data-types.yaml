@@ -7,6 +7,7 @@ tests:
   - //o[@base='int' and @name='intX' and @data]
   - //o[@base='float' and @name='floatX' and @data]
   - //o[@base='string' and @name='stringX' and @data]
+  - //o[@base='char' and @name='charX' and @data]
 eo: |
   01- > bytesX
 

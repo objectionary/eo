@@ -35,32 +35,6 @@ public interface Data<T> {
      * Take the take out.
      * @return The take
      */
-    T 𝜑();
-
-    /**
-     * End point.
-     *
-     * @since 0.1
-     */
-    final class End {
-        private final Object object;
-        public End(final Object src) {
-            this.object = src;
-        }
-        @SuppressWarnings("unchecked")
-        public <X> X 𝜑(final Class<X> type) {
-            if (this.object instanceof Data) {
-                return ((Data<X>) this.object).𝜑();
-            } else {
-                throw new TypeMismatchException(
-                    String.format(
-                        "Can't cast from %s to Data<%s>",
-                        this.object.getClass(),
-                        type
-                    )
-                );
-            }
-        }
-    }
+    T get();
 
 }

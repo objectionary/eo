@@ -24,28 +24,39 @@
 
 package org.eolang;
 
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
+
 /**
  * FLOAT.
  *
  * @since 0.1
  */
-public final class EOfloat implements Data<Double> {
+public class EOfloat implements Data<Double> {
 
     /**
      * The value.
      */
-    private final double value;
+    private final Unchecked<Double> value;
 
     /**
      * Ctor.
      * @param val The value
      */
     public EOfloat(final double val) {
-        this.value = val;
+        this(() -> val);
+    }
+
+    /**
+     * Ctor.
+     * @param val The value
+     */
+    public EOfloat(final Scalar<Double> val) {
+        this.value = new Unchecked<>(val);
     }
 
     @Override
-    public Double 𝜑() {
-        return this.value;
+    public final Double get() {
+        return this.value.value();
     }
 }

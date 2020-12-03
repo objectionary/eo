@@ -23,8 +23,7 @@
  */
 package org.eolang.txt;
 
-import org.eolang.Data;
-import org.eolang.EOinteger;
+import org.eolang.EOint;
 import org.eolang.EOstring;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,13 +39,11 @@ public final class EOsprintfTest {
     @Test
     public void printsSimpleText() {
         MatcherAssert.assertThat(
-            new Data.End(
-                new EOsprintf(
-                    new EOstring("Hello, %s %d!"),
-                    new EOstring("John"),
-                    new EOinteger(2L)
-                )
-            ).𝜑(String.class),
+            new EOsprintf(
+                new EOstring("Hello, %s %d!"),
+                new EOstring("John"),
+                new EOint(2L)
+            ).get(),
             Matchers.equalTo("Hello, John 2!")
         );
     }

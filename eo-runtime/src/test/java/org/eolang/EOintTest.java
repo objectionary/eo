@@ -28,20 +28,18 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOinteger}.
+ * Test case for {@link EOint}.
  *
  * @since 0.1
  */
-public final class EOintegerTest {
+public final class EOintTest {
 
     @Test
     public void addsNumbers() {
         MatcherAssert.assertThat(
-            new Data.End(
-                new EOinteger(1L).eoadd().cp(
-                    new EOinteger(5L), new EOinteger(-1L)
-                )
-            ).𝜑(Long.class),
+            new EOint(1L).eoadd().cp(
+                new EOint(5L), new EOint(-1L)
+            ).get(),
             Matchers.equalTo(5L)
         );
     }
@@ -49,11 +47,9 @@ public final class EOintegerTest {
     @Test
     public void multipliesNumbers() {
         MatcherAssert.assertThat(
-            new Data.End(
-                new EOinteger(2L).eomul().cp(
-                    new EOinteger(4L), new EOinteger(-2L)
-                )
-            ).𝜑(Long.class),
+            new EOint(2L).eomul().cp(
+                new EOint(4L), new EOint(-2L)
+            ).get(),
             Matchers.equalTo(-16L)
         );
     }

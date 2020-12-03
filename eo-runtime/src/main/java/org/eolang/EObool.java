@@ -24,29 +24,42 @@
 
 package org.eolang;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
+
 /**
  * BOOLEAN.
  *
  * @since 0.1
  */
-public final class EObool implements Data<Boolean> {
+public class EObool implements Data<Boolean> {
 
     /**
      * The value.
      */
-    private final boolean value;
+    private final Unchecked<Boolean> value;
 
     /**
      * Ctor.
      * @param val The value
      */
     public EObool(final boolean val) {
-        this.value = val;
+        this(() -> val);
+    }
+
+    /**
+     * Ctor.
+     * @param val The value
+     */
+    public EObool(final Scalar<Boolean> val) {
+        this.value = new Unchecked<>(val);
     }
 
     @Override
-    public Boolean 𝜑() {
-        return this.value;
+    public final Boolean get() {
+        return this.value.value();
     }
 
     /**
@@ -66,43 +79,28 @@ public final class EObool implements Data<Boolean> {
      * @param <T> The type of return
      * @since 0.1
      */
+    @SuppressWarnings("unchecked")
     public final class OpIf <T> {
-        public T cp(final T left, final T right) {
-            final T result;
-            if (EObool.this.𝜑()) {
-                result = left;
-            } else {
-                result =right;
+        public Data<T> cp(final Data<?> left, final Data<?> right) {
+            try {
+                final Constructor<Data<T>> ctor =
+                    (Constructor<Data<T>>) left.getClass()
+                        .getDeclaredConstructor(Scalar.class);
+                return ctor.newInstance(
+                    (Scalar<T>) () -> {
+                        final T result;
+                        if (EObool.this.get()) {
+                            result = (T) left.get();
+                        } else {
+                            result = (T) right.get();
+                        }
+                        return result;
+                    }
+                );
+            } catch (NoSuchMethodException | IllegalAccessException
+                | InstantiationException | InvocationTargetException ex) {
+                throw new IllegalStateException(ex);
             }
-            return result;
         }
     }
-
-//    /**
-//     * Makes a WHILE.
-//     *
-//     * new EObool(true).while().cp("result")
-//     *
-//     * @return Result
-//     */
-//    public <T> EObool.OpIf<T> eowhile() {
-//        return new EObool.OpWhile<>();
-//    }
-//
-//    /**
-//     * Operator WHILE.
-//     *
-//     * @param <T> The type of return
-//     * @since 0.1
-//     */
-//    public final class OpWhile <Data<T>> {
-//        public T cp(final T body) {
-//            final T result;
-//            while (EObool.this.𝜑()) {
-//                result = body.𝜑;
-//            }
-//            return result;
-//        }
-//    }
-
 }
