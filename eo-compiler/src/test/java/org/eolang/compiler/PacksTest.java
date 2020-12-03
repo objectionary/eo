@@ -87,6 +87,7 @@ public final class PacksTest {
             "catches-reserved-atoms.yaml",
             "catches-noname-attrs.yaml",
             "catches-same-line-name.yaml",
+            "all-data-types.yaml",
             "fixes-globals.yaml",
             "adds-refs.yaml",
             "float-vars.yaml",

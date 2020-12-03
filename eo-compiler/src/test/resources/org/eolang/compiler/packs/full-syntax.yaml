@@ -8,7 +8,7 @@ tests:
   - //o[@base='string']
   - //o[@base='char' and text()='e']
   - //o[@base='float' and text()='500.43']
-  - //o[@base='integer' and text()='31']
+  - //o[@base='int' and text()='31']
   - //o[@base='string' and text()='Hello, world!']
   - //o[@name='hello' and @const]
   - //o[@as='i']

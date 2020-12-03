@@ -274,10 +274,10 @@ public final class XeListener implements ProgramListener {
             type = "float";
             data = Float.toString(Float.parseFloat(ctx.getText()));
         } else if (ctx.INT() != null) {
-            type = "integer";
+            type = "int";
             data = Long.toString(Long.parseLong(ctx.getText()));
         } else if (ctx.HEX() != null) {
-            type = "integer";
+            type = "int";
             data = Long.toString(
                 // @checkstyle MagicNumberCheck (1 line)
                 Long.parseLong(ctx.getText().substring(2), 16)

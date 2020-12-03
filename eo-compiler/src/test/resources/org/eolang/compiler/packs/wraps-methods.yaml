@@ -7,7 +7,7 @@ tests:
   - //o[@base='.foo' and count(./o)=1]
   - //o[@base='.trim' and count(./o)=2]
   - //o[@base='.trim']/o[1][@base='.get']
-  - //o[@base='.trim']/o[2][@base='integer']
+  - //o[@base='.trim']/o[2][@base='int']
 eo: |
   [args] > app
     stdout

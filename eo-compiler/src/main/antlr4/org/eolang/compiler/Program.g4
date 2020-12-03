@@ -214,7 +214,9 @@ EOL
   }
   ;
 
-BYTES: (('0'..'9' | 'A'..'F') '-')+;
+fragment BYTE: [0-9A-F][0-9A-F] MINUS;
+BYTES: BYTE (BYTE* [0-9A-F][0-9A-F])?;
+
 BOOL: 'true' | 'false';
 CHAR: '\'' (LETTER | DIGIT) '\'';
 STRING: '"' ('\\"' | ~'"')* '"';

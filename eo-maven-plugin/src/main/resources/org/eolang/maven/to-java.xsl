@@ -307,12 +307,7 @@ SOFTWARE.
     <xsl:text>"</xsl:text>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.integer' and not(*) and normalize-space()]">
-    <xsl:text>new EOinteger(</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>L)</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@base='org.eolang.hex' and not(*) and normalize-space()]">
+  <xsl:template match="o[@base='org.eolang.int' and not(*) and normalize-space()]">
     <xsl:text>new EOinteger(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>L)</xsl:text>
