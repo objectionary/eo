@@ -79,6 +79,7 @@ public final class PacksTest {
             "simple.yaml",
             "full-syntax.yaml",
             "catches-name-duplicates.yaml",
+            "catches-abstract-decoratee.yaml",
             "catches-alias-duplicates.yaml",
             "catches-global-nonames.yaml",
             "catches-broken-aliases.yaml",

@@ -99,11 +99,6 @@ SOFTWARE.
         <xsl:value-of select="$TAB"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:apply-templates select="." mode="body">
-          <xsl:with-param name="indent">
-            <xsl:value-of select="$TAB"/>
-          </xsl:with-param>
-        </xsl:apply-templates>
         <xsl:apply-templates select="o[@name and @base]" mode="method">
           <xsl:with-param name="indent">
             <xsl:value-of select="$TAB"/>
@@ -154,52 +149,6 @@ SOFTWARE.
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$TAB"/>
     <xsl:text>return _;</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:text>}</xsl:text>
-    <xsl:value-of select="$EOL"/>
-  </xsl:template>
-  <xsl:template match="o[eo:abstract(.)]" mode="body">
-    <xsl:param name="indent"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:text>@Override</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:text>public Phi 𝜑() {</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:value-of select="$TAB"/>
-    <xsl:choose>
-      <xsl:when test="o[not(@name)]">
-        <xsl:text>return </xsl:text>
-        <xsl:apply-templates select="o[not(@name)]">
-          <xsl:with-param name="indent">
-            <xsl:value-of select="$indent"/>
-            <xsl:value-of select="$TAB"/>
-          </xsl:with-param>
-        </xsl:apply-templates>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>throw new RuntimeException(</xsl:text>
-        <xsl:value-of select="$EOL"/>
-        <xsl:value-of select="$indent"/>
-        <xsl:value-of select="$TAB"/>
-        <xsl:value-of select="$TAB"/>
-        <xsl:choose>
-          <xsl:when test="o[@name='msg']">
-            <xsl:text>this.msg().𝜑().toString()</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>String.format("Runtime exception at %s", this.getClass())</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:value-of select="$EOL"/>
-        <xsl:value-of select="$indent"/>
-        <xsl:value-of select="$TAB"/>
-        <xsl:text>)</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>;</xsl:text>
     <xsl:value-of select="$EOL"/>
     <xsl:value-of select="$indent"/>
     <xsl:text>}</xsl:text>

@@ -88,7 +88,7 @@ public final class ToJava {
                 ).with(new ClasspathSources()),
                 new ListOf<>(
                     "/org/eolang/compiler/globals-to-abstracts.xsl",
-                    "/org/eolang/compiler/float-abstracts.xsl",
+                    "/org/eolang/compiler/abstracts-float-up.xsl",
                     "to-java.xsl"
                 )
             )
