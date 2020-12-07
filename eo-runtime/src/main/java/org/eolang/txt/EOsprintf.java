@@ -34,7 +34,7 @@ import org.eolang.EOstring;
  *
  * @since 0.2
  */
-public final class EOsprintf extends EOstring {
+public class EOsprintf extends EOstring {
 
     /**
      * Ctor.

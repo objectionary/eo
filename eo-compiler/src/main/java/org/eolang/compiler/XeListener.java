@@ -154,18 +154,31 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
-        for (final TerminalNode attr : ctx.NAME()) {
-            this.dirs.add("o")
-                .attr("line", ctx.getStart().getLine())
-                .attr("name", attr.getText())
-                .up();
+        if (ctx.ATOM() != null) {
+            this.dirs.attr("atom", "");
         }
         this.dirs.up();
     }
 
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
-        // This method is created by ANTLR and can't be removed
+    }
+
+    @Override
+    public void enterArgument(final ProgramParser.ArgumentContext ctx) {
+        this.enter();
+        this.dirs.add("o")
+            .attr("line", ctx.getStart().getLine())
+            .attr("name", ctx.NAME().getText());
+        if (ctx.DOTS() != null) {
+            this.dirs.attr("vararg", "");
+        }
+        this.dirs.up().up();
+    }
+
+    @Override
+    public void exitArgument(final ProgramParser.ArgumentContext ctx) {
+        // nothing
     }
 
     @Override

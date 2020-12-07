@@ -72,7 +72,7 @@ public class EObool implements Data<Boolean> {
      * @checkstyle NonStaticMethodCheck (3 lines)
      */
     public final <T> EObool.OpIf<T> eoif() {
-        return new EObool.OpIf<>();
+        return new EObool.OpIf<>(this.value);
     }
 
     /**
@@ -82,7 +82,14 @@ public class EObool implements Data<Boolean> {
      * @since 0.1
      */
     @SuppressWarnings("unchecked")
-    public final class OpIf<T> {
+    public final class OpIf<T> extends EObool {
+        /**
+         * Ctor.
+         * @param val The value
+         */
+        public OpIf(final Scalar<Boolean> val) {
+            super(val);
+        }
         /**
          * Make a copy.
          *
@@ -99,7 +106,7 @@ public class EObool implements Data<Boolean> {
                 return ctor.newInstance(
                     (Scalar<T>) () -> {
                         final T result;
-                        if (EObool.this.get()) {
+                        if (this.get()) {
                             result = (T) left.get();
                         } else {
                             result = (T) right.get();

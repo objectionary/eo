@@ -3,7 +3,7 @@ tests:
   - /program/license[text()!='']
   - /program/metas[count(meta)=3]
   - /program/metas/meta[head='foo' and tail='']
-  - /program/objects[count(o)=5]
+  - /program/objects[count(o)=6]
   - //o[@base='bool']
   - //o[@base='string']
   - //o[@base='char' and text()='e']
@@ -14,6 +14,7 @@ tests:
   - //o[@as='i']
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
+  - //o[@atom and @name='atom' and count(o)=2 and o[@vararg and @name='a']]
 eo: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
@@ -27,6 +28,8 @@ eo: |
 
   # This is just a simple string
   "Hello, world!" > hello!
+
+  [tt a...]? > atom
 
   [x] > first
     second > hello

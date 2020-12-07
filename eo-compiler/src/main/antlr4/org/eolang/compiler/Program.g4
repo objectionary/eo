@@ -68,9 +68,16 @@ object
 abstraction
   :
   LSQ
-  (NAME (SPACE NAME)*)?
+  (argument (SPACE argument)*)?
   RSQ
+  ATOM?
   suffix?
+  ;
+
+argument
+  :
+  NAME
+  DOTS?
   ;
 
 tail
@@ -181,7 +188,9 @@ data
 COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
+DOTS: '...';
 CONST: '!';
+ATOM: '?';
 COLON: ':';
 ARROW: '>';
 PLUS: '+';

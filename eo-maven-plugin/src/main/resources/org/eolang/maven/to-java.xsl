@@ -69,9 +69,13 @@ SOFTWARE.
         <xsl:text>import org.eolang.sys.*;</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$EOL"/>
-        <xsl:text>public final class </xsl:text>
+        <xsl:text>public class </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text> implements Phi {</xsl:text>
+        <xsl:if test="o[@name='@']">
+          <xsl:text> extends </xsl:text>
+          <xsl:value-of select="eo:class-name(o[@name='@']/@base)"/>
+        </xsl:if>
+        <xsl:text> {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$TAB"/>
         <xsl:text>public static final </xsl:text>

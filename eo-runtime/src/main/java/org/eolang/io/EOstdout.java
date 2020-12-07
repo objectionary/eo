@@ -33,7 +33,7 @@ import org.eolang.EObool;
  *
  * @since 0.1
  */
-public final class EOstdout extends EObool {
+public class EOstdout extends EObool {
 
     /**
      * Ctor.
