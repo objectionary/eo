@@ -83,6 +83,7 @@ public final class PacksTest {
             "catches-alias-duplicates.yaml",
             "catches-global-nonames.yaml",
             "catches-broken-aliases.yaml",
+            "catches-middle-vararg.yaml",
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",
             "catches-reserved-atoms.yaml",
