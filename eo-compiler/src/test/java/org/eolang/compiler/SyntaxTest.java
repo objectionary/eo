@@ -38,17 +38,17 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class ProgramTest {
+public final class SyntaxTest {
 
     @Test
     public void compilesSimpleCode() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Program program = new Program(
-            "test-works",
+        final Syntax syntax = new Syntax(
+            "test",
             new ResourceOf("org/eolang/compiler/fibonacci.eo"),
             new OutputTo(baos)
         );
-        program.compile();
+        syntax.parse();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new String(baos.toByteArray())
@@ -62,12 +62,12 @@ public final class ProgramTest {
         Assertions.assertThrows(
             CompileException.class,
             () -> {
-                final Program program = new Program(
-                    "broken-test",
+                final Syntax syntax = new Syntax(
+                    "test-it",
                     new InputOf("this code is definitely wrong"),
                     new DeadOutput()
                 );
-                program.compile();
+                syntax.parse();
             }
         );
     }

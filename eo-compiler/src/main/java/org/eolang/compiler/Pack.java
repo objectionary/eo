@@ -56,7 +56,6 @@ public final class Pack implements Iterable<XSL> {
                 "errors/broken-aliases.xsl",
                 "errors/duplicate-aliases.xsl",
                 "errors/global-nonames.xsl",
-                "errors/noname-attributes.xsl",
                 "errors/reserved-atoms.xsl",
                 "errors/same-line-names.xsl",
                 "errors/self-naming.xsl",
@@ -65,7 +64,8 @@ public final class Pack implements Iterable<XSL> {
                 "vars-float-up.xsl",
                 "add-refs.xsl",
                 "resolve-aliases.xsl",
-                "errors/unknown-names.xsl"
+                "errors/unknown-names.xsl",
+                "errors/noname-attributes.xsl"
             )
         );
     }

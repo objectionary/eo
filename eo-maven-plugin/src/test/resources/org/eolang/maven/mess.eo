@@ -20,6 +20,8 @@
 # alpha > beta
 #   alpha
 #     'Z'
-[] > main
-  stdout > @
+[n x] > test
+  "dude!" > @
+  n.hello > f
     "Hello, world!"
+    x

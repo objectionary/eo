@@ -29,22 +29,12 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.io.UncheckedInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.TextOf;
 
 /**
  * Program.
@@ -55,46 +45,38 @@ import org.cactoos.text.TextOf;
 public final class Program {
 
     /**
-     * The name of it.
+     * XML to optimize.
      */
-    private final String name;
+    private final XML source;
 
     /**
-     * Text to parse.
-     */
-    private final Input input;
-
-    /**
-     * Target to save XML to.
+     * Target to save XMLs to.
      */
     private final Output target;
 
     /**
      * Ctor.
      *
-     * @param nme The name of it
-     * @param ipt Input text
+     * @param dom XML to optimize
      * @param file The file to write the XML to
      */
-    public Program(final String nme, final Input ipt, final Path file) {
-        this(nme, ipt, new OutputTo(file));
+    public Program(final XML dom, final Path file) {
+        this(dom, new OutputTo(file));
     }
 
     /**
      * Ctor.
      *
-     * @param nme The name of it
-     * @param ipt Input text
+     * @param dom XML to optimize
      * @param tgt Target
      */
-    public Program(final String nme, final Input ipt, final Output tgt) {
-        this.name = nme;
-        this.input = ipt;
+    public Program(final XML dom, final Output tgt) {
+        this.source = dom;
         this.target = tgt;
     }
 
     /**
-     * Compile it to XML and save (with default set of XSLs).
+     * Compile it to XMLs and save (with default set of XSLs).
      * @throws IOException If fails
      */
     public void compile() throws IOException {
@@ -131,59 +113,22 @@ public final class Program {
      */
     public void compile(final Iterable<XSL> xsls,
         final Program.Spy spy) throws IOException {
-        final String[] lines = new TextOf(this.input).asString().split("\n");
-        final ANTLRErrorListener errors = new BaseErrorListener() {
-            // @checkstyle ParameterNumberCheck (10 lines)
-            @Override
-            public void syntaxError(final Recognizer<?, ?> recognizer,
-                final Object symbol, final int line,
-                final int position, final String msg,
-                final RecognitionException error) {
-                throw new CompileException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg,
-                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        lines.length < line ? "EOF" : lines[line - 1]
-                    ),
-                    error
-                );
-            }
-        };
-        final ProgramLexer lexer =
-            new ProgramLexer(
-                CharStreams.fromStream(
-                    new UncheckedInput(this.input).stream()
-                )
-            );
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errors);
-        final ProgramParser parser =
-            new ProgramParser(
-                new CommonTokenStream(lexer)
-            );
-        parser.removeErrorListeners();
-        parser.addErrorListener(errors);
-        final XeListener xel = new XeListener(this.name);
-        new ParseTreeWalker().walk(xel, parser.program());
-        XML dom = xel.xml();
-        Logger.debug(this, "Raw XML:\n%s", dom.toString());
         int index = 0;
+        XML before = this.source;
         for (final XSL xsl : xsls) {
-            final XML after = xsl.transform(dom);
+            final XML after = xsl.transform(before);
             spy.push(index, xsl, after);
             ++index;
-            dom = after;
+            before = after;
         }
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
-                    new InputOf(dom.toString()),
+                    new InputOf(before.toString()),
                     this.target
                 )
             )
         ).value();
-        Logger.debug(this, "Input of %d EO lines compiled", lines.length);
     }
 
     /**

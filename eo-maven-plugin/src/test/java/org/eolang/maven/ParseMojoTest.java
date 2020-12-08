@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
@@ -32,58 +31,63 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
+import org.eolang.compiler.CompileException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link CompileMojo}.
+ * Test case for {@link ParseMojo}.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class CompileMojoTest extends AbstractMojoTestCase {
+public final class ParseMojoTest extends AbstractMojoTestCase {
 
     @Test
     public void testSimpleCompilation() throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
+        final Path target = temp.resolve("target");
         new LengthOf(
             new TeeInput(
                 new InputOf(
-                    "[args] > main\n  (stdout \"Hello!\").print > x\n"
+                    "[args] > main\n  (stdout \"Hello!\").print\n"
                 ),
                 new OutputTo(src.resolve("main.eo"))
             )
         ).value();
-        final Path target = temp.resolve("target");
-        final Path generated = temp.resolve("generated");
         new Mojo<>(ParseMojo.class)
             .with("project", new MavenProjectStub())
-            .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
-            .execute();
-        new Mojo<>(OptimizeMojo.class)
-            .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .execute();
-        new Mojo<>(CompileMojo.class)
-            .with("project", new MavenProjectStub())
-            .with("targetDir", target.toFile())
-            .with("generatedDir", generated.toFile())
-            .execute();
-        final Path java = generated.resolve("EOmain.java");
         MatcherAssert.assertThat(
-            Files.exists(java),
+            Files.exists(target.resolve("eo/parse/main.eo.xml")),
             Matchers.is(true)
         );
-        final String code = new TextOf(new InputOf(java)).asString();
-        Logger.info(this, "Java output:\n%s", code);
-        MatcherAssert.assertThat(
-            code,
-            Matchers.containsString("class EOmain")
+    }
+
+    @Test
+    public void testCrashOnInvalidSyntax() throws Exception {
+        final Path temp = Files.createTempDirectory("eo");
+        final Path src = temp.resolve("src");
+        final Path target = temp.resolve("target");
+        new LengthOf(
+            new TeeInput(
+                new InputOf("something is wrong here"),
+                new OutputTo(src.resolve("f.eo"))
+            )
+        ).value();
+        Assertions.assertThrows(
+            CompileException.class,
+            () -> new Mojo<>(ParseMojo.class)
+                .with("project", new MavenProjectStub())
+                .with("sourcesDir", src.toFile())
+                .with("targetDir", target.toFile())
+                .execute()
         );
     }
 

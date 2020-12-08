@@ -24,6 +24,7 @@
 package org.eolang.compiler;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Map;
@@ -54,9 +55,13 @@ public final class PacksTest {
             )
         );
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Program program = new Program(
+        new Syntax(
             pack,
             new InputOf(String.format("%s\n", map.get("eo"))),
+            new OutputTo(baos)
+        ).parse();
+        final Program program = new Program(
+            new XMLDocument(baos.toString()),
             new OutputTo(baos)
         );
         final Collection<String> xsls = (Collection<String>) map.get("xsls");

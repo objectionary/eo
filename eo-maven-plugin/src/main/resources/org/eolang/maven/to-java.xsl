@@ -86,7 +86,7 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
         <xsl:for-each select="o[@name and not(@base) and not(o)]">
           <xsl:value-of select="$TAB"/>
-          <xsl:text>private Phi </xsl:text>
+          <xsl:text>private Object </xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>;</xsl:text>
           <xsl:value-of select="$EOL"/>
@@ -125,9 +125,9 @@ SOFTWARE.
     <xsl:text> cp(</xsl:text>
     <xsl:for-each select="o[@name and not(@base) and not(o)]">
       <xsl:if test="position()!=1">
-        <xsl:text>,</xsl:text>
+        <xsl:text>, </xsl:text>
       </xsl:if>
-      <xsl:text>final Phi </xsl:text>
+      <xsl:text>final Object </xsl:text>
       <xsl:value-of select="@name"/>
     </xsl:for-each>
     <xsl:text>) {</xsl:text>
@@ -161,8 +161,15 @@ SOFTWARE.
   <xsl:template match="o[@name and @base]" mode="method">
     <xsl:param name="indent"/>
     <xsl:value-of select="$indent"/>
-    <xsl:text>public Phi </xsl:text>
-    <xsl:value-of select="@name"/>
+    <xsl:text>public Object </xsl:text>
+    <xsl:choose>
+      <xsl:when test="@name='@'">
+        <xsl:text>_origin</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="$EOL"/>
     <xsl:value-of select="$indent"/>
@@ -188,6 +195,10 @@ SOFTWARE.
       <xsl:when test="$b and eo:abstract($b)">
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>.𝑥</xsl:text>
+      </xsl:when>
+      <xsl:when test="$b[@name and not(@base)]">
+        <xsl:text>this.</xsl:text>
+        <xsl:value-of select="@base"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>this.</xsl:text>
