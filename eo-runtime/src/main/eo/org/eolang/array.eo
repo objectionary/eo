@@ -1,0 +1,13 @@
+[b] > array
+
+  # Reduce from start "a" using the function "f"
+  [a f] > reduce /a
+
+  # Map with index
+  [f] > mapi /array
+
+  # Map without index
+  [f] > map
+    mapi
+      [x i]
+        f x

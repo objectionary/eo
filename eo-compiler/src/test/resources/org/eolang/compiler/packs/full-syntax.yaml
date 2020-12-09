@@ -29,7 +29,7 @@ eo: |
   # This is just a simple string
   "Hello, world!" > hello!
 
-  [tt a...]? > atom
+  [tt a...] > atom /int
 
   [x] > first
     second > hello

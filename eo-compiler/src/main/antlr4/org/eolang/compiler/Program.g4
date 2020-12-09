@@ -70,8 +70,7 @@ abstraction
   LSQ
   (argument (SPACE argument)*)?
   RSQ
-  ATOM?
-  suffix?
+  (suffix (SPACE SLASH NAME)?)?
   ;
 
 argument
@@ -190,7 +189,7 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 DOTS: '...';
 CONST: '!';
-ATOM: '?';
+SLASH: '/';
 COLON: ':';
 ARROW: '>';
 PLUS: '+';

@@ -1,0 +1,12 @@
+[b] > int
+  [] > neg | int
+  [x...] > add /int
+  [x...] > sub
+    x.reduce
+      $
+      [a b]
+        a.add b.neg
+  [x...] > mul /int
+  [x...] > div /int
+  [x] > mod /int
+

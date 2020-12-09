@@ -155,8 +155,8 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
-        if (ctx.ATOM() != null) {
-            this.dirs.attr("atom", "");
+        if (ctx.SLASH() != null) {
+            this.dirs.attr("atom", ctx.NAME());
         }
         this.dirs.up();
     }
