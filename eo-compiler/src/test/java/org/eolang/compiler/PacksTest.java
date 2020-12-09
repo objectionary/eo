@@ -97,6 +97,7 @@ public final class PacksTest {
             "all-data-types.yaml",
             "fixes-globals.yaml",
             "adds-refs.yaml",
+            "adds-default-package.yaml",
             "float-vars.yaml",
             "float-abstracts.yaml",
             "resolves-aliases.yaml",

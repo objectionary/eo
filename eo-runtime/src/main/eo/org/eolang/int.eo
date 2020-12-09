@@ -7,7 +7,7 @@
 
   # Subtract some numbers from the current one
   [x...] > sub
-    x.reduce
+    x.reduce > @
       $
       [a b]
         a.add b.neg

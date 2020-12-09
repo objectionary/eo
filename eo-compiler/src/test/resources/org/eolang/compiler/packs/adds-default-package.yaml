@@ -1,13 +1,11 @@
 xsls:
   - add-refs.xsl
   - resolve-aliases.xsl
+  - add-default-package.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
-  - /program/metas/meta[head='foo' and @line='4']
-  - /program/metas[count(meta)=1]
-  - //o[@base='org.eolang.io.stdout' and @line='9']
-  - //o[@base='and' and @line='7']
+  - //o[@base='org.eolang.and' and @line='7']
   - //o[@base='$']
 eo: |
   +alias stdout org.eolang.io.stdout

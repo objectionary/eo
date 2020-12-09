@@ -65,6 +65,7 @@ public final class Pack implements Iterable<XSL> {
                 "vars-float-up.xsl",
                 "add-refs.xsl",
                 "resolve-aliases.xsl",
+                "add-default-package.xsl",
                 "errors/unknown-names.xsl",
                 "errors/noname-attributes.xsl"
             )
