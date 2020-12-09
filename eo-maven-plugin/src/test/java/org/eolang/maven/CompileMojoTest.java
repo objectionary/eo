@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
@@ -51,10 +52,8 @@ public final class CompileMojoTest {
         final Path src = temp.resolve("src");
         new LengthOf(
             new TeeInput(
-                new InputOf(
-                    "[args] > main\n  (stdout \"Hello!\").print > x\n"
-                ),
-                new OutputTo(src.resolve("main.eo"))
+                new ResourceOf("/org/eolang/maven/mess.eo"),
+                new OutputTo(src.resolve("mess.eo"))
             )
         ).value();
         final Path target = temp.resolve("target");
@@ -71,7 +70,7 @@ public final class CompileMojoTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .execute();
-        final Path java = generated.resolve("EOmain.java");
+        final Path java = generated.resolve("EOmess.java");
         MatcherAssert.assertThat(
             Files.exists(java),
             Matchers.is(true)

@@ -1,12 +1,23 @@
 [b] > int
-  [] > neg | int
+  # Change the sign of the number
+  [] > neg /int
+
+  # Add a few more numbers to the current one
   [x...] > add /int
+
+  # Subtract some numbers from the current one
   [x...] > sub
     x.reduce
       $
       [a b]
         a.add b.neg
+
+  # Multiply this one by some other numbers
   [x...] > mul /int
+
+  # Divide this one by others
   [x...] > div /int
+
+  # Calculate MOD
   [x] > mod /int
 

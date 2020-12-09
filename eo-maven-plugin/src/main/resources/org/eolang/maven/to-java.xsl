@@ -69,8 +69,6 @@ SOFTWARE.
         <xsl:apply-templates select="/program/metas/meta[head='package']"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:text>import org.eolang.sys.*;</xsl:text>
-        <xsl:value-of select="$EOL"/>
         <xsl:value-of select="$EOL"/>
         <xsl:text>public class </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
