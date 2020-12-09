@@ -83,6 +83,7 @@ public final class XeListener implements ProgramListener {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
+            .add("listing").set(ctx.getText()).up()
             .add("errors").up();
     }
 
