@@ -132,6 +132,7 @@ public final class CompileMojo extends AbstractMojo {
         final Path temp = this.targetDir.toPath().resolve("eo/compile");
         try {
             final XML xml = new XMLDocument(file);
+            final String name = xml.xpath("/program/@name").get(0);
             final XML out = new XSLDocument(
                 new TextOf(
                     new ResourceOf("org/eolang/maven/to-java.xsl")
@@ -142,12 +143,7 @@ public final class CompileMojo extends AbstractMojo {
                     new TeeInput(
                         new InputOf(out.toString()),
                         new OutputTo(
-                            temp.resolve(
-                                String.format(
-                                    "%s.xml",
-                                    xml.xpath("/program/@name").get(0)
-                                )
-                            )
+                            temp.resolve(String.format("%s.xml", name))
                         )
                     )
                 )
@@ -156,7 +152,8 @@ public final class CompileMojo extends AbstractMojo {
             for (final XML error : errors) {
                 Logger.error(
                     this,
-                    "[%s] %s",
+                    "[%s:%s] %s",
+                    name,
                     error.xpath("@line").get(0),
                     error.xpath("text()").get(0)
                 );

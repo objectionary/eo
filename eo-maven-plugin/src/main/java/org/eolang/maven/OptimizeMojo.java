@@ -110,7 +110,8 @@ public final class OptimizeMojo extends AbstractMojo {
             new Program(new XMLDocument(file), new OutputTo(baos)).compile(
                 new Pack()
                     .with("globals-to-abstracts.xsl")
-                    .with("abstracts-float-up.xsl"),
+                    .with("abstracts-float-up.xsl")
+                    .with("errors/broken-refs.xsl"),
                 new TargetSpy(dir)
             );
             final Path target = this.targetDir.toPath()

@@ -1,7 +1,9 @@
 xsls:
   - add-refs.xsl
   - abstracts-float-up.xsl
+  - errors/same-line-names.xsl
   - errors/duplicate-names.xsl
+  - errors/broken-refs.xsl
 tests:
   - /program/objects[count(o)=7]
   - /program/errors[count(*)=0]

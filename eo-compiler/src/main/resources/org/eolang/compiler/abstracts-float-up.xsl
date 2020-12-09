@@ -84,10 +84,17 @@ SOFTWARE.
     </xsl:for-each>
   </xsl:function>
   <xsl:template match="o[eo:abstract(.)]">
+    <xsl:variable name="o" select="."/>
     <xsl:element name="o">
-      <xsl:apply-templates select="@* except @base"/>
+      <xsl:apply-templates select="@*[name()!='base' and name()!='line']"/>
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
+      </xsl:attribute>
+      <xsl:attribute name="ref">
+        <xsl:value-of select="@line"/>
+      </xsl:attribute>
+      <xsl:attribute name="cut">
+        <xsl:value-of select="count(preceding::o)"/>
       </xsl:attribute>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
       <xsl:for-each select="1 to count($ancestors) - 1">
@@ -101,6 +108,8 @@ SOFTWARE.
               </xsl:for-each>
             </xsl:attribute>
             <xsl:attribute name="ref">
+              <xsl:value-of select="$o/@line"/>
+              <xsl:text>.</xsl:text>
               <xsl:value-of select="@line"/>
             </xsl:attribute>
             <xsl:attribute name="base">
@@ -115,6 +124,7 @@ SOFTWARE.
     </xsl:element>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]" mode="top">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="name">
         <xsl:value-of select="eo:name-of(.)"/>
@@ -132,6 +142,8 @@ SOFTWARE.
               </xsl:for-each>
             </xsl:attribute>
             <xsl:attribute name="line">
+              <xsl:value-of select="$o/@line"/>
+              <xsl:text>.</xsl:text>
               <xsl:value-of select="@line"/>
             </xsl:attribute>
           </xsl:element>
