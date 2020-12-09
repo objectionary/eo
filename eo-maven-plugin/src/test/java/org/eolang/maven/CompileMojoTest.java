@@ -52,7 +52,7 @@ public final class CompileMojoTest {
         final Path src = temp.resolve("src");
         new LengthOf(
             new TeeInput(
-                new ResourceOf("/org/eolang/maven/mess.eo"),
+                new ResourceOf("org/eolang/maven/mess.eo"),
                 new OutputTo(src.resolve("mess.eo"))
             )
         ).value();
@@ -79,7 +79,7 @@ public final class CompileMojoTest {
         Logger.info(this, "Java output:\n%s", code);
         MatcherAssert.assertThat(
             code,
-            Matchers.containsString("class EOmain")
+            Matchers.containsString("class EOmess")
         );
     }
 

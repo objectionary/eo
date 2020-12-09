@@ -57,7 +57,7 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="concat($p, 'EO', $c)"/>
   </xsl:function>
-  <xsl:template match="o[eo:abstract(.)]">
+  <xsl:template match="o[eo:abstract(.) and not(@atom)]">
     <xsl:copy>
       <xsl:apply-templates select="@* except @name"/>
       <xsl:attribute name="name">
@@ -125,7 +125,7 @@ SOFTWARE.
     <xsl:value-of select="$indent"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
-    <xsl:text> cp(</xsl:text>
+    <xsl:text> _copy(</xsl:text>
     <xsl:for-each select="o[@name and not(@base) and not(o)]">
       <xsl:if test="position()!=1">
         <xsl:text>, </xsl:text>
@@ -247,7 +247,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:if test="count(o) &gt; $skip">
-      <xsl:text>.cp(</xsl:text>
+      <xsl:text>._copy(</xsl:text>
       <xsl:value-of select="$EOL"/>
       <xsl:value-of select="$indent"/>
       <xsl:for-each select="o[position() &gt; $skip]">

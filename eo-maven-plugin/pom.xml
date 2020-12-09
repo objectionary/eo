@@ -160,8 +160,8 @@ SOFTWARE.
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
               <excludes>
-                <exclude>checkstyle:/src/it/.*</exclude>
-                <exclude>pmd:/src/it/.*</exclude>
+                <exclude>checkstyle:/src/it.*</exclude>
+                <exclude>pmd:/src/it.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
                 <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
               </excludes>
