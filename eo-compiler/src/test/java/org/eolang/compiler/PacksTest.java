@@ -89,6 +89,7 @@ public final class PacksTest {
             "catches-global-nonames.yaml",
             "catches-broken-aliases.yaml",
             "catches-middle-vararg.yaml",
+            "catches-nonempty-atoms.yaml",
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",
             "catches-reserved-atoms.yaml",
