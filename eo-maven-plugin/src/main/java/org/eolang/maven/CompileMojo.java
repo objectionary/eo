@@ -172,8 +172,8 @@ public final class CompileMojo extends AbstractMojo {
             if (!errors.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(
-                        "There are %d errors, see log above",
-                        errors.size()
+                        "There are %d errors in %s, see log above",
+                        errors.size(), file
                     )
                 );
             }
