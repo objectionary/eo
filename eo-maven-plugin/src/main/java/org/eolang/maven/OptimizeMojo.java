@@ -109,18 +109,21 @@ public final class OptimizeMojo extends AbstractMojo {
             new Program(
                 new XMLDocument(file), new OutputTo(baos)
             ).compile(new TargetSpy(dir));
+            final Path target = this.targetDir.toPath()
+                .resolve("eo/optimize")
+                .resolve(name);
             new IoChecked<>(
                 new LengthOf(
                     new TeeInput(
                         new InputOf(baos.toString()),
-                        new OutputTo(
-                            this.targetDir.toPath()
-                                .resolve("eo/optimize")
-                                .resolve(name)
-                        )
+                        new OutputTo(target)
                     )
                 )
             ).value();
+            Logger.info(
+                this, "%s optimized to %s, all steps are in %s",
+                file, target, dir
+            );
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(
@@ -132,7 +135,6 @@ public final class OptimizeMojo extends AbstractMojo {
                 ex
             );
         }
-        Logger.info(this, "%s optimized to %s", file, dir);
     }
 
 }
