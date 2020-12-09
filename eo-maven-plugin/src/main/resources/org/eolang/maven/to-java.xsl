@@ -26,10 +26,13 @@ SOFTWARE.
   <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
   <xsl:variable name="EOL">
-    <xsl:value-of select="'&#x0a;'"/>
+    <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
+  </xsl:variable>
+  <xsl:variable name="x">
+    <xsl:value-of select="'&#x1D465;'"/>
   </xsl:variable>
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -80,7 +83,9 @@ SOFTWARE.
         <xsl:value-of select="$TAB"/>
         <xsl:text>public static final </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text> 𝑥 = new </xsl:text>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="$x"/>
+        <xsl:text> = new </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
         <xsl:text>();</xsl:text>
         <xsl:value-of select="$EOL"/>
@@ -194,7 +199,8 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="$b and eo:abstract($b)">
         <xsl:value-of select="eo:class-name($b/@name)"/>
-        <xsl:text>.𝑥</xsl:text>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="$x"/>
       </xsl:when>
       <xsl:when test="$b[@name and not(@base)]">
         <xsl:text>this.</xsl:text>
@@ -231,7 +237,8 @@ SOFTWARE.
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(@ref) and (* or not(normalize-space()))]">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:class-name(@base)"/>
-    <xsl:text>.𝑥</xsl:text>
+    <xsl:text>.</xsl:text>
+    <xsl:value-of select="$x"/>
     <xsl:apply-templates select="." mode="copy">
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>

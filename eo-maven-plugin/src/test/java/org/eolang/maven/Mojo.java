@@ -24,41 +24,61 @@
 package org.eolang.maven;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.ReflectionUtils;
 
 /**
  * Mutable mojo builder.
  *
+ * @param <T> Type of mojo
  * @since 0.1
  */
-final class Mojo <T extends AbstractMojo> {
+final class Mojo<T extends AbstractMojo> {
 
+    /**
+     * The type of mojo.
+     */
     private final Class<T> type;
 
+    /**
+     * All attributes.
+     */
     private final Map<String, Object> attrs;
 
+    /**
+     * Ctor.
+     *
+     * @param tpe The type
+     */
     Mojo(final Class<T> tpe) {
         this.type = tpe;
         this.attrs = new HashMap<>(0);
     }
 
+    /**
+     * Add one more attribute and return self.
+     *
+     * @param attr The name
+     * @param value The value
+     * @return Itself
+     */
     public Mojo<T> with(final String attr, final Object value) {
         this.attrs.put(attr, value);
         return this;
     }
 
+    /**
+     * Execute it.
+     */
     public void execute() {
         try {
-            final AbstractMojo mojo = this.type.newInstance();
+            final AbstractMojo mojo = this.type.getConstructor().newInstance();
             for (final Map.Entry<String, Object> ent : this.attrs.entrySet()) {
-                final Field field =
-                    ReflectionUtils.getFieldByNameIncludingSuperclasses(
-                        ent.getKey(), this.type);
+                final Field field = this.type.getDeclaredField(ent.getKey());
                 if (field == null) {
                     throw new IllegalStateException(
                         String.format(
@@ -73,8 +93,11 @@ final class Mojo <T extends AbstractMojo> {
                 field.set(mojo, ent.getValue());
             }
             mojo.execute();
-        } catch (MojoExecutionException | MojoFailureException | InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(e);
+        } catch (final MojoExecutionException | MojoFailureException
+            | InstantiationException | IllegalAccessException
+            | NoSuchMethodException | InvocationTargetException
+            | NoSuchFieldException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 

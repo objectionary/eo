@@ -23,42 +23,45 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link CompileMojo}.
+ * Test case for {@link PullMojo}.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class CompileMojoTest {
+public final class PullMojoTest {
 
     @Test
-    public void testSimpleCompilation() throws Exception {
+    @Disabled
+    public void testSimpleOptimize() throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new LengthOf(
             new TeeInput(
                 new InputOf(
-                    "[args] > main\n  (stdout \"Hello!\").print > x\n"
+                    String.join(
+                        "\n",
+                        "+alias stdout org.eolang.io.stdout",
+                        "",
+                        "[args] > main\n  (stdout \"Hello!\").print\n"
+                    )
                 ),
                 new OutputTo(src.resolve("main.eo"))
             )
         ).value();
         final Path target = temp.resolve("target");
-        final Path generated = temp.resolve("generated");
         new Mojo<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
@@ -66,21 +69,12 @@ public final class CompileMojoTest {
         new Mojo<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
-        new Mojo<>(CompileMojo.class)
-            .with("project", new MavenProjectStub())
+        new Mojo<>(PullMojo.class)
             .with("targetDir", target.toFile())
-            .with("generatedDir", generated.toFile())
             .execute();
-        final Path java = generated.resolve("EOmain.java");
         MatcherAssert.assertThat(
-            Files.exists(java),
+            Files.exists(target.resolve("eo/pull/org/stdout/io/stdout.eo.xml")),
             Matchers.is(true)
-        );
-        final String code = new TextOf(new InputOf(java)).asString();
-        Logger.info(this, "Java output:\n%s", code);
-        MatcherAssert.assertThat(
-            code,
-            Matchers.containsString("class EOmain")
         );
     }
 

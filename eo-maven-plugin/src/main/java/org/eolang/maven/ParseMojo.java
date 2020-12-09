@@ -35,7 +35,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -59,12 +58,6 @@ import org.slf4j.impl.StaticLoggerBinder;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 public final class ParseMojo extends AbstractMojo {
-
-    /**
-     * Maven project.
-     */
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
 
     /**
      * Target directory.

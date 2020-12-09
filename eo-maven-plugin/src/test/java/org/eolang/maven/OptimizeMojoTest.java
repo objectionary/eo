@@ -25,8 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -42,7 +40,7 @@ import org.junit.jupiter.api.Test;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class OptimizeMojoTest extends AbstractMojoTestCase {
+public final class OptimizeMojoTest {
 
     @Test
     public void testSimpleOptimize() throws Exception {
@@ -58,12 +56,10 @@ public final class OptimizeMojoTest extends AbstractMojoTestCase {
         ).value();
         final Path target = temp.resolve("target");
         new Mojo<>(ParseMojo.class)
-            .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
         new Mojo<>(OptimizeMojo.class)
-            .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(

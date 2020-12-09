@@ -25,9 +25,9 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.AbstractMojo;
@@ -43,22 +43,21 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
-import org.eolang.compiler.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
- * Optimize XML files.
+ * Pull EO XML files.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
-    name = "optimize",
+    name = "pull",
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-public final class OptimizeMojo extends AbstractMojo {
+public final class PullMojo extends AbstractMojo {
 
     /**
      * From directory.
@@ -73,11 +72,11 @@ public final class OptimizeMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("eo/parse");
+        final Path dir = this.targetDir.toPath().resolve("eo/optimize");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
-                .forEach(file -> this.optimize(dir, file));
+                .forEach(this::pull);
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 new UncheckedText(
@@ -92,47 +91,62 @@ public final class OptimizeMojo extends AbstractMojo {
     }
 
     /**
-     * Optimize XML file after parsing.
+     * Pull all deps found in XML file.
      *
-     * @param home Where it was found
      * @param file EO file
      */
-    private void optimize(final Path home, final Path file) {
-        final String name = file.toString().substring(
-            home.toString().length() + 1
-        );
-        final Path dir = this.targetDir.toPath()
-            .resolve("eo/steps")
-            .resolve(name);
+    private void pull(final Path file) {
         try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Program(
-                new XMLDocument(file), new OutputTo(baos)
-            ).compile(new TargetSpy(dir));
-            new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(baos.toString()),
-                        new OutputTo(
-                            this.targetDir.toPath()
-                                .resolve("eo/optimize")
-                                .resolve(name)
-                        )
-                    )
-                )
-            ).value();
+            final String xpath = String.join(
+                "",
+                "//o[@base and contains(@base, '.') ",
+                "and not(starts-with(@base, '.'))]/@base"
+            );
+            for (final String name : new XMLDocument(file).xpath(xpath)) {
+                this.pull(name);
+            }
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(
                     new FormattedText(
-                        "Can't compile %s into %s",
+                        "Can't pull %s into %s",
                         file, this.targetDir
                     )
                 ).asString(),
                 ex
             );
         }
-        Logger.info(this, "%s optimized to %s", file, dir);
+    }
+
+    /**
+     * Pull one dep.
+     *
+     * @param name Name of the object, e.g. "org.eolang.io.stdout"
+     * @throws IOException If fails
+     */
+    private void pull(final String name) throws IOException {
+        final String res = String.format("/%s.eo.xml", name.replace(".", "/"));
+        final InputStream input = this.getClass().getResourceAsStream(res);
+        if (input == null) {
+            throw new IllegalStateException(
+                String.format(
+                    "Can't find \"%s\" in classpath",
+                    res
+                )
+            );
+        }
+        final Path path = this.targetDir.toPath()
+            .resolve("eo/pull")
+            .resolve(String.format("%s.eo.xml", name.replace(".", "/")));
+        new IoChecked<>(
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(input),
+                    new OutputTo(path)
+                )
+            )
+        ).value();
+        Logger.info(this, "%s pulled to %s", name, path);
     }
 
 }

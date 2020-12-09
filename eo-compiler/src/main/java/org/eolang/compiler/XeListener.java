@@ -162,6 +162,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
+        // Nothing here
     }
 
     @Override
