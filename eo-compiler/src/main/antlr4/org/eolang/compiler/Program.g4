@@ -152,6 +152,8 @@ head
   :
   AT
   |
+  SELF
+  |
   NAME
   |
   NAME DOT
@@ -190,6 +192,7 @@ CONST: '!';
 SLASH: '/';
 COLON: ':';
 ARROW: '>';
+SELF: '$';
 PLUS: '+';
 MINUS: '-';
 SPACE: ' ';
