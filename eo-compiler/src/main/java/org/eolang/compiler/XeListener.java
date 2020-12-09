@@ -232,6 +232,9 @@ public final class XeListener implements ProgramListener {
         if (ctx.AT() != null) {
             this.dirs.attr("base", "@");
         }
+        if (ctx.SELF() != null) {
+            this.dirs.attr("base", "$");
+        }
     }
 
     @Override
