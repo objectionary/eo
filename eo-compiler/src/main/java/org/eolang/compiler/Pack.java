@@ -52,11 +52,12 @@ public final class Pack implements Iterable<XSL> {
     public Pack() {
         this(
             new ListOf<>(
+                "errors/not-empty-atoms.xsl",
+                "errors/middle-varargs.xsl",
                 "errors/duplicate-names.xsl",
                 "errors/broken-aliases.xsl",
                 "errors/duplicate-aliases.xsl",
                 "errors/global-nonames.xsl",
-                "errors/reserved-atoms.xsl",
                 "errors/same-line-names.xsl",
                 "errors/self-naming.xsl",
                 "add-refs.xsl",

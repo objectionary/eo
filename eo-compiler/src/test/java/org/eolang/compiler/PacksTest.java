@@ -92,7 +92,6 @@ public final class PacksTest {
             "catches-nonempty-atoms.yaml",
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",
-            "catches-reserved-atoms.yaml",
             "catches-noname-attrs.yaml",
             "catches-same-line-name.yaml",
             "all-data-types.yaml",
