@@ -10,7 +10,7 @@
     x.reduce > @
       $
       [a b]
-        a.add b.neg
+        a.add b.neg > @
 
   # Multiply this one by some other numbers
   [x...] > mul /int
