@@ -31,13 +31,11 @@ program
 license
   :
   (COMMENT EOL)+
-  EOL
   ;
 
 metas
   :
   (META EOL)+
-  EOL
   ;
 
 objects
@@ -46,7 +44,6 @@ objects
     (COMMENT EOL)*
     object
     EOL
-    EOL?
   )+
   ;
 
@@ -67,6 +64,7 @@ object
 
 abstraction
   :
+  (COMMENT EOL)*
   LSQ
   (argument (SPACE argument)*)?
   RSQ
@@ -204,7 +202,7 @@ AT: '@';
 HASH: '#';
 EOL
   :
-  [\r\n]
+  [\r\n]+
   SPACE*
   {
     int tabs = getText().replaceAll("[\r\n]+", "").length() / 2;
