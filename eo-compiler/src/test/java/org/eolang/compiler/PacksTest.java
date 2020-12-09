@@ -23,6 +23,7 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -70,6 +71,7 @@ public final class PacksTest {
         } else {
             program.compile(new Pack(xsls));
         }
+        Logger.debug(this, "Output XML:\n%s", baos.toString());
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(baos.toString()),

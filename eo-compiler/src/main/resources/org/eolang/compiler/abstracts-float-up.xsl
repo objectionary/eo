@@ -85,16 +85,9 @@ SOFTWARE.
   </xsl:function>
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
+      <xsl:apply-templates select="@* except @base"/>
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
-      </xsl:attribute>
-      <xsl:if test="@name">
-        <xsl:attribute name="name">
-          <xsl:value-of select="@name"/>
-        </xsl:attribute>
-      </xsl:if>
-      <xsl:attribute name="line">
-        <xsl:value-of select="@line"/>
       </xsl:attribute>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
       <xsl:for-each select="1 to count($ancestors) - 1">

@@ -3,9 +3,11 @@ xsls:
   - abstracts-float-up.xsl
   - errors/duplicate-names.xsl
 tests:
-  - /program/objects[count(o)=6]
+  - /program/objects[count(o)=7]
   - /program/errors[count(*)=0]
   - //objects[not(.//o[@name=''])]
+  - //o[@name='first$2$native' and @atom='int']
+  - //o[@base='first$2$native' and @atom='int']
   - //o[@name='first']
   - //o[@name='first']/o[@base='test' and @as='foo']
   - //o[@name='first$2$second']
@@ -15,6 +17,7 @@ eo: |
   [a b] > first
     test:foo
       a > yes
+      [] > native /int
       [x b] > second
         a > no
         [b c] > third

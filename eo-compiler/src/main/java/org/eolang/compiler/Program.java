@@ -109,10 +109,8 @@ public final class Program {
      *
      * @param xsls List of XSLs to apply
      * @param spy The spy
-     * @throws IOException If fails
      */
-    public void compile(final Iterable<XSL> xsls,
-        final Program.Spy spy) throws IOException {
+    public void compile(final Iterable<XSL> xsls, final Program.Spy spy) {
         int index = 0;
         XML before = this.source;
         for (final XSL xsl : xsls) {

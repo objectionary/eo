@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.io.IOException;
@@ -44,12 +43,12 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
-import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
+import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -130,21 +129,14 @@ public final class CompileMojo extends AbstractMojo {
      * @param file XML file
      */
     private void compile(final Path file) {
-        final Path temp = this.targetDir.toPath().resolve("eo/temp");
+        final Path temp = this.targetDir.toPath().resolve("eo/compile");
         try {
             final XML xml = new XMLDocument(file);
-            final XML out = new XSLChain(
-                new Mapped<>(
-                    doc -> new XSLDocument(
-                        CompileMojo.class.getResourceAsStream(doc)
-                    ).with(new ClasspathSources()),
-                    new ListOf<>(
-                        "/org/eolang/compiler/globals-to-abstracts.xsl",
-                        "/org/eolang/compiler/abstracts-float-up.xsl",
-                        "to-java.xsl"
-                    )
-                )
-            ).transform(xml);
+            final XML out = new XSLDocument(
+                new TextOf(
+                    new ResourceOf("org/eolang/maven/to-java.xsl")
+                ).asString()
+            ).with(new ClasspathSources()).transform(xml);
             new IoChecked<>(
                 new LengthOf(
                     new TeeInput(
@@ -182,7 +174,7 @@ public final class CompileMojo extends AbstractMojo {
                     this.generatedDir.toPath().resolve(
                         Paths.get(
                             String.format(
-                                "%s.java", java.xpath("@name").get(0)
+                                "%s.java", java.xpath("@java-name").get(0)
                             )
                         )
                     ),

@@ -55,14 +55,19 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, 'EO', $c)"/>
+    <xsl:value-of select="concat($p, 'EO', replace($c, '\$', '\$EO'))"/>
   </xsl:function>
+  <xsl:template match="@name">
+    <xsl:attribute name="name">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+    <xsl:attribute name="java-name">
+      <xsl:value-of select="eo:class-name(.)"/>
+    </xsl:attribute>
+  </xsl:template>
   <xsl:template match="o[eo:abstract(.) and not(@atom)]">
     <xsl:copy>
-      <xsl:apply-templates select="@* except @name"/>
-      <xsl:attribute name="name">
-        <xsl:value-of select="eo:class-name(@name)"/>
-      </xsl:attribute>
+      <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
         <xsl:value-of select="$EOL"/>
         <xsl:apply-templates select="/program" mode="license"/>
@@ -164,12 +169,22 @@ SOFTWARE.
   <xsl:template match="o[@name and @base]" mode="method">
     <xsl:param name="indent"/>
     <xsl:value-of select="$indent"/>
-    <xsl:text>public Object </xsl:text>
+    <xsl:text>public </xsl:text>
+    <xsl:choose>
+      <xsl:when test="@atom">
+        <xsl:value-of select="eo:class-name(@atom)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>Object</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text> </xsl:text>
     <xsl:choose>
       <xsl:when test="@name='@'">
         <xsl:text>_origin</xsl:text>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:text>eo</xsl:text>
         <xsl:value-of select="@name"/>
       </xsl:otherwise>
     </xsl:choose>
@@ -206,6 +221,7 @@ SOFTWARE.
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>this.</xsl:text>
+        <xsl:text>eo</xsl:text>
         <xsl:value-of select="@base"/>
         <xsl:text>()</xsl:text>
       </xsl:otherwise>

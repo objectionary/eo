@@ -43,6 +43,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
+import org.eolang.compiler.Pack;
 import org.eolang.compiler.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -106,9 +107,12 @@ public final class OptimizeMojo extends AbstractMojo {
             .resolve(name);
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Program(
-                new XMLDocument(file), new OutputTo(baos)
-            ).compile(new TargetSpy(dir));
+            new Program(new XMLDocument(file), new OutputTo(baos)).compile(
+                new Pack()
+                    .with("globals-to-abstracts.xsl")
+                    .with("abstracts-float-up.xsl"),
+                new TargetSpy(dir)
+            );
             final Path target = this.targetDir.toPath()
                 .resolve("eo/optimize")
                 .resolve(name);
