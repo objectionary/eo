@@ -84,9 +84,8 @@ SOFTWARE.
     </xsl:for-each>
   </xsl:function>
   <xsl:template match="o[eo:abstract(.)]">
-    <xsl:variable name="o" select="."/>
     <xsl:element name="o">
-      <xsl:apply-templates select="@*[name()!='base' and name()!='line']"/>
+      <xsl:apply-templates select="@*[name()!='base']"/>
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>
@@ -103,20 +102,12 @@ SOFTWARE.
           <xsl:element name="o">
             <xsl:attribute name="as">
               <xsl:value-of select="@name"/>
-              <xsl:for-each select="1 to $level">
-                <xsl:text>+</xsl:text>
-              </xsl:for-each>
-            </xsl:attribute>
-            <xsl:attribute name="ref">
-              <xsl:value-of select="$o/@line"/>
-              <xsl:text>.</xsl:text>
-              <xsl:value-of select="@line"/>
             </xsl:attribute>
             <xsl:attribute name="base">
               <xsl:value-of select="@name"/>
-              <xsl:for-each select="1 to ($level - 1)">
-                <xsl:text>+</xsl:text>
-              </xsl:for-each>
+            </xsl:attribute>
+            <xsl:attribute name="level">
+              <xsl:value-of select="$level"/>
             </xsl:attribute>
           </xsl:element>
         </xsl:for-each>
@@ -137,9 +128,9 @@ SOFTWARE.
           <xsl:element name="o">
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
-              <xsl:for-each select="1 to $level">
-                <xsl:text>+</xsl:text>
-              </xsl:for-each>
+            </xsl:attribute>
+            <xsl:attribute name="level">
+              <xsl:value-of select="$level"/>
             </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="$o/@line"/>

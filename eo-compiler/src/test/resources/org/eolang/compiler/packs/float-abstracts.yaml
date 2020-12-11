@@ -1,11 +1,13 @@
 xsls:
-  - add-refs.xsl
+  - remove-refs.xsl
   - abstracts-float-up.xsl
+  - remove-levels.xsl
+  - add-refs.xsl
   - errors/same-line-names.xsl
   - errors/duplicate-names.xsl
   - errors/broken-refs.xsl
 tests:
-  - /program/objects[count(o)=7]
+  - /program/objects[count(o)=9]
   - /program/errors[count(*)=0]
   - //objects[not(.//o[@name=''])]
   - //o[@name='first$2$native' and @atom='int']
@@ -14,7 +16,8 @@ tests:
   - //o[@name='first']/o[@base='test' and @as='foo']
   - //o[@name='first$2$second']
   - //o[@name='first$2$second$third']
-  - //o[@name='first$2$second$third']/o[@base='stdout']/o[@base='a' and @ref='1']
+  - //o[@name='first$2$second$third']/o[@base='stdout']/o[@base='a']
+  - //o[@line='20.19' and @name='aa']
 eo: |
   [a b] > first
     test:foo
@@ -33,3 +36,7 @@ eo: |
             "hello, world!" > msg
         []
           "Failure"
+
+  [aa] > ooo
+    [bbb] > fff
+      aa.test > a
