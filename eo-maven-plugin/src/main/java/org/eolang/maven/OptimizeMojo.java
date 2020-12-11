@@ -24,12 +24,14 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -133,6 +135,26 @@ public final class OptimizeMojo extends AbstractMojo {
                 this, "Optimized XML saved to %s:\n%s",
                 target, baos.toString()
             );
+            final List<XML> errors = new XMLDocument(baos.toString())
+                .nodes("/program/errors/error");
+            for (final XML error : errors) {
+                Logger.error(
+                    this,
+                    "[%s:%s] %s (%s)",
+                    name,
+                    error.xpath("@line").get(0),
+                    error.xpath("text()").get(0),
+                    error.xpath("@check").get(0)
+                );
+            }
+            if (!errors.isEmpty()) {
+                throw new IllegalStateException(
+                    String.format(
+                        "There are %d errors in %s, see log above",
+                        errors.size(), file
+                    )
+                );
+            }
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(

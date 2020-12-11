@@ -219,6 +219,15 @@ SOFTWARE.
         <xsl:text>this.</xsl:text>
         <xsl:value-of select="@base"/>
       </xsl:when>
+      <xsl:when test="not($b)">
+        <xsl:message terminate="yes">
+          <xsl:text>Can't find what "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>:</xsl:text>
+          <xsl:value-of select="@ref"/>
+          <xsl:text>" is pointing to</xsl:text>
+        </xsl:message>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:text>this.</xsl:text>
         <xsl:text>eo</xsl:text>

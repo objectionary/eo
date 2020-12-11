@@ -29,7 +29,7 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="//o[@ref and @base]">
         <xsl:variable name="o" select="."/>
-        <xsl:if test="not(//o[@name and @line=$o/@ref])">
+        <xsl:if test="not(//o[@name=$o/@base and @line=$o/@ref])">
           <xsl:element name="error">
             <xsl:attribute name="check">
               <xsl:text>broken-refs</xsl:text>

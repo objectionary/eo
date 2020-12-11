@@ -148,25 +148,6 @@ public final class CompileMojo extends AbstractMojo {
                     )
                 )
             ).value();
-            final List<XML> errors = out.nodes("/program/errors/error");
-            for (final XML error : errors) {
-                Logger.error(
-                    this,
-                    "[%s:%s] %s (%s)",
-                    name,
-                    error.xpath("@line").get(0),
-                    error.xpath("text()").get(0),
-                    error.xpath("@check").get(0)
-                );
-            }
-            if (!errors.isEmpty()) {
-                throw new IllegalStateException(
-                    String.format(
-                        "There are %d errors in %s, see log above",
-                        errors.size(), file
-                    )
-                );
-            }
             for (final XML java : out.nodes("/program/objects/o[java]")) {
                 CompileMojo.save(
                     this.generatedDir.toPath().resolve(
