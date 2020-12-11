@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
@@ -77,5 +78,6 @@ final class TargetSpy implements Program.Spy {
                 )
             )
         ).value();
+        Logger.debug(this, "Step #%d by %s:\n%s", index, file, xml);
     }
 }

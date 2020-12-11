@@ -26,7 +26,9 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
@@ -48,12 +50,37 @@ public final class CompileMojoTest {
 
     @Test
     public void testSimpleCompilation() throws Exception {
+        final String java = this.compile(
+            new ResourceOf("org/eolang/maven/mess.eo"),
+            "EOmess.java"
+        );
+        MatcherAssert.assertThat(java, Matchers.containsString("class EOmess"));
+    }
+
+    @Test
+    public void testRealCompilation() throws Exception {
+        final String java = this.compile(
+            new InputOf(Paths.get("eo-runtime/src/main/eo/org/eolang/array.eo")),
+            "EOarray.java"
+        );
+        MatcherAssert.assertThat(java, Matchers.containsString("class"));
+    }
+
+    /**
+     * Compile EO to Java.
+     * @param code EO sources
+     * @param file The file to return
+     * @return All Java code
+     * @throws Exception If fails
+     */
+    private String compile(final Input code,
+        final String file) throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new LengthOf(
             new TeeInput(
-                new ResourceOf("org/eolang/maven/mess.eo"),
-                new OutputTo(src.resolve("mess.eo"))
+                code,
+                new OutputTo(src.resolve("code.eo"))
             )
         ).value();
         final Path target = temp.resolve("target");
@@ -70,17 +97,14 @@ public final class CompileMojoTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .execute();
-        final Path java = generated.resolve("EOmess.java");
+        final Path java = generated.resolve(file);
         MatcherAssert.assertThat(
             Files.exists(java),
             Matchers.is(true)
         );
-        final String code = new TextOf(new InputOf(java)).asString();
-        Logger.info(this, "Java output:\n%s", code);
-        MatcherAssert.assertThat(
-            code,
-            Matchers.containsString("class EOmess")
-        );
+        final String out = new TextOf(new InputOf(java)).asString();
+        Logger.info(this, "Java output:\n%s", out);
+        return out;
     }
 
 }

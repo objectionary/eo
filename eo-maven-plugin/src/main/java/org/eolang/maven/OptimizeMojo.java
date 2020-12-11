@@ -129,6 +129,10 @@ public final class OptimizeMojo extends AbstractMojo {
                 this, "%s optimized to %s, all steps are in %s",
                 file, target, dir
             );
+            Logger.debug(
+                this, "Optimized XML saved to %s:\n%s",
+                target, baos.toString()
+            );
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(

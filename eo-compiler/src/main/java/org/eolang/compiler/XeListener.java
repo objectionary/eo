@@ -56,12 +56,18 @@ public final class XeListener implements ProgramListener {
     private final Directives dirs;
 
     /**
+     * When we start.
+     */
+    private final long start;
+
+    /**
      * Ctor.
      * @param nme Tha name of it
      */
     public XeListener(final String nme) {
         this.name = nme;
         this.dirs = new Directives();
+        this.start = System.nanoTime();
     }
 
     /**
@@ -89,7 +95,9 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.up();
+        this.dirs
+            .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
+            .up();
     }
 
     @Override

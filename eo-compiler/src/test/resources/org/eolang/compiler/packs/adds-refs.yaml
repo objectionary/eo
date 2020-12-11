@@ -5,7 +5,8 @@ xsls:
   - add-refs.xsl
 tests:
   - /program/errors[count(*)=0]
-  - /program/objects[count(o)=2]
+  - /program/objects[count(o)=3]
+  - //objects[not(//o[@ref and @base='@'])]
   - //o[@base='x' and @ref='1']
   - //o[@base='x' and @ref='4']
   - //o[@base='x' and @line='11' and @ref='4']
@@ -22,7 +23,7 @@ eo: |
       one
         x
         two
-          a
+          a > @
           three
             x
       something > a
@@ -31,3 +32,8 @@ eo: |
     tt
       x 4
       first
+
+  []
+    one
+      [f]
+        1 > ooo
