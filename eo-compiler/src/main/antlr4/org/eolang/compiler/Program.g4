@@ -227,15 +227,11 @@ fragment BYTE: [0-9A-F][0-9A-F] MINUS;
 BYTES: BYTE (BYTE* [0-9A-F][0-9A-F])?;
 
 BOOL: 'true' | 'false';
-CHAR: '\'' (LETTER | DIGIT) '\'';
+CHAR: '\'' [0-9a-zA-Z] '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
-INT: (PLUS | MINUS)? DIGIT+;
-FLOAT: (PLUS | MINUS)? DIGIT+ DOT DIGIT+;
-HEX: '0x' (DIGIT | 'a'..'f')+;
+INT: (PLUS | MINUS)? [0-9]+;
+FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
+HEX: '0x' [0-9a-f]+;
 
-NAME: LO (LETTER | DIGIT)*;
+NAME: [a-z][a-z0-9_A-Z]*;
 
-LETTER: (HI | LO);
-HI: [A-Z];
-LO: [a-z];
-DIGIT: [0-9];
