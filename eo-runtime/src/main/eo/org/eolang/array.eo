@@ -3,10 +3,15 @@
   # Reduce from start "a" using the function "f"
   [a f] > reduce /a
 
-  # Map with index
+  # Map with index. Here "f" must be an abstract
+  # object with two free attributes. The first
+  # one for the element of the array, the second one
+  # for the index.
   [f] > mapi /array
 
-  # Map without index
+  # Map without index. Here "f" must be an abstract
+  # object with one free attribute, for the element
+  # of the array.
   [f] > map
     mapi > @
       [x i]

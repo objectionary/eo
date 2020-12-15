@@ -61,7 +61,7 @@ public final class CompileMojoTest {
     public void testRealCompilation() throws Exception {
         final String java = this.compile(
             new InputOf(Paths.get("eo-runtime/src/main/eo/org/eolang/array.eo")),
-            "EOarray.java"
+            "EOarray$EOmap.java"
         );
         MatcherAssert.assertThat(java, Matchers.containsString("class"));
     }
