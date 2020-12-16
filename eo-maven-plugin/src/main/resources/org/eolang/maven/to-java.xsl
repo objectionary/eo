@@ -25,12 +25,20 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
   <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
-  <xsl:variable name="EOL">
-    <xsl:value-of select="'&#10;'"/>
-  </xsl:variable>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
+  <xsl:function name="eo:eol">
+    <xsl:param name="tabs"/>
+    <xsl:value-of select="'&#10;'"/>
+    <xsl:value-of select="eo:tabs($tabs)"/>
+  </xsl:function>
+  <xsl:function name="eo:tabs">
+    <xsl:param name="n"/>
+    <xsl:for-each select="1 to $n">
+      <xsl:text>  </xsl:text>
+    </xsl:for-each>
+  </xsl:function>
   <xsl:function name="eo:type-of">
     <xsl:param name="root"/>
     <xsl:param name="o"/>
@@ -66,6 +74,17 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="concat($p, 'EO', replace($c, '\$', '\$EO'))"/>
   </xsl:function>
+  <xsl:function name="eo:method-name" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:choose>
+      <xsl:when test="$n='@'">
+        <xsl:text>_origin</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat('eo_', $n)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
   <xsl:template match="@name">
     <xsl:attribute name="name">
       <xsl:value-of select="."/>
@@ -78,27 +97,23 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
-        <xsl:value-of select="$EOL"/>
+        <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="/program" mode="license"/>
         <xsl:apply-templates select="/program/metas/meta[head='package']"/>
         <xsl:text>import org.eolang.*;</xsl:text>
-        <xsl:value-of select="$EOL"/>
-        <xsl:value-of select="$EOL"/>
-        <xsl:text>public class </xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
+        <xsl:value-of select="eo:eol(0)"/>
+        <xsl:text>public final class </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:if test="o[@name='@']">
-          <xsl:text> extends </xsl:text>
-          <xsl:value-of select="eo:class-name(o[@name='@']/@base)"/>
-        </xsl:if>
         <xsl:text> {</xsl:text>
-        <xsl:value-of select="$EOL"/>
+        <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="." mode="attributes"/>
         <xsl:apply-templates select="." mode="ctor"/>
         <xsl:apply-templates select="." mode="_copy"/>
         <xsl:apply-templates select="." mode="_init"/>
         <xsl:apply-templates select="o[@name and @base]" mode="method">
           <xsl:with-param name="indent">
-            <xsl:value-of select="$TAB"/>
+            <xsl:value-of select="eo:tabs(1)"/>
           </xsl:with-param>
         </xsl:apply-templates>
         <xsl:text>}</xsl:text>
@@ -107,60 +122,68 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o" mode="attributes">
     <xsl:for-each select="o[@name and not(@base) and not(o) and not(@level)]">
-      <xsl:value-of select="$TAB"/>
+      <xsl:value-of select="eo:tabs(1)"/>
       <xsl:text>public Object </xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>;</xsl:text>
-      <xsl:value-of select="$EOL"/>
+      <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
   </xsl:template>
   <xsl:template match="o" mode="ctor">
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>(final Object p) {</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$TAB"/>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this._parent = p;</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="o" mode="_call">
+    <xsl:value-of select="eo:tabs(1)"/>
+    <xsl:text>public Object _call(final String m) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>final Method method = this.getClass().getMethod(m);</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>final Method method = this.getClass().getMethod(m);</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>final Method method = this.getClass().getMethod(m);</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>final Method method = this.getClass().getMethod(m);</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o" mode="_copy">
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text> _copy() {</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$TAB"/>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:eol(2)"/>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text> _ = new </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>(this._parent);</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:for-each select="o[@name and not(@base) and not(@level)]">
-      <xsl:value-of select="$TAB"/>
-      <xsl:value-of select="$TAB"/>
+      <xsl:value-of select="eo:tabs(2)"/>
       <xsl:text>_.</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text> = this.</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>;</xsl:text>
-      <xsl:value-of select="$EOL"/>
+      <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
-    <xsl:value-of select="$TAB"/>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:tabs(2)"/>
     <xsl:text>return _;</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o" mode="_init">
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>public void _init(</xsl:text>
     <xsl:for-each select="o[@name and not(@base) and not(@level)]">
       <xsl:if test="position() &gt; 1">
@@ -170,20 +193,19 @@ SOFTWARE.
       <xsl:value-of select="@name"/>
     </xsl:for-each>
     <xsl:text>) {</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:for-each select="o[@name and not(@base) and not(@level)]">
-      <xsl:value-of select="$TAB"/>
-      <xsl:value-of select="$TAB"/>
+      <xsl:value-of select="eo:tabs(2)"/>
       <xsl:text>this.</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text> = </xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>;</xsl:text>
-      <xsl:value-of select="$EOL"/>
+      <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>}</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o" mode="method">
     <xsl:param name="indent"/>
@@ -191,31 +213,23 @@ SOFTWARE.
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@base)"/>
     <xsl:text> </xsl:text>
-    <xsl:choose>
-      <xsl:when test="@name='@'">
-        <xsl:text>_origin</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>eo</xsl:text>
-        <xsl:value-of select="@name"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="eo:method-name(@name)"/>
     <xsl:text>() {</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select=".">
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
-        <xsl:value-of select="$TAB"/>
+        <xsl:value-of select="eo:tabs(1)"/>
       </xsl:with-param>
       <xsl:with-param name="name" select="'ret'"/>
     </xsl:apply-templates>
     <xsl:value-of select="$indent"/>
-    <xsl:value-of select="$TAB"/>
+    <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>return ret;</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="$indent"/>
     <xsl:text>}</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o[@base]">
     <xsl:param name="indent"/>
@@ -259,8 +273,7 @@ SOFTWARE.
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>this.</xsl:text>
-        <xsl:text>eo</xsl:text>
-        <xsl:value-of select="@base"/>
+        <xsl:value-of select="eo:method-name(@base)"/>
         <xsl:text>()</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
@@ -269,7 +282,7 @@ SOFTWARE.
     <xsl:value-of select="$b/@name"/>
     <xsl:text>" at line #</xsl:text>
     <xsl:value-of select="$b/@line"/>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:for-each select="o[not(@level)]">
       <xsl:variable name="n">
         <xsl:value-of select="$name"/>
@@ -280,13 +293,13 @@ SOFTWARE.
         <xsl:with-param name="name" select="$n"/>
         <xsl:with-param name="indent">
           <xsl:value-of select="$indent"/>
-          <xsl:value-of select="$TAB"/>
+          <xsl:value-of select="eo:tabs(1)"/>
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
     <xsl:if test="o">
       <xsl:value-of select="$indent"/>
-      <xsl:value-of select="$TAB"/>
+      <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
       <xsl:text>._init(</xsl:text>
       <xsl:for-each select="o[not(@level)]">
@@ -298,7 +311,7 @@ SOFTWARE.
         <xsl:value-of select="position()"/>
       </xsl:for-each>
       <xsl:text>);</xsl:text>
-      <xsl:value-of select="$EOL"/>
+      <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and o]">
@@ -344,31 +357,31 @@ SOFTWARE.
     <xsl:text>package </xsl:text>
     <xsl:value-of select="tail"/>
     <xsl:text>;</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="/program" mode="license">
     <xsl:text>/*</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * This file was auto-generated by eolang-maven-plugin</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * on </xsl:text>
     <xsl:value-of select="current-dateTime()"/>
     <xsl:text>. Don't edit it,</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * your changes will be discarded on the next build.</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * The sources were compiled to XML on </xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * </xsl:text>
     <xsl:value-of select="@time"/>
     <xsl:text> by the EO compiler v.</xsl:text>
     <xsl:value-of select="@version"/>
     <xsl:text>.</xsl:text>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> */</xsl:text>
-    <xsl:value-of select="$EOL"/>
-    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
