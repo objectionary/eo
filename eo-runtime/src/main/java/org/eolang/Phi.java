@@ -32,6 +32,22 @@ package org.eolang;
 public interface Phi {
 
     /**
+     * Set the attribute.
+     *
+     * @param name The name of the attribute to call
+     * @param phi The object
+     */
+    void _init(String name, Phi phi);
+
+    /**
+     * Set the attribute.
+     *
+     * @param index Index of it
+     * @param phi The object
+     */
+    void _init(int index, Phi phi);
+
+    /**
      * Get the attribute.
      *
      * @param name The name of the attribute to call

@@ -119,7 +119,7 @@ SOFTWARE.
         <xsl:apply-templates select="." mode="ctor"/>
         <xsl:apply-templates select="." mode="_copy"/>
         <xsl:apply-templates select="." mode="_init"/>
-        <xsl:apply-templates select="." mode="_call"/>
+        <xsl:apply-templates select="." mode="_attr"/>
         <xsl:text>}</xsl:text>
       </xsl:element>
     </xsl:copy>
@@ -170,7 +170,9 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="o" mode="_call">
+  <xsl:template match="o" mode="_attr">
+    <xsl:value-of select="eo:tabs(1)"/>
+    <xsl:text>@Override</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public Phi _attr(final String a) {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
@@ -186,7 +188,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(3)"/>
     <xsl:choose>
       <xsl:when test="o[@name='@']">
-        <xsl:text>return this._origin.get()._attr(a);</xsl:text>
+        <xsl:text>return this._origin.get()._attr(attr);</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>throw new IllegalStateException(</xsl:text>
@@ -234,26 +236,29 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o" mode="_init">
     <xsl:value-of select="eo:tabs(1)"/>
-    <xsl:text>public void _init(</xsl:text>
-    <xsl:for-each select="o[@name and not(@base) and not(@level)]">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>final Phi </xsl:text>
-      <xsl:value-of select="eo:attr-name(@name)"/>
-    </xsl:for-each>
-    <xsl:text>) {</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:for-each select="o[@name and not(@base) and not(@level)]">
-      <xsl:value-of select="eo:tabs(2)"/>
-      <xsl:text>this.</xsl:text>
-      <xsl:value-of select="eo:attr-name(@name)"/>
-      <xsl:text> = () -&gt; </xsl:text>
-      <xsl:value-of select="eo:attr-name(@name)"/>
-      <xsl:text>;</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:for-each>
-    <xsl:value-of select="eo:tabs(1)"/>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public void _init(final String attr, final Phi phi) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>try {</xsl:text>
+    <xsl:value-of select="eo:eol(3)"/>
+    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text>.class.getField(a).set(this, phi);</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>} catch (final NoSuchFieldException | IllegalAccessException ex) {</xsl:text>
+    <xsl:value-of select="eo:eol(3)"/>
+    <xsl:text>throw new IllegalStateException(</xsl:text>
+    <xsl:value-of select="eo:eol(4)"/>
+    <xsl:text>String.format(</xsl:text>
+    <xsl:value-of select="eo:eol(5)"/>
+    <xsl:text>"No attribute \"%s\"", a</xsl:text>
+    <xsl:value-of select="eo:eol(4)"/>
+    <xsl:text>)</xsl:text>
+    <xsl:value-of select="eo:eol(3)"/>
+    <xsl:text>);</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
@@ -364,22 +369,28 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:if test="o[position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
       <xsl:text>._init(</xsl:text>
-      <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text>, </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="$name"/>
-        <xsl:text>_</xsl:text>
-        <xsl:value-of select="position()"/>
-      </xsl:for-each>
+      <xsl:choose>
+        <xsl:when test="@as">
+          <xsl:text>"</xsl:text>
+          <xsl:value-of select="@as"/>
+          <xsl:text>"</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="position() - 1"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>, </xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>_</xsl:text>
+      <xsl:value-of select="position()"/>
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="o[@base='org.eolang.string' and not(*) and normalize-space()]">
     <xsl:text>new EOstring(</xsl:text>
