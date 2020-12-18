@@ -218,6 +218,7 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterMethod(final ProgramParser.MethodContext ctx) {
         this.dirs.add("o")
+            .attr("method", "")
             .attr("line", ctx.getStart().getLine())
             .attr("base", ctx.getText()).up();
     }

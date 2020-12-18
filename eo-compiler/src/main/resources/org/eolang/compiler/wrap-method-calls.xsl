@@ -40,19 +40,19 @@ SOFTWARE.
   -->
   <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/compiler/_funcs.xsl"/>
-  <xsl:template match="o[eo:method(.)]" mode="#all">
+  <xsl:template match="o[@method]" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates select="preceding-sibling::o[1]" mode="full"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[following-sibling::o[1][eo:method(.)]]">
+  <xsl:template match="o[following-sibling::o[1][@method]]">
     <!-- We delete the original one -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="node()|@* except @method"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

@@ -137,6 +137,7 @@ public final class CompileMojo extends AbstractMojo {
                     new ResourceOf("org/eolang/maven/to-java.xsl")
                 ).asString()
             ).with(new ClasspathSources()).transform(xml);
+            Logger.debug(this, "Raw Java output of %s:\n%s", file, out);
             new IoChecked<>(
                 new LengthOf(
                     new TeeInput(

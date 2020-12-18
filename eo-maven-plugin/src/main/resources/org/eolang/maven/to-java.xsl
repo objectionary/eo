@@ -132,7 +132,7 @@ SOFTWARE.
     <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>public Call&lt;Object&gt; </xsl:text>
     <xsl:value-of select="eo:attr-name(@name)"/>
-    <xsl:text> = () -> {</xsl:text>
+    <xsl:text> = () -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select=".">
       <xsl:with-param name="name" select="'ret'"/>
@@ -169,11 +169,18 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>.class.getField(m);</xsl:text>
     <xsl:value-of select="eo:eol(3)"/>
-    <xsl:text>return field.get(this);</xsl:text>
+    <xsl:text>return ((Call&lt;Object&gt;) field.get(this)).call();</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>} catch (final NoSuchFieldException ex) {</xsl:text>
     <xsl:value-of select="eo:eol(3)"/>
-    <xsl:text>return this._origin._call(m);</xsl:text>
+    <xsl:choose>
+      <xsl:when test="o[@name='@']">
+        <xsl:text>return this._origin._call(m);</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>throw new IllegalStateException("no attr");</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
@@ -222,7 +229,7 @@ SOFTWARE.
       <xsl:value-of select="eo:tabs(2)"/>
       <xsl:text>this.</xsl:text>
       <xsl:value-of select="eo:attr-name(@name)"/>
-      <xsl:text> = () -> </xsl:text>
+      <xsl:text> = () -&gt; </xsl:text>
       <xsl:value-of select="eo:attr-name(@name)"/>
       <xsl:text>;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
@@ -298,7 +305,7 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:if test="o">
+    <xsl:if test="o[not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>

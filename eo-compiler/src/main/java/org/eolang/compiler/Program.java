@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
-import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
@@ -77,9 +76,8 @@ public final class Program {
 
     /**
      * Compile it to XMLs and save (with default set of XSLs).
-     * @throws IOException If fails
      */
-    public void compile() throws IOException {
+    public void compile() {
         this.compile(new Program.Spy.None());
     }
 
@@ -87,10 +85,9 @@ public final class Program {
      * Compile it to XML and save (with default set of XSLs).
      *
      * @param spy The spy
-     * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public void compile(final Program.Spy spy) throws IOException {
+    public void compile(final Program.Spy spy) {
         this.compile(new Pack(), spy);
     }
 
@@ -98,9 +95,8 @@ public final class Program {
      * Compile it to XML and save.
      *
      * @param xsls List of XSLs to apply
-     * @throws IOException If fails
      */
-    public void compile(final Iterable<XSL> xsls) throws IOException {
+    public void compile(final Iterable<XSL> xsls) {
         this.compile(xsls, new Program.Spy.None());
     }
 
@@ -151,11 +147,24 @@ public final class Program {
         final class None implements Program.Spy {
             @Override
             public void push(final int index, final XSL xsl, final XML xml) {
+                // Nothing
+            }
+        }
+
+        /**
+         * Empty spy.
+         *
+         * @since 0.1
+         */
+        final class Verbose implements Program.Spy {
+            @Override
+            public void push(final int index, final XSL xsl, final XML xml) {
                 Logger.debug(
                     this,
-                    "Parsed #%d via %s",
+                    "Parsed #%d via %s\n%s",
                     index,
-                    new XMLDocument(xsl.toString()).xpath("/*/@id").get(0)
+                    new XMLDocument(xsl.toString()).xpath("/*/@id").get(0),
+                    xml
                 );
             }
         }

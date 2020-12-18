@@ -67,9 +67,9 @@ public final class PacksTest {
         final Program program = new Program(xml, new OutputTo(baos));
         final Collection<String> xsls = (Collection<String>) map.get("xsls");
         if (xsls == null) {
-            program.compile();
+            program.compile(new Program.Spy.Verbose());
         } else {
-            program.compile(new Pack(xsls));
+            program.compile(new Pack(xsls), new Program.Spy.Verbose());
         }
         Logger.debug(this, "Output XML:\n%s", baos.toString());
         for (final String xpath : (Iterable<String>) map.get("tests")) {
