@@ -52,7 +52,9 @@ SOFTWARE.
             </xsl:attribute>
             <xsl:text>The object "</xsl:text>
             <xsl:value-of select="@base"/>
-            <xsl:text>" is absent, but is referenced</xsl:text>
+            <xsl:text>" is absent, but is referenced as "</xsl:text>
+            <xsl:value-of select="@ref"/>
+            <xsl:text>"</xsl:text>
           </xsl:element>
         </xsl:if>
       </xsl:for-each>
