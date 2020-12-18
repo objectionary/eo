@@ -186,7 +186,7 @@ SOFTWARE.
         <xsl:value-of select="eo:eol(4)"/>
         <xsl:text>)</xsl:text>
         <xsl:value-of select="eo:eol(3)"/>
-        <xsl:text>)</xsl:text>
+        <xsl:text>);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:value-of select="eo:eol(2)"/>
