@@ -331,10 +331,13 @@ SOFTWARE.
         <xsl:value-of select="$indent"/>
       </xsl:with-param>
     </xsl:apply-templates>
-    <xsl:text>base = </xsl:text>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>final Phi </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text> = </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_base._attr("</xsl:text>
-    <xsl:value-of select="@base"/>
+    <xsl:value-of select="substring-after(@base, '.')"/>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
@@ -366,7 +369,7 @@ SOFTWARE.
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
       <xsl:text>._init(</xsl:text>
-      <xsl:for-each select="o[not(@level)]">
+      <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
