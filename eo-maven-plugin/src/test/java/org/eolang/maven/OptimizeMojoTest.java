@@ -49,7 +49,7 @@ public final class OptimizeMojoTest {
         new LengthOf(
             new TeeInput(
                 new InputOf(
-                    "[args] > main\n  (stdout \"Hello!\").print\n"
+                    "[args] > main\n  (stdout \"Hello!\").print > @\n"
                 ),
                 new OutputTo(src.resolve("main.eo"))
             )

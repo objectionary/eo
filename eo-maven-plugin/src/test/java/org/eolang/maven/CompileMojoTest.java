@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -60,7 +59,7 @@ public final class CompileMojoTest {
     @Test
     public void testRealCompilation() throws Exception {
         final String java = this.compile(
-            new InputOf(Paths.get("eo-runtime/src/main/eo/org/eolang/array.eo")),
+            new ResourceOf("org/eolang/maven/array.eo"),
             "EOarray$EOmap.java"
         );
         MatcherAssert.assertThat(java, Matchers.containsString("class"));

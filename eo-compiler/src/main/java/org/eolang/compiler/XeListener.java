@@ -96,6 +96,7 @@ public final class XeListener implements ProgramListener {
     @Override
     public void exitProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs
+            // @checkstyle MagicNumber (1 line)
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
