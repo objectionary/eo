@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@base and not(@ref) and not(contains(@base, '.'))]">
+      <xsl:for-each select="//o[@base and @base!='$' and not(@ref) and not(contains(@base, '.'))]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>unknown-names</xsl:text>
