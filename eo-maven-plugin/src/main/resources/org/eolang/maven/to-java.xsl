@@ -273,6 +273,7 @@ SOFTWARE.
       </xsl:message>
     </xsl:if>
     <xsl:value-of select="$indent"/>
+    <xsl:text>final </xsl:text>
     <xsl:choose>
       <xsl:when test="$t and eo:abstract($t)">
         <xsl:value-of select="eo:class-name($t/@name)"/>
@@ -285,7 +286,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="$b='$'">
+      <xsl:when test="@base='$'">
         <xsl:text>this</xsl:text>
       </xsl:when>
       <xsl:when test="$b and eo:abstract($b)">
@@ -335,6 +336,7 @@ SOFTWARE.
     <xsl:text>_base._attr("</xsl:text>
     <xsl:value-of select="@base"/>
     <xsl:text>");</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
