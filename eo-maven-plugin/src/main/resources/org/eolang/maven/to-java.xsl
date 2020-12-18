@@ -194,13 +194,13 @@ SOFTWARE.
     <xsl:text> _copy() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:value-of select="eo:class-name(@name)"/>
-    <xsl:text> _ = new </xsl:text>
+    <xsl:text> _c = new </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>(this._parent);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:for-each select="o[@name and not(@base) and not(@level)]">
       <xsl:value-of select="eo:tabs(2)"/>
-      <xsl:text>_.</xsl:text>
+      <xsl:text>_c.</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text> = this.</xsl:text>
       <xsl:value-of select="@name"/>
@@ -208,7 +208,7 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
     <xsl:value-of select="eo:tabs(2)"/>
-    <xsl:text>return _;</xsl:text>
+    <xsl:text>return _c;</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

@@ -27,6 +27,21 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select="//o[@ref and @ref!='' and not(matches(@ref, '^[0-9]+(\.[0-9]+)?$'))]">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>broken-refs</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>The ref at "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>" is wrongly formatted: "</xsl:text>
+          <xsl:value-of select="@ref"/>
+          <xsl:text>"</xsl:text>
+        </xsl:element>
+      </xsl:for-each>
       <xsl:for-each select="//o[@ref and @ref='']">
         <xsl:element name="error">
           <xsl:attribute name="check">

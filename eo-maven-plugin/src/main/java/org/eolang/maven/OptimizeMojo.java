@@ -114,6 +114,7 @@ public final class OptimizeMojo extends AbstractMojo {
                     .with("globals-to-abstracts.xsl")
                     .with("remove-refs.xsl")
                     .with("abstracts-float-up.xsl")
+                    .with("remove-levels.xsl")
                     .with("add-refs.xsl")
                     .with("errors/broken-refs.xsl"),
                 new TargetSpy(dir)

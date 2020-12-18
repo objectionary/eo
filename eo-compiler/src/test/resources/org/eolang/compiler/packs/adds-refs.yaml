@@ -3,6 +3,7 @@ xsls:
   - errors/self-naming.xsl
   - errors/same-line-names.xsl
   - add-refs.xsl
+  - errors/broken-refs.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=3]

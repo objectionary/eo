@@ -46,6 +46,13 @@ SOFTWARE.
               <xsl:text>"</xsl:text>
             </xsl:message>
           </xsl:if>
+          <xsl:if test="count($x)!=1">
+            <xsl:message terminate="yes">
+              <xsl:text>Duplicate names inside "</xsl:text>
+              <xsl:value-of select="@name"/>
+              <xsl:text>"</xsl:text>
+            </xsl:message>
+          </xsl:if>
           <xsl:attribute name="ref">
             <xsl:value-of select="$x/@line"/>
           </xsl:attribute>
