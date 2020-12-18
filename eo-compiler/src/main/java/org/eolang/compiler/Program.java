@@ -24,9 +24,11 @@
 package org.eolang.compiler;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
 import java.nio.file.Path;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
@@ -107,10 +109,15 @@ public final class Program {
      * @param spy The spy
      */
     public void compile(final Iterable<XSL> xsls, final Program.Spy spy) {
+        final XSL each = new XSLDocument(
+            Program.class.getResourceAsStream("/org/eolang/compiler/_each.xsl")
+        ).with(new ClasspathSources());
         int index = 0;
         XML before = this.source;
         for (final XSL xsl : xsls) {
-            final XML after = xsl.transform(before);
+            final XML after = each.with("step", index).transform(
+                xsl.transform(before)
+            );
             spy.push(index, xsl, after);
             ++index;
             before = after;

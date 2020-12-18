@@ -142,11 +142,12 @@ public final class OptimizeMojo extends AbstractMojo {
             for (final XML error : errors) {
                 Logger.error(
                     this,
-                    "[%s:%s] %s (%s)",
+                    "[%s:%s] %s (%s:%s)",
                     name,
                     error.xpath("@line").get(0),
                     error.xpath("text()").get(0),
-                    error.xpath("@check").get(0)
+                    error.xpath("@check").get(0),
+                    error.xpath("@step").get(0)
                 );
             }
             if (!errors.isEmpty()) {
