@@ -46,6 +46,9 @@ SOFTWARE.
       <xsl:when test="$o/@base and $o/@ref">
         <xsl:copy-of select="eo:type-of($root, $root//o[@name=$o/@base and @line=$o/@ref])"/>
       </xsl:when>
+      <xsl:when test="not($o/@base) and not($o/@ref) and contains($o/@line, '.')">
+        <xsl:copy-of select="eo:type-of($root, $root//o[@line=substring-after($o/@line, '.') and @name=$o/@name])"/>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:copy-of select="$o"/>
       </xsl:otherwise>
@@ -152,6 +155,14 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text>(final Phi p) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>this(() -&gt; p);</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public </xsl:text>
+    <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>(final Attr p) {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this._parent = p;</xsl:text>
@@ -246,13 +257,13 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="o[@base]">
+  <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:variable name="o" select="."/>
     <xsl:variable name="b" select="//o[@name=$o/@base and @line=$o/@ref]"/>
     <xsl:variable name="t" select="eo:type-of(/, $b)"/>
-    <xsl:if test="not($b)">
+    <xsl:if test="not($b) and @base!='$'">
       <xsl:message terminate="yes">
         <xsl:text>Can't find what "</xsl:text>
         <xsl:value-of select="@base"/>
@@ -263,7 +274,7 @@ SOFTWARE.
     </xsl:if>
     <xsl:value-of select="$indent"/>
     <xsl:choose>
-      <xsl:when test="eo:abstract($t)">
+      <xsl:when test="$t and eo:abstract($t)">
         <xsl:value-of select="eo:class-name($t/@name)"/>
       </xsl:when>
       <xsl:otherwise>
@@ -274,6 +285,9 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
+      <xsl:when test="$b='$'">
+        <xsl:text>this</xsl:text>
+      </xsl:when>
       <xsl:when test="$b and eo:abstract($b)">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
@@ -299,7 +313,39 @@ SOFTWARE.
     <xsl:text>" at line #</xsl:text>
     <xsl:value-of select="$b/@line"/>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:for-each select="o[not(@level)]">
+    <xsl:apply-templates select="." mode="application">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  <xsl:template match="o[starts-with(@base, '.') and o]">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:apply-templates select="o[1]">
+      <xsl:with-param name="name">
+        <xsl:value-of select="$name"/>
+        <xsl:text>_base</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:text>base = </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>_base._attr("</xsl:text>
+    <xsl:value-of select="@base"/>
+    <xsl:text>");</xsl:text>
+    <xsl:apply-templates select="." mode="application">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+      <xsl:with-param name="skip" select="1"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  <xsl:template match="o" mode="application">
+    <xsl:param name="indent"/>
+    <xsl:param name="skip" select="0"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
       <xsl:variable name="n">
         <xsl:value-of select="$name"/>
         <xsl:text>_</xsl:text>
@@ -313,7 +359,7 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:if test="o[not(@level)]">
+    <xsl:if test="o[position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
@@ -329,17 +375,6 @@ SOFTWARE.
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
-  </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.') and o]">
-    <xsl:param name="indent"/>
-    <!--    <xsl:apply-templates select="o[1]">-->
-    <!--      <xsl:with-param name="indent">-->
-    <!--        <xsl:value-of select="$indent"/>-->
-    <!--      </xsl:with-param>-->
-    <!--    </xsl:apply-templates>-->
-    <xsl:value-of select="@base"/>
-    <xsl:text>(</xsl:text>
-    <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="o[@base='org.eolang.string' and not(*) and normalize-space()]">
     <xsl:text>new EOstring(</xsl:text>
