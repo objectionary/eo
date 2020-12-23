@@ -22,9 +22,31 @@
  * SOFTWARE.
  */
 
+package org.eolang;
+
 /**
- * EO runtime, texts.
+ * IF.
  *
- * @since 0.2
+ * @since 1.0
  */
-package org.eolang.txt;
+public class EOarray$EOreduce extends Phi {
+
+    public EOarray$EOreduce() {
+        super();
+        this.put("origin", () -> {
+            final Phi[] array = new Data.Take(
+                this.get("eo_self")
+            ).take(Phi[].class);
+            Phi out = this.get("eo_a");
+            for (final Phi arg : array) {
+                final Phi before = out;
+                final Phi after = this.get("eo_f").copy();
+                after.put(0, () -> before);
+                after.put(1, () -> arg);
+                out = after;
+            }
+            return out;
+        });
+    }
+
+}

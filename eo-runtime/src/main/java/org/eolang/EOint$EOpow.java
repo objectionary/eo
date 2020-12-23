@@ -21,34 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link EOstring}.
+ * POW.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOstringTest {
+public class EOint$EOpow extends Phi {
 
-    @Test
-    public void encapsulatesString() {
-        final String key = "hey";
-        MatcherAssert.assertThat(
-            new EOstring(key).get(),
-            Matchers.equalTo(key)
-        );
-    }
+    public EOint$EOpow() {
+        super();
+        this.put("origin", () -> {
+            final Phi out = new org.eolang.EOint();
+            out.put(
+                "eo_self",
+                () -> new Data.Value<>(
+                    Math.pow(
+                        new Data.Take(
+                            this.get("eo_self")
+                        ).take(Long.class),
+                        new Data.Take(
+                            this.get("eo_x")
+                        ).take(Long.class)
+                    )
 
-    @Test
-    public void instanceWithScalar() {
-        MatcherAssert.assertThat(
-            new EOstring(() -> "Hi").get(),
-            Matchers.equalTo("Hi")
-        );
+                )
+            );
+            return out;
+        });
     }
 
 }

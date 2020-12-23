@@ -1,5 +1,5 @@
 +package org.eolang
 
 [] > bool
-  true > data?
+  true > self?
   [t f] > if /t

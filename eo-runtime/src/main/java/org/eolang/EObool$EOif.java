@@ -21,37 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link EObool}.
+ * IF.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOboolTest {
+public class EObool$EOif extends Phi {
 
-    @Test
-    public void instanceWithScalar() {
-        MatcherAssert.assertThat(
-            new EObool(() -> true).get(),
-            Matchers.equalTo(true)
-        );
-    }
-
-    @Test
-    public void makesFork() {
-        final String left = "Hello!";
-        MatcherAssert.assertThat(
-            new EObool(true).eoif().copy(
-                new EOstring(left),
-                new EOstring("world")
-            ).get(),
-            Matchers.equalTo(left)
-        );
+    public EObool$EOif() {
+        super();
+        this.put("origin", () -> {
+            final Boolean term = new Data.Take(
+                this.get("eo_self")
+            ).take(Boolean.class);
+            final Phi out;
+            if (term) {
+                out = this.get("eo_t");
+            } else {
+                out = this.get("eo_f");
+            }
+            return out;
+        });
     }
 
 }

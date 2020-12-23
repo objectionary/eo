@@ -27,6 +27,8 @@ package org.eolang.txt;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eolang.Data;
+import org.eolang.EObool;
+import org.eolang.EOstring;
 import org.eolang.Phi;
 
 /**
@@ -36,36 +38,41 @@ import org.eolang.Phi;
  */
 public class EOsprintf extends Phi {
 
-    public EOstring$EOtrim() {
-        super("text", ??);
+    public EOsprintf() {
+        super("eo_format", "eo_args...");
         this.put("origin", () -> {
             final Phi out = new org.eolang.EOstring();
+            final String format = new Data.Take(
+                this.get("eo_format")
+            ).take(String.class);
+            final Phi[] args = new Data.Take(
+                this.get("eo_args")
+            ).take(Phi[].class);
+            final Collection<Object> items = new LinkedList<>();
+            for (final Phi arg : args) {
+                items.add(EOsprintf.toArg(arg));
+            }
             out.put(
-                "eo_data",
+                "eo_self",
                 () -> new Data.Value<>(
-                    new Data.Take(
-                        this.get("eo_data")
-                    ).take(String.class).trim()
+                    String.format(format, items.toArray())
                 )
             );
             return out;
         });
     }
 
-    /**
-     * Ctor.
-     * @param format Format
-     * @param args Args
-     */
-    public EOsprintf(final Data<String> format, final Data<?>... args) {
-        super(
-            () -> {
-                final Collection<Object> items = new LinkedList<>();
-                for (final Data<?> arg : args) {
-                    items.add(arg.get());
-                }
-                return String.format(format.get(), items.toArray());
-            }
-        );
+    private static Object toArg(final Phi phi) {
+        final Object result;
+        final Data.Take take = new Data.Take(phi.get("eo_self"));
+        if (phi instanceof EObool) {
+            result = take.take(Boolean.class);
+        } else if (phi instanceof EOstring) {
+            result = take.take(String.class);
+        } else {
+            throw new UnsupportedOperationException("");
+        }
+        return result;
     }
+
 }

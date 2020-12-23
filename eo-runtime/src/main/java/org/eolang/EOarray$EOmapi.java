@@ -21,38 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link EOint}.
+ * IF.
  *
- * @since 0.1
- * @checkstyle MagicNumberCheck (500 lines)
+ * @since 1.0
  */
-public final class EOintTest {
+public class EOarray$EOmapi extends Phi {
 
-    @Test
-    public void addsNumbers() {
-        MatcherAssert.assertThat(
-            new EOint(1L).eoadd().copy(
-                new EOint(5L), new EOint(-1L)
-            ).get(),
-            Matchers.equalTo(5L)
-        );
-    }
-
-    @Test
-    public void multipliesNumbers() {
-        MatcherAssert.assertThat(
-            new EOint(2L).eomul().copy(
-                new EOint(4L), new EOint(-2L)
-            ).get(),
-            Matchers.equalTo(-16L)
-        );
+    public EOarray$EOmapi() {
+        super();
+        this.put("origin", () -> {
+            final Phi[] array = new Data.Take(
+                this.get("eo_self")
+            ).take(Phi[].class);
+            for (long idx = 0; idx < array.length; ++idx) {
+                final Phi before = array[(int) idx];
+                final Phi after = this.get("eo_f").copy();
+                after.put(0, () -> before);
+                final long index = idx;
+                after.put(1, () -> new Data.Value<>(index));
+                array[(int) idx] = after;
+            }
+            final Phi out = new org.eolang.EOarray();
+            out.put("eo_self", () -> new Data.Value<>(array));
+            return out;
+        });
     }
 
 }

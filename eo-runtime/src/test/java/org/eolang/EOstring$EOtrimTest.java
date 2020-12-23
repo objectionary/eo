@@ -21,28 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.txt;
+package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOsprintf}.
+ * Test case for {@link EOstring}.
  *
- * @since 0.2
+ * @since 0.1
  */
-public final class EOsprintfTest {
+public final class EOstring$EOtrimTest {
 
     @Test
-    public void printsSimpleText() {
+    public void trimsString() {
+        final Phi phi = new EOstring$EOtrim();
+        phi.put("eo_text", () -> new Data.Value<>("Hello, world!  "));
         MatcherAssert.assertThat(
-            new EOsprintf(
-                new EOstring("Hello, %s %d!"),
-                new EOstring("John"),
-                new EOint(2L)
-            ).get(),
-            Matchers.equalTo("Hello, John 2!")
+            new Data.Take(new EOstring$EOtrim()).take(String.class),
+            Matchers.equalTo("Hello, world!")
         );
     }
 

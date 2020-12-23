@@ -21,33 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang;
 
 /**
- * Test case for {@link EOstdout$EOorigin}.
+ * NEG.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOstdout$EOoriginTest {
+public class EOint$EOneg extends Phi {
 
-    @Test
-    public void printsString() {
-        final String text = "Hello, друг!";
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new EOstdout$EOorigin(
-            new EOstring(text),
-            new PrintStream(baos)
-        ).get();
-        MatcherAssert.assertThat(
-            baos.toString(),
-            Matchers.equalTo(text)
-        );
+    public EOint$EOneg() {
+        super();
+        this.put("origin", () -> {
+            final Phi out = new org.eolang.EOint();
+            out.put(
+                "eo_self",
+                () -> new Data.Value<>(
+                    new Data.Take(
+                        this.get("eo_self")
+                    ).take(Long.class) * -1L
+                )
+            );
+            return out;
+        });
     }
 
 }

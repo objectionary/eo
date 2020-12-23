@@ -25,22 +25,26 @@
 package org.eolang;
 
 /**
- * TRIM.
+ * MUL.
  *
  * @since 1.0
  */
-public class EOstring$EOtrim extends Phi {
+public class EOint$EOmul extends Phi {
 
-    public EOstring$EOtrim() {
+    public EOint$EOmul() {
         super();
         this.put("origin", () -> {
-            final Phi out = new org.eolang.EOstring();
+            final Phi out = new org.eolang.EOint();
             out.put(
                 "eo_self",
                 () -> new Data.Value<>(
                     new Data.Take(
                         this.get("eo_self")
-                    ).take(String.class).trim()
+                    ).take(Long.class)
+                    *
+                    new Data.Take(
+                        this.get("eo_x")
+                    ).take(Long.class)
                 )
             );
             return out;

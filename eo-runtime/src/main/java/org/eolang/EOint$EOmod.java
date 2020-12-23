@@ -22,9 +22,35 @@
  * SOFTWARE.
  */
 
+package org.eolang;
+
 /**
- * EO system objects.
+ * MOD.
  *
- * @since 0.1
+ * @since 1.0
  */
-package org.eolang.io;
+public class EOint$EOmod extends Phi {
+
+    public EOint$EOmod() {
+        super();
+        this.put("origin", () -> {
+            final Phi out = new org.eolang.EOint();
+            out.put(
+                "eo_self",
+                () -> new Data.Value<>(
+                    Math.floorMod(
+                        new Data.Take(
+                            this.get("eo_self")
+                        ).take(Long.class),
+                        new Data.Take(
+                            this.get("eo_x")
+                        ).take(Long.class)
+                    )
+
+                )
+            );
+            return out;
+        });
+    }
+
+}
