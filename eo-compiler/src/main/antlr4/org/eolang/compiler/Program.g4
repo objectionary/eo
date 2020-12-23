@@ -66,13 +66,20 @@ abstraction
   :
   (COMMENT EOL)*
   LSQ
-  (argument (SPACE argument)*)?
+  (attribute (SPACE attribute)*)?
   RSQ
   (suffix (SPACE SLASH NAME)?)?
   ;
 
-argument
+attribute
   :
+  label
+  ;
+
+label
+  :
+  AT
+  |
   NAME
   DOTS?
   ;
@@ -90,7 +97,7 @@ suffix
   SPACE
   ARROW
   SPACE
-  name=( NAME | AT )
+  label
   QUESTION?
   CONST?
   ;

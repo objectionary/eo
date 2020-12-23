@@ -176,20 +176,31 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    public void enterArgument(final ProgramParser.ArgumentContext ctx) {
+    public void enterAttribute(final ProgramParser.AttributeContext ctx) {
         this.enter();
-        this.dirs.add("o")
-            .attr("line", ctx.getStart().getLine())
-            .attr("name", ctx.NAME().getText());
-        if (ctx.DOTS() != null) {
-            this.dirs.attr("vararg", "");
-        }
+        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+    }
+
+    @Override
+    public void exitAttribute(final ProgramParser.AttributeContext ctx) {
         this.dirs.up().up();
     }
 
     @Override
-    public void exitArgument(final ProgramParser.ArgumentContext ctx) {
-        // nothing
+    public void enterLabel(final ProgramParser.LabelContext ctx) {
+        if (ctx.AT() != null) {
+            this.dirs.attr("name", ctx.AT().getText());
+        }
+        if (ctx.NAME() != null) {
+            this.dirs.attr("name", ctx.NAME().getText());
+        }
+        if (ctx.DOTS() != null) {
+            this.dirs.attr("vararg", "");
+        }
+    }
+
+    @Override
+    public void exitLabel(final ProgramParser.LabelContext ctx) {
     }
 
     @Override
@@ -205,7 +216,6 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
         this.enter();
-        this.dirs.attr("name", ctx.name.getText());
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
         }
