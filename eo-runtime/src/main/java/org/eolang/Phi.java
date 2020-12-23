@@ -24,28 +24,86 @@
 
 package org.eolang;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Callback.
+ * A simple object.
  *
  * @since 0.1
  */
-public interface Phi {
+public class Phi {
+
+    /**
+     * Bound attributes.
+     */
+    private final Map<String, Attr> bound;
+
+    /**
+     * Names of free attributes.
+     */
+    private final List<String> free;
+
+    /**
+     * Ctor.
+     */
+    public Phi(final String... names) {
+        this(new HashMap<>(0), new ArrayList<>(Arrays.asList(names)));
+    }
+
+    /**
+     * Ctor.
+     */
+    private Phi(final Map<String, Attr> bnd, final List<String> names) {
+        this.bound = new HashMap<>(bnd);
+        this.free = names;
+    }
+
+    /**
+     * Make a copy.
+     *
+     * @return A copy
+     */
+    public final Phi copy() {
+        return new Phi(this.bound, this.free);
+    }
 
     /**
      * Set the attribute.
      *
-     * @param name The name of the attribute to call
-     * @param phi The object
+     * @param name The name of the attribute to set
+     * @param phi The value to set
      */
-    void _init(String name, Phi phi);
+    public final void put(final String name, final Attr phi) {
+        if (!this.free.contains(name)) {
+            throw new IllegalStateException(
+                String.format(
+                    "Attribute \"%s\" is not free here", name
+                )
+            );
+        }
+        if (this.bound.containsKey(name)) {
+            throw new IllegalStateException(
+                String.format(
+                    "Attribute \"%s\" is already bound", name
+                )
+            );
+        }
+        this.bound.put(name, phi);
+    }
 
     /**
-     * Set the attribute.
+     * Set the attribute by position.
      *
-     * @param index Index of it
-     * @param phi The object
+     * @param pos The position of it
+     * @param phi The value to set
      */
-    void _init(int index, Phi phi);
+    public final void put(final int pos, final Attr phi) {
+        this.bound.put(this.free.get(pos), phi);
+    }
 
     /**
      * Get the attribute.
@@ -53,13 +111,26 @@ public interface Phi {
      * @param name The name of the attribute to call
      * @return The object
      */
-    Phi _attr(String name);
+    public final Phi get(final String name) {
+        Phi attr = this.bound.get(name).get();
+        if (attr == null) {
+            final Attr origin = this.bound.get("_origin");
+            if (origin == null) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't find \"%s\" attribute", name
+                    )
+                );
+            }
+            attr = origin.get().get(name);
+        }
+        return attr;
+    }
 
-    /**
-     * Make a copy.
-     *
-     * @return The object
-     */
-    Phi _copy();
+    protected <T> T data(final Class<T> type) {
+        throw new UnsupportedOperationException(
+            "No data here"
+        );
+    }
 
 }

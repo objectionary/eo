@@ -209,6 +209,9 @@ public final class XeListener implements ProgramListener {
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
         }
+        if (ctx.QUESTION() != null) {
+            this.dirs.attr("rw", "");
+        }
     }
 
     @Override

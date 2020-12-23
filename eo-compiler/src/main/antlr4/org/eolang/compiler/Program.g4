@@ -91,6 +91,7 @@ suffix
   ARROW
   SPACE
   name=( NAME | AT )
+  QUESTION?
   CONST?
   ;
 
@@ -189,6 +190,7 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 DOTS: '...';
 CONST: '!';
+QUESTION: '?';
 SLASH: '/';
 COLON: ':';
 ARROW: '>';

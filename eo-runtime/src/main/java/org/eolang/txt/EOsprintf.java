@@ -26,8 +26,6 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.Data;
-import org.eolang.EOstring;
 
 /**
  * Sprintf.

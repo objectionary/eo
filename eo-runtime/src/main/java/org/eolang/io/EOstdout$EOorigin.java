@@ -22,26 +22,27 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.io;
+
+import org.eolang.Data;
+import org.eolang.EObool;
+import org.eolang.Phi;
 
 /**
- * Something is wrong with arguments.
+ * Stdout.
  *
  * @since 0.1
  */
-public final class ArgsException extends RuntimeException {
+public class EOstdout$EOorigin extends Phi {
 
-    /**
-     * Serial ID.
-     */
-    private static final long serialVersionUID = -6643350804302660951L;
-
-    /**
-     * Ctor.
-     * @param reason The reason
-     */
-    public ArgsException(final String reason) {
-        super(reason);
+    public EOstdout$EOorigin() {
+        super("text");
+        this.put("origin", () -> {
+            System.out.print(
+                new Data.Take(this.get("text")).take(String.class)
+            );
+            return new EObool();
+        });
     }
 
 }

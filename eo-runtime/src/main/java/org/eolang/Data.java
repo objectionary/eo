@@ -25,18 +25,23 @@
 package org.eolang;
 
 /**
- * Data primitive.
+ * A data container.
  *
- * @param <T> Type of return
  * @since 0.1
  */
 public interface Data<T> {
 
-    /**
-     * Take the take out.
-     *
-     * @return The take
-     */
-    T get();
+    T take();
+
+    public class Take {
+        private final Phi phi;
+        public Take(final Phi src) {
+            this.phi = src;
+        }
+        @SuppressWarnings("unchecked")
+        public <T> T take(final Class<T> type) {
+            return ((Data<T>) type.cast(this.phi)).take();
+        }
+    }
 
 }

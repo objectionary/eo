@@ -21,39 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.eolang.Data;
-import org.eolang.EObool;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Stdout.
+ * Test case for {@link EOstdout$EOorigin}.
  *
  * @since 0.1
  */
-public class EOstdout extends EObool {
+public final class EOstdout$EOoriginTest {
 
-    /**
-     * Ctor.
-     * @param txt The text to print
-     */
-    public EOstdout(final Data<String> txt) {
-        this(txt, System.out);
-    }
-
-    /**
-     * Ctor.
-     * @param text The output stream
-     * @param stream The text to print
-     */
-    public EOstdout(final Data<String> text, final PrintStream stream) {
-        super(
-            () -> {
-                stream.print(text.get());
-                return true;
-            }
+    @Test
+    public void printsString() {
+        final String text = "Hello, друг!";
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new EOstdout$EOorigin(
+            new EOstring(text),
+            new PrintStream(baos)
+        ).get();
+        MatcherAssert.assertThat(
+            baos.toString(),
+            Matchers.equalTo(text)
         );
     }
 
