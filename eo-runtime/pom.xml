@@ -33,12 +33,6 @@ SOFTWARE.
   <packaging>jar</packaging>
   <name>eo-runtime</name>
   <description>eolang runtime library</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.cactoos</groupId>
-      <artifactId>cactoos</artifactId>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -58,4 +52,23 @@ SOFTWARE.
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>qulice</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.qulice</groupId>
+            <artifactId>qulice-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>checkstyle:.*</exclude>
+                <exclude>pmd:.*</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
