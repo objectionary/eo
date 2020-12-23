@@ -247,6 +247,10 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
+    <xsl:value-of select="$indent"/>
+    <xsl:value-of select="$name"/>
+    <xsl:text>.inherit(this);</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>

@@ -100,6 +100,20 @@ public class Phi {
     }
 
     /**
+     * Inherit attributes from parent object.
+     *
+     * @param parent The parent
+     */
+    public final void inherit(final Phi parent) {
+        for (final Map.Entry<String, Attr> attr : parent.bound.entrySet()) {
+            this.put(
+                String.format("%s+", attr.getKey()),
+                attr.getValue()
+            );
+        }
+    }
+
+    /**
      * Get the attribute.
      *
      * @param name The name of the attribute to call
