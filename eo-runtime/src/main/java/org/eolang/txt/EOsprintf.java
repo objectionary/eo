@@ -26,13 +26,31 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eolang.Data;
+import org.eolang.Phi;
 
 /**
  * Sprintf.
  *
  * @since 0.2
  */
-public class EOsprintf extends EOstring {
+public class EOsprintf extends Phi {
+
+    public EOstring$EOtrim() {
+        super("text", ??);
+        this.put("origin", () -> {
+            final Phi out = new org.eolang.EOstring();
+            out.put(
+                "eo_data",
+                () -> new Data.Value<>(
+                    new Data.Take(
+                        this.get("eo_data")
+                    ).take(String.class).trim()
+                )
+            );
+            return out;
+        });
+    }
 
     /**
      * Ctor.

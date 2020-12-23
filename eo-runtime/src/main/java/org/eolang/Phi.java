@@ -85,13 +85,7 @@ public class Phi {
                 )
             );
         }
-        if (this.bound.containsKey(name)) {
-            throw new IllegalStateException(
-                String.format(
-                    "Attribute \"%s\" is already bound", name
-                )
-            );
-        }
+        this.free.remove(name);
         this.bound.put(name, phi);
     }
 
@@ -112,6 +106,13 @@ public class Phi {
      * @return The object
      */
     public final Phi get(final String name) {
+        if (!this.free.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "The object is still abstract, can't get(%s)", name
+                )
+            );
+        }
         Phi attr = this.bound.get(name).get();
         if (attr == null) {
             final Attr origin = this.bound.get("_origin");

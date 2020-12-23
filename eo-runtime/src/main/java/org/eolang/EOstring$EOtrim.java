@@ -25,35 +25,27 @@
 package org.eolang;
 
 /**
- * A data container.
- *
- * @since 0.1
+ * Created with IntelliJ IDEA.
+ * @author Yegor Bugayenko (yegor@tpc2.com)
+ * @version $
+ * @since 1.0
  */
-public interface Data<T> {
+public class EOstring$EOtrim extends Phi {
 
-    T take();
-
-    final class Value<T> extends Phi implements Data<T> {
-        private final T val;
-        public Value(final T value) {
-            super();
-            this.val = value;
-        }
-        @Override
-        public T take() {
-            return this.val;
-        }
-    }
-
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
-        }
-        @SuppressWarnings("unchecked")
-        public <T> T take(final Class<T> type) {
-            return ((Data<T>) type.cast(this.phi.get("data"))).take();
-        }
+    public EOstring$EOtrim() {
+        super();
+        this.put("origin", () -> {
+            final Phi out = new org.eolang.EOstring();
+            out.put(
+                "eo_data",
+                () -> new Data.Value<>(
+                    new Data.Take(
+                        this.get("eo_data")
+                    ).take(String.class).trim()
+                )
+            );
+            return out;
+        });
     }
 
 }

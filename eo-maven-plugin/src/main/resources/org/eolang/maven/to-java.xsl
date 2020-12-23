@@ -122,7 +122,7 @@ SOFTWARE.
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>super(</xsl:text>
-    <xsl:for-each select="o[@name and not(@base) and not(@level)]">
+    <xsl:for-each select="o[@name and (not(@base) or @rw) and not(@level)]">
       <xsl:if test="position() &gt; 1">
         <xsl:text>, </xsl:text>
       </xsl:if>
@@ -164,16 +164,6 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:variable name="o" select="."/>
     <xsl:variable name="b" select="//o[@name=$o/@base and @line=$o/@ref]"/>
-    <xsl:variable name="t" select="eo:type-of(/, $b)"/>
-    <xsl:if test="not($b) and @base!='$'">
-      <xsl:message terminate="yes">
-        <xsl:text>Can't find what "</xsl:text>
-        <xsl:value-of select="@base"/>
-        <xsl:text>:</xsl:text>
-        <xsl:value-of select="@ref"/>
-        <xsl:text>" is pointing to</xsl:text>
-      </xsl:message>
-    </xsl:if>
     <xsl:value-of select="$indent"/>
     <xsl:text>final Phi </xsl:text>
     <xsl:value-of select="$name"/>
@@ -187,21 +177,26 @@ SOFTWARE.
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>()</xsl:text>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:when test="@ref">
         <xsl:text>this.get("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
         <xsl:text>")</xsl:text>
         <xsl:if test="o">
           <xsl:text>.copy()</xsl:text>
         </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>new </xsl:text>
+        <xsl:value-of select="eo:class-name(@base)"/>
+        <xsl:text>()</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>
-    <xsl:text> // "</xsl:text>
-    <xsl:value-of select="$b/@name"/>
-    <xsl:text>" at line #</xsl:text>
-    <xsl:value-of select="$b/@line"/>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="data">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -275,31 +270,33 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.string' and not(*) and normalize-space()]">
-    <xsl:text>new EOstring(</xsl:text>
-    <xsl:text>"</xsl:text>
+  <xsl:template match="o[@data]" mode="data">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:value-of select="$indent"/>
+    <xsl:value-of select="$name"/>
+    <xsl:text>.put("data", () -&gt; new Data.Value&lt;</xsl:text>
+    <xsl:apply-templates select="." mode="value"/>
+    <xsl:text>);</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="o[@data='string']" mode="value">
+    <xsl:text>String&gt;("</xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>"</xsl:text>
+    <xsl:text>")</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[@data='int']" mode="value">
+    <xsl:text>Integer&gt;(</xsl:text>
+    <xsl:value-of select="text()"/>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.int' and not(*) and normalize-space()]">
-    <xsl:text>new EOinteger(</xsl:text>
+  <xsl:template match="o[@data='bool']" mode="value">
+    <xsl:text>Boolean&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>L)</xsl:text>
+    <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base='org.eolang.float' and not(*) and normalize-space()]">
-    <xsl:text>new EOfloat(</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>d)</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@base='org.eolang.char' and not(*) and normalize-space()]">
-    <xsl:text>new EOchar(</xsl:text>
-    <xsl:text>'</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>')</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@base='org.eolang.bool' and not(*) and normalize-space()]">
-    <xsl:text>new EObool(</xsl:text>
+  <xsl:template match="o[@data='float']" mode="value">
+    <xsl:text>Double&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>)</xsl:text>
   </xsl:template>

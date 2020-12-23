@@ -36,10 +36,12 @@ import org.eolang.Phi;
 public class EOstdout$EOorigin extends Phi {
 
     public EOstdout$EOorigin() {
-        super("text");
+        super();
         this.put("origin", () -> {
             System.out.print(
-                new Data.Take(this.get("text")).take(String.class)
+                new Data.Take(
+                    this.get("eo_text")
+                ).take(String.class)
             );
             return new EObool();
         });

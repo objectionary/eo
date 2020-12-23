@@ -60,7 +60,7 @@ public final class CompileMojoTest {
     public void testRealCompilation() throws Exception {
         final String java = this.compile(
             new ResourceOf("org/eolang/maven/array.eo"),
-            "EOarray$EOmap.java"
+            "EOarray.java"
         );
         MatcherAssert.assertThat(java, Matchers.containsString("class"));
     }
