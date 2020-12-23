@@ -1,19 +1,7 @@
-xsls:
-  - errors/reserved-atoms.xsl
-  - errors/self-naming.xsl
-  - errors/same-line-names.xsl
-  - errors/one-body.xsl
-  - errors/duplicate-aliases.xsl
-  - errors/broken-aliases.xsl
-  - errors/duplicate-names.xsl
-  - 01-add-refs.xsl
-  - 02-resolve-aliases.xsl
-  - errors/unknown-names.xsl
-  - 03-abstracts-float-up.xsl
-  - 04-rename-bases.xsl
-  - 05-wrap-method-calls.xsl
 tests:
-  - /program/objects[count(o)=2]
+  - /program/errors[count(*)=0]
+  - /program/objects[count(o)=1]
+  - //o[@base='.and']
 eo: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool
@@ -26,15 +14,15 @@ eo: |
 
   [args] > main
     [y] > leap
-      or
-        and
-          eq (mod y 4) 0
-          not (eq (mod y 100) 0)
-        eq (mod y 400) 0
-    and
+      or. > @
+        and.
+          eq. (mod. y 4) 0
+          not. (eq. (mod. y 100) 0)
+        eq. (mod. y 400) 0
+    and > @
       stdout "Enter a year:"
       stdout
-        concat
-          (scanner stdin).nextInt > !year
-          " is a leap year?"
-          leap year:y
+        sprintf
+          "%s is %sa leap year!"
+          (scanner stdin).nextInt > year!
+          if (leap year:y) "" "not "

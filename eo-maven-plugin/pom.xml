@@ -43,12 +43,6 @@ SOFTWARE.
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <scope>runtime</scope>
@@ -103,6 +97,11 @@ SOFTWARE.
       <version>3.0.1</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-matchers</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -155,8 +154,8 @@ SOFTWARE.
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
               <excludes>
-                <exclude>checkstyle:/src/it/.*</exclude>
-                <exclude>pmd:/src/it/.*</exclude>
+                <exclude>checkstyle:/src/it.*</exclude>
+                <exclude>pmd:/src/it.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
                 <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
               </excludes>

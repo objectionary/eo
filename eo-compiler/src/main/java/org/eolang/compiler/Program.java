@@ -24,28 +24,18 @@
 package org.eolang.compiler;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
-import java.io.IOException;
 import java.nio.file.Path;
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.io.UncheckedInput;
-import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.TextOf;
 
 /**
  * Program.
@@ -56,128 +46,135 @@ import org.cactoos.text.TextOf;
 public final class Program {
 
     /**
-     * The name of it.
+     * XML to optimize.
      */
-    private final String name;
+    private final XML source;
 
     /**
-     * Text to parse.
-     */
-    private final Input input;
-
-    /**
-     * Target to save XML to.
+     * Target to save XMLs to.
      */
     private final Output target;
 
     /**
      * Ctor.
      *
-     * @param nme The name of it
-     * @param ipt Input text
+     * @param dom XML to optimize
      * @param file The file to write the XML to
      */
-    public Program(final String nme, final Input ipt, final Path file) {
-        this(nme, ipt, new OutputTo(file));
+    public Program(final XML dom, final Path file) {
+        this(dom, new OutputTo(file));
     }
 
     /**
      * Ctor.
      *
-     * @param nme The name of it
-     * @param ipt Input text
+     * @param dom XML to optimize
      * @param tgt Target
      */
-    public Program(final String nme, final Input ipt, final Output tgt) {
-        this.name = nme;
-        this.input = ipt;
+    public Program(final XML dom, final Output tgt) {
+        this.source = dom;
         this.target = tgt;
+    }
+
+    /**
+     * Compile it to XMLs and save (with default set of XSLs).
+     */
+    public void compile() {
+        this.compile(new Program.Spy.None());
     }
 
     /**
      * Compile it to XML and save (with default set of XSLs).
      *
-     * @throws IOException If fails
+     * @param spy The spy
      */
-    public void compile() throws IOException {
-        this.compile(
-            new ListOf<>(
-                "errors/broken-aliases.xsl",
-                "errors/duplicate-aliases.xsl",
-                "errors/one-body.xsl",
-                "errors/reserved-atoms.xsl",
-                "errors/same-line-names.xsl",
-                "errors/self-naming.xsl",
-                "01-add-refs.xsl",
-                "02-resolve-aliases.xsl",
-                "errors/unknown-names.xsl",
-                "03-abstracts-float-up.xsl",
-                "04-rename-bases.xsl",
-                "05-wrap-method-calls.xsl"
-            )
-        );
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void compile(final Program.Spy spy) {
+        this.compile(new Pack(), spy);
     }
 
     /**
      * Compile it to XML and save.
      *
      * @param xsls List of XSLs to apply
-     * @throws IOException If fails
      */
-    public void compile(final Iterable<String> xsls) throws IOException {
-        final String[] lines = new TextOf(this.input).asString().split("\n");
-        final ANTLRErrorListener errors = new BaseErrorListener() {
-            // @checkstyle ParameterNumberCheck (10 lines)
-            @Override
-            public void syntaxError(final Recognizer<?, ?> recognizer,
-                final Object symbol, final int line,
-                final int position, final String msg,
-                final RecognitionException error) {
-                throw new CompileException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg,
-                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        lines.length < line ? "EOF" : lines[line - 1]
-                    ),
-                    error
-                );
-            }
-        };
-        final ProgramLexer lexer =
-            new ProgramLexer(
-                CharStreams.fromStream(
-                    new UncheckedInput(this.input).stream()
-                )
+    public void compile(final Iterable<XSL> xsls) {
+        this.compile(xsls, new Program.Spy.None());
+    }
+
+    /**
+     * Compile it to XML and save.
+     *
+     * @param xsls List of XSLs to apply
+     * @param spy The spy
+     */
+    public void compile(final Iterable<XSL> xsls, final Program.Spy spy) {
+        final XSL each = new XSLDocument(
+            Program.class.getResourceAsStream("/org/eolang/compiler/_each.xsl")
+        ).with(new ClasspathSources());
+        int index = 0;
+        XML before = this.source;
+        for (final XSL xsl : xsls) {
+            final XML after = each.with("step", index).transform(
+                xsl.transform(before)
             );
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errors);
-        final ProgramParser parser =
-            new ProgramParser(
-                new CommonTokenStream(lexer)
-            );
-        parser.removeErrorListeners();
-        parser.addErrorListener(errors);
-        final XeListener xel = new XeListener(this.name);
-        new ParseTreeWalker().walk(xel, parser.program());
+            spy.push(index, xsl, after);
+            ++index;
+            before = after;
+        }
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
-                    new InputOf(
-                        new XSLChain(
-                            new Mapped<>(
-                                node -> new XSLDocument(
-                                    Program.class.getResourceAsStream(node)
-                                ),
-                                xsls
-                            )
-                        ).transform(xel.xml()).toString()
-                    ),
+                    new InputOf(before.toString()),
                     this.target
                 )
             )
         ).value();
-        Logger.debug(this, "Input of %d EO lines compiled", lines.length);
+    }
+
+    /**
+     * Spy.
+     *
+     * @since 0.1
+     */
+    public interface Spy {
+        /**
+         * New XSL produced.
+         * @param index The index of the XSL
+         * @param xsl The XSL used
+         * @param xml The XML produced
+         */
+        void push(int index, XSL xsl, XML xml);
+
+        /**
+         * Empty spy.
+         *
+         * @since 0.1
+         */
+        final class None implements Program.Spy {
+            @Override
+            public void push(final int index, final XSL xsl, final XML xml) {
+                // Nothing
+            }
+        }
+
+        /**
+         * Empty spy.
+         *
+         * @since 0.1
+         */
+        final class Verbose implements Program.Spy {
+            @Override
+            public void push(final int index, final XSL xsl, final XML xml) {
+                Logger.debug(
+                    this,
+                    "Parsed #%d via %s\n%s",
+                    index,
+                    new XMLDocument(xsl.toString()).xpath("/*/@id").get(0),
+                    xml
+                );
+            }
+        }
     }
 
 }

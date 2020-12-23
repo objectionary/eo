@@ -56,12 +56,18 @@ public final class XeListener implements ProgramListener {
     private final Directives dirs;
 
     /**
+     * When we start.
+     */
+    private final long start;
+
+    /**
      * Ctor.
      * @param nme Tha name of it
      */
     public XeListener(final String nme) {
         this.name = nme;
         this.dirs = new Directives();
+        this.start = System.nanoTime();
     }
 
     /**
@@ -83,12 +89,16 @@ public final class XeListener implements ProgramListener {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
+            .add("listing").set(ctx.getText()).up()
             .add("errors").up();
     }
 
     @Override
     public void exitProgram(final ProgramParser.ProgramContext ctx) {
-        this.dirs.up();
+        this.dirs
+            // @checkstyle MagicNumber (1 line)
+            .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
+            .up();
     }
 
     @Override
@@ -154,18 +164,43 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
-        for (final TerminalNode attr : ctx.NAME()) {
-            this.dirs.add("o")
-                .attr("line", ctx.getStart().getLine())
-                .attr("name", attr.getText())
-                .up();
+        if (ctx.SLASH() != null) {
+            this.dirs.attr("atom", ctx.NAME());
         }
         this.dirs.up();
     }
 
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        // Nothing here
+    }
+
+    @Override
+    public void enterAttribute(final ProgramParser.AttributeContext ctx) {
+        this.enter();
+        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+    }
+
+    @Override
+    public void exitAttribute(final ProgramParser.AttributeContext ctx) {
+        this.dirs.up().up();
+    }
+
+    @Override
+    public void enterLabel(final ProgramParser.LabelContext ctx) {
+        if (ctx.AT() != null) {
+            this.dirs.attr("name", ctx.AT().getText());
+        }
+        if (ctx.NAME() != null) {
+            this.dirs.attr("name", ctx.NAME().getText());
+        }
+        if (ctx.DOTS() != null) {
+            this.dirs.attr("vararg", "");
+        }
+    }
+
+    @Override
+    public void exitLabel(final ProgramParser.LabelContext ctx) {
     }
 
     @Override
@@ -181,9 +216,11 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
         this.enter();
-        this.dirs.attr("name", ctx.NAME().getText());
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
+        }
+        if (ctx.QUESTION() != null) {
+            this.dirs.attr("rw", "");
         }
     }
 
@@ -195,6 +232,7 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterMethod(final ProgramParser.MethodContext ctx) {
         this.dirs.add("o")
+            .attr("method", "")
             .attr("line", ctx.getStart().getLine())
             .attr("base", ctx.getText()).up();
     }
@@ -208,10 +246,17 @@ public final class XeListener implements ProgramListener {
     public void enterHead(final ProgramParser.HeadContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.NAME() != null) {
-            this.dirs.attr("base", ctx.NAME().getText());
+            String base = ctx.NAME().getText();
+            if (ctx.DOT() != null) {
+                base = String.format(".%s", base);
+            }
+            this.dirs.attr("base", base);
         }
         if (ctx.AT() != null) {
             this.dirs.attr("base", "@");
+        }
+        if (ctx.SELF() != null) {
+            this.dirs.attr("base", "$");
         }
     }
 
@@ -251,12 +296,16 @@ public final class XeListener implements ProgramListener {
         this.dirs.up();
     }
 
+    // @checkstyle ExecutableStatementCountCheck (100 lines)
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
-        if (ctx.BOOL() != null) {
+        if (ctx.BYTES() != null) {
+            type = "bytes";
+            data = ctx.getText().replace("-", " ").trim();
+        } else if (ctx.BOOL() != null) {
             type = "bool";
             data = Boolean.toString(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.CHAR() != null) {
@@ -265,18 +314,14 @@ public final class XeListener implements ProgramListener {
         } else if (ctx.FLOAT() != null) {
             type = "float";
             data = Float.toString(Float.parseFloat(ctx.getText()));
-        } else if (ctx.INTEGER() != null) {
-            type = "integer";
+        } else if (ctx.INT() != null) {
+            type = "int";
             data = Long.toString(Long.parseLong(ctx.getText()));
         } else if (ctx.HEX() != null) {
-            type = "hex";
-            data = String.format(
-                "0x%s",
-                Long.toString(
-                    // @checkstyle MagicNumberCheck (2 line)
-                    Long.parseLong(ctx.getText().substring(2), 16),
-                    16
-                )
+            type = "int";
+            data = Long.toString(
+                // @checkstyle MagicNumberCheck (1 line)
+                Long.parseLong(ctx.getText().substring(2), 16)
             );
         } else if (ctx.STRING() != null) {
             type = "string";
@@ -284,6 +329,7 @@ public final class XeListener implements ProgramListener {
         } else {
             throw new CompileException("Unknown data type");
         }
+        this.dirs.attr("data", type);
         this.dirs.attr("base", type);
         this.dirs.set(data);
     }

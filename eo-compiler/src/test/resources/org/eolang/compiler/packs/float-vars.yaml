@@ -1,0 +1,34 @@
+xsls:
+  - add-refs.xsl
+  - vars-float-up.xsl
+  - errors/duplicate-names.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - /program/objects[count(o)=2]
+  - //o[@base='input' and @name='t' and @line='6' and @const and count(o)=2]
+  - //objects[count(.//o[@base='string'])=1]
+  - //o[@name='y']/o[@name='t']
+  - //o[@name='y']/o[@name='oops']
+  - //o[@name='last' and not(@cut)]
+  - //objects[count(//o[@name='oops'])=1]
+  - //objects[count(//o[@cut='0'])=0]
+  - //o[@name='aaa' and not(@cut)]
+  - //o[@name='ooo' and not(@cut)]
+eo: |
+  [] > x
+    first > ff
+    one
+      [] > y
+        two
+          input > t!
+            "Hello, world!"
+            [] > oops
+              50
+    three t
+    [] > last
+      three 1
+
+  [ppp]
+    one
+      [aaa] > kkk
+        1 > ooo

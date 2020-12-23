@@ -22,7 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="duplicate-aliases" version="2.0">
+  <xsl:strip-space elements="*"/>
   <xsl:function name="eo:name" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:sequence select="tokenize($object/tail, ' ')[1]"/>
@@ -34,6 +35,9 @@ SOFTWARE.
         <xsl:variable name="name" select="eo:name(.)"/>
         <xsl:if test="preceding-sibling::meta[head='alias' and eo:name(.)=$name]">
           <xsl:element name="error">
+            <xsl:attribute name="check">
+              <xsl:text>duplicate-aliases</xsl:text>
+            </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
             </xsl:attribute>

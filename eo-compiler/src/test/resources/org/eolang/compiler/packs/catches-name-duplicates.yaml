@@ -1,9 +1,11 @@
 xsls:
   - errors/duplicate-names.xsl
 tests:
-  - /program/errors[count(error)=1]
+  - /program/errors[count(error)=2]
   - /program/errors/error[@line='2']
   - /program/objects/o[@name='first']/o[@name='x']
 eo: |
   [x] > first
     second > x
+
+  18 > first

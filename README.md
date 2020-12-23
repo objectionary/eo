@@ -79,18 +79,18 @@ whether it's leap or not:
 
 [args] > main
   [y] > leap
-    or
-      and
-        eq (mod y 4) 0
-        not (eq (mod y 100) 0)
-      eq (mod y 400) 0
-  and
+    or.
+      and.
+        eq. (mod. y 4) 0
+        not. (eq. (mod. y 100) 0)
+      eq. (mod. y 400) 0
+  and. > @
     stdout "Enter a year:"
     stdout
-      concat
-        (scanner stdin).nextInt > !year
-        " is a leap year?"
-        leap year:y
+      sprintf
+        "%d is %sa leap year!"
+        (scanner stdin).nextInt > year!
+        if (leap year:y) "" "not "
 ```
 
 More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it).

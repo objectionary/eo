@@ -2,15 +2,19 @@ xsls:
   - errors/duplicate-names.xsl
   - errors/self-naming.xsl
   - errors/same-line-names.xsl
-  - 01-add-refs.xsl
+  - add-refs.xsl
+  - errors/broken-refs.xsl
 tests:
-  - /program/objects[count(o)=2]
+  - /program/errors[count(*)=0]
+  - /program/objects[count(o)=3]
+  - //objects[not(//o[@ref and @base='@'])]
   - //o[@base='x' and @ref='1']
   - //o[@base='x' and @ref='4']
   - //o[@base='x' and @line='11' and @ref='4']
   - //o[@base='a' and @line='9' and @ref='12']
   - //o[@base='something' and @line='12' and @name='a' and not(@ref)]
   - //o[@base='x' and @line='16' and @ref='14']
+  - //o[@base='first' and @line='17' and @ref='1']
 eo: |
   [x a] > first
     (stdout x)
@@ -20,7 +24,7 @@ eo: |
       one
         x
         two
-          a
+          a > @
           three
             x
       something > a
@@ -28,3 +32,9 @@ eo: |
   [a] > x
     tt
       x 4
+      first
+
+  []
+    one
+      [f]
+        1 > ooo

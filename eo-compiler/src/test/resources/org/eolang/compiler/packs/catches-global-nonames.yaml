@@ -1,0 +1,9 @@
+xsls:
+  - errors/global-nonames.xsl
+tests:
+  - /program/errors[count(error)=1]
+  - /program/errors/error[@line='3']
+eo: |
+  3.14 > pi
+
+  fake

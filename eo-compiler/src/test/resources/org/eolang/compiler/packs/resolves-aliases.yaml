@@ -1,12 +1,14 @@
 xsls:
-  - 01-add-refs.xsl
-  - 02-resolve-aliases.xsl
+  - add-refs.xsl
+  - resolve-aliases.xsl
 tests:
+  - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
   - /program/metas/meta[head='foo' and @line='4']
   - /program/metas[count(meta)=1]
   - //o[@base='org.eolang.io.stdout' and @line='9']
-  - //o[@base='org.eolang.and' and @line='7']
+  - //o[@base='and' and @line='7']
+  - //o[@base='$']
 eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdin org.eolang.io.stdin
@@ -15,5 +17,6 @@ eo: |
 
   [args] > main
     and
-      (scanner stdin).nextLine > !line
+      (scanner stdin).nextLine > line!
       (stdout "You entered" line).print
+      $

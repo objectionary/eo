@@ -1,0 +1,27 @@
++package org.eolang
+
+[] > int
+  0 > self?
+
+  # Change the sign of the number
+  [] > neg /int
+
+  # Add to the current one
+  [x] > add /int
+
+  # Subtract from the current one
+  [x] > sub
+    add x.neg > @
+
+  # Multiply this one by another int
+  [x] > mul /int
+
+  # Divide this one by another int
+  [x] > div
+    mul x.pow -1 > @
+
+  # Calculate MOD
+  [x] > mod /int
+
+  # Make it power x
+  [x] > pow /int

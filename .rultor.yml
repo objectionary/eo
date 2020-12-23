@@ -12,9 +12,9 @@ install: |
   pdd --file=/dev/null
 merge:
   script: |
-    mvn clean install -Peo -Pqulice --errors --settings ../settings.xml
+    mvn clean install -Peo -Pqulice --errors --settings ../settings.xml -Dstyle.color=never
 release:
   script: |-
-    mvn versions:set "-DnewVersion=${tag}"
+    mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
-    mvn clean deploy -Peo -Psonatype --errors --settings ../settings.xml
+    mvn clean deploy -Peo -Psonatype --errors --settings ../settings.xml -Dstyle.color=never

@@ -24,13 +24,15 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.io.ByteArrayOutputStream;
+import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.nio.file.Paths;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,12 +42,13 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
+import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.compiler.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -73,8 +76,7 @@ public final class CompileMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
-        required = false,
-        readonly = false,
+        required = true,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
     private transient File generatedDir;
@@ -84,22 +86,10 @@ public final class CompileMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
-        required = false,
-        readonly = false,
+        required = true,
         defaultValue = "${project.build.directory}"
     )
     private transient File targetDir;
-
-    /**
-     * Directory in which .eo files are located.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = false,
-        readonly = false,
-        defaultValue = "${project.basedir}/src/main/eo"
-    )
-    private transient File sourcesDirectory;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -107,11 +97,9 @@ public final class CompileMojo extends AbstractMojo {
         if (this.generatedDir.mkdirs()) {
             Logger.info(this, "Gen directory created: %s", this.generatedDir);
         }
-        if (this.targetDir.mkdirs()) {
-            Logger.info(this, "Target directory created: %s", this.targetDir);
-        }
+        final Path dir = this.targetDir.toPath().resolve("eo/optimize");
         try {
-            Files.walk(this.sourcesDirectory.toPath())
+            Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
                 .forEach(this::compile);
         } catch (final IOException ex) {
@@ -119,7 +107,7 @@ public final class CompileMojo extends AbstractMojo {
                 new UncheckedText(
                     new FormattedText(
                         "Can't list EO files in %s",
-                        this.sourcesDirectory
+                        dir
                     )
                 ).asString(),
                 ex
@@ -135,56 +123,43 @@ public final class CompileMojo extends AbstractMojo {
     }
 
     /**
-     * Compile one EO file.
-     * @param file EO file
+     * Compile one XML file.
+     *
+     * @param file XML file
      */
     private void compile(final Path file) {
-        final String name = file.toString().substring(
-            this.sourcesDirectory.toString().length() + 1
-        );
+        final Path temp = this.targetDir.toPath().resolve("eo/compile");
         try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Program(
-                name,
-                new InputOf(file),
-                new OutputTo(baos)
-            ).compile(new ArrayList<>(0));
-            final String xml = String.format("%s.xml", name);
+            final XML xml = new XMLDocument(file);
+            final String name = xml.xpath("/program/@name").get(0);
+            final XML out = new XSLDocument(
+                new TextOf(
+                    new ResourceOf("org/eolang/maven/to-java.xsl")
+                ).asString()
+            ).with(new ClasspathSources()).transform(xml);
+            Logger.debug(this, "Raw Java output of %s:\n%s", file, out);
             new IoChecked<>(
                 new LengthOf(
                     new TeeInput(
-                        new InputOf(baos.toString()),
+                        new InputOf(out.toString()),
                         new OutputTo(
-                            this.targetDir.toPath()
-                                .resolve("eo-compiler-raw")
-                                .resolve(xml)
+                            temp.resolve(String.format("%s.xml", name))
                         )
                     )
                 )
             ).value();
-            baos.reset();
-            new Program(
-                name,
-                new InputOf(file),
-                new OutputTo(baos)
-            ).compile();
-            new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(baos.toString()),
-                        new OutputTo(
-                            this.targetDir.toPath()
-                                .resolve("eo-compiler")
-                                .resolve(xml)
+            for (final XML java : out.nodes("/program/objects/o[java]")) {
+                CompileMojo.save(
+                    this.generatedDir.toPath().resolve(
+                        Paths.get(
+                            String.format(
+                                "%s.java", java.xpath("@java-name").get(0)
+                            )
                         )
-                    )
-                )
-            ).value();
-            new ToJava(
-                new XMLDocument(baos.toString()),
-                this.generatedDir.toPath(),
-                this.targetDir.toPath().resolve("eo-to-java")
-            ).compile();
+                    ),
+                    java.xpath("java/text()").get(0)
+                );
+            }
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 new UncheckedText(
@@ -197,6 +172,30 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+    }
+
+    /**
+     * Save one Java file.
+     * @param path The path
+     * @param content The content
+     * @throws IOException If fails
+     */
+    private static void save(final Path path, final String content)
+        throws IOException {
+        new IoChecked<>(
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(content),
+                    path
+                )
+            )
+        ).value();
+        Logger.info(
+            CompileMojo.class,
+            "Saved %d chars to %s",
+            content.length(),
+            path.toAbsolutePath()
+        );
     }
 
 }

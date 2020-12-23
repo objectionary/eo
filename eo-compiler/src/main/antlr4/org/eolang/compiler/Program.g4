@@ -31,13 +31,11 @@ program
 license
   :
   (COMMENT EOL)+
-  EOL
   ;
 
 metas
   :
   (META EOL)+
-  EOL
   ;
 
 objects
@@ -46,7 +44,6 @@ objects
     (COMMENT EOL)*
     object
     EOL
-    EOL?
   )+
   ;
 
@@ -67,10 +64,24 @@ object
 
 abstraction
   :
+  (COMMENT EOL)*
   LSQ
-  (NAME (SPACE NAME)*)?
+  (attribute (SPACE attribute)*)?
   RSQ
-  suffix?
+  (suffix (SPACE SLASH NAME)?)?
+  ;
+
+attribute
+  :
+  label
+  ;
+
+label
+  :
+  AT
+  |
+  NAME
+  DOTS?
   ;
 
 tail
@@ -86,8 +97,9 @@ suffix
   SPACE
   ARROW
   SPACE
+  label
+  QUESTION?
   CONST?
-  NAME
   ;
 
 method
@@ -148,7 +160,11 @@ head
   :
   AT
   |
+  SELF
+  |
   NAME
+  |
+  NAME DOT
   |
   data
   ;
@@ -161,11 +177,13 @@ has
 
 data
   :
+  BYTES
+  |
   BOOL
   |
   STRING
   |
-  INTEGER
+  INT
   |
   FLOAT
   |
@@ -177,9 +195,13 @@ data
 COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
+DOTS: '...';
 CONST: '!';
+QUESTION: '?';
+SLASH: '/';
 COLON: ':';
 ARROW: '>';
+SELF: '$';
 PLUS: '+';
 MINUS: '-';
 SPACE: ' ';
@@ -192,7 +214,7 @@ AT: '@';
 HASH: '#';
 EOL
   :
-  [\r\n]
+  [\r\n]+
   SPACE*
   {
     int tabs = getText().replaceAll("[\r\n]+", "").length() / 2;
@@ -210,16 +232,15 @@ EOL
   }
   ;
 
+fragment BYTE: [0-9A-F][0-9A-F] MINUS;
+BYTES: BYTE (BYTE* [0-9A-F][0-9A-F])?;
+
 BOOL: 'true' | 'false';
-CHAR: '\'' (LETTER | DIGIT) '\'';
+CHAR: '\'' [0-9a-zA-Z] '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
-INTEGER: (PLUS | MINUS)? DIGIT+;
-FLOAT: (PLUS | MINUS)? DIGIT+ DOT DIGIT+;
-HEX: '0x' (DIGIT | 'a'..'f')+;
+INT: (PLUS | MINUS)? [0-9]+;
+FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
+HEX: '0x' [0-9a-f]+;
 
-NAME: LO (LETTER | DIGIT)*;
+NAME: [a-z][a-z0-9_A-Z]*;
 
-LETTER: (HI | LO);
-HI: [A-Z];
-LO: [a-z];
-DIGIT: [0-9];

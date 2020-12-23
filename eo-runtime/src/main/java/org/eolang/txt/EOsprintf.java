@@ -26,46 +26,53 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.cactoos.iterable.Sorted;
-import org.eolang.sys.Args;
-import org.eolang.sys.Phi;
+import org.eolang.Data;
+import org.eolang.EObool;
+import org.eolang.EOstring;
+import org.eolang.Phi;
 
 /**
  * Sprintf.
  *
  * @since 0.2
  */
-public final class EOsprintf implements Phi {
+public class EOsprintf extends Phi {
 
-    /**
-     * Args.
-     */
-    private final Args args;
-
-    /**
-     * Ctor.
-     * @param arg Args
-     */
-    public EOsprintf(final Args arg) {
-        this.args = arg;
+    public EOsprintf() {
+        super("eo_format", "eo_args...");
+        this.put("origin", () -> {
+            final Phi out = new org.eolang.EOstring();
+            final String format = new Data.Take(
+                this.get("eo_format")
+            ).take(String.class);
+            final Phi[] args = new Data.Take(
+                this.get("eo_args")
+            ).take(Phi[].class);
+            final Collection<Object> items = new LinkedList<>();
+            for (final Phi arg : args) {
+                items.add(EOsprintf.toArg(arg));
+            }
+            out.put(
+                "eo_self",
+                () -> new Data.Value<>(
+                    String.format(format, items.toArray())
+                )
+            );
+            return out;
+        });
     }
 
-    @Override
-    @SuppressWarnings("PMD.SystemPrintln")
-    public Object call() throws Exception {
-        final Collection<Object> items = new LinkedList<>();
-        for (final String key : new Sorted<>(this.args.keys())) {
-            if (key.charAt(0) != '0') {
-                continue;
-            }
-            if ("01".equals(key)) {
-                continue;
-            }
-            items.add(this.args.call(key, Object.class));
+    private static Object toArg(final Phi phi) {
+        final Object result;
+        final Data.Take take = new Data.Take(phi.get("eo_self"));
+        if (phi instanceof EObool) {
+            result = take.take(Boolean.class);
+        } else if (phi instanceof EOstring) {
+            result = take.take(String.class);
+        } else {
+            throw new UnsupportedOperationException("");
         }
-        return String.format(
-            this.args.call("01", String.class),
-            items.toArray()
-        );
+        return result;
     }
+
 }

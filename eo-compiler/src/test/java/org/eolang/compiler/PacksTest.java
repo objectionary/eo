@@ -23,7 +23,10 @@
  */
 package org.eolang.compiler;
 
+import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Map;
@@ -54,12 +57,21 @@ public final class PacksTest {
             )
         );
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Program program = new Program(
+        new Syntax(
             pack,
             new InputOf(String.format("%s\n", map.get("eo"))),
             new OutputTo(baos)
-        );
-        program.compile((Iterable<String>) map.get("xsls"));
+        ).parse();
+        final XML xml = new XMLDocument(baos.toString());
+        baos.reset();
+        final Program program = new Program(xml, new OutputTo(baos));
+        final Collection<String> xsls = (Collection<String>) map.get("xsls");
+        if (xsls == null) {
+            program.compile(new Program.Spy.Verbose());
+        } else {
+            program.compile(new Pack(xsls), new Program.Spy.Verbose());
+        }
+        Logger.debug(this, "Output XML:\n%s", baos.toString());
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(baos.toString()),
@@ -74,15 +86,22 @@ public final class PacksTest {
             "simple.yaml",
             "full-syntax.yaml",
             "catches-name-duplicates.yaml",
+            "catches-abstract-decoratee.yaml",
             "catches-alias-duplicates.yaml",
+            "catches-global-nonames.yaml",
             "catches-broken-aliases.yaml",
+            "catches-middle-vararg.yaml",
+            "catches-nonempty-atoms.yaml",
             "catches-unknown-names.yaml",
             "catches-self-naming.yaml",
-            "catches-reserved-atoms.yaml",
-            "catches-two-bodies.yaml",
+            "catches-noname-attrs.yaml",
             "catches-same-line-name.yaml",
+            "all-data-types.yaml",
+            "fixes-globals.yaml",
             "adds-refs.yaml",
-            "flatten-abstracts.yaml",
+            "adds-default-package.yaml",
+            "float-vars.yaml",
+            "float-abstracts.yaml",
             "resolves-aliases.yaml",
             "wraps-methods.yaml",
             "leap-year.yaml"
