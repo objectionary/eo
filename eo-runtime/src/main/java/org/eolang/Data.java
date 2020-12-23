@@ -52,7 +52,7 @@ public interface Data<T> {
         }
         @SuppressWarnings("unchecked")
         public <T> T take(final Class<T> type) {
-            return ((Data<T>) type.cast(this.phi.get("data"))).take();
+            return type.cast(((Data<T>) Data.class.cast(this.phi)).take());
         }
     }
 

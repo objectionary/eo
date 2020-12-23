@@ -78,14 +78,14 @@ public class Phi {
      * @param phi The value to set
      */
     public final void put(final String name, final Attr phi) {
-        if (!this.free.contains(name)) {
+        if (this.bound.containsKey(name) && !this.free.contains(name)) {
             throw new IllegalStateException(
                 String.format(
-                    "Attribute \"%s\" is not free here", name
+                    "The attribute \"%s\" is already bound in %s",
+                    name, this.getClass().getCanonicalName()
                 )
             );
         }
-        this.free.remove(name);
         this.bound.put(name, phi);
     }
 
@@ -106,32 +106,23 @@ public class Phi {
      * @return The object
      */
     public final Phi get(final String name) {
-        if (!this.free.isEmpty()) {
-            throw new IllegalStateException(
-                String.format(
-                    "The object is still abstract, can't get(%s)", name
-                )
-            );
-        }
-        Phi attr = this.bound.get(name).get();
+        final Attr attr = this.bound.get(name);
+        final Phi phi;
         if (attr == null) {
-            final Attr origin = this.bound.get("_origin");
+            final Attr origin = this.bound.get("origin");
             if (origin == null) {
                 throw new IllegalStateException(
                     String.format(
-                        "Can't find \"%s\" attribute", name
+                        "Can't find \"%s\" attr and there is no origin in %s",
+                        name, this.getClass().getCanonicalName()
                     )
                 );
             }
-            attr = origin.get().get(name);
+            phi = origin.get().get(name);
+        } else {
+            phi = attr.get();
         }
-        return attr;
-    }
-
-    protected <T> T data(final Class<T> type) {
-        throw new UnsupportedOperationException(
-            "No data here"
-        );
+        return phi;
     }
 
 }
