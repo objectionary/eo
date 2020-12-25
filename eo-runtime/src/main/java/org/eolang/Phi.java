@@ -106,10 +106,12 @@ public class Phi {
      */
     public final Phi inherit(final Phi parent) {
         for (final Map.Entry<String, Attr> attr : parent.bound.entrySet()) {
-            this.put(
-                String.format("%s+", attr.getKey()),
-                attr.getValue()
-            );
+            if (!this.bound.containsKey(attr.getKey())) {
+                this.put(
+                    attr.getKey(),
+                    attr.getValue()
+                );
+            }
         }
         return this;
     }
@@ -124,7 +126,7 @@ public class Phi {
         final Attr attr = this.bound.get(name);
         final Phi phi;
         if (attr == null) {
-            final Attr origin = this.bound.get("origin");
+            final Attr origin = this.bound.get("_origin");
             if (origin == null) {
                 throw new IllegalStateException(
                     String.format(

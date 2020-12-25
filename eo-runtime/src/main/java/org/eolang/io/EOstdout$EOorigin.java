@@ -37,10 +37,10 @@ public class EOstdout$EOorigin extends Phi {
 
     public EOstdout$EOorigin() {
         super();
-        this.put("origin", () -> {
+        this.put("_origin", () -> {
             System.out.print(
                 new Data.Take(
-                    this.get("eo_text")
+                    this.get("text")
                 ).take(String.class)
             );
             return new EObool();

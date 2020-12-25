@@ -33,13 +33,13 @@ public class EOstring$EOtrim extends Phi {
 
     public EOstring$EOtrim() {
         super();
-        this.put("origin", () -> {
+        this.put("_origin", () -> {
             final Phi out = new org.eolang.EOstring();
             out.put(
-                "eo_self",
+                "self",
                 () -> new Data.Value<>(
                     new Data.Take(
-                        this.get("eo_text+")
+                        this.get("text+")
                     ).take(String.class).trim()
                 )
             );

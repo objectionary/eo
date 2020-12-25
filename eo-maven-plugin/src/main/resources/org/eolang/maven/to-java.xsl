@@ -81,10 +81,10 @@ SOFTWARE.
     <xsl:param name="n" as="xs:string"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:text>origin</xsl:text>
+        <xsl:text>_origin</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat('eo_', $n)"/>
+        <xsl:value-of select="concat('', $n)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -190,7 +190,7 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="." mode="data">
+    <xsl:apply-templates select=".[@data]" mode="data">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
@@ -272,7 +272,7 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text>.put("data", () -&gt; new Data.Value&lt;</xsl:text>
+    <xsl:text>.put("_data", () -&gt; new Data.Value&lt;</xsl:text>
     <xsl:apply-templates select="." mode="value"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -315,7 +315,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * your changes will be discarded on the next build.</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:text> * The sources were compiled to XML on </xsl:text>
+    <xsl:text> * The sources were compiled to XML on</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * </xsl:text>
     <xsl:value-of select="@time"/>

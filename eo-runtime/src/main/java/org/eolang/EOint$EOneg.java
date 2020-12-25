@@ -33,13 +33,13 @@ public class EOint$EOneg extends Phi {
 
     public EOint$EOneg() {
         super();
-        this.put("origin", () -> {
+        this.put("_origin", () -> {
             final Phi out = new org.eolang.EOint();
             out.put(
-                "eo_self",
+                "self",
                 () -> new Data.Value<>(
                     new Data.Take(
-                        this.get("eo_self")
+                        this.get("self")
                     ).take(Long.class) * -1L
                 )
             );

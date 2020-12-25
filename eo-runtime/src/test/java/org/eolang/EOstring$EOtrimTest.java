@@ -37,9 +37,9 @@ public final class EOstring$EOtrimTest {
     @Test
     public void trimsString() {
         final Phi phi = new EOstring$EOtrim();
-        phi.put("eo_text+", () -> new Data.Value<>("Hello, world!  "));
+        phi.put("text+", () -> new Data.Value<>("Hello, world!  "));
         MatcherAssert.assertThat(
-            new Data.Take(phi.get("eo_self")).take(String.class),
+            new Data.Take(phi.get("self")).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
     }

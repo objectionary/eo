@@ -33,14 +33,14 @@ public class EOarray$EOreduce extends Phi {
 
     public EOarray$EOreduce() {
         super();
-        this.put("origin", () -> {
+        this.put("_origin", () -> {
             final Phi[] array = new Data.Take(
-                this.get("eo_self")
+                this.get("self")
             ).take(Phi[].class);
-            Phi out = this.get("eo_a");
+            Phi out = this.get("a");
             for (final Phi arg : array) {
                 final Phi before = out;
-                final Phi after = this.get("eo_f").copy();
+                final Phi after = this.get("f").copy();
                 after.put(0, () -> before);
                 after.put(1, () -> arg);
                 out = after;
