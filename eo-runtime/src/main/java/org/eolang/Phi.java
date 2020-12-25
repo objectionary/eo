@@ -104,13 +104,14 @@ public class Phi {
      *
      * @param parent The parent
      */
-    public final void inherit(final Phi parent) {
+    public final Phi inherit(final Phi parent) {
         for (final Map.Entry<String, Attr> attr : parent.bound.entrySet()) {
             this.put(
                 String.format("%s+", attr.getKey()),
                 attr.getValue()
             );
         }
+        return this;
     }
 
     /**
