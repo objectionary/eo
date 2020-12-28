@@ -75,9 +75,9 @@ public class Phi {
      * Set the attribute.
      *
      * @param name The name of the attribute to set
-     * @param phi The value to set
+     * @param attr The value to set
      */
-    public final void put(final String name, final Attr phi) {
+    public final void put(final String name, final Attr attr) {
         if (this.bound.containsKey(name) && !this.free.contains(name)) {
             throw new IllegalStateException(
                 String.format(
@@ -86,7 +86,27 @@ public class Phi {
                 )
             );
         }
-        this.bound.put(name, phi);
+        this.bound.put(name, attr);
+    }
+
+    /**
+     * Set the attribute.
+     *
+     * @param name The name of the attribute to set
+     * @param phi The value to set
+     */
+    public final void put(final String name, final Phi phi) {
+        this.put(name, () -> phi);
+    }
+
+    /**
+     * Set the attribute by position.
+     *
+     * @param pos The position of it
+     * @param attr The value to set
+     */
+    public final void put(final int pos, final Attr attr) {
+        this.bound.put(this.free.get(pos), attr);
     }
 
     /**
@@ -95,8 +115,8 @@ public class Phi {
      * @param pos The position of it
      * @param phi The value to set
      */
-    public final void put(final int pos, final Attr phi) {
-        this.bound.put(this.free.get(pos), phi);
+    public final void put(final int pos, final Phi phi) {
+        this.put(pos, () -> phi);
     }
 
     /**
@@ -130,8 +150,13 @@ public class Phi {
             if (origin == null) {
                 throw new IllegalStateException(
                     String.format(
-                        "Can't find \"%s\" attr and there is no origin in %s",
-                        name, this.getClass().getCanonicalName()
+                        "Can't find \"%s\" attr among (%s) and there is no origin in %s",
+                        name,
+                        String.join(
+                            ", ",
+                            this.bound.keySet()
+                        ),
+                        this.getClass().getCanonicalName()
                     )
                 );
             }

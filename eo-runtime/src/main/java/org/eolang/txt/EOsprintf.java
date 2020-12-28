@@ -41,7 +41,6 @@ public class EOsprintf extends Phi {
     public EOsprintf() {
         super("format", "args...");
         this.put("_origin", () -> {
-            final Phi out = new org.eolang.EOstring();
             final String format = new Data.Take(
                 this.get("format")
             ).take(String.class);
@@ -52,9 +51,10 @@ public class EOsprintf extends Phi {
             for (final Phi arg : args) {
                 items.add(EOsprintf.toArg(arg));
             }
+            final Phi out = new org.eolang.EOstring();
             out.put(
-                "self",
-                () -> new Data.Value<>(
+                "_data",
+                new Data.Value<>(
                     String.format(format, items.toArray())
                 )
             );
@@ -64,7 +64,7 @@ public class EOsprintf extends Phi {
 
     private static Object toArg(final Phi phi) {
         final Object result;
-        final Data.Take take = new Data.Take(phi.get("self"));
+        final Data.Take take = new Data.Take(phi);
         if (phi instanceof EObool) {
             result = take.take(Boolean.class);
         } else if (phi instanceof EOstring) {

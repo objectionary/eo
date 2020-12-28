@@ -34,9 +34,7 @@ public class EObool$EOif extends Phi {
     public EObool$EOif() {
         super();
         this.put("_origin", () -> {
-            final Boolean term = new Data.Take(
-                this.get("self")
-            ).take(Boolean.class);
+            final Boolean term = new Data.Take(this).take(Boolean.class);
             final Phi out;
             if (term) {
                 out = this.get("t");

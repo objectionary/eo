@@ -36,11 +36,9 @@ public class EOint$EOadd extends Phi {
         this.put("_origin", () -> {
             final Phi out = new org.eolang.EOint();
             out.put(
-                "self",
-                () -> new Data.Value<>(
-                    new Data.Take(
-                        this.get("self")
-                    ).take(Long.class)
+                "_data",
+                new Data.Value<>(
+                    new Data.Take(this).take(Long.class)
                     +
                     new Data.Take(
                         this.get("x")

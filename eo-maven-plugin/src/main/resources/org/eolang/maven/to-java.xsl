@@ -75,7 +75,7 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', 'origin'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '_origin'), '\$', '\$EO'))"/>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -259,7 +259,7 @@ SOFTWARE.
           <xsl:value-of select="position() - 1"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>, () -&gt; </xsl:text>
+      <xsl:text>, </xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>_</xsl:text>
       <xsl:value-of select="position()"/>
@@ -272,7 +272,7 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text>.put("_data", () -&gt; new Data.Value&lt;</xsl:text>
+    <xsl:text>.put("_data", new Data.Value&lt;</xsl:text>
     <xsl:apply-templates select="." mode="value"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

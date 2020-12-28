@@ -200,7 +200,9 @@ SOFTWARE.
             <configuration>
               <excludes>
                 <exclude>checkstyle:/src/it.*</exclude>
+                <exclude>checkstyle:/src/test/resources/.*</exclude>
                 <exclude>pmd:/src/it.*</exclude>
+                <exclude>pmd:/src/test/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
                 <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
               </excludes>

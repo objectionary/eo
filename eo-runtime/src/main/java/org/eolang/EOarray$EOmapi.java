@@ -34,19 +34,15 @@ public class EOarray$EOmapi extends Phi {
     public EOarray$EOmapi() {
         super();
         this.put("_origin", () -> {
-            final Phi[] array = new Data.Take(
-                this.get("self")
-            ).take(Phi[].class);
+            final Phi[] array = new Data.Take(this).take(Phi[].class);
             for (long idx = 0; idx < array.length; ++idx) {
-                final Phi before = array[(int) idx];
                 final Phi after = this.get("f").copy();
-                after.put(0, () -> before);
-                final long index = idx;
-                after.put(1, () -> new Data.Value<>(index));
+                after.put(0, array[(int) idx]);
+                after.put(1, new Data.Value<>(idx));
                 array[(int) idx] = after;
             }
             final Phi out = new org.eolang.EOarray();
-            out.put("self", () -> new Data.Value<>(array));
+            out.put("_data", new Data.Value<>(array));
             return out;
         });
     }

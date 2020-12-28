@@ -33,9 +33,9 @@ import org.eolang.Phi;
  *
  * @since 0.1
  */
-public class EOstdout$EOorigin extends Phi {
+public class EOstdout$EO_origin extends Phi {
 
-    public EOstdout$EOorigin() {
+    public EOstdout$EO_origin() {
         super();
         this.put("_origin", () -> {
             System.out.print(

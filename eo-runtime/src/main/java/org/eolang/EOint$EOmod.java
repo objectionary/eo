@@ -36,12 +36,10 @@ public class EOint$EOmod extends Phi {
         this.put("_origin", () -> {
             final Phi out = new org.eolang.EOint();
             out.put(
-                "self",
-                () -> new Data.Value<>(
+                "_data",
+                new Data.Value<>(
                     Math.floorMod(
-                        new Data.Take(
-                            this.get("self")
-                        ).take(Long.class),
+                        new Data.Take(this).take(Long.class),
                         new Data.Take(
                             this.get("x")
                         ).take(Long.class)
