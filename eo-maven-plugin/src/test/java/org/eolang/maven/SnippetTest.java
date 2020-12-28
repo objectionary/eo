@@ -36,12 +36,12 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -55,7 +55,6 @@ import org.yaml.snakeyaml.Yaml;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
-    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -115,24 +114,34 @@ public final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .execute();
+        new LengthOf(
+            new TeeInput(
+                new ResourceOf("org/eolang/maven/Main.java"),
+                new OutputTo(generated.resolve("Main.java"))
+            )
+        ).value();
         final Path classes = temp.resolve("classes");
-        final Path jar = Paths.get(
+        final String cpath = String.format(
+            ".:%s",
             System.getProperty(
                 "runtime.jar",
                 Paths.get(System.getProperty("user.home")).resolve(
-                    ".m2/repository/org/eolang/eo-runtime/0.1.5/eo-runtime-0.1.5.jar"
+                    String.format(
+                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                        "1.0-SNAPSHOT"
+                    )
                 ).toString()
             )
         );
         Files.walk(generated)
             .filter(file -> !file.toFile().isDirectory())
-            .forEach(file -> SnippetTest.javac(file, classes, jar));
+            .forEach(file -> SnippetTest.javac(file, classes, cpath));
         final Process proc = new ProcessBuilder()
             .command(
                 "java",
-                "EOmain.class",
                 "-cp",
-                jar.toString()
+                cpath,
+                "Main"
             )
             .directory(classes.toFile())
             .redirectErrorStream(true)
@@ -159,10 +168,10 @@ public final class SnippetTest {
      *
      * @param file The java file
      * @param dir Destination directory
-     * @param jar Path to JAR file
+     * @param cpath Classpath
      */
     private static String javac(final Path file, final Path dir,
-        final Path jar) {
+        final String cpath) {
         final ProcessBuilder proc = new ProcessBuilder()
             .command(
                 "javac",
@@ -170,7 +179,7 @@ public final class SnippetTest {
                 "-d",
                 dir.toString(),
                 "-cp",
-                jar.toString()
+                cpath
             )
             .directory(file.getParent().toFile())
             .redirectErrorStream(true);
