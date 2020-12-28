@@ -40,11 +40,8 @@ public class EOint$EOpow extends Phi {
                 new Data.Value<>(
                     Math.pow(
                         new Data.Take(this).take(Long.class),
-                        new Data.Take(
-                            this.get("x")
-                        ).take(Long.class)
+                        new Data.Take(this.get("x")).take(Long.class)
                     )
-
                 )
             );
             return out;

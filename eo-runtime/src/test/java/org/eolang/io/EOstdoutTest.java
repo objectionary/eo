@@ -21,32 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.io;
 
-package org.eolang;
+import org.eolang.Data;
+import org.eolang.EOstring;
+import org.eolang.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * MOD.
+ * Test case for {@link EOstdout}.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOmod extends Phi {
+public final class EOstdoutTest {
 
-    public EOint$EOmod() {
-        super();
-        this.put("_origin", () -> {
-            final Phi out = new org.eolang.EOint();
-            out.put(
-                "_data",
-                new Data.Value<>(
-                    Math.floorMod(
-                        new Data.Take(this).take(Long.class),
-                        new Data.Take(this.get("x")).take(Long.class)
-                    )
-
-                )
-            );
-            return out;
-        });
+    @Test
+    public void printsString() {
+        final Phi format = new EOstring();
+        format.put("_data", new Data.Value<>("Hello, world!"));
+        final Phi phi = new EOstdout();
+        phi.put("text", format);
+        MatcherAssert.assertThat(
+            new Data.Take(phi).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
     }
 
 }

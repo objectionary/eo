@@ -22,31 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
 /**
- * MOD.
+ * EO runtime, tests.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOmod extends Phi {
-
-    public EOint$EOmod() {
-        super();
-        this.put("_origin", () -> {
-            final Phi out = new org.eolang.EOint();
-            out.put(
-                "_data",
-                new Data.Value<>(
-                    Math.floorMod(
-                        new Data.Take(this).take(Long.class),
-                        new Data.Take(this.get("x")).take(Long.class)
-                    )
-
-                )
-            );
-            return out;
-        });
-    }
-
-}
+package org.eolang.txt;

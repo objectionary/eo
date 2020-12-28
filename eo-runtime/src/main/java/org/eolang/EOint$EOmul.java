@@ -40,9 +40,7 @@ public class EOint$EOmul extends Phi {
                 new Data.Value<>(
                     new Data.Take(this).take(Long.class)
                     *
-                    new Data.Take(
-                        this.get("x")
-                    ).take(Long.class)
+                    new Data.Take(this.get("x")).take(Long.class)
                 )
             );
             return out;

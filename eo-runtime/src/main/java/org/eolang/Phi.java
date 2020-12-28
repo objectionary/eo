@@ -26,6 +26,7 @@ package org.eolang;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class Phi {
      */
     private Phi(final Map<String, Attr> bnd, final List<String> names) {
         this.bound = new HashMap<>(bnd);
-        this.free = names;
+        this.free = Collections.unmodifiableList(names);
     }
 
     /**
@@ -68,7 +69,9 @@ public class Phi {
      * @return A copy
      */
     public final Phi copy() {
-        return new Phi(this.bound, this.free);
+        final Map<String, Attr> bnd = new HashMap<>(this.bound.size());
+        bnd.putAll(this.bound);
+        return new Phi(bnd, this.free);
     }
 
     /**
@@ -78,7 +81,15 @@ public class Phi {
      * @param attr The value to set
      */
     public final void put(final String name, final Attr attr) {
-        if (this.bound.containsKey(name) && !this.free.contains(name)) {
+        if (!this.free.contains(name)) {
+            throw new IllegalStateException(
+                String.format(
+                    "The attribute \"%s\" is absent in %s",
+                    name, this.getClass().getCanonicalName()
+                )
+            );
+        }
+        if (this.bound.containsKey(name)) {
             throw new IllegalStateException(
                 String.format(
                     "The attribute \"%s\" is already bound in %s",
@@ -125,14 +136,7 @@ public class Phi {
      * @param parent The parent
      */
     public final Phi inherit(final Phi parent) {
-        for (final Map.Entry<String, Attr> attr : parent.bound.entrySet()) {
-            if (!this.bound.containsKey(attr.getKey())) {
-                this.put(
-                    attr.getKey(),
-                    attr.getValue()
-                );
-            }
-        }
+        this.put("_parent", parent);
         return this;
     }
 

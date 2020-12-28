@@ -39,7 +39,7 @@ public final class EOstring$EOtrimTest {
         final Phi str = new org.eolang.EOstring();
         str.put("_data", new Data.Value<>("Hello, world!  "));
         final Phi phi = new EOstring$EOtrim();
-        phi.put("text", str);
+        phi.inherit(str);
         MatcherAssert.assertThat(
             new Data.Take(phi).take(String.class),
             Matchers.equalTo("Hello, world!")

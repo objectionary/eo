@@ -22,29 +22,29 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.io;
+
+import org.eolang.Data;
+import org.eolang.EObool;
+import org.eolang.Phi;
 
 /**
- * MOD.
+ * Stdout.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOmod extends Phi {
+public class EOstdout extends Phi {
 
-    public EOint$EOmod() {
-        super();
+    public EOstdout() {
+        super("text");
         this.put("_origin", () -> {
-            final Phi out = new org.eolang.EOint();
-            out.put(
-                "_data",
-                new Data.Value<>(
-                    Math.floorMod(
-                        new Data.Take(this).take(Long.class),
-                        new Data.Take(this.get("x")).take(Long.class)
-                    )
-
-                )
+            System.out.print(
+                new Data.Take(
+                    this.get("text")
+                ).take(String.class)
             );
+            final Phi out = new EObool();
+            out.put("_data", new Data.Value<>(true));
             return out;
         });
     }

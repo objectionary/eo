@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.eolang.Data;
 import org.eolang.EObool;
+import org.eolang.EOint;
 import org.eolang.EOstring;
 import org.eolang.Phi;
 
@@ -67,10 +68,17 @@ public class EOsprintf extends Phi {
         final Data.Take take = new Data.Take(phi);
         if (phi instanceof EObool) {
             result = take.take(Boolean.class);
+        } else if (phi instanceof EOint) {
+            result = take.take(Long.class);
         } else if (phi instanceof EOstring) {
             result = take.take(String.class);
         } else {
-            throw new UnsupportedOperationException("");
+            throw new UnsupportedOperationException(
+                String.format(
+                    "Can't print object of type %s",
+                    phi.getClass().getName()
+                )
+            );
         }
         return result;
     }

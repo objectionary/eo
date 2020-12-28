@@ -22,29 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang.io;
-
-import org.eolang.Data;
-import org.eolang.EObool;
-import org.eolang.Phi;
-
 /**
- * Stdout.
+ * EO runtime, tests.
  *
  * @since 0.1
  */
-public class EOstdout$EO_origin extends Phi {
-
-    public EOstdout$EO_origin() {
-        super();
-        this.put("_origin", () -> {
-            System.out.print(
-                new Data.Take(
-                    this.get("text")
-                ).take(String.class)
-            );
-            return new EObool();
-        });
-    }
-
-}
+package org.eolang.io;

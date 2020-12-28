@@ -39,7 +39,7 @@ public class EOstring$EOtrim extends Phi {
                 "_data",
                 new Data.Value<>(
                     new Data.Take(
-                        this.get("text")
+                        this.get("_parent")
                     ).take(String.class).trim()
                 )
             );
