@@ -23,9 +23,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
@@ -39,6 +41,7 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -52,6 +55,7 @@ import org.yaml.snakeyaml.Yaml;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
+    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -63,12 +67,10 @@ public final class SnippetTest {
             )
         );
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-        final int result = this.run(
+        final int result = SnippetTest.run(
             new InputOf(String.format("%s\n", map.get("eo"))),
             new InputOf(map.get("in").toString()),
-            new OutputTo(stdout),
-            new OutputTo(stderr)
+            new OutputTo(stdout)
         );
         MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
     }
@@ -77,7 +79,6 @@ public final class SnippetTest {
     private static Collection<String> yamlSnippets() {
         return new ListOf<>(
             "simple.yaml"
-//            "leap-year.yaml"
         );
     }
 
@@ -85,11 +86,12 @@ public final class SnippetTest {
      * Compile EO to Java and run.
      * @param code EO sources
      * @param stdin The input
+     * @param stdout Where to put stdout
      * @return All Java code
      * @throws Exception If fails
      */
-    private int run(final Input code, final Input stdin,
-        final Output stdout, final Output stderr) throws Exception {
+    private static int run(final Input code, final Input stdin,
+        final Output stdout) throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new LengthOf(
@@ -113,8 +115,68 @@ public final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .execute();
-        final Path javac = temp.resolve("javac");
+        final Path classes = temp.resolve("classes");
+        final Path jar = Paths.get(
+            System.getProperty(
+                "runtime.jar",
+                Paths.get(System.getProperty("user.home")).resolve(
+                    ".m2/repository/org/eolang/eo-runtime/0.1.5/eo-runtime-0.1.5.jar"
+                ).toString()
+            )
+        );
+        Files.walk(generated)
+            .filter(file -> !file.toFile().isDirectory())
+            .forEach(file -> SnippetTest.javac(file, classes, jar));
+        final Process proc = new ProcessBuilder()
+            .command(
+                "java",
+                "EOmain.class",
+                "-cp",
+                jar.toString()
+            )
+            .directory(classes.toFile())
+            .redirectErrorStream(true)
+            .start();
+        new LengthOf(
+            new TeeInput(
+                stdin,
+                new OutputTo(proc.getOutputStream())
+            )
+        ).value();
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(vproc.stdout()),
+                    stdout
+                )
+            ).value();
+        }
         return 0;
+    }
+
+    /**
+     * Compile .java to .class.
+     *
+     * @param file The java file
+     * @param dir Destination directory
+     * @param jar Path to JAR file
+     */
+    private static String javac(final Path file, final Path dir,
+        final Path jar) {
+        final ProcessBuilder proc = new ProcessBuilder()
+            .command(
+                "javac",
+                file.getFileName().toString(),
+                "-d",
+                dir.toString(),
+                "-cp",
+                jar.toString()
+            )
+            .directory(file.getParent().toFile())
+            .redirectErrorStream(true);
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
+            return vproc.stdout();
+        }
     }
 
 }

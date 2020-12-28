@@ -90,6 +90,12 @@ final class Mojo<T extends AbstractMojo> {
         }
     }
 
+    /**
+     * Take a field.
+     * @param mojo The class
+     * @param name Field name
+     * @return Field
+     */
     private Field field(final Class<?> mojo, final String name) {
         Field field;
         try {
