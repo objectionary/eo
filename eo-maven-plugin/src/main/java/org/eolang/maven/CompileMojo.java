@@ -49,6 +49,7 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.parser.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -136,7 +137,7 @@ public final class CompileMojo extends AbstractMojo {
                 new TextOf(
                     new ResourceOf("org/eolang/maven/to-java.xsl")
                 ).asString()
-            ).with(new ClasspathSources()).transform(xml);
+            ).with(new ClasspathSources(Program.class)).transform(xml);
             Logger.debug(this, "Raw Java output of %s:\n%s", file, out);
             new IoChecked<>(
                 new LengthOf(

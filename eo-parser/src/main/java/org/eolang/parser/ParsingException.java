@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,9 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.parser;
 
-assert new File(basedir, 'target/generated-sources/eo/EOapp.java').exists()
-assert new File(basedir, 'target/eo-to-java/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo-parser/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo-parser-raw/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/classes/org/eolang/examples/EOapp.class').exists()
+/**
+ * When parsing fails.
+ *
+ * @since 0.1
+ */
+public final class ParsingException extends RuntimeException {
+
+    /**
+     * Serialization marker.
+     */
+    private static final long serialVersionUID = -3043426132301042201L;
+
+    /**
+     * Ctor.
+     * @param msg Message
+     */
+    public ParsingException(final String msg) {
+        super(msg);
+    }
+
+    /**
+     * Ctor.
+     * @param msg Message
+     * @param cause Cause of failure
+     */
+    public ParsingException(final String msg, final Exception cause) {
+        super(msg, cause);
+    }
+
+}

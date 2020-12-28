@@ -45,8 +45,8 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
-import org.eolang.compiler.Pack;
-import org.eolang.compiler.Program;
+import org.eolang.parser.Pack;
+import org.eolang.parser.Program;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**

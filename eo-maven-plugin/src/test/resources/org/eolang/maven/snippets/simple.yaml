@@ -1,0 +1,8 @@
+exit: 0
+in: ""
+eo: |
+  [args...] > main
+    stdout > @
+      sprintf
+        "Hello, dear %s!"
+        "Jeff"

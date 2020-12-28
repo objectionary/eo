@@ -34,7 +34,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.compiler.Program;
+import org.eolang.parser.Program;
 
 /**
  * The spy to log all results.

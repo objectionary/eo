@@ -29,7 +29,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
-import org.eolang.compiler.CompileException;
+import org.eolang.parser.ParsingException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -79,7 +79,7 @@ public final class ParseMojoTest {
             )
         ).value();
         Assertions.assertThrows(
-            CompileException.class,
+            ParsingException.class,
             () -> new Mojo<>(ParseMojo.class)
                 .with("sourcesDir", src.toFile())
                 .with("targetDir", target.toFile())

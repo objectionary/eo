@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -22,8 +22,11 @@
  * SOFTWARE.
  */
 
-assert new File(basedir, 'target/generated-sources/eo/EOapp.java').exists()
-assert new File(basedir, 'target/eo-to-java/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo-parser/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo-parser-raw/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/classes/org/eolang/examples/EOapp.class').exists()
+/**
+ * EO Compiler, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.1
+ */
+package org.eolang.parser;

@@ -39,7 +39,7 @@ SOFTWARE.
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
-      <artifactId>eo-compiler</artifactId>
+      <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -100,6 +100,24 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.6.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.21</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

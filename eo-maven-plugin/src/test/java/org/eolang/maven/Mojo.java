@@ -78,27 +78,37 @@ final class Mojo<T extends AbstractMojo> {
         try {
             final AbstractMojo mojo = this.type.getConstructor().newInstance();
             for (final Map.Entry<String, Object> ent : this.attrs.entrySet()) {
-                final Field field = this.type.getDeclaredField(ent.getKey());
-                if (field == null) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Can't find \"%s\" of %s in %s",
-                            ent.getKey(),
-                            ent.getValue().getClass().getCanonicalName(),
-                            this.type.getCanonicalName()
-                        )
-                    );
-                }
+                final Field field = this.field(this.type, ent.getKey());
                 field.setAccessible(true);
                 field.set(mojo, ent.getValue());
             }
             mojo.execute();
         } catch (final MojoExecutionException | MojoFailureException
             | InstantiationException | IllegalAccessException
-            | NoSuchMethodException | InvocationTargetException
-            | NoSuchFieldException ex) {
+            | NoSuchMethodException | InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    private Field field(final Class<?> mojo, final String name) {
+        Field field;
+        try {
+            field = mojo.getDeclaredField(name);
+        } catch (final NoSuchFieldException ex) {
+            final Class<?> parent = mojo.getSuperclass();
+            if (parent == null) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't find \"%s\" in %s",
+                        name,
+                        this.type.getCanonicalName()
+                    ),
+                    ex
+                );
+            }
+            field = this.field(parent, name);
+        }
+        return field;
     }
 
 }
