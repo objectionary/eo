@@ -1,6 +1,9 @@
 +package org.eolang
 
-[b] > array
+[data] > array
+
+  # Append one element to the array
+  [x] > append /array
 
   # Reduce from start "a" using the function "f"
   [a f] > reduce /a

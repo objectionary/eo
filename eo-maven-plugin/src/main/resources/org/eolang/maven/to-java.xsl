@@ -121,31 +121,35 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>super(</xsl:text>
-    <xsl:for-each select="o[@name and (not(@base) or @rw) and not(@level)]">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:value-of select="eo:attr-name(@name)"/>
-      <xsl:text>"</xsl:text>
-    </xsl:for-each>
-    <xsl:text>);</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="o[@name and @base]" mode="attr">
+    <xsl:text>super();</xsl:text>
+    <xsl:apply-templates select="o[@name and not(@level)]" mode="ent">
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(2)"/>
       </xsl:with-param>
     </xsl:apply-templates>
-    <xsl:value-of select="eo:tabs(1)"/>
-    <xsl:text>};</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="o" mode="attr">
-    <xsl:value-of select="eo:tabs(2)"/>
-    <xsl:text>this.put("</xsl:text>
+  <xsl:template match="o" mode="ent">
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="eo:attr-name(@name)"/>
-    <xsl:text>", () -&gt; {</xsl:text>
+    <xsl:text>", </xsl:text>
+    <xsl:apply-templates select="." mode="attr"/>
+    <xsl:text>);</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[not(@base)]" mode="attr">
+    <xsl:text>new AtFree(</xsl:text>
+    <xsl:text>new AtDefault()</xsl:text>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[@vararg]" mode="attr">
+    <xsl:text>new AtDefault()</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[@base]" mode="attr">
+    <xsl:text>new AtBound(</xsl:text>
+    <xsl:text>new AtDefault(() -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select=".">
       <xsl:with-param name="name" select="'ret'"/>
@@ -156,8 +160,8 @@ SOFTWARE.
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>});</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>})</xsl:text>
+    <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
@@ -178,9 +182,9 @@ SOFTWARE.
         <xsl:text>().inherit(this)</xsl:text>
       </xsl:when>
       <xsl:when test="@ref">
-        <xsl:text>this.get("</xsl:text>
+        <xsl:text>this.attr("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").copy()</xsl:text>
+        <xsl:text>").get().copy()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
@@ -216,9 +220,9 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_base.get("</xsl:text>
+    <xsl:text>_base.attr("</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
-    <xsl:text>").copy();</xsl:text>
+    <xsl:text>").get().copy();</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
@@ -248,7 +252,7 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text>.put(</xsl:text>
+      <xsl:text>.attr(</xsl:text>
       <xsl:choose>
         <xsl:when test="@as">
           <xsl:text>"</xsl:text>
@@ -259,7 +263,7 @@ SOFTWARE.
           <xsl:value-of select="position() - 1"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>, </xsl:text>
+      <xsl:text>).put(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>_</xsl:text>
       <xsl:value-of select="position()"/>
@@ -272,7 +276,7 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text>.put("_data", new Data.Value&lt;</xsl:text>
+    <xsl:text>.attr("data").put(new Data.Value&lt;</xsl:text>
     <xsl:apply-templates select="." mode="value"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

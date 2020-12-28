@@ -25,26 +25,40 @@
 package org.eolang;
 
 /**
- * ADD.
+ * Vararg attribute.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOadd extends Phi {
+public final class AtVararg implements Attr {
 
-    public EOint$EOadd() {
-        super();
-        this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtDefault(() -> {
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(this).take(Long.class)
-                    +
-                    new Data.Take(this.attr("x").get()).take(Long.class)
-                )
-            );
-            return out;
-        })));
+    private final Attr origin;
+
+    public AtVararg(final Attr attr) {
+        this.origin = attr;
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtVararg(this.origin.copy());
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        Phi array = this.get();
+        if (array.equals(Phi.ETA)) {
+            final Phi empty = new org.eolang.EOarray();
+            empty.attr("data").put(new Data.Value<>(new Phi[] {}));
+            this.origin.put(empty);
+            array = this.get();
+        }
+        final Phi append = array.attr("append").get().copy().inherit(array);
+        append.attr(0).put(phi);
+        new Data.Take(append).take(Boolean.class);
     }
 
 }

@@ -40,9 +40,9 @@ public final class EOstdoutTest {
     @Test
     public void printsString() {
         final Phi format = new EOstring();
-        format.put("_data", new Data.Value<>("Hello, world!"));
+        format.attr("data").put(new Data.Value<>("Hello, world!"));
         final Phi phi = new EOstdout();
-        phi.put("text", format);
+        phi.attr("text").put(format);
         MatcherAssert.assertThat(
             new Data.Take(phi).take(Boolean.class),
             Matchers.equalTo(true)

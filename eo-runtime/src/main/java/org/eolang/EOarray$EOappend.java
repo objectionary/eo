@@ -25,24 +25,26 @@
 package org.eolang;
 
 /**
- * ADD.
+ * IF.
  *
  * @since 1.0
  */
-public class EOint$EOadd extends Phi {
+public class EOarray$EOappend extends Phi {
 
-    public EOint$EOadd() {
+    public EOarray$EOappend() {
         super();
         this.add("x", new AtFree());
         this.add("_origin", new AtBound(new AtDefault(() -> {
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(this).take(Long.class)
-                    +
-                    new Data.Take(this.attr("x").get()).take(Long.class)
-                )
-            );
+            final Phi[] array = new Data.Take(
+                this.attr("_parent").get()
+            ).take(Phi[].class);
+            final Phi[] dest = new Phi[array.length + 1];
+            for (int idx = 0; idx < array.length; ++idx) {
+                dest[idx] = array[idx];
+            }
+            dest[array.length] = this.attr("x").get();
+            final Phi out = new org.eolang.EOarray();
+            out.attr("data").put(new Data.Value<>(dest));
             return out;
         })));
     }

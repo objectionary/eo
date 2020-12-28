@@ -24,6 +24,9 @@
 
 package org.eolang.io;
 
+import org.eolang.AtBound;
+import org.eolang.AtDefault;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.EObool;
 import org.eolang.Phi;
@@ -36,17 +39,18 @@ import org.eolang.Phi;
 public class EOstdout extends Phi {
 
     public EOstdout() {
-        super("text");
-        this.put("_origin", () -> {
+        super();
+        this.add("text", new AtFree());
+        this.add("_origin", new AtBound(new AtDefault(() -> {
             System.out.print(
                 new Data.Take(
-                    this.get("text")
+                    this.attr("text").get()
                 ).take(String.class)
             );
             final Phi out = new EObool();
-            out.put("_data", new Data.Value<>(true));
+            out.attr("data").put(new Data.Value<>(true));
             return out;
-        });
+        })));
     }
 
 }

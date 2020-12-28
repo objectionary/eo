@@ -33,16 +33,18 @@ public class EObool$EOif extends Phi {
 
     public EObool$EOif() {
         super();
-        this.put("_origin", () -> {
+        this.add("t", new AtFree());
+        this.add("f", new AtFree());
+        this.add("_origin", new AtBound(new AtDefault(() -> {
             final Boolean term = new Data.Take(this).take(Boolean.class);
             final Phi out;
             if (term) {
-                out = this.get("t");
+                out = this.attr("t").get();
             } else {
-                out = this.get("f");
+                out = this.attr("f").get();
             }
             return out;
-        });
+        })));
     }
 
 }

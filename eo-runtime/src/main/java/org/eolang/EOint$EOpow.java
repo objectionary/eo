@@ -33,19 +33,19 @@ public class EOint$EOpow extends Phi {
 
     public EOint$EOpow() {
         super();
-        this.put("_origin", () -> {
+        this.add("x", new AtFree());
+        this.add("_origin", new AtBound(new AtDefault(() -> {
             final Phi out = new org.eolang.EOint();
-            out.put(
-                "_data",
+            out.attr("data").put(
                 new Data.Value<>(
                     Math.pow(
                         new Data.Take(this).take(Long.class),
-                        new Data.Take(this.get("x")).take(Long.class)
+                        new Data.Take(this.attr("x").get()).take(Long.class)
                     )
                 )
             );
             return out;
-        });
+        })));
     }
 
 }

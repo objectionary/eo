@@ -54,7 +54,7 @@ public interface Data<T> {
         public <T> T take(final Class<T> type) {
             Phi src = this.phi;
             if (!(src instanceof Data)) {
-                src = src.get("_data");
+                src = src.attr("data").get();
             }
             final Data<T> data = (Data<T>) Data.class.cast(src);
             return type.cast(data.take());

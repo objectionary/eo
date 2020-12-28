@@ -25,8 +25,6 @@
 package org.eolang;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,28 +37,43 @@ import java.util.Map;
 public class Phi {
 
     /**
-     * Bound attributes.
+     * ETA.
      */
-    private final Map<String, Attr> bound;
+    public static final Phi ETA = new Phi();
 
     /**
-     * Names of free attributes.
+     * Attributes.
      */
-    private final List<String> free;
+    private final Map<String, Attr> attrs;
+
+    /**
+     * Order of their names.
+     */
+    private final List<String> order;
 
     /**
      * Ctor.
      */
-    public Phi(final String... names) {
-        this(new HashMap<>(0), new ArrayList<>(Arrays.asList(names)));
+    public Phi() {
+        this(new HashMap<>(0), new ArrayList<>(0));
     }
 
     /**
      * Ctor.
      */
-    private Phi(final Map<String, Attr> bnd, final List<String> names) {
-        this.bound = new HashMap<>(bnd);
-        this.free = Collections.unmodifiableList(names);
+    private Phi(final Map<String, Attr> map, final List<String> ordr) {
+        this.attrs = map;
+        this.order = ordr;
+    }
+
+    /**
+     * Add new attribute.
+     * @param name The name
+     * @param attr The attr
+     */
+    protected final void add(final String name, final Attr attr) {
+        this.order.add(name);
+        this.attrs.put(name, attr);
     }
 
     /**
@@ -69,65 +82,49 @@ public class Phi {
      * @return A copy
      */
     public final Phi copy() {
-        final Map<String, Attr> bnd = new HashMap<>(this.bound.size());
-        bnd.putAll(this.bound);
-        return new Phi(bnd, this.free);
-    }
-
-    /**
-     * Set the attribute.
-     *
-     * @param name The name of the attribute to set
-     * @param attr The value to set
-     */
-    public final void put(final String name, final Attr attr) {
-        if (!this.free.contains(name)) {
-            throw new IllegalStateException(
-                String.format(
-                    "The attribute \"%s\" is absent in %s",
-                    name, this.getClass().getCanonicalName()
-                )
-            );
+        final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            map.put(ent.getKey(), ent.getValue().copy());
         }
-        if (this.bound.containsKey(name)) {
-            throw new IllegalStateException(
-                String.format(
-                    "The attribute \"%s\" is already bound in %s",
-                    name, this.getClass().getCanonicalName()
-                )
-            );
+        return new Phi(map, this.order);
+    }
+
+    /**
+     * Get attribute by position.
+     *
+     * @param pos The position of the attribute
+     * @return The attr
+     */
+    public final Attr attr(final int pos) {
+        return this.attr(this.order.get(pos));
+    }
+
+    /**
+     * Get attribute.
+     *
+     * @param name The name of the attribute
+     * @return The attr
+     */
+    public final Attr attr(final String name) {
+        Attr attr = this.attrs.get(name);
+        if (attr == null) {
+            final Attr origin = this.attrs.get("_origin");
+            if (origin == null) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't find \"%s\" attr among (%s) and there is no origin in %s",
+                        name,
+                        String.join(
+                            ", ",
+                            this.attrs.keySet()
+                        ),
+                        this.getClass().getCanonicalName()
+                    )
+                );
+            }
+            attr = origin.get().attr(name);
         }
-        this.bound.put(name, attr);
-    }
-
-    /**
-     * Set the attribute.
-     *
-     * @param name The name of the attribute to set
-     * @param phi The value to set
-     */
-    public final void put(final String name, final Phi phi) {
-        this.put(name, () -> phi);
-    }
-
-    /**
-     * Set the attribute by position.
-     *
-     * @param pos The position of it
-     * @param attr The value to set
-     */
-    public final void put(final int pos, final Attr attr) {
-        this.bound.put(this.free.get(pos), attr);
-    }
-
-    /**
-     * Set the attribute by position.
-     *
-     * @param pos The position of it
-     * @param phi The value to set
-     */
-    public final void put(final int pos, final Phi phi) {
-        this.put(pos, () -> phi);
+        return attr;
     }
 
     /**
@@ -136,39 +133,8 @@ public class Phi {
      * @param parent The parent
      */
     public final Phi inherit(final Phi parent) {
-        this.put("_parent", parent);
+        this.attr("_parent").put(parent);
         return this;
-    }
-
-    /**
-     * Get the attribute.
-     *
-     * @param name The name of the attribute to call
-     * @return The object
-     */
-    public final Phi get(final String name) {
-        final Attr attr = this.bound.get(name);
-        final Phi phi;
-        if (attr == null) {
-            final Attr origin = this.bound.get("_origin");
-            if (origin == null) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't find \"%s\" attr among (%s) and there is no origin in %s",
-                        name,
-                        String.join(
-                            ", ",
-                            this.bound.keySet()
-                        ),
-                        this.getClass().getCanonicalName()
-                    )
-                );
-            }
-            phi = origin.get().get(name);
-        } else {
-            phi = attr.get();
-        }
-        return phi;
     }
 
 }

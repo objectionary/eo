@@ -25,26 +25,33 @@
 package org.eolang;
 
 /**
- * ADD.
+ * Bound attribute.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOadd extends Phi {
+public final class AtBound implements Attr {
 
-    public EOint$EOadd() {
-        super();
-        this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtDefault(() -> {
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(this).take(Long.class)
-                    +
-                    new Data.Take(this.attr("x").get()).take(Long.class)
-                )
-            );
-            return out;
-        })));
+    private final Attr origin;
+
+    public AtBound(final Attr attr) {
+        this.origin = attr;
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtBound(this.origin.copy());
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        throw new IllegalStateException(
+            "You can't overwrite this attribute"
+        );
     }
 
 }

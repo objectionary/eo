@@ -26,6 +26,10 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eolang.AtBound;
+import org.eolang.AtDefault;
+import org.eolang.AtFree;
+import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.EObool;
 import org.eolang.EOint;
@@ -40,27 +44,28 @@ import org.eolang.Phi;
 public class EOsprintf extends Phi {
 
     public EOsprintf() {
-        super("format", "args...");
-        this.put("_origin", () -> {
+        super();
+        this.add("format", new AtFree());
+        this.add("args", new AtVararg(new AtFree()));
+        this.add("_origin", new AtBound(new AtDefault(() -> {
             final String format = new Data.Take(
-                this.get("format")
+                this.attr("format").get()
             ).take(String.class);
             final Phi[] args = new Data.Take(
-                this.get("args")
+                this.attr("args").get()
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {
                 items.add(EOsprintf.toArg(arg));
             }
             final Phi out = new org.eolang.EOstring();
-            out.put(
-                "_data",
+            out.attr("data").put(
                 new Data.Value<>(
                     String.format(format, items.toArray())
                 )
             );
             return out;
-        });
+        })));
     }
 
     private static Object toArg(final Phi phi) {

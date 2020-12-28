@@ -33,17 +33,19 @@ public class EOarray$EOreduce extends Phi {
 
     public EOarray$EOreduce() {
         super();
-        this.put("_origin", () -> {
+        this.add("a", new AtFree());
+        this.add("f", new AtFree());
+        this.add("_origin", new AtBound(new AtDefault(() -> {
             final Phi[] array = new Data.Take(this).take(Phi[].class);
-            Phi out = this.get("a");
+            Phi out = this.attr("a").get();
             for (final Phi arg : array) {
-                final Phi after = this.get("f").copy();
-                after.put(0, out);
-                after.put(1, arg);
+                final Phi after = this.attr("f").get().copy();
+                after.attr(0).put(out);
+                after.attr(1).put(arg);
                 out = after;
             }
             return out;
-        });
+        })));
     }
 
 }

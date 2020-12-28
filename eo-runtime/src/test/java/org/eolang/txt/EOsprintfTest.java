@@ -24,7 +24,6 @@
 package org.eolang.txt;
 
 import org.eolang.Data;
-import org.eolang.EOarray;
 import org.eolang.EOint;
 import org.eolang.EOstring;
 import org.eolang.Phi;
@@ -42,14 +41,12 @@ public final class EOsprintfTest {
     @Test
     public void printsString() {
         final Phi format = new EOstring();
-        format.put("_data", new Data.Value<>("Hello, %d!"));
+        format.attr("data").put(new Data.Value<>("Hello, %d!"));
         final Phi num = new EOint();
-        num.put("_data", new Data.Value<>(1L));
-        final Phi array = new EOarray();
-        array.put("_data", new Data.Value<>(new Phi[] {num}));
+        num.attr("data").put(new Data.Value<>(1L));
         final Phi phi = new EOsprintf();
-        phi.put("format", format);
-        phi.put("args", array);
+        phi.attr("format").put(format);
+        phi.attr("args").put(num);
         MatcherAssert.assertThat(
             new Data.Take(phi).take(String.class),
             Matchers.equalTo("Hello, 1!")

@@ -32,10 +32,24 @@ package org.eolang;
 public interface Attr {
 
     /**
+     * Make a copy of it.
+     *
+     * @return A copy
+     */
+    Attr copy();
+
+    /**
      * Take the object out.
      *
      * @return The object
      */
     Phi get();
+
+    /**
+     * Put a new object in.
+     *
+     * @param phi The object to put
+     */
+    void put(Phi phi);
 
 }
