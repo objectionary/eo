@@ -24,22 +24,27 @@
 
 package org.eolang.io;
 
-import org.eolang.AtBound;
-import org.eolang.AtDefault;
-import org.eolang.AtFree;
-import org.eolang.Data;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtDefault;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.Data;
 import org.eolang.EObool;
-import org.eolang.Phi;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
 
 /**
  * Stdout.
  *
  * @since 0.1
  */
-public class EOstdout extends Phi {
+public class EOstdout extends PhDefault {
 
     public EOstdout() {
-        super();
+        this(Phi.ETA);
+    }
+
+    public EOstdout(final Phi parent) {
+        super(parent);
         this.add("text", new AtFree());
         this.add("_origin", new AtBound(new AtDefault(() -> {
             System.out.print(

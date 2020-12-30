@@ -21,32 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
 
-import org.eolang.phi.Data;
-import org.eolang.EOstring;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOstdout}.
+ * Vararg attribute.
  *
  * @since 0.1
  */
-public final class EOstdoutTest {
+public final class AtVararg implements Attr {
 
-    @Test
-    public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi phi = new EOstdout();
-        phi.attr("text").put(format);
-        MatcherAssert.assertThat(
-            new Data.Take(phi).take(Boolean.class),
-            Matchers.equalTo(true)
-        );
+    private final Attr origin;
+
+    public AtVararg() {
+        this(new AtDefault(AtVararg.empty()));
     }
 
+    public AtVararg(final Attr attr) {
+        this.origin = attr;
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtVararg(this.origin.copy());
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        final Phi array = this.get();
+        final Phi append = array.attr("push").get().copy();
+        append.attr(0).put(phi);
+        new Data.Take(append).take(Long.class);
+    }
+
+    private static Phi empty() {
+        final Phi empty = new org.eolang.EOarray();
+        empty.attr("data").put(new Data.Value<>(new Phi[] {}));
+        return empty;
+    }
 }

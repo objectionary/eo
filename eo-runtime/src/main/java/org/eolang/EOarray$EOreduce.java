@@ -24,15 +24,22 @@
 
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtDefault;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
+
 /**
  * IF.
  *
  * @since 1.0
  */
-public class EOarray$EOreduce extends Phi {
+public class EOarray$EOreduce extends PhDefault {
 
-    public EOarray$EOreduce() {
-        super();
+    public EOarray$EOreduce(final Phi parent) {
+        super(parent);
         this.add("a", new AtFree());
         this.add("f", new AtFree());
         this.add("_origin", new AtBound(new AtDefault(() -> {

@@ -22,24 +22,37 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.phi;
 
 /**
- * Vararg attribute.
+ * Modifiable only once attribute.
  *
  * @since 0.1
  */
-public final class AtVararg implements Attr {
+public final class AtOnce implements Attr {
 
     private final Attr origin;
 
-    public AtVararg(final Attr attr) {
+    public AtOnce() {
+        this(new AtDefault());
+    }
+
+    public AtOnce(final Phi phi) {
+        this(new AtDefault(phi));
+    }
+
+    public AtOnce(final Attr attr) {
         this.origin = attr;
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Attr copy() {
-        return new AtVararg(this.origin.copy());
+        return this.origin.copy();
     }
 
     @Override
@@ -49,16 +62,12 @@ public final class AtVararg implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        Phi array = this.get();
-        if (array.equals(Phi.ETA)) {
-            final Phi empty = new org.eolang.EOarray();
-            empty.attr("data").put(new Data.Value<>(new Phi[] {}));
-            this.origin.put(empty);
-            array = this.get();
+        if (!this.origin.get().equals(Phi.ETA)) {
+            throw new IllegalStateException(
+                "This free attribute is already set, can't reset"
+            );
         }
-        final Phi append = array.attr("append").get().copy().inherit(array);
-        append.attr(0).put(phi);
-        new Data.Take(append).take(Boolean.class);
+        this.origin.put(phi);
     }
 
 }

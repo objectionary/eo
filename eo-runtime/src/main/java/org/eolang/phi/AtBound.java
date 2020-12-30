@@ -21,31 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
 
-import org.eolang.phi.Data;
-import org.eolang.EOstring;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOstdout}.
+ * Bound attribute.
  *
  * @since 0.1
  */
-public final class EOstdoutTest {
+public final class AtBound implements Attr {
 
-    @Test
-    public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi phi = new EOstdout();
-        phi.attr("text").put(format);
-        MatcherAssert.assertThat(
-            new Data.Take(phi).take(Boolean.class),
-            Matchers.equalTo(true)
+    private final Attr origin;
+
+    public AtBound(final Phi phi) {
+        this(new AtDefault(phi));
+    }
+
+    public AtBound(final Attr attr) {
+        this.origin = attr;
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtBound(this.origin.copy());
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        throw new IllegalStateException(
+            String.format(
+                "You can't overwrite %s",
+                this.origin
+            )
         );
     }
 

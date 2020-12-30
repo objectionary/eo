@@ -22,45 +22,49 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.phi;
 
 /**
- * Free attribute.
+ * Absent attribute.
  *
  * @since 0.1
  */
-public final class AtFree implements Attr {
+public final class AtAbsent implements Attr {
 
-    private final Attr origin;
+    private final String name;
 
-    public AtFree() {
-        this(new AtDefault());
-    }
-
-    public AtFree(final Attr attr) {
-        this.origin = attr;
+    public AtAbsent(final String attr) {
+        this.name = attr;
     }
 
     @Override
     public Attr copy() {
-        final Attr copy = this.origin.copy();
-        copy.put(Phi.ETA);
-        return new AtFree(copy);
+        throw new IllegalArgumentException(
+            String.format(
+                "Can't copy(), attribute %s is absent",
+                this.name
+            )
+        );
     }
 
     @Override
     public Phi get() {
-        return this.origin.get();
+        throw new IllegalArgumentException(
+            String.format(
+                "Can't get(), attribute %s is absent",
+                this.name
+            )
+        );
     }
 
     @Override
     public void put(final Phi phi) {
-        if (!this.origin.get().equals(Phi.ETA)) {
-            throw new IllegalStateException(
-                "This free attribute is already set, can't reset"
-            );
-        }
-        this.origin.put(phi);
+        throw new IllegalArgumentException(
+            String.format(
+                "Can't put(), attribute %s is absent",
+                this.name
+            )
+        );
     }
 
 }

@@ -21,32 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
 
-import org.eolang.phi.Data;
-import org.eolang.EOstring;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOstdout}.
+ * A simple object.
  *
  * @since 0.1
  */
-public final class EOstdoutTest {
+public interface Phi {
 
-    @Test
-    public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi phi = new EOstdout();
-        phi.attr("text").put(format);
-        MatcherAssert.assertThat(
-            new Data.Take(phi).take(Boolean.class),
-            Matchers.equalTo(true)
-        );
-    }
+    /**
+     * Eta.
+     */
+    Phi ETA = new Phi() {
+        @Override
+        public Phi copy() {
+            throw new UnsupportedOperationException("#copy()");
+        }
+        @Override
+        public Attr attr(final int pos) {
+            throw new UnsupportedOperationException("#attr()");
+        }
+        @Override
+        public Attr attr(final String name) {
+            throw new UnsupportedOperationException("#attr()");
+        }
+    };
+
+    /**
+     * Make a copy.
+     *
+     * @return A copy
+     */
+    Phi copy();
+
+    /**
+     * Get attribute by position.
+     *
+     * @param pos The position of the attribute
+     * @return The attr
+     */
+    Attr attr(int pos);
+
+    /**
+     * Get attribute.
+     *
+     * @param name The name of the attribute
+     * @return The attr
+     */
+    Attr attr(String name);
 
 }

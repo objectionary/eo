@@ -21,44 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.phi;
 
-package org.eolang;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * A data container.
+ * Test case for {@link AtVararg}.
  *
  * @since 0.1
  */
-public interface Data<T> {
+public final class AtVarargTest {
 
-    T take();
-
-    final class Value<T> extends Phi implements Data<T> {
-        private final T val;
-        public Value(final T value) {
-            super();
-            this.val = value;
-        }
-        @Override
-        public T take() {
-            return this.val;
-        }
-    }
-
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
-        }
-        @SuppressWarnings("unchecked")
-        public <T> T take(final Class<T> type) {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("data").get();
-            }
-            final Data<T> data = (Data<T>) Data.class.cast(src);
-            return type.cast(data.take());
-        }
+    @Test
+    public void appendsElements() {
+        final Attr attr = new AtVararg();
+        final Phi phi = new PhDefault();
+        attr.put(phi);
+        MatcherAssert.assertThat(
+            new Data.Take(attr.get()).take(Phi[].class)[0],
+            Matchers.equalTo(phi)
+        );
     }
 
 }

@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import org.eolang.phi.Data;
+import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -38,8 +40,7 @@ public final class EOstring$EOtrimTest {
     public void trimsString() {
         final Phi str = new org.eolang.EOstring();
         str.attr("data").put(new Data.Value<>("Hello, world!  "));
-        final Phi phi = new EOstring$EOtrim();
-        phi.inherit(str);
+        final Phi phi = new EOstring$EOtrim(str);
         MatcherAssert.assertThat(
             new Data.Take(phi).take(String.class),
             Matchers.equalTo("Hello, world!")

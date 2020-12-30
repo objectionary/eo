@@ -105,23 +105,33 @@ SOFTWARE.
         <xsl:apply-templates select="/program/metas/meta[head='package']"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
+        <xsl:text>import org.eolang.phi.*;</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>public final class </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text> extends Phi {</xsl:text>
+        <xsl:text> extends PhDefault {</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="." mode="ctor"/>
+        <xsl:apply-templates select="." mode="ctors"/>
         <xsl:text>}</xsl:text>
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="ctor">
+  <xsl:template match="o" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>super();</xsl:text>
+    <xsl:text>this(Phi.ETA);</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public </xsl:text>
+    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text>(final Phi parent) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>super(parent);</xsl:text>
     <xsl:apply-templates select="o[@name and not(@level)]" mode="ent">
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(2)"/>
@@ -179,7 +189,7 @@ SOFTWARE.
       <xsl:when test="$b and eo:abstract($b)">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
-        <xsl:text>().inherit(this)</xsl:text>
+        <xsl:text>(this)</xsl:text>
       </xsl:when>
       <xsl:when test="@ref">
         <xsl:text>this.attr("</xsl:text>
@@ -189,7 +199,7 @@ SOFTWARE.
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name(@base)"/>
-        <xsl:text>().inherit(this)</xsl:text>
+        <xsl:text>(this)</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>

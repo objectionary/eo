@@ -22,34 +22,47 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.phi;
 
 /**
- * Attribute.
+ * Default attribute.
  *
  * @since 0.1
  */
-public interface Attr {
+public final class AtDefault implements Attr {
 
-    /**
-     * Make a copy of it.
-     *
-     * @return A copy
-     */
-    Attr copy();
+    private Env<Phi> env;
 
-    /**
-     * Take the object out.
-     *
-     * @return The object
-     */
-    Phi get();
+    public AtDefault() {
+        this(Phi.ETA);
+    }
 
-    /**
-     * Put a new object in.
-     *
-     * @param phi The object to put
-     */
-    void put(Phi phi);
+    public AtDefault(final Phi phi) {
+        this(new Env.Simple(phi));
+    }
+
+    public AtDefault(final Env<Phi> phi) {
+        this.env = phi;
+    }
+
+    @Override
+    public String toString() {
+        return this.env.toString();
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtDefault(this.env);
+    }
+
+    @Override
+    public Phi get() {
+        return this.env.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.env = new Env.Simple(phi);
+    }
 
 }

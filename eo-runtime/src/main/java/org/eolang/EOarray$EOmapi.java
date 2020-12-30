@@ -24,23 +24,30 @@
 
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtDefault;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
+
 /**
- * IF.
+ * MAPI.
  *
  * @since 1.0
  */
-public class EOarray$EOmapi extends Phi {
+public class EOarray$EOmapi extends PhDefault {
 
-    public EOarray$EOmapi() {
-        super();
+    public EOarray$EOmapi(final Phi parent) {
+        super(parent);
         this.add("f", new AtFree());
         this.add("_origin", new AtBound(new AtDefault(() -> {
             final Phi[] array = new Data.Take(this).take(Phi[].class);
-            for (long idx = 0; idx < array.length; ++idx) {
+            for (int idx = 0; idx < array.length; ++idx) {
                 final Phi after = this.attr("f").get().copy();
-                after.attr(0).put(array[(int) idx]);
+                after.attr(0).put(array[idx]);
                 after.attr(1).put(new Data.Value<>(idx));
-                array[(int) idx] = after;
+                array[idx] = after;
             }
             final Phi out = new org.eolang.EOarray();
             out.attr("data").put(new Data.Value<>(array));

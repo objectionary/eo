@@ -179,6 +179,9 @@ public final class XeListener implements ProgramListener {
     public void enterAttribute(final ProgramParser.AttributeContext ctx) {
         this.enter();
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        if (ctx.QUESTION() != null) {
+            this.dirs.attr("rw", "");
+        }
     }
 
     @Override
@@ -219,9 +222,6 @@ public final class XeListener implements ProgramListener {
         this.enter();
         if (ctx.CONST() != null) {
             this.dirs.attr("const", "");
-        }
-        if (ctx.QUESTION() != null) {
-            this.dirs.attr("rw", "");
         }
     }
 

@@ -24,40 +24,35 @@
 
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtDefault;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
+
 /**
- * Default attribute.
+ * PUSH.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class AtDefault implements Attr {
+public class EOarray$EOpush extends PhDefault {
 
-    private Env<Phi> env;
-
-    public AtDefault() {
-        this(Phi.ETA);
-    }
-
-    public AtDefault(final Phi phi) {
-        this(() -> phi);
-    }
-
-    public AtDefault(final Env<Phi> phi) {
-        this.env = phi;
-    }
-
-    @Override
-    public Attr copy() {
-        return new AtDefault(this.env);
-    }
-
-    @Override
-    public Phi get() {
-        return this.env.get();
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        this.env = () -> phi;
+    public EOarray$EOpush(final Phi parent) {
+        super(parent);
+        this.add("x", new AtFree());
+        this.add("_origin", new AtBound(new AtDefault(() -> {
+            final Phi[] array = new Data.Take(parent).take(Phi[].class);
+            final Phi[] dest = new Phi[array.length + 1];
+            for (int idx = 0; idx < array.length; ++idx) {
+                dest[idx] = array[idx];
+            }
+            dest[array.length] = this.attr("x").get();
+            parent.attr("data").put(new Data.Value<>(dest));
+            final Phi out = new org.eolang.EOint();
+            out.attr("data").put(new Data.Value<>(dest.length));
+            return out;
+        })));
     }
 
 }

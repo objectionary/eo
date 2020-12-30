@@ -22,24 +22,39 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.phi;
 
 /**
- * Bound attribute.
+ * Free attribute.
  *
  * @since 0.1
  */
-public final class AtBound implements Attr {
+public final class AtFree implements Attr {
 
     private final Attr origin;
 
-    public AtBound(final Attr attr) {
+    public AtFree() {
+        this(new AtDefault());
+    }
+
+    public AtFree(final Phi phi) {
+        this(new AtDefault(phi));
+    }
+
+    public AtFree(final Attr attr) {
         this.origin = attr;
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Attr copy() {
-        return new AtBound(this.origin.copy());
+        final Attr copy = this.origin.copy();
+        copy.put(Phi.ETA);
+        return new AtFree(copy);
     }
 
     @Override
@@ -49,9 +64,7 @@ public final class AtBound implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new IllegalStateException(
-            "You can't overwrite this attribute"
-        );
+        this.origin.put(phi);
     }
 
 }

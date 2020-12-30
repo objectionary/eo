@@ -24,15 +24,22 @@
 
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtDefault;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
+
 /**
  * POW.
  *
  * @since 1.0
  */
-public class EOint$EOpow extends Phi {
+public class EOint$EOpow extends PhDefault {
 
-    public EOint$EOpow() {
-        super();
+    public EOint$EOpow(final Phi parent) {
+        super(parent);
         this.add("x", new AtFree());
         this.add("_origin", new AtBound(new AtDefault(() -> {
             final Phi out = new org.eolang.EOint();

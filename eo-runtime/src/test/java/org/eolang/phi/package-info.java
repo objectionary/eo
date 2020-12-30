@@ -22,15 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
 /**
- * Envelope.
+ * EO runtime, tests.
  *
  * @since 0.1
  */
-public interface Env<T> {
-
-    T get();
-
-}
+package org.eolang.phi;

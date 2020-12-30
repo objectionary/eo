@@ -21,32 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
 
-import org.eolang.phi.Data;
-import org.eolang.EOstring;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOstdout}.
+ * Envelope.
  *
  * @since 0.1
  */
-public final class EOstdoutTest {
+public interface Env<T> {
 
-    @Test
-    public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi phi = new EOstdout();
-        phi.attr("text").put(format);
-        MatcherAssert.assertThat(
-            new Data.Take(phi).take(Boolean.class),
-            Matchers.equalTo(true)
-        );
+    T get();
+
+    class Simple implements Env<Phi> {
+        private final Phi phi;
+        public Simple(final Phi src) {
+            this.phi = src;
+        }
+        @Override
+        public String toString() {
+            return this.phi.getClass().getSimpleName();
+        }
+        @Override
+        public Phi get() {
+            return this.phi;
+        }
     }
 
 }

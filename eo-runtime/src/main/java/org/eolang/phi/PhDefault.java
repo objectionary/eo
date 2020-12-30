@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+package org.eolang.phi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,12 +34,7 @@ import java.util.Map;
  *
  * @since 0.1
  */
-public class Phi {
-
-    /**
-     * ETA.
-     */
-    public static final Phi ETA = new Phi();
+public class PhDefault implements Phi {
 
     /**
      * Attributes.
@@ -54,16 +49,67 @@ public class Phi {
     /**
      * Ctor.
      */
-    public Phi() {
+    public PhDefault() {
+        this(Phi.ETA);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param prnt Parent
+     */
+    public PhDefault(final Phi prnt) {
         this(new HashMap<>(0), new ArrayList<>(0));
+        this.add("_parent", new AtBound(prnt));
     }
 
     /**
      * Ctor.
      */
-    private Phi(final Map<String, Attr> map, final List<String> ordr) {
+    private PhDefault(final Map<String, Attr> map, final List<String> ordr) {
         this.attrs = map;
         this.order = ordr;
+    }
+
+    @Override
+    public final PhDefault copy() {
+        final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            map.put(ent.getKey(), ent.getValue().copy());
+        }
+        return new PhDefault(map, this.order);
+    }
+
+    @Override
+    public final Attr attr(final int pos) {
+        if (pos >= this.order.size()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "There are just %d attributes, can't find the %dth",
+                    this.order.size(), pos
+                )
+            );
+        }
+        return this.attr(this.order.get(pos));
+    }
+
+    @Override
+    public final Attr attr(final String name) {
+        Attr attr = this.attrs.get(name);
+        if (attr != null) {
+            return attr;
+        }
+        final String[] scopes = {"_origin", "_parent"};
+        for (final String scope : scopes) {
+            final Attr sub = this.attrs.get(scope);
+            if (sub != null) {
+                attr = sub.get().attr(name);
+                if (!(attr instanceof AtAbsent)) {
+                    return attr;
+                }
+            }
+        }
+        return new AtAbsent(name);
     }
 
     /**
@@ -72,69 +118,10 @@ public class Phi {
      * @param attr The attr
      */
     protected final void add(final String name, final Attr attr) {
-        this.order.add(name);
+        if (name.charAt(0) != '_') {
+            this.order.add(name);
+        }
         this.attrs.put(name, attr);
-    }
-
-    /**
-     * Make a copy.
-     *
-     * @return A copy
-     */
-    public final Phi copy() {
-        final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            map.put(ent.getKey(), ent.getValue().copy());
-        }
-        return new Phi(map, this.order);
-    }
-
-    /**
-     * Get attribute by position.
-     *
-     * @param pos The position of the attribute
-     * @return The attr
-     */
-    public final Attr attr(final int pos) {
-        return this.attr(this.order.get(pos));
-    }
-
-    /**
-     * Get attribute.
-     *
-     * @param name The name of the attribute
-     * @return The attr
-     */
-    public final Attr attr(final String name) {
-        Attr attr = this.attrs.get(name);
-        if (attr == null) {
-            final Attr origin = this.attrs.get("_origin");
-            if (origin == null) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't find \"%s\" attr among (%s) and there is no origin in %s",
-                        name,
-                        String.join(
-                            ", ",
-                            this.attrs.keySet()
-                        ),
-                        this.getClass().getCanonicalName()
-                    )
-                );
-            }
-            attr = origin.get().attr(name);
-        }
-        return attr;
-    }
-
-    /**
-     * Inherit attributes from parent object.
-     *
-     * @param parent The parent
-     */
-    public final Phi inherit(final Phi parent) {
-        this.attr("_parent").put(parent);
-        return this;
     }
 
 }

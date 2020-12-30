@@ -24,22 +24,30 @@
 
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtDefault;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
+
 /**
  * TRIM.
  *
  * @since 1.0
  */
-public class EOstring$EOtrim extends Phi {
+public class EOstring$EOtrim extends PhDefault {
 
     public EOstring$EOtrim() {
-        super();
+        this(Phi.ETA);
+    }
+
+    public EOstring$EOtrim(final Phi parent) {
+        super(parent);
         this.add("_origin", new AtBound(new AtDefault(() -> {
             final Phi out = new org.eolang.EOstring();
             out.attr("data").put(
                 new Data.Value<>(
-                    new Data.Take(
-                        this.attr("_parent").get()
-                    ).take(String.class).trim()
+                    new Data.Take(parent).take(String.class).trim()
                 )
             );
             return out;

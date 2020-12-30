@@ -74,6 +74,7 @@ abstraction
 attribute
   :
   label
+  QUESTION?
   ;
 
 label
@@ -98,7 +99,6 @@ suffix
   ARROW
   SPACE
   label
-  QUESTION?
   CONST?
   ;
 

@@ -1,8 +1,13 @@
 +package org.eolang
 
-[data] > array
+[data?] > array
 
-  # Append one element to the array
+  # Push element to the array, modifying it. The
+  # result value is the new size of the array.
+  [x] > push /int
+
+  # Create a new array with this element added to
+  # the end of it.
   [x] > append /array
 
   # Reduce from start "a" using the function "f"
