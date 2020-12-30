@@ -147,7 +147,8 @@ one after another:
     The output of the parser you can find in the `target/eo/parse` directory.
 
   * **Optimization**.
-    There are a number of XSLT transformations that need to be done
+    There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
+    that need to be done
     with the XML document in order to make it ready for compilation.
     Each transformation has its own `.xslt` file in the `eo-parser` directory.
     The class `org.eolang.parser.Program` is responsible for making XSLT
@@ -164,8 +165,8 @@ one after another:
 
 There is also a module called `eo-runtime`, which includes both `.eo` and `.java` code
 for most popular and important objects that any of you will need in order
-to write even a simple in EO. There are objects like `string`, `int`, `sprintf`,
-`stdout`, and so on. You may want to contribute there by creating new objects.
+to write even a simple EO program. There are objects like `string`, `int`, `sprintf`,
+`stdout`, and so on. By the way, you may want to contribute there by creating new objects.
 
 ## How to Contribute
 
