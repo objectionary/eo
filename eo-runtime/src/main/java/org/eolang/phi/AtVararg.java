@@ -42,6 +42,11 @@ public final class AtVararg implements Attr {
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Attr copy() {
         return new AtVararg(this.origin.copy());
     }
@@ -54,10 +59,9 @@ public final class AtVararg implements Attr {
     @Override
     public void put(final Phi phi) {
         final Phi array = this.get(Phi.ETA);
-        final Phi push = array.attr("push").get(array);
-        final Phi copy = push.copy();
-        copy.attr(0).put(phi);
-        new Data.Take(copy).take(Long.class);
+        final Phi push = array.attr("push").get(array).copy();
+        push.attr(0).put(phi);
+        new Data.Take(push).take(Long.class);
     }
 
     private static Phi empty() {

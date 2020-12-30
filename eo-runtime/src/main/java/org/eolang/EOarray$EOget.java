@@ -22,34 +22,34 @@
  * SOFTWARE.
  */
 
-package org.eolang.examples;
+package org.eolang;
+
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtStatic;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
 
 /**
- * EO entry point.
+ * GET.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class Main {
+public class EOarray$EOget extends PhDefault {
 
-    /**
-     * Main entry point.
-     * @param args Command line args
-     * @throws Exception In case of failure
-     */
-    public static void main(final String... args) throws Exception {
-        new EOapp(
-            new ArgsOf(
-                new Entry(
-                    "args",
-                    new EOarray(
-                        new ArgsOf(
-                            new Entry("01", Long.parseLong(args[0])),
-                            new Entry("02", Long.parseLong(args[1]))
-                        )
-                    )
-                )
-            )
-        ).call();
+    public EOarray$EOget(final Phi parent) {
+        super(parent);
+        this.add("i", new AtFree());
+        this.add("_origin", new AtBound(new AtStatic(self -> {
+            final Phi[] array = new Data.Take(
+                self.attr("_parent").get(self)
+            ).take(Phi[].class);
+            final long idx = new Data.Take(
+                self.attr("i").get(self)
+            ).take(Long.class);
+            return array[(int) idx];
+        })));
     }
 
 }

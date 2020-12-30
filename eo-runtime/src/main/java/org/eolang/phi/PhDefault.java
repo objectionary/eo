@@ -126,17 +126,17 @@ public class PhDefault implements Phi {
         if (attr != null) {
             return attr;
         }
-        final String[] scopes = {"_origin", "_parent"};
-        for (final String scope : scopes) {
-            final Attr sub = this.attrs.get(scope);
-            if (sub != null) {
-                attr = sub.get(this).attr(name);
-                if (!(attr instanceof AtAbsent)) {
-                    return attr;
-                }
+        final Attr sub = this.attrs.get("_origin");
+        if (sub != null) {
+            attr = sub.get(this).attr(name);
+            if (!(attr instanceof AtAbsent)) {
+                return attr;
             }
         }
-        return new AtAbsent(name);
+        return new AtNamed(
+            String.format("%s#%s", this.getClass().getCanonicalName(), name),
+            new AtAbsent(name)
+        );
     }
 
     /**

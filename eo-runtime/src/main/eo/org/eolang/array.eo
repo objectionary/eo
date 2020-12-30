@@ -6,6 +6,10 @@
   # result value is the new size of the array.
   [x] > push /int
 
+  # Take one element from the array, at the
+  # given position.
+  [i] > get /object
+
   # Create a new array with this element added to
   # the end of it.
   [x] > append /array

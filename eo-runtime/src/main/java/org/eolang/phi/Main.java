@@ -24,56 +24,32 @@
 
 package org.eolang.phi;
 
+import org.eolang.EOstring;
+
 /**
- * A simple object.
+ * Bridge between Java CLI and EO.
  *
  * @since 0.1
  */
-public interface Phi {
+public final class Main {
 
-    /**
-     * Eta.
-     */
-    Phi ETA = new Phi() {
-        @Override
-        public String toString() {
-            return "eta";
+    public static void main(final String... args) throws Exception {
+        final String path = args[0].replaceAll("([^\\.]+)$", "EO$1");
+        final Phi app = Phi.class.cast(
+            Class.forName(path).getConstructor().newInstance()
+        );
+        for (int idx = 1; idx < args.length; ++idx) {
+            final Phi phi = new EOstring();
+            final String arg = args[idx];
+            phi.attr("data").put(new Data.Value<>(arg));
+            app.attr("args").put(phi);
         }
-        @Override
-        public Phi copy() {
-            return this;
+        System.out.println(app);
+        if (!new Data.Take(app).take(Boolean.class)) {
+            throw new IllegalStateException(
+                "Runtime failure"
+            );
         }
-        @Override
-        public Attr attr(final int pos) {
-            return this.attr("");
-        }
-        @Override
-        public Attr attr(final String name) {
-            throw new Attr.Exception("No attributes in ETA");
-        }
-    };
-
-    /**
-     * Make a copy.
-     *
-     * @return A copy
-     */
-    Phi copy();
-
-    /**
-     * Get attribute by position.
-     *
-     * @param pos The position of the attribute
-     * @return The attr
-     */
-    Attr attr(int pos);
-
-    /**
-     * Get attribute.
-     *
-     * @param name The name of the attribute
-     * @return The attr
-     */
-    Attr attr(String name);
+    }
 
 }

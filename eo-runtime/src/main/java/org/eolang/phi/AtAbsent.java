@@ -54,7 +54,7 @@ public final class AtAbsent implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new IllegalArgumentException(
+        throw new Attr.Exception(
             String.format(
                 "Can't put(), attribute %s is absent",
                 this.name

@@ -50,14 +50,15 @@ public interface Data<T> {
         public Take(final Phi src) {
             this.phi = src;
         }
-        @SuppressWarnings("unchecked")
-        public <T> T take(final Class<T> type) {
+        public Object take() {
             Phi src = this.phi;
             if (!(src instanceof Data)) {
                 src = src.attr("data").get(src);
             }
-            final Data<T> data = (Data<T>) Data.class.cast(src);
-            return type.cast(data.take());
+            return Data.class.cast(src).take();
+        }
+        public <T> T take(final Class<T> type) {
+            return type.cast(this.take());
         }
     }
 

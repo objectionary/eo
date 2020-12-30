@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -21,8 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-assert new File(basedir, 'target/generated-sources/eo/EOpixel.java').exists()
-assert new File(basedir, 'target/generated-sources/eo/EOpixel$hello.java').exists()
-assert new File(basedir, 'target/classes/EOpixel.class').exists()
-assert new File(basedir, 'target/classes/EOpixel$hello.class').exists()
+import org.eolang.phi.Data;
+import org.eolang.phi.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Test case for {@link EOarray}.
+ *
+ * @since 0.1
+ */
+public final class EOarray$EOgetTest {
+
+    @Test
+    public void pushesAndGetsBack() {
+        final Phi str = new org.eolang.EOstring();
+        final String txt = "Hello, world!";
+        str.attr("data").put(new Data.Value<>(txt));
+        final Phi array = new org.eolang.EOarray();
+        array.attr("data").put(new Data.Value<>(new Phi[] {str}));
+        final Phi idx = new org.eolang.EOint();
+        idx.attr("data").put(new Data.Value<>(0L));
+        final Phi get = array.attr("get").get(array);
+        get.attr(0).put(idx);
+        MatcherAssert.assertThat(
+            new Data.Take(get).take(String.class),
+            Matchers.equalTo(txt)
+        );
+        MatcherAssert.assertThat(
+            new Data.Take(get).take(),
+            Matchers.equalTo(txt)
+        );
+    }
+}
