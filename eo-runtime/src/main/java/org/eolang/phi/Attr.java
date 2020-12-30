@@ -41,9 +41,10 @@ public interface Attr {
     /**
      * Take the object out.
      *
+     * @param self The object that this attribute belong to now
      * @return The object
      */
-    Phi get();
+    Phi get(Phi self);
 
     /**
      * Put a new object in.
@@ -51,5 +52,18 @@ public interface Attr {
      * @param phi The object to put
      */
     void put(Phi phi);
+
+    /**
+     * @since 0.1
+     */
+    final class Exception extends RuntimeException {
+        private static final long serialVersionUID = 597749420437007615L;
+        public Exception(final String cause) {
+            super(cause);
+        }
+        public Exception(final String cause, final Throwable root) {
+            super(cause, root);
+        }
+    }
 
 }

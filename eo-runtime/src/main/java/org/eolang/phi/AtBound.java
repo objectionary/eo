@@ -34,7 +34,7 @@ public final class AtBound implements Attr {
     private final Attr origin;
 
     public AtBound(final Phi phi) {
-        this(new AtDefault(phi));
+        this(new AtSimple(phi));
     }
 
     public AtBound(final Attr attr) {
@@ -48,12 +48,12 @@ public final class AtBound implements Attr {
 
     @Override
     public Attr copy() {
-        return new AtBound(this.origin.copy());
+        return this;
     }
 
     @Override
-    public Phi get() {
-        return this.origin.get();
+    public Phi get(final Phi self) {
+        return this.origin.get(self);
     }
 
     @Override

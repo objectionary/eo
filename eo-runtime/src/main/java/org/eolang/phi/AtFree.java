@@ -34,11 +34,11 @@ public final class AtFree implements Attr {
     private final Attr origin;
 
     public AtFree() {
-        this(new AtDefault());
+        this(new AtSimple());
     }
 
     public AtFree(final Phi phi) {
-        this(new AtDefault(phi));
+        this(new AtSimple(phi));
     }
 
     public AtFree(final Attr attr) {
@@ -58,8 +58,14 @@ public final class AtFree implements Attr {
     }
 
     @Override
-    public Phi get() {
-        return this.origin.get();
+    public Phi get(final Phi self) {
+        final Phi phi = this.origin.get(self);
+        if (phi.equals(Phi.ETA)) {
+            throw new Attr.Exception(
+                "The attribute is not initialized, can't read"
+            );
+        }
+        return phi;
     }
 
     @Override

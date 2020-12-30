@@ -25,39 +25,59 @@
 package org.eolang.phi;
 
 /**
- * A data container.
+ * Named attribute.
  *
  * @since 0.1
  */
-public interface Data<T> {
+public final class AtNamed implements Attr {
 
-    T take();
+    private final Attr origin;
 
-    final class Value<T> extends PhDefault implements Data<T> {
-        private final T val;
-        public Value(final T value) {
-            super(Phi.ETA);
-            this.val = value;
-        }
-        @Override
-        public T take() {
-            return this.val;
+    private final String name;
+
+    public AtNamed(final String nme, final Attr attr) {
+        this.name = nme;
+        this.origin = attr;
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Attr copy() {
+        try {
+            return this.origin.copy();
+        } catch (final Attr.Exception ex) {
+            throw new Attr.Exception(
+                String.format("Error at %s", this.name),
+                ex
+            );
         }
     }
 
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
+    @Override
+    public Phi get(final Phi self) {
+        try {
+            return this.origin.get(self);
+        } catch (final Attr.Exception ex) {
+            throw new Attr.Exception(
+                String.format("Error at %s", this.name),
+                ex
+            );
         }
-        @SuppressWarnings("unchecked")
-        public <T> T take(final Class<T> type) {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("data").get(src);
-            }
-            final Data<T> data = (Data<T>) Data.class.cast(src);
-            return type.cast(data.take());
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        try {
+            this.origin.put(phi);
+        } catch (final Attr.Exception ex) {
+            throw new Attr.Exception(
+                String.format("Error at %s", this.name),
+                ex
+            );
         }
     }
 

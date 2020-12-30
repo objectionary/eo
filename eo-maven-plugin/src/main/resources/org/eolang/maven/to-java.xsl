@@ -24,7 +24,6 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
   <xsl:strip-space elements="*"/>
-  <xsl:import href="_funcs.xsl"/>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
@@ -133,6 +132,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>super(parent);</xsl:text>
     <xsl:apply-templates select="attr">
+      <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(2)"/>
       </xsl:with-param>
@@ -142,12 +142,17 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="attr">
+    <xsl:param name="class"/>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="eo:attr-name(@name)"/>
+    <xsl:text>", new AtNamed("</xsl:text>
+    <xsl:value-of select="eo:class-name($class/@name)"/>
+    <xsl:text>#</xsl:text>
+    <xsl:value-of select="eo:attr-name(@name)"/>
     <xsl:text>", </xsl:text>
     <xsl:apply-templates select="*"/>
-    <xsl:text>);</xsl:text>
+    <xsl:text>));</xsl:text>
   </xsl:template>
   <xsl:template match="once">
     <xsl:text>new AtOnce(</xsl:text>
@@ -161,7 +166,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtBound(</xsl:text>
-    <xsl:text>new AtDefault(() -&gt; {</xsl:text>
+    <xsl:text>new AtStatic(self -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>
@@ -186,29 +191,29 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:variable name="o" select="."/>
-    <xsl:variable name="b" select="//o[@name=$o/@base and @line=$o/@ref]"/>
+    <xsl:variable name="b" select="//class[@name=$o/@base and @line=$o/@ref]"/>
     <xsl:value-of select="$indent"/>
     <xsl:text>final Phi </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
       <xsl:when test="@base='$'">
-        <xsl:text>this</xsl:text>
+        <xsl:text>self</xsl:text>
       </xsl:when>
-      <xsl:when test="$b and eo:abstract($b)">
+      <xsl:when test="$b">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
-        <xsl:text>(this)</xsl:text>
+        <xsl:text>(self)</xsl:text>
       </xsl:when>
       <xsl:when test="@ref">
-        <xsl:text>this.attr("</xsl:text>
+        <xsl:text>self.attr("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").get().copy()</xsl:text>
+        <xsl:text>").get(self).copy()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name(@base)"/>
-        <xsl:text>(this)</xsl:text>
+        <xsl:text>(self)</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>
@@ -237,7 +242,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>_base.attr("</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
-    <xsl:text>").get().copy();</xsl:text>
+    <xsl:text>").get(self).copy();</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>

@@ -38,23 +38,18 @@ public final class AtAbsent implements Attr {
     }
 
     @Override
-    public Attr copy() {
-        throw new IllegalArgumentException(
-            String.format(
-                "Can't copy(), attribute %s is absent",
-                this.name
-            )
-        );
+    public String toString() {
+        return "-";
     }
 
     @Override
-    public Phi get() {
-        throw new IllegalArgumentException(
-            String.format(
-                "Can't get(), attribute %s is absent",
-                this.name
-            )
-        );
+    public Attr copy() {
+        return this;
+    }
+
+    @Override
+    public Phi get(final Phi self) {
+        return Phi.ETA;
     }
 
     @Override

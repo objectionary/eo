@@ -25,8 +25,8 @@
 package org.eolang;
 
 import org.eolang.phi.AtBound;
-import org.eolang.phi.AtDefault;
 import org.eolang.phi.AtFree;
+import org.eolang.phi.AtStatic;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
@@ -42,11 +42,11 @@ public class EOarray$EOreduce extends PhDefault {
         super(parent);
         this.add("a", new AtFree());
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtDefault(() -> {
+        this.add("_origin", new AtBound(new AtStatic(self -> {
             final Phi[] array = new Data.Take(this).take(Phi[].class);
-            Phi out = this.attr("a").get();
+            Phi out = self.attr("a").get(self);
             for (final Phi arg : array) {
-                final Phi after = this.attr("f").get().copy();
+                final Phi after = self.attr("f").get(self).copy();
                 after.attr(0).put(out);
                 after.attr(1).put(arg);
                 out = after;

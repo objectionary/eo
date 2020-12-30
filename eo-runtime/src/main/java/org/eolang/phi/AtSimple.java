@@ -25,40 +25,40 @@
 package org.eolang.phi;
 
 /**
- * A data container.
+ * Default attribute.
  *
  * @since 0.1
  */
-public interface Data<T> {
+public final class AtSimple implements Attr {
 
-    T take();
+    private Phi phi;
 
-    final class Value<T> extends PhDefault implements Data<T> {
-        private final T val;
-        public Value(final T value) {
-            super(Phi.ETA);
-            this.val = value;
-        }
-        @Override
-        public T take() {
-            return this.val;
-        }
+    public AtSimple() {
+        this(Phi.ETA);
     }
 
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
-        }
-        @SuppressWarnings("unchecked")
-        public <T> T take(final Class<T> type) {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("data").get(src);
-            }
-            final Data<T> data = (Data<T>) Data.class.cast(src);
-            return type.cast(data.take());
-        }
+    public AtSimple(final Phi src) {
+        this.phi = src;
+    }
+
+    @Override
+    public String toString() {
+        return this.phi.toString();
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtSimple(this.phi.copy());
+    }
+
+    @Override
+    public Phi get(final Phi self) {
+        return this.phi;
+    }
+
+    @Override
+    public void put(final Phi src) {
+        this.phi = src;
     }
 
 }

@@ -25,6 +25,7 @@
 package org.eolang.phi;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,13 @@ public class PhDefault implements Phi {
      */
     public PhDefault(final Phi prnt) {
         this(new HashMap<>(0), new ArrayList<>(0));
-        this.add("_parent", new AtBound(prnt));
+        this.add(
+            "_parent",
+            new AtNamed(
+                String.format("%s#_parent", this.getClass().getCanonicalName()),
+                new AtBound(prnt)
+            )
+        );
     }
 
     /**
@@ -69,6 +76,26 @@ public class PhDefault implements Phi {
     private PhDefault(final Map<String, Attr> map, final List<String> ordr) {
         this.attrs = map;
         this.order = ordr;
+    }
+
+    @Override
+    public final String toString() {
+        final Collection<String> list = new ArrayList<>(this.attrs.size());
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            list.add(
+                String.format(
+                    "%s=%s",
+                    ent.getKey(),
+                    ent.getValue().toString().replace("\n", "\n  ")
+                )
+            );
+        }
+        return String.format(
+            "%s#%d:{\n  %s\n}",
+            this.getClass().getCanonicalName(),
+            this.hashCode(),
+            String.join("\n  ", list)
+        );
     }
 
     @Override
@@ -83,7 +110,7 @@ public class PhDefault implements Phi {
     @Override
     public final Attr attr(final int pos) {
         if (pos >= this.order.size()) {
-            throw new IllegalArgumentException(
+            throw new Attr.Exception(
                 String.format(
                     "There are just %d attributes, can't find the %dth",
                     this.order.size(), pos
@@ -103,7 +130,7 @@ public class PhDefault implements Phi {
         for (final String scope : scopes) {
             final Attr sub = this.attrs.get(scope);
             if (sub != null) {
-                attr = sub.get().attr(name);
+                attr = sub.get(this).attr(name);
                 if (!(attr instanceof AtAbsent)) {
                     return attr;
                 }

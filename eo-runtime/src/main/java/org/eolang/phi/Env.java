@@ -29,21 +29,21 @@ package org.eolang.phi;
  *
  * @since 0.1
  */
-public interface Env<T> {
+public interface Env {
 
-    T get();
+    Phi get(Phi self);
 
-    class Simple implements Env<Phi> {
+    class Simple implements Env {
         private final Phi phi;
         public Simple(final Phi src) {
             this.phi = src;
         }
         @Override
         public String toString() {
-            return this.phi.getClass().getSimpleName();
+            return this.phi.toString();
         }
         @Override
-        public Phi get() {
+        public Phi get(final Phi self) {
             return this.phi;
         }
     }

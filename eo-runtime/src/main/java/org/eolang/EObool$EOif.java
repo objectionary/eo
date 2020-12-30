@@ -25,8 +25,8 @@
 package org.eolang;
 
 import org.eolang.phi.AtBound;
-import org.eolang.phi.AtDefault;
 import org.eolang.phi.AtFree;
+import org.eolang.phi.AtStatic;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
@@ -42,13 +42,13 @@ public class EObool$EOif extends PhDefault {
         super(parent);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtDefault(() -> {
+        this.add("_origin", new AtBound(new AtStatic(self -> {
             final Boolean term = new Data.Take(this).take(Boolean.class);
             final Phi out;
             if (term) {
-                out = this.attr("t").get();
+                out = self.attr("t").get(self);
             } else {
-                out = this.attr("f").get();
+                out = self.attr("f").get(self);
             }
             return out;
         })));

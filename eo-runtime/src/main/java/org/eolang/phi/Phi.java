@@ -36,8 +36,12 @@ public interface Phi {
      */
     Phi ETA = new Phi() {
         @Override
+        public String toString() {
+            return "eta";
+        }
+        @Override
         public Phi copy() {
-            throw new UnsupportedOperationException("#copy()");
+            return this;
         }
         @Override
         public Attr attr(final int pos) {

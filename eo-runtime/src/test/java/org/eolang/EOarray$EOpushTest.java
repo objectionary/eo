@@ -21,48 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-package org.eolang.phi;
+import org.eolang.phi.Data;
+import org.eolang.phi.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Default attribute.
+ * Test case for {@link EOarray}.
  *
  * @since 0.1
  */
-public final class AtDefault implements Attr {
+public final class EOarray$EOpushTest {
 
-    private Env<Phi> env;
-
-    public AtDefault() {
-        this(Phi.ETA);
+    @Test
+    public void pushesObject() {
+        final Phi str = new org.eolang.EOstring();
+        str.attr("data").put(new Data.Value<>("Hello, world!"));
+        final Phi array = new org.eolang.EOarray();
+        array.attr("data").put(new Data.Value<>(new Phi[] {}));
+        final Phi push = new EOarray$EOpush(array);
+        push.attr(0).put(str);
+        MatcherAssert.assertThat(
+            new Data.Take(push).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+        MatcherAssert.assertThat(
+            new Data.Take(array).take(Phi[].class)[0],
+            Matchers.equalTo(str)
+        );
     }
 
-    public AtDefault(final Phi phi) {
-        this(new Env.Simple(phi));
-    }
-
-    public AtDefault(final Env<Phi> phi) {
-        this.env = phi;
-    }
-
-    @Override
-    public String toString() {
-        return this.env.toString();
-    }
-
-    @Override
-    public Attr copy() {
-        return new AtDefault(this.env);
-    }
-
-    @Override
-    public Phi get() {
-        return this.env.get();
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        this.env = new Env.Simple(phi);
+    @Test
+    public void makesCopy() {
+        final Phi array = new org.eolang.EOarray();
+        array.attr("data").put(new Data.Value<>(new Phi[] {}));
+        MatcherAssert.assertThat(
+            new EOarray$EOpush(array).copy(),
+            Matchers.notNullValue()
+        );
     }
 
 }

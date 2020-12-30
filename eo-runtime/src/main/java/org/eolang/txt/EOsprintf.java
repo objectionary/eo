@@ -26,14 +26,14 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtDefault;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtVararg;
-import org.eolang.phi.Data;
 import org.eolang.EObool;
 import org.eolang.EOint;
 import org.eolang.EOstring;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtStatic;
+import org.eolang.phi.AtVararg;
+import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -52,19 +52,18 @@ public class EOsprintf extends PhDefault {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtDefault(() -> {
+        this.add("_origin", new AtBound(new AtStatic(self -> {
             final String format = new Data.Take(
-                this.attr("format").get()
+                self.attr("format").get(self)
             ).take(String.class);
             final Phi[] args = new Data.Take(
-                this.attr("args").get()
+                self.attr("args").get(self)
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {
                 items.add(EOsprintf.toArg(arg));
             }
             final Phi out = new org.eolang.EOstring();
-            System.out.println(items.toArray()[0]);
             out.attr("data").put(
                 new Data.Value<>(
                     String.format(format, items.toArray())

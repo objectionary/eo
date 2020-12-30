@@ -25,40 +25,36 @@
 package org.eolang.phi;
 
 /**
- * A data container.
+ * Static attribute.
  *
  * @since 0.1
  */
-public interface Data<T> {
+public final class AtStatic implements Attr {
 
-    T take();
+    private Env env;
 
-    final class Value<T> extends PhDefault implements Data<T> {
-        private final T val;
-        public Value(final T value) {
-            super(Phi.ETA);
-            this.val = value;
-        }
-        @Override
-        public T take() {
-            return this.val;
-        }
+    public AtStatic(final Env phi) {
+        this.env = phi;
     }
 
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
-        }
-        @SuppressWarnings("unchecked")
-        public <T> T take(final Class<T> type) {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("data").get(src);
-            }
-            final Data<T> data = (Data<T>) Data.class.cast(src);
-            return type.cast(data.take());
-        }
+    @Override
+    public String toString() {
+        return "...";
+    }
+
+    @Override
+    public Attr copy() {
+        return new AtStatic(this.env);
+    }
+
+    @Override
+    public Phi get(final Phi self) {
+        return this.env.get(self);
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.env = new Env.Simple(phi);
     }
 
 }

@@ -24,11 +24,11 @@
 
 package org.eolang.io;
 
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtDefault;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.Data;
 import org.eolang.EObool;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtStatic;
+import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -46,10 +46,10 @@ public class EOstdout extends PhDefault {
     public EOstdout(final Phi parent) {
         super(parent);
         this.add("text", new AtFree());
-        this.add("_origin", new AtBound(new AtDefault(() -> {
+        this.add("_origin", new AtBound(new AtStatic(self -> {
             System.out.print(
                 new Data.Take(
-                    this.attr("text").get()
+                    self.attr("text").get(self)
                 ).take(String.class)
             );
             final Phi out = new EObool();

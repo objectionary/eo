@@ -33,16 +33,19 @@ public final class AtOnce implements Attr {
 
     private final Attr origin;
 
+    private Boolean set;
+
     public AtOnce() {
-        this(new AtDefault());
+        this(new AtSimple());
     }
 
     public AtOnce(final Phi phi) {
-        this(new AtDefault(phi));
+        this(new AtSimple(phi));
     }
 
     public AtOnce(final Attr attr) {
         this.origin = attr;
+        this.set = false;
     }
 
     @Override
@@ -52,22 +55,24 @@ public final class AtOnce implements Attr {
 
     @Override
     public Attr copy() {
+        this.set = false;
         return this.origin.copy();
     }
 
     @Override
-    public Phi get() {
-        return this.origin.get();
+    public Phi get(final Phi self) {
+        return this.origin.get(self);
     }
 
     @Override
     public void put(final Phi phi) {
-        if (!this.origin.get().equals(Phi.ETA)) {
-            throw new IllegalStateException(
+        if (this.set) {
+            throw new Attr.Exception(
                 "This free attribute is already set, can't reset"
             );
         }
         this.origin.put(phi);
+        this.set = true;
     }
 
 }

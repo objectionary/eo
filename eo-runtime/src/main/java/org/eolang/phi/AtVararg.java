@@ -34,7 +34,7 @@ public final class AtVararg implements Attr {
     private final Attr origin;
 
     public AtVararg() {
-        this(new AtDefault(AtVararg.empty()));
+        this(new AtSimple(AtVararg.empty()));
     }
 
     public AtVararg(final Attr attr) {
@@ -47,16 +47,17 @@ public final class AtVararg implements Attr {
     }
 
     @Override
-    public Phi get() {
-        return this.origin.get();
+    public Phi get(final Phi self) {
+        return this.origin.get(self);
     }
 
     @Override
     public void put(final Phi phi) {
-        final Phi array = this.get();
-        final Phi append = array.attr("push").get().copy();
-        append.attr(0).put(phi);
-        new Data.Take(append).take(Long.class);
+        final Phi array = this.get(Phi.ETA);
+        final Phi push = array.attr("push").get(array);
+        final Phi copy = push.copy();
+        copy.attr(0).put(phi);
+        new Data.Take(copy).take(Long.class);
     }
 
     private static Phi empty() {
