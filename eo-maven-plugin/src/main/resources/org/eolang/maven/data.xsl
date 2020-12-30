@@ -60,6 +60,10 @@ SOFTWARE.
             <xsl:value-of select="text()"/>
             <xsl:text>L</xsl:text>
           </xsl:when>
+          <xsl:when test="@data='float'">
+            <xsl:value-of select="text()"/>
+            <xsl:text>d</xsl:text>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="text()"/>
           </xsl:otherwise>
