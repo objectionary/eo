@@ -157,7 +157,7 @@ one after another:
     The output of each transformation you can find in the `target/eo/optimize` directory.
 
   * **Compilation**.
-    The class `CompileMojo` in the `eo-maven-plugin` module is responsible
+    The class `org.eolang.maven.CompileMojo` in the `eo-maven-plugin` module is responsible
     for putting parsing and optimization steps together and then transforming
     the XML document into a collection of `.java` files. There are a number
     of transformations that do this, they all exist in `.xsl` files.
