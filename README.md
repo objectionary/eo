@@ -79,7 +79,7 @@ whether it's leap or not:
 
 [args] > main
   [y] > leap
-    or.
+    or. > @
       and.
         eq. (mod. y 4) 0
         not. (eq. (mod. y 100) 0)
