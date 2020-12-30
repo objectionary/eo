@@ -134,7 +134,40 @@ You will need Java 8+.
 
 More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/main/it).
 
-## How to contribute
+## How it Works?
+
+The entire process of turning an `.eo` program into an executable
+binary code constists of a few steps, which must be done
+one after another:
+
+  * **Parsing**.
+    It's done by the `org.eolang.parser.Syntax` class in the `eo-parser` module. It takes
+    the source code in a plain text format and parses into XML document,
+    using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
+    The output of the parser you can find in the `target/eo/parse` directory.
+
+  * **Optimization**.
+    There are a number of XSLT transformations that need to be done
+    with the XML document in order to make it ready for compilation.
+    Each transformation has its own `.xslt` file in the `eo-parser` directory.
+    The class `org.eolang.parser.Program` is responsible for making XSLT
+    transformations and the entire list of them is stored in the
+    `org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
+    The output of each transformation you can find in the `target/eo/optimize` directory.
+
+  * **Compilation**.
+    The class `CompileMojo` in the `eo-maven-plugin` module is responsible
+    for putting parsing and optimization steps together and then transforming
+    the XML document into a collection of `.java` files. There are a number
+    of transformations that do this, they all exist in `.xsl` files.
+    The output of this step you can find in the `target/generated-sources` directory.
+
+There is also a module called `eo-runtime`, which includes both `.eo` and `.java` code
+for most popular and important objects that any of you will need in order
+to write even a simple in EO. There are objects like `string`, `int`, `sprintf`,
+`stdout`, and so on. You may want to contribute there by creating new objects.
+
+## How to Contribute
 
 Fork repository, make changes, send us a pull request. We will review your changes and apply them to the master branch shortly, provided they don't violate our quality standards. To avoid frustration, before sending us your pull request please run full Maven build:
 
