@@ -93,6 +93,44 @@ whether it's leap or not:
         if (leap year:y) "" "not "
 ```
 
+In order to compile this program, put it into `src/main/eo/main.eo` and then
+create a file `pom.xml` with this content (it's just a sample):
+
+```xml
+<project>
+  [...]
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eolang</groupId>
+        <artifactId>eo-maven-plugin</artifactId>
+        <version>0.1.6</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>parse</goal>
+              <goal>optimize</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime</artifactId>
+      <version>0.1.6</version>
+    </dependency>
+  </dependencies>
+</project>
+```
+
+Then, you just run `mvn clean test` and the `.eo` file will be parsed,
+transformed to `.java` files and then compiled to `.class` file.
+You can see them all in `target` directory.
+
 More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/main/it).
 
 ## How to contribute
