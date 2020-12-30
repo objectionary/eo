@@ -150,7 +150,7 @@ one after another:
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
     that need to be done
     with the XML document in order to make it ready for compilation.
-    Each transformation has its own `.xslt` file in the `eo-parser` directory.
+    Each transformation has its own `.xsl` file in the `eo-parser` directory.
     The class `org.eolang.parser.Program` is responsible for making XSLT
     transformations and the entire list of them is stored in the
     `org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
@@ -170,8 +170,14 @@ to write even a simple EO program. There are objects like `string`, `int`, `spri
 
 ## How to Contribute
 
-Fork repository, make changes, send us a pull request. We will review your changes and apply them to the master branch shortly, provided they don't violate our quality standards. To avoid frustration, before sending us your pull request please run full Maven build:
+Fork repository, make changes, send us a pull request.
+We will review your changes and apply them to the `master` branch shortly,
+provided they don't violate our quality standards. To avoid frustration,
+before sending us your pull request please run full Maven build:
 
 ```bash
 $ mvn clean install -Pqulice
 ```
+
+You will need Maven 3.3+ and Java 8+.
+
