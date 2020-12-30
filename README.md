@@ -127,9 +127,10 @@ create a file `pom.xml` with this content (it's just a sample):
 </project>
 ```
 
-Then, you just run `mvn clean test` and the `.eo` file will be parsed,
-transformed to `.java` files and then compiled to `.class` file.
-You can see them all in `target` directory.
+Then, you just run `mvn clean test` (you will need [Maven 3.3+](https://maven.apache.org/))
+and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
+and then compiled to `.class` files. You can see them all in the `target` directory.
+You will need Java 8+.
 
 More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/main/it).
 
@@ -140,13 +141,3 @@ Fork repository, make changes, send us a pull request. We will review your chang
 ```bash
 $ mvn clean install -Pqulice
 ```
-
-## Troubleshooting
-
-If after clean import from Maven, IDEA doesn't compile the project
-and shows errors about ProgramLexer is undefined:
-
-- Open Maven Projects window
-- Select eo-compiler
-- Right button
-- Generate Sources and Update Folders
