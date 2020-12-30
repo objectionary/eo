@@ -93,7 +93,7 @@ whether it's leap or not:
         if (leap year:y) "" "not "
 ```
 
-More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it).
+More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/main/it).
 
 ## How to contribute
 
