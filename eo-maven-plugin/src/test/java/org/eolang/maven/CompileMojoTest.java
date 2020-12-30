@@ -98,6 +98,7 @@ public final class CompileMojoTest {
             .execute();
         final Path java = generated.resolve(file);
         MatcherAssert.assertThat(
+            String.format("The file \"%s\" wasn't created", java),
             Files.exists(java),
             Matchers.is(true)
         );

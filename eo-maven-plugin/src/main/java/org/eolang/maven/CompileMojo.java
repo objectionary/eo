@@ -131,25 +131,30 @@ public final class CompileMojo extends AbstractMojo {
     private void compile(final Path file) {
         final Path temp = this.targetDir.toPath().resolve("eo/compile");
         try {
-            final XML xml = new XMLDocument(file);
-            final String name = xml.xpath("/program/@name").get(0);
-            final XML out = new XSLDocument(
-                new TextOf(
-                    new ResourceOf("org/eolang/maven/to-java.xsl")
-                ).asString()
-            ).with(new ClasspathSources(Program.class)).transform(xml);
-            Logger.debug(this, "Raw Java output of %s:\n%s", file, out);
+            final String[] sheets = {
+                "org/eolang/maven/classes.xsl",
+                "org/eolang/maven/attrs.xsl",
+                "org/eolang/maven/once.xsl",
+                "org/eolang/maven/data.xsl",
+                "org/eolang/maven/to-java.xsl",
+            };
+            XML after = new XMLDocument(file);
+            for (final String sheet : sheets) {
+                after = this.transform(after, sheet);
+            }
+            Logger.debug(this, "Raw Java output of %s:\n%s", file, after);
+            final String name = after.xpath("/program/@name").get(0);
             new IoChecked<>(
                 new LengthOf(
                     new TeeInput(
-                        new InputOf(out.toString()),
+                        new InputOf(after.toString()),
                         new OutputTo(
                             temp.resolve(String.format("%s.xml", name))
                         )
                     )
                 )
             ).value();
-            for (final XML java : out.nodes("/program/objects/o[java]")) {
+            for (final XML java : after.nodes("//class[java and not(@atom)]")) {
                 CompileMojo.save(
                     this.generatedDir.toPath().resolve(
                         Paths.get(
@@ -173,6 +178,22 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+    }
+
+    /**
+     * Single transformation.
+     * @param before XML before
+     * @param sheet The XSL to use
+     * @return Result
+     * @throws IOException If fails
+     */
+    private XML transform(final XML before, final String sheet)
+        throws IOException {
+        final XML xml = new XSLDocument(
+            new TextOf(new ResourceOf(sheet)).asString()
+        ).with(new ClasspathSources(Program.class)).transform(before);
+        Logger.debug(this, "XML output after %s:\n%s", sheet, xml);
+        return xml;
     }
 
     /**

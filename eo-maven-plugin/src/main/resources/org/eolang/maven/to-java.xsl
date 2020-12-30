@@ -96,7 +96,7 @@ SOFTWARE.
       <xsl:value-of select="eo:class-name(.)"/>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="o[eo:abstract(.) and not(@atom)]">
+  <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
@@ -117,7 +117,7 @@ SOFTWARE.
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="ctors">
+  <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
@@ -132,7 +132,7 @@ SOFTWARE.
     <xsl:text>(final Phi parent) {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>super(parent);</xsl:text>
-    <xsl:apply-templates select="o[@name and not(@level)]" mode="ent">
+    <xsl:apply-templates select="attr">
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(2)"/>
       </xsl:with-param>
@@ -141,27 +141,29 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="o" mode="ent">
+  <xsl:template match="attr">
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="eo:attr-name(@name)"/>
     <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="." mode="attr"/>
+    <xsl:apply-templates select="*"/>
     <xsl:text>);</xsl:text>
   </xsl:template>
-  <xsl:template match="o[not(@base)]" mode="attr">
-    <xsl:text>new AtFree(</xsl:text>
-    <xsl:text>new AtDefault()</xsl:text>
+  <xsl:template match="once">
+    <xsl:text>new AtOnce(</xsl:text>
+    <xsl:apply-templates select="*"/>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@vararg]" mode="attr">
-    <xsl:text>new AtDefault()</xsl:text>
+  <xsl:template match="free">
+    <xsl:text>new AtFree(</xsl:text>
+    <xsl:apply-templates select="*"/>
+    <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@base]" mode="attr">
+  <xsl:template match="bound">
     <xsl:text>new AtBound(</xsl:text>
     <xsl:text>new AtDefault(() -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select=".">
+    <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(3)"/>
@@ -172,6 +174,13 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
     <xsl:text>)</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[@vararg]">
+    <xsl:text>new AtVararg()</xsl:text>
+  </xsl:template>
+  <xsl:template match="o[not(@base) and @name]">
+    <xsl:text>/</xsl:text>
+    <xsl:text>* default */</xsl:text>
   </xsl:template>
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
@@ -204,10 +213,6 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select=".[@data]" mode="data">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -280,36 +285,25 @@ SOFTWARE.
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
+    <xsl:apply-templates select="value">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent">
+        <xsl:value-of select="$indent"/>
+        <xsl:value-of select="eo:tabs(1)"/>
+      </xsl:with-param>
+    </xsl:apply-templates>
   </xsl:template>
-  <xsl:template match="o[@data]" mode="data">
+  <xsl:template match="value">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
     <xsl:text>.attr("data").put(new Data.Value&lt;</xsl:text>
-    <xsl:apply-templates select="." mode="value"/>
-    <xsl:text>);</xsl:text>
+    <xsl:value-of select="@java-type"/>
+    <xsl:text>&gt;(</xsl:text>
+    <xsl:value-of select="text()"/>
+    <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-  </xsl:template>
-  <xsl:template match="o[@data='string']" mode="value">
-    <xsl:text>String&gt;("</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>")</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@data='int']" mode="value">
-    <xsl:text>Integer&gt;(</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@data='bool']" mode="value">
-    <xsl:text>Boolean&gt;(</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@data='float']" mode="value">
-    <xsl:text>Double&gt;(</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="/program/metas/meta[head='package']" mode="#all">
     <xsl:text>package </xsl:text>
