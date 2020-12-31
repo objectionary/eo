@@ -21,24 +21,13 @@
 # SOFTWARE.
 
 +package org.eolang.examples
-+alias fibo org.eolang.examples.fibonacci
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
 
-[args] > app
-  and
-    stdout
-      sprintf
-        "%dth Fibonacci number is %d"
-        (args.get 0) > n!
-        fibo n
-    if
-      not
-        eq
-          args.get 1 > e
-          n
-      []
-        sprintf > msg
-          "%d not equal to %d"
-          n
-          e
+# This is the main abstract object that
+# represents n-th Fibonacci number
+[n] > fibonacci
+  if. > @
+    less. n 2
+    n
+    add.
+      fibonacci (sub. n 1)
+      fibonacci (sub. n 2)

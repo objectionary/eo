@@ -41,10 +41,10 @@ public class EOarray$EOmapi extends PhDefault {
     public EOarray$EOmapi(final Phi parent) {
         super(parent);
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final Phi[] array = new Data.Take(this).take(Phi[].class);
             for (int idx = 0; idx < array.length; ++idx) {
-                final Phi after = self.attr("f").get(self).copy();
+                final Phi after = self.attr("f").get().copy();
                 after.attr(0).put(array[idx]);
                 after.attr(1).put(new Data.Value<>(idx));
                 array[idx] = after;

@@ -42,11 +42,11 @@ public class EOarray$EOreduce extends PhDefault {
         super(parent);
         this.add("a", new AtFree());
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final Phi[] array = new Data.Take(this).take(Phi[].class);
-            Phi out = self.attr("a").get(self);
+            Phi out = self.attr("a").get();
             for (final Phi arg : array) {
-                final Phi after = self.attr("f").get(self).copy();
+                final Phi after = self.attr("f").get().copy();
                 after.attr(0).put(out);
                 after.attr(1).put(arg);
                 out = after;

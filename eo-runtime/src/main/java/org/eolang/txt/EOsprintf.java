@@ -26,9 +26,6 @@ package org.eolang.txt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.EObool;
-import org.eolang.EOint;
-import org.eolang.EOstring;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtStatic;
@@ -52,16 +49,16 @@ public class EOsprintf extends PhDefault {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final String format = new Data.Take(
-                self.attr("format").get(self)
+                self.attr("format").get()
             ).take(String.class);
             final Phi[] args = new Data.Take(
-                self.attr("args").get(self)
+                self.attr("args").get()
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {
-                items.add(EOsprintf.toArg(arg));
+                items.add(new Data.Take(arg).take());
             }
             final Phi out = new org.eolang.EOstring();
             out.attr("data").put(
@@ -71,26 +68,6 @@ public class EOsprintf extends PhDefault {
             );
             return out;
         })));
-    }
-
-    private static Object toArg(final Phi phi) {
-        final Object result;
-        final Data.Take take = new Data.Take(phi);
-        if (phi instanceof EObool) {
-            result = take.take(Boolean.class);
-        } else if (phi instanceof EOint) {
-            result = take.take(Long.class);
-        } else if (phi instanceof EOstring) {
-            result = take.take(String.class);
-        } else {
-            throw new UnsupportedOperationException(
-                String.format(
-                    "Can't print object of type %s",
-                    phi.getClass().getName()
-                )
-            );
-        }
-        return result;
     }
 
 }

@@ -43,18 +43,18 @@ public final class AtAbsent implements Attr {
     }
 
     @Override
-    public Attr copy() {
+    public Attr copy(final Phi self) {
         return this;
     }
 
     @Override
-    public Phi get(final Phi self) {
+    public Phi get() {
         return Phi.ETA;
     }
 
     @Override
     public void put(final Phi phi) {
-        throw new IllegalArgumentException(
+        throw new Attr.Exception(
             String.format(
                 "Can't put(), attribute %s is absent",
                 this.name

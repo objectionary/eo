@@ -29,19 +29,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -55,6 +58,7 @@ import org.yaml.snakeyaml.Yaml;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
+    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -68,10 +72,19 @@ public final class SnippetTest {
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         final int result = SnippetTest.run(
             new InputOf(String.format("%s\n", map.get("eo"))),
+            (List<String>) map.get("args"),
             new InputOf(map.get("in").toString()),
             new OutputTo(stdout)
         );
         MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
+        for (final String ptn : (Iterable<String>) map.get("out")) {
+            MatcherAssert.assertThat(
+                stdout.toString(),
+                Matchers.matchesPattern(
+                    Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+                )
+            );
+        }
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -84,13 +97,16 @@ public final class SnippetTest {
     /**
      * Compile EO to Java and run.
      * @param code EO sources
+     * @param args Command line arguments
      * @param stdin The input
      * @param stdout Where to put stdout
      * @return All Java code
      * @throws Exception If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    private static int run(final Input code, final Input stdin,
-        final Output stdout) throws Exception {
+    @SuppressWarnings("unchecked")
+    private static int run(final Input code, final List<String> args,
+        final Input stdin, final Output stdout) throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new LengthOf(
@@ -114,12 +130,6 @@ public final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .execute();
-        new LengthOf(
-            new TeeInput(
-                new ResourceOf("org/eolang/maven/Main.java"),
-                new OutputTo(generated.resolve("Main.java"))
-            )
-        ).value();
         final Path classes = temp.resolve("classes");
         final String cpath = String.format(
             ".:%s",
@@ -138,10 +148,15 @@ public final class SnippetTest {
             .forEach(file -> SnippetTest.javac(file, classes, cpath));
         final Process proc = new ProcessBuilder()
             .command(
-                "java",
-                "-cp",
-                cpath,
-                "Main"
+                new Joined<>(
+                    new ListOf<>(
+                        "java",
+                        "-cp",
+                        cpath,
+                        "org.eolang.phi.Main"
+                    ),
+                    args
+                )
             )
             .directory(classes.toFile())
             .redirectErrorStream(true)

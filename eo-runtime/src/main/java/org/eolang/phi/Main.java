@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2020 Yegor Bugayenko
@@ -22,7 +22,33 @@
  * SOFTWARE.
  */
 
-assert new File(basedir, 'target/generated-sources/eo/EOpixel.java').exists()
-assert new File(basedir, 'target/generated-sources/eo/EOpixel$hello.java').exists()
-assert new File(basedir, 'target/classes/EOpixel.class').exists()
-assert new File(basedir, 'target/classes/EOpixel$hello.class').exists()
+package org.eolang.phi;
+
+import org.eolang.EOstring;
+
+/**
+ * Bridge between Java CLI and EO.
+ *
+ * @since 0.1
+ */
+public final class Main {
+
+    public static void main(final String... args) throws Exception {
+        final String path = args[0].replaceAll("([^\\.]+)$", "EO$1");
+        final Phi app = Phi.class.cast(
+            Class.forName(path).getConstructor().newInstance()
+        );
+        for (int idx = 1; idx < args.length; ++idx) {
+            final Phi phi = new EOstring();
+            final String arg = args[idx];
+            phi.attr("data").put(new Data.Value<>(arg));
+            app.attr("args").put(phi);
+        }
+        if (!new Data.Take(app).take(Boolean.class)) {
+            throw new IllegalStateException(
+                "Runtime failure"
+            );
+        }
+    }
+
+}

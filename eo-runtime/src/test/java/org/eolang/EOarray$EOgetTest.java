@@ -21,37 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtStatic;
 import org.eolang.phi.Data;
-import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * MUL.
+ * Test case for {@link EOarray}.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOmul extends PhDefault {
+public final class EOarray$EOgetTest {
 
-    public EOint$EOmul(final Phi parent) {
-        super(parent);
-        this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(this, self -> {
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(self).take(Long.class)
-                    *
-                    new Data.Take(self.attr("x").get()).take(Long.class)
-                )
-            );
-            return out;
-        })));
+    @Test
+    public void pushesAndGetsBack() {
+        final Phi str = new org.eolang.EOstring();
+        final String txt = "Hello, world!";
+        str.attr("data").put(new Data.Value<>(txt));
+        final Phi array = new org.eolang.EOarray();
+        array.attr("data").put(new Data.Value<>(new Phi[] {str}));
+        final Phi idx = new org.eolang.EOint();
+        idx.attr("data").put(new Data.Value<>(0L));
+        final Phi get = array.attr("get").get();
+        get.attr(0).put(idx);
+        MatcherAssert.assertThat(
+            new Data.Take(get).take(String.class),
+            Matchers.equalTo(txt)
+        );
+        MatcherAssert.assertThat(
+            new Data.Take(get).take(),
+            Matchers.equalTo(txt)
+        );
     }
-
 }

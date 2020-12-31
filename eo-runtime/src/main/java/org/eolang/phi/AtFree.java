@@ -51,15 +51,15 @@ public final class AtFree implements Attr {
     }
 
     @Override
-    public Attr copy() {
-        final Attr copy = this.origin.copy();
+    public Attr copy(final Phi self) {
+        final Attr copy = this.origin.copy(self);
         copy.put(Phi.ETA);
         return new AtFree(copy);
     }
 
     @Override
-    public Phi get(final Phi self) {
-        final Phi phi = this.origin.get(self);
+    public Phi get() {
+        final Phi phi = this.origin.get();
         if (phi.equals(Phi.ETA)) {
             throw new Attr.Exception(
                 "The attribute is not initialized, can't read"

@@ -46,21 +46,21 @@ public final class AtNamed implements Attr {
     }
 
     @Override
-    public Attr copy() {
+    public Attr copy(final Phi self) {
         try {
-            return this.origin.copy();
+            return new AtNamed(this.name, this.origin.copy(self));
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
-                String.format("Error at %s", this.name),
+                String.format("Error in %s at %s", self, this.name),
                 ex
             );
         }
     }
 
     @Override
-    public Phi get(final Phi self) {
+    public Phi get() {
         try {
-            return this.origin.get(self);
+            return this.origin.get();
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error at %s", this.name),

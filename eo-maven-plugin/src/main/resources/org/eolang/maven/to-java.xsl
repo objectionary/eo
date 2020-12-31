@@ -164,9 +164,14 @@ SOFTWARE.
     <xsl:apply-templates select="*"/>
     <xsl:text>)</xsl:text>
   </xsl:template>
+  <xsl:template match="vararg">
+    <xsl:text>new AtVararg(</xsl:text>
+    <xsl:apply-templates select="*"/>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtBound(</xsl:text>
-    <xsl:text>new AtStatic(self -&gt; {</xsl:text>
+    <xsl:text>new AtStatic(this, self -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>
@@ -179,9 +184,6 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
     <xsl:text>)</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@vararg]">
-    <xsl:text>new AtVararg()</xsl:text>
   </xsl:template>
   <xsl:template match="o[not(@base) and @name]">
     <xsl:text>/</xsl:text>
@@ -208,7 +210,10 @@ SOFTWARE.
       <xsl:when test="@ref">
         <xsl:text>self.attr("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").get(self).copy()</xsl:text>
+        <xsl:text>").get()</xsl:text>
+        <xsl:if test="*">
+          <xsl:text>.copy()</xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
@@ -242,7 +247,11 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>_base.attr("</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
-    <xsl:text>").get(self).copy();</xsl:text>
+    <xsl:text>").get()</xsl:text>
+    <xsl:if test="count(*) &gt; 1">
+      <xsl:text>.copy()</xsl:text>
+    </xsl:if>
+    <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>

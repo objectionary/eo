@@ -37,7 +37,7 @@ public interface Phi {
     Phi ETA = new Phi() {
         @Override
         public String toString() {
-            return "eta";
+            return "\uD835\uDF02";
         }
         @Override
         public Phi copy() {
@@ -45,11 +45,11 @@ public interface Phi {
         }
         @Override
         public Attr attr(final int pos) {
-            throw new UnsupportedOperationException("#attr()");
+            return this.attr("");
         }
         @Override
         public Attr attr(final String name) {
-            throw new UnsupportedOperationException("#attr()");
+            throw new Attr.Exception("No attributes in ETA");
         }
     };
 

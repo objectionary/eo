@@ -34,17 +34,17 @@ public interface Attr {
     /**
      * Make a copy of it.
      *
+     * @param self The object that this attribute will belong to
      * @return A copy
      */
-    Attr copy();
+    Attr copy(Phi self);
 
     /**
      * Take the object out.
      *
-     * @param self The object that this attribute belong to now
      * @return The object
      */
-    Phi get(Phi self);
+    Phi get();
 
     /**
      * Put a new object in.

@@ -42,13 +42,13 @@ public class EObool$EOif extends PhDefault {
         super(parent);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final Boolean term = new Data.Take(this).take(Boolean.class);
             final Phi out;
             if (term) {
-                out = self.attr("t").get(self);
+                out = self.attr("t").get();
             } else {
-                out = self.attr("f").get(self);
+                out = self.attr("f").get();
             }
             return out;
         })));
