@@ -51,6 +51,7 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -71,6 +72,7 @@ SOFTWARE.
           </arguments>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
   <dependencies>
