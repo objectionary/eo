@@ -42,6 +42,7 @@ public class EOarray$EOget extends PhDefault {
         super(parent);
         this.add("i", new AtFree());
         this.add("_origin", new AtBound(new AtStatic(this, self -> {
+            System.out.println(self.attr("_parent").get());
             final Phi[] array = new Data.Take(
                 self.attr("_parent").get()
             ).take(Phi[].class);

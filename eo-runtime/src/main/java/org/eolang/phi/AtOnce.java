@@ -56,7 +56,7 @@ public final class AtOnce implements Attr {
     @Override
     public Attr copy(final Phi self) {
         this.set = false;
-        return this.origin.copy(self);
+        return new AtOnce(this.origin.copy(self));
     }
 
     @Override

@@ -48,7 +48,7 @@ public final class AtBound implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return this.origin.copy(self);
+        return new AtBound(this.origin.copy(self));
     }
 
     @Override
