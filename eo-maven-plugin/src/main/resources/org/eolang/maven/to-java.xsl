@@ -171,7 +171,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtBound(</xsl:text>
-    <xsl:text>new AtStatic(self -&gt; {</xsl:text>
+    <xsl:text>new AtStatic(this, self -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>
@@ -210,7 +210,7 @@ SOFTWARE.
       <xsl:when test="@ref">
         <xsl:text>self.attr("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").get(self).copy()</xsl:text>
+        <xsl:text>").get().copy()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
@@ -244,10 +244,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>_base.attr("</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
-    <xsl:text>").get(</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>_base</xsl:text>
-    <xsl:text>).copy();</xsl:text>
+    <xsl:text>").get().copy();</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>

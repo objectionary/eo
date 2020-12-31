@@ -60,7 +60,8 @@ public class PhDefault implements Phi {
      * @param prnt Parent
      */
     public PhDefault(final Phi prnt) {
-        this(new HashMap<>(0), new ArrayList<>(0));
+        this.attrs = new HashMap<>(0);
+        this.order = new ArrayList<>(0);
         this.add(
             "_parent",
             new AtNamed(
@@ -70,16 +71,8 @@ public class PhDefault implements Phi {
         );
     }
 
-    /**
-     * Ctor.
-     */
-    private PhDefault(final Map<String, Attr> map, final List<String> ordr) {
-        this.attrs = map;
-        this.order = ordr;
-    }
-
     @Override
-    public final String toString() {
+    public String toString() {
         final Collection<String> list = new ArrayList<>(this.attrs.size());
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             list.add(
@@ -99,12 +92,12 @@ public class PhDefault implements Phi {
     }
 
     @Override
-    public final PhDefault copy() {
-        final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+    public final Phi copy() {
+        final PhDefault copy = new PhDefault();
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            map.put(ent.getKey(), ent.getValue().copy());
+            copy.add(ent.getKey(), ent.getValue().copy(copy));
         }
-        return new PhDefault(map, this.order);
+        return copy;
     }
 
     @Override
@@ -128,7 +121,7 @@ public class PhDefault implements Phi {
         }
         final Attr sub = this.attrs.get("_origin");
         if (sub != null) {
-            attr = sub.get(this).attr(name);
+            attr = sub.get().attr(name);
             if (!(attr instanceof AtAbsent)) {
                 return attr;
             }

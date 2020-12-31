@@ -47,19 +47,19 @@ public final class AtVararg implements Attr {
     }
 
     @Override
-    public Attr copy() {
-        return new AtVararg(this.origin.copy());
+    public Attr copy(final Phi self) {
+        return new AtVararg(this.origin.copy(self));
     }
 
     @Override
-    public Phi get(final Phi self) {
-        return this.origin.get(self);
+    public Phi get() {
+        return this.origin.get();
     }
 
     @Override
     public void put(final Phi phi) {
-        final Phi array = this.get(Phi.ETA);
-        final Phi push = array.attr("push").get(array).copy();
+        final Phi array = this.get();
+        final Phi push = array.attr("push").get().copy();
         push.attr(0).put(phi);
         new Data.Take(push).take(Long.class);
     }

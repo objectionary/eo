@@ -31,9 +31,12 @@ package org.eolang.phi;
  */
 public final class AtStatic implements Attr {
 
-    private Env env;
+    private final Phi self;
 
-    public AtStatic(final Env phi) {
+    private final Env env;
+
+    public AtStatic(final Phi slf, final Env phi) {
+        this.self = slf;
         this.env = phi;
     }
 
@@ -43,18 +46,20 @@ public final class AtStatic implements Attr {
     }
 
     @Override
-    public Attr copy() {
-        return new AtStatic(this.env);
+    public Attr copy(final Phi slf) {
+        return new AtStatic(slf, this.env);
     }
 
     @Override
-    public Phi get(final Phi self) {
-        return this.env.get(self);
+    public Phi get() {
+        return this.env.get(this.self);
     }
 
     @Override
     public void put(final Phi phi) {
-        this.env = new Env.Simple(phi);
+        throw new IllegalStateException(
+            "You can't overwrite static code"
+        );
     }
 
 }

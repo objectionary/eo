@@ -45,7 +45,7 @@ public final class EOarray$EOgetTest {
         array.attr("data").put(new Data.Value<>(new Phi[] {str}));
         final Phi idx = new org.eolang.EOint();
         idx.attr("data").put(new Data.Value<>(0L));
-        final Phi get = array.attr("get").get(array);
+        final Phi get = array.attr("get").get();
         get.attr(0).put(idx);
         MatcherAssert.assertThat(
             new Data.Take(get).take(String.class),

@@ -39,7 +39,7 @@ public class EOint$EOneg extends PhDefault {
 
     public EOint$EOneg(final Phi parent) {
         super(parent);
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final Phi out = new org.eolang.EOint();
             out.attr("data").put(
                 new Data.Value<>(

@@ -41,15 +41,15 @@ public class EOarray$EOpush extends PhDefault {
     public EOarray$EOpush(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final Phi[] array = new Data.Take(
-                self.attr("_parent").get(self)
+                self.attr("_parent").get()
             ).take(Phi[].class);
             final Phi[] dest = new Phi[array.length + 1];
             for (int idx = 0; idx < array.length; ++idx) {
                 dest[idx] = array[idx];
             }
-            dest[array.length] = self.attr("x").get(self);
+            dest[array.length] = self.attr("x").get();
             parent.attr("data").put(new Data.Value<>(dest));
             final Phi out = new org.eolang.EOint();
             out.attr("data").put(new Data.Value<>((long) dest.length));

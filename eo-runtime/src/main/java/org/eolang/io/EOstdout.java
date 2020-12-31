@@ -46,10 +46,10 @@ public class EOstdout extends PhDefault {
     public EOstdout(final Phi parent) {
         super(parent);
         this.add("text", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             System.out.print(
                 new Data.Take(
-                    self.attr("text").get(self)
+                    self.attr("text").get()
                 ).take(String.class)
             );
             final Phi out = new EObool();

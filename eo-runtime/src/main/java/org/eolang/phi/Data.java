@@ -40,6 +40,10 @@ public interface Data<T> {
             this.val = value;
         }
         @Override
+        public String toString() {
+            return this.val.toString();
+        }
+        @Override
         public T take() {
             return this.val;
         }
@@ -53,7 +57,7 @@ public interface Data<T> {
         public Object take() {
             Phi src = this.phi;
             if (!(src instanceof Data)) {
-                src = src.attr("data").get(src);
+                src = src.attr("data").get();
             }
             return Data.class.cast(src).take();
         }

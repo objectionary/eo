@@ -43,12 +43,12 @@ public final class AtAbsent implements Attr {
     }
 
     @Override
-    public Attr copy() {
+    public Attr copy(final Phi self) {
         return this;
     }
 
     @Override
-    public Phi get(final Phi self) {
+    public Phi get() {
         return Phi.ETA;
     }
 

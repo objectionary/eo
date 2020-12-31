@@ -37,7 +37,7 @@ public interface Phi {
     Phi ETA = new Phi() {
         @Override
         public String toString() {
-            return "eta";
+            return "\uD835\uDF02";
         }
         @Override
         public Phi copy() {

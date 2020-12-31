@@ -49,12 +49,12 @@ public class EOsprintf extends PhDefault {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtStatic(self -> {
+        this.add("_origin", new AtBound(new AtStatic(this, self -> {
             final String format = new Data.Take(
-                self.attr("format").get(self)
+                self.attr("format").get()
             ).take(String.class);
             final Phi[] args = new Data.Take(
-                self.attr("args").get(self)
+                self.attr("args").get()
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {
