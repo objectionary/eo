@@ -44,7 +44,6 @@ public final class Main {
             phi.attr("data").put(new Data.Value<>(arg));
             app.attr("args").put(phi);
         }
-        System.out.println(app);
         if (!new Data.Take(app).take(Boolean.class)) {
             throw new IllegalStateException(
                 "Runtime failure"

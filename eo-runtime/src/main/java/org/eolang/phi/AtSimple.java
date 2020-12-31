@@ -48,7 +48,7 @@ public final class AtSimple implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return this;
+        return new AtSimple(this.phi);
     }
 
     @Override

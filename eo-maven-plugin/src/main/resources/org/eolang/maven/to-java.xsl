@@ -210,7 +210,10 @@ SOFTWARE.
       <xsl:when test="@ref">
         <xsl:text>self.attr("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").get().copy()</xsl:text>
+        <xsl:text>").get()</xsl:text>
+        <xsl:if test="*">
+          <xsl:text>.copy()</xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
@@ -244,7 +247,11 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>_base.attr("</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
-    <xsl:text>").get().copy();</xsl:text>
+    <xsl:text>").get()</xsl:text>
+    <xsl:if test="count(*) &gt; 1">
+      <xsl:text>.copy()</xsl:text>
+    </xsl:if>
+    <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
