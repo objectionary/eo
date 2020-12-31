@@ -17,4 +17,5 @@ release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
+    mvn clean install -Dinvoker.skip
     mvn clean deploy -Peo -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
