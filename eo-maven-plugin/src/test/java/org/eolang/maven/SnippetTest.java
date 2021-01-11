@@ -179,7 +179,7 @@ public final class SnippetTest {
     }
 
     /**
-     * Compile .java to .class.
+     * Compile .java to .class and return the output.
      *
      * @param file The java file
      * @param dir Destination directory
