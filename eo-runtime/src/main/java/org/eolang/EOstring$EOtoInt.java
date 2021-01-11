@@ -40,11 +40,13 @@ public class EOstring$EOtoInt extends PhDefault {
     public EOstring$EOtoInt(final Phi parent) {
         super(parent);
         this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi out = new org.eolang.EOstring();
+            final Phi out = new org.eolang.EOint();
             out.attr("data").put(
                 new Data.Value<>(
                     Long.parseLong(
-                        new Data.Take(parent).take(String.class)
+                        new Data.Take(
+                            self.attr("_parent").get()
+                        ).take(String.class)
                     )
                 )
             );

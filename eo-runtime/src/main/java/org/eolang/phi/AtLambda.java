@@ -24,6 +24,8 @@
 
 package org.eolang.phi;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Static attribute.
  *
@@ -35,9 +37,12 @@ public final class AtLambda implements Attr {
 
     private final Env env;
 
+    private final AtomicReference<Phi> done;
+
     public AtLambda(final Phi slf, final Env phi) {
         this.self = slf;
         this.env = phi;
+        this.done = new AtomicReference<>();
     }
 
     @Override
@@ -52,7 +57,10 @@ public final class AtLambda implements Attr {
 
     @Override
     public Phi get() {
-        return this.env.get(this.self);
+        if (this.done.get() == null) {
+            this.done.set(this.env.get(this.self));
+        }
+        return this.done.get();
     }
 
     @Override

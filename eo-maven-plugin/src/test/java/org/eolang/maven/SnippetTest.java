@@ -91,6 +91,7 @@ public final class SnippetTest {
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Collection<String> yamlSnippets() {
         return new ListOf<>(
+            "ifthenelse.yaml",
             "fibo.yaml",
             "simple.yaml"
         );
