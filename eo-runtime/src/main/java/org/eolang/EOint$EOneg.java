@@ -43,7 +43,7 @@ public class EOint$EOneg extends PhDefault {
             final Phi out = new org.eolang.EOint();
             out.attr("data").put(
                 new Data.Value<>(
-                    new Data.Take(self).take(Long.class) * -1L
+                    new Data.Take(self.attr("_parent").get()).take(Long.class) * -1L
                 )
             );
             return out;

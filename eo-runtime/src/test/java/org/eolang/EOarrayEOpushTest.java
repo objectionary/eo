@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOarray$EOpushTest {
+public final class EOarrayEOpushTest {
 
     @Test
     public void pushesObject() {

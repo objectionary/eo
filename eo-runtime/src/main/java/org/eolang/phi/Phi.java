@@ -49,13 +49,19 @@ public interface Phi {
         }
         @Override
         public Attr attr(final String name) {
-            throw new Attr.Exception("No attributes in ETA");
+            throw new Attr.Exception(
+                String.format(
+                    "No attributes in ETA, trying to get \"%s\"",
+                    name
+                )
+            );
         }
     };
 
     /**
      * Make a copy.
      *
+     * @param name New name
      * @return A copy
      */
     Phi copy();

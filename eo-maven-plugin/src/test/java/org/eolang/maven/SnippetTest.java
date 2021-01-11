@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
@@ -57,6 +58,7 @@ import org.yaml.snakeyaml.Yaml;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
+//    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -75,6 +77,7 @@ public final class SnippetTest {
             new OutputTo(stdout)
         );
         MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
+        Logger.info(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
                 stdout.toString(),
@@ -88,6 +91,7 @@ public final class SnippetTest {
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Collection<String> yamlSnippets() {
         return new ListOf<>(
+            "fibo.yaml",
             "simple.yaml"
         );
     }

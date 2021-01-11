@@ -43,7 +43,9 @@ public class EOstring$EOtrim extends PhDefault {
             final Phi out = new org.eolang.EOstring();
             out.attr("data").put(
                 new Data.Value<>(
-                    new Data.Take(parent).take(String.class).trim()
+                    new Data.Take(
+                        self.attr("_parent").get()
+                    ).take(String.class).trim()
                 )
             );
             return out;

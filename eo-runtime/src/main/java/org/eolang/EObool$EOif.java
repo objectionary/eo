@@ -43,7 +43,9 @@ public class EObool$EOif extends PhDefault {
         this.add("t", new AtFree());
         this.add("f", new AtFree());
         this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Boolean term = new Data.Take(this).take(Boolean.class);
+            final Boolean term = new Data.Take(
+                self.attr("_parent").get()
+            ).take(Boolean.class);
             final Phi out;
             if (term) {
                 out = self.attr("t").get();

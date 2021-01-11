@@ -45,7 +45,7 @@ public class EOint$EOadd extends PhDefault {
             final Phi out = new org.eolang.EOint();
             out.attr("data").put(
                 new Data.Value<>(
-                    new Data.Take(this).take(Long.class)
+                    new Data.Take(self.attr("_parent").get()).take(Long.class)
                     +
                     new Data.Take(self.attr("x").get()).take(Long.class)
                 )

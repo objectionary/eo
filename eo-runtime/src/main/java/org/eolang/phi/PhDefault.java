@@ -24,6 +24,7 @@
 
 package org.eolang.phi;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,13 +63,7 @@ public class PhDefault implements Phi {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add(
-            "_parent",
-            new AtNamed(
-                String.format("%s#_parent", this.getClass().getCanonicalName()),
-                new AtBound(prnt)
-            )
-        );
+        this.add("_parent", new AtBound(prnt));
     }
 
     @Override
@@ -93,24 +88,38 @@ public class PhDefault implements Phi {
 
     @Override
     public final Phi copy() {
-        final PhDefault copy = new PhDefault();
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            copy.add(ent.getKey(), ent.getValue().copy(copy));
+        try {
+            final PhDefault copy =
+                this.getClass().getConstructor(Phi.class).newInstance(
+                    this.attrs.get("_parent").get()
+                );
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                if ("_parent".equals(ent.getKey())) {
+                    continue;
+                }
+                copy.add(ent.getKey(), ent.getValue().copy(copy));
+            }
+            return copy;
+        } catch (final InstantiationException | IllegalAccessException
+            | InvocationTargetException | NoSuchMethodException ex) {
+            throw new IllegalStateException(ex);
         }
-        return copy;
     }
 
     @Override
     public final Attr attr(final int pos) {
-        if (pos >= this.order.size()) {
+        if (this.order.isEmpty()) {
             throw new Attr.Exception(
-                String.format(
-                    "There are just %d attributes, can't find the %dth",
-                    this.order.size(), pos
-                )
+                "There are no attributes here"
             );
         }
-        return this.attr(this.order.get(pos));
+        final int idx;
+        if (pos >= this.order.size()) {
+            idx = this.order.size() - 1;
+        } else {
+            idx = pos;
+        }
+        return this.attr(this.order.get(idx));
     }
 
     @Override
@@ -141,7 +150,17 @@ public class PhDefault implements Phi {
         if (name.charAt(0) != '_') {
             this.order.add(name);
         }
-        this.attrs.put(name, attr);
+        this.attrs.put(
+            name,
+            new AtNamed(
+                String.format(
+                    "%s#%s",
+                    this.getClass().getCanonicalName(),
+                    name
+                ),
+                attr
+            )
+        );
     }
 
 }

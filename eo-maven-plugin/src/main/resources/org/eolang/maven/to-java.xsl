@@ -142,17 +142,12 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="attr">
-    <xsl:param name="class"/>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="eo:attr-name(@name)"/>
-    <xsl:text>", new AtNamed("</xsl:text>
-    <xsl:value-of select="eo:class-name($class/@name)"/>
-    <xsl:text>#</xsl:text>
-    <xsl:value-of select="eo:attr-name(@name)"/>
     <xsl:text>", </xsl:text>
     <xsl:apply-templates select="*"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
   </xsl:template>
   <xsl:template match="once">
     <xsl:text>new AtOnce(</xsl:text>
@@ -200,7 +195,7 @@ SOFTWARE.
     <xsl:text> = </xsl:text>
     <xsl:choose>
       <xsl:when test="@base='$'">
-        <xsl:text>self</xsl:text>
+        <xsl:text>self.copy()</xsl:text>
       </xsl:when>
       <xsl:when test="$b">
         <xsl:text>new </xsl:text>

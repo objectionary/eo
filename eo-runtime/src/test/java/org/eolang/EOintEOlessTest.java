@@ -21,40 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
-import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * IF.
+ * Test case for {@link EOint}.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOarray$EOreduce extends PhDefault {
+public final class EOintEOlessTest {
 
-    public EOarray$EOreduce(final Phi parent) {
-        super(parent);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            Phi out = self.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
-            }
-            return out;
-        })));
+    @Test
+    public void comparesWithAnotherNumber() {
+        final Phi left = new org.eolang.EOint();
+        left.attr("data").put(new Data.Value<>(42L));
+        final Phi right = new org.eolang.EOint();
+        right.attr("data").put(new Data.Value<>(0L));
+        final Phi less = left.attr("less").get();
+        less.attr(0).put(right);
+        MatcherAssert.assertThat(
+            new Data.Take(less).take(Boolean.class),
+            Matchers.equalTo(false)
+        );
     }
-
 }

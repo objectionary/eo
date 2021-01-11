@@ -46,7 +46,7 @@ public class EOint$EOpow extends PhDefault {
             out.attr("data").put(
                 new Data.Value<>(
                     Math.pow(
-                        new Data.Take(self).take(Long.class),
+                        new Data.Take(self.attr("_parent").get()).take(Long.class),
                         new Data.Take(self.attr("x").get()).take(Long.class)
                     )
                 )

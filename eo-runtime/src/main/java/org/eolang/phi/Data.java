@@ -24,6 +24,8 @@
 
 package org.eolang.phi;
 
+import java.util.Arrays;
+
 /**
  * A data container.
  *
@@ -41,7 +43,15 @@ public interface Data<T> {
         }
         @Override
         public String toString() {
-            return this.val.toString();
+            final String txt;
+            if (this.val instanceof String) {
+                txt = String.format("\"%s\"", this.val.toString());
+            } else if (this.val.getClass().isArray()) {
+                txt = Arrays.toString((Object[]) this.val);
+            } else {
+                txt = this.val.toString();
+            }
+            return txt;
         }
         @Override
         public T take() {
@@ -55,11 +65,21 @@ public interface Data<T> {
             this.phi = src;
         }
         public Object take() {
+            System.out.printf(
+                "%s \u2B62 ...\n",
+                this.phi.getClass().getCanonicalName()
+            );
             Phi src = this.phi;
             if (!(src instanceof Data)) {
                 src = src.attr("data").get();
             }
-            return Data.class.cast(src).take();
+            final Object data = Data.class.cast(src).take();
+            System.out.printf(
+                "%s \u2B62 %s\n",
+                this.phi.getClass().getCanonicalName(),
+                src
+            );
+            return data;
         }
         public <T> T take(final Class<T> type) {
             return type.cast(this.take());
