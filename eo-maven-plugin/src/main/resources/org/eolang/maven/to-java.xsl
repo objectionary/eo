@@ -188,7 +188,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:variable name="o" select="."/>
-    <xsl:variable name="b" select="//class[@name=$o/@base and @line=$o/@ref]"/>
+    <xsl:variable name="b" select="//*[@name=$o/@base and @line=$o/@ref]"/>
     <xsl:value-of select="$indent"/>
     <xsl:text>final Phi </xsl:text>
     <xsl:value-of select="$name"/>
@@ -197,12 +197,20 @@ SOFTWARE.
       <xsl:when test="@base='$'">
         <xsl:text>self.copy()</xsl:text>
       </xsl:when>
-      <xsl:when test="$b">
+      <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(self)</xsl:text>
       </xsl:when>
-      <xsl:when test="@ref">
+      <xsl:when test="$b/@level">
+        <xsl:text>self.attr("_parent").get().attr("</xsl:text>
+        <xsl:value-of select="eo:attr-name(@base)"/>
+        <xsl:text>").get()</xsl:text>
+        <xsl:if test="*">
+          <xsl:text>.copy()</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="$b">
         <xsl:text>self.attr("</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
         <xsl:text>").get()</xsl:text>
