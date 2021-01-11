@@ -24,6 +24,8 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.PhMethod;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,8 +44,10 @@ public final class EOintEOsubTest {
         left.attr("data").put(new Data.Value<>(42L));
         final Phi right = new org.eolang.EOint();
         right.attr("data").put(new Data.Value<>(13L));
-        final Phi sub = left.attr("sub").get();
-        sub.attr(0).put(right);
+        final Phi sub = new PhWith(
+            new PhMethod(left, "sub"),
+            0, right
+        );
         MatcherAssert.assertThat(
             new Data.Take(sub).take(Long.class),
             Matchers.equalTo(29L)

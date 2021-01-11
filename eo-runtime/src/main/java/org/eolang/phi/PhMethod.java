@@ -25,54 +25,41 @@
 package org.eolang.phi;
 
 /**
- * Static attribute.
+ * A method-calling object.
  *
  * @since 0.1
  */
-public final class AtLambda implements Attr {
+public final class PhMethod implements Phi {
 
-    private final Env code;
-
+    /**
+     * The object fetched.
+     */
     private final Data<Phi> object;
 
-    public AtLambda(final Phi self, final Env env) {
-        this(
-            env,
-            new Data.Once<>(
-                () -> env.get(self)
-            )
-        );
-    }
-
-    public AtLambda(final Env env, final Data<Phi> data) {
-        this.object = data;
-        this.code = env;
-    }
-
-    @Override
-    public String toString() {
-        return "λ";
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtLambda(this.code,
-            new Data.Once<>(
-                () -> this.code.get(self)
-            )
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param mtd The name of method
+     */
+    public PhMethod(final Phi phi, final String mtd) {
+        this.object = new Data.Once<>(
+            () -> phi.attr(mtd).get()
         );
     }
 
     @Override
-    public Phi get() {
-        return this.object.take();
+    public Phi copy() {
+        return this.object.take().copy();
     }
 
     @Override
-    public void put(final Phi phi) {
-        throw new IllegalStateException(
-            "You can't overwrite static code"
-        );
+    public Attr attr(final int pos) {
+        return this.object.take().attr(pos);
     }
 
+    @Override
+    public Attr attr(final String name) {
+        return this.object.take().attr(name);
+    }
 }

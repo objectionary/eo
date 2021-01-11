@@ -23,8 +23,10 @@
  */
 package org.eolang.io;
 
-import org.eolang.phi.Data;
 import org.eolang.EOstring;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhCopy;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,10 +41,16 @@ public final class EOstdoutTest {
 
     @Test
     public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi phi = new EOstdout(Phi.ETA);
-        phi.attr("text").put(format);
+        final Phi format = new PhWith(
+            new EOstring(),
+            "data",
+            new Data.Value<>("Hello, world!\n")
+        );
+        final Phi phi = new PhWith(
+            new PhCopy(new EOstdout(Phi.ETA)),
+            "text",
+            format
+        );
         MatcherAssert.assertThat(
             new Data.Take(phi).take(Boolean.class),
             Matchers.equalTo(true)

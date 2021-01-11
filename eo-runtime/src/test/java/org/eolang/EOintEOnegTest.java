@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.PhMethod;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,7 +41,7 @@ public final class EOintEOnegTest {
     public void negatesNumber() {
         final Phi left = new org.eolang.EOint();
         left.attr("data").put(new Data.Value<>(42L));
-        final Phi neg = left.attr("neg").get();
+        final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
             new Data.Take(neg).take(Long.class),
             Matchers.equalTo(-42L)

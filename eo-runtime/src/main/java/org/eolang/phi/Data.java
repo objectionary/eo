@@ -25,6 +25,7 @@
 package org.eolang.phi;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A data container.
@@ -34,6 +35,22 @@ import java.util.Arrays;
 public interface Data<T> {
 
     T take();
+
+    final class Once<T> implements Data<T> {
+        private final Data<T> src;
+        private final AtomicReference<T> ref;
+        public Once(final Data<T> data) {
+            this.src = data;
+            this.ref = new AtomicReference<>();
+        }
+        @Override
+        public T take() {
+            if (this.ref.get() == null) {
+                this.ref.set(this.src.take());
+            }
+            return this.ref.get();
+        }
+    }
 
     final class Value<T> extends PhDefault implements Data<T> {
         private final T val;
