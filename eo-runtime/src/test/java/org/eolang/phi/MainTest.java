@@ -21,35 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.txt;
+package org.eolang.phi;
 
-import org.eolang.phi.Data;
-import org.eolang.EOint;
-import org.eolang.EOstring;
-import org.eolang.phi.Phi;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOsprintf}.
+ * Test case for {@link Main}.
  *
  * @since 0.1
  */
-public final class EOsprintfTest {
+public final class MainTest {
 
     @Test
-    public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, %d!"));
-        final Phi num = new EOint();
-        num.attr("data").put(new Data.Value<>(1L));
-        final Phi phi = new EOsprintf(Phi.ETA);
-        phi.attr("format").put(format);
-        phi.attr("args").put(num);
+    public void printsVersion() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new Main(new PrintStream(baos)).exec("--version");
         MatcherAssert.assertThat(
-            new Data.Take(phi).take(String.class),
-            Matchers.equalTo("Hello, 1!")
+            baos.toString(),
+            Matchers.containsString("EOLANG Runtime v.")
         );
     }
 

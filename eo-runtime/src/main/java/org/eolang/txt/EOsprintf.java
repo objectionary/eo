@@ -41,10 +41,6 @@ import org.eolang.phi.Phi;
  */
 public class EOsprintf extends PhDefault {
 
-    public EOsprintf() {
-        this(Phi.ETA);
-    }
-
     public EOsprintf(final Phi parent) {
         super(parent);
         this.add("format", new AtFree());

@@ -37,10 +37,6 @@ import org.eolang.phi.Phi;
  */
 public class EOstring$EOtrim extends PhDefault {
 
-    public EOstring$EOtrim() {
-        this(Phi.ETA);
-    }
-
     public EOstring$EOtrim(final Phi parent) {
         super(parent);
         this.add("_origin", new AtBound(new AtStatic(this, self -> {

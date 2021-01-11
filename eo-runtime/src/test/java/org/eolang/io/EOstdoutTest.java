@@ -41,7 +41,7 @@ public final class EOstdoutTest {
     public void printsString() {
         final Phi format = new EOstring();
         format.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi phi = new EOstdout();
+        final Phi phi = new EOstdout(Phi.ETA);
         phi.attr("text").put(format);
         MatcherAssert.assertThat(
             new Data.Take(phi).take(Boolean.class),

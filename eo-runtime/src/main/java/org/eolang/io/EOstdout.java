@@ -39,10 +39,6 @@ import org.eolang.phi.Phi;
  */
 public class EOstdout extends PhDefault {
 
-    public EOstdout() {
-        this(Phi.ETA);
-    }
-
     public EOstdout(final Phi parent) {
         super(parent);
         this.add("text", new AtFree());
