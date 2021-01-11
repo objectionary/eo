@@ -171,7 +171,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtBound(</xsl:text>
-    <xsl:text>new AtStatic(this, self -&gt; {</xsl:text>
+    <xsl:text>new AtLambda(this, self -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>

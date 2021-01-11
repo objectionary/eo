@@ -29,25 +29,25 @@ package org.eolang.phi;
  *
  * @since 0.1
  */
-public final class AtStatic implements Attr {
+public final class AtLambda implements Attr {
 
     private final Phi self;
 
     private final Env env;
 
-    public AtStatic(final Phi slf, final Env phi) {
+    public AtLambda(final Phi slf, final Env phi) {
         this.self = slf;
         this.env = phi;
     }
 
     @Override
     public String toString() {
-        return "...";
+        return "λ";
     }
 
     @Override
     public Attr copy(final Phi slf) {
-        return new AtStatic(slf, this.env);
+        return new AtLambda(slf, this.env);
     }
 
     @Override

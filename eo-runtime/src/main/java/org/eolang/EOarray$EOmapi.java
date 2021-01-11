@@ -26,7 +26,7 @@ package org.eolang;
 
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
-import org.eolang.phi.AtStatic;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
@@ -41,7 +41,7 @@ public class EOarray$EOmapi extends PhDefault {
     public EOarray$EOmapi(final Phi parent) {
         super(parent);
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(this, self -> {
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(this).take(Phi[].class);
             for (int idx = 0; idx < array.length; ++idx) {
                 final Phi after = self.attr("f").get().copy();

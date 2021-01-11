@@ -46,4 +46,9 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void emptyRunWorks() throws Exception {
+        Main.main();
+    }
+
 }

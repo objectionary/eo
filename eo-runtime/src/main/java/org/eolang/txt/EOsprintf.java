@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
-import org.eolang.phi.AtStatic;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
@@ -45,7 +45,7 @@ public class EOsprintf extends PhDefault {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtStatic(this, self -> {
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
             final String format = new Data.Take(
                 self.attr("format").get()
             ).take(String.class);

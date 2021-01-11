@@ -49,11 +49,11 @@ public final class Main {
     }
 
     public static void main(final String... args) throws Exception {
-        new Main(System.out).exec();
+        new Main(System.out).exec(args);
     }
 
     public void exec(final String... args) throws Exception {
-        if ("--version".equals(args[0])) {
+        if (args.length == 0 || "--version".equals(args[0])) {
             this.version();
             return;
         }
