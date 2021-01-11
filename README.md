@@ -132,7 +132,7 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
-More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it/fibonacci/src/main/eo/org/eolang/examples).
+More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it).
 
 ## How it Works?
 
