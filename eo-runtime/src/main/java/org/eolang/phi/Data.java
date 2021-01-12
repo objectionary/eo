@@ -44,6 +44,10 @@ public interface Data<T> {
             this.ref = new AtomicReference<>();
         }
         @Override
+        public String toString() {
+            return this.take().toString();
+        }
+        @Override
         public T take() {
             if (this.ref.get() == null) {
                 this.ref.set(this.src.take());

@@ -72,8 +72,9 @@ public class PhDefault implements Phi {
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             list.add(
                 String.format(
-                    "%s=%s",
+                    "%s(%d)=%s",
                     ent.getKey(),
+                    this.order.indexOf(ent.getKey()),
                     ent.getValue().toString().replace("\n", "\n  ")
                 )
             );
@@ -93,11 +94,8 @@ public class PhDefault implements Phi {
                 this.getClass().getConstructor(Phi.class).newInstance(
                     this.attrs.get("_parent").get()
                 );
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                if ("_parent".equals(ent.getKey())) {
-                    continue;
-                }
-                copy.add(ent.getKey(), ent.getValue().copy(copy));
+            for (final String attr : this.order) {
+                copy.add(attr, this.attrs.get(attr).copy(copy));
             }
             return copy;
         } catch (final InstantiationException | IllegalAccessException

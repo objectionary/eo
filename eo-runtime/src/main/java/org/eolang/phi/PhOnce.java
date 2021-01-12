@@ -25,42 +25,43 @@
 package org.eolang.phi;
 
 /**
- * A attr-putting object.
+ * An object wrapping another one.
  *
  * @since 0.1
  */
-public final class PhWith extends PhOnce {
+public class PhOnce implements Phi {
+
+    /**
+     * The object fetched.
+     */
+    private final Data<Phi> object;
 
     /**
      * Ctor.
      *
-     * @param phi The object
-     * @param name The name of attr
-     * @param attr The value
+     * @param data The object
      */
-    public PhWith(final Phi phi, final String name, final Phi attr) {
-        super(
-            () -> {
-                phi.attr(name).put(attr);
-                return phi;
-            }
-        );
+    public PhOnce(final Data<Phi> data) {
+        this.object = new Data.Once<>(data);
     }
 
-    /**
-     * Ctor.
-     *
-     * @param phi The object
-     * @param pos The position
-     * @param attr The value
-     */
-    public PhWith(final Phi phi, final int pos, final Phi attr) {
-        super(
-            () -> {
-                phi.attr(pos).put(attr);
-                return phi;
-            }
-        );
+    @Override
+    public final String toString() {
+        return this.object.toString();
     }
 
+    @Override
+    public final Phi copy() {
+        return this.object.take().copy();
+    }
+
+    @Override
+    public final Attr attr(final int pos) {
+        return this.object.take().attr(pos);
+    }
+
+    @Override
+    public final Attr attr(final String name) {
+        return this.object.take().attr(name);
+    }
 }

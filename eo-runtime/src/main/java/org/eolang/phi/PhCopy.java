@@ -29,12 +29,7 @@ package org.eolang.phi;
  *
  * @since 0.1
  */
-public final class PhCopy implements Phi {
-
-    /**
-     * The object fetched.
-     */
-    private final Data<Phi> object;
+public final class PhCopy extends PhOnce {
 
     /**
      * Ctor.
@@ -42,23 +37,7 @@ public final class PhCopy implements Phi {
      * @param phi The object
      */
     public PhCopy(final Phi phi) {
-        this.object = new Data.Once<>(
-            phi::copy
-        );
+        super(phi::copy);
     }
 
-    @Override
-    public Phi copy() {
-        return this.object.take().copy();
-    }
-
-    @Override
-    public Attr attr(final int pos) {
-        return this.object.take().attr(pos);
-    }
-
-    @Override
-    public Attr attr(final String name) {
-        return this.object.take().attr(name);
-    }
 }

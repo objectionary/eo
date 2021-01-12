@@ -43,7 +43,7 @@ public final class AtVararg implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("%sV", this.origin.toString());
     }
 
     @Override

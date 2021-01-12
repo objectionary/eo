@@ -63,4 +63,27 @@ public final class EOsprintfTest {
         );
     }
 
+    @Test
+    public void printsStringWithVarargs() {
+        final Phi format = new PhWith(
+            new EOstring(),
+            "data",
+            new Data.Value<>("Hello, %s %s!")
+        );
+        final Phi num = new PhWith(
+            new EOint(), "data", new Data.Value<>(5L)
+        );
+        Phi phi = new EOsprintf(Phi.ETA);
+        System.out.println(phi);
+        phi = phi.copy();
+        System.out.println(phi);
+        phi = new PhWith(phi, 0, format);
+        phi = new PhWith(phi, 1, num);
+        phi = new PhWith(phi, 2, num);
+        MatcherAssert.assertThat(
+            new Data.Take(phi).take(String.class),
+            Matchers.equalTo("Hello, 5 5!")
+        );
+    }
+
 }

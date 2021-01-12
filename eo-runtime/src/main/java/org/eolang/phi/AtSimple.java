@@ -43,7 +43,7 @@ public final class AtSimple implements Attr {
 
     @Override
     public String toString() {
-        return this.phi.toString();
+        return String.format("%sS", this.phi.toString());
     }
 
     @Override

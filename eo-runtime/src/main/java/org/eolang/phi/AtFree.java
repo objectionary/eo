@@ -47,7 +47,7 @@ public final class AtFree implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("%sF", this.origin.toString());
     }
 
     @Override

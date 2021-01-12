@@ -29,12 +29,7 @@ package org.eolang.phi;
  *
  * @since 0.1
  */
-public final class PhMethod implements Phi {
-
-    /**
-     * The object fetched.
-     */
-    private final Data<Phi> object;
+public final class PhMethod extends PhOnce {
 
     /**
      * Ctor.
@@ -43,23 +38,7 @@ public final class PhMethod implements Phi {
      * @param mtd The name of method
      */
     public PhMethod(final Phi phi, final String mtd) {
-        this.object = new Data.Once<>(
-            () -> phi.attr(mtd).get()
-        );
+        super(() -> phi.attr(mtd).get());
     }
 
-    @Override
-    public Phi copy() {
-        return this.object.take().copy();
-    }
-
-    @Override
-    public Attr attr(final int pos) {
-        return this.object.take().attr(pos);
-    }
-
-    @Override
-    public Attr attr(final String name) {
-        return this.object.take().attr(name);
-    }
 }
