@@ -69,7 +69,7 @@ independent.
 
 ## Quick Start
 
-Here is a simple program that asks for a year and tells you
+Here is a simple program that gets a year from command line and tells you
 whether it's leap or not:
 
 ```
@@ -77,20 +77,18 @@ whether it's leap or not:
 +alias stdin org.eolang.io.stdin
 +alias scanner org.eolang.txt.scanner
 
-[args] > main
+[args...] > main
   [y] > leap
     or. > @
       and.
         eq. (mod. y 4) 0
         not. (eq. (mod. y 100) 0)
       eq. (mod. y 400) 0
-  and. > @
-    stdout "Enter a year:"
-    stdout
-      sprintf
-        "%d is %sa leap year!"
-        (scanner stdin).nextInt > year!
-        if (leap year:y) "" "not "
+  stdout > @
+    sprintf
+      "%d is %sa leap year!"
+      (args.get 0).nextInt > year!
+      if (leap year:y) "" "not "
 ```
 
 In order to compile this program, put it into `src/main/eo/main.eo` and then
@@ -104,7 +102,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.1.6</version>
+        <version>0.1.10</version>
         <executions>
           <execution>
             <goals>
@@ -115,13 +113,32 @@ create a file `pom.xml` with this content (it's just a sample):
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.eolang.phi.Main</mainClass>
+          <arguments>
+            <argument>main</argument>
+            <argument>2008</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.6</version>
+      <version>0.1.10</version>
     </dependency>
   </dependencies>
 </project>
