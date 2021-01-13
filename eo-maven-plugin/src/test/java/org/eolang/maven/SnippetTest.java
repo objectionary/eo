@@ -133,6 +133,7 @@ public final class SnippetTest {
             .with("generatedDir", generated.toFile())
             .execute();
         final Path classes = temp.resolve("classes");
+        classes.toFile().mkdir();
         final String cpath = String.format(
             ".:%s",
             System.getProperty(
