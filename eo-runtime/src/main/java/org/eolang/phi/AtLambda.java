@@ -22,39 +22,61 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
-import org.eolang.phi.Data;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.Phi;
+package org.eolang.phi;
 
 /**
- * IF.
+ * Static attribute.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOarray$EOreduce extends PhDefault {
+public final class AtLambda implements Attr {
 
-    public EOarray$EOreduce(final Phi parent) {
-        super(parent);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            Phi out = self.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
-            }
-            return out;
-        })));
+    private final Env code;
+
+    private final Data<Phi> object;
+
+    public AtLambda(final Env env) {
+        this(new PhEta(), env);
+    }
+
+    public AtLambda(final Phi self, final Env env) {
+        this(
+            env,
+            new Data.Once<>(
+                () -> env.get(self)
+            )
+        );
+    }
+
+    private AtLambda(final Env env, final Data<Phi> data) {
+        this.object = data;
+        this.code = env;
+    }
+
+    @Override
+    public String toString() {
+        return "λ";
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtLambda(this.code,
+            new Data.Once<>(
+                () -> this.code.get(self)
+            )
+        );
+    }
+
+    @Override
+    public Phi get() {
+        return this.object.take();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        throw new IllegalStateException(
+            "You can't overwrite static code"
+        );
     }
 
 }

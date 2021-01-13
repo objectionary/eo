@@ -23,9 +23,11 @@
  */
 package org.eolang.txt;
 
-import org.eolang.phi.Data;
 import org.eolang.EOint;
 import org.eolang.EOstring;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhEta;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,16 +42,46 @@ public final class EOsprintfTest {
 
     @Test
     public void printsString() {
-        final Phi format = new EOstring();
-        format.attr("data").put(new Data.Value<>("Hello, %d!"));
+        final Phi format = new PhWith(
+            new EOstring(),
+            "data",
+            new Data.Value<>("Hello, %d!")
+        );
         final Phi num = new EOint();
         num.attr("data").put(new Data.Value<>(1L));
-        final Phi phi = new EOsprintf();
-        phi.attr("format").put(format);
-        phi.attr("args").put(num);
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOsprintf(new PhEta()),
+                "format",
+                format
+            ),
+            "args",
+            num
+        );
         MatcherAssert.assertThat(
             new Data.Take(phi).take(String.class),
             Matchers.equalTo("Hello, 1!")
+        );
+    }
+
+    @Test
+    public void printsStringWithVarargs() {
+        final Phi format = new PhWith(
+            new EOstring(),
+            "data",
+            new Data.Value<>("Hello, %s %s!")
+        );
+        final Phi num = new PhWith(
+            new EOint(), "data", new Data.Value<>(5L)
+        );
+        Phi phi = new EOsprintf(new PhEta());
+        phi = phi.copy();
+        phi = new PhWith(phi, 0, format);
+        phi = new PhWith(phi, 1, num);
+        phi = new PhWith(phi, 2, num);
+        MatcherAssert.assertThat(
+            new Data.Take(phi).take(String.class),
+            Matchers.equalTo("Hello, 5 5!")
         );
     }
 

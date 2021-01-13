@@ -25,7 +25,7 @@
 package org.eolang;
 
 import org.eolang.phi.AtBound;
-import org.eolang.phi.AtStatic;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
@@ -39,11 +39,11 @@ public class EOint$EOneg extends PhDefault {
 
     public EOint$EOneg(final Phi parent) {
         super(parent);
-        this.add("_origin", new AtBound(new AtStatic(this, self -> {
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
             final Phi out = new org.eolang.EOint();
             out.attr("data").put(
                 new Data.Value<>(
-                    new Data.Take(self).take(Long.class) * -1L
+                    new Data.Take(self.attr("_parent").get()).take(Long.class) * -1L
                 )
             );
             return out;

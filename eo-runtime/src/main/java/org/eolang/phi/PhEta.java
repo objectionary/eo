@@ -25,41 +25,34 @@
 package org.eolang.phi;
 
 /**
- * Static attribute.
+ * ETA.
  *
  * @since 0.1
  */
-public final class AtStatic implements Attr {
-
-    private final Phi self;
-
-    private final Env env;
-
-    public AtStatic(final Phi slf, final Env phi) {
-        this.self = slf;
-        this.env = phi;
-    }
+public final class PhEta implements Phi {
 
     @Override
     public String toString() {
-        return "...";
+        return "\uD835\uDF02";
     }
 
     @Override
-    public Attr copy(final Phi slf) {
-        return new AtStatic(slf, this.env);
+    public PhEta copy() {
+        return new PhEta();
     }
 
     @Override
-    public Phi get() {
-        return this.env.get(this.self);
+    public Attr attr(final int pos) {
+        return this.attr("");
     }
 
     @Override
-    public void put(final Phi phi) {
-        throw new IllegalStateException(
-            "You can't overwrite static code"
+    public Attr attr(final String name) {
+        throw new Attr.Exception(
+            String.format(
+                "No attributes in ETA, trying to get \"%s\"",
+                name
+            )
         );
     }
-
 }

@@ -42,13 +42,13 @@ public final class AtNamed implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("%sN", this.origin.toString());
     }
 
     @Override
     public Attr copy(final Phi self) {
         try {
-            return new AtNamed(this.name, this.origin.copy(self));
+            return this.origin.copy(self);
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error in %s at %s", self, this.name),
@@ -60,7 +60,10 @@ public final class AtNamed implements Attr {
     @Override
     public Phi get() {
         try {
-            return this.origin.get();
+            System.out.printf("getting(\"%s\")...\n", this.name);
+            final Phi phi = this.origin.get();
+            System.out.printf("get(\"%s\"): %s\n", this.name, phi.getClass().getCanonicalName());
+            return phi;
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error at %s", this.name),

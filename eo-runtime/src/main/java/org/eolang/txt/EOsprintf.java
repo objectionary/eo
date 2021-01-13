@@ -28,10 +28,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
-import org.eolang.phi.AtStatic;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -41,15 +42,11 @@ import org.eolang.phi.Phi;
  */
 public class EOsprintf extends PhDefault {
 
-    public EOsprintf() {
-        this(Phi.ETA);
-    }
-
     public EOsprintf(final Phi parent) {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtStatic(this, self -> {
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
             final String format = new Data.Take(
                 self.attr("format").get()
             ).take(String.class);
@@ -60,13 +57,13 @@ public class EOsprintf extends PhDefault {
             for (final Phi arg : args) {
                 items.add(new Data.Take(arg).take());
             }
-            final Phi out = new org.eolang.EOstring();
-            out.attr("data").put(
+            return new PhWith(
+                new org.eolang.EOstring(),
+                "data",
                 new Data.Value<>(
                     String.format(format, items.toArray())
                 )
             );
-            return out;
         })));
     }
 

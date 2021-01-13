@@ -1,8 +1,7 @@
 exit: 0
 in: ""
 out:
-  - "Hello.+"
-  - ".+dear Jeff.+"
+  - ".*Hello, dear Jeff.*"
 args: ["main", "Jeff"]
 eo: |
   +alias stdout org.eolang.io.stdout

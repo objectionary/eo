@@ -32,30 +32,9 @@ package org.eolang.phi;
 public interface Phi {
 
     /**
-     * Eta.
-     */
-    Phi ETA = new Phi() {
-        @Override
-        public String toString() {
-            return "\uD835\uDF02";
-        }
-        @Override
-        public Phi copy() {
-            return this;
-        }
-        @Override
-        public Attr attr(final int pos) {
-            return this.attr("");
-        }
-        @Override
-        public Attr attr(final String name) {
-            throw new Attr.Exception("No attributes in ETA");
-        }
-    };
-
-    /**
      * Make a copy.
      *
+     * @param name New name
      * @return A copy
      */
     Phi copy();

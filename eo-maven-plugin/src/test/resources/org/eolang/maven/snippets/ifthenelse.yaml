@@ -1,0 +1,20 @@
+exit: 0
+in: ""
+out:
+  - ".*17 is greater than zero.*"
+args: ["main", "17"]
+eo: |
+  +alias stdout org.eolang.io.stdout
+  +alias sprintf org.eolang.txt.sprintf
+
+  [args...] > main
+    [n] > f
+      if. > @
+        n.less 0
+        "smaller"
+        "greater"
+    stdout > @
+      sprintf
+        "%d is %s than zero\n"
+        (args.get 0).toInt > num
+        f num

@@ -122,7 +122,7 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>this(Phi.ETA);</xsl:text>
+    <xsl:text>this(new PhEta());</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
@@ -142,17 +142,12 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="attr">
-    <xsl:param name="class"/>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="eo:attr-name(@name)"/>
-    <xsl:text>", new AtNamed("</xsl:text>
-    <xsl:value-of select="eo:class-name($class/@name)"/>
-    <xsl:text>#</xsl:text>
-    <xsl:value-of select="eo:attr-name(@name)"/>
     <xsl:text>", </xsl:text>
     <xsl:apply-templates select="*"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
   </xsl:template>
   <xsl:template match="once">
     <xsl:text>new AtOnce(</xsl:text>
@@ -171,7 +166,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtBound(</xsl:text>
-    <xsl:text>new AtStatic(this, self -&gt; {</xsl:text>
+    <xsl:text>new AtLambda(this, self -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>
@@ -193,27 +188,29 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:variable name="o" select="."/>
-    <xsl:variable name="b" select="//class[@name=$o/@base and @line=$o/@ref]"/>
+    <xsl:variable name="b" select="//*[@name=$o/@base and @line=$o/@ref]"/>
     <xsl:value-of select="$indent"/>
-    <xsl:text>final Phi </xsl:text>
+    <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
       <xsl:when test="@base='$'">
         <xsl:text>self</xsl:text>
       </xsl:when>
-      <xsl:when test="$b">
+      <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(self)</xsl:text>
       </xsl:when>
-      <xsl:when test="@ref">
-        <xsl:text>self.attr("</xsl:text>
+      <xsl:when test="$b/@level">
+        <xsl:text>new PhMethod(new PhMethod(self, "_parent"), "</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").get()</xsl:text>
-        <xsl:if test="*">
-          <xsl:text>.copy()</xsl:text>
-        </xsl:if>
+        <xsl:text>")</xsl:text>
+      </xsl:when>
+      <xsl:when test="$b">
+        <xsl:text>new PhMethod(self, "</xsl:text>
+        <xsl:value-of select="eo:attr-name(@base)"/>
+        <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
@@ -223,6 +220,15 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:if test="*">
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = </xsl:text>
+      <xsl:text>new PhCopy(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -241,18 +247,22 @@ SOFTWARE.
       </xsl:with-param>
     </xsl:apply-templates>
     <xsl:value-of select="$indent"/>
-    <xsl:text>final Phi </xsl:text>
+    <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text> = </xsl:text>
+    <xsl:text> = new PhMethod(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_base.attr("</xsl:text>
+    <xsl:text>_base, "</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
-    <xsl:text>").get()</xsl:text>
-    <xsl:if test="count(*) &gt; 1">
-      <xsl:text>.copy()</xsl:text>
-    </xsl:if>
-    <xsl:text>;</xsl:text>
+    <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:if test="count(*) &gt; 1">
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhCopy(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -281,7 +291,9 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text>.attr(</xsl:text>
+      <xsl:text> = new PhWith(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>, </xsl:text>
       <xsl:choose>
         <xsl:when test="@as">
           <xsl:text>"</xsl:text>
@@ -292,7 +304,7 @@ SOFTWARE.
           <xsl:value-of select="position() - 1"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>).put(</xsl:text>
+      <xsl:text>, </xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>_</xsl:text>
       <xsl:value-of select="position()"/>
@@ -312,7 +324,9 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text>.attr("data").put(new Data.Value&lt;</xsl:text>
+    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>, "data", new Data.Value&lt;</xsl:text>
     <xsl:value-of select="@java-type"/>
     <xsl:text>&gt;(</xsl:text>
     <xsl:value-of select="text()"/>

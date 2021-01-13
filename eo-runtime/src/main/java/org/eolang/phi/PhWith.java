@@ -21,46 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.eolang.phi.Data;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOarray}.
+ * A attr-putting object.
  *
  * @since 0.1
  */
-public final class EOarray$EOpushTest {
+public final class PhWith extends PhOnce {
 
-    @Test
-    public void pushesObject() {
-        final Phi str = new org.eolang.EOstring();
-        str.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {}));
-        final Phi push = new EOarray$EOpush(array);
-        push.attr(0).put(str);
-        MatcherAssert.assertThat(
-            new Data.Take(push).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-        MatcherAssert.assertThat(
-            new Data.Take(array).take(Phi[].class)[0],
-            Matchers.equalTo(str)
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param name The name of attr
+     * @param attr The value
+     */
+    public PhWith(final Phi phi, final String name, final Phi attr) {
+        super(
+            () -> {
+                phi.attr(name).put(attr);
+                return phi;
+            }
         );
     }
 
-    @Test
-    public void makesCopy() {
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {}));
-        MatcherAssert.assertThat(
-            new EOarray$EOpush(array).copy(),
-            Matchers.notNullValue()
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param pos The position
+     * @param attr The value
+     */
+    public PhWith(final Phi phi, final int pos, final Phi attr) {
+        super(
+            () -> {
+                phi.attr(pos).put(attr);
+                return phi;
+            }
         );
     }
 

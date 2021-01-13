@@ -47,20 +47,20 @@ public final class AtFree implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("%sF", this.origin.toString());
     }
 
     @Override
     public Attr copy(final Phi self) {
         final Attr copy = this.origin.copy(self);
-        copy.put(Phi.ETA);
+        copy.put(new PhEta());
         return new AtFree(copy);
     }
 
     @Override
     public Phi get() {
         final Phi phi = this.origin.get();
-        if (phi.equals(Phi.ETA)) {
+        if (phi.equals(new PhEta())) {
             throw new Attr.Exception(
                 "The attribute is not initialized, can't read"
             );

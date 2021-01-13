@@ -27,18 +27,23 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@vararg and following-sibling::o[@name and not(@base)]]">
-        <xsl:element name="error">
-          <xsl:attribute name="check">
-            <xsl:text>middle-varags</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute name="line">
-            <xsl:value-of select="@line"/>
-          </xsl:attribute>
-          <xsl:text>Varargs param </xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text> must be the last one</xsl:text>
-        </xsl:element>
+      <xsl:for-each select="//o[@vararg]">
+        <xsl:variable name="s" select="following-sibling::o[@name and not(@base) and not(*)]"/>
+        <xsl:if test="$s">
+          <xsl:element name="error">
+            <xsl:attribute name="check">
+              <xsl:text>middle-varags</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="line">
+              <xsl:value-of select="@line"/>
+            </xsl:attribute>
+            <xsl:text>Varargs param "</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>" must be the last one, while "</xsl:text>
+            <xsl:value-of select="$s/@name"/>
+            <xsl:text>" follows</xsl:text>
+          </xsl:element>
+        </xsl:if>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>

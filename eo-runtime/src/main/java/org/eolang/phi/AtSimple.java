@@ -34,7 +34,7 @@ public final class AtSimple implements Attr {
     private Phi phi;
 
     public AtSimple() {
-        this(Phi.ETA);
+        this(new PhEta());
     }
 
     public AtSimple(final Phi src) {
@@ -43,7 +43,7 @@ public final class AtSimple implements Attr {
 
     @Override
     public String toString() {
-        return this.phi.toString();
+        return String.format("%sS", this.phi.toString());
     }
 
     @Override

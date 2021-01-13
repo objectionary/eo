@@ -34,26 +34,34 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOarray$EOgetTest {
+public final class EOarrayEOpushTest {
 
     @Test
-    public void pushesAndGetsBack() {
+    public void pushesObject() {
         final Phi str = new org.eolang.EOstring();
-        final String txt = "Hello, world!";
-        str.attr("data").put(new Data.Value<>(txt));
+        str.attr("data").put(new Data.Value<>("Hello, world!"));
         final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {str}));
-        final Phi idx = new org.eolang.EOint();
-        idx.attr("data").put(new Data.Value<>(0L));
-        final Phi get = array.attr("get").get();
-        get.attr(0).put(idx);
+        array.attr("data").put(new Data.Value<>(new Phi[] {}));
+        final Phi push = new EOarray$EOpush(array);
+        push.attr(0).put(str);
         MatcherAssert.assertThat(
-            new Data.Take(get).take(String.class),
-            Matchers.equalTo(txt)
+            new Data.Take(push).take(Long.class),
+            Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            new Data.Take(get).take(),
-            Matchers.equalTo(txt)
+            new Data.Take(array).take(Phi[].class)[0],
+            Matchers.equalTo(str)
         );
     }
+
+    @Test
+    public void makesCopy() {
+        final Phi array = new org.eolang.EOarray();
+        array.attr("data").put(new Data.Value<>(new Phi[] {}));
+        MatcherAssert.assertThat(
+            new EOarray$EOpush(array).copy(),
+            Matchers.notNullValue()
+        );
+    }
+
 }

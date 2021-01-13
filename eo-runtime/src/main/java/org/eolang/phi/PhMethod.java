@@ -22,39 +22,23 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
-import org.eolang.phi.Data;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.Phi;
+package org.eolang.phi;
 
 /**
- * IF.
+ * A method-calling object.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOarray$EOreduce extends PhDefault {
+public final class PhMethod extends PhOnce {
 
-    public EOarray$EOreduce(final Phi parent) {
-        super(parent);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            Phi out = self.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
-            }
-            return out;
-        })));
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param mtd The name of method
+     */
+    public PhMethod(final Phi phi, final String mtd) {
+        super(() -> phi.attr(mtd).get());
     }
 
 }

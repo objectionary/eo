@@ -1,4 +1,8 @@
 +package org.eolang
 
 [data] > string
+  # Trim it from both sides
   [] > trim /string
+
+  # Make an integer out of this string
+  [] > toInt /int

@@ -22,39 +22,46 @@
  * SOFTWARE.
  */
 
-package org.eolang;
-
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
-import org.eolang.phi.Data;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.Phi;
+package org.eolang.phi;
 
 /**
- * IF.
+ * An object wrapping another one.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOarray$EOreduce extends PhDefault {
+public class PhOnce implements Phi {
 
-    public EOarray$EOreduce(final Phi parent) {
-        super(parent);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            Phi out = self.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
-            }
-            return out;
-        })));
+    /**
+     * The object fetched.
+     */
+    private final Data<Phi> object;
+
+    /**
+     * Ctor.
+     *
+     * @param data The object
+     */
+    public PhOnce(final Data<Phi> data) {
+        this.object = new Data.Once<>(data);
     }
 
+    @Override
+    public final String toString() {
+        return this.object.toString();
+    }
+
+    @Override
+    public final Phi copy() {
+        return this.object.take().copy();
+    }
+
+    @Override
+    public final Attr attr(final int pos) {
+        return this.object.take().attr(pos);
+    }
+
+    @Override
+    public final Attr attr(final String name) {
+        return this.object.take().attr(name);
+    }
 }

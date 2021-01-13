@@ -50,7 +50,7 @@ public final class AtOnce implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("%sO", this.origin.toString());
     }
 
     @Override

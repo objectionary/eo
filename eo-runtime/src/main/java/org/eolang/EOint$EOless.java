@@ -32,27 +32,24 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * IF.
+ * LESS.
  *
  * @since 1.0
  */
-public class EOarray$EOreduce extends PhDefault {
+public class EOint$EOless extends PhDefault {
 
-    public EOarray$EOreduce(final Phi parent) {
+    public EOint$EOless(final Phi parent) {
         super(parent);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
+        this.add("x", new AtFree());
         this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            Phi out = self.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
-            }
+            final Phi out = new org.eolang.EObool();
+            out.attr("data").put(
+                new Data.Value<>(
+                    new Data.Take(self.attr("_parent").get()).take(Long.class)
+                    <
+                    new Data.Take(self.attr("x").get()).take(Long.class)
+                )
+            );
             return out;
         })));
     }
