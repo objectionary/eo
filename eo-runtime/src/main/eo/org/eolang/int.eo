@@ -1,6 +1,9 @@
 +package org.eolang
 
 [data] > int
+  # Equals to another number
+  [x] > eq /bool
+
   # Change the sign of the number
   [] > neg /int
 

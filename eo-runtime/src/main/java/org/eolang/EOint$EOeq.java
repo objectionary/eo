@@ -37,18 +37,18 @@ import org.eolang.phi.Phi;
  *
  * @since 1.0
  */
-public class EOint$EOless extends PhDefault {
+public class EOint$EOeq extends PhDefault {
 
-    public EOint$EOless(final Phi parent) {
+    public EOint$EOeq(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
         this.add("_origin", new AtBound(new AtLambda(this, self -> new PhWith(
             new org.eolang.EObool(),
             "data",
             new Data.Value<>(
-                new Data.Take(self.attr("_parent").get()).take(Long.class)
-                <
-                new Data.Take(self.attr("x").get()).take(Long.class)
+                new Data.Take(self.attr("_parent").get()).take(Long.class).equals(
+                    new Data.Take(self.attr("x").get()).take(Long.class)
+                )
             )
         ))));
     }

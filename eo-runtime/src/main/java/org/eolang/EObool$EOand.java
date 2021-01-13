@@ -33,24 +33,28 @@ import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
- * LESS.
+ * AND.
  *
  * @since 1.0
  */
-public class EOint$EOless extends PhDefault {
+public class EObool$EOand extends PhDefault {
 
-    public EOint$EOless(final Phi parent) {
+    public EObool$EOand(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> new PhWith(
-            new org.eolang.EObool(),
-            "data",
-            new Data.Value<>(
-                new Data.Take(self.attr("_parent").get()).take(Long.class)
-                <
-                new Data.Take(self.attr("x").get()).take(Long.class)
-            )
-        ))));
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+            final Boolean term = new Data.Take(
+                self.attr("_parent").get()
+            ).take(Boolean.class);
+            final Boolean val = new Data.Take(
+                self.attr("x").get()
+            ).take(Boolean.class);
+            return new PhWith(
+                new org.eolang.EObool(),
+                "data",
+                new Data.Value<>(term && val)
+            );
+        })));
     }
 
 }

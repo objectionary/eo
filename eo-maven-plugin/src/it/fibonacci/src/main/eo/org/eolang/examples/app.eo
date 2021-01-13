@@ -25,17 +25,17 @@
 +alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 
-[args] > app
+[args...] > app
   and. > @
     stdout
       sprintf
         "%dth Fibonacci number is %d"
-        (args.get 0) > n!
+        (args.get 0).toInt > n!
         fibonacci n
     if.
       not.
         eq.
-          args.get 1 > e
+          (args.get 1).toInt > e
           n
       []
         sprintf > msg

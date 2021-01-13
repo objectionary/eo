@@ -1,4 +1,9 @@
 +package org.eolang
 
 [data] > bool
+  # If true, return "t", otherwise "f"
   [t f] > if /t
+
+  # AND
+  [x] > and /t
+
