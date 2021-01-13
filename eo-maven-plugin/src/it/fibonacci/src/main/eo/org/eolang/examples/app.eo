@@ -31,15 +31,15 @@
       sprintf
         "%dth Fibonacci number is %d\n"
         (args.get 0).toInt > n!
-        fibonacci n
+        fibonacci n > f
     if.
       not.
         eq.
           (args.get 1).toInt > e
-          n
+          f
       []
         sprintf > msg
           "%d not equal to %d"
           n
-          e
+          f
       true
