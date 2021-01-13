@@ -51,7 +51,6 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
-      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -72,14 +71,13 @@ SOFTWARE.
           </arguments>
         </configuration>
       </plugin>
-      -->
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.8</version>
+      <version>0.1.9</version>
     </dependency>
   </dependencies>
 </project>
