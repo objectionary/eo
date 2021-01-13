@@ -4,6 +4,11 @@
   # If true, return "t", otherwise "f"
   [t f] > if /t
 
-  # AND
-  [x] > and /t
+  # NOT
+  [] > not /bool
 
+  # AND
+  [x] > and /bool
+
+  # OR
+  [x] > or /bool
