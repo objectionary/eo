@@ -50,7 +50,7 @@ public final class EOsprintfTest {
         num.attr("data").put(new Data.Value<>(1L));
         final Phi phi = new PhWith(
             new PhWith(
-                new EOsprintf(new PhiEta()),
+                new EOsprintf(new PhEta()),
                 "format",
                 format
             ),
@@ -73,7 +73,7 @@ public final class EOsprintfTest {
         final Phi num = new PhWith(
             new EOint(), "data", new Data.Value<>(5L)
         );
-        Phi phi = new EOsprintf(new PhiEta());
+        Phi phi = new EOsprintf(new PhEta());
         System.out.println(phi);
         phi = phi.copy();
         System.out.println(phi);

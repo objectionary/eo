@@ -59,7 +59,7 @@ public interface Data<T> {
     final class Value<T> extends PhDefault implements Data<T> {
         private final T val;
         public Value(final T value) {
-            super(new PhiEta());
+            super(new PhEta());
             this.val = value;
         }
         @Override

@@ -52,7 +52,7 @@ public class PhDefault implements Phi {
      * Ctor.
      */
     public PhDefault() {
-        this(new PhiEta());
+        this(new PhEta());
     }
 
     /**
