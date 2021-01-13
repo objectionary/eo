@@ -117,18 +117,16 @@ public final class Syntax {
                 );
             }
         };
-        final ProgramLexer lexer =
-            new ProgramLexer(
-                CharStreams.fromStream(
-                    new UncheckedInput(this.input).stream()
-                )
-            );
+        final ProgramLexer lexer = new ProgramLexer(
+            CharStreams.fromStream(
+                new UncheckedInput(this.input).stream()
+            )
+        );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
-        final ProgramParser parser =
-            new ProgramParser(
-                new CommonTokenStream(lexer)
-            );
+        final ProgramParser parser = new ProgramParser(
+            new CommonTokenStream(lexer)
+        );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
         final XeListener xel = new XeListener(this.name);
