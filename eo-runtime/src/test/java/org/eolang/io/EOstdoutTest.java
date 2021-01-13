@@ -47,7 +47,7 @@ public final class EOstdoutTest {
             new Data.Value<>("Hello, world!\n")
         );
         final Phi phi = new PhWith(
-            new PhCopy(new EOstdout(Phi.ETA)),
+            new PhCopy(new EOstdout(new PhiEta())),
             "text",
             format
         );

@@ -39,7 +39,7 @@ public final class AtAbsent implements Attr {
 
     @Override
     public String toString() {
-        return "-";
+        return "\uD835\uDF02";
     }
 
     @Override

@@ -122,7 +122,7 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>this(Phi.ETA);</xsl:text>
+    <xsl:text>this(new PhiEta());</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>

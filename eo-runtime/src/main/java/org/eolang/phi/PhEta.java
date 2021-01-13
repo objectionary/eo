@@ -25,52 +25,34 @@
 package org.eolang.phi;
 
 /**
- * Free attribute.
+ * ETA.
  *
  * @since 0.1
  */
-public final class AtFree implements Attr {
-
-    private final Attr origin;
-
-    public AtFree() {
-        this(new AtSimple());
-    }
-
-    public AtFree(final Phi phi) {
-        this(new AtSimple(phi));
-    }
-
-    public AtFree(final Attr attr) {
-        this.origin = attr;
-    }
+public final class PhEta implements Phi {
 
     @Override
     public String toString() {
-        return String.format("%sF", this.origin.toString());
+        return "\uD835\uDF02";
     }
 
     @Override
-    public Attr copy(final Phi self) {
-        final Attr copy = this.origin.copy(self);
-        copy.put(new PhiEta());
-        return new AtFree(copy);
+    public PhEta copy() {
+        return new PhEta();
     }
 
     @Override
-    public Phi get() {
-        final Phi phi = this.origin.get();
-        if (phi.equals(new PhiEta())) {
-            throw new Attr.Exception(
-                "The attribute is not initialized, can't read"
-            );
-        }
-        return phi;
+    public Attr attr(final int pos) {
+        return this.attr("");
     }
 
     @Override
-    public void put(final Phi phi) {
-        this.origin.put(phi);
+    public Attr attr(final String name) {
+        throw new Attr.Exception(
+            String.format(
+                "No attributes in ETA, trying to get \"%s\"",
+                name
+            )
+        );
     }
-
 }
