@@ -29,7 +29,7 @@
   and. > @
     stdout
       sprintf
-        "%dth Fibonacci number is %d"
+        "%dth Fibonacci number is %d\n"
         (args.get 0).toInt > n!
         fibonacci n
     if.
@@ -42,3 +42,4 @@
           "%d not equal to %d"
           n
           e
+      true
