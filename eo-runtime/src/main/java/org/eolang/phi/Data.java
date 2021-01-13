@@ -86,21 +86,11 @@ public interface Data<T> {
             this.phi = src;
         }
         public Object take() {
-            System.out.printf(
-                "%s \u2B62 ...\n",
-                this.phi.getClass().getCanonicalName()
-            );
             Phi src = this.phi;
             if (!(src instanceof Data)) {
                 src = src.attr("data").get();
             }
-            final Object data = Data.class.cast(src).take();
-            System.out.printf(
-                "%s \u2B62 %s\n",
-                this.phi.getClass().getCanonicalName(),
-                src
-            );
-            return data;
+            return Data.class.cast(src).take();
         }
         public <T> T take(final Class<T> type) {
             return type.cast(this.take());

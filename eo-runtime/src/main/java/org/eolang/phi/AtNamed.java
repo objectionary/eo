@@ -60,10 +60,7 @@ public final class AtNamed implements Attr {
     @Override
     public Phi get() {
         try {
-            System.out.printf("getting(\"%s\")...\n", this.name);
-            final Phi phi = this.origin.get();
-            System.out.printf("get(\"%s\"): %s\n", this.name, phi.getClass().getCanonicalName());
-            return phi;
+            return this.origin.get();
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error at %s", this.name),
