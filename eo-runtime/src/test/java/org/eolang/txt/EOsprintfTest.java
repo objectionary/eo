@@ -26,6 +26,7 @@ package org.eolang.txt;
 import org.eolang.EOint;
 import org.eolang.EOstring;
 import org.eolang.phi.Data;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
@@ -74,9 +75,7 @@ public final class EOsprintfTest {
             new EOint(), "data", new Data.Value<>(5L)
         );
         Phi phi = new EOsprintf(new PhEta());
-        System.out.println(phi);
         phi = phi.copy();
-        System.out.println(phi);
         phi = new PhWith(phi, 0, format);
         phi = new PhWith(phi, 1, num);
         phi = new PhWith(phi, 2, num);

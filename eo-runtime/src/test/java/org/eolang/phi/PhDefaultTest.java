@@ -21,41 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
+package org.eolang.phi;
 
-import org.eolang.EOstring;
-import org.eolang.phi.Data;
-import org.eolang.phi.PhCopy;
-import org.eolang.phi.PhEta;
-import org.eolang.phi.PhWith;
-import org.eolang.phi.Phi;
+import org.eolang.EOint;
+import org.eolang.txt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstdout}.
+ * Test case for {@link PhDefault}.
  *
  * @since 0.1
  */
-public final class EOstdoutTest {
+public final class PhDefaultTest {
 
     @Test
-    public void printsString() {
-        final Phi format = new PhWith(
-            new EOstring(),
-            "data",
-            new Data.Value<>("Hello, world!\n")
+    public void makesCopy() {
+        final Phi num = new PhWith(new EOint(), "data", new Data.Value<>(42L));
+        final Phi parent = new EOsprintf(new PhEta());
+        final Phi phi = new PhDefaultTest.Foo(parent);
+        phi.attr(0).put(num);
+        final Phi copy = phi.copy();
+        MatcherAssert.assertThat(
+            new Data.Take(copy).take(String.class),
+            Matchers.equalTo("Hello, world!")
         );
-        final Phi phi = new PhWith(
-            new PhCopy(new EOstdout(new PhEta())),
-            "text",
-            format
+        Assertions.assertThrows(
+            Attr.Exception.class,
+            () -> new Data.Take(new PhMethod(copy, "x")).take(Long.class)
         );
         MatcherAssert.assertThat(
-            new Data.Take(phi).take(Boolean.class),
-            Matchers.equalTo(true)
+            phi.attr("x").get().attr("data"),
+            Matchers.notNullValue()
         );
+        Assertions.assertThrows(
+            Attr.Exception.class,
+            () -> copy.attr(0).get().attr("data")
+        );
+    }
+
+    public static class Foo extends PhDefault {
+         public Foo(final Phi parent) {
+             super(parent);
+             this.add("x", new AtFree());
+             this.add("_origin", new AtBound(new AtLambda(self -> new PhWith(
+                 new org.eolang.EOstring(),
+                 "data",
+                 new Data.Value<>("Hello, world!")
+             ))));
+        }
     }
 
 }

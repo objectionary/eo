@@ -35,6 +35,10 @@ public final class AtLambda implements Attr {
 
     private final Data<Phi> object;
 
+    public AtLambda(final Env env) {
+        this(new PhEta(), env);
+    }
+
     public AtLambda(final Phi self, final Env env) {
         this(
             env,
@@ -44,7 +48,7 @@ public final class AtLambda implements Attr {
         );
     }
 
-    public AtLambda(final Env env, final Data<Phi> data) {
+    private AtLambda(final Env env, final Data<Phi> data) {
         this.object = data;
         this.code = env;
     }

@@ -24,7 +24,6 @@
 
 package org.eolang.phi;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,12 +35,12 @@ import java.util.Map;
  *
  * @since 0.1
  */
-public class PhDefault implements Phi {
+public class PhDefault implements Phi, Cloneable {
 
     /**
      * Attributes.
      */
-    private final Map<String, Attr> attrs;
+    private Map<String, Attr> attrs;
 
     /**
      * Order of their names.
@@ -69,6 +68,12 @@ public class PhDefault implements Phi {
     @Override
     public String toString() {
         final Collection<String> list = new ArrayList<>(this.attrs.size());
+        list.add(
+            String.format(
+                "_order=%s",
+                this.order
+            )
+        );
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             list.add(
                 String.format(
@@ -90,16 +95,13 @@ public class PhDefault implements Phi {
     @Override
     public final Phi copy() {
         try {
-            final PhDefault copy =
-                this.getClass().getConstructor(Phi.class).newInstance(
-                    this.attrs.get("_parent").get()
-                );
-            for (final String attr : this.order) {
-                copy.add(attr, this.attrs.get(attr).copy(copy));
+            final PhDefault copy = PhDefault.class.cast(this.clone());
+            copy.attrs = new HashMap<>();
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                copy.attrs.put(ent.getKey(), ent.getValue().copy(copy));
             }
             return copy;
-        } catch (final InstantiationException | IllegalAccessException
-            | InvocationTargetException | NoSuchMethodException ex) {
+        } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -160,5 +162,4 @@ public class PhDefault implements Phi {
             )
         );
     }
-
 }
