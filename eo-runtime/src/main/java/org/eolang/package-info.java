@@ -26,7 +26,7 @@
  * EO runtime.
  *
  * @since 0.1
- * @see <a href="http://www.eolang.org">project site www.eolang.org</a>
+ * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
  * @see <a href="https://github.com/yegor256/eo">GitHub project</a>
  */
 package org.eolang;
