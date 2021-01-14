@@ -22,7 +22,10 @@ and [Java SDK 8+](https://www.java.com/en/download/) installed):
 $ mvn compile
 ```
 
-Then, just run it:
+Intermediary `*.xml` files will be generated in the `target` directory (it will
+be created). Also, there will be `*.java` and `*.class` files. Feel free to analyze
+them: EO is parsed into XML, then translated to Java, and then compiled
+by Java SDK to Java bytecode. Then, just run the bytecode program through JRE:
 
 ```bash
 $ ./run.sh 9
