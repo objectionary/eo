@@ -3,7 +3,9 @@
 You can play with EOLANG here, in a few simple steps:
 
 First, clone this repo to your local machine and go
-to the `sandbox` directory:
+to the `sandbox` directory (you will need
+[Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+installed):
 
 ```bash
 $ git clone https://github.com/yegor256/eo.git
