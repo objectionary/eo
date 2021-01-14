@@ -38,4 +38,4 @@ we will fix it.
 Then, you can modify `*.eo` files, run `mvn compile` to compile them
 again and `run.sh` to run it again.
 
-Have fun!
+[Have fun!](https://www.elegantobjects.org)
