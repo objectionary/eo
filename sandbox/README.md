@@ -9,7 +9,7 @@ installed):
 
 ```bash
 $ git clone https://github.com/yegor256/eo.git
-$ cd sandbox
+$ cd eo/sandbox
 ```
 
 Then, compile the code (you will need
