@@ -27,3 +27,6 @@ $ ./run.sh 9
 
 Should work. If it doesn't, [submit an issue](https://github.com/yegor256/eo/issues),
 we will fix it.
+
+Then, you can modify `*.eo` files, run `mvn compile` to compile them
+again and `run.sh` to run it again. Have fun!
