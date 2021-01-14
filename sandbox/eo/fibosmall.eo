@@ -1,0 +1,8 @@
++package sandbox
+
+# Precondition: n >= 0 && n < 3
+[n] > fibosmall
+  if. > @
+    eq. n 2
+    1
+    n
