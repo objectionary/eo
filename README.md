@@ -1,4 +1,4 @@
-<img src="http://cf.jare.io/?u=http%3A%2F%2Fwww.yegor256.com%2Fimages%2Fbooks%2Felegant-objects%2Fcactus.svg" height="100px" />
+<img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
 
 [![Donate via Zerocracy](https://www.0crat.com/contrib-badge/C63314D6Z.svg)](https://www.0crat.com/contrib/C63314D6Z)
 
@@ -69,7 +69,7 @@ independent.
 
 ## Quick Start
 
-Here is a simple program that asks for a year and tells you
+Here is a simple program that gets a year from command line and tells you
 whether it's leap or not:
 
 ```
@@ -77,20 +77,18 @@ whether it's leap or not:
 +alias stdin org.eolang.io.stdin
 +alias scanner org.eolang.txt.scanner
 
-[args] > main
+[args...] > main
   [y] > leap
     or. > @
       and.
         eq. (mod. y 4) 0
         not. (eq. (mod. y 100) 0)
       eq. (mod. y 400) 0
-  and. > @
-    stdout "Enter a year:"
-    stdout
-      sprintf
-        "%d is %sa leap year!"
-        (scanner stdin).nextInt > year!
-        if (leap year:y) "" "not "
+  stdout > @
+    sprintf
+      "%d is %sa leap year!"
+      (args.get 0).nextInt > year!
+      if (leap year:y) "" "not "
 ```
 
 In order to compile this program, put it into `src/main/eo/main.eo` and then
@@ -104,7 +102,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.1.6</version>
+        <version>0.1.10</version>
         <executions>
           <execution>
             <goals>
@@ -115,13 +113,32 @@ create a file `pom.xml` with this content (it's just a sample):
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.eolang.phi.Main</mainClass>
+          <arguments>
+            <argument>main</argument>
+            <argument>2008</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.6</version>
+      <version>0.1.10</version>
     </dependency>
   </dependencies>
 </project>
@@ -132,7 +149,92 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
-More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/main/it).
+More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it).
+
+## Tutorial
+
+Let's start with a simple EO program:
+
+```
++alias stdout org.eolang.io.stdout
+
+[] > app
+  stdout > @
+    "Hello, world!"
+```
+
+Here we create a new [abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
+named `app`, which has got a single attribute named `@`. The object attached to the attribute
+`@` is a copy of the object `stdout` with a single argument `"Hello, world!"`. The object
+`stdout` is also [abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
+It can't be used directly, a copy of it has to be created, with a few requirement arguments provided.
+This is how a copy of the object `stdout` is made:
+
+```
+stdout
+  "Hello, world!"
+```
+
+The indentation in EO is important, just like in Python. There have to be two spaces
+in front of the line in order to go to the deeper level of nesting. This code can also be written
+in a "horizontal" notation:
+
+```
+stdout "Hello, world!"
+```
+
+Moreover, it's possible to use brackets in order to group arguments and avoid
+ambiguity. For example, instead of using a plain string `"Hello, world!"`
+we may want to create a copy of the object `stdout` with a more complex
+argument: a copy of the object `sprintf`:
+
+```
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[] > app
+  stdout > @
+    sprintf
+      "Hello, %s!"
+      "Jeffrey"
+```
+
+Here, the object `sprintf` is also [abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
+It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`. This program
+can be written using horizontal notation:
+
+```
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[] > app
+  (stdout (sprintf "Hello, %s!" "Jeffrey")) > @
+```
+
+The special attribute `@` denotes an object that is being
+[decorated](https://www.yegor256.com/2015/02/26/composable-decorators.html).
+In this example, the object `app` decorates the copy of the
+object `stdout` and through this starts to behave like
+the object `stdout`: all attributes of `stdout` become the
+attributes of the `app`. The object `app` may have its own
+attributes. For example, it's possible to define a new abstract object
+inside `app` and use it to build the output string:
+
+```
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[] > app
+  stdout (msg "Jeffrey") > @
+  [name] > msg
+    sprintf "Hello, %s!" name > @
+```
+
+Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
+`msg` has an abstract object attached to it, with a single "free" attribute
+`name`.
+
+Got the idea?
 
 ## How it Works?
 

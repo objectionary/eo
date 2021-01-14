@@ -1,6 +1,9 @@
 +package org.eolang
 
 [data] > int
+  # Equals to another number
+  [x] > eq /bool
+
   # Change the sign of the number
   [] > neg /int
 
@@ -9,17 +12,20 @@
 
   # Subtract from the current one
   [x] > sub
-    add x.neg > @
+    add (x.neg) > @
 
   # Multiply this one by another int
   [x] > mul /int
 
   # Divide this one by another int
   [x] > div
-    mul x.pow -1 > @
+    mul (x.pow -1) > @
 
   # Calculate MOD
   [x] > mod /int
 
   # Make it power x
   [x] > pow /int
+
+  # It is less than the argument provided?
+  [x] > less /bool

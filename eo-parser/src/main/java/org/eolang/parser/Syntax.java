@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -117,18 +117,16 @@ public final class Syntax {
                 );
             }
         };
-        final ProgramLexer lexer =
-            new ProgramLexer(
-                CharStreams.fromStream(
-                    new UncheckedInput(this.input).stream()
-                )
-            );
+        final ProgramLexer lexer = new ProgramLexer(
+            CharStreams.fromStream(
+                new UncheckedInput(this.input).stream()
+            )
+        );
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
-        final ProgramParser parser =
-            new ProgramParser(
-                new CommonTokenStream(lexer)
-            );
+        final ProgramParser parser = new ProgramParser(
+            new CommonTokenStream(lexer)
+        );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
         final XeListener xel = new XeListener(this.name);

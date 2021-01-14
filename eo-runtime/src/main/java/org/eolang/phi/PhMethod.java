@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.eolang.phi.Data;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOstring}.
+ * A method-calling object.
  *
  * @since 0.1
  */
-public final class EOstring$EOtrimTest {
+public final class PhMethod extends PhOnce {
 
-    @Test
-    public void trimsString() {
-        final Phi str = new org.eolang.EOstring();
-        str.attr("data").put(new Data.Value<>("Hello, world!  "));
-        final Phi phi = new EOstring$EOtrim(str);
-        MatcherAssert.assertThat(
-            new Data.Take(phi).take(String.class),
-            Matchers.equalTo("Hello, world!")
-        );
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param mtd The name of method
+     */
+    public PhMethod(final Phi phi, final String mtd) {
+        super(() -> phi.attr(mtd).get());
     }
 
 }

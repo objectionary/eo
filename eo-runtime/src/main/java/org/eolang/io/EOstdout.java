@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package org.eolang.io;
 import org.eolang.EObool;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
-import org.eolang.phi.AtStatic;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
@@ -39,14 +39,10 @@ import org.eolang.phi.Phi;
  */
 public class EOstdout extends PhDefault {
 
-    public EOstdout() {
-        this(Phi.ETA);
-    }
-
     public EOstdout(final Phi parent) {
         super(parent);
         this.add("text", new AtFree());
-        this.add("_origin", new AtBound(new AtStatic(this, self -> {
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
             System.out.print(
                 new Data.Take(
                     self.attr("text").get()

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,45 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-package org.eolang.phi;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhMethod;
+import org.eolang.phi.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Static attribute.
+ * Test case for {@link EOint}.
  *
  * @since 0.1
  */
-public final class AtStatic implements Attr {
+public final class EOintEOnegTest {
 
-    private final Phi self;
-
-    private final Env env;
-
-    public AtStatic(final Phi slf, final Env phi) {
-        this.self = slf;
-        this.env = phi;
-    }
-
-    @Override
-    public String toString() {
-        return "...";
-    }
-
-    @Override
-    public Attr copy(final Phi slf) {
-        return new AtStatic(slf, this.env);
-    }
-
-    @Override
-    public Phi get() {
-        return this.env.get(this.self);
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        throw new IllegalStateException(
-            "You can't overwrite static code"
+    @Test
+    public void negatesNumber() {
+        final Phi left = new org.eolang.EOint();
+        left.attr("data").put(new Data.Value<>(42L));
+        final Phi neg = new PhMethod(left, "neg");
+        MatcherAssert.assertThat(
+            new Data.Take(neg).take(Long.class),
+            Matchers.equalTo(-42L)
         );
     }
-
 }

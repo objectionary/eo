@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,11 @@
 
 package org.eolang.phi;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import org.eolang.EOstring;
 
 /**
@@ -33,7 +38,25 @@ import org.eolang.EOstring;
  */
 public final class Main {
 
+    private final PrintStream stdout;
+
+    /**
+     * Ctor.
+     * @param out The output
+     */
+    public Main(final PrintStream out) {
+        this.stdout = out;
+    }
+
     public static void main(final String... args) throws Exception {
+        new Main(System.out).exec(args);
+    }
+
+    public void exec(final String... args) throws Exception {
+        if (args.length == 0 || "--version".equals(args[0])) {
+            this.version();
+            return;
+        }
         final String path = args[0].replaceAll("([^\\.]+)$", "EO$1");
         final Phi app = Phi.class.cast(
             Class.forName(path).getConstructor().newInstance()
@@ -47,6 +70,21 @@ public final class Main {
         if (!new Data.Take(app).take(Boolean.class)) {
             throw new IllegalStateException(
                 "Runtime failure"
+            );
+        }
+    }
+
+    private void version() throws IOException {
+        try (BufferedReader input =
+            new BufferedReader(
+                new InputStreamReader(
+                    Main.class.getResourceAsStream("version.txt"),
+                    StandardCharsets.UTF_8)
+                )
+            ) {
+            this.stdout.printf(
+                "EOLANG Runtime v.%s",
+                input.lines().findFirst().get()
             );
         }
     }

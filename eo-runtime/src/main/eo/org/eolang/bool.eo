@@ -1,4 +1,14 @@
 +package org.eolang
 
 [data] > bool
+  # If true, return "t", otherwise "f"
   [t f] > if /t
+
+  # NOT
+  [] > not /bool
+
+  # AND
+  [x] > and /bool
+
+  # OR
+  [x] > or /bool

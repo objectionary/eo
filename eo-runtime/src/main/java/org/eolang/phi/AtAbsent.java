@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,24 +39,34 @@ public final class AtAbsent implements Attr {
 
     @Override
     public String toString() {
-        return "-";
+        return "\uD835\uDF02";
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return this;
+        throw new Attr.Exception(
+            String.format(
+                "Can't copy(), attribute \"%s\" is absent",
+                this.name
+            )
+        );
     }
 
     @Override
     public Phi get() {
-        return Phi.ETA;
+        throw new Attr.Exception(
+            String.format(
+                "Can't get(), attribute \"%s\" is absent",
+                this.name
+            )
+        );
     }
 
     @Override
     public void put(final Phi phi) {
         throw new Attr.Exception(
             String.format(
-                "Can't put(), attribute %s is absent",
+                "Can't put(), attribute \"%s\" is absent",
                 this.name
             )
         );

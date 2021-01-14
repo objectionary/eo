@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
@@ -44,7 +45,6 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -58,7 +58,6 @@ import org.yaml.snakeyaml.Yaml;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
-    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -77,6 +76,7 @@ public final class SnippetTest {
             new OutputTo(stdout)
         );
         MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
+        Logger.info(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
                 stdout.toString(),
@@ -90,6 +90,8 @@ public final class SnippetTest {
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Collection<String> yamlSnippets() {
         return new ListOf<>(
+            "ifthenelse.yaml",
+            "fibo.yaml",
             "simple.yaml"
         );
     }
@@ -131,6 +133,7 @@ public final class SnippetTest {
             .with("generatedDir", generated.toFile())
             .execute();
         final Path classes = temp.resolve("classes");
+        classes.toFile().mkdir();
         final String cpath = String.format(
             ".:%s",
             System.getProperty(
@@ -179,7 +182,7 @@ public final class SnippetTest {
     }
 
     /**
-     * Compile .java to .class.
+     * Compile .java to .class and return the output.
      *
      * @param file The java file
      * @param dir Destination directory

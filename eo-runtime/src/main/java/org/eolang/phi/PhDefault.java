@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,12 +35,12 @@ import java.util.Map;
  *
  * @since 0.1
  */
-public class PhDefault implements Phi {
+public class PhDefault implements Phi, Cloneable {
 
     /**
      * Attributes.
      */
-    private final Map<String, Attr> attrs;
+    private Map<String, Attr> attrs;
 
     /**
      * Order of their names.
@@ -51,7 +51,7 @@ public class PhDefault implements Phi {
      * Ctor.
      */
     public PhDefault() {
-        this(Phi.ETA);
+        this(new PhEta());
     }
 
     /**
@@ -62,23 +62,24 @@ public class PhDefault implements Phi {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add(
-            "_parent",
-            new AtNamed(
-                String.format("%s#_parent", this.getClass().getCanonicalName()),
-                new AtBound(prnt)
-            )
-        );
+        this.add("_parent", new AtBound(prnt));
     }
 
     @Override
     public String toString() {
         final Collection<String> list = new ArrayList<>(this.attrs.size());
+        list.add(
+            String.format(
+                "_order=%s",
+                this.order
+            )
+        );
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             list.add(
                 String.format(
-                    "%s=%s",
+                    "%s(%d)=%s",
                     ent.getKey(),
+                    this.order.indexOf(ent.getKey()),
                     ent.getValue().toString().replace("\n", "\n  ")
                 )
             );
@@ -93,24 +94,32 @@ public class PhDefault implements Phi {
 
     @Override
     public final Phi copy() {
-        final PhDefault copy = new PhDefault();
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            copy.add(ent.getKey(), ent.getValue().copy(copy));
+        try {
+            final PhDefault copy = PhDefault.class.cast(this.clone());
+            copy.attrs = new HashMap<>();
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                copy.attrs.put(ent.getKey(), ent.getValue().copy(copy));
+            }
+            return copy;
+        } catch (final CloneNotSupportedException ex) {
+            throw new IllegalStateException(ex);
         }
-        return copy;
     }
 
     @Override
     public final Attr attr(final int pos) {
-        if (pos >= this.order.size()) {
+        if (this.order.isEmpty()) {
             throw new Attr.Exception(
-                String.format(
-                    "There are just %d attributes, can't find the %dth",
-                    this.order.size(), pos
-                )
+                "There are no attributes here"
             );
         }
-        return this.attr(this.order.get(pos));
+        final int idx;
+        if (pos >= this.order.size()) {
+            idx = this.order.size() - 1;
+        } else {
+            idx = pos;
+        }
+        return this.attr(this.order.get(idx));
     }
 
     @Override
@@ -141,7 +150,16 @@ public class PhDefault implements Phi {
         if (name.charAt(0) != '_') {
             this.order.add(name);
         }
-        this.attrs.put(name, attr);
+        this.attrs.put(
+            name,
+            new AtNamed(
+                String.format(
+                    "%s#%s",
+                    this.getClass().getCanonicalName(),
+                    name
+                ),
+                attr
+            )
+        );
     }
-
 }

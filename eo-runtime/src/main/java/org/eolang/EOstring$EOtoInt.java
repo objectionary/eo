@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,36 @@
  * SOFTWARE.
  */
 
-/**
- * EO entry point.
- *
- * @since 0.1
- */
-public final class Main {
+package org.eolang;
 
-    /**
-     * Java app entry point.
-     * @param args Command line args
-     * @throws Exception In case of failure
-     */
-    public static void main(final String... args) throws Exception {
-        new hello().say().call();
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtLambda;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.Phi;
+
+/**
+ * TOINT.
+ *
+ * @since 1.0
+ */
+public class EOstring$EOtoInt extends PhDefault {
+
+    public EOstring$EOtoInt(final Phi parent) {
+        super(parent);
+        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+            final Phi out = new org.eolang.EOint();
+            out.attr("data").put(
+                new Data.Value<>(
+                    Long.parseLong(
+                        new Data.Take(
+                            self.attr("_parent").get()
+                        ).take(String.class)
+                    )
+                )
+            );
+            return out;
+        })));
     }
 
 }

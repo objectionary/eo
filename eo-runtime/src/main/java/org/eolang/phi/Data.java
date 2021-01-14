@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,9 @@
 
 package org.eolang.phi;
 
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * A data container.
  *
@@ -33,15 +36,43 @@ public interface Data<T> {
 
     T take();
 
+    final class Once<T> implements Data<T> {
+        private final Data<T> src;
+        private final AtomicReference<T> ref;
+        public Once(final Data<T> data) {
+            this.src = data;
+            this.ref = new AtomicReference<>();
+        }
+        @Override
+        public String toString() {
+            return this.take().toString();
+        }
+        @Override
+        public T take() {
+            if (this.ref.get() == null) {
+                this.ref.set(this.src.take());
+            }
+            return this.ref.get();
+        }
+    }
+
     final class Value<T> extends PhDefault implements Data<T> {
         private final T val;
         public Value(final T value) {
-            super(Phi.ETA);
+            super(new PhEta());
             this.val = value;
         }
         @Override
         public String toString() {
-            return this.val.toString();
+            final String txt;
+            if (this.val instanceof String) {
+                txt = String.format("\"%s\"", this.val.toString());
+            } else if (this.val.getClass().isArray()) {
+                txt = Arrays.toString((Object[]) this.val);
+            } else {
+                txt = this.val.toString();
+            }
+            return txt;
         }
         @Override
         public T take() {

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2020 Yegor Bugayenko
+ * Copyright (c) 2016-2021 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ public final class CompileMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
-    private transient File generatedDir;
+    private File generatedDir;
 
     /**
      * Target directory.
@@ -90,7 +90,7 @@ public final class CompileMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}"
     )
-    private transient File targetDir;
+    private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {

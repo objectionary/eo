@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2020 Yegor Bugayenko
+Copyright (c) 2016-2021 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
   <version>@project.version@</version>
   <packaging>jar</packaging>
   <name>Fibonacci Numbers Calculator</name>
-  <url>http://eolang.org/</url>
+  <url>https://www.eolang.org/</url>
   <build>
     <plugins>
       <plugin>
@@ -51,7 +51,6 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
-      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -72,14 +71,13 @@ SOFTWARE.
           </arguments>
         </configuration>
       </plugin>
-      -->
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>@project.version@</version>
+      <version>0.1.10</version>
     </dependency>
   </dependencies>
 </project>
