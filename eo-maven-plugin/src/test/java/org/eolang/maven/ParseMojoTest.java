@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
 public final class ParseMojoTest {
 
     @Test
-    public void testSimpleCompilation() throws Exception {
+    public void testSimpleParsing() throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         final Path target = temp.resolve("target");

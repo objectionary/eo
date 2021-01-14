@@ -27,8 +27,12 @@ import com.jcabi.log.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,6 +44,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Syntax;
@@ -57,6 +62,7 @@ import org.slf4j.impl.StaticLoggerBinder;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
+@SuppressWarnings("PMD.ImmutableField")
 public final class ParseMojo extends AbstractMojo {
 
     /**
@@ -67,7 +73,7 @@ public final class ParseMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}"
     )
-    private transient File targetDir;
+    private File targetDir;
 
     /**
      * Directory in which .eo files are located.
@@ -77,7 +83,21 @@ public final class ParseMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.basedir}/src/main/eo"
     )
-    private transient File sourcesDir;
+    private File sourcesDir;
+
+    /**
+     * List of inclusion GLOB filters for finding EO files.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private Set<String> includes = new SetOf<>("**/*.eo");
+
+    /**
+     * List of exclusion GLOB filters for finding EO files.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private Set<String> excludes = new HashSet<>(0);
 
     @Override
     public void execute() throws MojoFailureException {
@@ -88,6 +108,16 @@ public final class ParseMojo extends AbstractMojo {
         try {
             Files.walk(this.sourcesDir.toPath())
                 .filter(file -> !file.toFile().isDirectory())
+                .filter(
+                    file -> this.includes.stream().anyMatch(
+                        glob -> ParseMojo.matcher(glob).matches(file)
+                    )
+                )
+                .filter(
+                    file -> this.excludes.stream().noneMatch(
+                        glob -> ParseMojo.matcher(glob).matches(file)
+                    )
+                )
                 .forEach(this::parse);
         } catch (final IOException ex) {
             throw new MojoFailureException(
@@ -100,6 +130,16 @@ public final class ParseMojo extends AbstractMojo {
                 ex
             );
         }
+    }
+
+    /**
+     * Create glob matcher from text.
+     * @param text The pattern
+     * @return Matcher
+     */
+    private static PathMatcher matcher(final String text) {
+        return FileSystems.getDefault()
+            .getPathMatcher(String.format("glob:%s", text));
     }
 
     /**

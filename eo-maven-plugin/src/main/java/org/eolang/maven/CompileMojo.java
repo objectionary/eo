@@ -80,7 +80,7 @@ public final class CompileMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
-    private transient File generatedDir;
+    private File generatedDir;
 
     /**
      * Target directory.
@@ -90,7 +90,7 @@ public final class CompileMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}"
     )
-    private transient File targetDir;
+    private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {

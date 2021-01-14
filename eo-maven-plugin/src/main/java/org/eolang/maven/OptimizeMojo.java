@@ -71,7 +71,7 @@ public final class OptimizeMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}"
     )
-    private transient File targetDir;
+    private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {
