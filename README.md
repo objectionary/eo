@@ -164,11 +164,11 @@ Let's start with a simple EO program:
 ```
 
 Here we create a new [abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
-named `app`, which has single attribute named `@`. The object attached to the attribute
-`@` is a copy of object `stdout` with a single argument `"Hello, world!"`. The object
+named `app`, which has got a single attribute named `@`. The object attached to the attribute
+`@` is a copy of the object `stdout` with a single argument `"Hello, world!"`. The object
 `stdout` is also [abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
-We can't use it directly, we should make a copy of it, providing the requirement arguments.
-This is how we make a copy of an object `stdout`:
+It can't be used directly, a copy of it has to be created, with a few requirement arguments provided.
+This is how a copy of the object `stdout` is made:
 
 ```
 stdout
@@ -186,7 +186,7 @@ stdout "Hello, world!"
 Moreover, it's possible to use brackets in order to group arguments and avoid
 ambiguity. For example, instead of using a plain string `"Hello, world!"`
 we may want to create a copy of the object `stdout` with a more complex
-argument: a copy of object `sprintf`:
+argument: a copy of the object `sprintf`:
 
 ```
 +alias stdout org.eolang.io.stdout
@@ -217,7 +217,7 @@ In this example, the object `app` decorates the copy of the
 object `stdout` and through this starts to behave like
 the object `stdout`: all attributes of `stdout` become the
 attributes of the `app`. The object `app` may have its own
-attributes. For example, it's possible define a new abstract object
+attributes. For example, it's possible to define a new abstract object
 inside `app` and use it to build the output string:
 
 ```
@@ -230,7 +230,7 @@ inside `app` and use it to build the output string:
     sprintf "Hello, %s!" name > @
 ```
 
-Now, the object `app` has two attributes: `@` and `msg`. The attribute
+Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 `msg` has an abstract object attached to it, with a single "free" attribute
 `name`.
 
