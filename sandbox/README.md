@@ -36,4 +36,6 @@ Should work. If it doesn't, [submit an issue](https://github.com/yegor256/eo/iss
 we will fix it.
 
 Then, you can modify `*.eo` files, run `mvn compile` to compile them
-again and `run.sh` to run it again. Have fun!
+again and `run.sh` to run it again.
+
+Have fun!
