@@ -87,14 +87,12 @@ public final class ParseMojo extends AbstractMojo {
 
     /**
      * List of inclusion GLOB filters for finding EO files.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
     private Set<String> includes = new SetOf<>("**/*.eo");
 
     /**
      * List of exclusion GLOB filters for finding EO files.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
     private Set<String> excludes = new HashSet<>(0);
