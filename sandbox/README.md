@@ -12,7 +12,7 @@ $ cd sandbox
 
 Then, compile the code (you will need
 [Maven 3.3+](https://maven.apache.org/)
-and Java 8+ installed):
+and [Java SDK 8+](https://www.java.com/en/download/) installed):
 
 ```bash
 $ mvn compile
