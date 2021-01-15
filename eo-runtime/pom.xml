@@ -50,7 +50,7 @@ SOFTWARE.
           </execution>
           <execution>
             <id>test-compile</id>
-            <phase>test-compile</phase>
+            <phase>compile</phase>
             <goals>
               <goal>parse</goal>
               <goal>optimize</goal>
@@ -59,6 +59,8 @@ SOFTWARE.
             <configuration>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
               <targetDir>${project.basedir}/target/eo-test</targetDir>
+              <addSourcesRoot>false</addSourcesRoot>
+              <addTestSourcesRoot>true</addTestSourcesRoot>
               <generatedDir>${project.basedir}/target/generated-test-sources/eo</generatedDir>
             </configuration>
           </execution>

@@ -64,6 +64,7 @@ import org.slf4j.impl.StaticLoggerBinder;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
+@SuppressWarnings("PMD.LongVariable")
 public final class CompileMojo extends AbstractMojo {
 
     /**
@@ -92,6 +93,21 @@ public final class CompileMojo extends AbstractMojo {
     )
     private File targetDir;
 
+    /**
+     * Add to source root.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean addSourcesRoot = true;
+
+    /**
+     * Add to test source root.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private boolean addTestSourcesRoot;
+
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -114,9 +130,16 @@ public final class CompileMojo extends AbstractMojo {
                 ex
             );
         }
-        this.project.addCompileSourceRoot(
-            this.generatedDir.getAbsolutePath()
-        );
+        if (this.addSourcesRoot) {
+            this.project.addCompileSourceRoot(
+                this.generatedDir.getAbsolutePath()
+            );
+        }
+        if (this.addTestSourcesRoot) {
+            this.project.addTestCompileSourceRoot(
+                this.generatedDir.getAbsolutePath()
+            );
+        }
         Logger.info(
             this, "Directory added to sources: %s",
             this.generatedDir
