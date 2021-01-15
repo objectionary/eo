@@ -1,13 +1,13 @@
 +package org.eolang
 +junit
 
-[] > simpleTest
+[] > writesIntoMemory
   memory > x
   and. > @
     x.write 10
     x.eq 10
 
-[] > doubleWriteTest
+[] > doubleWrites
   memory > m
   and. > @
     and.

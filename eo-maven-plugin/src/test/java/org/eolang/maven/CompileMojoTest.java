@@ -51,9 +51,11 @@ public final class CompileMojoTest {
     public void testSimpleCompilation() throws Exception {
         final String java = this.compile(
             new ResourceOf("org/eolang/maven/mess.eo"),
-            "EOmess.java"
+            "EOmessTest.java"
         );
-        MatcherAssert.assertThat(java, Matchers.containsString("class EOmess"));
+        MatcherAssert.assertThat(
+            java, Matchers.containsString("class EOmessTest")
+        );
     }
 
     @Test
