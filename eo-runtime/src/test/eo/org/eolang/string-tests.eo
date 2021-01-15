@@ -1,0 +1,7 @@
++package org.eolang
++junit
+
+[] > trimsString
+  eq. > @
+    "Hello, dude  ".trim
+    "Hello, dude"
