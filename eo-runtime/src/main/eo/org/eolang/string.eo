@@ -6,3 +6,7 @@
 
   # Make an integer out of this string
   [] > toInt /int
+
+  # Is true if both strings are equal
+  [x] > eq /bool
+
