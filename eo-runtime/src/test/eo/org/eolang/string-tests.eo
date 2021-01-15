@@ -5,3 +5,9 @@
   eq. > @
     "Hello, dude  ".trim
     "Hello, dude"
+
+[] > turnsStringIntoInt
+  eq. > @
+    "42".toInt
+    42
+
