@@ -1,6 +1,7 @@
 +package org.eolang
++junit
 
-[] > simple
+[] > simpleTest
   memory > x
   and. > @
     x.write 10
