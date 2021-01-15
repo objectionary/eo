@@ -88,7 +88,7 @@ public final class CompileMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     private File targetDir;
 
@@ -98,7 +98,7 @@ public final class CompileMojo extends AbstractMojo {
         if (this.generatedDir.mkdirs()) {
             Logger.info(this, "Gen directory created: %s", this.generatedDir);
         }
-        final Path dir = this.targetDir.toPath().resolve("eo/optimize");
+        final Path dir = this.targetDir.toPath().resolve("optimize");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
@@ -129,7 +129,7 @@ public final class CompileMojo extends AbstractMojo {
      * @param file XML file
      */
     private void compile(final Path file) {
-        final Path temp = this.targetDir.toPath().resolve("eo/compile");
+        final Path temp = this.targetDir.toPath().resolve("compile");
         try {
             final String[] sheets = {
                 "org/eolang/maven/classes.xsl",

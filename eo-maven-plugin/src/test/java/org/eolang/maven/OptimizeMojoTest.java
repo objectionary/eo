@@ -63,7 +63,7 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("eo/steps/main.eo.xml")),
+            Files.exists(target.resolve("steps/main.eo.xml")),
             Matchers.is(true)
         );
     }

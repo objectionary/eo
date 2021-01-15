@@ -71,7 +71,7 @@ public final class ParseMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     private File targetDir;
 
@@ -150,7 +150,7 @@ public final class ParseMojo extends AbstractMojo {
         );
         final String xml = String.format("%s.xml", name);
         final Path path = this.targetDir.toPath()
-            .resolve("eo/parse")
+            .resolve("parse")
             .resolve(xml);
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -65,14 +65,14 @@ public final class PullMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("eo/optimize");
+        final Path dir = this.targetDir.toPath().resolve("optimize");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
@@ -136,7 +136,7 @@ public final class PullMojo extends AbstractMojo {
             );
         }
         final Path path = this.targetDir.toPath()
-            .resolve("eo/pull")
+            .resolve("pull")
             .resolve(String.format("%s.eo.xml", name.replace(".", "/")));
         new IoChecked<>(
             new LengthOf(

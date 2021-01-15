@@ -69,14 +69,14 @@ public final class OptimizeMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("eo/parse");
+        final Path dir = this.targetDir.toPath().resolve("parse");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
@@ -104,9 +104,7 @@ public final class OptimizeMojo extends AbstractMojo {
         final String name = file.toString().substring(
             home.toString().length() + 1
         );
-        final Path dir = this.targetDir.toPath()
-            .resolve("eo/steps")
-            .resolve(name);
+        final Path dir = this.targetDir.toPath().resolve("steps").resolve(name);
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             new Program(new XMLDocument(file), new OutputTo(baos)).compile(
@@ -120,7 +118,7 @@ public final class OptimizeMojo extends AbstractMojo {
                 new TargetSpy(dir)
             );
             final Path target = this.targetDir.toPath()
-                .resolve("eo/optimize")
+                .resolve("optimize")
                 .resolve(name);
             new IoChecked<>(
                 new LengthOf(

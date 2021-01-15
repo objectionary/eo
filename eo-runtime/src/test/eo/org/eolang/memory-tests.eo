@@ -1,0 +1,8 @@
++package org.eolang
+
+[] > simple
+  memory > x
+  and. > @
+    x.write 10
+    x.eq 10
+

@@ -62,7 +62,7 @@ public final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("eo/parse/main.eo.xml")),
+            Files.exists(target.resolve("parse/main.eo.xml")),
             Matchers.is(true)
         );
     }
