@@ -29,6 +29,7 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -41,7 +42,7 @@ public class EOarray$EOmapi extends PhDefault {
     public EOarray$EOmapi(final Phi parent) {
         super(parent);
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
                 self.attr("_parent").get()
             ).take(Phi[].class);
@@ -51,9 +52,11 @@ public class EOarray$EOmapi extends PhDefault {
                 after.attr(1).put(new Data.Value<>(idx));
                 array[idx] = after;
             }
-            final Phi out = new org.eolang.EOarray();
-            out.attr("data").put(new Data.Value<>(array));
-            return out;
+            return new PhWith(
+                new org.eolang.EOarray(),
+                "data",
+                new Data.Value<>(array)
+            );
         })));
     }
 

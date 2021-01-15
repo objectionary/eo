@@ -46,7 +46,7 @@ public class EOsprintf extends PhDefault {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final String format = new Data.Take(
                 self.attr("format").get()
             ).take(String.class);

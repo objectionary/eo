@@ -74,13 +74,13 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '_origin'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '&#x3C6;'), '\$', '\$EO'))"/>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:text>_origin</xsl:text>
+        <xsl:text>&#x3C6;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="concat('', $n)"/>

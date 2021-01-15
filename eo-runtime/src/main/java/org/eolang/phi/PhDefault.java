@@ -128,7 +128,7 @@ public class PhDefault implements Phi, Cloneable {
         if (attr != null) {
             return attr;
         }
-        final Attr sub = this.attrs.get("_origin");
+        final Attr sub = this.attrs.get("φ");
         if (sub != null) {
             attr = sub.get().attr(name);
             if (!(attr instanceof AtAbsent)) {
@@ -147,7 +147,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     protected final void add(final String name, final Attr attr) {
-        if (name.charAt(0) != '_') {
+        if (name.matches("^[a-z]+$")) {
             this.order.add(name);
         }
         this.attrs.put(

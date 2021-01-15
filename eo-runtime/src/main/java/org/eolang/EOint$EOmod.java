@@ -29,6 +29,7 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -41,18 +42,16 @@ public class EOint$EOmod extends PhDefault {
     public EOint$EOmod(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(
-                new Data.Value<>(
-                    Math.floorMod(
-                        new Data.Take(self.attr("_parent").get()).take(Long.class),
-                        new Data.Take(self.attr("x").get()).take(Long.class)
-                    )
+        this.add("φ", new AtBound(new AtLambda(this, self -> new PhWith(
+            new org.eolang.EOint(),
+            "data",
+            new Data.Value<>(
+                Math.floorMod(
+                    new Data.Take(self.attr("_parent").get()).take(Long.class),
+                    new Data.Take(self.attr("x").get()).take(Long.class)
                 )
-            );
-            return out;
-        })));
+            )
+        ))));
     }
 
 }

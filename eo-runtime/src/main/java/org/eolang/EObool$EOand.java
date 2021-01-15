@@ -42,7 +42,7 @@ public class EObool$EOand extends PhDefault {
     public EObool$EOand(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Boolean term = new Data.Take(
                 self.attr("_parent").get()
             ).take(Boolean.class);

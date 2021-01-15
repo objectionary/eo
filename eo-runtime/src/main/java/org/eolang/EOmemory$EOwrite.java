@@ -29,31 +29,25 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
- * PUSH.
+ * MEMORY.WRITE.
  *
  * @since 1.0
  */
-public class EOarray$EOpush extends PhDefault {
+public class EOmemory$EOwrite extends PhDefault {
 
-    public EOarray$EOpush(final Phi parent) {
+    public EOmemory$EOwrite(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            final Phi[] dest = new Phi[array.length + 1];
-            for (int idx = 0; idx < array.length; ++idx) {
-                dest[idx] = array[idx];
-            }
-            dest[array.length] = self.attr("x").get();
-            parent.attr("data").put(new Data.Value<>(dest));
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(new Data.Value<>((long) dest.length));
-            return out;
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final Phi arg = self.attr("x").get();
+            self.attr("_parent").get().attr("φ").put(arg);
+            return new PhWith(
+                new org.eolang.EObool(), "data", new Data.Value<>(true)
+            );
         })));
     }
 

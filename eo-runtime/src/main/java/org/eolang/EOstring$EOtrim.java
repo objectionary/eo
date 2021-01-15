@@ -28,6 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -39,17 +40,15 @@ public class EOstring$EOtrim extends PhDefault {
 
     public EOstring$EOtrim(final Phi parent) {
         super(parent);
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi out = new org.eolang.EOstring();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(
-                        self.attr("_parent").get()
-                    ).take(String.class).trim()
-                )
-            );
-            return out;
-        })));
+        this.add("φ", new AtBound(new AtLambda(this, self -> new PhWith(
+            new org.eolang.EOstring(),
+            "data",
+            new Data.Value<>(
+                new Data.Take(
+                    self.attr("_parent").get()
+                ).take(String.class).trim()
+            )
+        ))));
     }
 
 }

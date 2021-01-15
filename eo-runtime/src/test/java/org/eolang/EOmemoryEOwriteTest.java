@@ -24,44 +24,33 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOarray}.
+ * Test case for {@link EOmemory}.
  *
  * @since 0.1
  */
-public final class EOarrayEOpushTest {
+public final class EOmemoryEOwriteTest {
 
     @Test
-    public void pushesObject() {
-        final Phi str = new org.eolang.EOstring();
-        str.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {}));
-        final Phi push = new EOarray$EOpush(array);
-        push.attr(0).put(str);
-        MatcherAssert.assertThat(
-            new Data.Take(push).take(Long.class),
-            Matchers.equalTo(1L)
+    public void readsAndWrites() {
+        final Phi mem = new org.eolang.EOmemory();
+        final Phi text = new PhWith(
+            new org.eolang.EOstring(),
+            "data",
+            new Data.Value<>("Hello, world!")
         );
+        final Phi write = mem.attr("write").get();
+        write.attr(0).put(text);
+        new Data.Take(write).take(Boolean.class);
         MatcherAssert.assertThat(
-            new Data.Take(array).take(Phi[].class)[0],
-            Matchers.equalTo(str)
-        );
-    }
-
-    @Test
-    public void makesCopy() {
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {}));
-        MatcherAssert.assertThat(
-            new EOarray$EOpush(array).copy(),
-            Matchers.notNullValue()
+            new Data.Take(mem).take(String.class),
+            Matchers.startsWith("Hello, ")
         );
     }
-
 }

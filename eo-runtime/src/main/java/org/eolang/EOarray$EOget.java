@@ -41,7 +41,7 @@ public class EOarray$EOget extends PhDefault {
     public EOarray$EOget(final Phi parent) {
         super(parent);
         this.add("i", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
                 self.attr("_parent").get()
             ).take(Phi[].class);

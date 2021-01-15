@@ -42,7 +42,7 @@ public class EOint$EOeq extends PhDefault {
     public EOint$EOeq(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> new PhWith(
+        this.add("φ", new AtBound(new AtLambda(this, self -> new PhWith(
             new org.eolang.EObool(),
             "data",
             new Data.Value<>(

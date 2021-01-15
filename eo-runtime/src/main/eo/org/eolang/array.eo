@@ -1,10 +1,6 @@
 +package org.eolang
 
-[data?] > array
-
-  # Push element to the array, modifying it. The
-  # result value is the new size of the array.
-  [x] > push /int
+[data] > array
 
   # Take one element from the array, at the
   # given position.
