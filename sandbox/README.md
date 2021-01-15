@@ -10,7 +10,7 @@ to the `sandbox` directory (you will need
 installed):
 
 ```bash
-$ git clone https://github.com/yegor256/eo.git
+$ git clone https://github.com/cqfn/eo.git
 $ cd eo/sandbox
 ```
 
@@ -32,7 +32,7 @@ $ ./run.sh 9
 9th Fibonacci number is 34
 ```
 
-Should work. If it doesn't, [submit an issue](https://github.com/yegor256/eo/issues),
+Should work. If it doesn't, [submit an issue](https://github.com/cqfn/eo/issues),
 we will fix it.
 
 Then, you can modify `*.eo` files, run `mvn compile` to compile them
