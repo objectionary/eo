@@ -41,7 +41,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
@@ -153,6 +152,7 @@ public final class CompileMojo extends AbstractMojo {
      */
     private void compile(final Path file) {
         final Path temp = this.targetDir.toPath().resolve("compile");
+        final Path pre = this.targetDir.toPath().resolve("pre");
         try {
             final String[] sheets = {
                 "org/eolang/maven/classes.xsl",
@@ -164,21 +164,21 @@ public final class CompileMojo extends AbstractMojo {
                 "org/eolang/maven/to-java.xsl",
             };
             XML after = new XMLDocument(file);
+            final String name = after.xpath("/program/@name").get(0);
             for (final String sheet : sheets) {
                 after = this.transform(after, sheet);
+                final Path dir = pre.resolve(name);
+                Files.write(
+                    // @checkstyle MagicNumber (1 line)
+                    CompileMojo.resolve(dir, sheet.split("/")[3]),
+                    after.toString().getBytes()
+                );
             }
             Logger.debug(this, "Raw Java output of %s:\n%s", file, after);
-            final String name = after.xpath("/program/@name").get(0);
-            new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(after.toString()),
-                        new OutputTo(
-                            temp.resolve(String.format("%s.xml", name))
-                        )
-                    )
-                )
-            ).value();
+            Files.write(
+                CompileMojo.resolve(temp, name),
+                after.toString().getBytes()
+            );
             for (final XML java : after.nodes("//class[java and not(@atom)]")) {
                 CompileMojo.save(
                     this.generatedDir.toPath().resolve(
@@ -203,6 +203,25 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+    }
+
+    /**
+     * Make a relative path.
+     * @param dir The dir
+     * @param name The name
+     * @return Path
+     */
+    private static Path resolve(final Path dir, final String name) {
+        final Path path = dir.resolve(
+            String.format(
+                "%s.xml",
+                name
+            )
+        );
+        if (path.toFile().getParentFile().mkdirs()) {
+            Logger.info(CompileMojo.class, "%s directory created", dir);
+        }
+        return path;
     }
 
     /**

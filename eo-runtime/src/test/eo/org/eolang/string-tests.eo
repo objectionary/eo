@@ -3,11 +3,11 @@
 
 [] > trimsString
   eq. > @
-    "Hello, dude  ".trim
     "Hello, dude"
+    "Hello, dude  ".trim
 
 [] > turnsStringIntoInt
   eq. > @
-    "42".toInt
     42
+    "42".toInt
 

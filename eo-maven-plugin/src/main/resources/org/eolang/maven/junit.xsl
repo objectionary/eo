@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:strip-space elements="*"/>
-  <xsl:template match="class/@name">
+  <xsl:template match="class[not(@parent)]/@name">
     <xsl:attribute name="name">
       <xsl:choose>
         <xsl:when test="//meta[head='junit']">
@@ -37,7 +37,28 @@ SOFTWARE.
       </xsl:choose>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="class">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:if test="//meta[head='junit']">
+        <xsl:variable name="c" select="."/>
+        <xsl:apply-templates select="//class[@parent=$c/@name]" mode="copy"/>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="objects/class[@parent]">
+    <xsl:choose>
+      <xsl:when test="//meta[head='junit']">
+        <!-- kill them -->
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy>
+          <xsl:apply-templates select="node()|@*"/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

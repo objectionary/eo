@@ -1,0 +1,21 @@
++package org.eolang
++junit
+
+[] > forksOnCondition
+  eq. > @
+    42
+    if.
+      5.eq 8
+      123
+      42
+
+[] > iteratesOverSimpleCounter
+  memory > x
+  and. > @
+    x.write 5
+    eq.
+      5
+      while.
+        (x.less 0).not
+        [i]
+          x.write (x.sub 1) > @

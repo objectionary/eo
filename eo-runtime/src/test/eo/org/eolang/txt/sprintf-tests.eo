@@ -4,6 +4,6 @@
 
 [] > printsSimpleString
   eq. > @
+    "Hello, Jeffrey!"
     sprintf "Hello, %s!"
       "Jeffrey"
-    "Hello, Jeffrey!"

@@ -87,7 +87,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <xsl:template match="@name">
+  <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:value-of select="."/>
     </xsl:attribute>
@@ -107,18 +107,23 @@ SOFTWARE.
         <xsl:text>import org.eolang.phi.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="//meta[head='junit']"/>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:text>public final class </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text> extends PhDefault {</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="." mode="ctors"/>
-        <xsl:if test="//meta[head='junit']">
-          <xsl:apply-templates select="." mode="tests"/>
-        </xsl:if>
-        <xsl:text>}</xsl:text>
+        <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template match="class" mode="body">
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>public final class </xsl:text>
+    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text> extends PhDefault {</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:if test="//meta[head='junit'] and not(@parent)">
+      <xsl:apply-templates select="." mode="tests"/>
+    </xsl:if>
+    <xsl:apply-templates select="class" mode="body"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
@@ -127,7 +132,7 @@ SOFTWARE.
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:choose>
-      <xsl:when test="//meta[head='junit']">
+      <xsl:when test="//meta[head='junit'] and not(@parent)">
         <xsl:text>this.init();</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -138,7 +143,7 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:choose>
-      <xsl:when test="//meta[head='junit']">
+      <xsl:when test="//meta[head='junit'] and not(@parent)">
         <xsl:text>private void init() {</xsl:text>
       </xsl:when>
       <xsl:otherwise>

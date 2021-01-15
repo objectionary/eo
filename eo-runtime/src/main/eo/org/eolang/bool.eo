@@ -12,3 +12,8 @@
 
   # OR
   [x] > or /bool
+
+  # While this is true copies the object
+  # with "i" as the position of the cycle. The result
+  # of WHILE is the number of successful cycles.
+  [f] > while /int
