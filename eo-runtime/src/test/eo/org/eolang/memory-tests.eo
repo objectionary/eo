@@ -7,3 +7,11 @@
     x.write 10
     x.eq 10
 
+[] > doubleWriteTest
+  memory > m
+  and. > @
+    and.
+      m.write "Hello, world!"
+      m.write 42
+    m.eq 42
+
