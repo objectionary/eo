@@ -1,0 +1,11 @@
++package org.eolang.io
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
++junit
+
+[] > printsStringToConsole
+  stdout > @
+    sprintf
+      "This is the random number %f, %s!\n"
+      random
+      "Jeff"
