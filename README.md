@@ -243,10 +243,11 @@ This is how you iterate:
     x.write 2
     while.
       x.less 6
-      and.
-        stdout
-          sprintf "%dx%d = %d" x x (x.pow 2)
-        x.write (x.add 1)
+      [i]
+        and. > @
+          stdout
+            sprintf "%dx%d = %d" x x (x.pow 2)
+          x.write (x.add 1)
 ```
 
 This code will print this:
