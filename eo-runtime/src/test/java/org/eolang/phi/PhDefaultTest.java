@@ -27,6 +27,7 @@ import org.eolang.EOint;
 import org.eolang.txt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,6 +51,17 @@ public final class PhDefaultTest {
         MatcherAssert.assertThat(
             phi.attr("x").get().attr("data"),
             Matchers.notNullValue()
+        );
+    }
+
+    @Test
+    public void setsFreeAttributeOnlyOnce() {
+        final Phi num = new PhWith(new EOint(), "data", new Data.Value<>(42L));
+        final Phi phi = new PhDefaultTest.Foo(new PhEta());
+        phi.attr(0).put(num);
+        Assertions.assertThrows(
+            Attr.Exception.class,
+            () -> phi.attr(0).put(num)
         );
     }
 

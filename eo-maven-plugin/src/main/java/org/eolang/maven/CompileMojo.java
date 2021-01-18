@@ -159,7 +159,6 @@ public final class CompileMojo extends AbstractMojo {
                 "org/eolang/maven/junit.xsl",
                 "org/eolang/maven/attrs.xsl",
                 "org/eolang/maven/varargs.xsl",
-                "org/eolang/maven/once.xsl",
                 "org/eolang/maven/data.xsl",
                 "org/eolang/maven/to-java.xsl",
             };

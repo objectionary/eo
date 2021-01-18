@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOmemoryEOwriteTest {
+public final class EOmemoryTest {
 
     @Test
     public void readsAndWrites() {
@@ -51,6 +52,37 @@ public final class EOmemoryEOwriteTest {
         MatcherAssert.assertThat(
             new Data.Take(mem).take(String.class),
             Matchers.startsWith("Hello, ")
+        );
+    }
+
+    @Test
+    public void rewritesItself() {
+        final Phi mem = new org.eolang.EOmemory();
+        final Phi num = new PhWith(
+            new org.eolang.EOint(), "data", new Data.Value<>(1L)
+        );
+        new Data.Take(
+            new PhWith(mem.attr("write").get(), 0, num)
+        ).take(Boolean.class);
+        new Data.Take(
+            new PhWith(mem.attr("write").get(), 0, num)
+        ).take(Boolean.class);
+        new Data.Take(
+            new PhWith(
+                mem.attr("write").get(),
+                0,
+                new PhWith(
+                    new PhMethod(mem, "add"),
+                    0,
+                    new PhWith(
+                        new org.eolang.EOint(), "data", new Data.Value<>(5L)
+                    )
+                )
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Data.Take(mem).take(Long.class),
+            Matchers.equalTo(6L)
         );
     }
 }

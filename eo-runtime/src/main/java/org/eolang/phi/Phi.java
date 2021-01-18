@@ -34,7 +34,6 @@ public interface Phi {
     /**
      * Make a copy.
      *
-     * @param name New name
      * @return A copy
      */
     Phi copy();
