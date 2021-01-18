@@ -53,6 +53,27 @@ public final class EOmemoryTest {
     }
 
     @Test
+    public void comparesForEquality() {
+        final Phi mem = new org.eolang.EOmemory();
+        new Data.Take(
+            new PhWith(
+                new PhCopy(new PhMethod(mem, "write")),
+                0, new Data.ToPhi(1L)
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Data.Take(
+                new PhWith(
+                    new PhMethod(mem, "eq"),
+                    0,
+                    new Data.ToPhi(1L)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     public void writesAndRewrites() {
         final Phi mem = new org.eolang.EOmemory();
         new Data.Take(
