@@ -43,10 +43,10 @@ public class EObool$EOwhile extends PhDefault {
         super(parent);
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            int count = 0;
+            long count = 0L;
             while (true) {
                 final Boolean term = new Data.Take(
-                    self.attr("_parent").get()
+                    self.attr("ρ").get()
                 ).take(Boolean.class);
                 if (!term) {
                     break;

@@ -46,7 +46,7 @@ public class EOstring$EOtoInt extends PhDefault {
             new Data.Value<>(
                 Long.parseLong(
                     new Data.Take(
-                        self.attr("_parent").get()
+                        self.attr("ρ").get()
                     ).take(String.class)
                 )
             )

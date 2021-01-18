@@ -25,8 +25,8 @@
 package org.eolang;
 
 import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
+import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.PhWith;
@@ -41,18 +41,24 @@ public class EObool$EOor extends PhDefault {
 
     public EObool$EOor(final Phi parent) {
         super(parent);
-        this.add("x", new AtFree());
+        this.add("x", new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Boolean term = new Data.Take(
-                self.attr("_parent").get()
+            Boolean term = new Data.Take(
+                self.attr("ρ").get()
             ).take(Boolean.class);
-            final Boolean val = new Data.Take(
+            final Phi[] args = new Data.Take(
                 self.attr("x").get()
-            ).take(Boolean.class);
+            ).take(Phi[].class);
+            for (final Phi arg : args) {
+                term |= new Data.Take(arg).take(Boolean.class);
+                if (term) {
+                    break;
+                }
+            }
             return new PhWith(
                 new org.eolang.EObool(),
                 "data",
-                new Data.Value<>(term || val)
+                new Data.Value<>(term)
             );
         })));
     }

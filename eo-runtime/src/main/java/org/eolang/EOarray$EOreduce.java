@@ -44,7 +44,7 @@ public class EOarray$EOreduce extends PhDefault {
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Phi[].class);
             Phi out = self.attr("a").get();
             for (final Phi arg : array) {

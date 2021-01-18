@@ -62,7 +62,7 @@ public class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("_parent", new AtBound(prnt));
+        this.add("ρ", new AtBound(prnt));
     }
 
     @Override
@@ -96,10 +96,11 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = PhDefault.class.cast(this.clone());
-            copy.attrs = new HashMap<>();
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                copy.attrs.put(ent.getKey(), ent.getValue().copy(copy));
+                map.put(ent.getKey(), ent.getValue().copy(copy));
             }
+            copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);

@@ -44,7 +44,7 @@ public class EOmemory$EOwrite extends PhDefault {
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi arg = self.attr("x").get();
-            self.attr("_parent").get().attr("φ").put(arg);
+            self.attr("ρ").get().attr("φ").put(arg);
             return new PhWith(
                 new org.eolang.EObool(), "data", new Data.Value<>(true)
             );

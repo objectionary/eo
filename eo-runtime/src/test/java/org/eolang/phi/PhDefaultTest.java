@@ -27,7 +27,6 @@ import org.eolang.EOint;
 import org.eolang.txt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -48,17 +47,9 @@ public final class PhDefaultTest {
             new Data.Take(copy).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
-        Assertions.assertThrows(
-            Attr.Exception.class,
-            () -> new Data.Take(new PhMethod(copy, "x")).take(Long.class)
-        );
         MatcherAssert.assertThat(
             phi.attr("x").get().attr("data"),
             Matchers.notNullValue()
-        );
-        Assertions.assertThrows(
-            Attr.Exception.class,
-            () -> copy.attr(0).get().attr("data")
         );
     }
 

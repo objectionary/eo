@@ -48,11 +48,6 @@ public final class PhEta implements Phi {
 
     @Override
     public Attr attr(final String name) {
-        throw new Attr.Exception(
-            String.format(
-                "No attributes in ETA, trying to get \"%s\"",
-                name
-            )
-        );
+        return new AtAbsent(name);
     }
 }

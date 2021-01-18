@@ -47,7 +47,7 @@ public class EOint$EOmod extends PhDefault {
             "data",
             new Data.Value<>(
                 Math.floorMod(
-                    new Data.Take(self.attr("_parent").get()).take(Long.class),
+                    new Data.Take(self.attr("ρ").get()).take(Long.class),
                     new Data.Take(self.attr("x").get()).take(Long.class)
                 )
             )

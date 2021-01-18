@@ -44,7 +44,7 @@ public class EOarray$EOmapi extends PhDefault {
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Phi[].class);
             for (int idx = 0; idx < array.length; ++idx) {
                 final Phi after = self.attr("f").get().copy();

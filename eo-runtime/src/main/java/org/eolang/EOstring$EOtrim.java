@@ -45,7 +45,7 @@ public class EOstring$EOtrim extends PhDefault {
             "data",
             new Data.Value<>(
                 new Data.Take(
-                    self.attr("_parent").get()
+                    self.attr("ρ").get()
                 ).take(String.class).trim()
             )
         ))));

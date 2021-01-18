@@ -44,7 +44,7 @@ public class EOint$EOneg extends PhDefault {
             new org.eolang.EOint(),
             "data",
             new Data.Value<>(
-                new Data.Take(self.attr("_parent").get()).take(Long.class) * -1L
+                new Data.Take(self.attr("ρ").get()).take(Long.class) * -1L
             )
         ))));
     }

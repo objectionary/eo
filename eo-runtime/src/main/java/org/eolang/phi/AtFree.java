@@ -52,9 +52,7 @@ public final class AtFree implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        final Attr copy = this.origin.copy(self);
-        copy.put(new PhEta());
-        return new AtFree(copy);
+        return new AtFree(this.origin.copy(self));
     }
 
     @Override

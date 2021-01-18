@@ -226,7 +226,7 @@ SOFTWARE.
         <xsl:text>(self)</xsl:text>
       </xsl:when>
       <xsl:when test="$b/@level">
-        <xsl:text>new PhMethod(new PhMethod(self, "_parent"), "</xsl:text>
+        <xsl:text>new PhMethod(new PhMethod(self, "&#x3C1;"), "</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
         <xsl:text>")</xsl:text>
       </xsl:when>
@@ -272,9 +272,9 @@ SOFTWARE.
     <xsl:value-of select="$indent"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhMethod(</xsl:text>
+    <xsl:text> = new PhMethod(new PhCopy(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_base, "</xsl:text>
+    <xsl:text>_base), "</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

@@ -46,7 +46,7 @@ public class EOint$EOeq extends PhDefault {
             new org.eolang.EObool(),
             "data",
             new Data.Value<>(
-                new Data.Take(self.attr("_parent").get()).take(Long.class).equals(
+                new Data.Take(self.attr("ρ").get()).take(Long.class).equals(
                     new Data.Take(self.attr("x").get()).take(Long.class)
                 )
             )

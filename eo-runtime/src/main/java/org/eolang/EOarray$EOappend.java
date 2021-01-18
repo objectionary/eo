@@ -44,7 +44,7 @@ public class EOarray$EOappend extends PhDefault {
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Phi[].class);
             final Phi[] dest = new Phi[array.length + 1];
             for (int idx = 0; idx < array.length; ++idx) {

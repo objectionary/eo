@@ -44,7 +44,7 @@ public class EObool$EOnot extends PhDefault {
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Boolean term = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Boolean.class);
             return new PhWith(
                 new org.eolang.EObool(),

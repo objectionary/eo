@@ -18,4 +18,4 @@
       while.
         (x.less 0).not
         [i]
-          x.write (x.sub 1) > @
+          x.write (x.add i) > @
