@@ -21,31 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * EQ.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOintEOlessTest {
+public class EOfloat$EOeq extends PhDefault {
 
-    @Test
-    public void comparesWithAnotherNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("less").get();
-        less.attr(0).put(right);
-        MatcherAssert.assertThat(
-            new Data.Take(less).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
+    public EOfloat$EOeq(final Phi parent) {
+        super(parent);
+        this.add("x", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new Data.Take(self.attr("ρ").get()).take(Double.class).equals(
+                new Data.Take(self.attr("x").get()).take(Double.class)
+            )
+        ))));
     }
 
 }

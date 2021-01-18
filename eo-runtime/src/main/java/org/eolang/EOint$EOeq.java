@@ -32,7 +32,7 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * LESS.
+ * EQ.
  *
  * @since 1.0
  */

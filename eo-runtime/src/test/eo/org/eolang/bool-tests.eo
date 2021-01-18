@@ -16,6 +16,6 @@
     eq.
       5
       while.
-        (x.less 0).not
+        x.less 10
         [i]
           x.write (x.add i) > @

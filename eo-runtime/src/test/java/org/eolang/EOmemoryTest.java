@@ -53,6 +53,27 @@ public final class EOmemoryTest {
     }
 
     @Test
+    public void writesAndRewrites() {
+        final Phi mem = new org.eolang.EOmemory();
+        new Data.Take(
+            new PhWith(
+                new PhCopy(new PhMethod(mem, "write")),
+                0, new Data.ToPhi(1L)
+            )
+        ).take(Boolean.class);
+        new Data.Take(
+            new PhWith(
+                new PhCopy(new PhMethod(mem, "write")),
+                0, new Data.ToPhi(5L)
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Data.Take(mem).take(Long.class),
+            Matchers.equalTo(5L)
+        );
+    }
+
+    @Test
     public void makeCorrectCopy() {
         final Phi mem = new org.eolang.EOmemory();
         final Phi text = new Data.ToPhi(1L);
@@ -66,11 +87,44 @@ public final class EOmemoryTest {
     }
 
     @Test
+    public void comparesOnFly() {
+        final Phi mem = new org.eolang.EOmemory();
+        new Data.Take(
+            new PhWith(
+                new PhCopy(new PhMethod(mem, "write")),
+                0, new Data.ToPhi(1L)
+            )
+        ).take(Boolean.class);
+        final Phi less = new PhWith(
+            new PhMethod(mem, "less"),
+            0,
+            new Data.ToPhi(10L)
+        );
+        MatcherAssert.assertThat(
+            new Data.Take(less).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+        new Data.Take(
+            new PhWith(
+                new PhCopy(new PhMethod(mem, "write")),
+                0, new Data.ToPhi(42L)
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Data.Take(less).take(Boolean.class),
+            Matchers.equalTo(false)
+        );
+    }
+
+    @Test
     public void rewritesItself() {
         final Phi mem = new org.eolang.EOmemory();
-        final Phi num = new Data.ToPhi(1L);
         new Data.Take(
-            new PhWith(new PhCopy(new PhMethod(mem, "write")), 0, num)
+            new PhWith(
+                new PhCopy(new PhMethod(mem, "write")),
+                0,
+                new Data.ToPhi(1L)
+            )
         ).take(Boolean.class);
         new Data.Take(
             new PhWith(
@@ -79,13 +133,13 @@ public final class EOmemoryTest {
                 new PhWith(
                     new PhMethod(mem, "add"),
                     0,
-                    new Data.ToPhi(5L)
+                    new Data.ToPhi(42L)
                 )
             )
         ).take(Boolean.class);
         MatcherAssert.assertThat(
             new Data.Take(mem).take(Long.class),
-            Matchers.equalTo(6L)
+            Matchers.equalTo(43L)
         );
     }
 }

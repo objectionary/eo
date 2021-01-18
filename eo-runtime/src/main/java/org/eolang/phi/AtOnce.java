@@ -21,30 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import org.eolang.phi.Data;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOint}.
+ * Read only once.
  *
  * @since 0.1
  */
-public final class EOintEOlessTest {
+public final class AtOnce implements Attr {
 
-    @Test
-    public void comparesWithAnotherNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("less").get();
-        less.attr(0).put(right);
-        MatcherAssert.assertThat(
-            new Data.Take(less).take(Boolean.class),
-            Matchers.equalTo(false)
+    private final Attr origin;
+
+    private final Data<Phi> data;
+
+    public AtOnce(final Attr attr) {
+        this.origin = attr;
+        this.data = new Data.Once<>(attr::get);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%sO", this.origin.toString());
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtOnce(this.origin.copy(self));
+    }
+
+    @Override
+    public Phi get() {
+        return this.data.take();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        throw new IllegalStateException(
+            String.format(
+                "You can't overwrite %s",
+                this.origin
+            )
         );
     }
 

@@ -7,12 +7,12 @@
     x.write 10
     x.eq 10
 
-# [] > doubleWrites
-#  memory > m
-#  and. > @
-#    m.write "Hello, world!"
-#    m.write 42
-#    m.eq 42
+[] > doubleWrites
+  memory > m
+  and. > @
+    m.write "Hello, world!"
+    m.write 42
+    m.eq 42
 
 [] > rewritesAndIncrementsItself
   memory > m

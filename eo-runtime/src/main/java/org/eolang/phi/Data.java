@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.EOarray;
 import org.eolang.EObool;
+import org.eolang.EOfloat;
 import org.eolang.EOint;
 import org.eolang.EOstring;
 
@@ -71,6 +72,8 @@ public interface Data<T> {
                         phi = new EOint();
                     } else if (obj instanceof String) {
                         phi = new EOstring();
+                    } else if (obj instanceof Double) {
+                        phi = new EOfloat();
                     } else if (obj instanceof Phi[]) {
                         phi = new EOarray();
                     } else {

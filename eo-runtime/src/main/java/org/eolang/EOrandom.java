@@ -21,31 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
+import java.security.SecureRandom;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * RANDOM.
  *
  * @since 0.1
  */
-public final class EOintEOlessTest {
+public class EOrandom extends PhDefault {
 
-    @Test
-    public void comparesWithAnotherNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("less").get();
-        less.attr(0).put(right);
-        MatcherAssert.assertThat(
-            new Data.Take(less).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
+    public EOrandom() {
+        this(new PhEta());
+    }
+
+    public EOrandom(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new SecureRandom().nextDouble()
+        ))));
     }
 
 }

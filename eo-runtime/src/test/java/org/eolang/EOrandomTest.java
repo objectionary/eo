@@ -30,21 +30,19 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link EOrandom}.
  *
  * @since 0.1
  */
-public final class EOintEOlessTest {
+public final class EOrandomTest {
 
     @Test
-    public void comparesWithAnotherNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("less").get();
-        less.attr(0).put(right);
+    public void readsTwice() {
+        final Phi rnd = new EOrandom();
+        final Double first = new Data.Take(rnd).take(Double.class);
         MatcherAssert.assertThat(
-            new Data.Take(less).take(Boolean.class),
-            Matchers.equalTo(false)
+            new Data.Take(rnd).take(Double.class),
+            Matchers.not(Matchers.equalTo(first))
         );
     }
 

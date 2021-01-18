@@ -31,7 +31,6 @@ import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.PhEta;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -41,7 +40,7 @@ import org.eolang.phi.Phi;
  */
 public class EOmemory extends PhDefault {
 
-    private final AtomicReference<Phi> phi = new AtomicReference<>();
+    private final AtomicReference<Phi> phi = new AtomicReference<>(new PhEta());
 
     public EOmemory() {
         this(new PhEta());
@@ -53,18 +52,19 @@ public class EOmemory extends PhDefault {
         this.add("write", new AtBound(new AtLambda(this, EOmemory.Write::new)));
     }
 
+    @Override
+    public final String toString() {
+        return String.format("<%s>", this.phi.get());
+    }
+
     private final class Write extends PhDefault {
         Write(final Phi parent) {
             super(parent);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> {
-                final Phi arg = self.attr("x").get();
-                final Object obj = new Data.Take(arg).take();
-                System.out.println(obj);
+                final Object obj = new Data.Take(self.attr("x").get()).take();
                 EOmemory.this.phi.set(new Data.ToPhi(obj));
-                return new PhWith(
-                    new org.eolang.EObool(), "data", new Data.Value<>(true)
-                );
+                return new Data.ToPhi(true);
             })));
         }
     }

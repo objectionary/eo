@@ -40,17 +40,12 @@ public final class AtLambda implements Attr {
     }
 
     public AtLambda(final Phi self, final Env env) {
-        this(
-            env,
-            new Data.Once<>(
-                () -> env.get(self)
-            )
-        );
+        this(env, () -> env.get(self));
     }
 
     private AtLambda(final Env env, final Data<Phi> data) {
-        this.object = data;
         this.code = env;
+        this.object = data;
     }
 
     @Override
@@ -60,11 +55,7 @@ public final class AtLambda implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtLambda(this.code,
-            new Data.Once<>(
-                () -> this.code.get(self)
-            )
-        );
+        return new AtLambda(this.code, () -> this.code.get(self));
     }
 
     @Override

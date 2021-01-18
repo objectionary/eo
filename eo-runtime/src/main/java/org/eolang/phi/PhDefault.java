@@ -62,7 +62,7 @@ public class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("ρ", new AtBound(prnt));
+        this.add("ρ", new AtSimple(prnt));
     }
 
     @Override
@@ -133,7 +133,7 @@ public class PhDefault implements Phi, Cloneable {
         if (sub != null) {
             attr = sub.get().attr(name);
             if (!(attr instanceof AtAbsent)) {
-                return attr;
+                return new AtChild(attr);
             }
         }
         return new AtNamed(
@@ -162,5 +162,29 @@ public class PhDefault implements Phi, Cloneable {
                 attr
             )
         );
+    }
+
+    private final class AtChild implements Attr {
+        private final Attr origin;
+        AtChild(final Attr attr) {
+            this.origin = attr;
+        }
+        @Override
+        public Attr copy(final Phi self) {
+            return new AtChild(this.origin.copy(self));
+        }
+        @Override
+        public Phi get() {
+            final Phi phi = this.origin.get();
+            if (phi instanceof Data) {
+                return phi;
+            }
+            phi.attr("ρ").put(PhDefault.this);
+            return phi;
+        }
+        @Override
+        public void put(final Phi phi) {
+            this.origin.put(phi);
+        }
     }
 }
