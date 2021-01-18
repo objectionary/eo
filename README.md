@@ -237,6 +237,9 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
 [] > app
   memory > x
   and. > @
@@ -244,7 +247,7 @@ This is how you iterate:
     while.
       x.less 6
       [i]
-        and. > @
+        seq > @
           stdout
             sprintf "%dx%d = %d" x x (x.pow 2)
           x.write (x.add 1)

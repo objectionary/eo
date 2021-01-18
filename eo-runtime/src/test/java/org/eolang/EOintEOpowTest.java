@@ -21,32 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.Phi;
+import org.eolang.phi.PhMethod;
+import org.eolang.phi.PhWith;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * POW.
+ * Test case for {@link EOint}.
  *
- * @since 1.0
+ * @since 0.1
  */
-public class EOint$EOpow extends PhDefault {
+public final class EOintEOpowTest {
 
-    public EOint$EOpow(final Phi parent) {
-        super(parent);
-        this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            (long) Math.pow(
-                new Data.Take(self.attr("ρ").get()).take(Long.class),
-                new Data.Take(self.attr("x").get()).take(Long.class)
-            )
-        ))));
+    @Test
+    public void powersNumber() {
+        MatcherAssert.assertThat(
+            new Data.Take(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(2L), "pow"),
+                    0,
+                    new Data.ToPhi(4L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(16L)
+        );
     }
 
 }
