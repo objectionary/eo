@@ -25,28 +25,36 @@
 package org.eolang;
 
 import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
+import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
 
 /**
- * POW.
+ * SEQ.
  *
  * @since 1.0
  */
-public class EOint$EOpow extends PhDefault {
+public class EOseq extends PhDefault {
 
-    public EOint$EOpow(final Phi parent) {
+    public EOseq() {
+        this(new PhEta());
+    }
+
+    public EOseq(final Phi parent) {
         super(parent);
-        this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            (long) Math.pow(
-                new Data.Take(self.attr("ρ").get()).take(Long.class),
-                new Data.Take(self.attr("x").get()).take(Long.class)
-            )
-        ))));
+        this.add("steps", new AtVararg());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final Phi[] args = new Data.Take(
+                self.attr("steps").get()
+            ).take(Phi[].class);
+            for (final Phi arg : args) {
+                new Data.Take(arg).take();
+            }
+            return new Data.ToPhi(true);
+        })));
     }
 
 }

@@ -1,4 +1,6 @@
 +package org.eolang
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 +junit
 
 [] > forksOnCondition
@@ -19,3 +21,15 @@
         x.less 10
         [i]
           x.write (x.add i) > @
+
+[] > printsNiceFormulas
+  memory > x
+  seq > @
+    x.write 2
+    while.
+      x.less 6
+      [i]
+        seq > @
+          stdout
+            sprintf "%dx%d = %d\n" x x (x.pow 2)
+          x.write (x.add 1)
