@@ -234,6 +234,30 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 `msg` has an abstract object attached to it, with a single "free" attribute
 `name`.
 
+This is how you iterate:
+
+```
+[] > app
+  memory > x
+  and. > @
+    x.write 2
+    while.
+      x.less 6
+      and.
+        stdout
+          sprintf "%dx%d = %d" x x (x.pow 2)
+        x.write (x.add 1)
+```
+
+This code will print this:
+
+```
+2 x 2 = 4
+3 x 3 = 9
+4 x 4 = 16
+5 x 5 = 25
+```
+
 Got the idea?
 
 ## How it Works?
