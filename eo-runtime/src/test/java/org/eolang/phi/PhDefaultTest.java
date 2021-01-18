@@ -23,7 +23,6 @@
  */
 package org.eolang.phi;
 
-import org.eolang.EOint;
 import org.eolang.txt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,7 +38,7 @@ public final class PhDefaultTest {
 
     @Test
     public void makesCopy() {
-        final Phi num = new PhWith(new EOint(), "data", new Data.Value<>(42L));
+        final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(new PhEta());
         final Phi phi = new PhDefaultTest.Foo(parent);
         phi.attr(0).put(num);
@@ -56,7 +55,7 @@ public final class PhDefaultTest {
 
     @Test
     public void setsFreeAttributeOnlyOnce() {
-        final Phi num = new PhWith(new EOint(), "data", new Data.Value<>(42L));
+        final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo(new PhEta());
         phi.attr(0).put(num);
         Assertions.assertThrows(

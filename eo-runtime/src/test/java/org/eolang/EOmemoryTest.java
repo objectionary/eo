@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.PhCopy;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
@@ -56,27 +57,33 @@ public final class EOmemoryTest {
     }
 
     @Test
+    public void makeCorrectCopy() {
+        final Phi mem = new org.eolang.EOmemory();
+        final Phi text = new Data.ToPhi(1L);
+        final Phi write = mem.attr("write").get();
+        write.attr(0).put(text);
+        new Data.Take(write).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Data.Take(new PhCopy(mem)).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
     public void rewritesItself() {
         final Phi mem = new org.eolang.EOmemory();
-        final Phi num = new PhWith(
-            new org.eolang.EOint(), "data", new Data.Value<>(1L)
-        );
+        final Phi num = new Data.ToPhi(1L);
         new Data.Take(
-            new PhWith(mem.attr("write").get(), 0, num)
-        ).take(Boolean.class);
-        new Data.Take(
-            new PhWith(mem.attr("write").get(), 0, num)
+            new PhWith(new PhCopy(new PhMethod(mem, "write")), 0, num)
         ).take(Boolean.class);
         new Data.Take(
             new PhWith(
-                mem.attr("write").get(),
+                new PhCopy(new PhMethod(mem, "write")),
                 0,
                 new PhWith(
                     new PhMethod(mem, "add"),
                     0,
-                    new PhWith(
-                        new org.eolang.EOint(), "data", new Data.Value<>(5L)
-                    )
+                    new Data.ToPhi(5L)
                 )
             )
         ).take(Boolean.class);

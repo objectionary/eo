@@ -38,13 +38,10 @@ public final class EOarrayEOgetTest {
 
     @Test
     public void pushesAndGetsBack() {
-        final Phi str = new org.eolang.EOstring();
         final String txt = "Hello, world!";
-        str.attr("data").put(new Data.Value<>(txt));
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {str}));
-        final Phi idx = new org.eolang.EOint();
-        idx.attr("data").put(new Data.Value<>(0L));
+        final Phi str = new Data.ToPhi(txt);
+        final Phi array = new Data.ToPhi(new Phi[] {str});
+        final Phi idx = new Data.ToPhi(0L);
         final Phi get = array.attr("get").get();
         get.attr(0).put(idx);
         MatcherAssert.assertThat(

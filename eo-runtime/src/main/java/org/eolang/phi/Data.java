@@ -26,6 +26,10 @@ package org.eolang.phi;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eolang.EOarray;
+import org.eolang.EObool;
+import org.eolang.EOint;
+import org.eolang.EOstring;
 
 /**
  * A data container.
@@ -53,6 +57,30 @@ public interface Data<T> {
                 this.ref.set(this.src.take());
             }
             return this.ref.get();
+        }
+    }
+
+    final class ToPhi extends PhOnce {
+        public ToPhi(final Object obj) {
+            super(
+                () -> {
+                    final Phi phi;
+                    if (obj instanceof Boolean) {
+                        phi = new EObool();
+                    } else if (obj instanceof Long) {
+                        phi = new EOint();
+                    } else if (obj instanceof String) {
+                        phi = new EOstring();
+                    } else if (obj instanceof Phi[]) {
+                        phi = new EOarray();
+                    } else {
+                        throw new IllegalArgumentException(
+                            "Unknown type"
+                        );
+                    }
+                    return new PhWith(phi, "data", new Data.Value<>(obj));
+                }
+            );
         }
     }
 

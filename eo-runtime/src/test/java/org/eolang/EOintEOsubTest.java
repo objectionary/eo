@@ -40,10 +40,8 @@ public final class EOintEOsubTest {
 
     @Test
     public void subtractsNumber() {
-        final Phi left = new org.eolang.EOint();
-        left.attr("data").put(new Data.Value<>(42L));
-        final Phi right = new org.eolang.EOint();
-        right.attr("data").put(new Data.Value<>(13L));
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(13L);
         final Phi sub = new PhWith(
             new PhMethod(left, "sub"),
             0, right

@@ -59,8 +59,9 @@ public class EOmemory extends PhDefault {
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> {
                 final Phi arg = self.attr("x").get();
-                EOmemory.this.phi.set(arg);
-                System.out.println("write!");
+                EOmemory.this.phi.set(
+                    new Data.ToPhi(new Data.Take(arg).take())
+                );
                 return new PhWith(
                     new org.eolang.EObool(), "data", new Data.Value<>(true)
                 );

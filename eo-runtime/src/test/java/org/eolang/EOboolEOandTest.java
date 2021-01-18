@@ -38,10 +38,8 @@ public final class EOboolEOandTest {
 
     @Test
     public void logicallyJoinsTwoValues() {
-        final Phi left = new org.eolang.EObool();
-        left.attr("data").put(new Data.Value<>(true));
-        final Phi right = new org.eolang.EObool();
-        right.attr("data").put(new Data.Value<>(false));
+        final Phi left = new Data.ToPhi(true);
+        final Phi right = new Data.ToPhi(false);
         final Phi and = left.attr("and").get();
         and.attr(0).put(right);
         MatcherAssert.assertThat(

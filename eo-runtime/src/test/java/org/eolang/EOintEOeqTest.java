@@ -41,12 +41,8 @@ public final class EOintEOeqTest {
 
     @Test
     public void comparesWithAnotherNumber() {
-        final Phi left = new PhWith(
-            new org.eolang.EOint(), "data", new Data.Value<>(42L)
-        );
-        final Phi right = new PhWith(
-            new org.eolang.EOint(), "data", new Data.Value<>(0L)
-        );
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(0L);
         final Phi eql = new PhCopy(
             new PhCopy(
                 new PhWith(
