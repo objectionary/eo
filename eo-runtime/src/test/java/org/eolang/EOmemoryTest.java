@@ -42,11 +42,7 @@ public final class EOmemoryTest {
     @Test
     public void readsAndWrites() {
         final Phi mem = new org.eolang.EOmemory();
-        final Phi text = new PhWith(
-            new org.eolang.EOstring(),
-            "data",
-            new Data.Value<>("Hello, world!")
-        );
+        final Phi text = new Data.ToPhi("Hello, world!");
         final Phi write = mem.attr("write").get();
         write.attr(0).put(text);
         new Data.Take(write).take(Boolean.class);

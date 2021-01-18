@@ -68,11 +68,9 @@ public final class PhDefaultTest {
          public Foo(final Phi parent) {
              super(parent);
              this.add("x", new AtFree());
-             this.add("φ", new AtBound(new AtLambda(self -> new PhWith(
-                 new org.eolang.EOstring(),
-                 "data",
-                 new Data.Value<>("Hello, world!")
-             ))));
+             this.add("φ", new AtBound(new AtLambda(
+                 self -> new Data.ToPhi("Hello, world!")
+             )));
         }
     }
 

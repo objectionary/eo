@@ -24,13 +24,11 @@
 
 package org.eolang.io;
 
-import org.eolang.EObool;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -49,7 +47,7 @@ public class EOstdout extends PhDefault {
                     self.attr("text").get()
                 ).take(String.class)
             );
-            return new PhWith(new EObool(), "data", new Data.Value<>(true));
+            return new Data.ToPhi(true);
         })));
     }
 

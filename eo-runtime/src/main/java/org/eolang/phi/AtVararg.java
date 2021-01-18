@@ -26,7 +26,6 @@ package org.eolang.phi;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eolang.EOarray;
 
 /**
  * Vararg attribute.
@@ -49,11 +48,7 @@ public final class AtVararg implements Attr {
 
     @Override
     public Phi get() {
-        return new PhWith(
-            new EOarray(),
-            "data",
-            new Data.Value<>(this.array.toArray(new Phi[] {}))
-        );
+        return new Data.ToPhi(this.array.toArray(new Phi[] {}));
     }
 
     @Override

@@ -57,13 +57,7 @@ public class EOsprintf extends PhDefault {
             for (final Phi arg : args) {
                 items.add(new Data.Take(arg).take());
             }
-            return new PhWith(
-                new org.eolang.EOstring(),
-                "data",
-                new Data.Value<>(
-                    String.format(format, items.toArray())
-                )
-            );
+            return new Data.ToPhi(String.format(format, items.toArray());
         })));
     }
 

@@ -29,7 +29,6 @@ import org.eolang.phi.AtLambda;
 import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -55,11 +54,7 @@ public class EObool$EOor extends PhDefault {
                     break;
                 }
             }
-            return new PhWith(
-                new org.eolang.EObool(),
-                "data",
-                new Data.Value<>(term)
-            );
+            return new Data.ToPhi(term);
         })));
     }
 

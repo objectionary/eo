@@ -29,7 +29,6 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -52,21 +51,11 @@ public class EObool$EOwhile extends PhDefault {
                     break;
                 }
                 final Phi body = self.attr("f").get().copy();
-                body.attr(0).put(
-                    new PhWith(
-                        new org.eolang.EOint(),
-                        "data",
-                        new Data.Value<>(count)
-                    )
-                );
+                body.attr(0).put(new Data.ToPhi(count));
                 new Data.Take(body).take();
                 ++count;
             }
-            return new PhWith(
-                new org.eolang.EOint(),
-                "data",
-                new Data.Value<>(count)
-            );
+            return new Data.ToPhi(count);
         })));
     }
 

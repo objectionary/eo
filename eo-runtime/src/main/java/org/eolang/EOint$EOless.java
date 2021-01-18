@@ -29,7 +29,6 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -42,14 +41,10 @@ public class EOint$EOless extends PhDefault {
     public EOint$EOless(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> new PhWith(
-            new org.eolang.EObool(),
-            "data",
-            new Data.Value<>(
-                new Data.Take(self.attr("ρ").get()).take(Long.class)
-                <
-                new Data.Take(self.attr("x").get()).take(Long.class)
-            )
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new Data.Take(self.attr("ρ").get()).take(Long.class)
+            <
+            new Data.Take(self.attr("x").get()).take(Long.class)
         ))));
     }
 

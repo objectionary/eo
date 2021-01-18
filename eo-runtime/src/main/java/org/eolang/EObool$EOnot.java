@@ -29,7 +29,6 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -46,11 +45,7 @@ public class EObool$EOnot extends PhDefault {
             final Boolean term = new Data.Take(
                 self.attr("ρ").get()
             ).take(Boolean.class);
-            return new PhWith(
-                new org.eolang.EObool(),
-                "data",
-                new Data.Value<>(!term)
-            );
+            return new Data.ToPhi(!term);
         })));
     }
 

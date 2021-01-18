@@ -29,7 +29,6 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -52,11 +51,7 @@ public class EOarray$EOmapi extends PhDefault {
                 after.attr(1).put(new Data.Value<>(idx));
                 array[idx] = after;
             }
-            return new PhWith(
-                new org.eolang.EOarray(),
-                "data",
-                new Data.Value<>(array)
-            );
+            return new Data.ToPhi(array);
         })));
     }
 
