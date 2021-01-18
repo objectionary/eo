@@ -1,0 +1,10 @@
++package sandbox
+
+# Precondition: n >= 3
+# minus1 = number of times the fibonacci number of n-1 must be taken
+# minus2 = number of times the fibonacci number of n-2 must be taken
+[n minus1 minus2] > fiborec
+  if. > @
+    eq. n 3
+    add. minus1 minus2
+    fiborec (sub. n 1) (add. minus1 minus2) minus1
