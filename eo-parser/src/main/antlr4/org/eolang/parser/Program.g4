@@ -74,7 +74,6 @@ abstraction
 attribute
   :
   label
-  QUESTION?
   ;
 
 label
@@ -197,7 +196,6 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 DOTS: '...';
 CONST: '!';
-QUESTION: '?';
 SLASH: '/';
 COLON: ':';
 ARROW: '>';

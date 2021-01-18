@@ -24,31 +24,47 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
- * MEMORY.WRITE.
+ * MEMORY.
  *
  * @since 1.0
  */
-public class EOmemory$EOwrite extends PhDefault {
+public class EOmemory extends PhDefault {
 
-    public EOmemory$EOwrite(final Phi parent) {
+    private final AtomicReference<Phi> phi = new AtomicReference<>();
+
+    public EOmemory() {
+        this(new PhEta());
+    }
+
+    public EOmemory(final Phi parent) {
         super(parent);
-        this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Phi arg = self.attr("x").get();
-            self.attr("ρ").get().attr("φ").put(arg);
-            return new PhWith(
-                new org.eolang.EObool(), "data", new Data.Value<>(true)
-            );
-        })));
+        this.add("φ", new AtBound(new AtLambda(this, self -> this.phi.get())));
+        this.add("write", new AtBound(new AtLambda(this, EOmemory.Write::new)));
+    }
+
+    private final class Write extends PhDefault {
+        Write(final Phi parent) {
+            super(parent);
+            this.add("x", new AtFree());
+            this.add("φ", new AtBound(new AtLambda(this, self -> {
+                final Phi arg = self.attr("x").get();
+                EOmemory.this.phi.set(arg);
+                return new PhWith(
+                    new org.eolang.EObool(), "data", new Data.Value<>(true)
+                );
+            })));
+        }
     }
 
 }
