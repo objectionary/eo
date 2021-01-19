@@ -45,10 +45,18 @@ public class EOarray$EOget extends PhDefault {
             final Phi[] array = new Data.Take(
                 self.attr("ρ").get()
             ).take(Phi[].class);
-            final long idx = new Data.Take(
+            final int idx = (int) (long) new Data.Take(
                 self.attr("i").get()
             ).take(Long.class);
-            return array[(int) idx];
+            if (array.length <= idx) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Can't get() the %dth element of the array, there are just %d of them",
+                        idx, array.length
+                    )
+                );
+            }
+            return array[idx];
         })));
     }
 
