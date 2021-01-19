@@ -28,11 +28,13 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Map;
+import org.apache.commons.io.IOUtils;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -81,30 +83,12 @@ public final class PacksTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlPacks() {
-        return new ListOf<>(
-            "simple.yaml",
-            "full-syntax.yaml",
-            "catches-name-duplicates.yaml",
-            "catches-abstract-decoratee.yaml",
-            "catches-alias-duplicates.yaml",
-            "catches-global-nonames.yaml",
-            "catches-broken-aliases.yaml",
-            "catches-middle-vararg.yaml",
-            "catches-nonempty-atoms.yaml",
-            "catches-unknown-names.yaml",
-            "catches-self-naming.yaml",
-            "catches-noname-attrs.yaml",
-            "catches-same-line-name.yaml",
-            "all-data-types.yaml",
-            "fixes-globals.yaml",
-            "adds-refs.yaml",
-            "adds-default-package.yaml",
-            "float-vars.yaml",
-            "float-abstracts.yaml",
-            "resolves-aliases.yaml",
-            "wraps-methods.yaml",
-            "leap-year.yaml"
+    private static Collection<String> yamlPacks() throws IOException {
+        return IOUtils.readLines(
+            PacksTest.class.getClassLoader().getResourceAsStream(
+                "org/eolang/parser/packs/"
+            ),
+            Charset.defaultCharset()
         );
     }
 
