@@ -55,6 +55,7 @@ public final class Pack implements Iterable<XSL> {
                 "errors/not-empty-atoms.xsl",
                 "errors/middle-varargs.xsl",
                 "errors/duplicate-names.xsl",
+                "errors/many-free-attributes.xsl",
                 "errors/broken-aliases.xsl",
                 "errors/duplicate-aliases.xsl",
                 "errors/global-nonames.xsl",
