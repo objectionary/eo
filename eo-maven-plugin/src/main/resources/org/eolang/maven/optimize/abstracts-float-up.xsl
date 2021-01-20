@@ -120,6 +120,9 @@ SOFTWARE.
       <xsl:attribute name="name">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>
+      <xsl:attribute name="original-name">
+        <xsl:value-of select="@name"/>
+      </xsl:attribute>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
       <xsl:if test="count($ancestors) &gt; 1">
         <xsl:attribute name="ancestors">

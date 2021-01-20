@@ -272,9 +272,9 @@ SOFTWARE.
     <xsl:value-of select="$indent"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhMethod(new PhCopy(</xsl:text>
+    <xsl:text> = new PhMethod(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_base), "</xsl:text>
+    <xsl:text>_base, "</xsl:text>
     <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
