@@ -148,7 +148,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     protected final void add(final String name, final Attr attr) {
-        if (name.matches("^[a-z]+$")) {
+        if (name.matches("^[a-z0-9]+$")) {
             this.order.add(name);
         }
         this.attrs.put(
