@@ -1,7 +1,7 @@
 # The EO Programming Language Standard Library
 This section covers *The EO Standard Library* which is a collection of utility objects for writing programs in *EO*.
 ## Command Line Interface Output
-*The EO Standard Library* contains two objects for the CLI output: `sprintf` for formatted output and `stdout` for plain text output. 
+*The EO Standard Library* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 ### Plain Text Output
 For plain text output, the `stdout` object is used.   
 **Fully Qualified Name:** `org.eolang.io.stdout`.
