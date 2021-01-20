@@ -32,7 +32,6 @@ import org.eolang.phi.AtLambda;
 import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -46,7 +45,7 @@ public class EOsprintf extends PhDefault {
         super(parent);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final String format = new Data.Take(
                 self.attr("format").get()
             ).take(String.class);
@@ -57,13 +56,7 @@ public class EOsprintf extends PhDefault {
             for (final Phi arg : args) {
                 items.add(new Data.Take(arg).take());
             }
-            return new PhWith(
-                new org.eolang.EOstring(),
-                "data",
-                new Data.Value<>(
-                    String.format(format, items.toArray())
-                )
-            );
+            return new Data.ToPhi(String.format(format, items.toArray()));
         })));
     }
 

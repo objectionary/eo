@@ -25,10 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -46,14 +42,10 @@ public final class OptimizeMojoTest {
     public void testSimpleOptimize() throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
-        new LengthOf(
-            new TeeInput(
-                new InputOf(
-                    "[args] > main\n  (stdout \"Hello!\").print > @\n"
-                ),
-                new OutputTo(src.resolve("main.eo"))
-            )
-        ).value();
+        new Save(
+            "[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src.resolve("main.eo")
+        ).save();
         final Path target = temp.resolve("target");
         new Mojo<>(ParseMojo.class)
             .with("targetDir", target.toFile())
@@ -63,7 +55,7 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("eo/steps/main.eo.xml")),
+            Files.exists(target.resolve("02-steps/main.eo.xml")),
             Matchers.is(true)
         );
     }

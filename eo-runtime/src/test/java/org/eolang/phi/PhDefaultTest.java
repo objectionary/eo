@@ -23,7 +23,6 @@
  */
 package org.eolang.phi;
 
-import org.eolang.EOint;
 import org.eolang.txt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,7 +38,7 @@ public final class PhDefaultTest {
 
     @Test
     public void makesCopy() {
-        final Phi num = new PhWith(new EOint(), "data", new Data.Value<>(42L));
+        final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(new PhEta());
         final Phi phi = new PhDefaultTest.Foo(parent);
         phi.attr(0).put(num);
@@ -48,17 +47,20 @@ public final class PhDefaultTest {
             new Data.Take(copy).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
-        Assertions.assertThrows(
-            Attr.Exception.class,
-            () -> new Data.Take(new PhMethod(copy, "x")).take(Long.class)
-        );
         MatcherAssert.assertThat(
             phi.attr("x").get().attr("data"),
             Matchers.notNullValue()
         );
+    }
+
+    @Test
+    public void setsFreeAttributeOnlyOnce() {
+        final Phi num = new Data.ToPhi(42L);
+        final Phi phi = new PhDefaultTest.Foo(new PhEta());
+        phi.attr(0).put(num);
         Assertions.assertThrows(
             Attr.Exception.class,
-            () -> copy.attr(0).get().attr("data")
+            () -> phi.attr(0).put(num)
         );
     }
 
@@ -66,11 +68,9 @@ public final class PhDefaultTest {
          public Foo(final Phi parent) {
              super(parent);
              this.add("x", new AtFree());
-             this.add("_origin", new AtBound(new AtLambda(self -> new PhWith(
-                 new org.eolang.EOstring(),
-                 "data",
-                 new Data.Value<>("Hello, world!")
-             ))));
+             this.add("φ", new AtBound(new AtLambda(
+                 self -> new Data.ToPhi("Hello, world!")
+             )));
         }
     }
 

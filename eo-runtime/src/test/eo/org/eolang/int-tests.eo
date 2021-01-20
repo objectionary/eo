@@ -1,0 +1,45 @@
++package org.eolang
++junit
+
+[] > comparesTwoNumbers
+  less. > @
+    10
+    50
+
+[] > comparesTwoNumbersForEquality
+  not. > @
+    eq.
+      123
+      42
+
+[] > calculatesFibonacciNumberWithRecursion
+  eq. > @
+    13
+    fibo 7
+  [n] > fibo
+    if. > @
+      n.less 3
+      1
+      add.
+        fibo (n.sub 1)
+        fibo (n.sub 2)
+
+[] > calculatesFibonacciNumberWithTail
+  eq. > @
+    13
+    fibonacci 7
+  [n] > fibonacci
+    if. > @
+      n.less 3
+      small n
+      rec n 1 1
+    [n] > small
+      if. > @
+        n.eq 2
+        1
+        n
+    [n minus1 minus2] > rec
+      if. > @
+        n.eq 3
+        minus1.add minus2
+        rec (n.sub 1) (minus1.add minus2) minus1

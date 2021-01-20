@@ -38,8 +38,7 @@ public final class EOboolEOnotTest {
 
     @Test
     public void inversesValue() {
-        final Phi left = new org.eolang.EObool();
-        left.attr("data").put(new Data.Value<>(true));
+        final Phi left = new Data.ToPhi(true);
         final Phi not = left.attr("not").get();
         not.attr(0).put(left);
         MatcherAssert.assertThat(

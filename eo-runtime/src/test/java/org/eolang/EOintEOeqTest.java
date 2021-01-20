@@ -24,6 +24,9 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.PhCopy;
+import org.eolang.phi.PhMethod;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,12 +41,17 @@ public final class EOintEOeqTest {
 
     @Test
     public void comparesWithAnotherNumber() {
-        final Phi left = new org.eolang.EOint();
-        left.attr("data").put(new Data.Value<>(42L));
-        final Phi right = new org.eolang.EOint();
-        right.attr("data").put(new Data.Value<>(0L));
-        final Phi eql = left.attr("eq").get();
-        eql.attr(0).put(right);
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(0L);
+        final Phi eql = new PhCopy(
+            new PhCopy(
+                new PhWith(
+                    new PhMethod(new PhCopy(left), "eq"),
+                    0,
+                    new PhCopy(right)
+                )
+            )
+        );
         MatcherAssert.assertThat(
             new Data.Take(eql).take(Boolean.class),
             Matchers.equalTo(false)

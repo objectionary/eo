@@ -23,8 +23,6 @@
  */
 package org.eolang.txt;
 
-import org.eolang.EOint;
-import org.eolang.EOstring;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhEta;
 import org.eolang.phi.PhWith;
@@ -42,13 +40,8 @@ public final class EOsprintfTest {
 
     @Test
     public void printsString() {
-        final Phi format = new PhWith(
-            new EOstring(),
-            "data",
-            new Data.Value<>("Hello, %d!")
-        );
-        final Phi num = new EOint();
-        num.attr("data").put(new Data.Value<>(1L));
+        final Phi format = new Data.ToPhi("Hello, %d!");
+        final Phi num = new Data.ToPhi(1L);
         final Phi phi = new PhWith(
             new PhWith(
                 new EOsprintf(new PhEta()),
@@ -66,14 +59,8 @@ public final class EOsprintfTest {
 
     @Test
     public void printsStringWithVarargs() {
-        final Phi format = new PhWith(
-            new EOstring(),
-            "data",
-            new Data.Value<>("Hello, %s %s!")
-        );
-        final Phi num = new PhWith(
-            new EOint(), "data", new Data.Value<>(5L)
-        );
+        final Phi format = new Data.ToPhi("Hello, %s %s!");
+        final Phi num = new Data.ToPhi(5L);
         Phi phi = new EOsprintf(new PhEta());
         phi = phi.copy();
         phi = new PhWith(phi, 0, format);

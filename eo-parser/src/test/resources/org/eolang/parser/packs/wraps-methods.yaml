@@ -1,5 +1,5 @@
 xsls:
-  - wrap-method-calls.xsl
+  - org/eolang/parser/wrap-method-calls.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]

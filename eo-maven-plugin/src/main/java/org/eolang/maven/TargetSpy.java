@@ -27,21 +27,18 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
-import org.eolang.parser.Program;
+import org.eolang.parser.Spy;
 
 /**
  * The spy to log all results.
  *
  * @since 0.1
  */
-final class TargetSpy implements Program.Spy {
+final class TargetSpy implements Spy {
+
     /**
      * The dir.
      */
@@ -56,7 +53,8 @@ final class TargetSpy implements Program.Spy {
     }
 
     @Override
-    public void push(final int index, final XSL xsl, final XML xml) {
+    public void push(final int index, final XSL xsl, final XML xml)
+        throws IOException {
         final List<String> names = new XMLDocument(
             xsl.toString()
         ).xpath("/*/@id");
@@ -66,18 +64,15 @@ final class TargetSpy implements Program.Spy {
         } else {
             file = names.get(0).replaceAll("[^a-z0-9]", "-");
         }
-        new Unchecked<>(
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(xml.toString()),
-                    new OutputTo(
-                        this.dir.resolve(
-                            String.format("%02d-%s.xml", index, file)
-                        )
-                    )
-                )
+        if (this.dir.toFile().mkdirs()) {
+            Logger.debug(this, "Directory %s created", this.dir);
+        }
+        new Save(
+            xml.toString(),
+            this.dir.resolve(
+                String.format("%02d-%s.xml", index, file)
             )
-        ).value();
+        ).save();
         Logger.debug(this, "Step #%d by %s:\n%s", index, file, xml);
     }
 }

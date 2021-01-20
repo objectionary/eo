@@ -21,47 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOarray}.
+ * EQ.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOarrayEOpushTest {
+public class EOstring$EOeq extends PhDefault {
 
-    @Test
-    public void pushesObject() {
-        final Phi str = new org.eolang.EOstring();
-        str.attr("data").put(new Data.Value<>("Hello, world!"));
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {}));
-        final Phi push = new EOarray$EOpush(array);
-        push.attr(0).put(str);
-        MatcherAssert.assertThat(
-            new Data.Take(push).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-        MatcherAssert.assertThat(
-            new Data.Take(array).take(Phi[].class)[0],
-            Matchers.equalTo(str)
-        );
-    }
-
-    @Test
-    public void makesCopy() {
-        final Phi array = new org.eolang.EOarray();
-        array.attr("data").put(new Data.Value<>(new Phi[] {}));
-        MatcherAssert.assertThat(
-            new EOarray$EOpush(array).copy(),
-            Matchers.notNullValue()
-        );
+    public EOstring$EOeq(final Phi parent) {
+        super(parent);
+        this.add("x", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new Data.Take(self.attr("ρ").get()).take(String.class).equals(
+                new Data.Take(self.attr("x").get()).take(String.class)
+            )
+        ))));
     }
 
 }

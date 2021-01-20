@@ -45,6 +45,7 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -58,6 +59,7 @@ import org.yaml.snakeyaml.Yaml;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
+    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -111,12 +113,7 @@ public final class SnippetTest {
         final Input stdin, final Output stdout) throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
-        new LengthOf(
-            new TeeInput(
-                code,
-                new OutputTo(src.resolve("code.eo"))
-            )
-        ).value();
+        new Save(code, src.resolve("code.eo")).save();
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final MavenProject project = new MavenProjectStub();

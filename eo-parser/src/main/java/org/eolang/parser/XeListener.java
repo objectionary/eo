@@ -38,7 +38,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Program.
+ * The listener for ANTLR4 walker.
  *
  * @since 0.1
  */
@@ -90,7 +90,8 @@ public final class XeListener implements ProgramListener {
                 )
             )
             .add("listing").set(ctx.getText()).up()
-            .add("errors").up();
+            .add("errors").up()
+            .add("sheets").up();
     }
 
     @Override
@@ -179,9 +180,6 @@ public final class XeListener implements ProgramListener {
     public void enterAttribute(final ProgramParser.AttributeContext ctx) {
         this.enter();
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
-        if (ctx.QUESTION() != null) {
-            this.dirs.attr("rw", "");
-        }
     }
 
     @Override

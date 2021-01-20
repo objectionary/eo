@@ -1,10 +1,19 @@
 +package sandbox
-+alias fiborec sandbox.fiborec
-+alias fibosmall sandbox.fibosmall
 
-# Precondition: n >= 0
 [n] > fibonacci
   if. > @
-    less. n 3
-    fibosmall n
-    fiborec n 1 1
+    n.less 3
+    small n
+    rec n 1 1
+
+  [n] > small
+    if. > @
+      n.eq 2
+      1
+      n
+
+  [n minus1 minus2] > rec
+    if. > @
+      n.eq 3
+      minus1.add minus2
+      rec (n.sub 1) (minus1.add minus2) minus1

@@ -4,21 +4,21 @@
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/C63314D6Z.svg)](https://www.0crat.com/p/C63314D6Z)
-[![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/eo)](http://www.rultor.com/p/yegor256/eo)
+[![DevOps By Rultor.com](http://www.rultor.com/b/cqfn/eo)](http://www.rultor.com/p/cqfn/eo)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
-[![Build Status](https://travis-ci.org/yegor256/eo.svg?branch=master)](https://travis-ci.org/yegor256/eo)
-[![PDD status](http://www.0pdd.com/svg?name=yegor256/eo)](http://www.0pdd.com/p?name=yegor256/eo)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e4f7ed144919f7f0d58c/maintainability)](https://codeclimate.com/github/yegor256/eo/maintainability)
-[![Hits-of-Code](https://hitsofcode.com/github/yegor256/eo)](https://hitsofcode.com/view/github/yegor256/eo)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/eo/blob/master/LICENSE.txt)
-![Lines of code](https://img.shields.io/tokei/lines/github/yegor256/eo)
+[![Build Status](https://travis-ci.org/cqfn/eo.svg?branch=master)](https://travis-ci.org/cqfn/eo)
+[![PDD status](http://www.0pdd.com/svg?name=cqfn/eo)](http://www.0pdd.com/p?name=cqfn/eo)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e4f7ed144919f7f0d58c/maintainability)](https://codeclimate.com/github/cqfn/eo/maintainability)
+[![Hits-of-Code](https://hitsofcode.com/github/cqfn/eo)](https://hitsofcode.com/view/github/cqfn/eo)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/eo/blob/master/LICENSE.txt)
+![Lines of code](https://img.shields.io/tokei/lines/github/cqfn/eo)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language. It's still a prototype.
-It's the future of OOP. Please [contribute](https://github.com/yegor256/eo#how-to-contribute)!
+It's the future of OOP. Please [contribute](https://github.com/cqfn/eo#how-to-contribute)!
 By the way, we're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
@@ -57,7 +57,7 @@ These things we **don't tolerate**:
   * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
-  * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/yegor256/eo/issues/51))
+  * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
 
 We want EO to be compilable to Java. We want to stay as close to Java and JVM
 as possible, mostly in order to re-use the eco-system and libraries
@@ -149,7 +149,7 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
-More examples are [here](https://github.com/yegor256/eo/tree/master/eo-maven-plugin/src/it).
+More examples are [here](https://github.com/cqfn/eo/tree/master/eo-maven-plugin/src/it).
 
 ## Tutorial
 
@@ -233,6 +233,34 @@ inside `app` and use it to build the output string:
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 `msg` has an abstract object attached to it, with a single "free" attribute
 `name`.
+
+This is how you iterate:
+
+```
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[] > app
+  memory > x
+  and. > @
+    x.write 2
+    while.
+      x.less 6
+      [i]
+        seq > @
+          stdout
+            sprintf "%dx%d = %d" x x (x.pow 2)
+          x.write (x.add 1)
+```
+
+This code will print this:
+
+```
+2 x 2 = 4
+3 x 3 = 9
+4 x 4 = 16
+5 x 5 = 25
+```
 
 Got the idea?
 

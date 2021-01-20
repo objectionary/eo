@@ -29,10 +29,10 @@ eo: |
   # This is just a simple string
   "Hello, world!" > hello!
 
-  [tt a...?] > atom /int
+  [tt a...] > atom /int
 
   # This is very good object
-  [x?] > first
+  [x] > first
     second > hello
       $.add 5 > i
       third:foo > x...!

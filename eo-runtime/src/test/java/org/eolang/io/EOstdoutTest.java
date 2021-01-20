@@ -23,7 +23,6 @@
  */
 package org.eolang.io;
 
-import org.eolang.EOstring;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhCopy;
 import org.eolang.phi.PhEta;
@@ -42,11 +41,7 @@ public final class EOstdoutTest {
 
     @Test
     public void printsString() {
-        final Phi format = new PhWith(
-            new EOstring(),
-            "data",
-            new Data.Value<>("Hello, world!\n")
-        );
+        final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
             new PhCopy(new EOstdout(new PhEta())),
             "text",

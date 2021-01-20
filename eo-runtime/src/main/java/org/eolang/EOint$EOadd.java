@@ -41,17 +41,11 @@ public class EOint$EOadd extends PhDefault {
     public EOint$EOadd(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(self.attr("_parent").get()).take(Long.class)
-                    +
-                    new Data.Take(self.attr("x").get()).take(Long.class)
-                )
-            );
-            return out;
-        })));
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new Data.Take(self.attr("ρ").get()).take(Long.class)
+            +
+            new Data.Take(self.attr("x").get()).take(Long.class)
+        ))));
     }
 
 }

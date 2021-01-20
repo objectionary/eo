@@ -26,7 +26,6 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.io.IOException;
-import java.nio.file.Path;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -37,7 +36,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.io.UncheckedInput;
 import org.cactoos.scalar.LengthOf;
@@ -45,7 +43,7 @@ import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
 
 /**
- * Syntax parser.
+ * Syntax parser, from plain text to XML using ANTLR4.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -72,17 +70,6 @@ public final class Syntax {
      *
      * @param nme The name of it
      * @param ipt Input text
-     * @param file The file to write the XML to
-     */
-    public Syntax(final String nme, final Input ipt, final Path file) {
-        this(nme, ipt, new OutputTo(file));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param nme The name of it
-     * @param ipt Input text
      * @param tgt Target
      */
     public Syntax(final String nme, final Input ipt, final Output tgt) {
@@ -94,10 +81,9 @@ public final class Syntax {
     /**
      * Compile it to XML and save.
      *
-     * @return XML parsed
      * @throws IOException If fails
      */
-    public XML parse() throws IOException {
+    public void parse() throws IOException {
         final String[] lines = new TextOf(this.input).asString().split("\n");
         final ANTLRErrorListener errors = new BaseErrorListener() {
             // @checkstyle ParameterNumberCheck (10 lines)
@@ -142,7 +128,6 @@ public final class Syntax {
             )
         ).value();
         Logger.debug(this, "Input of %d EO lines compiled", lines.length);
-        return dom;
     }
 
 }

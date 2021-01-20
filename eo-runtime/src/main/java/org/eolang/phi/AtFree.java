@@ -33,6 +33,8 @@ public final class AtFree implements Attr {
 
     private final Attr origin;
 
+    private Boolean set;
+
     public AtFree() {
         this(new AtSimple());
     }
@@ -43,6 +45,7 @@ public final class AtFree implements Attr {
 
     public AtFree(final Attr attr) {
         this.origin = attr;
+        this.set = false;
     }
 
     @Override
@@ -52,9 +55,7 @@ public final class AtFree implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        final Attr copy = this.origin.copy(self);
-        copy.put(new PhEta());
-        return new AtFree(copy);
+        return new AtFree(this.origin.copy(self));
     }
 
     @Override
@@ -70,7 +71,13 @@ public final class AtFree implements Attr {
 
     @Override
     public void put(final Phi phi) {
+        if (this.set) {
+            throw new Attr.Exception(
+                "This free attribute is already set, can't reset"
+            );
+        }
         this.origin.put(phi);
+        this.set = true;
     }
 
 }

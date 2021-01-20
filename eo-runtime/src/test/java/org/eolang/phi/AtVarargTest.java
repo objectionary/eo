@@ -39,8 +39,9 @@ public final class AtVarargTest {
         final Attr attr = new AtVararg();
         final Phi phi = new PhDefault();
         attr.put(phi);
+        attr.put(phi);
         MatcherAssert.assertThat(
-            new Data.Take(attr.get()).take(Phi[].class)[0],
+            new Data.Take(attr.get()).take(Phi[].class)[1],
             Matchers.equalTo(phi)
         );
     }

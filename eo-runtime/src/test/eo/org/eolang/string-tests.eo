@@ -1,0 +1,13 @@
++package org.eolang
++junit
+
+[] > trimsString
+  eq. > @
+    "Hello, dude"
+    "Hello, dude  ".trim
+
+[] > turnsStringIntoInt
+  eq. > @
+    42
+    "42".toInt
+

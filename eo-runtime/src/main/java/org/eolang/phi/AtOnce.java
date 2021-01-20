@@ -25,7 +25,7 @@
 package org.eolang.phi;
 
 /**
- * Modifiable only once attribute.
+ * Read only once.
  *
  * @since 0.1
  */
@@ -33,19 +33,11 @@ public final class AtOnce implements Attr {
 
     private final Attr origin;
 
-    private Boolean set;
-
-    public AtOnce() {
-        this(new AtSimple());
-    }
-
-    public AtOnce(final Phi phi) {
-        this(new AtSimple(phi));
-    }
+    private final Data<Phi> data;
 
     public AtOnce(final Attr attr) {
         this.origin = attr;
-        this.set = false;
+        this.data = new Data.Once<>(attr::get);
     }
 
     @Override
@@ -55,24 +47,22 @@ public final class AtOnce implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        this.set = false;
         return new AtOnce(this.origin.copy(self));
     }
 
     @Override
     public Phi get() {
-        return this.origin.get();
+        return this.data.take();
     }
 
     @Override
     public void put(final Phi phi) {
-        if (this.set) {
-            throw new Attr.Exception(
-                "This free attribute is already set, can't reset"
-            );
-        }
-        this.origin.put(phi);
-        this.set = true;
+        throw new IllegalStateException(
+            String.format(
+                "You can't overwrite %s",
+                this.origin
+            )
+        );
     }
 
 }

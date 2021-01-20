@@ -22,13 +22,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pre-attrs" version="2.0">
   <xsl:strip-space elements="*"/>
-  <xsl:template match="attr/o[not(@base) and @name and not(@rw)]">
-    <xsl:element name="once">
-      <xsl:copy>
-        <xsl:apply-templates select="node()|@*"/>
-      </xsl:copy>
+  <xsl:template match="class/o[@name and not(@level)]">
+    <xsl:element name="attr">
+      <xsl:apply-templates select="@name"/>
+      <xsl:variable name="t">
+        <xsl:choose>
+          <xsl:when test="@base">
+            <xsl:text>bound</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>free</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:element name="{$t}">
+        <xsl:copy>
+          <xsl:apply-templates select="node()|@*"/>
+        </xsl:copy>
+      </xsl:element>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">

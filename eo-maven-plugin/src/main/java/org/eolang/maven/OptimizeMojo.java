@@ -24,29 +24,21 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.UncheckedText;
-import org.eolang.parser.Pack;
-import org.eolang.parser.Program;
+import org.cactoos.list.ListOf;
+import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -69,26 +61,24 @@ public final class OptimizeMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("eo/parse");
+        final Path dir = this.targetDir.toPath().resolve("01-parse");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
                 .forEach(file -> this.optimize(dir, file));
         } catch (final IOException ex) {
             throw new MojoFailureException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't list XML files in %s",
-                        dir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't list XML files in %s",
+                    dir
+                ),
                 ex
             );
         }
@@ -104,32 +94,28 @@ public final class OptimizeMojo extends AbstractMojo {
         final String name = file.toString().substring(
             home.toString().length() + 1
         );
-        final Path dir = this.targetDir.toPath()
-            .resolve("eo/steps")
-            .resolve(name);
+        final Path dir = this.targetDir.toPath().resolve("02-steps").resolve(name);
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Program(new XMLDocument(file), new OutputTo(baos)).compile(
-                new Pack()
-                    .with("globals-to-abstracts.xsl")
-                    .with("remove-refs.xsl")
-                    .with("abstracts-float-up.xsl")
-                    .with("remove-levels.xsl")
-                    .with("add-refs.xsl")
-                    .with("errors/broken-refs.xsl"),
+            new Xsline(
+                new XMLDocument(file),
+                new OutputTo(baos),
                 new TargetSpy(dir)
-            );
-            final Path target = this.targetDir.toPath()
-                .resolve("eo/optimize")
-                .resolve(name);
-            new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(baos.toString()),
-                        new OutputTo(target)
-                    )
+            ).with(
+                new ListOf<>(
+                    "org/eolang/maven/optimize/globals-to-abstracts.xsl",
+                    "org/eolang/maven/optimize/remove-refs.xsl",
+                    "org/eolang/maven/optimize/abstracts-float-up.xsl",
+                    "org/eolang/maven/optimize/remove-levels.xsl",
+                    "org/eolang/parser/add-refs.xsl",
+                    "org/eolang/maven/optimize/fix-missed-names.xsl",
+                    "org/eolang/parser/errors/broken-refs.xsl"
                 )
-            ).value();
+            ).pass();
+            final Path target = this.targetDir.toPath()
+                .resolve("03-optimize")
+                .resolve(name);
+            new Save(baos.toString(), target).save();
             Logger.info(
                 this, "%s optimized to %s, all steps are in %s",
                 file, target, dir
@@ -138,35 +124,12 @@ public final class OptimizeMojo extends AbstractMojo {
                 this, "Optimized XML saved to %s:\n%s",
                 target, baos.toString()
             );
-            final List<XML> errors = new XMLDocument(baos.toString())
-                .nodes("/program/errors/error");
-            for (final XML error : errors) {
-                Logger.error(
-                    this,
-                    "[%s:%s] %s (%s:%s)",
-                    name,
-                    error.xpath("@line").get(0),
-                    error.xpath("text()").get(0),
-                    error.xpath("@check").get(0),
-                    error.xpath("@step").get(0)
-                );
-            }
-            if (!errors.isEmpty()) {
-                throw new IllegalStateException(
-                    String.format(
-                        "There are %d errors in %s, see log above",
-                        errors.size(), file
-                    )
-                );
-            }
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't compile %s into %s",
-                        file, this.targetDir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't pass %s into %s",
+                    file, this.targetDir
+                ),
                 ex
             );
         }

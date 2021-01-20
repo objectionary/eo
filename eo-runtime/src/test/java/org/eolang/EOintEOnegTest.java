@@ -39,8 +39,7 @@ public final class EOintEOnegTest {
 
     @Test
     public void negatesNumber() {
-        final Phi left = new org.eolang.EOint();
-        left.attr("data").put(new Data.Value<>(42L));
+        final Phi left = new Data.ToPhi(42L);
         final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
             new Data.Take(neg).take(Long.class),

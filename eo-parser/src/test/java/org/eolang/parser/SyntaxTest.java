@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Program}.
+ * Test case for {@link Xsline}.
  *
  * @since 0.1
  */

@@ -23,23 +23,16 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.log.Logger;
-import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import java.io.ByteArrayOutputStream;
-import java.util.Collection;
-import java.util.Map;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.list.ListOf;
+import java.io.IOException;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.yaml.snakeyaml.Yaml;
 
 /**
- * Test case for packs.
+ * Test case for optimize-packs.
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -48,64 +41,26 @@ public final class PacksTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    @SuppressWarnings("unchecked")
     public void testPacks(final String pack) throws Exception {
-        final Yaml yaml = new Yaml();
-        final Map<String, Object> map = yaml.load(
-            PacksTest.class.getResourceAsStream(
-                String.format("packs/%s", pack)
-            )
+        MatcherAssert.assertThat(
+            new Scenario(
+                new TextOf(
+                    new ResourceOf(
+                        String.format("org/eolang/parser/packs/%s", pack)
+                    )
+                ).asString()
+            ).failures(),
+            Matchers.empty()
         );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Syntax(
-            pack,
-            new InputOf(String.format("%s\n", map.get("eo"))),
-            new OutputTo(baos)
-        ).parse();
-        final XML xml = new XMLDocument(baos.toString());
-        baos.reset();
-        final Program program = new Program(xml, new OutputTo(baos));
-        final Collection<String> xsls = (Collection<String>) map.get("xsls");
-        if (xsls == null) {
-            program.compile(new Program.Spy.Verbose());
-        } else {
-            program.compile(new Pack(xsls), new Program.Spy.Verbose());
-        }
-        Logger.debug(this, "Output XML:\n%s", baos.toString());
-        for (final String xpath : (Iterable<String>) map.get("tests")) {
-            MatcherAssert.assertThat(
-                XhtmlMatchers.xhtml(baos.toString()),
-                XhtmlMatchers.hasXPath(xpath)
-            );
-        }
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlPacks() {
-        return new ListOf<>(
-            "simple.yaml",
-            "full-syntax.yaml",
-            "catches-name-duplicates.yaml",
-            "catches-abstract-decoratee.yaml",
-            "catches-alias-duplicates.yaml",
-            "catches-global-nonames.yaml",
-            "catches-broken-aliases.yaml",
-            "catches-middle-vararg.yaml",
-            "catches-nonempty-atoms.yaml",
-            "catches-unknown-names.yaml",
-            "catches-self-naming.yaml",
-            "catches-noname-attrs.yaml",
-            "catches-same-line-name.yaml",
-            "all-data-types.yaml",
-            "fixes-globals.yaml",
-            "adds-refs.yaml",
-            "adds-default-package.yaml",
-            "float-vars.yaml",
-            "float-abstracts.yaml",
-            "resolves-aliases.yaml",
-            "wraps-methods.yaml",
-            "leap-year.yaml"
-        );
+    private static String[] yamlPacks() throws IOException {
+        return new TextOf(
+            new ResourceOf(
+                "org/eolang/parser/packs/"
+            )
+        ).asString().split("\n");
     }
 
 }

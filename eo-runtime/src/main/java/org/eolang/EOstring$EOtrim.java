@@ -39,17 +39,11 @@ public class EOstring$EOtrim extends PhDefault {
 
     public EOstring$EOtrim(final Phi parent) {
         super(parent);
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi out = new org.eolang.EOstring();
-            out.attr("data").put(
-                new Data.Value<>(
-                    new Data.Take(
-                        self.attr("_parent").get()
-                    ).take(String.class).trim()
-                )
-            );
-            return out;
-        })));
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new Data.Take(
+                self.attr("ρ").get()
+            ).take(String.class).trim()
+        ))));
     }
 
 }

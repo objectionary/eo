@@ -1,20 +1,20 @@
 xsls:
-  - remove-refs.xsl
-  - abstracts-float-up.xsl
-  - remove-levels.xsl
-  - add-refs.xsl
-  - errors/same-line-names.xsl
-  - errors/duplicate-names.xsl
-  - errors/broken-refs.xsl
+  - org/eolang/maven/optimize/remove-refs.xsl
+  - org/eolang/maven/optimize/abstracts-float-up.xsl
+  - org/eolang/maven/optimize/remove-levels.xsl
+  - org/eolang/parser/add-refs.xsl
+  - org/eolang/parser/errors/same-line-names.xsl
+  - org/eolang/parser/errors/duplicate-names.xsl
+  - org/eolang/parser/errors/broken-refs.xsl
 tests:
   - /program/objects[count(o)=9]
   - /program/errors[count(*)=0]
   - //objects[not(.//o[@name=''])]
   - //o[@name='first$2$native' and @atom='int']
   - //o[@base='first$2$native' and @atom='int']
-  - //o[@name='first']
+  - //o[@name='first' and not(@ancestors)]
   - //o[@name='first']/o[@base='test' and @as='foo']
-  - //o[@name='first$2$second']
+  - //o[@name='first$2$second' and @ancestors='1' and @parent='first']
   - //o[@name='first$2$second$third']
   - //o[@name='first$2$second$third']/o[@base='stdout']/o[@base='a']
   - //o[@line='20.19' and @name='aa']

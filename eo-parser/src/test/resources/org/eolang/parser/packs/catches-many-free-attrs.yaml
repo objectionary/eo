@@ -1,0 +1,17 @@
+xsls:
+  - org/eolang/parser/errors/many-free-attributes.xsl
+tests:
+  - /program/errors[count(error)=1]
+eo: |
+  [a b c d e f]
+    something > @
+
+  [x y z] > main
+    [v] > zz /int
+    [v] > yy /int
+    [v] > uu /int
+    [v] > ff /int
+    [v] > oo /int
+    [v] > pp /int
+
+

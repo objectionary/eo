@@ -32,28 +32,30 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * PUSH.
+ * WHILE.
  *
  * @since 1.0
  */
-public class EOarray$EOpush extends PhDefault {
+public class EObool$EOwhile extends PhDefault {
 
-    public EOarray$EOpush(final Phi parent) {
+    public EObool$EOwhile(final Phi parent) {
         super(parent);
-        this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
-            ).take(Phi[].class);
-            final Phi[] dest = new Phi[array.length + 1];
-            for (int idx = 0; idx < array.length; ++idx) {
-                dest[idx] = array[idx];
+        this.add("f", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            long count = 0L;
+            while (true) {
+                final Boolean term = new Data.Take(
+                    self.attr("ρ").get()
+                ).take(Boolean.class);
+                if (!term) {
+                    break;
+                }
+                final Phi body = self.attr("f").get().copy();
+                body.attr(0).put(new Data.ToPhi(count));
+                new Data.Take(body).take();
+                ++count;
             }
-            dest[array.length] = self.attr("x").get();
-            parent.attr("data").put(new Data.Value<>(dest));
-            final Phi out = new org.eolang.EOint();
-            out.attr("data").put(new Data.Value<>((long) dest.length));
-            return out;
+            return new Data.ToPhi(count);
         })));
     }
 

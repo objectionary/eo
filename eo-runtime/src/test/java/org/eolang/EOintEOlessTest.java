@@ -38,10 +38,8 @@ public final class EOintEOlessTest {
 
     @Test
     public void comparesWithAnotherNumber() {
-        final Phi left = new org.eolang.EOint();
-        left.attr("data").put(new Data.Value<>(42L));
-        final Phi right = new org.eolang.EOint();
-        right.attr("data").put(new Data.Value<>(0L));
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(0L);
         final Phi less = left.attr("less").get();
         less.attr(0).put(right);
         MatcherAssert.assertThat(
@@ -49,4 +47,5 @@ public final class EOintEOlessTest {
             Matchers.equalTo(false)
         );
     }
+
 }

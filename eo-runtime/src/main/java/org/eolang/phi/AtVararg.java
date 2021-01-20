@@ -24,6 +24,9 @@
 
 package org.eolang.phi;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Vararg attribute.
  *
@@ -31,42 +34,26 @@ package org.eolang.phi;
  */
 public final class AtVararg implements Attr {
 
-    private final Attr origin;
-
-    public AtVararg() {
-        this(new AtSimple(AtVararg.empty()));
-    }
-
-    public AtVararg(final Attr attr) {
-        this.origin = attr;
-    }
+    private final List<Phi> array = new LinkedList<>();
 
     @Override
     public String toString() {
-        return String.format("%sV", this.origin.toString());
+        return String.format("%sV", this.array.toString());
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtVararg(this.origin.copy(self));
+        return new AtVararg();
     }
 
     @Override
     public Phi get() {
-        return this.origin.get();
+        return new Data.ToPhi(this.array.toArray(new Phi[] {}));
     }
 
     @Override
     public void put(final Phi phi) {
-        final Phi array = this.get();
-        final Phi push = array.attr("push").get().copy();
-        push.attr(0).put(phi);
-        new Data.Take(push).take(Long.class);
+        this.array.add(phi);
     }
 
-    private static Phi empty() {
-        final Phi empty = new org.eolang.EOarray();
-        empty.attr("data").put(new Data.Value<>(new Phi[] {}));
-        return empty;
-    }
 }

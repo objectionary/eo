@@ -47,7 +47,7 @@ public class PhOnce implements Phi {
 
     @Override
     public final String toString() {
-        return this.object.toString();
+        return this.object.take().toString();
     }
 
     @Override

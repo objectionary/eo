@@ -41,7 +41,7 @@ SOFTWARE.
     foo$test > test
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:import href="_funcs.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">
@@ -120,8 +120,19 @@ SOFTWARE.
       <xsl:attribute name="name">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>
-      <xsl:apply-templates select="node()|@* except @name"/>
+      <xsl:attribute name="original-name">
+        <xsl:value-of select="@name"/>
+      </xsl:attribute>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
+      <xsl:if test="count($ancestors) &gt; 1">
+        <xsl:attribute name="ancestors">
+          <xsl:value-of select="count($ancestors) - 1"/>
+        </xsl:attribute>
+        <xsl:attribute name="parent">
+          <xsl:value-of select="$ancestors[1]/@name"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@* except @name"/>
       <xsl:for-each select="1 to count($ancestors) - 1">
         <xsl:variable name="level" select="position()"/>
         <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $level + 1], $ancestors[count($ancestors) - $level])">

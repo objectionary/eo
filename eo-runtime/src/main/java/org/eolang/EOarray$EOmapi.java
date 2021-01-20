@@ -41,9 +41,9 @@ public class EOarray$EOmapi extends PhDefault {
     public EOarray$EOmapi(final Phi parent) {
         super(parent);
         this.add("f", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Phi[].class);
             for (int idx = 0; idx < array.length; ++idx) {
                 final Phi after = self.attr("f").get().copy();
@@ -51,9 +51,7 @@ public class EOarray$EOmapi extends PhDefault {
                 after.attr(1).put(new Data.Value<>(idx));
                 array[idx] = after;
             }
-            final Phi out = new org.eolang.EOarray();
-            out.attr("data").put(new Data.Value<>(array));
-            return out;
+            return new Data.ToPhi(array);
         })));
     }
 

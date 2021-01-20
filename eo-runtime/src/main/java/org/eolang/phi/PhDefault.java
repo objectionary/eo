@@ -62,7 +62,7 @@ public class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("_parent", new AtBound(prnt));
+        this.add("ρ", new AtSimple(prnt));
     }
 
     @Override
@@ -96,10 +96,11 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = PhDefault.class.cast(this.clone());
-            copy.attrs = new HashMap<>();
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                copy.attrs.put(ent.getKey(), ent.getValue().copy(copy));
+                map.put(ent.getKey(), ent.getValue().copy(copy));
             }
+            copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
@@ -128,11 +129,11 @@ public class PhDefault implements Phi, Cloneable {
         if (attr != null) {
             return attr;
         }
-        final Attr sub = this.attrs.get("_origin");
+        final Attr sub = this.attrs.get("φ");
         if (sub != null) {
             attr = sub.get().attr(name);
             if (!(attr instanceof AtAbsent)) {
-                return attr;
+                return new AtChild(attr);
             }
         }
         return new AtNamed(
@@ -147,7 +148,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     protected final void add(final String name, final Attr attr) {
-        if (name.charAt(0) != '_') {
+        if (name.matches("^[a-z0-9]+$")) {
             this.order.add(name);
         }
         this.attrs.put(
@@ -161,5 +162,29 @@ public class PhDefault implements Phi, Cloneable {
                 attr
             )
         );
+    }
+
+    private final class AtChild implements Attr {
+        private final Attr origin;
+        AtChild(final Attr attr) {
+            this.origin = attr;
+        }
+        @Override
+        public Attr copy(final Phi self) {
+            return new AtChild(this.origin.copy(self));
+        }
+        @Override
+        public Phi get() {
+            final Phi phi = this.origin.get();
+            if (phi instanceof Data) {
+                return phi;
+            }
+            phi.attr("ρ").put(PhDefault.this);
+            return phi;
+        }
+        @Override
+        public void put(final Phi phi) {
+            this.origin.put(phi);
+        }
     }
 }

@@ -1,7 +1,7 @@
 assets:
-  settings.xml: yegor256/home#assets/eo/settings.xml
-  pubring.gpg: yegor256/home#assets/pubring.gpg
-  secring.gpg: yegor256/home#assets/secring.gpg
+  settings.xml: cqfn/secrets#settings.xml
+  pubring.gpg: cqfn/secrets#pubring.gpg
+  secring.gpg: cqfn/secrets#secring.gpg
 env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
   JAVA_OPTS: -XX:MaxPermSize=256m -Xmx1g
@@ -12,10 +12,10 @@ install: |
   pdd --file=/dev/null
 merge:
   script: |
-    mvn clean install -Peo -Pqulice --errors --settings ../settings.xml -Dstyle.color=never
+    mvn clean install -Pqulice --errors -Dstyle.color=never
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
     mvn clean install -Dinvoker.skip
-    mvn clean deploy -Peo -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
+    mvn clean deploy -Pcqfn -Psonatype --errors --settings ../settings.xml -Dstyle.color=never

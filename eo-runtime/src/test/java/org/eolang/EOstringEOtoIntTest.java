@@ -38,8 +38,7 @@ public final class EOstringEOtoIntTest {
 
     @Test
     public void toIntString() {
-        final Phi str = new org.eolang.EOstring();
-        str.attr("data").put(new Data.Value<>("42"));
+        final Phi str = new Data.ToPhi("42");
         final Phi phi = new EOstring$EOtoInt(str);
         MatcherAssert.assertThat(
             new Data.Take(phi).take(Long.class),

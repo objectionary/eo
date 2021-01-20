@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
@@ -36,13 +35,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.UncheckedText;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -65,26 +57,24 @@ public final class PullMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     private File targetDir;
 
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("eo/optimize");
+        final Path dir = this.targetDir.toPath().resolve("optimize");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
                 .forEach(this::pull);
         } catch (final IOException ex) {
             throw new MojoFailureException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't list XML files in %s",
-                        dir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't list XML files in %s",
+                    dir
+                ),
                 ex
             );
         }
@@ -107,12 +97,10 @@ public final class PullMojo extends AbstractMojo {
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't pull %s into %s",
-                        file, this.targetDir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't pull %s into %s",
+                    file, this.targetDir
+                ),
                 ex
             );
         }
@@ -136,17 +124,9 @@ public final class PullMojo extends AbstractMojo {
             );
         }
         final Path path = this.targetDir.toPath()
-            .resolve("eo/pull")
+            .resolve("pull")
             .resolve(String.format("%s.eo.xml", name.replace(".", "/")));
-        new IoChecked<>(
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(input),
-                    new OutputTo(path)
-                )
-            )
-        ).value();
-        Logger.info(this, "%s pulled to %s", name, path);
+        new Save(input, path).save();
     }
 
 }

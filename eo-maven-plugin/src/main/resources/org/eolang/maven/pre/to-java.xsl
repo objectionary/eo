@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
   <xsl:strip-space elements="*"/>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
@@ -74,20 +74,20 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '_origin'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '&#x3C6;'), '\$', '\$EO'))"/>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:text>_origin</xsl:text>
+        <xsl:text>&#x3C6;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="concat('', $n)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <xsl:template match="@name">
+  <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:value-of select="."/>
     </xsl:attribute>
@@ -101,20 +101,29 @@ SOFTWARE.
       <xsl:element name="java">
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="/program" mode="license"/>
-        <xsl:apply-templates select="/program/metas/meta[head='package']"/>
+        <xsl:apply-templates select="//meta[head='package']"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>import org.eolang.phi.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:text>public final class </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text> extends PhDefault {</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="." mode="ctors"/>
-        <xsl:text>}</xsl:text>
+        <xsl:apply-templates select="//meta[head='junit']"/>
+        <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template match="class" mode="body">
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>public final class </xsl:text>
+    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text> extends PhDefault {</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:if test="//meta[head='junit'] and not(@parent)">
+      <xsl:apply-templates select="." mode="tests"/>
+    </xsl:if>
+    <xsl:apply-templates select="class" mode="body"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
@@ -122,15 +131,29 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>() {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>this(new PhEta());</xsl:text>
+    <xsl:choose>
+      <xsl:when test="//meta[head='junit'] and not(@parent)">
+        <xsl:text>this.init();</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>this(new PhEta());</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text>public </xsl:text>
-    <xsl:value-of select="eo:class-name(@name)"/>
-    <xsl:text>(final Phi parent) {</xsl:text>
-    <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>super(parent);</xsl:text>
+    <xsl:choose>
+      <xsl:when test="//meta[head='junit'] and not(@parent)">
+        <xsl:text>private void init() {</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>public </xsl:text>
+        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:text>(final Phi parent) {</xsl:text>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>super(parent);</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
@@ -165,7 +188,7 @@ SOFTWARE.
     <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="bound">
-    <xsl:text>new AtBound(</xsl:text>
+    <xsl:text>new AtBound(new AtOnce(</xsl:text>
     <xsl:text>new AtLambda(this, self -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
@@ -178,7 +201,7 @@ SOFTWARE.
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
-    <xsl:text>)</xsl:text>
+    <xsl:text>))</xsl:text>
   </xsl:template>
   <xsl:template match="o[not(@base) and @name]">
     <xsl:text>/</xsl:text>
@@ -203,7 +226,7 @@ SOFTWARE.
         <xsl:text>(self)</xsl:text>
       </xsl:when>
       <xsl:when test="$b/@level">
-        <xsl:text>new PhMethod(new PhMethod(self, "_parent"), "</xsl:text>
+        <xsl:text>new PhMethod(new PhMethod(self, "&#x3C1;"), "</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
         <xsl:text>")</xsl:text>
       </xsl:when>
@@ -333,11 +356,34 @@ SOFTWARE.
     <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="/program/metas/meta[head='package']" mode="#all">
+  <xsl:template match="class" mode="tests">
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>@Test</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public void testWorks() {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>Assertions.assertTrue(</xsl:text>
+    <xsl:value-of select="eo:eol(3)"/>
+    <xsl:text>new Data.Take(new </xsl:text>
+    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text>()).take(Boolean.class)</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>);</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="meta[head='package']">
     <xsl:text>package </xsl:text>
     <xsl:value-of select="tail"/>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="meta[head='junit']">
+    <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="/program" mode="license">

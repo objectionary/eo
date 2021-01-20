@@ -41,14 +41,22 @@ public class EOarray$EOget extends PhDefault {
     public EOarray$EOget(final Phi parent) {
         super(parent);
         this.add("i", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Phi[].class);
-            final long idx = new Data.Take(
+            final int idx = (int) (long) new Data.Take(
                 self.attr("i").get()
             ).take(Long.class);
-            return array[(int) idx];
+            if (array.length <= idx) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Can't get() the %dth element of the array, there are just %d of them",
+                        idx, array.length
+                    )
+                );
+            }
+            return array[idx];
         })));
     }
 

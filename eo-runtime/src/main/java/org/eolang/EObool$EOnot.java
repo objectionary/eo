@@ -29,7 +29,6 @@ import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
@@ -42,15 +41,11 @@ public class EObool$EOnot extends PhDefault {
     public EObool$EOnot(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("_origin", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Boolean term = new Data.Take(
-                self.attr("_parent").get()
+                self.attr("ρ").get()
             ).take(Boolean.class);
-            return new PhWith(
-                new org.eolang.EObool(),
-                "data",
-                new Data.Value<>(!term)
-            );
+            return new Data.ToPhi(!term);
         })));
     }
 
