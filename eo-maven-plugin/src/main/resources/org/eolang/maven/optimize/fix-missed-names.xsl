@@ -29,7 +29,7 @@ SOFTWARE.
   them and fix them.
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="o[@base]">
+  <xsl:template match="o[@base and not(@ref)]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
