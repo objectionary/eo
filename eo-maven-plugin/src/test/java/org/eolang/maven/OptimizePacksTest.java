@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.maven;
 
 import java.io.IOException;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.parser.Scenario;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +38,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class PacksTest {
+public final class OptimizePacksTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
@@ -46,7 +47,7 @@ public final class PacksTest {
             new Scenario(
                 new TextOf(
                     new ResourceOf(
-                        String.format("org/eolang/parser/packs/%s", pack)
+                        String.format("org/eolang/maven/optimize-packs/%s", pack)
                     )
                 ).asString()
             ).failures(),
@@ -58,7 +59,7 @@ public final class PacksTest {
     private static String[] yamlPacks() throws IOException {
         return new TextOf(
             new ResourceOf(
-                "org/eolang/parser/packs/"
+                "org/eolang/maven/optimize-packs/"
             )
         ).asString().split("\n");
     }

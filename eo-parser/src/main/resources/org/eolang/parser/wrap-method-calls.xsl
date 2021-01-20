@@ -39,7 +39,7 @@ SOFTWARE.
   </o>
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:import href="_funcs.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:template match="o[@method]" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>

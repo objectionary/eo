@@ -41,7 +41,7 @@ SOFTWARE.
     foo$test > test
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:import href="_funcs.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">

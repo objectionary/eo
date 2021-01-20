@@ -1,6 +1,6 @@
 xsls:
-  - add-refs.xsl
-  - resolve-aliases.xsl
+  - org/eolang/parser/add-refs.xsl
+  - org/eolang/parser/resolve-aliases.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]

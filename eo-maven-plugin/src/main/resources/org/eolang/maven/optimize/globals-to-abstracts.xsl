@@ -22,43 +22,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="globals-to-abstracts" version="2.0">
+  <!--
+  Here we convert global closed objects to abstract ones. For example,
+  this code:
+
+  mul > c
+    2
+    pi
+
+  Would be converted to:
+
+  [] > c
+    mul
+      2
+      pi
+  -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="class[not(@parent)]/@name">
-    <xsl:attribute name="name">
-      <xsl:choose>
-        <xsl:when test="//meta[head='junit']">
-          <xsl:value-of select="."/>
-          <xsl:text>Test</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="."/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:attribute>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:template match="objects/o[not(eo:abstract(.))]">
+    <xsl:element name="o">
+      <xsl:apply-templates select="@name|@line|@ref"/>
+      <xsl:copy>
+        <xsl:apply-templates select="node()|@* except @name"/>
+      </xsl:copy>
+    </xsl:element>
   </xsl:template>
-  <xsl:template match="class">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//meta[head='junit']">
-        <xsl:variable name="c" select="."/>
-        <xsl:apply-templates select="//class[@parent=$c/@name]" mode="copy"/>
-      </xsl:if>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="objects/class[@parent]">
-    <xsl:choose>
-      <xsl:when test="//meta[head='junit']">
-        <!-- kill them -->
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy>
-          <xsl:apply-templates select="node()|@*"/>
-        </xsl:copy>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <xsl:template match="node()|@*" mode="#all">
+  <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

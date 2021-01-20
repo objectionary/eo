@@ -38,7 +38,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Program.
+ * The listener for ANTLR4 walker.
  *
  * @since 0.1
  */
@@ -90,7 +90,8 @@ public final class XeListener implements ProgramListener {
                 )
             )
             .add("listing").set(ctx.getText()).up()
-            .add("errors").up();
+            .add("errors").up()
+            .add("sheets").up();
     }
 
     @Override

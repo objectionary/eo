@@ -42,7 +42,7 @@ SOFTWARE.
       x
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:import href="_funcs.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:template match="objects">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="full"/>

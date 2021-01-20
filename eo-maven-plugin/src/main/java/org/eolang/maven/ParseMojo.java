@@ -41,12 +41,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Syntax;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -100,9 +95,6 @@ public final class ParseMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        if (this.targetDir.mkdirs()) {
-            Logger.info(this, "Target directory created: %s", this.targetDir);
-        }
         try {
             Files.walk(this.sourcesDir.toPath())
                 .filter(file -> !file.toFile().isDirectory())
@@ -119,12 +111,10 @@ public final class ParseMojo extends AbstractMojo {
                 .forEach(this::parse);
         } catch (final IOException ex) {
             throw new MojoFailureException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't list EO files in %s",
-                        this.sourcesDir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't list EO files in %s",
+                    this.sourcesDir
+                ),
                 ex
             );
         }
@@ -150,7 +140,7 @@ public final class ParseMojo extends AbstractMojo {
         );
         final String xml = String.format("%s.xml", name);
         final Path path = this.targetDir.toPath()
-            .resolve("parse")
+            .resolve("01-parse")
             .resolve(xml);
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -159,22 +149,13 @@ public final class ParseMojo extends AbstractMojo {
                 new InputOf(file),
                 new OutputTo(baos)
             ).parse();
-            new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(baos.toString()),
-                        new OutputTo(path)
-                    )
-                )
-            ).value();
+            new Save(baos.toString(), path).save();
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't parse %s into %s",
-                        file, this.targetDir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't parse %s into %s",
+                    file, this.targetDir
+                ),
                 ex
             );
         }

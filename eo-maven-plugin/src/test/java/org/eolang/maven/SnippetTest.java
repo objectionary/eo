@@ -113,12 +113,7 @@ public final class SnippetTest {
         final Input stdin, final Output stdout) throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
-        new LengthOf(
-            new TeeInput(
-                code,
-                new OutputTo(src.resolve("code.eo"))
-            )
-        ).value();
+        new Save(code, src.resolve("code.eo")).save();
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final MavenProject project = new MavenProjectStub();

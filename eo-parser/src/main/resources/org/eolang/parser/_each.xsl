@@ -24,12 +24,24 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:param name="step"/>
-  <xsl:template match="errors/error">
+  <xsl:param name="sheet"/>
+  <xsl:template match="errors/error[not(@step) or not(@sheet)]">
     <xsl:copy>
       <xsl:attribute name="step">
         <xsl:value-of select="$step"/>
       </xsl:attribute>
+      <xsl:attribute name="sheet">
+        <xsl:value-of select="$sheet"/>
+      </xsl:attribute>
       <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="sheets">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:element name="sheet">
+        <xsl:value-of select="$sheet"/>
+      </xsl:element>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

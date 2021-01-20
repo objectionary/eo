@@ -24,15 +24,14 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,15 +39,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.scalar.LengthOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.parser.Program;
+import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -113,7 +108,7 @@ public final class CompileMojo extends AbstractMojo {
         if (this.generatedDir.mkdirs()) {
             Logger.info(this, "Gen directory created: %s", this.generatedDir);
         }
-        final Path dir = this.targetDir.toPath().resolve("optimize");
+        final Path dir = this.targetDir.toPath().resolve("03-optimize");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
@@ -151,57 +146,79 @@ public final class CompileMojo extends AbstractMojo {
      * @param file XML file
      */
     private void compile(final Path file) {
-        final Path temp = this.targetDir.toPath().resolve("compile");
-        final Path pre = this.targetDir.toPath().resolve("pre");
+        final Path temp = this.targetDir.toPath().resolve("05-compile");
+        final Path pre = this.targetDir.toPath().resolve("04-pre");
         try {
-            final String[] sheets = {
-                "org/eolang/maven/classes.xsl",
-                "org/eolang/maven/junit.xsl",
-                "org/eolang/maven/attrs.xsl",
-                "org/eolang/maven/varargs.xsl",
-                "org/eolang/maven/data.xsl",
-                "org/eolang/maven/to-java.xsl",
-            };
-            XML after = new XMLDocument(file);
-            final String name = after.xpath("/program/@name").get(0);
-            for (final String sheet : sheets) {
-                after = this.transform(after, sheet);
-                final Path dir = pre.resolve(name);
-                Files.write(
-                    // @checkstyle MagicNumber (1 line)
-                    CompileMojo.resolve(dir, sheet.split("/")[3]),
-                    after.toString().getBytes()
-                );
-            }
-            Logger.debug(this, "Raw Java output of %s:\n%s", file, after);
-            Files.write(
-                CompileMojo.resolve(temp, name),
-                after.toString().getBytes()
-            );
+            final XML input = new XMLDocument(file);
+            final String name = input.xpath("/program/@name").get(0);
+            final Path target = CompileMojo.resolve(temp, name);
+            new Xsline(
+                input,
+                new OutputTo(CompileMojo.resolve(temp, name)),
+                new TargetSpy(CompileMojo.resolve(pre, name)),
+                new ListOf<>(
+                    "org/eolang/maven/pre/classes.xsl",
+                    "org/eolang/maven/pre/junit.xsl",
+                    "org/eolang/maven/pre/attrs.xsl",
+                    "org/eolang/maven/pre/varargs.xsl",
+                    "org/eolang/maven/pre/data.xsl",
+                    "org/eolang/maven/pre/to-java.xsl"
+                )
+            ).pass();
+            final XML after = this.noErrors(new XMLDocument(target), name);
             for (final XML java : after.nodes("//class[java and not(@atom)]")) {
-                CompileMojo.save(
+                new Save(
+                    java.xpath("java/text()").get(0),
                     this.generatedDir.toPath().resolve(
                         Paths.get(
                             String.format(
                                 "%s.java", java.xpath("@java-name").get(0)
                             )
                         )
-                    ),
-                    java.xpath("java/text()").get(0)
-                );
+                    )
+                ).save();
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't compile %s into %s",
-                        file, this.generatedDir
-                    )
-                ).asString(),
+                String.format(
+                    "Can't pass %s into %s",
+                    file, this.generatedDir
+                ),
                 ex
             );
         }
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+    }
+
+    /**
+     * Check for errors.
+     *
+     * @param xml The XML output
+     * @param name Name of the program
+     * @return The same XML if no errors
+     */
+    private XML noErrors(final XML xml, final String name) {
+        final List<XML> errors = xml.nodes("/program/errors/error");
+        for (final XML error : errors) {
+            Logger.error(
+                this,
+                "[%s:%s] %s (%s:%s)",
+                name,
+                error.xpath("@line").get(0),
+                error.xpath("text()").get(0),
+                error.xpath("@check").get(0),
+                error.xpath("@step").get(0)
+            );
+        }
+        if (!errors.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "There are %d errors in %s, see log above",
+                    errors.size(), name
+                )
+            );
+        }
+        return xml;
     }
 
     /**
@@ -221,46 +238,6 @@ public final class CompileMojo extends AbstractMojo {
             Logger.info(CompileMojo.class, "%s directory created", dir);
         }
         return path;
-    }
-
-    /**
-     * Single transformation.
-     * @param before XML before
-     * @param sheet The XSL to use
-     * @return Result
-     * @throws IOException If fails
-     */
-    private XML transform(final XML before, final String sheet)
-        throws IOException {
-        final XML xml = new XSLDocument(
-            new TextOf(new ResourceOf(sheet)).asString()
-        ).with(new ClasspathSources(Program.class)).transform(before);
-        Logger.debug(this, "XML output after %s:\n%s", sheet, xml);
-        return xml;
-    }
-
-    /**
-     * Save one Java file.
-     * @param path The path
-     * @param content The content
-     * @throws IOException If fails
-     */
-    private static void save(final Path path, final String content)
-        throws IOException {
-        new IoChecked<>(
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(content),
-                    path
-                )
-            )
-        ).value();
-        Logger.info(
-            CompileMojo.class,
-            "Saved %d chars to %s",
-            content.length(),
-            path.toAbsolutePath()
-        );
     }
 
 }

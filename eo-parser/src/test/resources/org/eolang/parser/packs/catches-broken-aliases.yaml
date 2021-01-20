@@ -1,5 +1,5 @@
 xsls:
-  - errors/broken-aliases.xsl
+  - org/eolang/parser/errors/broken-aliases.xsl
 tests:
   - /program/errors[count(error)=3]
   - /program/errors/error[@line='2']

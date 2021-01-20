@@ -25,10 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -48,19 +44,15 @@ public final class PullMojoTest {
     public void testSimpleOptimize() throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
-        new LengthOf(
-            new TeeInput(
-                new InputOf(
-                    String.join(
-                        "\n",
-                        "+alias stdout org.eolang.io.stdout",
-                        "",
-                        "[args] > main\n  (stdout \"Hello!\").print\n"
-                    )
-                ),
-                new OutputTo(src.resolve("main.eo"))
-            )
-        ).value();
+        new Save(
+            String.join(
+                "\n",
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[args] > main\n  (stdout \"Hello!\").print\n"
+            ),
+            src.resolve("main.eo")
+        ).save();
         final Path target = temp.resolve("target");
         new Mojo<>(ParseMojo.class)
             .with("targetDir", target.toFile())

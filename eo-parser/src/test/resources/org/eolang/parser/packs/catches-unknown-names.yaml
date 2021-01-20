@@ -1,5 +1,5 @@
 xsls:
-  - errors/unknown-names.xsl
+  - org/eolang/parser/errors/unknown-names.xsl
 tests:
   - /program/errors[count(error)=1]
   - /program/errors/error[@line='2']

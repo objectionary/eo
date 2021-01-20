@@ -23,44 +23,56 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import java.io.IOException;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test case for optimize-packs.
+ * Spy to use in {@link Xsline}.
  *
- * @since 1.0
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.1
  */
-public final class PacksTest {
+public interface Spy {
 
-    @ParameterizedTest
-    @MethodSource("yamlPacks")
-    public void testPacks(final String pack) throws Exception {
-        MatcherAssert.assertThat(
-            new Scenario(
-                new TextOf(
-                    new ResourceOf(
-                        String.format("org/eolang/parser/packs/%s", pack)
-                    )
-                ).asString()
-            ).failures(),
-            Matchers.empty()
-        );
+    /**
+     * New XSL produced.
+     *
+     * @param index The index of the XSL
+     * @param xsl The XSL used
+     * @param xml The XML produced
+     * @throws IOException If fails
+     */
+    void push(int index, XSL xsl, XML xml) throws IOException;
+
+    /**
+     * Empty spy.
+     *
+     * @since 0.1
+     */
+    final class None implements Spy {
+        @Override
+        public void push(final int index, final XSL xsl, final XML xml) {
+            // Nothing
+        }
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static String[] yamlPacks() throws IOException {
-        return new TextOf(
-            new ResourceOf(
-                "org/eolang/parser/packs/"
-            )
-        ).asString().split("\n");
+    /**
+     * Verbose spy, printing the progress to the console.
+     *
+     * @since 0.1
+     */
+    final class Verbose implements Spy {
+        @Override
+        public void push(final int index, final XSL xsl, final XML xml) {
+            Logger.debug(
+                this,
+                "Parsed #%d via %s\n%s",
+                index,
+                new XMLDocument(xsl.toString()).xpath("/*/@id").get(0),
+                xml
+            );
+        }
     }
-
 }

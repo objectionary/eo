@@ -25,10 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
 import org.eolang.parser.ParsingException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,20 +45,16 @@ public final class ParseMojoTest {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         final Path target = temp.resolve("target");
-        new LengthOf(
-            new TeeInput(
-                new InputOf(
-                    "[args] > main\n  (stdout \"Hello!\").print\n"
-                ),
-                new OutputTo(src.resolve("main.eo"))
-            )
-        ).value();
+        new Save(
+            "[args] > main\n  (stdout \"Hello!\").print\n",
+            src.resolve("main.eo")
+        ).save();
         new Mojo<>(ParseMojo.class)
             .with("sourcesDir", src.toFile())
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("parse/main.eo.xml")),
+            Files.exists(target.resolve("01-parse/main.eo.xml")),
             Matchers.is(true)
         );
     }
@@ -72,12 +64,7 @@ public final class ParseMojoTest {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         final Path target = temp.resolve("target");
-        new LengthOf(
-            new TeeInput(
-                new InputOf("something is wrong here"),
-                new OutputTo(src.resolve("f.eo"))
-            )
-        ).value();
+        new Save("something is wrong here", src.resolve("f.eo")).save();
         Assertions.assertThrows(
             ParsingException.class,
             () -> new Mojo<>(ParseMojo.class)

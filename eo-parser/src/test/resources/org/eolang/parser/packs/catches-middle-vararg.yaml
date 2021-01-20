@@ -1,5 +1,5 @@
 xsls:
-  - errors/middle-varargs.xsl
+  - org/eolang/parser/errors/middle-varargs.xsl
 tests:
   - /program/errors[count(error)=1]
 eo: |

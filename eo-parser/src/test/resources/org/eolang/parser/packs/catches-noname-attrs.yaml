@@ -1,5 +1,5 @@
 xsls:
-  - errors/noname-attributes.xsl
+  - org/eolang/parser/errors/noname-attributes.xsl
 tests:
   - /program/errors[count(error)=2]
   - /program/errors/error[@line='1']
