@@ -55,9 +55,8 @@ String formatting is the process of data injection into the string, optionally a
 **Fully Qualified Name:** `org.eolang.txt.sprintf`.
 #### Usage
 The `sprintf` object has two free attributes:  
-1. `format` for the format string that describes the formatting of the resulting string.
+1. `format` for the format `string` that describes the formatting of the resulting string.
 2. `args` for the data being injected into the string. `args` may be empty or may have any number of objects. `args` must be consistent with the `format` (i.e. the number and the types (as well as their order) of objects in the `format` and the `args` should be the same).    
-The object bounded to the `text` attribute must be of `string` type.  
   
 If the `sprintf` object is fully applied (i.e. all the attributes are bound), its `@` (phi) attribute contains the resulting formatted object of type 'string'.  
 For the `format` syntax reference, see [this article](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax).  
