@@ -61,7 +61,7 @@ The `sprintf` object has two free attributes:
 If the `sprintf` object is fully applied (i.e. all the attributes are bound), its `@` (phi) attribute contains the resulting formatted object of type 'string'.  
 For the `format` syntax reference, see [this article](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax).  
 #### Examples
-##### Print 'Em All
+##### Format 'Em All
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -86,5 +86,41 @@ Conceptually, we format the string and then print it to the terminal.
 ```
 IN$: ./run.sh
 OUT>: int: 2, bool: false, string: Hey
+IN$: 
+```
+## Random Number Generation
+*The EO Standard Library* contains the `random` object for generating a cryptographically strong random number.  
+**Fully Qualified Name:** `org.eolang.random` (the object is automatically imported, so no aliasing or FQN reference required).  
+### Usage
+The `random` object has no free attributes. On its initialization, the `random` object's `@` (phi) attribute is bounded to the generated random number, which is immutable (i.e. cannot be changed or generated again in the scope of the initialized object). So, every time the new random number is needed, the new application (initialization) of the `random` object is needed.     
+The resulting random number bounded to the `@` attribute of the `random` object is of type `float`.  
+The value is in the range 0.0 (inclusive) to 1.0 (exclusive).  
+### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  sprintf > formatted_string
+    "the 1st random: %f\nthe 2nd random: %f\nthe 3rd random:%f\n"
+    random
+    random
+    random
+
+  (stdout formatted_string) > @
+
+```
+In this example, we apply (or copy) an abstract `sprintf` object by bounding its free attribute `format` to the object `"the 1st random: %f\nthe 2nd random: %f\nthe 3rd random:%f\n"` of type `string` and its free attribute `args` to three unique instances of the `random` object.  
+Next, we bound the resulting copy of the object to the `formatted_string` identifier.  
+Then, we supply the `formatted_string` for its application to `stdout`.  
+Finally, we bound the resulting copy of the object `stdout` to the `@` (phi) attribute of the `app` object.  
+Conceptually, we format the string by injecting three random values in it and then print it to the terminal.  
+#### Running
+```
+IN$: ./run.sh
+OUT>: the 1st random: 0.125293
+OUT>: the 2nd random: 0.074904
+OUT>: the 3rd random:0.958538
 IN$: 
 ```
