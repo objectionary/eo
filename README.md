@@ -265,10 +265,199 @@ This code will print this:
 Got the idea?  
 
 ## The EO Programming Language Standard Library
-This section covers *The EO Standard Library* which is a collection of utility objects for writing programs in *EO*.
+This section covers *The EO Standard Library* which is a collection of utility objects for writing programs in *EO*.  
+### The EO Data Types Objects  
+*The EO Programming Language* defines these data types objects: `bool`, `int`, `float`, `string`, `char`, and `array`. 
+#### `bool` Data Type Object
+The `bool` data type object has two possible values: `true` and `false`. The `bool` data type object is used as a boolean value for performing logical operations.
+##### Syntax
+The `bool` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+**EBNF Notation**  
+```EBNF
+BOOL     ::= 'true'
+           | 'false'
+```
+**Railroad Diagram**  
+![The Bool Data Type Railroad Diagram](docs/img/BOOL.png "The Bool Data Type Railroad Diagram")  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%b\n%b\n"
+      true
+      false
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: true
+OUT>: false
+IN$: 
+```
+##### `if` Attribute
+The `if` attribute object is used for value substitution based on some condition which can be evaluated as a `bool` object.  
+The `if` attribute object has two free attributes:  
+1. `t` for the substitution in case if the base `bool` object is `true`.  
+2. `f` for the substitution in case if the base `bool` object is `false`.  
+  
+If the `if` attibute object is fully applied (i.e. all the free attributes are bound), its `@` (phi) attribute contains the resulting substitution.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%s\n%s\n%s\nThe max(2, 5) is: %d\n"
+      true.if
+        "the first value is true"
+        "the first value is false"
+      false.if
+        "the second value is true"
+        "the second value is false"
+      if.
+        2.less 3
+        "2 is less than 3"
+        "2 is not less than 3"
+      (5.less 2).if
+        2
+        5
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: the first value is true
+OUT>: the second value is false
+OUT>: 2 is less than 3
+OUT>: The max(2, 5) is: 5
+IN$: 
+```
+##### `not` Attribute
+The `not` attribute object is the object with inversed value of its base `bool` object.  
+The `not` attribute object has no free attributes. When the `not` attribute object is applied (called), its `@` (phi) attribute contains the resulting substitution.    
+
+###### Example
+In this example all the answers from the previous example (the `if` attribute section) are inversed with the `not` attribute.  
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "[NOT Edition (all the answers are inversed with .not)]\n%s\n%s\n%s\nThe max(2, 5) is: %d\n"
+      true.not.if
+        "the first value is true"
+        "the first value is false"
+      false.not.if
+        "the second value is true"
+        "the second value is false"
+      if.
+        (2.less 3).not
+        "2 is less than 3"
+        "2 is not less than 3"
+      (5.less 2).not.if
+        2
+        5
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: [NOT Edition (all the answers are inversed with .not)]
+OUT>: the first value is false
+OUT>: the second value is true
+OUT>: 2 is not less than 3
+OUT>: The max(2, 5) is: 2
+IN$: 
+```
+##### `and` Attribute
+The `and` attribute object is used to perform logical conjunction operation on a variety of `bool` objects.  
+The `and` attribute object has one free attribute `x` for the `bool` objects (conjuncts) on which the logical conjunction operation is to be performed. `x` may be empty or may have any number of `bool` objects.  
+  
+If the `and` attribute object is applied, its `@` (phi) attribute contains the resulting conjunction of the base `bool` object and all the objects bounded to the `x` attribute of the `and` attribute object.    
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  true > a
+  true > b
+  true > c
+  false > d
+  stdout > @
+    sprintf
+      "a && b = %b\na && b && c = %b\na && b && c && d = %b\n"
+      a.and b
+      a.and b c
+      and.
+        a
+        b
+        c
+        d
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: a && b = true
+OUT>: a && b && c = true
+OUT>: a && b && c && d = false
+IN$: 
+```
+##### `or` Attribute
+The `or` attribute object is used to perform logical disjunction operation on a variety of `bool` objects.  
+The `or` attribute object has one free attribute `x` for the `bool` objects (disjuncts) on which the logical disjunction operation is to be performed. `x` may be empty or may have any number of `bool` objects.  
+  
+If the `or` attribute object is applied, its `@` (phi) attribute contains the resulting disjunction of the base `bool` object and all the objects bounded to the `x` attribute of the `or` attribute object.    
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  false > a
+  false > b
+  false > c
+  true > d
+  stdout > @
+    sprintf
+      "a || b = %b\na || b || c = %b\na || b || c || d = %b\n"
+      a.or b
+      a.or b c
+      or.
+        a
+        b
+        c
+        d
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: a || b = false
+OUT>: a || b || c = false
+OUT>: a || b || c || d = true
+IN$: 
+```
+##### `while` Attribute
+`TODO`
 ### Command Line Interface Output
 *The EO Standard Library* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
-#### Plain Text Output
+#### Plain Text Output. `stdout`
 For plain text output, the `stdout` object is used.   
 **Fully Qualified Name:** `org.eolang.io.stdout`.
 ##### Usage
@@ -314,7 +503,7 @@ OUT>: HelloIN$:
 ```
 **Note:** here the `Hello` is printed with no `EOL` character at the end of the line, because of the absence of it in the user input. 
 
-#### Formatting String
+#### Formatting String. `sprintf`
 For strings formatting, the `sprintf` object is used.  
 String formatting is the process of data injection into the string, optionally applying format patterns to the data.  
 **Fully Qualified Name:** `org.eolang.txt.sprintf`.
@@ -352,7 +541,7 @@ IN$: ./run.sh
 OUT>: int: 2, bool: false, string: Hey
 IN$: 
 ```
-### Random Number Generation
+### Random Number Generation. `random`
 *The EO Standard Library* contains the `random` object for generating a cryptographically strong random number.  
 **Fully Qualified Name:** `org.eolang.random` (the object is automatically imported, so no aliasing or FQN reference required).  
 #### Usage
