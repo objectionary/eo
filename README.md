@@ -511,6 +511,123 @@ OUT>: true
 OUT>: false
 IN$: 
 ```
+#### `string` Data Type Object
+The `string` data type object is used to to store and transform symbolic data (i.e. string literals).
+##### Syntax
+The `string` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+**EBNF Notation**  
+```EBNF
+STRING   ::= '"' ( '\"' | [^"] )* '"'
+```
+**Railroad Diagram**  
+![The String Data Type Railroad Diagram](docs/img/STRING.png "The String Data Type Railroad Diagram")  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%s%s%s"
+      "Hello, "
+      "World! Welcome to The \"EO Docs\"!"
+      "\n"
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: Hello, World! Welcome to The "EO Docs"!
+IN$: 
+```
+##### `eq` Attribute
+The `eq` attribute object is used for testing if two `string` objects are equal.    
+The `eq` attribute object has one free attribute `x` of type `string`, which is the second object (the first object is the base object of the `eq` attribute).    
+If the `eq` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the objects are equal) or `false` (otherwise).  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%b\n%b\n%b\n"
+      "".eq ""
+      "Hey".eq "Hey"
+      "Hey".eq "hey"
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: true
+OUT>: true
+OUT>: false
+IN$: 
+```
+##### `trim` Attribute
+The `trim` attribute object is used for trimming the base `string` object (i.e. `trim` removes whitespace from both ends of a string).    
+The `trim` attribute object has no free attributes.  
+If the `trim` attribute object is applied (called), its `@` (phi) attribute contains the resulting trimmed `string`.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%s%s%s"
+      "  Hello There  ".trim
+      "            !           ".trim
+      "\n".trim
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: Hello There!IN$: 
+```
+Here, the `\n` escape sequence is trimmed as it is a whitespace character. 
+##### `toInt` Attribute
+The `toInt` attribute object is used for parsing the base `string` object as an object of type `int`.  
+The format of the base `string` object must be as described below:  
+1. The first character of the `string` literal may be either `+` or `-`. This indicates the sign of the `int` value. The sign may be omitted (in such case the number is considered to be positive).  
+2. All the other characters of the `string` literal must be decimal digits (`0-9`). 
+  
+If the format of the base `string` object is incorrect, the `toInt` attribute would fail on its application.  
+The `toInt` attribute object has no free attributes.  
+If the `toInt` attribute object is applied (called), its `@` (phi) attribute contains the resulting parsed `int`.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n%d\n%d\n"
+      "1700".toInt
+      "-1500".toInt
+      "8".toInt
+      "-0".toInt
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 1700
+OUT>: -1500
+OUT>: 8
+OUT>: 0
+IN$: 
+```
 ### Command Line Interface Output
 *The EO Standard Library* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 #### Plain Text Output. `stdout`
