@@ -301,12 +301,12 @@ OUT>: false
 IN$: 
 ```
 ##### `if` Attribute
-The `if` attribute object is used for value substitution based on some condition which can be evaluated as a `bool` object.  
+The `if` attribute object is used for value substitution based on a condition that can be evaluated as a `bool` object.  
 The `if` attribute object has two free attributes:  
 1. `t` for the substitution in case if the base `bool` object is `true`.  
 2. `f` for the substitution in case if the base `bool` object is `false`.  
   
-If the `if` attibute object is fully applied (i.e. all the free attributes are bound), its `@` (phi) attribute contains the resulting substitution.  
+If the `if` attribute object is fully applied (i.e. all the free attributes are bound), its `@` (phi) attribute contains the resulting substitution.  
 ###### Example
 ```
 +package sandbox
@@ -342,11 +342,11 @@ OUT>: The max(2, 5) is: 5
 IN$: 
 ```
 ##### `not` Attribute
-The `not` attribute object is the object with inversed value of its base `bool` object.  
+The `not` attribute object is the object with the inversed value of its base `bool` object.  
 The `not` attribute object has no free attributes. When the `not` attribute object is applied (called), its `@` (phi) attribute contains the resulting substitution.    
 
 ###### Example
-In this example all the answers from the previous example (the `if` attribute section) are inversed with the `not` attribute.  
+In this example, all the answers from the previous example (the `if` attribute section) are inversed with the `not` attribute.  
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -487,9 +487,9 @@ OUT>: -3.710000
 IN$: 
 ```
 ##### `eq` Attribute
-The `eq` attribute object is used for testing if two `float` objects are equeal.    
+The `eq` attribute object is used for testing if two `float` objects are equal.    
 The `eq` attribute object has one free attribute `x` of type `float`, which is the second object (the first object is the base object of the `eq` attribute).    
-If the `eq` attibute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the either `true` (if the objects are equal) or `false` (otherwise).  
+If the `eq` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the objects are equal) or `false` (otherwise).  
 ###### Example
 ```
 +package sandbox
