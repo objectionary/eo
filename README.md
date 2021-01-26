@@ -455,6 +455,62 @@ IN$:
 ```
 ##### `while` Attribute
 `TODO`
+#### `float` Data Type Object
+The `float` data type object values range is the same as of `double` data type in Java (which is a double-precision 64-bit IEEE 754 floating point). The `float` data type object is used to perform `FPU` computations.
+##### Syntax
+The `float` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+**EBNF Notation**  
+```EBNF
+FLOAT    ::= ( '+' | '-' )? [0-9]+ '.' [0-9]+
+```
+**Railroad Diagram**  
+![The Float Data Type Railroad Diagram](docs/img/FLOAT.png "The Float Data Type Railroad Diagram")  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%f\n%f\n"
+      1.5
+      -3.71
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 1.500000
+OUT>: -3.710000
+IN$: 
+```
+##### `eq` Attribute
+The `eq` attribute object is used for testing if two `float` objects are equeal.    
+The `eq` attribute object has one free attribute `x` of type `float`, which is the second object (the first object is the base object of the `eq` attribute).    
+If the `eq` attibute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the either `true` (if the objects are equal) or `false` (otherwise).  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%b\n%b\n"
+      1.5.eq 1.5
+      -3.71.eq 3.71
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: true
+OUT>: false
+IN$: 
+```
 ### Command Line Interface Output
 *The EO Standard Library* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 #### Plain Text Output. `stdout`
