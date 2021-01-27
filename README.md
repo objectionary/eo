@@ -840,7 +840,41 @@ IN$:
 ##### `div` Attribute
 `TODO` (does not work properly at the moment)
 ##### `mod` Attribute
-`TODO`
+The `mod` attribute object is used to calculate the floor remainder of the integer division of its base `int` object by the `x` free attribute (i.e. `$ fmod x`).  
+If the `mod` attribute object is fully applied, it represents the resulting floor modulus (remainder).  
+The modulus for `x = 0` is undefined.
+The resulting floor modulus has the same sign as the divisor `x`.  
+The relationship between the `mod` and `div` operations is as follows:  
+`(x div y) * y + x mod y == x`
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n%d\n%d\n%d\n%d\n"
+      2.mod 1
+      7.mod 5
+      113.mod 10
+      113.mod -10
+      -113.mod 10
+      -113.mod -10
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 0
+OUT>: 2
+OUT>: 3
+OUT>: -7
+OUT>: 7
+OUT>: -3
+IN$: 
+```
 ##### `pow` Attribute
 The `pow` attribute object is used to calculate the power of its base `int` object and the free attribute `x` of type `int` (i.e. `$^x`).  
 If the `pow` attribute object is fully applied, it represents the resulting power of the base `int` object raised to the power of the `x` attribute.  
@@ -871,7 +905,19 @@ OUT>: 1
 OUT>: 2
 IN$: 
 ```
-Here, `2^(-10)` results in `0` as well as raising all the integer numbers (except `0`) to the negative power (`-1, -2, -3, ...`). 
+Here, `2^(-10)` results in `0` as well as raising all the integer numbers (except `0`) to the negative power (`-1, -2, -3, ...`).  
+#### `char` Data Type Object
+The `char` data type object represents a single character.  
+**The `char` object is not implemented yet, hence the `char` cannot be used for now.**
+**Fully Qualified Name:** `org.eolang.char` (no aliasing or FQN reference required since the object is automatically imported).  
+##### Syntax
+The `char` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+**EBNF Notation**  
+```EBNF
+CHAR     ::= "'" [0-9a-zA-Z] "'"
+```
+**Railroad Diagram**  
+![The Char Data Type Railroad Diagram](docs/img/CHAR.png "The Char Data Type Railroad Diagram")  
 ### Command Line Interface Output
 *The EO Standard Object Collection* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 #### Plain Text Output. `stdout`
