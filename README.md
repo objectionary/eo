@@ -628,6 +628,247 @@ OUT>: 8
 OUT>: 0
 IN$: 
 ```
+#### `int` Data Type Object
+The `int` data type object is used to store and performing computations on 64-bit integer numbers.
+##### Syntax
+The `int` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+**EBNF Notation**  
+```EBNF
+INT      ::= ( '+' | '-' )? [0-9]+
+```
+There is also an alternative syntax for hexadecimal numerals (i.e. with the base `16`). This notation implies only non-negative values.
+```EBNF
+HEX      ::= '0x' [0-9a-f]+
+```
+**Railroad Diagram**  
+![The Int Data Type Railroad Diagram](docs/img/INT.png "The Int Data Type Railroad Diagram")  
+And an alternative notation for HEX integers:  
+![The Int Data Type Railroad Diagram (HEX Notation)](docs/img/HEX.png "The Int Data Type Railroad Diagram (HEX Notation)")  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n%d\n%#01x\n"
+      -157
+      1009283
+      0xf.add 1
+      0xa
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: -157
+OUT>: 1009283
+OUT>: 16
+OUT>: 0xa
+IN$: 
+```
+##### `eq` Attribute
+The `eq` attribute object is used for testing if two `int` objects are equal.    
+The `eq` attribute object has one free attribute `x` of type `int`, which is the second object (the first object is the base object of the `eq` attribute).    
+If the `eq` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the objects are equal) or `false` (otherwise).  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%b\n%b\n"
+      eq.
+        0xf
+        15
+      15.eq (0xf.add 1)
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: true
+OUT>: false
+IN$: 
+```
+##### `less` Attribute
+The `less` attribute object is used for testing if its base `int` object is less than its `x` free attribute (i.e. `self < x`).  
+If the `less` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the base object is less than `x` free attribute of the `less`) or `false` (otherwise).  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%b\n%b\n"
+      -7.less 0
+      less.
+        0
+        0
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: true
+OUT>: false
+IN$: 
+```
+##### `add` Attribute
+The `add` attribute object is used to calculate the sum of its base `int` object and the free attribute `x` of type `int` (i.e. `self+x`).  
+If the `add` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting sum of the integer numbers.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n"
+      add.
+        0x10
+        16
+      -16.add 0x10
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 32
+OUT>: 0
+IN$: 
+```
+##### `sub` Attribute
+The `sub` attribute object is used to calculate the difference between its base `int` object and the free attribute `x` of type `int` (i.e. `self-x`).  
+If the `sub` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting difference of the integer numbers.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n"
+      sub.
+        0x10
+        16
+      -16.sub 0x10
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 0
+OUT>: -32
+IN$: 
+```
+##### `neg` Attribute
+The `neg` attribute object is used to negate its base `int` object (i.e. `-self`).  
+If the `neg` attribute object is applied (called), its `@` (phi) attribute contains the resulting negation of the base `int` object.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n%d\n%d\n"
+      5.neg
+      0x10.neg
+      (17.add 3).neg
+      17.neg.add 3
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: -5
+OUT>: -16
+OUT>: -20
+OUT>: -14
+IN$: 
+```
+##### `mul` Attribute
+The `mul` attribute object is used to calculate the product of its base `int` object and the free attribute `x` of type `int` (i.e. `self × x`).  
+If the `mul` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting product of the integer numbers.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n%d\n%d\n%d\n"
+      -7.mul 0
+      13.mul 1
+      mul.
+        0x10
+        0x10
+      ((10.mul 10).mul 10).mul 10
+      10.mul 10.mul 10.mul 10
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 0
+OUT>: 13
+OUT>: 256
+OUT>: 10000
+OUT>: 10000
+IN$: 
+```
+##### `div` Attribute
+`TODO` (does not work properly at the moment)
+##### `mod` Attribute
+`TODO`
+##### `pow` Attribute
+The `pow` attribute object is used to calculate the power of its base `int` object and the free attribute `x` of type `int` (i.e. `self^x`).  
+If the `pow` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting power of the base `int` object raised to the power of the `x` attribute of the `pow` attribute.  
+###### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%d\n%d\n%d\n%d\n%d\n"
+      2.pow 10
+      -2.pow 3
+      2.pow -10
+      2.pow 0
+      2.pow 1
+
+```
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 1024
+OUT>: -8
+OUT>: 0
+OUT>: 1
+OUT>: 2
+IN$: 
+```
+Here, `2^(-10)` results in `0` as well as raising all the integer numbers (except `0`) to the negative power (`-1, -2, -3, ...`). 
 ### Command Line Interface Output
 *The EO Standard Library* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 #### Plain Text Output. `stdout`
