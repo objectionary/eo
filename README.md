@@ -1155,6 +1155,36 @@ OUT>: will be datarized
 OUT>: one by one, in sequatial order
 IN$: 
 ```
+### Mutable Storage in Memory. `memory`
+*The EO Standard Object Collection* contains the `memory` object for mutable storage in RAM.  
+**Fully Qualified Name:** `org.eolang.memory` (no aliasing or FQN reference required since the object is automatically imported).  
+**Usage**
+To use the `memory` object, the following steps are needed:  
+1. Make a copy of the `memory` object and bound it to some attribute.  
+2. To put an object into the `memory` object, the `write` attribute object is used. It has the `x` free attribute that is the object to put into the `memory`. The `write` attribute evaluates to `true` on datarization.  
+3. To retrieve the object stored in the `memory`, datarization of the `memory` object is used.  
+##### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  memory > m
+  seq > @
+    m.write 1
+    m.write (m.add 1)
+    m.write (m.add 1)
+    m.write (m.add 1)
+    stdout (sprintf "%d\n" m)
+
+``` 
+###### Running
+```
+IN$: ./run.sh
+OUT>: 4
+IN$: 
+```
 ## How it Works?
 The entire process of turning an `.eo` program into an executable
 binary code constists of a few steps, which must be done
