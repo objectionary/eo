@@ -237,22 +237,20 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```
-+package sandbox
 +alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 
-[args...] > app
+[] > app
   memory > x
-  seq > @
+  and. > @
     x.write 2
     while.
       x.less 6
       [i]
         seq > @
           stdout
-            sprintf "%dx%d = %d\n" x x (x.pow 2)
+            sprintf "%dx%d = %d" x x (x.pow 2)
           x.write (x.add 1)
-
 ```
 
 This code will print this:
@@ -266,15 +264,15 @@ This code will print this:
 
 Got the idea?  
 
-## The EO Programming Language Standard Library
-This section covers *The EO Standard Library* which is a collection of utility objects for writing programs in *EO*.  
-### The EO Data Types Objects  
-*The EO Programming Language* defines these data types objects: `bool`, `int`, `float`, `string`, `char`, and `array`. 
+## The EO Standard Object Collection
+This section covers *The EO Standard Object Collection* which is a library of utility objects for writing programs in *EO*.  
+### Data Type Objects  
+*The EO Programming Language* and *The EO Standard Object Collection* defines these data type objects: `bool`, `int`, `float`, `string`, `char`. 
 #### `bool` Data Type Object
-The `bool` data type object has two possible values: `true` and `false`. The `bool` data type object is used as a boolean value for performing logical operations.  
-**Fully Qualified Name:** `org.eolang.bool` (the object is automatically imported, so no aliasing or FQN reference required).  
+The `bool` data type object represents a boolean value (either `true` or `false`) that can be used for performing logical operations.  
+**Fully Qualified Name:** `org.eolang.bool` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
-The `bool` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+The `bool` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for `bool` values are as follows.  
 **EBNF Notation**  
 ```EBNF
 BOOL     ::= 'true'
@@ -306,10 +304,10 @@ IN$:
 ##### `if` Attribute
 The `if` attribute object is used for value substitution based on a condition that can be evaluated as a `bool` object.  
 The `if` attribute object has two free attributes:  
-1. `t` for the substitution in case if the base `bool` object is `true`.  
-2. `f` for the substitution in case if the base `bool` object is `false`.  
+1. `t` for the substitution if the base `bool` object is `true`.  
+2. `f` for the substitution if the base `bool` object is `false`.  
   
-If the `if` attribute object is fully applied (i.e. all the free attributes are bound), its `@` (phi) attribute contains the resulting substitution.  
+If the `if` attribute object is fully applied, it represents the corresponding substitution value.   
 ###### Example
 ```
 +package sandbox
@@ -345,9 +343,8 @@ OUT>: The max(2, 5) is: 5
 IN$: 
 ```
 ##### `not` Attribute
-The `not` attribute object is the object with the inversed value of its base `bool` object.  
-The `not` attribute object has no free attributes. When the `not` attribute object is applied (called), its `@` (phi) attribute contains the resulting substitution.    
-
+The `not` attribute object represents a `bool` object with the inversed inner value of its base `bool` object.  
+The `not` attribute object has no free attributes.  
 ###### Example
 In this example, all the answers from the previous example (the `if` attribute section) are inversed with the `not` attribute.  
 ```
@@ -385,10 +382,10 @@ OUT>: The max(2, 5) is: 2
 IN$: 
 ```
 ##### `and` Attribute
-The `and` attribute object is used to perform logical conjunction operation on a variety of `bool` objects.  
-The `and` attribute object has one free attribute `x` for the `bool` objects (conjuncts) on which the logical conjunction operation is to be performed. `x` may be empty or may have any number of `bool` objects.  
+The `and` attribute object represents logical conjunction on a variety of `bool` objects.  
+The `and` attribute object has one free attribute `x` for the `bool` objects (conjuncts). `x` may be empty or may have any number of `bool` objects.  
   
-If the `and` attribute object is applied, its `@` (phi) attribute contains the resulting conjunction of the base `bool` object and all the objects bounded to the `x` attribute of the `and` attribute object.    
+If the `and` attribute object is applied, it represents the conjunction of the base `bool` object and all the objects bound to the `x` attribute.  
 ###### Example
 ```
 +package sandbox
@@ -421,10 +418,10 @@ OUT>: a && b && c && d = false
 IN$: 
 ```
 ##### `or` Attribute
-The `or` attribute object is used to perform logical disjunction operation on a variety of `bool` objects.  
-The `or` attribute object has one free attribute `x` for the `bool` objects (disjuncts) on which the logical disjunction operation is to be performed. `x` may be empty or may have any number of `bool` objects.  
+The `or` attribute object represents logical disjunction on a variety of `bool` objects.  
+The `or` attribute object has one free attribute `x` for the `bool` objects (disjuncts). `x` may be empty or may have any number of `bool` objects.  
   
-If the `or` attribute object is applied, its `@` (phi) attribute contains the resulting disjunction of the base `bool` object and all the objects bounded to the `x` attribute of the `or` attribute object.    
+If the `or` attribute object is applied, it represents the disjunction of the base `bool` object and all the objects bound to the `x` attribute.    
 ###### Example
 ```
 +package sandbox
@@ -459,10 +456,10 @@ IN$:
 ##### `while` Attribute
 `TODO`
 #### `float` Data Type Object
-The `float` data type object values range is the same as of `double` data type in Java (which is a double-precision 64-bit IEEE 754 floating point). The `float` data type object is used to perform `FPU` computations.  
-**Fully Qualified Name:** `org.eolang.float` (the object is automatically imported, so no aliasing or FQN reference required).  
+The `float` data type object represents a double-precision 64-bit IEEE 754 floating-point number and can be used to perform various `FPU` computations.  
+**Fully Qualified Name:** `org.eolang.float` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
-The `float` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+The `float` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
 ```EBNF
 FLOAT    ::= ( '+' | '-' )? [0-9]+ '.' [0-9]+
@@ -492,8 +489,8 @@ IN$:
 ```
 ##### `eq` Attribute
 The `eq` attribute object is used for testing if two `float` objects are equal.    
-The `eq` attribute object has one free attribute `x` of type `float`, which is the second object (the first object is the base object of the `eq` attribute).    
-If the `eq` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the objects are equal) or `false` (otherwise).  
+The `eq` attribute object has one free attribute `x` of type `float` that is the second object (the first object is the base object of the `eq` attribute).    
+If the `eq` attribute object is applied, it represents the result of the equality test (either `true` (if the objects are equal) or `false` (otherwise)).  
 ###### Example
 ```
 +package sandbox
@@ -516,10 +513,10 @@ OUT>: false
 IN$: 
 ```
 #### `string` Data Type Object
-The `string` data type object is used to to store and transform symbolic data (i.e. string literals).  
-**Fully Qualified Name:** `org.eolang.string` (the object is automatically imported, so no aliasing or FQN reference required).  
+The `string` data type object represents a string literal.  
+**Fully Qualified Name:** `org.eolang.string` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
-The `string` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+The `string` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
 ```EBNF
 STRING   ::= '"' ( '\"' | [^"] )* '"'
@@ -549,8 +546,8 @@ IN$:
 ```
 ##### `eq` Attribute
 The `eq` attribute object is used for testing if two `string` objects are equal.    
-The `eq` attribute object has one free attribute `x` of type `string`, which is the second object (the first object is the base object of the `eq` attribute).    
-If the `eq` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the objects are equal) or `false` (otherwise).  
+The `eq` attribute object has one free attribute `x` of type `string` that is the second object (the first object is the base object of the `eq` attribute).    
+If the `eq` attribute object is fully applied, it represents the result of the equality test (either `true` (if the objects are equal) or `false` (otherwise)).  
 ###### Example
 ```
 +package sandbox
@@ -575,9 +572,9 @@ OUT>: false
 IN$: 
 ```
 ##### `trim` Attribute
-The `trim` attribute object is used for trimming the base `string` object (i.e. `trim` removes whitespace from both ends of a string).    
+The `trim` attribute object is used for trimming the base `string` object (i.e. `trim` is a `string` with whitespace removed from both ends of the base `string`).    
 The `trim` attribute object has no free attributes.  
-If the `trim` attribute object is applied (called), its `@` (phi) attribute contains the resulting trimmed `string`.  
+If the `trim` attribute object is applied (called), it represents the resulting trimmed `string`.  
 ###### Example
 ```
 +package sandbox
@@ -600,14 +597,14 @@ OUT>: Hello There!IN$:
 ```
 Here, the `\n` escape sequence is trimmed as it is a whitespace character. 
 ##### `toInt` Attribute
-The `toInt` attribute object is used for parsing the base `string` object as an object of type `int`.  
+The `toInt` attribute object is used for parsing the base `string` object as an `int` object.  
 The format of the base `string` object must be as described below:  
-1. The first character of the `string` literal may be either `+` or `-`. This indicates the sign of the `int` value. The sign may be omitted (in such case the number is considered to be positive).  
+1. The first character of the `string` literal may be either `+` or `-`. This indicates the sign of the `int` value. The sign may be omitted (in such a case, the number is positive).  
 2. All the other characters of the `string` literal must be decimal digits (`0-9`). 
   
-If the format of the base `string` object is incorrect, the `toInt` attribute would fail on its application.  
+If the format of the base `string` object is incorrect, the `toInt` attribute will fail on its application.  
 The `toInt` attribute object has no free attributes.  
-If the `toInt` attribute object is applied (called), its `@` (phi) attribute contains the resulting parsed `int`.  
+If the `toInt` attribute object is applied (called), it represents the parsed `int` object.  
 ###### Example
 ```
 +package sandbox
@@ -634,15 +631,15 @@ OUT>: 0
 IN$: 
 ```
 #### `int` Data Type Object
-The `int` data type object is used to store and performing computations on 64-bit integer numbers.  
-**Fully Qualified Name:** `org.eolang.int` (the object is automatically imported, so no aliasing or FQN reference required).  
+The `int` data type object represents a 64-bit integer number.  
+**Fully Qualified Name:** `org.eolang.int` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
-The `int` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
+The `int` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
 ```EBNF
 INT      ::= ( '+' | '-' )? [0-9]+
 ```
-There is also an alternative syntax for hexadecimal numerals (i.e. with the base `16`). This notation implies only non-negative values.
+There is also an alternative syntax for hexadecimal numerals (i.e., with the base `16`). This notation implies only non-negative values.
 ```EBNF
 HEX      ::= '0x' [0-9a-f]+
 ```
@@ -677,8 +674,8 @@ IN$:
 ```
 ##### `eq` Attribute
 The `eq` attribute object is used for testing if two `int` objects are equal.    
-The `eq` attribute object has one free attribute `x` of type `int`, which is the second object (the first object is the base object of the `eq` attribute).    
-If the `eq` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the objects are equal) or `false` (otherwise).  
+The `eq` attribute object has one free attribute `x` of type `int` that is the second object (the first object is the base object of the `eq` attribute).    
+If the `eq` attribute object is fully applied, it represents the result of the equality testing (either `true` (if the objects are equal) or `false` (otherwise)).  
 ###### Example
 ```
 +package sandbox
@@ -703,8 +700,8 @@ OUT>: false
 IN$: 
 ```
 ##### `less` Attribute
-The `less` attribute object is used for testing if its base `int` object is less than its `x` free attribute (i.e. `self < x`).  
-If the `less` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains either `true` (if the base object is less than `x` free attribute of the `less`) or `false` (otherwise).  
+The `less` attribute object is used for testing if its base `int` object is less than its `x` free attribute (i.e. `$ < x`).  
+If the `less` attribute object is fully applied, it represents the result of the testing (either `true` (if the base object is less than `x` free attribute of the `less`) or `false` (otherwise)).  
 ###### Example
 ```
 +package sandbox
@@ -729,8 +726,8 @@ OUT>: false
 IN$: 
 ```
 ##### `add` Attribute
-The `add` attribute object is used to calculate the sum of its base `int` object and the free attribute `x` of type `int` (i.e. `self+x`).  
-If the `add` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting sum of the integer numbers.  
+The `add` attribute object is used to calculate the sum of its base `int` object and the free attribute `x` of type `int` (i.e. `$+x`).  
+If the `add` attribute object is fully applied, it represents the resulting sum of the integer numbers.  
 ###### Example
 ```
 +package sandbox
@@ -755,8 +752,8 @@ OUT>: 0
 IN$: 
 ```
 ##### `sub` Attribute
-The `sub` attribute object is used to calculate the difference between its base `int` object and the free attribute `x` of type `int` (i.e. `self-x`).  
-If the `sub` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting difference of the integer numbers.  
+The `sub` attribute object is used to calculate the difference between its base `int` object and the free attribute `x` of type `int` (i.e. `$-x`).  
+If the `sub` attribute object is fully applied, it represents the resulting difference of the integer numbers.  
 ###### Example
 ```
 +package sandbox
@@ -781,8 +778,8 @@ OUT>: -32
 IN$: 
 ```
 ##### `neg` Attribute
-The `neg` attribute object is used to negate its base `int` object (i.e. `-self`).  
-If the `neg` attribute object is applied (called), its `@` (phi) attribute contains the resulting negation of the base `int` object.  
+The `neg` attribute object is used to negate its base `int` object (i.e. `-$`).  
+If the `neg` attribute object is applied (called), it represents the resulting negation of the base `int` object.  
 ###### Example
 ```
 +package sandbox
@@ -809,8 +806,8 @@ OUT>: -14
 IN$: 
 ```
 ##### `mul` Attribute
-The `mul` attribute object is used to calculate the product of its base `int` object and the free attribute `x` of type `int` (i.e. `self × x`).  
-If the `mul` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting product of the integer numbers.  
+The `mul` attribute object is used to calculate the product of its base `int` object and the free attribute `x` of type `int` (i.e. `$ × x`).  
+If the `mul` attribute object is fully applied, it represents the resulting product of the integer numbers.  
 ###### Example
 ```
 +package sandbox
@@ -845,8 +842,8 @@ IN$:
 ##### `mod` Attribute
 `TODO`
 ##### `pow` Attribute
-The `pow` attribute object is used to calculate the power of its base `int` object and the free attribute `x` of type `int` (i.e. `self^x`).  
-If the `pow` attribute object is fully applied (i.e. the free attribute is bound), its `@` (phi) attribute contains the resulting power of the base `int` object raised to the power of the `x` attribute of the `pow` attribute.  
+The `pow` attribute object is used to calculate the power of its base `int` object and the free attribute `x` of type `int` (i.e. `$^x`).  
+If the `pow` attribute object is fully applied, it represents the resulting power of the base `int` object raised to the power of the `x` attribute.  
 ###### Example
 ```
 +package sandbox
@@ -876,13 +873,13 @@ IN$:
 ```
 Here, `2^(-10)` results in `0` as well as raising all the integer numbers (except `0`) to the negative power (`-1, -2, -3, ...`). 
 ### Command Line Interface Output
-*The EO Standard Library* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
+*The EO Standard Object Collection* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 #### Plain Text Output. `stdout`
 For plain text output, the `stdout` object is used.   
 **Fully Qualified Name:** `org.eolang.io.stdout`.
 ##### Usage
-The `stdout` object has one free attribute `text` which should be bounded to the text to be printed.  
-The object bounded to the `text` attribute must be of `string` type.  
+The `stdout` object has one free attribute `text` that should be bound to the text to print.  
+The object bound to the `text` attribute must be of `string` type.  
 The `stdout` does not put the End of Line character at the end of the output, so the `\n` escape sequence should be used in case if such a behavior is needed.  
 For the complete list of escape sequences supported by `stdout`, see the corresponding section of [the article](https://docs.oracle.com/javase/tutorial/java/data/characters.html).  
 ##### Example 1. The Plain Old “Hello, World”
@@ -892,9 +889,7 @@ For the complete list of escape sequences supported by `stdout`, see the corresp
 
 [args...] > app
   (stdout "Hello, World!\n") > @
-```
-In this example, we apply (or copy) an abstract `stdout` object by bounding its free attribute `text` to the object `"Hello, World!\n"` of type `string`.  
-Next, we bound the resulting copy of the object to the `@` (phi) attribute of the `app` object. 
+``` 
 ###### Running
 ```
 IN$: ./run.sh
@@ -913,15 +908,12 @@ IN$:
       args
       0
 ```
-In this example, we apply (or copy) an abstract `stdout` object by bounding its free attribute `text` to the attribute `get` of the `args` object, whose free attribute `i` (index) is bounded to the object `0` of type `int`.  
-Next, we bound the resulting copy of the object to the `@` (phi) attribute of the `app` object.  
-Conceptually, we extract the first word the user types in the command line when running the application and then print the word back. 
 ###### Running
 ```
 IN$: ./run.sh Hello Bye Thanks Ok
 OUT>: HelloIN$: 
 ```
-**Note:** here the `Hello` is printed with no `EOL` character at the end of the line, because of the absence of it in the user input. 
+**Note:** here, the `Hello` is printed with no `EOL` character at the end of the line because of the absence of it in the user input. 
 
 #### Formatting String. `sprintf`
 For strings formatting, the `sprintf` object is used.  
@@ -929,10 +921,10 @@ String formatting is the process of data injection into the string, optionally a
 **Fully Qualified Name:** `org.eolang.txt.sprintf`.
 ##### Usage
 The `sprintf` object has two free attributes:  
-1. `format` for the format `string` that describes the formatting of the resulting string.
-2. `args` for the data being injected into the string. `args` may be empty or may have any number of objects. `args` must be consistent with the `format` (i.e. the number and the types (as well as their order) of objects in the `format` and the `args` should be the same).    
+1. `format` for the format `string` that describes the formatting of the resulting `string`.
+2. `args` for the data being injected into the string. `args` may be empty or may have any number of objects. `args` must be consistent with the `format` (i.e., the number and the types (as well as their order) of the objects in the `format` and the `args` should be the same).    
   
-If the `sprintf` object is fully applied (i.e. all the attributes are bound), its `@` (phi) attribute contains the resulting formatted object of type 'string'.  
+If the `sprintf` object is fully applied, it represents the resulting formatted `string`.  
 For the `format` syntax reference, see [this article](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax).  
 ##### Example. Format 'Em All
 ```
@@ -949,12 +941,7 @@ For the `format` syntax reference, see [this article](https://docs.oracle.com/ja
 
   (stdout formatted_string) > @
 
-```
-In this example, we apply (or copy) an abstract `sprintf` object by bounding its free attribute `format` to the object `"int: %d, bool: %b, string: %s\n"` of type `string` and its free attribute `args` to objects `2` of type `int`, `2.less 0` (which is the object `false`) of type `bool`, and `"Hey"` of type `string`.  
-Next, we bound the resulting copy of the object to the `formatted_string` identifier.  
-Then, we supply the `formatted_string` for its application to `stdout`.  
-Finally, we bound the resulting copy of the object `stdout` to the `@` (phi) attribute of the `app` object.  
-Conceptually, we format the string and then print it to the terminal.  
+```  
 ###### Running
 ```
 IN$: ./run.sh
@@ -962,12 +949,12 @@ OUT>: int: 2, bool: false, string: Hey
 IN$: 
 ```
 ### Random Number Generation. `random`
-*The EO Standard Library* contains the `random` object for generating a cryptographically strong random number.  
-**Fully Qualified Name:** `org.eolang.random` (the object is automatically imported, so no aliasing or FQN reference required).  
+*The EO Standard Object Collection* contains the `random` object for generating a cryptographically strong random number.  
+**Fully Qualified Name:** `org.eolang.random` (no aliasing or FQN reference required since the object is automatically imported).  
 #### Usage
-The `random` object has no free attributes. On its initialization, the `random` object's `@` (phi) attribute is bounded to the generated random number, which is immutable (i.e. cannot be changed or generated again in the scope of the initialized object). So, every time the new random number is needed, the new application (initialization) of the `random` object is needed.     
-The resulting random number bounded to the `@` attribute of the `random` object is of type `float`.  
-The value is in the range 0.0 (inclusive) to 1.0 (exclusive).  
+The `random` object has no free attributes. When applied, the `random` object represents the generated random number that is immutable (i.e. cannot be changed). So, every time the new random number is needed, the new application (initialization) of the `random` object is needed.     
+The resulting random numberrepresented by the `random` object is of type `float`.  
+The value is in the range `0.0` (inclusive) to `1.0` (exclusive).  
 #### Example
 ```
 +package sandbox
@@ -983,12 +970,7 @@ The value is in the range 0.0 (inclusive) to 1.0 (exclusive).
 
   (stdout formatted_string) > @
 
-```
-In this example, we apply (or copy) an abstract `sprintf` object by bounding its free attribute `format` to the object `"the 1st random: %f\nthe 2nd random: %f\nthe 3rd random:%f\n"` of type `string` and its free attribute `args` to three unique instances of the `random` object.  
-Next, we bound the resulting copy of the object to the `formatted_string` identifier.  
-Then, we supply the `formatted_string` for its application to `stdout`.  
-Finally, we bound the resulting copy of the object `stdout` to the `@` (phi) attribute of the `app` object.  
-Conceptually, we format the string by injecting three random values in it and then print it to the terminal.  
+```  
 ##### Running
 ```
 IN$: ./run.sh
