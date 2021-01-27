@@ -1126,6 +1126,35 @@ IN$:
 `TODO` The `map` implementation is not correct.
 #### `mapi` Attribute
 `TODO` The `map` implementation is not correct.
+### Sequencing Computations. `seq`
+*The EO Standard Object Collection* contains the `seq` object for sequencing computations.  
+The `seq` object has one free attribute `steps` that may have arbitrary number of steps that will be evaluated one by one, from the beginning to the end in the sequential order.  
+The `seq` object starts the *datarization* process for each of the objects bound to the `steps` attribute of it.  
+On datarization, the `seq` object evaluates into the `bool` object `true`. 
+**Fully Qualified Name:** `org.eolang.seq` (no aliasing or FQN reference required since the object is automatically imported).  
+#### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  seq > @
+    stdout "Hello\n"
+    stdout "These objects\n"
+    stdout "will be datarized\n"
+    stdout "one by one, in sequatial order\n"
+
+``` 
+##### Running
+```
+IN$: ./run.sh
+OUT>: Hello
+OUT>: These objects
+OUT>: will be datarized
+OUT>: one by one, in sequatial order
+IN$: 
+```
 ## How it Works?
 The entire process of turning an `.eo` program into an executable
 binary code constists of a few steps, which must be done
