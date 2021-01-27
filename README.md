@@ -1025,9 +1025,108 @@ OUT>: the 2nd random: 0.074904
 OUT>: the 3rd random:0.958538
 IN$: 
 ```
+### Arrays
+*The EO Standard Object Collection* contains the `array` object for working with arrays of objects.  
+**Fully Qualified Name:** `org.eolang.array` (no aliasing or FQN reference required since the object is automatically imported).  
+#### `get` Attribute
+The `get` attribute object is used to retrieve an object stored at the position `i` of the base `array` object.  
+The position `i` must be within 0 and the length of the `array` inclusively.  
+When applied, the `get` attribute object represents the object stored at the position `i` of the base `array` object.
+##### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
 
+[args...] > app
+  stdout > @
+    sprintf
+      "%s\n%s\n"
+      args.get 0
+      args.get 1
+
+``` 
+In this example the `args` array is used that consists of the CLI parameters passed to the program.
+###### Running
+```
+IN$: ./run.sh Hello, World!
+OUT>: Hello,
+OUT>: World!
+IN$: 
+```
+#### `append` Attribute
+The `append` attribute object is used to append the `x` object at the end of the base `array` object.   
+When applied, the `append` attribute object represents the resulting `array` object with the `x` at the end of it. 
+##### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  args.append "New Element!" > argsExtended
+  stdout > @
+    sprintf
+      "%s\n%s\n%s\n"
+      argsExtended.get 0
+      argsExtended.get 1
+      argsExtended.get 2
+
+``` 
+In this example the `args` array is used that consists of the CLI parameters passed to the program.
+###### Running
+```
+IN$: ./run.sh Hello, World!
+OUT>: Hello,
+OUT>: World!
+OUT>: New Element!
+IN$: 
+```
+#### `reduce` Attribute
+The `reduce` attribute object is used to perform the reduction operation of its base `array` object. Reduction is a proccess of accumulating a set of objects into one aggregated object.  
+The `reduce` attribute object has two free attributes:  
+1. `a` for the initial value of the accumulator.  
+2. `f` for the object that represents the reduction function. It must have two free attibutes:  
+   1. The first attribute is the current value of the accumulator.  
+   2. The second attribute is the current object of the `array`.
+
+The `f` attribute object aggregates the objects of the `array` in the `accumulator`. Objects of the `array` arrive into the `f` in the order these objects are stored in the `array`.      
+When applied, the `reduce` attribute object represents the resulting reduced accumulator object. 
+##### Example
+```
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias stdout org.eolang.io.stdout
+
+[args...] > app
+  [accumulator current] > reduceFunction
+    add. > @
+      accumulator
+      current.toInt
+
+  reduce. > sum
+    args
+    0
+    reduceFunction
+
+  stdout > @
+    sprintf
+      "%d\n"
+      sum
+
+``` 
+In this example the `args` array is used that consists of the CLI parameters passed to the program. The array of numbers passed into the program is reduced into the sum of its elements. 
+###### Running
+```
+IN$: ./run.sh 1 2 3 4 5
+OUT>: 15
+IN$: 
+```
+#### `map` Attribute
+`TODO` The `map` implementation is not correct.
+#### `mapi` Attribute
+`TODO` The `map` implementation is not correct.
 ## How it Works?
-
 The entire process of turning an `.eo` program into an executable
 binary code constists of a few steps, which must be done
 one after another:
