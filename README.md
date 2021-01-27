@@ -269,7 +269,8 @@ This section covers *The EO Standard Library* which is a collection of utility o
 ### The EO Data Types Objects  
 *The EO Programming Language* defines these data types objects: `bool`, `int`, `float`, `string`, `char`, and `array`. 
 #### `bool` Data Type Object
-The `bool` data type object has two possible values: `true` and `false`. The `bool` data type object is used as a boolean value for performing logical operations.
+The `bool` data type object has two possible values: `true` and `false`. The `bool` data type object is used as a boolean value for performing logical operations.  
+**Fully Qualified Name:** `org.eolang.bool` (the object is automatically imported, so no aliasing or FQN reference required).  
 ##### Syntax
 The `bool` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -456,7 +457,8 @@ IN$:
 ##### `while` Attribute
 `TODO`
 #### `float` Data Type Object
-The `float` data type object values range is the same as of `double` data type in Java (which is a double-precision 64-bit IEEE 754 floating point). The `float` data type object is used to perform `FPU` computations.
+The `float` data type object values range is the same as of `double` data type in Java (which is a double-precision 64-bit IEEE 754 floating point). The `float` data type object is used to perform `FPU` computations.  
+**Fully Qualified Name:** `org.eolang.float` (the object is automatically imported, so no aliasing or FQN reference required).  
 ##### Syntax
 The `float` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -512,7 +514,8 @@ OUT>: false
 IN$: 
 ```
 #### `string` Data Type Object
-The `string` data type object is used to to store and transform symbolic data (i.e. string literals).
+The `string` data type object is used to to store and transform symbolic data (i.e. string literals).  
+**Fully Qualified Name:** `org.eolang.string` (the object is automatically imported, so no aliasing or FQN reference required).  
 ##### Syntax
 The `string` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -629,7 +632,8 @@ OUT>: 0
 IN$: 
 ```
 #### `int` Data Type Object
-The `int` data type object is used to store and performing computations on 64-bit integer numbers.
+The `int` data type object is used to store and performing computations on 64-bit integer numbers.  
+**Fully Qualified Name:** `org.eolang.int` (the object is automatically imported, so no aliasing or FQN reference required).  
 ##### Syntax
 The `int` data type object values may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
