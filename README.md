@@ -67,6 +67,55 @@ We also want to have an ability to compile it to any other language, like
 Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
 independent.
 
+## Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Quick Start](#quick-start)
+- [Tutorial](#tutorial)
+- [The EO Standard Object Collection](#the-eo-standard-object-collection)
+  - [Data Type Objects](#data-type-objects)
+    - [`bool` Data Type Object](#bool-data-type-object)
+      - [Syntax](#syntax)
+      - [`if` Attribute](#if-attribute)
+      - [`not` Attribute](#not-attribute)
+      - [`and` Attribute](#and-attribute)
+      - [`or` Attribute](#or-attribute)
+      - [`while` Attribute](#while-attribute)
+    - [`float` Data Type Object](#float-data-type-object)
+      - [Syntax](#syntax-1)
+      - [`eq` Attribute](#eq-attribute)
+    - [`string` Data Type Object](#string-data-type-object)
+      - [Syntax](#syntax-2)
+      - [`eq` Attribute](#eq-attribute-1)
+      - [`trim` Attribute](#trim-attribute)
+      - [`toInt` Attribute](#toint-attribute)
+    - [`int` Data Type Object](#int-data-type-object)
+      - [Syntax](#syntax-3)
+      - [`eq` Attribute](#eq-attribute-2)
+      - [`less` Attribute](#less-attribute)
+      - [`add` Attribute](#add-attribute)
+      - [`sub` Attribute](#sub-attribute)
+      - [`neg` Attribute](#neg-attribute)
+      - [`mul` Attribute](#mul-attribute)
+      - [`div` Attribute](#div-attribute)
+      - [`mod` Attribute](#mod-attribute)
+      - [`pow` Attribute](#pow-attribute)
+    - [`char` Data Type Object](#char-data-type-object)
+      - [Syntax](#syntax-4)
+  - [Command Line Interface Output](#command-line-interface-output)
+    - [Plain Text Output. `stdout`](#plain-text-output-stdout)
+    - [Formatting Strings. `sprintf`](#formatting-strings-sprintf)
+  - [Random Number Generation. `random`](#random-number-generation-random)
+  - [Arrays](#arrays)
+    - [`get` Attribute](#get-attribute)
+    - [`append` Attribute](#append-attribute)
+    - [`reduce` Attribute](#reduce-attribute)
+    - [`map` Attribute](#map-attribute)
+    - [`mapi` Attribute](#mapi-attribute)
+  - [Sequencing Computations. `seq`](#sequencing-computations-seq)
+  - [Mutable Storage in Memory. `memory`](#mutable-storage-in-memory-memory)
+- [How it Works?](#how-it-works)
+- [How to Contribute](#how-to-contribute)
+
 ## Quick Start
 
 Here is a simple program that gets a year from command line and tells you
@@ -281,7 +330,7 @@ BOOL     ::= 'true'
 ```
 **Railroad Diagram**  
 ![The Bool Data Type Railroad Diagram](docs/img/BOOL.png "The Bool Data Type Railroad Diagram")  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -295,7 +344,7 @@ BOOL     ::= 'true'
       false
 
 ```
-**Running**  
+**Running**   
 ```
 IN$: ./run.sh
 OUT>: true
@@ -309,7 +358,7 @@ The `if` attribute object has two free attributes:
 2. `f` for the substitution if the base `bool` object is `false`.  
   
 If the `if` attribute object is fully applied, it represents the corresponding substitution value.   
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -346,7 +395,7 @@ IN$:
 ##### `not` Attribute
 The `not` attribute object represents a `bool` object with the inversed inner value of its base `bool` object.  
 The `not` attribute object has no free attributes.  
-###### Example
+###### Example <!-- omit in toc -->
 In this example, all the answers from the previous example (the `if` attribute section) are inversed with the `not` attribute.  
 ```
 +package sandbox
@@ -387,7 +436,7 @@ The `and` attribute object represents logical conjunction on a variety of `bool`
 The `and` attribute object has one free attribute `x` for the `bool` objects (conjuncts). `x` may be empty or may have any number of `bool` objects.  
   
 If the `and` attribute object is applied, it represents the conjunction of the base `bool` object and all the objects bound to the `x` attribute.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -423,7 +472,7 @@ The `or` attribute object represents logical disjunction on a variety of `bool` 
 The `or` attribute object has one free attribute `x` for the `bool` objects (disjuncts). `x` may be empty or may have any number of `bool` objects.  
   
 If the `or` attribute object is applied, it represents the disjunction of the base `bool` object and all the objects bound to the `x` attribute.    
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -459,7 +508,7 @@ The `while` attribute object is used to evaluate its `f` free attribute until th
 The `f` attribute object must have the free attribute `i` (the current iteration of the `while` loop).  
 On datarization, the `while` attribute object evaluates to the number of iterations the loop took.  
 Since objects are immutable, the `memory` object should be used as the loop condition (i.e., the base `bool` object of the `while` attribute). Moreover, the `memory` object should be changed somehow inside the `f`, otherwise the `while` will evaluate infinitely. 
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias stdout org.eolang.io.stdout
@@ -478,7 +527,7 @@ Since objects are immutable, the `memory` object should be used as the loop cond
           x.write (x.add 1)
 
 ```
-Here, the `i` attribute of the `f` iteration object is used to find the `x^3`. However, the `i` attribute may stay unused inside the `f`. 
+Here, the `i` attribute of the `f` iteration object is used to find the `x^3`. However, the `i` attribute may stay unused inside the `f`.  
 **Running**  
 ```
 IN$: ./run.sh
@@ -506,7 +555,7 @@ FLOAT    ::= ( '+' | '-' )? [0-9]+ '.' [0-9]+
 ```
 **Railroad Diagram**  
 ![The Float Data Type Railroad Diagram](docs/img/FLOAT.png "The Float Data Type Railroad Diagram")  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -531,7 +580,7 @@ IN$:
 The `eq` attribute object is used for testing if two `float` objects are equal.    
 The `eq` attribute object has one free attribute `x` of type `float` that is the second object (the first object is the base object of the `eq` attribute).    
 If the `eq` attribute object is applied, it represents the result of the equality test (either `true` (if the objects are equal) or `false` (otherwise)).  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -563,7 +612,7 @@ STRING   ::= '"' ( '\"' | [^"] )* '"'
 ```
 **Railroad Diagram**  
 ![The String Data Type Railroad Diagram](docs/img/STRING.png "The String Data Type Railroad Diagram")  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -588,7 +637,7 @@ IN$:
 The `eq` attribute object is used for testing if two `string` objects are equal.    
 The `eq` attribute object has one free attribute `x` of type `string` that is the second object (the first object is the base object of the `eq` attribute).    
 If the `eq` attribute object is fully applied, it represents the result of the equality test (either `true` (if the objects are equal) or `false` (otherwise)).  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -615,7 +664,7 @@ IN$:
 The `trim` attribute object is used for trimming the base `string` object (i.e. `trim` is a `string` with whitespace removed from both ends of the base `string`).    
 The `trim` attribute object has no free attributes.  
 If the `trim` attribute object is applied (called), it represents the resulting trimmed `string`.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -645,7 +694,7 @@ The format of the base `string` object must be as described below:
 If the format of the base `string` object is incorrect, the `toInt` attribute will fail on its application.  
 The `toInt` attribute object has no free attributes.  
 If the `toInt` attribute object is applied (called), it represents the parsed `int` object.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -687,7 +736,7 @@ HEX      ::= '0x' [0-9a-f]+
 ![The Int Data Type Railroad Diagram](docs/img/INT.png "The Int Data Type Railroad Diagram")  
 And an alternative notation for HEX integers:  
 ![The Int Data Type Railroad Diagram (HEX Notation)](docs/img/HEX.png "The Int Data Type Railroad Diagram (HEX Notation)")  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -716,7 +765,7 @@ IN$:
 The `eq` attribute object is used for testing if two `int` objects are equal.    
 The `eq` attribute object has one free attribute `x` of type `int` that is the second object (the first object is the base object of the `eq` attribute).    
 If the `eq` attribute object is fully applied, it represents the result of the equality testing (either `true` (if the objects are equal) or `false` (otherwise)).  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -742,7 +791,7 @@ IN$:
 ##### `less` Attribute
 The `less` attribute object is used for testing if its base `int` object is less than its `x` free attribute (i.e. `$ < x`).  
 If the `less` attribute object is fully applied, it represents the result of the testing (either `true` (if the base object is less than `x` free attribute of the `less`) or `false` (otherwise)).  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -768,7 +817,7 @@ IN$:
 ##### `add` Attribute
 The `add` attribute object is used to calculate the sum of its base `int` object and the free attribute `x` of type `int` (i.e. `$+x`).  
 If the `add` attribute object is fully applied, it represents the resulting sum of the integer numbers.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -794,7 +843,7 @@ IN$:
 ##### `sub` Attribute
 The `sub` attribute object is used to calculate the difference between its base `int` object and the free attribute `x` of type `int` (i.e. `$-x`).  
 If the `sub` attribute object is fully applied, it represents the resulting difference of the integer numbers.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -820,7 +869,7 @@ IN$:
 ##### `neg` Attribute
 The `neg` attribute object is used to negate its base `int` object (i.e. `-$`).  
 If the `neg` attribute object is applied (called), it represents the resulting negation of the base `int` object.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -848,7 +897,7 @@ IN$:
 ##### `mul` Attribute
 The `mul` attribute object is used to calculate the product of its base `int` object and the free attribute `x` of type `int` (i.e. `$ × x`).  
 If the `mul` attribute object is fully applied, it represents the resulting product of the integer numbers.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -886,7 +935,7 @@ The modulus for `x = 0` is undefined.
 The resulting floor modulus has the same sign as the divisor `x`.  
 The relationship between the `mod` and `div` operations is as follows:  
 `(x div y) * y + x mod y == x`
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -918,7 +967,7 @@ IN$:
 ##### `pow` Attribute
 The `pow` attribute object is used to calculate the power of its base `int` object and the free attribute `x` of type `int` (i.e. `$^x`).  
 If the `pow` attribute object is fully applied, it represents the resulting power of the base `int` object raised to the power of the `x` attribute.  
-###### Example
+###### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -948,7 +997,7 @@ IN$:
 Here, `2^(-10)` results in `0` as well as raising all the integer numbers (except `0`) to the negative power (`-1, -2, -3, ...`).  
 #### `char` Data Type Object
 The `char` data type object represents a single character.  
-**The `char` object is not implemented yet, hence the `char` cannot be used for now.**
+**The `char` object is not implemented yet, hence the `char` cannot be used for now.**  
 **Fully Qualified Name:** `org.eolang.char` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
 The `char` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
@@ -963,12 +1012,12 @@ CHAR     ::= "'" [0-9a-zA-Z] "'"
 #### Plain Text Output. `stdout`
 For plain text output, the `stdout` object is used.   
 **Fully Qualified Name:** `org.eolang.io.stdout`.
-##### Usage
+##### Usage <!-- omit in toc -->
 The `stdout` object has one free attribute `text` that should be bound to the text to print.  
 The object bound to the `text` attribute must be of `string` type.  
 The `stdout` does not put the End of Line character at the end of the output, so the `\n` escape sequence should be used in case if such a behavior is needed.  
 For the complete list of escape sequences supported by `stdout`, see the corresponding section of [the article](https://docs.oracle.com/javase/tutorial/java/data/characters.html).  
-##### Example 1. The Plain Old “Hello, World”
+##### Example 1. The Plain Old “Hello, World” <!-- omit in toc -->
 ```
 +package sandbox
 +alias stdout org.eolang.io.stdout
@@ -976,14 +1025,14 @@ For the complete list of escape sequences supported by `stdout`, see the corresp
 [args...] > app
   (stdout "Hello, World!\n") > @
 ``` 
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh
 OUT>: Hello, World!
 IN$: 
 ```
 
-##### Example 2. Print the First Word of the User's Input
+##### Example 2. Print the First Word of the User's Input <!-- omit in toc -->
 ```
 +package sandbox
 +alias stdout org.eolang.io.stdout
@@ -994,25 +1043,25 @@ IN$:
       args
       0
 ```
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh Hello Bye Thanks Ok
 OUT>: HelloIN$: 
 ```
 **Note:** here, the `Hello` is printed with no `EOL` character at the end of the line because of the absence of it in the user input. 
 
-#### Formatting String. `sprintf`
+#### Formatting Strings. `sprintf`
 For strings formatting, the `sprintf` object is used.  
 String formatting is the process of data injection into the string, optionally applying format patterns to the data.  
 **Fully Qualified Name:** `org.eolang.txt.sprintf`.
-##### Usage
+##### Usage <!-- omit in toc -->
 The `sprintf` object has two free attributes:  
 1. `format` for the format `string` that describes the formatting of the resulting `string`.
 2. `args` for the data being injected into the string. `args` may be empty or may have any number of objects. `args` must be consistent with the `format` (i.e., the number and the types (as well as their order) of the objects in the `format` and the `args` should be the same).    
   
 If the `sprintf` object is fully applied, it represents the resulting formatted `string`.  
 For the `format` syntax reference, see [this article](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax).  
-##### Example. Format 'Em All
+##### Example. Format 'Em All <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1028,7 +1077,7 @@ For the `format` syntax reference, see [this article](https://docs.oracle.com/ja
   (stdout formatted_string) > @
 
 ```  
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh
 OUT>: int: 2, bool: false, string: Hey
@@ -1037,11 +1086,11 @@ IN$:
 ### Random Number Generation. `random`
 *The EO Standard Object Collection* contains the `random` object for generating a cryptographically strong random number.  
 **Fully Qualified Name:** `org.eolang.random` (no aliasing or FQN reference required since the object is automatically imported).  
-#### Usage
+#### Usage <!-- omit in toc -->
 The `random` object has no free attributes. When applied, the `random` object represents the generated random number that is immutable (i.e. cannot be changed). So, every time the new random number is needed, the new application (initialization) of the `random` object is needed.     
 The resulting random number represented by the `random` object is of type `float`.  
 The value is in the range `0.0` (inclusive) to `1.0` (exclusive).  
-#### Example
+#### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1057,7 +1106,7 @@ The value is in the range `0.0` (inclusive) to `1.0` (exclusive).
   (stdout formatted_string) > @
 
 ```  
-##### Running
+##### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh
 OUT>: the 1st random: 0.125293
@@ -1072,7 +1121,7 @@ IN$:
 The `get` attribute object is used to retrieve an object stored at the position `i` of the base `array` object.  
 The position `i` must be within 0 and the length of the `array` inclusively.  
 When applied, the `get` attribute object represents the object stored at the position `i` of the base `array` object.
-##### Example
+##### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1087,7 +1136,7 @@ When applied, the `get` attribute object represents the object stored at the pos
 
 ``` 
 In this example, the `args` array is used that consists of the CLI parameters passed to the program.
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh Hello, World!
 OUT>: Hello,
@@ -1097,7 +1146,7 @@ IN$:
 #### `append` Attribute
 The `append` attribute object is used to append the `x` object at the end of the base `array` object.   
 When applied, the `append` attribute object represents the resulting `array` object with the `x` at the end of it. 
-##### Example
+##### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1114,7 +1163,7 @@ When applied, the `append` attribute object represents the resulting `array` obj
 
 ``` 
 In this example, the `args` array is used that consists of the CLI parameters passed to the program.
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh Hello, World!
 OUT>: Hello,
@@ -1132,7 +1181,7 @@ The `reduce` attribute object has two free attributes:
 
 The `f` attribute object aggregates the objects of the `array` in the `accumulator`. Objects of the `array` arrive into the `f` in the order these objects are stored in the `array`.      
 When applied, the `reduce` attribute object represents the resulting reduced accumulator object. 
-##### Example
+##### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1156,23 +1205,23 @@ When applied, the `reduce` attribute object represents the resulting reduced acc
 
 ``` 
 In this example, the `args` array is used that consists of the CLI parameters passed to the program. The array of numbers passed into the program is reduced into the sum of its elements. 
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh 1 2 3 4 5
 OUT>: 15
 IN$: 
 ```
 #### `map` Attribute
-`TODO` The `map` implementation is not correct.
+`TODO` The `map` implementation is broken.
 #### `mapi` Attribute
-`TODO` The `map` implementation is not correct.
+`TODO` The `map` implementation is broken.
 ### Sequencing Computations. `seq`
 *The EO Standard Object Collection* contains the `seq` object for sequencing computations.  
 The `seq` object has one free attribute `steps` that may have an arbitrary number of steps that will be evaluated one by one, from the beginning to the end in the sequential order.  
 The `seq` object starts the *datarization* process for each of the objects bound to the `steps` attribute of it.  
-On datarization, the `seq` object evaluates into the `bool` object `true`. 
+On datarization, the `seq` object evaluates into the `bool` object `true`.   
 **Fully Qualified Name:** `org.eolang.seq` (no aliasing or FQN reference required since the object is automatically imported).  
-#### Example
+#### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1186,7 +1235,7 @@ On datarization, the `seq` object evaluates into the `bool` object `true`.
     stdout "one by one, in sequatial order\n"
 
 ``` 
-##### Running
+##### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh
 OUT>: Hello
@@ -1203,7 +1252,7 @@ To use the `memory` object, the following steps are needed:
 1. Make a copy of the `memory` object and bound it to some attribute.  
 2. To put an object into the `memory` object, the `write` attribute object is used. It has the `x` free attribute that is the object to put into the `memory`. The `write` attribute evaluates to `true` on datarization.  
 3. To retrieve the object stored in the `memory`, datarization of the `memory` object is used.  
-##### Example
+##### Example <!-- omit in toc -->
 ```
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
@@ -1219,7 +1268,7 @@ To use the `memory` object, the following steps are needed:
     stdout (sprintf "%d\n" m)
 
 ``` 
-###### Running
+###### Running <!-- omit in toc -->
 ```
 IN$: ./run.sh
 OUT>: 4
