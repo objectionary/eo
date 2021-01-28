@@ -264,6 +264,7 @@ This code will print this:
 
 Got the idea?  
 
+
 ## The EO Standard Object Collection
 This section covers *The EO Standard Object Collection* which is a library of utility objects for writing programs in *EO*.  
 ### Data Type Objects  
@@ -454,7 +455,46 @@ OUT>: a || b || c || d = true
 IN$: 
 ```
 ##### `while` Attribute
-`TODO`
+The `while` attribute object is used to evaluate its `f` free attribute until the base `bool` object is not `false`.  
+The `f` attribute object must have the free attribute `i` (the current iteration of the `while` loop).  
+On datarization, the `while` attribute object evaluates to the number of iterations the loop took.  
+Since objects are immutable, the `memory` object should be used as the loop condition (i.e., the base `bool` object of the `while` attribute). Moreover, the `memory` object should be changed somehow inside the `f`, otherwise the `while` will evaluate infinitely. 
+###### Example
+```
++package sandbox
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[args...] > app
+  memory > x
+  seq > @
+    x.write 0
+    while.
+      x.less 11
+      [i]
+        seq > @
+          stdout
+            sprintf "%d x %d x %d = %d\n" x x i (x.mul (x.mul i))
+          x.write (x.add 1)
+
+```
+Here, the `i` attribute of the `f` iteration object is used to find the `x^3`. However, the `i` attribute may stay unused inside the `f`. 
+**Running**  
+```
+IN$: ./run.sh
+OUT>: 0 x 0 x 0 = 0
+OUT>: 1 x 1 x 1 = 1
+OUT>: 2 x 2 x 2 = 8
+OUT>: 3 x 3 x 3 = 27
+OUT>: 4 x 4 x 4 = 64
+OUT>: 5 x 5 x 5 = 125
+OUT>: 6 x 6 x 6 = 216
+OUT>: 7 x 7 x 7 = 343
+OUT>: 8 x 8 x 8 = 512
+OUT>: 9 x 9 x 9 = 729
+OUT>: 10 x 10 x 10 = 1000
+IN$: 
+```
 #### `float` Data Type Object
 The `float` data type object represents a double-precision 64-bit IEEE 754 floating-point number and can be used to perform various `FPU` computations.  
 **Fully Qualified Name:** `org.eolang.float` (no aliasing or FQN reference required since the object is automatically imported).  
@@ -999,7 +1039,7 @@ IN$:
 **Fully Qualified Name:** `org.eolang.random` (no aliasing or FQN reference required since the object is automatically imported).  
 #### Usage
 The `random` object has no free attributes. When applied, the `random` object represents the generated random number that is immutable (i.e. cannot be changed). So, every time the new random number is needed, the new application (initialization) of the `random` object is needed.     
-The resulting random numberrepresented by the `random` object is of type `float`.  
+The resulting random number represented by the `random` object is of type `float`.  
 The value is in the range `0.0` (inclusive) to `1.0` (exclusive).  
 #### Example
 ```
@@ -1046,7 +1086,7 @@ When applied, the `get` attribute object represents the object stored at the pos
       args.get 1
 
 ``` 
-In this example the `args` array is used that consists of the CLI parameters passed to the program.
+In this example, the `args` array is used that consists of the CLI parameters passed to the program.
 ###### Running
 ```
 IN$: ./run.sh Hello, World!
@@ -1073,7 +1113,7 @@ When applied, the `append` attribute object represents the resulting `array` obj
       argsExtended.get 2
 
 ``` 
-In this example the `args` array is used that consists of the CLI parameters passed to the program.
+In this example, the `args` array is used that consists of the CLI parameters passed to the program.
 ###### Running
 ```
 IN$: ./run.sh Hello, World!
@@ -1083,10 +1123,10 @@ OUT>: New Element!
 IN$: 
 ```
 #### `reduce` Attribute
-The `reduce` attribute object is used to perform the reduction operation of its base `array` object. Reduction is a proccess of accumulating a set of objects into one aggregated object.  
+The `reduce` attribute object is used to perform the reduction operation of its base `array` object. The reduction is a process of accumulating a set of objects into one aggregated object.  
 The `reduce` attribute object has two free attributes:  
 1. `a` for the initial value of the accumulator.  
-2. `f` for the object that represents the reduction function. It must have two free attibutes:  
+2. `f` for the object that represents the reduction function. It must have two free attributes:  
    1. The first attribute is the current value of the accumulator.  
    2. The second attribute is the current object of the `array`.
 
@@ -1115,7 +1155,7 @@ When applied, the `reduce` attribute object represents the resulting reduced acc
       sum
 
 ``` 
-In this example the `args` array is used that consists of the CLI parameters passed to the program. The array of numbers passed into the program is reduced into the sum of its elements. 
+In this example, the `args` array is used that consists of the CLI parameters passed to the program. The array of numbers passed into the program is reduced into the sum of its elements. 
 ###### Running
 ```
 IN$: ./run.sh 1 2 3 4 5
@@ -1128,7 +1168,7 @@ IN$:
 `TODO` The `map` implementation is not correct.
 ### Sequencing Computations. `seq`
 *The EO Standard Object Collection* contains the `seq` object for sequencing computations.  
-The `seq` object has one free attribute `steps` that may have arbitrary number of steps that will be evaluated one by one, from the beginning to the end in the sequential order.  
+The `seq` object has one free attribute `steps` that may have an arbitrary number of steps that will be evaluated one by one, from the beginning to the end in the sequential order.  
 The `seq` object starts the *datarization* process for each of the objects bound to the `steps` attribute of it.  
 On datarization, the `seq` object evaluates into the `bool` object `true`. 
 **Fully Qualified Name:** `org.eolang.seq` (no aliasing or FQN reference required since the object is automatically imported).  
@@ -1152,7 +1192,7 @@ IN$: ./run.sh
 OUT>: Hello
 OUT>: These objects
 OUT>: will be datarized
-OUT>: one by one, in sequatial order
+OUT>: one by one, in sequential order
 IN$: 
 ```
 ### Mutable Storage in Memory. `memory`
@@ -1185,6 +1225,7 @@ IN$: ./run.sh
 OUT>: 4
 IN$: 
 ```
+
 ## How it Works?
 The entire process of turning an `.eo` program into an executable
 binary code constists of a few steps, which must be done
