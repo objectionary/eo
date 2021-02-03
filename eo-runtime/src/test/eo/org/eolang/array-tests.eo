@@ -4,8 +4,8 @@
 
 # if map does mutate arrays, then this test would fail 
 # because of the absence of the toInt attribute
-# that is caused by mutation of the original string arrays
-# to int array
+# that is caused by mutation of the original string array
+# to an int array
 [] > mapDoesNotMutateArray
   [numbers...] > squares
     map. > @
