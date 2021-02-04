@@ -312,7 +312,7 @@ public final class XeListener implements ProgramListener {
             data = ctx.getText().substring(1, 2);
         } else if (ctx.FLOAT() != null) {
             type = "float";
-            data = Float.toString(Float.parseFloat(ctx.getText()));
+            data = Double.toString(Double.parseDouble(ctx.getText()));
         } else if (ctx.INT() != null) {
             type = "int";
             data = Long.toString(Long.parseLong(ctx.getText()));
