@@ -1232,7 +1232,7 @@ On datarization, the `seq` object evaluates into the `bool` object `true`.
     stdout "Hello\n"
     stdout "These objects\n"
     stdout "will be datarized\n"
-    stdout "one by one, in sequatial order\n"
+    stdout "one by one, in sequential order\n"
 
 ``` 
 ##### Running <!-- omit in toc -->
