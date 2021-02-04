@@ -41,12 +41,16 @@ public class EOint$EOpow extends PhDefault {
     public EOint$EOpow(final Phi parent) {
         super(parent);
         this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            (long) Math.pow(
-                new Data.Take(self.attr("ρ").get()).take(Long.class),
-                new Data.Take(self.attr("x").get()).take(Long.class)
-            )
-        ))));
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            long ρ = new Data.Take(self.attr("ρ").get()).take(Long.class);
+            long x = new Data.Take(self.attr("x").get()).take(Long.class);
+            if (ρ == 0L && x < 0L) {
+                PhDefault exception = new PhDefault();
+                exception.add("message", new AtBound(new AtLambda(() -> new Data.ToPhi("0 cannot be raised to a negative power")))); 
+                return exception;
+            }
+            return new Data.ToPhi((long) Math.pow(ρ, x));
+        })));
     }
 
 }

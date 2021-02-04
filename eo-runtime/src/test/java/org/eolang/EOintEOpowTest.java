@@ -29,6 +29,7 @@ import org.eolang.phi.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Test case for {@link EOint}.
@@ -49,6 +50,19 @@ public final class EOintEOpowTest {
             ).take(Long.class),
             Matchers.equalTo(16L)
         );
+    }
+
+    @Test
+    public void zeroToNegativePowerFails() {
+        Assertions.assertThrows(ArithmeticException.class, () -> {
+            new Data.Take(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(0L), "pow"),
+                    0,
+                    new Data.ToPhi(-1)
+                )
+            ).take(Long.class);
+        });
     }
 
 }
