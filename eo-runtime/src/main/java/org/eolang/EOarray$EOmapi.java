@@ -45,13 +45,14 @@ public class EOarray$EOmapi extends PhDefault {
             final Phi[] array = new Data.Take(
                 self.attr("ρ").get()
             ).take(Phi[].class);
+            final Phi[] dest = new Phi[array.length];
             for (int idx = 0; idx < array.length; ++idx) {
                 final Phi after = self.attr("f").get().copy();
                 after.attr(0).put(array[idx]);
                 after.attr(1).put(new Data.Value<>(idx));
-                array[idx] = after;
+                dest[idx] = after;
             }
-            return new Data.ToPhi(array);
+            return new Data.ToPhi(dest);
         })));
     }
 
