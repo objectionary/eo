@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import org.eolang.phi.Phi;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
@@ -53,15 +54,57 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToNegativePowerFails() {
-        Assertions.assertThrows(ArithmeticException.class, () -> {
+    public void zeroNonNegativePowers() {
+        // 0^0
+        MatcherAssert.assertThat(
             new Data.Take(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
-                    new Data.ToPhi(-1)
+                    new Data.ToPhi(0L)
                 )
-            ).take(Long.class);
+            ).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+        // 0^1
+        MatcherAssert.assertThat(
+            new Data.Take(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(0L), "pow"),
+                    0,
+                    new Data.ToPhi(1L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(0L)
+        );
+        // 0^2
+        MatcherAssert.assertThat(
+            new Data.Take(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(0L), "pow"),
+                    0,
+                    new Data.ToPhi(2L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    public void zeroToNegativePowerFails() {
+        Phi result = new PhWith(
+                        new PhMethod(new Data.ToPhi(0L), "pow"),
+                        0,
+                        new Data.ToPhi(-1L)
+                    );
+        MatcherAssert.assertThat(
+            new Data.Take(
+                result.attr("msg").get()
+            ).take(String.class),
+            Matchers.equalTo("0 cannot be raised to a negative power")
+        );
+        Assertions.assertThrows(org.eolang.phi.Attr.Exception.class, () -> {
+            new Data.Take(result).take(Long.class);
         });
     }
 
