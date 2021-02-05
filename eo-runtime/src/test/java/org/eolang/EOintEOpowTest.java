@@ -54,8 +54,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroNonNegativePowers() {
-        // 0^0
+    public void zeroToZeroPower() {
         MatcherAssert.assertThat(
             new Data.Take(
                 new PhWith(
@@ -66,7 +65,10 @@ public final class EOintEOpowTest {
             ).take(Long.class),
             Matchers.equalTo(1L)
         );
-        // 0^1
+    }
+
+    @Test
+    public void zeroToOnePower() {
         MatcherAssert.assertThat(
             new Data.Take(
                 new PhWith(
@@ -77,7 +79,10 @@ public final class EOintEOpowTest {
             ).take(Long.class),
             Matchers.equalTo(0L)
         );
-        // 0^2
+    }
+
+    @Test
+    public void zeroToTwoPower() {
         MatcherAssert.assertThat(
             new Data.Take(
                 new PhWith(
