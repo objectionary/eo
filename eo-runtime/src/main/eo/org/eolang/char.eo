@@ -1,0 +1,7 @@
++package org.eolang
++alias sprintf org.eolang.txt.sprintf
+
+[data] > char
+  # Converts char to string
+  [] > toString
+    sprintf "%c" data > @

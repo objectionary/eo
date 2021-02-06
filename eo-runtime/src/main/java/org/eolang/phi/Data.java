@@ -31,6 +31,7 @@ import org.eolang.EObool;
 import org.eolang.EOfloat;
 import org.eolang.EOint;
 import org.eolang.EOstring;
+import org.eolang.EOchar;
 
 /**
  * A data container.
@@ -72,6 +73,8 @@ public interface Data<T> {
                         phi = new EOint();
                     } else if (obj instanceof String) {
                         phi = new EOstring();
+                    } else if (obj instanceof Character) {
+                        phi = new EOchar();
                     } else if (obj instanceof Double) {
                         phi = new EOfloat();
                     } else if (obj instanceof Phi[]) {
