@@ -18,8 +18,7 @@
   [x] > mul /int
 
   # Divide this one by another int
-  [x] > div
-    mul (x.pow -1) > @
+  [x] > div /int
 
   # Calculate MOD
   [x] > mod /int
