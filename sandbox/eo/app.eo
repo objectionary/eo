@@ -6,5 +6,6 @@
 [args...] > app
   stdout > @
     sprintf
-      "%f\n"
-      3.1415926111
+      "%dth Fibonacci number is %d\n"
+      (args.get 0).toInt > n
+      fibonacci n
