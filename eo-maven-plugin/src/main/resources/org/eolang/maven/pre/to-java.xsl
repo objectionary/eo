@@ -154,6 +154,10 @@ SOFTWARE.
         <xsl:text>super(parent);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="//meta[head='package' and tail='org.eolang'] and (@name='array' or @name='int' or @name='float' or @name='int' or @name='bool' or @name='char' or @name='string')">
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>this.add("&#x394;", new AtFree());</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
@@ -349,7 +353,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "data", new Data.Value&lt;</xsl:text>
+    <xsl:text>, "&#x394;", new Data.Value&lt;</xsl:text>
     <xsl:value-of select="@java-type"/>
     <xsl:text>&gt;(</xsl:text>
     <xsl:value-of select="text()"/>

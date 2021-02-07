@@ -81,7 +81,7 @@ public interface Data<T> {
                             "Unknown type"
                         );
                     }
-                    return new PhWith(phi, "data", new Data.Value<>(obj));
+                    return new PhWith(phi, "Δ", new Data.Value<>(obj));
                 }
             );
         }

@@ -48,7 +48,7 @@ public final class PhDefaultTest {
             Matchers.equalTo("Hello, world!")
         );
         MatcherAssert.assertThat(
-            phi.attr("x").get().attr("data"),
+            phi.attr("x").get().attr("Δ"),
             Matchers.notNullValue()
         );
     }
