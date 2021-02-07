@@ -1,0 +1,20 @@
++package org.eolang
++alias sprintf org.eolang.txt.sprintf
++junit
+
+# if map does mutate arrays, then this test would fail 
+# because of the absence of the toInt attribute
+# that is caused by mutation of the original string array
+# to an int array
+[] > mapDoesNotMutateArray
+  [numbers...] > squares
+    map. > @
+      numbers
+      [current]
+        pow. > @
+          current.toInt
+          2
+  (squares "1" "2" "3") > sq
+  eq. > @
+    (sprintf "%d %d %d" 1 4 9)
+    (sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2))
