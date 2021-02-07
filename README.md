@@ -82,7 +82,6 @@ independent.
   - [Decoration](#decoration)
   - [Datarization](#datarization)
     - [`!` — Datarize Only Once](#--datarize-only-once)
-  - [Syntax Rules](#syntax-rules)
 - [How it Works?](#how-it-works)
 - [How to Contribute](#how-to-contribute)
 ## Quick Start
@@ -287,9 +286,11 @@ Got the idea?
 ## The EO Programming Language Reference
 This section covers the basic principles that the EO programming language relies on. These are objects, attributes, and four elemental operations — abstraction, application, decoration, and datarization.
 ### Objects
-**Objects** are a centric notion of the EO programming language. Essentially, an **object** is a set of *attributes*. An object connects with and links other objects through its attributes to compose new concepts that the object abstracts.
+**Objects** are a centric notion of the EO programming language. Essentially, an **object** is a set of *attributes*. An object connects with and links other objects through its attributes to compose new concepts that the object abstracts.  
+An **abstract object** is an object that has at least one [free attribute](#free--bound-attributes-binding).  
+A **closed object** is an object that has no [free attributes](#free--bound-attributes-binding). 
 ### Attributes
-An **attribute** is a pair of a name and a value, where a value of an attribute is an object. That is because `Everything in EO is an object`. Hence, for instance, an attribute `name` of an object `person` may be also referred to as plainly the object `name` of the object `person`.  
+An **attribute** is a pair of a name and a value, where a value of an attribute is another object. That is because `Everything in EO is an object`. Hence, for instance, an attribute `name` of an object `person` may be also referred to as plainly the object `name` of the object `person`.  
 #### Free & Bound Attributes. Binding
 **Binding** is an operation of associating an attribute's value with some object. An attribute may be bound to some object only once.  
 An attribute that is not bound to any object is named a **free attribute**. An attribute that has some object associated with its value is called a **bound attribute**.  
@@ -330,11 +331,66 @@ The `$` attribute may be used to access attributes of an object inside of the ob
   ($.plusOne).add 1 > plusTwo
 ``` 
 ### Abstraction
+**Abstraction** is the process of declaring a new object. Abstraction allows declaring both abstract and closed, anonymous and named objects.  
+If we are to compare abstraction and application, we can conclude that **abstraction** allows broadening the field of concepts (objects) by declaring new objects. *Application* allows enriching the objects declared through *abstraction* by defining the actual links between the concepts. 
+#### Syntax <!-- omit in toc -->
+The abstraction syntax includes the following elements:  
+1. *(optional)* One or more comment lines before (e.g., `# comment`).
+2. A sequence of free attributes in square bracket. The sequence may be:
+   1. Empty (`[]`). In this case, the declared object has no free attributes.  
+   2. Containing one or more attribute names (`[a]` or `[a b c d e]`). In this case, the listed attribute names are the free attributes of the declared object.  
+   3. Containing a variable-length attribute (`[animals...]`). The attribute must be at the end of the list of attributes to work properly. Internally, this attribute is represented by the `array` object.
+3. *(optional)* Binding to a name (` > myObject`). Declared objects may be anonymous. However, anonymous objects must be used in application only (i.e., we can only supply anonymous objects for binding them to free attributes during application).  
+4. *(optional)* The object may be declared as constant (i.e., datarized only once (see [this section](#--datarize-only-once))), if the object is bound to a name (see #3). For this, the `!` operator is used.  
+5. *(optional)* The object may be declared as atom (i.e., its implementation is made out of the EO language (for instance, in Java)), if the object is bound to a name (see #3). For this, the `/` operator is used (for example, `/bool`).
+**EBNF**  
+```EBNF
+abstraction ::= ( COMMENT '^' )*
+               '[' ( attribute ( ' ' attribute )* )? ']'
+                ( (' ' '>' ' ' label '!'?) ( ' ' '/' NAME )? )?
+            
+attribute ::= label
+label ::= '@' | NAME '...'?
+NAME ::= [a-z][a-z0-9_A-Z]*
+```
+**Railroad Diagram**
+![Abstraction Railroad Diagram](docs/img/abstraction.png "Abstraction Railroad Diagram")  
+#### Examples <!-- omit in toc -->
+```
+# no free attributes abstraction
+[] > magicalObject
+  # here we use application to define an attribute
+  42 > magicalNumber
+
+  # and here we use abstraction to define an attribute
+  [a] > addSomeMagic
+    # application again
+    magicalNumber.add a > @
+
+# variable-length attribute abstraction
+[a b c args...] > app
+  # the next five lines are examples of application
+  stdout > @
+    sprintf
+      "\n%d\n%d\n"
+      args.get 0
+      magicalObject.magicalNumber.add a
+
+# anonymous abstraction
+[args...] > app
+  reduce. > sum
+    args
+    0
+    [accumulator current] # <--- this is anonymous abstraction
+      add. > @
+        accumulator
+        current.toInt
+
+``` 
 ### Application
 ### Decoration
 ### Datarization
 #### `!` — Datarize Only Once
-### Syntax Rules
 
 ## How it Works?
 
