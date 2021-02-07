@@ -64,3 +64,15 @@
       mul.
         divisor
         quotient
+
+# Checks that division by one returns the dividend
+[] > divisionByOne
+  -235 > dividend
+  eq. > @
+    dividend.div 1
+    dividend
+
+# Checks that div works properly with dividends greater than zero
+[] > divForDividendGreaterThanZero
+  256.div 16 > quotient
+  quotient.eq 16 > @
