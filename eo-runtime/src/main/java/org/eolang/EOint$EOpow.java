@@ -28,6 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -43,8 +44,8 @@ public class EOint$EOpow extends PhDefault {
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             (long) Math.pow(
-                new Data.Take(self.attr("ρ").get()).take(Long.class),
-                new Data.Take(self.attr("x").get()).take(Long.class)
+                new Datarized(self.attr("ρ").get()).take(Long.class),
+                new Datarized(self.attr("x").get()).take(Long.class)
             )
         ))));
     }

@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.hamcrest.MatcherAssert;
@@ -40,7 +41,7 @@ public final class EOintEOpowTest {
     @Test
     public void powersNumber() {
         MatcherAssert.assertThat(
-            new Data.Take(
+            new Datarized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(2L), "pow"),
                     0,

@@ -111,21 +111,4 @@ public interface Data<T> {
         }
     }
 
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
-        }
-        public Object take() {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("data").get();
-            }
-            return Data.class.cast(src).take();
-        }
-        public <T> T take(final Class<T> type) {
-            return type.cast(this.take());
-        }
-    }
-
 }

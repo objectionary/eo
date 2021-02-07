@@ -21,37 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.io;
 
-import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
-import org.eolang.phi.PhCopy;
-import org.eolang.phi.PhEta;
-import org.eolang.phi.PhWith;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.phi;
 
 /**
- * Test case for {@link EOstdout}.
+ * A datarized object.
  *
  * @since 0.1
  */
-public final class EOstdoutTest {
+public final class Datarized {
+    /**
+     * The object to datarize.
+     */
+    private final Phi phi;
 
-    @Test
-    public void printsString() {
-        final Phi format = new Data.ToPhi("Hello, world!\n");
-        final Phi phi = new PhWith(
-            new PhCopy(new EOstdout(new PhEta())),
-            "text",
-            format
-        );
-        MatcherAssert.assertThat(
-            new Datarized(phi).take(Boolean.class),
-            Matchers.equalTo(true)
-        );
+    /**
+     * Ctor.
+     * @param src The object
+     */
+    public Datarized(final Phi src) {
+        this.phi = src;
     }
 
+    /**
+     * Take the object, no matter the type.
+     * @return The data
+     */
+    public Object take() {
+        Phi src = this.phi;
+        if (!(src instanceof Data)) {
+            src = src.attr("data").get();
+        }
+        return Data.class.cast(src).take();
+    }
+
+    /**
+     * Take the data with a type.
+     * @param type The type
+     * @param <T> The type
+     * @return The data
+     */
+    public <T> T take(final Class<T> type) {
+        return type.cast(this.take());
+    }
 }

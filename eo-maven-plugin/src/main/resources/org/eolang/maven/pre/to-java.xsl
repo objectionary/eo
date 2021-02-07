@@ -364,7 +364,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>Assertions.assertTrue(</xsl:text>
     <xsl:value-of select="eo:eol(3)"/>
-    <xsl:text>new Data.Take(new </xsl:text>
+    <xsl:text>new Datarized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>()).take(Boolean.class)</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
