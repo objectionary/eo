@@ -66,7 +66,25 @@ already available.
 We also want to have an ability to compile it to any other language, like
 Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
 independent.
-
+## Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Quick Start](#quick-start)
+- [Tutorial](#tutorial)
+- [The EO Programming Language Reference](#the-eo-programming-language-reference)
+  - [Objects](#objects)
+  - [Attributes](#attributes)
+    - [Free & Bound Attributes. Binding](#free--bound-attributes-binding)
+    - [Accessing Attributes. The Dot Notation](#accessing-attributes-the-dot-notation)
+    - [The `@` attribute](#the--attribute)
+    - [The `$` attribute](#the--attribute-1)
+  - [Abstraction](#abstraction)
+  - [Application](#application)
+  - [Decoration](#decoration)
+  - [Datarization](#datarization)
+    - [`!` — Datarize Only Once](#--datarize-only-once)
+  - [Syntax Rules](#syntax-rules)
+- [How it Works?](#how-it-works)
+- [How to Contribute](#how-to-contribute)
 ## Quick Start
 
 Here is a simple program that gets a year from command line and tells you
@@ -265,6 +283,58 @@ This code will print this:
 ```
 
 Got the idea?
+
+## The EO Programming Language Reference
+This section covers the basic principles that the EO programming language relies on. These are objects, attributes, and four elemental operations — abstraction, application, decoration, and datarization.
+### Objects
+**Objects** are a centric notion of the EO programming language. Essentially, an **object** is a set of *attributes*. An object connects with and links other objects through its attributes to compose new concepts that the object abstracts.
+### Attributes
+An **attribute** is a pair of a name and a value, where a value of an attribute is an object. That is because `Everything in EO is an object`. Hence, for instance, an attribute `name` of an object `person` may be also referred to as plainly the object `name` of the object `person`.  
+#### Free & Bound Attributes. Binding
+**Binding** is an operation of associating an attribute's value with some object. An attribute may be bound to some object only once.  
+An attribute that is not bound to any object is named a **free attribute**. An attribute that has some object associated with its value is called a **bound attribute**.  
+*Free attributes* may be declared through the object [abstraction](#abstraction) only.
+*Binding* may be performed either during object declaration using the bind (`>`) operator (see the [abstraction](#abstraction) section for more information) or through object copying (see the [application](#application) section for details).
+#### Accessing Attributes. The Dot Notation
+There are no access modifiers in the EO programming language. All attributes of all objects are publicly visible and accessible. To access attributes of objects, the dot notation is used. The dot notation can be used to retrieve values of attributes and not to bind attributes to objects.   
+##### Example. The Horizontal Dot Notation <!-- omit in toc -->
+```
+(5.add 7).mul 10 > calc
+```
+##### Example. The Vertical Dot Notation <!-- omit in toc -->
+```
+mul. > calc
+  add.
+    5
+    7
+  10
+```
+Here, `add` is an attribute of the object `5` and `mul` is an attribute of the attribute object `add`. 
+#### The `@` attribute
+The `@` attribute is named `phi` (after the Greek letter `φ`). The `@` character is reserved for the `phi` attribute and cannot be used for any other purpose. Every object has its own and only `@` attribute. The `@` attribute may be bound to a value only once.    
+The `@` attribute is used for decorating objects. An object bound to the `@` attribute is referred to as a decoratee (i.e., an object that is being decorated) while the base object of the `@` attribute is a decorator (i.e., an object that decorates the decoratee). Since the `@` attribute may be bound only once, every object may have only one decoratee object. More on the decoration see in [this section](#decoration).    
+In addition, the `@` attribute is heavily used in the datarization process (see [this section](#datarization) for more information). 
+#### The `$` attribute
+The `$` character is reserved for the special attirubute `self` that every object has. The `$` attribute is used to refer to the object itself.  
+The `$` attribute may be useful to use the result of the object's datarization process for declaring other object's attributes.  
+The `$` attribute may be used to access attributes of an object inside of the object with the dot notation (e.g., `$.attrA`), but this notation is redundant.  
+##### Example <!-- omit in toc -->
+```
+[] > numberTwo
+  # the object decorates (and evaluates to) the number two
+  2 > @
+  # $ is used to datarize the object for the internal use
+  $.add 1 > plusOne
+  # $.plusOne notation is redundant and may be
+  # replaced with just plusOne
+  ($.plusOne).add 1 > plusTwo
+``` 
+### Abstraction
+### Application
+### Decoration
+### Datarization
+#### `!` — Datarize Only Once
+### Syntax Rules
 
 ## How it Works?
 
