@@ -28,6 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -43,7 +44,7 @@ public class EOstdout extends PhDefault {
         this.add("text", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             System.out.print(
-                new Data.Take(
+                new Datarized(
                     self.attr("text").get()
                 ).take(String.class)
             );

@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,7 +43,7 @@ public final class EOboolEOnotTest {
         final Phi not = left.attr("not").get();
         not.attr(0).put(left);
         MatcherAssert.assertThat(
-            new Data.Take(not).take(Boolean.class),
+            new Datarized(not).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

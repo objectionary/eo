@@ -1,6 +1,6 @@
 +package org.eolang
 
-[data] > array
+[] > array
 
   # Take one element from the array, at the
   # given position.
@@ -23,6 +23,6 @@
   # object with one free attribute, for the element
   # of the array.
   [f] > map
-    mapi > @
+    ^.mapi > @
       [x i]
-        f x > @
+        ^.f x > @

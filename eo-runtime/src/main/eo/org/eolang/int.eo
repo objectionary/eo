@@ -1,6 +1,6 @@
 +package org.eolang
 
-[data] > int
+[] > int
   # Equals to another number
   [x] > eq /bool
 
@@ -12,7 +12,7 @@
 
   # Subtract from the current one
   [x] > sub
-    add (x.neg) > @
+    ^.add (x.neg) > @
 
   # Multiply this one by another int
   [x] > mul /int

@@ -24,6 +24,7 @@
 package org.eolang.txt;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhEta;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
@@ -52,7 +53,7 @@ public final class EOsprintfTest {
             num
         );
         MatcherAssert.assertThat(
-            new Data.Take(phi).take(String.class),
+            new Datarized(phi).take(String.class),
             Matchers.equalTo("Hello, 1!")
         );
     }
@@ -67,7 +68,7 @@ public final class EOsprintfTest {
         phi = new PhWith(phi, 1, num);
         phi = new PhWith(phi, 2, num);
         MatcherAssert.assertThat(
-            new Data.Take(phi).take(String.class),
+            new Datarized(phi).take(String.class),
             Matchers.equalTo("Hello, 5 5!")
         );
     }

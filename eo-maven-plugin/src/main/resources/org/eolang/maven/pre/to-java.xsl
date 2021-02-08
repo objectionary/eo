@@ -154,6 +154,10 @@ SOFTWARE.
         <xsl:text>super(parent);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="//meta[head='package' and tail='org.eolang'] and (@name='array' or @name='int' or @name='float' or @name='int' or @name='bool' or @name='char' or @name='string')">
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>this.add("&#x394;", new AtFree());</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
@@ -220,15 +224,27 @@ SOFTWARE.
       <xsl:when test="@base='$'">
         <xsl:text>self</xsl:text>
       </xsl:when>
+      <xsl:when test="@base='^'">
+        <xsl:text>new PhMethod(self, "&#x3C1;")</xsl:text>
+      </xsl:when>
       <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(self)</xsl:text>
       </xsl:when>
       <xsl:when test="$b/@level">
-        <xsl:text>new PhMethod(new PhMethod(self, "&#x3C1;"), "</xsl:text>
-        <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>")</xsl:text>
+        <xsl:message terminate="yes">
+          <xsl:text>You must explicitly say "</xsl:text>
+          <xsl:for-each select="1 to $b/@level">
+            <xsl:text>^.</xsl:text>
+          </xsl:for-each>
+          <xsl:value-of select="@base"/>
+          <xsl:text>"</xsl:text>
+          <xsl:text> instead of just "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>" on line </xsl:text>
+          <xsl:value-of select="@line"/>
+        </xsl:message>
       </xsl:when>
       <xsl:when test="$b">
         <xsl:text>new PhMethod(self, "</xsl:text>
@@ -275,7 +291,15 @@ SOFTWARE.
     <xsl:text> = new PhMethod(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_base, "</xsl:text>
-    <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
+    <xsl:variable name="method" select="substring-after(@base, '.')"/>
+    <xsl:choose>
+      <xsl:when test="$method='^'">
+        <xsl:text>&#x3C1;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="eo:attr-name($method)"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:if test="count(*) &gt; 1">
@@ -349,7 +373,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "data", new Data.Value&lt;</xsl:text>
+    <xsl:text>, "&#x394;", new Data.Value&lt;</xsl:text>
     <xsl:value-of select="@java-type"/>
     <xsl:text>&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
@@ -364,7 +388,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>Assertions.assertTrue(</xsl:text>
     <xsl:value-of select="eo:eol(3)"/>
-    <xsl:text>new Data.Take(new </xsl:text>
+    <xsl:text>new Datarized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text>()).take(Boolean.class)</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
