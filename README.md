@@ -331,7 +331,7 @@ The `$` attribute may be used to access attributes of an object inside of the ob
   ($.plusOne).add 1 > plusTwo
 ``` 
 ### Abstraction
-**Abstraction** is the process of declaring a new object. Abstraction allows declaring both abstract and closed, anonymous and named objects.  
+**Abstraction** is the operation of declaring a new object. Abstraction allows declaring both abstract and closed, anonymous and named objects.  
 If we are to compare abstraction and application, we can conclude that **abstraction** allows broadening the field of concepts (objects) by declaring new objects. *Application* allows enriching the objects declared through *abstraction* by defining the actual links between the concepts. 
 #### Syntax <!-- omit in toc -->
 The abstraction syntax includes the following elements:  
@@ -342,7 +342,7 @@ The abstraction syntax includes the following elements:
    3. Containing a variable-length attribute (`[animals...]`). The attribute must be at the end of the list of attributes to work properly. Internally, this attribute is represented by the `array` object.
 3. *(optional)* Binding to a name (` > myObject`). Declared objects may be anonymous. However, anonymous objects must be used in application only (i.e., we can only supply anonymous objects for binding them to free attributes during application).  
 4. *(optional)* The object may be declared as constant (i.e., datarized only once (see [this section](#--datarize-only-once))), if the object is bound to a name (see #3). For this, the `!` operator is used.  
-5. *(optional)* The object may be declared as atom (i.e., its implementation is made out of the EO language (for instance, in Java)), if the object is bound to a name (see #3). For this, the `/` operator is used (for example, `/bool`).
+5. *(optional)* The object may be declared as an atom (i.e., its implementation is made out of the EO language (for instance, in Java)), if the object is bound to a name (see #3). For this, the `/` operator is used (for example, `/bool`).  
 **EBNF**  
 ```EBNF
 abstraction ::= ( COMMENT '^' )*
@@ -353,7 +353,7 @@ attribute ::= label
 label ::= '@' | NAME '...'?
 NAME ::= [a-z][a-z0-9_A-Z]*
 ```
-**Railroad Diagram**
+**Railroad Diagram**  
 ![Abstraction Railroad Diagram](docs/img/abstraction.png "Abstraction Railroad Diagram")  
 #### Examples <!-- omit in toc -->
 ```
@@ -388,10 +388,41 @@ NAME ::= [a-z][a-z0-9_A-Z]*
 
 ``` 
 ### Application
+`TODO: syntax, comparison to abstraction, partial application, named attributes, examples`.
 ### Decoration
-### Datarization
-#### `!` — Datarize Only Once
+**Decoration** is the operation of extending one object's (`the decoratee`) attributes with attributes of the other object (`the decorator`). Through decoration, the decorator fetches all the attributes of the decoratee and adds up new own attributes. Hence, the decorator represents the decoratee with some extension in the functionality.  
+#### Syntax <!-- omit in toc -->  
+The decorator's `@` attribute should be bound to the decoratee object in order to perform the decoration operation.  
+The syntax for the decoration operation is as follows:  
+```
+[] > theDecorator
+  theDecoratee > @
+```
+Here, `theDecorator` can access all the attributes of `theDecoratee` and use them to define its own attributes.
+#### Example <!-- omit in toc -->
+Say, we have the `purchase` object that represents a purchase of some item that has a name, cost and quantity. The `purchaseTotal` decorates it and adds new functionality of calculating the total.
+```
+[itemName itemCost itemQuantity] > purchase
+  itemName > @
 
+[] > purchaseTotal
+  purchase > @
+  mul. > total
+    @.itemCost
+    @.itemQuantity
+```
+Now we can access both `purchase` and `purchaseTotal` attributes through a copy of `purchaseTotal`.
+### Datarization
+**Datarization** is the operation of evaluation of data laying behind an object. The datarization process (denoted hereby as `D(something)`) is recursive and consists of the following steps:  
+1. `D(obj) = obj` if `obj` is a data object. Data objects are `int`, `float`, `string`, `char`, `bytes`.  
+2. If the `obj` is an atom (atoms are objects that are implemented outside EO), then `D(obj)` is the data returned by the code behind the atom.  
+3. Otherwise, `D(obj) = D(obj.@)`. That is, if the object is neither data nor an atom, then the object "asks" its decoratee to find the data behind it.  
+  
+It is important to note that if the `@` attribute of the object (or any underlying object in the datarization recursive evaluation tree) is absent (free), then the datarization will fail.  
+If we want to datarize the object `x`, all objects and attributes that are used in the definition of the `@` attribute of the `x` will be datarized. Like this, if we want to datarize the attribute `x.attr`, all objects and attributes that are used in its definition (or the definition of `@` if the attribute is declared through abstraction) will be datarized.  
+The opposite is true. If the attribute `x.attr` or the object `x` itself are not used in the declaration of `y`, then `D(y)` will not datarize them and they will not be evaluated and executed. Thus, the datarization operation may be referred to as the lazy object evaluation (i.e., EO datarizes objects only when this is needed).    
+#### `!` — Datarize Only Once
+`not implemented`
 ## How it Works?
 
 The entire process of turning an `.eo` program into an executable
