@@ -4,4 +4,4 @@
 [data] > char
   # Converts char to string
   [] > toString
-    sprintf "%c" data > @
+    sprintf "%c" ^ > @
