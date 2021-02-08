@@ -92,6 +92,7 @@ public final class SnippetTest {
         return new ListOf<>(
             "ifthenelse.yaml",
             "fibo.yaml",
+            "parenting.yaml",
             "simple.yaml"
         );
     }
