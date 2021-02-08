@@ -13,8 +13,8 @@ eo: |
         n.less 2
         n
         add.
-          $ (n.sub 1)
-          $ (n.sub 2)
+          f (n.sub 1)
+          f (n.sub 2)
     stdout > @
       sprintf
         "The %dth fibo is %d"

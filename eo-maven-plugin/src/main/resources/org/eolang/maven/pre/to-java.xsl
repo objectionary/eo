@@ -224,15 +224,27 @@ SOFTWARE.
       <xsl:when test="@base='$'">
         <xsl:text>self</xsl:text>
       </xsl:when>
+      <xsl:when test="@base='^'">
+        <xsl:text>new PhMethod(self, "&#x3C1;")</xsl:text>
+      </xsl:when>
       <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(self)</xsl:text>
       </xsl:when>
       <xsl:when test="$b/@level">
-        <xsl:text>new PhMethod(new PhMethod(self, "&#x3C1;"), "</xsl:text>
-        <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>")</xsl:text>
+        <xsl:message terminate="yes">
+          <xsl:text>You must explicitly say "</xsl:text>
+          <xsl:for-each select="1 to $b/@level">
+            <xsl:text>^.</xsl:text>
+          </xsl:for-each>
+          <xsl:value-of select="@base"/>
+          <xsl:text>"</xsl:text>
+          <xsl:text> instead of just "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>" on line </xsl:text>
+          <xsl:value-of select="@line"/>
+        </xsl:message>
       </xsl:when>
       <xsl:when test="$b">
         <xsl:text>new PhMethod(self, "</xsl:text>
@@ -279,7 +291,15 @@ SOFTWARE.
     <xsl:text> = new PhMethod(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_base, "</xsl:text>
-    <xsl:value-of select="eo:attr-name(substring-after(@base, '.'))"/>
+    <xsl:variable name="method" select="substring-after(@base, '.')"/>
+    <xsl:choose>
+      <xsl:when test="$method='^'">
+        <xsl:text>&#x3C1;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="eo:attr-name($method)"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:if test="count(*) &gt; 1">

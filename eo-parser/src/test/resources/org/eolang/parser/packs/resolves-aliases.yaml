@@ -9,6 +9,7 @@ tests:
   - //o[@base='org.eolang.io.stdout' and @line='9']
   - //o[@base='and' and @line='7']
   - //o[@base='$']
+  - //o[@base='^']
 eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdin org.eolang.io.stdin
@@ -19,4 +20,5 @@ eo: |
     and
       (scanner stdin).nextLine > line!
       (stdout "You entered" line).print
+      ^.x
       $

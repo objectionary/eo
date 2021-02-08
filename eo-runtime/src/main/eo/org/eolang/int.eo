@@ -12,14 +12,14 @@
 
   # Subtract from the current one
   [x] > sub
-    add (x.neg) > @
+    ^.add (x.neg) > @
 
   # Multiply this one by another int
   [x] > mul /int
 
   # Divide this one by another int
   [x] > div
-    mul (x.pow -1) > @
+    ^.mul (x.pow -1) > @
 
   # Calculate MOD
   [x] > mod /int
