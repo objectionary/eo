@@ -27,7 +27,7 @@ package org.eolang;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
-import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -43,7 +43,7 @@ public class EObool$EOif extends PhDefault {
         this.add("t", new AtFree());
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Boolean term = new Data.Take(
+            final Boolean term = new Datarized(
                 self.attr("ρ").get()
             ).take(Boolean.class);
             final Phi out;

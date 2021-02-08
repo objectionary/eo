@@ -104,7 +104,11 @@ suffix
 method
   :
   DOT
-  NAME
+  (
+    NAME
+    |
+    PARENT
+  )
   ;
 
 application
@@ -159,6 +163,8 @@ head
   :
   AT
   |
+  PARENT
+  |
   SELF
   |
   NAME
@@ -209,6 +215,7 @@ RSQ: ']';
 LB: '(';
 RB: ')';
 AT: '@';
+PARENT: '^';
 HASH: '#';
 EOL
   :

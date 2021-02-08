@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhCopy;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
@@ -53,7 +54,7 @@ public final class EOintEOeqTest {
             )
         );
         MatcherAssert.assertThat(
-            new Data.Take(eql).take(Boolean.class),
+            new Datarized(eql).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

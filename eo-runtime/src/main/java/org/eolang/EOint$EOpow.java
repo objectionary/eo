@@ -28,6 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 import org.eolang.phi.PhWith;
@@ -43,8 +44,8 @@ public class EOint$EOpow extends PhDefault {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            long ρ = new Data.Take(self.attr("ρ").get()).take(Long.class);
-            long x = new Data.Take(self.attr("x").get()).take(Long.class);
+            long ρ = new Datarized(self.attr("ρ").get()).take(Long.class);
+            long x = new Datarized(self.attr("x").get()).take(Long.class);
             if (ρ == 0L && x < 0L) {
                 final Phi msg = new Data.ToPhi("0 cannot be raised to a negative power");
                 return new PhWith(new org.eolang.EOerror(), "msg", msg);

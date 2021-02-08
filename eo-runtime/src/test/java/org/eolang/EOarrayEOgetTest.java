@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -45,11 +46,11 @@ public final class EOarrayEOgetTest {
         final Phi get = array.attr("get").get();
         get.attr(0).put(idx);
         MatcherAssert.assertThat(
-            new Data.Take(get).take(String.class),
+            new Datarized(get).take(String.class),
             Matchers.equalTo(txt)
         );
         MatcherAssert.assertThat(
-            new Data.Take(get).take(),
+            new Datarized(get).take(),
             Matchers.equalTo(txt)
         );
     }

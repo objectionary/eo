@@ -84,7 +84,7 @@ public interface Data<T> {
                             "Unknown type"
                         );
                     }
-                    return new PhWith(phi, "data", new Data.Value<>(obj));
+                    return new PhWith(phi, "Δ", new Data.Value<>(obj));
                 }
             );
         }
@@ -111,23 +111,6 @@ public interface Data<T> {
         @Override
         public T take() {
             return this.val;
-        }
-    }
-
-    final class Take {
-        private final Phi phi;
-        public Take(final Phi src) {
-            this.phi = src;
-        }
-        public Object take() {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("data").get();
-            }
-            return Data.class.cast(src).take();
-        }
-        public <T> T take(final Class<T> type) {
-            return type.cast(this.take());
         }
     }
 
