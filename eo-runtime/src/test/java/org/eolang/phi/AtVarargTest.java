@@ -41,7 +41,7 @@ public final class AtVarargTest {
         attr.put(phi);
         attr.put(phi);
         MatcherAssert.assertThat(
-            new Data.Take(attr.get()).take(Phi[].class)[1],
+            new Datarized(attr.get()).take(Phi[].class)[1],
             Matchers.equalTo(phi)
         );
     }

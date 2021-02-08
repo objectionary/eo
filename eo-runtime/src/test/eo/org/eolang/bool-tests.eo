@@ -20,7 +20,7 @@
       while.
         x.less 10
         [i]
-          x.write (x.add i) > @
+          ^.x.write (^.x.add i) > @
 
 [] > printsNiceFormulas
   memory > x
@@ -31,5 +31,5 @@
       [i]
         seq > @
           stdout
-            sprintf "%dx%d = %d\n" x x (x.pow 2)
-          x.write (x.add 1)
+            sprintf "%dx%d = %d\n" (^.x) (^.x) (^.x.pow 2)
+          ^.x.write (^.x.add 1)

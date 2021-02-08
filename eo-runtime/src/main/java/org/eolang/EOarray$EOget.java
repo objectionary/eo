@@ -27,7 +27,7 @@ package org.eolang;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
-import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -42,10 +42,10 @@ public class EOarray$EOget extends PhDefault {
         super(parent);
         this.add("i", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Data.Take(
+            final Phi[] array = new Datarized(
                 self.attr("ρ").get()
             ).take(Phi[].class);
-            final int idx = (int) (long) new Data.Take(
+            final int idx = (int) (long) new Datarized(
                 self.attr("i").get()
             ).take(Long.class);
             if (array.length <= idx) {

@@ -25,6 +25,7 @@ package org.eolang;
 
 import org.eolang.phi.Phi;
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.hamcrest.MatcherAssert;
@@ -42,7 +43,7 @@ public final class EOintEOpowTest {
     @Test
     public void powersNumber() {
         MatcherAssert.assertThat(
-            new Data.Take(
+            new Datarized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(2L), "pow"),
                     0,
@@ -56,7 +57,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToZeroPower() {
         MatcherAssert.assertThat(
-            new Data.Take(
+            new Datarized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
@@ -70,7 +71,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToOnePower() {
         MatcherAssert.assertThat(
-            new Data.Take(
+            new Datarized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
@@ -84,7 +85,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToTwoPower() {
         MatcherAssert.assertThat(
-            new Data.Take(
+            new Datarized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
@@ -97,19 +98,19 @@ public final class EOintEOpowTest {
 
     @Test
     public void zeroToNegativePowerFails() {
-        Phi result = new PhWith(
-                        new PhMethod(new Data.ToPhi(0L), "pow"),
-                        0,
-                        new Data.ToPhi(-1L)
-                    );
+        final Phi result = new PhWith(
+            new PhMethod(new Data.ToPhi(0L), "pow"),
+            0,
+            new Data.ToPhi(-1L)
+        );
         MatcherAssert.assertThat(
-            new Data.Take(
+            new Datarized(
                 result.attr("msg").get()
             ).take(String.class),
             Matchers.equalTo("0 cannot be raised to a negative power")
         );
         Assertions.assertThrows(org.eolang.phi.Attr.Exception.class, () -> {
-            new Data.Take(result).take(Long.class);
+            new Datarized(result).take(Long.class);
         });
     }
 

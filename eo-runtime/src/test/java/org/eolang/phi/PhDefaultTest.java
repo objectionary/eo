@@ -44,11 +44,11 @@ public final class PhDefaultTest {
         phi.attr(0).put(num);
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            new Data.Take(copy).take(String.class),
+            new Datarized(copy).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
         MatcherAssert.assertThat(
-            phi.attr("x").get().attr("data"),
+            phi.attr("x").get().attr("Δ"),
             Matchers.notNullValue()
         );
     }

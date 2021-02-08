@@ -1,0 +1,16 @@
+exit: 0
+in: ""
+out:
+  - ".*The arg is 123.*"
+args: ["main", "123"]
+eo: |
+  +alias stdout org.eolang.io.stdout
+  +alias sprintf org.eolang.txt.sprintf
+
+  [args...] > main
+    [] > take
+      ^.args.get 0 > @
+    stdout > @
+      sprintf
+        "The arg is %s"
+        take
