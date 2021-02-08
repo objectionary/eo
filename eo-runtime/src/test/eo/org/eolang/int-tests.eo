@@ -48,7 +48,7 @@
 [] > zeroDivision
   eq. > @
     (2.div 0).msg
-    (error "Division by zero is undefined").msg
+    "Division by zero is undefined"
 
 # Checks mathematical equality
 # A = ((A div B) * B) + (A mod B)
