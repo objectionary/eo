@@ -40,6 +40,6 @@
       []
         sprintf > msg
           "%d not equal to %d"
-          n
-          f
+          ^.n
+          ^.f
       true
