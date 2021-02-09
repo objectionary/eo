@@ -2,6 +2,9 @@
 
 [] > array
 
+  # Obtain the length of the array.
+  [] > length /int
+
   # Take one element from the array, at the
   # given position.
   [i] > get /object
