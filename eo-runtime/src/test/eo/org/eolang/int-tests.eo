@@ -43,3 +43,36 @@
         n.eq 3
         minus1.add minus2
         rec (n.sub 1) (minus1.add minus2) minus1
+
+# Checks that division by zero returns an error object
+[] > zeroDivision
+  eq. > @
+    (2.div 0).msg
+    "Division by zero is undefined"
+
+# Checks mathematical equality
+# A = ((A div B) * B) + (A mod B)
+[] > divModCompatibility
+  -13 > dividend
+  5 > divisor
+  dividend.mod divisor > remainder
+  dividend.div divisor > quotient
+  eq. > @
+    dividend
+    add.
+      remainder
+      mul.
+        divisor
+        quotient
+
+# Checks that division by one returns the dividend
+[] > divisionByOne
+  -235 > dividend
+  eq. > @
+    dividend.div 1
+    dividend
+
+# Checks that div works properly with dividends greater than zero
+[] > divForDividendGreaterThanZero
+  256.div 16 > quotient
+  quotient.eq 16 > @
