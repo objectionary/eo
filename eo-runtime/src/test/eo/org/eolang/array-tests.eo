@@ -4,33 +4,29 @@
 
 # check that an empty array's .length equals to zero
 [] > emptyArrayLengthTest
-  [elements...] > arr
-
   eq. > @
     0
-    (arr).elements.length
+    (array).elements.length
 
 # check that array.length works properly for non-empty arrays
 [] > nonEmptyArrayLengthTest
-  [elements...] > arr
-
   eq. > @
     5
-    (arr "a" "b" "c" "d" "e").elements.length
+    (array "a" "b" "c" "d" "e").elements.length
 
 # if map does mutate arrays, then this test would fail 
 # because of the absence of the toInt attribute
 # that is caused by mutation of the original string array
 # to an int array
 [] > mapDoesNotMutateArray
-  [numbers...] > squares
+  [numbers] > squares
     map. > @
       numbers
       [current]
         pow. > @
           current.toInt
           2
-  (squares "1" "2" "3") > sq
+  (squares (array "1" "2" "3")) > sq
   eq. > @
     (sprintf "%d %d %d" 1 4 9)
     (sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2))

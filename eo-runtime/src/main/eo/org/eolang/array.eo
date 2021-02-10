@@ -1,7 +1,6 @@
 +package org.eolang
 
-[] > array
-
+[data...] > array
   # Obtain the length of the array.
   [] > length /int
 
