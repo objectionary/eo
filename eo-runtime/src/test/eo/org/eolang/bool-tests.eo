@@ -53,3 +53,21 @@
         (mThird.write 4)
     mFirst.eq 1
     mThird.eq 3
+
+# tests that bool.or stops calculations if its i'th
+# object is true (including the base object)
+[] > orShortCircuiting
+  memory > mFirst
+  memory > mThird
+  and. > @
+    or.
+      mFirst.write 1
+      mFirst.write 2
+      mFirst.write 3
+    or.
+      (mThird.write 1).not
+      (mThird.write 2).not
+      mThird.write 3
+      mThird.write 4
+    mFirst.eq 1
+    mThird.eq 3

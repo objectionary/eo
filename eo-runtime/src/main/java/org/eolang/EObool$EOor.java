@@ -50,10 +50,10 @@ public class EObool$EOor extends PhDefault {
                 self.attr("x").get()
             ).take(Phi[].class);
             for (final Phi arg : args) {
-                term |= new Datarized(arg).take(Boolean.class);
                 if (term) {
                     break;
                 }
+                term |= new Datarized(arg).take(Boolean.class);
             }
             return new Data.ToPhi(term);
         })));
