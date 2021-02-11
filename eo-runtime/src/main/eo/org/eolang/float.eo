@@ -3,3 +3,6 @@
 [] > float
   # Equals to another number
   [x] > eq /bool
+
+  # Multiplication of $ and x
+  [x] > mul /float

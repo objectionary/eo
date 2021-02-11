@@ -1,0 +1,37 @@
++package org.eolang
++junit
+
+[] > mulByZero
+  eq. > @
+    0.0
+    mul.
+      574.9
+      0.0
+
+[] > mulByOne
+  eq. > @
+    574.9
+    mul.
+      574.9
+      1.0
+
+[] > mulTwoPositives
+  eq. > @
+    179235.3825
+    mul.
+      574.5
+      311.985
+
+[] > mulTwoNegatives
+  eq. > @
+    179235.3825
+    mul.
+      -574.5
+      -311.985
+
+[] > mulDiffSign
+  eq. > @
+    -0.1792353825
+    mul.
+      -0.5745
+      0.311985
