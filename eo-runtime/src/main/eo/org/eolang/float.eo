@@ -12,3 +12,7 @@
 
   # Negation of $
   [] > neg /float
+
+  # Difference between $ and x
+  [x] > sub
+    ^.add (x.neg) > @
