@@ -1,0 +1,82 @@
++package org.eolang
++alias sprintf org.eolang.txt.sprintf
++junit
+
+[] > mulByZero
+  eq. > @
+    0.0
+    mul.
+      574.9
+      0.0
+
+[] > mulByOne
+  eq. > @
+    574.9
+    mul.
+      574.9
+      1.0
+
+[] > mulTwoPositives
+  eq. > @
+    179235.3825
+    mul.
+      574.5
+      311.985
+
+[] > mulTwoNegatives
+  eq. > @
+    179235.3825
+    mul.
+      -574.5
+      -311.985
+
+[] > mulDiffSign
+  eq. > @
+    -0.1792353825
+    mul.
+      -0.5745
+      0.311985
+
+[] > addTest
+  eq. > @
+    886.485
+    add.
+      574.5
+      311.985
+
+[] > negTest
+  eq. > @
+    -886.485
+    886.485.neg
+
+[] > subTest
+  eq. > @
+    262.515
+    sub.
+      574.5
+      311.985
+
+[] > zeroToNegPowTest
+  eq. > @
+    "Infinity"
+    sprintf
+      "%f"
+      pow.
+        0.0
+        -1.0
+
+[] > divTest
+  eq. > @
+    31.0
+    div.
+      15.5
+      0.5
+
+[] > zeroDivTest
+  eq. > @
+    "-Infinity"
+    sprintf
+      "%f"
+      div.
+        -345.10
+        0.0
