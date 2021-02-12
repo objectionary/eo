@@ -73,7 +73,7 @@ public final class PullMojo extends AbstractMojo {
     private Func<String, Input> repo = name -> new InputOf(
         new URL(
             String.format(
-                "https://raw.githubusercontent.com/yegor256/objectionary/master/objects/%s.eo",
+                "https://www.objectionary.com/xml/%s.eo.xml",
                 name.replace(".", "/")
             )
         )

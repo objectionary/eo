@@ -30,3 +30,17 @@
   eq. > @
     (sprintf "%d %d %d" 1 4 9)
     (sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2))
+
+# this test performs mapping of array using the index for it
+[] > mapiIndexCanBeAccessed
+  [numbers...] > multipliedByNaturalSequence
+    mapi. > @
+      numbers
+      [current index]
+        mul. > @
+          current.toInt
+          index.add 1
+  (multipliedByNaturalSequence "1" "2" "3") > mulSeq
+  eq. > @
+    (sprintf "%d %d %d" 1 4 9)
+    (sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2))
