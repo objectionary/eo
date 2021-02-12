@@ -22,29 +22,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="middle-varargs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-aliases" version="2.0">
+  <!--
+  Here we find all aliases that don't use full syntax
+  and expand them to the full one. For example, this one:
+
+  +alias org.example.foo
+
+  Will be expanded to:
+
+  +alias foo org.example.foo
+  -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="/program/errors">
+  <xsl:template match="/program/metas/meta[head='alias' and not(contains(tail, ' '))]">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@vararg]">
-        <xsl:variable name="s" select="following-sibling::o[@name and not(@base) and not(*) and not(@atom)]"/>
-        <xsl:if test="$s">
-          <xsl:element name="error">
-            <xsl:attribute name="check">
-              <xsl:text>middle-varags</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:text>Varargs param "</xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text>" must be the last one, while "</xsl:text>
-            <xsl:value-of select="$s/@name"/>
-            <xsl:text>" follows</xsl:text>
-          </xsl:element>
-        </xsl:if>
-      </xsl:for-each>
+      <xsl:attribute name="expanded"/>
+      <xsl:apply-templates select="node() except tail|@*"/>
+      <xsl:element name="tail">
+        <xsl:variable name="parts" select="tokenize(tail, '\.')"/>
+        <xsl:value-of select="$parts[last()]"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="tail"/>
+      </xsl:element>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

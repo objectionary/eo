@@ -3,3 +3,23 @@
 [] > float
   # Equals to another number
   [x] > eq /bool
+
+  # Multiplication of $ and x
+  [x] > mul /float
+
+  # Sum of $ and x
+  [x] > add /float
+
+  # Negation of $
+  [] > neg /float
+
+  # Difference between $ and x
+  [x] > sub
+    ^.add (x.neg) > @
+
+  # x'th power of $
+  [x] > pow /float
+
+  # Quotient of the division of $ by x
+  [x] > div
+    ^.mul (x.pow -1.0) > @

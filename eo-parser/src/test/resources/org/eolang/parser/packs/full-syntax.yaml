@@ -1,7 +1,7 @@
 xsls: []
 tests:
   - /program/license[text()!='']
-  - /program/metas[count(meta)=3]
+  - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']
   - /program/objects[count(o)=7]
   - //o[@base='bool']
@@ -21,6 +21,7 @@ eo: |
   # be parsed by the ANTLR
 
   +alias Test Test
+  +alias org.example.foo
   +foo
   +bar Some text
 
