@@ -50,7 +50,7 @@ public class EOarray$EOmapi extends PhDefault {
             for (int idx = 0; idx < array.length; ++idx) {
                 final Phi after = self.attr("f").get().copy();
                 after.attr(0).put(array[idx]);
-                after.attr(1).put(new Data.Value<>(idx));
+                after.attr(1).put(new Data.ToPhi((long)idx));
                 dest[idx] = after;
             }
             return new Data.ToPhi(dest);
