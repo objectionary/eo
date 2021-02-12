@@ -1,4 +1,5 @@
 +package org.eolang
++alias sprintf org.eolang.txt.sprintf
 +junit
 
 [] > mulByZero
@@ -54,3 +55,12 @@
     sub.
       574.5
       311.985
+
+[] > zeroToNegPowTest
+  eq. > @
+    "Infinity"
+    sprintf
+      "%f"
+      pow.
+        0.0
+        -1.0

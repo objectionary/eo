@@ -16,3 +16,6 @@
   # Difference between $ and x
   [x] > sub
     ^.add (x.neg) > @
+
+  # x'th power of $
+  [x] > pow /float
