@@ -32,13 +32,14 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
-import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -57,6 +58,12 @@ import org.slf4j.impl.StaticLoggerBinder;
 public final class ResolveMojo extends AbstractMojo {
 
     /**
+     * Maven project.
+     */
+    @Parameter(defaultValue = "${project}")
+    private MavenProject project;
+
+    /**
      * From directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -66,13 +73,21 @@ public final class ResolveMojo extends AbstractMojo {
     )
     private File targetDir;
 
+    /**
+     * Add to scope or not? If not, it will be a dry run.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean addToScope = true;
+
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
-        final Collection<Artifact> artifacts;
+        final Collection<Dependency> deps;
         try {
-            artifacts = Files.walk(dir)
+            deps = Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
                 .map(this::artifacts)
                 .flatMap(Collection::stream)
@@ -86,8 +101,21 @@ public final class ResolveMojo extends AbstractMojo {
                 ex
             );
         }
-        for (final Artifact artifact : artifacts) {
-            Logger.info(this, "%s needed", artifact);
+        for (final Dependency dep : deps) {
+            if (this.addToScope) {
+                this.project.getDependencies().add(dep);
+                Logger.info(
+                    this, "%s:%s:%s added to \"%s\" scope",
+                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
+                    dep.getScope()
+                );
+            } else {
+                Logger.info(
+                    this, "%s:%s:%s would be added to \"%s\" scope",
+                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
+                    dep.getScope()
+                );
+            }
         }
     }
 
@@ -97,12 +125,20 @@ public final class ResolveMojo extends AbstractMojo {
      * @param file EO file
      * @return List of artifacts needed
      */
-    private Collection<Artifact> artifacts(final Path file) {
-        final Collection<Artifact> artifacts = new LinkedList<>();
+    private Collection<Dependency> artifacts(final Path file) {
+        final Collection<Dependency> artifacts = new LinkedList<>();
         try {
-            final String xpath = "//meta[head='rt' and part[1]='jvm']/part[2]";
-            for (final String dep : new XMLDocument(file).xpath(xpath)) {
-                artifacts.add(null);
+            final String xpath = "//meta[head='rt' and part[1]='jvm']/part[2]/text()";
+            for (final String coords : new XMLDocument(file).xpath(xpath)) {
+                final String[] parts = coords.split(":");
+                final Dependency dep = new Dependency();
+                dep.setGroupId(parts[0]);
+                dep.setArtifactId(parts[1]);
+                dep.setVersion(parts[2]);
+                dep.setClassifier("");
+                dep.setType("jar");
+                dep.setScope("compile");
+                artifacts.add(dep);
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(
