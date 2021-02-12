@@ -124,15 +124,20 @@ public final class XeListener implements ProgramListener {
     public void enterMetas(final ProgramParser.MetasContext ctx) {
         this.dirs.add("metas");
         for (final TerminalNode node : ctx.META()) {
-            final String[] parts = node.getText().split(" ", 2);
+            final String[] pair = node.getText().split(" ", 2);
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
-                .add("head").set(parts[0].substring(1)).up()
+                .add("head").set(pair[0].substring(1)).up()
                 .add("tail");
-            if (parts.length > 1) {
-                this.dirs.set(parts[1].trim());
+            if (pair.length > 1) {
+                this.dirs.set(pair[1].trim()).up();
+                for (final String part : pair[1].trim().split(" ")) {
+                    this.dirs.add("part").set(part).up();
+                }
+            } else {
+                this.dirs.up();
             }
-            this.dirs.up().up();
+            this.dirs.up();
         }
         this.dirs.up();
     }

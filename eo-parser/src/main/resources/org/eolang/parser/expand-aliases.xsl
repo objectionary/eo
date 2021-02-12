@@ -37,11 +37,17 @@ SOFTWARE.
   <xsl:template match="/program/metas/meta[head='alias' and not(contains(tail, ' '))]">
     <xsl:copy>
       <xsl:attribute name="expanded"/>
-      <xsl:apply-templates select="node() except tail|@*"/>
+      <xsl:apply-templates select="node() except tail except part|@*"/>
+      <xsl:variable name="parts" select="tokenize(tail, '\.')"/>
       <xsl:element name="tail">
-        <xsl:variable name="parts" select="tokenize(tail, '\.')"/>
         <xsl:value-of select="$parts[last()]"/>
         <xsl:text> </xsl:text>
+        <xsl:value-of select="tail"/>
+      </xsl:element>
+      <xsl:element name="part">
+        <xsl:value-of select="$parts[last()]"/>
+      </xsl:element>
+      <xsl:element name="part">
         <xsl:value-of select="tail"/>
       </xsl:element>
     </xsl:copy>

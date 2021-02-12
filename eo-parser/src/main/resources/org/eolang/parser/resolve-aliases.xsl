@@ -34,19 +34,14 @@ SOFTWARE.
   If some alias is badly formatted, a runtime error is issued.
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="/program/metas">
-    <xsl:copy>
-      <xsl:apply-templates select="node() except meta[head='alias']|@*"/>
-    </xsl:copy>
-  </xsl:template>
   <xsl:template match="o[not(@ref) and @base and not(starts-with(@base, '.')) and not(contains(@base, '.'))]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
-        <xsl:variable name="meta" select="/program/metas/meta[head='alias' and tokenize(tail,' ')[1] = $o/@base]"/>
+        <xsl:variable name="meta" select="/program/metas/meta[head='alias' and part[1] = $o/@base]"/>
         <xsl:choose>
           <xsl:when test="$meta">
-            <xsl:variable name="tail" select="tokenize($meta/tail,' ')[2]"/>
+            <xsl:variable name="tail" select="$meta/part[2]"/>
             <xsl:if test="$tail = ''">
               <xsl:message terminate="yes">
                 <xsl:text>The alias "</xsl:text>
