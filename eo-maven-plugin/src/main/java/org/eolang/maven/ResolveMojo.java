@@ -91,6 +91,10 @@ public final class ResolveMojo extends AbstractMojo {
                 .filter(file -> !file.toFile().isDirectory())
                 .map(this::artifacts)
                 .flatMap(Collection::stream)
+                .map(ResolveMojo.Wrap::new)
+                .sorted()
+                .distinct()
+                .map(ResolveMojo.Wrap::dep)
                 .collect(Collectors.toList());
         } catch (final IOException ex) {
             throw new MojoFailureException(
@@ -150,5 +154,66 @@ public final class ResolveMojo extends AbstractMojo {
             );
         }
         return artifacts;
+    }
+
+    /**
+     * Wrapper for comparing.
+     *
+     * @since 0.1
+     */
+    private static final class Wrap implements Comparable<ResolveMojo.Wrap> {
+        /**
+         * Dependency.
+         */
+        private final Dependency dependency;
+
+        /**
+         * Ctor.
+         * @param dep Dependency
+         */
+        private Wrap(final Dependency dep) {
+            this.dependency = dep;
+        }
+
+        /**
+         * Return it.
+         * @return The dep
+         */
+        public Dependency dep() {
+            return this.dependency;
+        }
+
+        @Override
+        public int compareTo(final ResolveMojo.Wrap wrap) {
+            return ResolveMojo.Wrap.toStr(this.dependency).compareTo(
+                ResolveMojo.Wrap.toStr(wrap.dependency)
+            );
+        }
+
+        @Override
+        public boolean equals(final Object wrap) {
+            return ResolveMojo.Wrap.toStr(this.dependency).equals(
+                ResolveMojo.Wrap.toStr(
+                    ResolveMojo.Wrap.class.cast(wrap).dependency
+                )
+            );
+        }
+
+        @Override
+        public int hashCode() {
+            return ResolveMojo.Wrap.toStr(this.dependency).hashCode();
+        }
+
+        /**
+         * Convert it to string.
+         * @param dep The dep
+         * @return The text
+         */
+        private static String toStr(final Dependency dep) {
+            return String.format(
+                "%s:%s:%s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+            );
+        }
     }
 }
