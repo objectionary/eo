@@ -64,3 +64,19 @@
       pow.
         0.0
         -1.0
+
+[] > divTest
+  eq. > @
+    31.0
+    div.
+      15.5
+      0.5
+
+[] > zeroDivTest
+  eq. > @
+    "-Infinity"
+    sprintf
+      "%f"
+      div.
+        -345.10
+        0.0
