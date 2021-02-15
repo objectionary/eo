@@ -6,13 +6,13 @@
 [] > emptyArrayLengthTest
   eq. > @
     0
-    (array).elements.length
+    (array).length
 
 # check that array.length works properly for non-empty arrays
 [] > nonEmptyArrayLengthTest
   eq. > @
     5
-    (array "a" "b" "c" "d" "e").elements.length
+    (array "a" "b" "c" "d" "e").length
 
 # if map does mutate arrays, then this test would fail 
 # because of the absence of the toInt attribute
@@ -33,14 +33,14 @@
 
 # this test performs mapping of array using the index for it
 [] > mapiIndexCanBeAccessed
-  [numbers...] > multipliedByNaturalSequence
+  [numbers] > multipliedByNaturalSequence
     mapi. > @
       numbers
       [current index]
         mul. > @
           current.toInt
           index.add 1
-  (multipliedByNaturalSequence "1" "2" "3") > mulSeq
+  (multipliedByNaturalSequence (array "1" "2" "3")) > mulSeq
   eq. > @
     (sprintf "%d %d %d" 1 4 9)
     (sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2))
