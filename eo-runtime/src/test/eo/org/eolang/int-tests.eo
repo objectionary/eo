@@ -76,3 +76,9 @@
 [] > divForDividendGreaterThanZero
   256.div 16 > quotient
   quotient.eq 16 > @
+
+# Checks that int.toFloat works properly
+[] > toFloatWorks
+  eq. > @
+    -17.0
+    17.neg.toFloat
