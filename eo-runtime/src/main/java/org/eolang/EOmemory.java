@@ -63,8 +63,7 @@ public class EOmemory extends PhDefault {
             super(parent);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> {
-                final Object obj = new Datarized(self.attr("x").get()).take();
-                EOmemory.this.phi.set(new Data.ToPhi(obj));
+                EOmemory.this.phi.set(self.attr("x").get().copy());
                 return new Data.ToPhi(true);
             })));
         }
