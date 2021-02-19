@@ -1,0 +1,16 @@
++package org.eolang.txt
++alias regex org.eolang.txt.regex
++junit
+
+[] > matchesStringAgainstPattern
+  regex > @
+    "[a-z]+"
+  .match "hello"
+  .empty
+  .not
+
+[] > doesntMatchStringAgainstPattern
+  regex > @
+    "[a-zA-Z]+"
+  .match "Hello, World!"
+  .empty

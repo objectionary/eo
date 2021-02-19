@@ -58,7 +58,9 @@ object
   (
     EOL
     method
+    htail?
     suffix?
+    tail?
   )*
   ;
 

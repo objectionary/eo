@@ -1,0 +1,8 @@
++package org.eolang.txt
++rt jvm org.eolang:eo-runtime:0.1.18
+
+[pattern] > regex
+  pattern > @
+
+  # Match the text
+  [txt] > match /array
