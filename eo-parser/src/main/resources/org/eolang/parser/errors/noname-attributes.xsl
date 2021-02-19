@@ -34,7 +34,7 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o" mode="abstract">
-    <xsl:if test="o[not(@name)]">
+    <xsl:if test="o[not(@name) and not(starts-with(@base, '.'))]">
       <xsl:element name="error">
         <xsl:attribute name="check">
           <xsl:text>noname-attributes</xsl:text>
