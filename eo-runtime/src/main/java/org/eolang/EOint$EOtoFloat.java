@@ -25,7 +25,6 @@
 package org.eolang;
 
 import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.Datarized;
@@ -33,28 +32,17 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * MAPI.
+ * toFloat.
  *
  * @since 1.0
  */
-public class EOarray$EOmapi extends PhDefault {
+public class EOint$EOtoFloat extends PhDefault {
 
-    public EOarray$EOmapi(final Phi parent) {
+    public EOint$EOtoFloat(final Phi parent) {
         super(parent);
-        this.add("f", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Phi[] array = new Datarized(
-                self.attr("ρ").get()
-            ).take(Phi[].class);
-            final Phi[] dest = new Phi[array.length];
-            for (int idx = 0; idx < array.length; ++idx) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(array[idx]);
-                after.attr(1).put(new Data.ToPhi((long)idx));
-                dest[idx] = after;
-            }
-            return new Data.ToPhi(dest);
-        })));
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new Datarized(self.attr("ρ").get()).take(Long.class).doubleValue()
+        ))));
     }
 
 }
