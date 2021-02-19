@@ -29,3 +29,6 @@
 
   # It is less than the argument provided?
   [x] > less /bool
+
+  # Converts this to float
+  [] > toFloat /float
