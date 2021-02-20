@@ -154,7 +154,18 @@ SOFTWARE.
         <xsl:text>super(parent);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="//meta[head='package' and tail='org.eolang'] and (@name='array' or @name='int' or @name='float' or @name='int' or @name='bool' or @name='char' or @name='string')">
+    <xsl:variable name="atoms" as="element()*">
+      <a>org.eolang.string</a>
+      <a>org.eolang.array</a>
+      <a>org.eolang.int</a>
+      <a>org.eolang.float</a>
+      <a>org.eolang.bool</a>
+      <a>org.eolang.double</a>
+      <a>org.eolang.char</a>
+      <a>org.eolang.txt.regex</a>
+    </xsl:variable>
+    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
+    <xsl:if test="$atoms[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("&#x394;", new AtFree());</xsl:text>
     </xsl:if>
