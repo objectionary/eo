@@ -14,6 +14,9 @@
   # Negation of $
   [] > neg /float
 
+  # Sign of $ (-1.0, 0.0, or 1.0)
+  [] > signum /float
+
   # Difference between $ and x
   [x] > sub
     ^.add (x.neg) > @

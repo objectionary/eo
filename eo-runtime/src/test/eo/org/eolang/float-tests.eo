@@ -49,6 +49,21 @@
     -886.485
     886.485.neg
 
+[] > signumNegativeTest
+  eq. > @
+    -1.0
+    (-345.17.signum)
+
+[] > signumPositiveTest
+  eq. > @
+    1.0
+    (145.18.signum)
+
+[] > signumZeroPositive
+  eq. > @
+    0.0
+    (0.0.signum)
+
 [] > subTest
   eq. > @
     262.515
