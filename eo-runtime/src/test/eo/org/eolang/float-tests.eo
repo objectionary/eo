@@ -2,6 +2,94 @@
 +alias sprintf org.eolang.txt.sprintf
 +junit
 
+[] > lessTrueTest
+  less. > @
+    -10.5
+    50.3
+
+[] > lessEqualTest
+  not. > @
+    less.
+      -10.7
+      -10.7
+
+[] > lessFalseTest
+  not. > @
+    less.
+      10.13
+      -5.3
+
+[] > greaterTrueTest
+  greater. > @
+    -200.1
+    -1000.0
+
+[] > greaterFalseTest
+  not. > @
+    greater.
+      0.5
+      100.1
+
+[] > greaterEqualTest
+  not. > @
+    greater.
+      0.7
+      0.7
+
+[] > leqTrueTest
+  leq. > @
+    -200.5
+    -100.6
+
+[] > leqEqualTest
+  leq. > @
+    50.1
+    50.1
+
+[] > leqFalseTest
+  not. > @
+    leq.
+      0.9
+      -10.11
+
+[] > geqTrueTest
+  geq. > @
+    -1000.1
+    -1100.1
+
+[] > geqEqualTest
+  geq. > @
+    113.333
+    113.333
+
+[] > geqFalseTest
+  not. > @
+    geq.
+      0.7
+      10.9
+
+[] > eqTrueTest
+  eq. > @
+    123.5
+    123.5
+
+[] > eqFalseTest
+  not. > @
+    eq.
+      123.5
+      42.4
+
+[] > neqTrueTest
+  neq. > @
+    123.5
+    125.2
+
+[] > neqFalseTest
+  not. > @
+    neq.
+      -133.9
+      -133.9
+
 [] > mulByZero
   eq. > @
     0.0
