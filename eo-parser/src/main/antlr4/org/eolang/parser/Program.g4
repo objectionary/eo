@@ -49,6 +49,8 @@ objects
 
 object
   :
+  anonymous
+  |
   (
     abstraction
     |
@@ -64,13 +66,24 @@ object
   )*
   ;
 
+anonymous
+  :
+  attributes
+  htail
+  ;
+
 abstraction
   :
   (COMMENT EOL)*
+  attributes
+  (suffix (SPACE SLASH NAME)?)?
+  ;
+
+attributes
+  :
   LSQ
   (attribute (SPACE attribute)*)?
   RSQ
-  (suffix (SPACE SLASH NAME)?)?
   ;
 
 attribute

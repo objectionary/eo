@@ -168,6 +168,19 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    public void enterAnonymous(final ProgramParser.AnonymousContext ctx) {
+        this.dirs.add("o")
+            .attr("line", ctx.getStart().getLine())
+            .up();
+    }
+
+    @Override
+    public void exitAnonymous(final ProgramParser.AnonymousContext ctx) {
+        this.enter();
+        this.dirs.xpath("o[@base][1]").attr("name", "@").up().up();
+    }
+
+    @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.SLASH() != null) {
@@ -179,6 +192,16 @@ public final class XeListener implements ProgramListener {
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
         // Nothing here
+    }
+
+    @Override
+    public void enterAttributes(final ProgramParser.AttributesContext ctx) {
+        // This method is created by ANTLR and can't be removed
+    }
+
+    @Override
+    public void exitAttributes(final ProgramParser.AttributesContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
