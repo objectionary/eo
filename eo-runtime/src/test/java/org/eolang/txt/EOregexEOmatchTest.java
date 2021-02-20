@@ -23,6 +23,7 @@
  */
 package org.eolang.txt;
 
+import java.util.regex.Pattern;
 import org.eolang.phi.Data;
 import org.eolang.phi.Datarized;
 import org.eolang.phi.PhMethod;
@@ -37,15 +38,11 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOregex$EOmatchTest {
+public final class EOregexEOmatchTest {
 
     @Test
     public void matchesString() {
-        final Phi regex = new PhWith(
-            new org.eolang.txt.EOregex(),
-            "pattern",
-            new Data.ToPhi("([a-z]+)")
-        );
+        final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
         MatcherAssert.assertThat(
             new Datarized(
                 new PhWith(
@@ -60,11 +57,7 @@ public final class EOregex$EOmatchTest {
 
     @Test
     public void doesntMatchString() {
-        final Phi regex = new PhWith(
-            new org.eolang.txt.EOregex(),
-            "pattern",
-            new Data.ToPhi("([A-Z]{2})")
-        );
+        final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
         MatcherAssert.assertThat(
             new Datarized(
                 new PhWith(

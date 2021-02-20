@@ -45,13 +45,13 @@ public class EOregex$EOmatch extends PhDefault {
         super(parent);
         this.add("txt", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final String pattern = new Datarized(
+            final Pattern pattern = new Datarized(
                 self.attr("ρ").get()
-            ).take(String.class);
+            ).take(Pattern.class);
             final String txt = new Datarized(
                 self.attr("txt").get()
             ).take(String.class);
-            final Matcher matcher = Pattern.compile(pattern).matcher(txt);
+            final Matcher matcher = pattern.matcher(txt);
             if (matcher.matches()) {
                 final Phi[] dest = new Phi[matcher.groupCount()];
                 return new Data.ToPhi(dest);

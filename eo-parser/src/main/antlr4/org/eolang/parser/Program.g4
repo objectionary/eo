@@ -197,10 +197,14 @@ data
   HEX
   |
   CHAR
+  |
+  REGEX
   ;
 
 COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
+
+REGEX: SLASH ~[\r\n]+ SLASH [a-z]*;
 
 DOTS: '...';
 CONST: '!';

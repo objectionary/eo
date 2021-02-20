@@ -1,8 +1,12 @@
 +package org.eolang.txt
 +rt jvm org.eolang:eo-runtime:0.1.18
 
-[pattern] > regex
-  pattern > @
-
-  # Match the text
+# Regular expression in Perl format, for example: /[a-z]+/i
+[] > regex
+  # Match the text and return the array of matched groups
   [txt] > match /array
+
+  # Matches
+  [txt] > matches
+    (^.match txt).empty.not > @
+

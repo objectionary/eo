@@ -3,14 +3,12 @@
 +junit
 
 [] > matchesStringAgainstPattern
-  regex
-    "([a-z]+)"
+  /([a-z]+)/i
   .match "hello"
   .empty
   .not > @
 
 [] > doesntMatchStringAgainstPattern
-  regex
-    "([A-Z]{2})"
-  .match "Hello, World!"
-  .empty > @
+  /([A-Z]{2})/
+  .matches "Hello, World!"
+  .not > @
