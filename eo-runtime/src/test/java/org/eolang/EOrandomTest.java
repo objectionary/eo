@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public final class EOrandomTest {
 
     @Test
-    public void readsTwice() {
+    public void readsTwice() throws Exception {
         final Phi rnd = new EOrandom();
         final Double first = new Datarized(rnd).take(Double.class);
         MatcherAssert.assertThat(

@@ -42,7 +42,12 @@ import org.eolang.txt.EOregex;
  */
 public interface Data<T> {
 
-    T take();
+    /**
+     * Take the data.
+     * @return The data
+     * @throws Exception If fails
+     */
+    T take() throws Exception;
 
     final class Once<T> implements Data<T> {
         private final Data<T> src;
@@ -53,10 +58,14 @@ public interface Data<T> {
         }
         @Override
         public String toString() {
-            return this.take().toString();
+            try {
+                return this.take().toString();
+            } catch (final Exception ex) {
+                throw new IllegalStateException(ex);
+            }
         }
         @Override
-        public T take() {
+        public T take() throws Exception {
             if (this.ref.get() == null) {
                 this.ref.set(this.src.take());
             }

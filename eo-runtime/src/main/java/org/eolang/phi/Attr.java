@@ -44,7 +44,7 @@ public interface Attr {
      *
      * @return The object
      */
-    Phi get();
+    Phi get() throws java.lang.Exception;
 
     /**
      * Put a new object in.

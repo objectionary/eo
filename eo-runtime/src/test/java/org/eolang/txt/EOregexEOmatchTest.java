@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 public final class EOregexEOmatchTest {
 
     @Test
-    public void matchesString() {
+    public void matchesString() throws Exception {
         final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
         MatcherAssert.assertThat(
             new Datarized(
@@ -56,7 +56,7 @@ public final class EOregexEOmatchTest {
     }
 
     @Test
-    public void doesntMatchString() {
+    public void doesntMatchString() throws Exception {
         final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
         MatcherAssert.assertThat(
             new Datarized(

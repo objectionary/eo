@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 public final class EOmemoryTest {
 
     @Test
-    public void readsAndWrites() {
+    public void readsAndWrites() throws Exception {
         final Phi mem = new org.eolang.EOmemory();
         final Phi text = new Data.ToPhi("Hello, world!");
         final Phi write = mem.attr("write").get();
@@ -54,7 +54,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void comparesForEquality() {
+    public void comparesForEquality() throws Exception {
         final Phi mem = new org.eolang.EOmemory();
         new Datarized(
             new PhWith(
@@ -75,7 +75,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void writesAndRewrites() {
+    public void writesAndRewrites() throws Exception {
         final Phi mem = new org.eolang.EOmemory();
         new Datarized(
             new PhWith(
@@ -96,7 +96,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void makeCorrectCopy() {
+    public void makeCorrectCopy() throws Exception {
         final Phi mem = new org.eolang.EOmemory();
         final Phi text = new Data.ToPhi(1L);
         final Phi write = mem.attr("write").get();
@@ -109,7 +109,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void comparesOnFly() {
+    public void comparesOnFly() throws Exception {
         final Phi mem = new org.eolang.EOmemory();
         new Datarized(
             new PhWith(
@@ -139,7 +139,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void rewritesItself() {
+    public void rewritesItself() throws Exception {
         final Phi mem = new org.eolang.EOmemory();
         new Datarized(
             new PhWith(
