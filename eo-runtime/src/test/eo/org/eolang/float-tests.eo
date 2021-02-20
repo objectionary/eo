@@ -183,3 +183,18 @@
       div.
         -345.10
         0.0
+
+[] > absPositiveTest
+  eq. > @
+    13.5
+    (13.5.abs)
+
+[] > absNegativeTest
+  eq. > @
+    17.9
+    (-17.9.abs)
+
+[] > absZeroTest
+  eq. > @
+    0.0
+    (0.0.abs)

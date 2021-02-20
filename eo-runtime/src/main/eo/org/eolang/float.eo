@@ -42,3 +42,6 @@
   # Quotient of the division of $ by x
   [x] > div
     ^.mul (x.pow -1.0) > @
+
+  # Absolute value of $ (i.e., with no sign)
+  [] > abs /float
