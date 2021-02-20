@@ -2,8 +2,23 @@
 +rt jvm org.eolang:eo-runtime:0.1.18
 
 [] > float
-  # Equals to another number
+  # Tests that $ = x
   [x] > eq /bool
+
+  # Tests that $ ≠ x
+  [x] > neq /bool
+
+  # Tests that $ < x
+  [x] > less /bool
+
+  # Tests that $ ≤ x
+  [x] > leq /bool
+
+  # Tests that $ > x
+  [x] > greater /bool
+
+  # Tests that $ ≥ x
+  [x] > geq /bool
 
   # Multiplication of $ and x
   [x] > mul /float
