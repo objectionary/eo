@@ -28,12 +28,14 @@ import java.io.ByteArrayInputStream;
 import org.eolang.phi.Data;
 import org.eolang.phi.Datarized;
 import org.eolang.phi.PhCopy;
+import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Test case for {@link EOstdin}.
@@ -50,9 +52,52 @@ public final class EOstdinTest {
     }
  
     @Test
-    public void mockedInputTest() {
-        String input = "this is a test input!";
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
+    public void nextLineOneLineTest() {
+        String expectedResult = "this is a test input!";
+        mockSystemIn(expectedResult + "\n");
+
+        final Phi nextLineCopy = new PhMethod(new PhCopy(new EOstdin(new PhEta())), "nextLine");
+        final String gatheredInput = new Datarized(nextLineCopy).take(String.class);
+        MatcherAssert.assertThat(
+            gatheredInput,
+            Matchers.equalTo(expectedResult)
+        );
+    }
+
+    @Test
+    public void nextLineMultiLineTest() {
+        String expectedResult = "this is a test input!";
+        String input = expectedResult + "\nanother line\nyet another line";
+        mockSystemIn(input);
+
+        final Phi nextLineCopy = new PhMethod(new PhCopy(new EOstdin(new PhEta())), "nextLine");
+        final String gatheredInput = new Datarized(nextLineCopy).take(String.class);
+        MatcherAssert.assertThat(
+            gatheredInput,
+            Matchers.equalTo(expectedResult)
+        );
+    }
+
+    @Test
+    public void nextLineEmptyTest() {
+        String input = "";
+        mockSystemIn(input);
+        final Phi result = new PhMethod(new PhCopy(new EOstdin(new PhEta())), "nextLine");
+        MatcherAssert.assertThat(
+            new Datarized(
+                result.attr("msg").get()
+            ).take(String.class),
+            Matchers.equalTo("There is no line in the standard input stream to consume")
+        );
+        Assertions.assertThrows(org.eolang.phi.Attr.Exception.class, () -> {
+            new Datarized(result).take(String.class);
+        });
+    }
+
+    @Test
+    public void stdinOneLineTest() {
+        String input = "this is a test input!\n";
+        mockSystemIn(input);
 
         final Phi stdinCopy = new PhCopy(new EOstdin(new PhEta()));
         final String gatheredInput = new Datarized(stdinCopy).take(String.class);
@@ -60,5 +105,35 @@ public final class EOstdinTest {
             gatheredInput,
             Matchers.equalTo(input)
         );
+    }
+
+    @Test
+    public void stdinMultiLineTest() {
+        String input = "this is a test input!\nanother line\nyet another line";
+        mockSystemIn(input);
+
+        final Phi stdinCopy = new PhCopy(new EOstdin(new PhEta()));
+        final String gatheredInput = new Datarized(stdinCopy).take(String.class);
+        MatcherAssert.assertThat(
+            gatheredInput,
+            Matchers.equalTo(input)
+        );
+    }
+
+    @Test
+    public void stdinEmptyTest() {
+        String input = "";
+        mockSystemIn(input);
+
+        final Phi stdinCopy = new PhCopy(new EOstdin(new PhEta()));
+        final String gatheredInput = new Datarized(stdinCopy).take(String.class);
+        MatcherAssert.assertThat(
+            gatheredInput,
+            Matchers.equalTo(input)
+        );
+    }
+
+    private void mockSystemIn(String mockingText) {
+        System.setIn(new ByteArrayInputStream(mockingText.getBytes()));
     }
 }

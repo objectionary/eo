@@ -28,21 +28,29 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import java.util.Scanner;
 
 /**
- * Standard Input.
+ * Standard Input. Consumes only one line.
  *
  * @since 0.1
  */
-public class EOstdin extends PhDefault {
+public class EOstdin$EOnextLine extends PhDefault {
 
-    public EOstdin(final Phi parent) {
+    public EOstdin$EOnextLine(final Phi parent) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            Scanner sc = new Scanner(System.in);
-            return new Data.ToPhi(sc.nextLine());
+            try (Scanner sc = new Scanner(System.in)) {
+                if (sc.hasNextLine()) {
+                    return new Data.ToPhi(sc.nextLine());
+                }
+                else {
+                    final Phi msg = new Data.ToPhi("There is no line in the standard input stream to consume");
+                    return new PhWith(new org.eolang.EOerror(), "msg", msg);
+                }
+            }
         })));
     }
 
