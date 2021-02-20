@@ -1,0 +1,9 @@
+xsls: []
+tests:
+  - //objects[count(o)=2]
+  - //o[@base='x' and @name='@']
+  - //o[@base='a' and @name='@']
+eo: |
+  [x] x.add 1
+
+  [a b] (a.add 6).add b
