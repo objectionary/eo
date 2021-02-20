@@ -33,7 +33,6 @@ import org.eolang.phi.Phi;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Standard Input. Consumes all data.
@@ -52,7 +51,7 @@ public class EOstdin$EOφ extends PhDefault {
                     buf.write((byte) result);
                     result = bis.read();
                 }
-                return new Data.ToPhi(buf.toString(StandardCharsets.UTF_8.name()));
+                return new Data.ToPhi(buf.toString());
             }
             catch(IOException e) {
                 final Phi msg = new Data.ToPhi("Cannot read from the standard input stream: " + e.getMessage());
