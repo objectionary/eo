@@ -395,7 +395,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>@Test</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text>public void testWorks() {</xsl:text>
+    <xsl:text>public void testWorks() throws java.lang.Exception {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>Assertions.assertTrue(</xsl:text>
     <xsl:value-of select="eo:eol(3)"/>

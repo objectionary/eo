@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOaddTest {
 
     @Test
-    public void addsNumbers() {
+    public void addsNumbers() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
         final Phi add = left.attr("add").get();

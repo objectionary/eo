@@ -59,7 +59,7 @@ public final class AtLambda implements Attr {
     }
 
     @Override
-    public Phi get() {
+    public Phi get() throws java.lang.Exception {
         return this.object.take();
     }
 

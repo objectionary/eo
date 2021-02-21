@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 public final class EOstdoutTest {
 
     @Test
-    public void printsString() {
+    public void printsString() throws Exception {
         final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
             new PhCopy(new EOstdout(new PhEta())),
