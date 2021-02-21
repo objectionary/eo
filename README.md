@@ -79,6 +79,7 @@ independent.
     - [The `$` attribute](#the--attribute-1)
     - [The `^` attribute](#the--attribute-2)
   - [Abstraction](#abstraction)
+    - [Anonymous Abstraction](#anonymous-abstraction)
   - [Application](#application)
   - [Decoration](#decoration)
   - [Datarization](#datarization)
@@ -346,6 +347,18 @@ The abstraction syntax includes the following elements:
 3. *(optional)* Binding to a name (` > myObject`). Declared objects may be anonymous. However, anonymous objects must be used in application only (i.e., we can only supply anonymous objects for binding them to free attributes during application).  
 4. *(optional)* The object may be declared as constant (i.e., datarized only once (see [this section](#--datarize-only-once))), if the object is bound to a name (see #3). For this, the `!` operator is used.  
 5. *(optional)* The object may be declared as an atom (i.e., its implementation is made out of the EO language (for instance, in Java)), if the object is bound to a name (see #3). For this, the `/` operator is used (for example, `/bool`).  
+#### Anonymous Abstraction
+There are two types of anonymous abstraction: inline and plain multi-line.  
+**Plain Multi-line Anonymous Abstraction**   
+```
+[a b]
+  a.add b > @
+```
+The same can be expressed in just one line.  
+**Inline Anonymous Abstraction**  
+```
+[a b] a.add b
+```  
 **EBNF**  
 ```EBNF
 abstraction ::= ( COMMENT '^' )*
