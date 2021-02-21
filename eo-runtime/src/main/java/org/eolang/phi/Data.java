@@ -26,12 +26,14 @@ package org.eolang.phi;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import org.eolang.EOarray;
 import org.eolang.EObool;
 import org.eolang.EOfloat;
 import org.eolang.EOint;
 import org.eolang.EOstring;
 import org.eolang.EOchar;
+import org.eolang.txt.EOregex;
 
 /**
  * A data container.
@@ -40,7 +42,12 @@ import org.eolang.EOchar;
  */
 public interface Data<T> {
 
-    T take();
+    /**
+     * Take the data.
+     * @return The data
+     * @throws Exception If fails
+     */
+    T take() throws Exception;
 
     final class Once<T> implements Data<T> {
         private final Data<T> src;
@@ -51,10 +58,14 @@ public interface Data<T> {
         }
         @Override
         public String toString() {
-            return this.take().toString();
+            try {
+                return this.take().toString();
+            } catch (final Exception ex) {
+                throw new IllegalStateException(ex);
+            }
         }
         @Override
-        public T take() {
+        public T take() throws Exception {
             if (this.ref.get() == null) {
                 this.ref.set(this.src.take());
             }
@@ -77,11 +88,16 @@ public interface Data<T> {
                         phi = new EOchar();
                     } else if (obj instanceof Double) {
                         phi = new EOfloat();
+                    } else if (obj instanceof Pattern) {
+                        phi = new EOregex();
                     } else if (obj instanceof Phi[]) {
                         phi = new EOarray();
                     } else {
                         throw new IllegalArgumentException(
-                            "Unknown type"
+                            String.format(
+                                "Unknown type of data: %s",
+                                obj.getClass().getCanonicalName()
+                            )
                         );
                     }
                     return new PhWith(phi, "Δ", new Data.Value<>(obj));

@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOsubTest {
 
     @Test
-    public void subtractsNumber() {
+    public void subtractsNumber() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
         final Phi sub = new PhWith(

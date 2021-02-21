@@ -1,0 +1,11 @@
+xsls: []
+tests:
+  - //o[@base='regex' and @data='regex' and text()='[a-z]+' and @flags='m']
+  - //o[@base='regex' and @data='regex' and text()='123\1' and @flags='']
+  - //o[@base='regex' and @data='regex' and text()='^test$' and @flags='']
+eo: |
+  /[a-z]+/m.match "test" > test
+
+  /123\1/ > re
+
+  /^test$/.match "111" > z

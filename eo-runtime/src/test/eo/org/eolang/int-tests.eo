@@ -1,16 +1,93 @@
 +package org.eolang
 +junit
 
-[] > comparesTwoNumbers
+[] > lessTrueTest
   less. > @
     10
     50
 
-[] > comparesTwoNumbersForEquality
+[] > lessEqualTest
+  not. > @
+    less.
+      10
+      10
+
+[] > lessFalseTest
+  not. > @
+    less.
+      10
+      -5
+
+[] > greaterTrueTest
+  greater. > @
+    -200
+    -1000
+
+[] > greaterFalseTest
+  not. > @
+    greater.
+      0
+      100
+
+[] > greaterEqualTest
+  not. > @
+    greater.
+      0
+      0
+
+[] > leqTrueTest
+  leq. > @
+    -200
+    -100
+
+[] > leqEqualTest
+  leq. > @
+    50
+    50
+
+[] > leqFalseTest
+  not. > @
+    leq.
+      0
+      -10
+
+[] > geqTrueTest
+  geq. > @
+    -1000
+    -1100
+
+[] > geqEqualTest
+  geq. > @
+    113
+    113
+
+[] > geqFalseTest
+  not. > @
+    geq.
+      0
+      10
+
+[] > eqTrueTest
+  eq. > @
+    123
+    123
+
+[] > eqFalseTest
   not. > @
     eq.
       123
       42
+
+[] > neqTrueTest
+  neq. > @
+    123
+    125
+
+[] > neqFalseTest
+  not. > @
+    neq.
+      -133
+      -133
 
 [] > calculatesFibonacciNumberWithRecursion
   eq. > @
@@ -76,3 +153,9 @@
 [] > divForDividendGreaterThanZero
   256.div 16 > quotient
   quotient.eq 16 > @
+
+# Checks that int.toFloat works properly
+[] > toFloatWorks
+  eq. > @
+    -17.0
+    17.neg.toFloat

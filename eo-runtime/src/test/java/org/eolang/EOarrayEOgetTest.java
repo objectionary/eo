@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOarrayEOgetTest {
 
     @Test
-    public void pushesAndGetsBack() {
+    public void pushesAndGetsBack() throws Exception {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
         final Phi array = new Data.ToPhi(new Phi[] {str});

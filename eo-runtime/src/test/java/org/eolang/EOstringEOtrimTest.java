@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOstringEOtrimTest {
 
     @Test
-    public void trimsString() {
+    public void trimsString() throws Exception {
         final Phi str = new Data.ToPhi("Hello, world!  ");
         final Phi phi = new EOstring$EOtrim(str);
         MatcherAssert.assertThat(

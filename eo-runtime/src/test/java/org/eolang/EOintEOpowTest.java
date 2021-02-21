@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Assertions;
 public final class EOintEOpowTest {
 
     @Test
-    public void powersNumber() {
+    public void powersNumber() throws Exception {
         MatcherAssert.assertThat(
             new Datarized(
                 new PhWith(
@@ -55,7 +55,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToZeroPower() {
+    public void zeroToZeroPower() throws Exception {
         MatcherAssert.assertThat(
             new Datarized(
                 new PhWith(
@@ -69,7 +69,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToOnePower() {
+    public void zeroToOnePower() throws Exception {
         MatcherAssert.assertThat(
             new Datarized(
                 new PhWith(
@@ -83,7 +83,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToTwoPower() {
+    public void zeroToTwoPower() throws Exception {
         MatcherAssert.assertThat(
             new Datarized(
                 new PhWith(
@@ -97,7 +97,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToNegativePowerFails() {
+    public void zeroToNegativePowerFails() throws Exception {
         final Phi result = new PhWith(
             new PhMethod(new Data.ToPhi(0L), "pow"),
             0,

@@ -4,6 +4,9 @@
 [elements...] > array
   elements > @
 
+  # Is it empty?
+  [] > empty /bool
+
   # Obtain the length of the array.
   [] > length /int
 

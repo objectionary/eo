@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 public final class AtVarargTest {
 
     @Test
-    public void appendsElements() {
+    public void appendsElements() throws Exception {
         final Attr attr = new AtVararg();
         final Phi phi = new PhDefault();
         attr.put(phi);
