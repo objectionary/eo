@@ -77,6 +77,7 @@ independent.
     - [Accessing Attributes. The Dot Notation](#accessing-attributes-the-dot-notation)
     - [The `@` attribute](#the--attribute)
     - [The `$` attribute](#the--attribute-1)
+    - [The `^` attribute](#the--attribute-2)
   - [Abstraction](#abstraction)
   - [Application](#application)
   - [Decoration](#decoration)
@@ -286,9 +287,9 @@ Got the idea?
 ## The EO Programming Language Reference
 This section covers the basic principles that the EO programming language relies on. These are objects, attributes, and four elemental operations — abstraction, application, decoration, and datarization.
 ### Objects
-**Objects** are a centric notion of the EO programming language. Essentially, an **object** is a set of *attributes*. An object connects with and links other objects through its attributes to compose new concepts that the object abstracts.  
+**Objects** are a centric notion of the EO programming language. Essentially, an **object** is a set of *attributes*. An object connects with and links other objects through its attributes to compose a new concept that the object abstracts.  
 An **abstract object** is an object that has at least one [free attribute](#free--bound-attributes-binding).  
-A **closed object** is an object that has no [free attributes](#free--bound-attributes-binding). 
+A **closed object** is an object whose all attributes are [bound](#free--bound-attributes-binding). 
 ### Attributes
 An **attribute** is a pair of a name and a value, where a value of an attribute is another object. That is because `Everything in EO is an object`. Hence, for instance, an attribute `name` of an object `person` may be also referred to as plainly the object `name` of the object `person`.  
 #### Free & Bound Attributes. Binding
@@ -310,25 +311,27 @@ mul. > calc
     7
   10
 ```
-Here, `add` is an attribute of the object `5` and `mul` is an attribute of the attribute object `add`. 
+Here, `add` is an attribute of the object `5` and `mul` is an attribute of the attribute object `add` (or, more precisely, an attribute of an object that `add` abstracts or datarizes to, which is an integer number `int`). 
 #### The `@` attribute
-The `@` attribute is named `phi` (after the Greek letter `φ`). The `@` character is reserved for the `phi` attribute and cannot be used for any other purpose. Every object has its own and only `@` attribute. The `@` attribute may be bound to a value only once.    
+The `@` attribute is named `phi` (after the Greek letter `φ`). The `@` character is reserved for the `phi` attribute and cannot be used for any other purpose. Every object has its own and only `@` attribute. The `@` attribute can be bound to a value only once.    
 The `@` attribute is used for decorating objects. An object bound to the `@` attribute is referred to as a decoratee (i.e., an object that is being decorated) while the base object of the `@` attribute is a decorator (i.e., an object that decorates the decoratee). Since the `@` attribute may be bound only once, every object may have only one decoratee object. More on the decoration see in [this section](#decoration).    
 In addition, the `@` attribute is heavily used in the datarization process (see [this section](#datarization) for more information). 
 #### The `$` attribute
 The `$` character is reserved for the special attirubute `self` that every object has. The `$` attribute is used to refer to the object itself.  
 The `$` attribute may be useful to use the result of the object's datarization process for declaring other object's attributes.  
 The `$` attribute may be used to access attributes of an object inside of the object with the dot notation (e.g., `$.attrA`), but this notation is redundant.  
+#### The `^` attribute
+The `^` attribute is used to refer to the parent object.  
+The `^` attribute may be used to access attributes of a parent object inside of the current object with the dot notation (e.g., `^.attrA`). 
 ##### Example <!-- omit in toc -->
 ```
-[] > numberTwo
-  # the object decorates (and evaluates to) the number two
-  2 > @
-  # $ is used to datarize the object for the internal use
-  $.add 1 > plusOne
-  # $.plusOne notation is redundant and may be
-  # replaced with just plusOne
-  ($.plusOne).add 1 > plusTwo
+[] > parentObject
+  42 > magicNumbe
+  [] > childObject
+    24 > magicNumber
+    add. > @
+      ^.magicNumber # refers to the parent object's attr
+      magicNumber # refers to $.magicNumber
 ``` 
 ### Abstraction
 **Abstraction** is the operation of declaring a new object. Abstraction allows declaring both abstract and closed, anonymous and named objects.  
@@ -411,7 +414,7 @@ Say, we have the `purchase` object that represents a purchase of some item that 
     @.itemCost
     @.itemQuantity
 ```
-Now we can access both `purchase` and `purchaseTotal` attributes through a copy of `purchaseTotal`.
+Now we can access all attributes of `purchase` and `purchaseTotal`  through a copy of `purchaseTotal`.
 ### Datarization
 **Datarization** is the operation of evaluation of data laying behind an object. The datarization process (denoted hereby as `D(something)`) is recursive and consists of the following steps:  
 1. `D(obj) = obj` if `obj` is a data object. Data objects are `int`, `float`, `string`, `char`, `bytes`.  
@@ -419,7 +422,7 @@ Now we can access both `purchase` and `purchaseTotal` attributes through a copy 
 3. Otherwise, `D(obj) = D(obj.@)`. That is, if the object is neither data nor an atom, then the object "asks" its decoratee to find the data behind it.  
   
 It is important to note that if the `@` attribute of the object (or any underlying object in the datarization recursive evaluation tree) is absent (free), then the datarization will fail.  
-If we want to datarize the object `x`, all objects and attributes that are used in the definition of the `@` attribute of the `x` will be datarized. Like this, if we want to datarize the attribute `x.attr`, all objects and attributes that are used in its definition (or the definition of `@` if the attribute is declared through abstraction) will be datarized.  
+If we want to datarize the object `x`, all objects and attributes that are used in the definition of the `@` attribute of the `x` will be datarized. Like this, if we want to datarize the attribute `x.attr`, all objects and attributes that are used in the definition of its `@` attribute will be datarized.  
 The opposite is true. If the attribute `x.attr` or the object `x` itself are not used in the declaration of `y`, then `D(y)` will not datarize them and they will not be evaluated and executed. Thus, the datarization operation may be referred to as the lazy object evaluation (i.e., EO datarizes objects only when this is needed).    
 #### `!` — Datarize Only Once
 `not implemented`
