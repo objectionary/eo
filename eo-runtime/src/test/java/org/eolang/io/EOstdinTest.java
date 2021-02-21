@@ -52,7 +52,7 @@ public final class EOstdinTest {
     }
  
     @Test
-    public void nextLineOneLineTest() {
+    public void nextLineOneLineTest() throws Exception {
         String expectedResult = "this is a test input!";
         mockSystemIn(expectedResult + "\n");
 
@@ -65,7 +65,7 @@ public final class EOstdinTest {
     }
 
     @Test
-    public void nextLineMultiLineTest() {
+    public void nextLineMultiLineTest() throws Exception {
         String expectedResult = "this is a test input!";
         String input = expectedResult + "\nanother line\nyet another line";
         mockSystemIn(input);
@@ -79,7 +79,7 @@ public final class EOstdinTest {
     }
 
     @Test
-    public void nextLineEmptyTest() {
+    public void nextLineEmptyTest() throws Exception {
         String input = "";
         mockSystemIn(input);
         final Phi result = new PhMethod(new PhCopy(new EOstdin(new PhEta())), "nextLine");
@@ -95,7 +95,7 @@ public final class EOstdinTest {
     }
 
     @Test
-    public void stdinOneLineTest() {
+    public void stdinOneLineTest() throws Exception {
         String input = "this is a test input!\n";
         mockSystemIn(input);
 
@@ -108,7 +108,7 @@ public final class EOstdinTest {
     }
 
     @Test
-    public void stdinMultiLineTest() {
+    public void stdinMultiLineTest() throws Exception {
         String input = "this is a test input!\nanother line\nyet another line";
         mockSystemIn(input);
 
@@ -121,7 +121,7 @@ public final class EOstdinTest {
     }
 
     @Test
-    public void stdinEmptyTest() {
+    public void stdinEmptyTest() throws Exception {
         String input = "";
         mockSystemIn(input);
 
