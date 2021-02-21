@@ -23,10 +23,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.AbstractMojo;
@@ -35,6 +36,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.Func;
+import org.cactoos.Input;
+import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.io.InputOf;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -61,14 +66,27 @@ public final class PullMojo extends AbstractMojo {
     )
     private File targetDir;
 
+    /**
+     * The repo.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private Func<String, Input> repo = name -> new InputOf(
+        new URL(
+            String.format(
+                "https://www.objectionary.com/xml/%s.eo.xml",
+                name.replace(".", "/")
+            )
+        )
+    );
+
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("optimize");
+        final Path dir = this.targetDir.toPath().resolve("03-optimize");
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
-                .forEach(this::pull);
+                .forEach(file -> this.pull(dir, file));
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
@@ -83,9 +101,10 @@ public final class PullMojo extends AbstractMojo {
     /**
      * Pull all deps found in XML file.
      *
+     * @param dir The dir
      * @param file EO file
      */
-    private void pull(final Path file) {
+    private void pull(final Path dir, final Path file) {
         try {
             final String xpath = String.join(
                 "",
@@ -93,7 +112,7 @@ public final class PullMojo extends AbstractMojo {
                 "and not(starts-with(@base, '.'))]/@base"
             );
             for (final String name : new XMLDocument(file).xpath(xpath)) {
-                this.pull(name);
+                this.pull(dir, name);
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(
@@ -109,24 +128,19 @@ public final class PullMojo extends AbstractMojo {
     /**
      * Pull one dep.
      *
+     * @param dir The dir
      * @param name Name of the object, e.g. "org.eolang.io.stdout"
      * @throws IOException If fails
      */
-    private void pull(final String name) throws IOException {
-        final String res = String.format("/%s.eo.xml", name.replace(".", "/"));
-        final InputStream input = this.getClass().getResourceAsStream(res);
-        if (input == null) {
-            throw new IllegalStateException(
-                String.format(
-                    "Can't find \"%s\" in classpath",
-                    res
-                )
-            );
+    private void pull(final Path dir, final String name) throws IOException {
+        final Path path = dir.resolve(
+            String.format("%s.eo.xml", name.replace(".", "/"))
+        );
+        if (path.toFile().exists()) {
+            Logger.debug(this, "The file %s already exists", path);
+        } else {
+            new Save(new IoCheckedFunc<>(this.repo).apply(name), path).save();
         }
-        final Path path = this.targetDir.toPath()
-            .resolve("pull")
-            .resolve(String.format("%s.eo.xml", name.replace(".", "/")));
-        new Save(input, path).save();
     }
 
 }

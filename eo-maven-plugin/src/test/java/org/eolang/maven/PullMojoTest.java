@@ -25,9 +25,11 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,8 +42,7 @@ import org.junit.jupiter.api.Test;
 public final class PullMojoTest {
 
     @Test
-    @Disabled
-    public void testSimpleOptimize() throws Exception {
+    public void testSimplePull() throws Exception {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new Save(
@@ -63,9 +64,14 @@ public final class PullMojoTest {
             .execute();
         new Mojo<>(PullMojo.class)
             .with("targetDir", target.toFile())
+            .with("repo", (Func<String, Input>) input -> new InputOf("test"))
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("eo/pull/org/stdout/io/stdout.eo.xml")),
+            Files.exists(
+                target.resolve(
+                    "03-optimize/org/eolang/io/stdout.eo.xml"
+                )
+            ),
             Matchers.is(true)
         );
     }

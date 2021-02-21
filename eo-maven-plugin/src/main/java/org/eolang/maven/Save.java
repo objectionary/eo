@@ -89,7 +89,7 @@ public final class Save {
     public void save() throws IOException {
         final File dir = this.path.toFile().getParentFile();
         if (dir.mkdirs()) {
-            Logger.info(Save.class, "%s directory created", dir);
+            Logger.debug(Save.class, "%s directory created", dir);
         }
         final byte[] bytes = this.content.getBytes();
         Files.write(this.path, bytes);

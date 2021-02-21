@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,13 +38,13 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOlessTest {
 
     @Test
-    public void comparesWithAnotherNumber() {
+    public void comparesWithAnotherNumber() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
         final Phi less = left.attr("less").get();
         less.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Data.Take(less).take(Boolean.class),
+            new Datarized(less).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,13 +38,13 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOaddTest {
 
     @Test
-    public void addsNumbers() {
+    public void addsNumbers() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
         final Phi add = left.attr("add").get();
         add.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Data.Take(add).take(Long.class),
+            new Datarized(add).take(Long.class),
             Matchers.equalTo(55L)
         );
     }

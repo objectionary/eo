@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
@@ -38,11 +39,11 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOnegTest {
 
     @Test
-    public void negatesNumber() {
+    public void negatesNumber() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
-            new Data.Take(neg).take(Long.class),
+            new Datarized(neg).take(Long.class),
             Matchers.equalTo(-42L)
         );
     }

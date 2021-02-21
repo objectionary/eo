@@ -108,7 +108,7 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Attr attr(final int pos) {
+    public final Attr attr(final int pos) throws Exception {
         if (this.order.isEmpty()) {
             throw new Attr.Exception(
                 "There are no attributes here"
@@ -124,7 +124,7 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Attr attr(final String name) {
+    public final Attr attr(final String name) throws Exception {
         Attr attr = this.attrs.get(name);
         if (attr != null) {
             return attr;
@@ -174,7 +174,7 @@ public class PhDefault implements Phi, Cloneable {
             return new AtChild(this.origin.copy(self));
         }
         @Override
-        public Phi get() {
+        public Phi get() throws java.lang.Exception {
             final Phi phi = this.origin.get();
             if (phi instanceof Data) {
                 return phi;

@@ -64,10 +64,10 @@ public final class Main {
         for (int idx = 1; idx < args.length; ++idx) {
             final Phi phi = new EOstring();
             final String arg = args[idx];
-            phi.attr("data").put(new Data.Value<>(arg));
+            phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr("args").put(phi);
         }
-        if (!new Data.Take(app).take(Boolean.class)) {
+        if (!new Datarized(app).take(Boolean.class)) {
             throw new IllegalStateException(
                 "Runtime failure"
             );

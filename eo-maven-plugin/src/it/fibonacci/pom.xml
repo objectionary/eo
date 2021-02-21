@@ -46,6 +46,8 @@ SOFTWARE.
             <goals>
               <goal>parse</goal>
               <goal>optimize</goal>
+              <goal>pull</goal>
+              <goal>resolve</goal>
               <goal>compile</goal>
             </goals>
           </execution>
@@ -77,7 +79,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.13</version>
+      <version>@runtime.version@</version>
     </dependency>
   </dependencies>
 </project>

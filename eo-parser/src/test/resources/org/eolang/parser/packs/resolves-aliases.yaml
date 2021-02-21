@@ -1,22 +1,26 @@
 xsls:
   - org/eolang/parser/add-refs.xsl
+  - org/eolang/parser/expand-aliases.xsl
   - org/eolang/parser/resolve-aliases.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
   - /program/metas/meta[head='foo' and @line='4']
-  - /program/metas[count(meta)=1]
+  - /program/metas[count(meta)=4]
+  - //o[@base='org.eolang.txt.scanner']
   - //o[@base='org.eolang.io.stdout' and @line='9']
   - //o[@base='and' and @line='7']
   - //o[@base='$']
+  - //o[@base='^']
 eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdin org.eolang.io.stdin
-  +alias scanner org.eolang.txt.scanner
+  +alias org.eolang.txt.scanner
   +foo Some other meta
 
   [args] > main
     and
       (scanner stdin).nextLine > line!
       (stdout "You entered" line).print
+      ^.x
       $

@@ -1,6 +1,13 @@
 +package org.eolang
++rt jvm org.eolang:eo-runtime:0.1.18
 
-[data] > array
+[] > array
+
+  # Is it empty?
+  [] > empty /bool
+
+  # Obtain the length of the array.
+  [] > length /int
 
   # Take one element from the array, at the
   # given position.
@@ -23,6 +30,6 @@
   # object with one free attribute, for the element
   # of the array.
   [f] > map
-    mapi > @
+    ^.mapi > @
       [x i]
-        f x > @
+        ^.f x > @

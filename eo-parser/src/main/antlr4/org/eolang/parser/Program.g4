@@ -49,6 +49,8 @@ objects
 
 object
   :
+  anonymous
+  |
   (
     abstraction
     |
@@ -58,17 +60,30 @@ object
   (
     EOL
     method
+    htail?
     suffix?
+    tail?
   )*
+  ;
+
+anonymous
+  :
+  attributes
+  htail
   ;
 
 abstraction
   :
   (COMMENT EOL)*
+  attributes
+  (suffix (SPACE SLASH NAME)?)?
+  ;
+
+attributes
+  :
   LSQ
   (attribute (SPACE attribute)*)?
   RSQ
-  (suffix (SPACE SLASH NAME)?)?
   ;
 
 attribute
@@ -104,7 +119,11 @@ suffix
 method
   :
   DOT
-  NAME
+  (
+    NAME
+    |
+    PARENT
+  )
   ;
 
 application
@@ -159,6 +178,8 @@ head
   :
   AT
   |
+  PARENT
+  |
   SELF
   |
   NAME
@@ -189,10 +210,14 @@ data
   HEX
   |
   CHAR
+  |
+  REGEX
   ;
 
 COMMENT: HASH ~[\r\n]*;
 META: PLUS NAME (SPACE ~[\r\n]+)?;
+
+REGEX: SLASH ~[\r\n]+ SLASH [a-z]*;
 
 DOTS: '...';
 CONST: '!';
@@ -209,6 +234,7 @@ RSQ: ']';
 LB: '(';
 RB: ')';
 AT: '@';
+PARENT: '^';
 HASH: '#';
 EOL
   :
@@ -240,5 +266,5 @@ INT: (PLUS | MINUS)? [0-9]+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
 HEX: '0x' [0-9a-f]+;
 
-NAME: [a-z][a-z0-9_A-Z]*;
+NAME: [a-z][a-z0-9_A-Z\-]*;
 

@@ -1,8 +1,24 @@
 +package org.eolang
++rt jvm org.eolang:eo-runtime:0.1.18
 
-[data] > int
-  # Equals to another number
+[] > int
+  # Tests that $ = x
   [x] > eq /bool
+
+  # Tests that $ ≠ x
+  [x] > neq /bool
+
+  # Tests that $ < x
+  [x] > less /bool
+
+  # Tests that $ ≤ x
+  [x] > leq /bool
+
+  # Tests that $ > x
+  [x] > greater /bool
+
+  # Tests that $ ≥ x
+  [x] > geq /bool
 
   # Change the sign of the number
   [] > neg /int
@@ -12,14 +28,13 @@
 
   # Subtract from the current one
   [x] > sub
-    add (x.neg) > @
+    ^.add (x.neg) > @
 
   # Multiply this one by another int
   [x] > mul /int
 
   # Divide this one by another int
-  [x] > div
-    mul (x.pow -1) > @
+  [x] > div /int
 
   # Calculate MOD
   [x] > mod /int
@@ -27,5 +42,5 @@
   # Make it power x
   [x] > pow /int
 
-  # It is less than the argument provided?
-  [x] > less /bool
+  # Converts this to float
+  [] > toFloat /float

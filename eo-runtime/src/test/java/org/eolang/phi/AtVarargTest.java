@@ -35,13 +35,13 @@ import org.junit.jupiter.api.Test;
 public final class AtVarargTest {
 
     @Test
-    public void appendsElements() {
+    public void appendsElements() throws Exception {
         final Attr attr = new AtVararg();
         final Phi phi = new PhDefault();
         attr.put(phi);
         attr.put(phi);
         MatcherAssert.assertThat(
-            new Data.Take(attr.get()).take(Phi[].class)[1],
+            new Datarized(attr.get()).take(Phi[].class)[1],
             Matchers.equalTo(phi)
         );
     }

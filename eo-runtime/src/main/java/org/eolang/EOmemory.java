@@ -29,6 +29,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
@@ -62,7 +63,7 @@ public class EOmemory extends PhDefault {
             super(parent);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> {
-                final Object obj = new Data.Take(self.attr("x").get()).take();
+                final Object obj = new Datarized(self.attr("x").get()).take();
                 EOmemory.this.phi.set(new Data.ToPhi(obj));
                 return new Data.ToPhi(true);
             })));

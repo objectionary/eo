@@ -28,7 +28,7 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="//o[@vararg]">
-        <xsl:variable name="s" select="following-sibling::o[@name and not(@base) and not(*)]"/>
+        <xsl:variable name="s" select="following-sibling::o[@name and not(@base) and not(*) and not(@atom)]"/>
         <xsl:if test="$s">
           <xsl:element name="error">
             <xsl:attribute name="check">

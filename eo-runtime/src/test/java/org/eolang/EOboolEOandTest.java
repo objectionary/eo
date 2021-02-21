@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,13 +38,13 @@ import org.junit.jupiter.api.Test;
 public final class EOboolEOandTest {
 
     @Test
-    public void logicallyJoinsTwoValues() {
+    public void logicallyJoinsTwoValues() throws Exception {
         final Phi left = new Data.ToPhi(true);
         final Phi right = new Data.ToPhi(false);
         final Phi and = left.attr("and").get();
         and.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Data.Take(and).take(Boolean.class),
+            new Datarized(and).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

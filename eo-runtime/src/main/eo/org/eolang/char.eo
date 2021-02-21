@@ -1,0 +1,8 @@
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.1.18
++alias sprintf org.eolang.txt.sprintf
+
+[data] > char
+  # Converts char to string
+  [] > toString
+    sprintf "%c" ^ > @

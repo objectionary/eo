@@ -1,7 +1,7 @@
 xsls: []
 tests:
   - /program/license[text()!='']
-  - /program/metas[count(meta)=3]
+  - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']
   - /program/objects[count(o)=7]
   - //o[@base='bool']
@@ -21,6 +21,7 @@ eo: |
   # be parsed by the ANTLR
 
   +alias Test Test
+  +alias org.example.foo
   +foo
   +bar Some text
 
@@ -40,7 +41,7 @@ eo: |
           (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey true > a!
             # This object is also very good
             []
-              hey > you...
+              ^.^.hey > you...
             kid
       f:u
         z
@@ -52,7 +53,7 @@ eo: |
   []
     one.two.three.four.five
       t
-    .two
+    .two "hello!"
     .three > a1
     .four > a2
     .five > a3
@@ -63,7 +64,7 @@ eo: |
 
   [] > ooo
     # This is one
-    [] > o1
+    [] > o-1
 
     # This is two
     [] > o2

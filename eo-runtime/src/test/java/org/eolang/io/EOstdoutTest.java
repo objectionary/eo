@@ -24,6 +24,7 @@
 package org.eolang.io;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhCopy;
 import org.eolang.phi.PhEta;
 import org.eolang.phi.PhWith;
@@ -40,7 +41,7 @@ import org.junit.jupiter.api.Test;
 public final class EOstdoutTest {
 
     @Test
-    public void printsString() {
+    public void printsString() throws Exception {
         final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
             new PhCopy(new EOstdout(new PhEta())),
@@ -48,7 +49,7 @@ public final class EOstdoutTest {
             format
         );
         MatcherAssert.assertThat(
-            new Data.Take(phi).take(Boolean.class),
+            new Datarized(phi).take(Boolean.class),
             Matchers.equalTo(true)
         );
     }

@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,11 +38,11 @@ import org.junit.jupiter.api.Test;
 public final class EOstringEOtoIntTest {
 
     @Test
-    public void toIntString() {
+    public void toIntString() throws Exception {
         final Phi str = new Data.ToPhi("42");
         final Phi phi = new EOstring$EOtoInt(str);
         MatcherAssert.assertThat(
-            new Data.Take(phi).take(Long.class),
+            new Datarized(phi).take(Long.class),
             Matchers.equalTo(42L)
         );
     }

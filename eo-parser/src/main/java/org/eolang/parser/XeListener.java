@@ -124,15 +124,20 @@ public final class XeListener implements ProgramListener {
     public void enterMetas(final ProgramParser.MetasContext ctx) {
         this.dirs.add("metas");
         for (final TerminalNode node : ctx.META()) {
-            final String[] parts = node.getText().split(" ", 2);
+            final String[] pair = node.getText().split(" ", 2);
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
-                .add("head").set(parts[0].substring(1)).up()
+                .add("head").set(pair[0].substring(1)).up()
                 .add("tail");
-            if (parts.length > 1) {
-                this.dirs.set(parts[1].trim());
+            if (pair.length > 1) {
+                this.dirs.set(pair[1].trim()).up();
+                for (final String part : pair[1].trim().split(" ")) {
+                    this.dirs.add("part").set(part).up();
+                }
+            } else {
+                this.dirs.up();
             }
-            this.dirs.up().up();
+            this.dirs.up();
         }
         this.dirs.up();
     }
@@ -163,6 +168,19 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    public void enterAnonymous(final ProgramParser.AnonymousContext ctx) {
+        this.dirs.add("o")
+            .attr("line", ctx.getStart().getLine())
+            .up();
+    }
+
+    @Override
+    public void exitAnonymous(final ProgramParser.AnonymousContext ctx) {
+        this.enter();
+        this.dirs.xpath("o[@base][1]").attr("name", "@").up().up();
+    }
+
+    @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.SLASH() != null) {
@@ -174,6 +192,16 @@ public final class XeListener implements ProgramListener {
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
         // Nothing here
+    }
+
+    @Override
+    public void enterAttributes(final ProgramParser.AttributesContext ctx) {
+        // This method is created by ANTLR and can't be removed
+    }
+
+    @Override
+    public void exitAttributes(final ProgramParser.AttributesContext ctx) {
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override
@@ -257,6 +285,9 @@ public final class XeListener implements ProgramListener {
         if (ctx.SELF() != null) {
             this.dirs.attr("base", "$");
         }
+        if (ctx.PARENT() != null) {
+            this.dirs.attr("base", "^");
+        }
     }
 
     @Override
@@ -297,34 +328,39 @@ public final class XeListener implements ProgramListener {
 
     // @checkstyle ExecutableStatementCountCheck (100 lines)
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
+    @SuppressWarnings({ "PMD.ConfusingTernary", "PMD.CyclomaticComplexity" })
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
+        final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             type = "bytes";
-            data = ctx.getText().replace("-", " ").trim();
+            data = text.replace("-", " ").trim();
         } else if (ctx.BOOL() != null) {
             type = "bool";
-            data = Boolean.toString(Boolean.parseBoolean(ctx.getText()));
+            data = Boolean.toString(Boolean.parseBoolean(text));
         } else if (ctx.CHAR() != null) {
             type = "char";
-            data = ctx.getText().substring(1, 2);
+            data = text.substring(1, 2);
         } else if (ctx.FLOAT() != null) {
             type = "float";
-            data = Float.toString(Float.parseFloat(ctx.getText()));
+            data = Double.toString(Double.parseDouble(text));
         } else if (ctx.INT() != null) {
             type = "int";
-            data = Long.toString(Long.parseLong(ctx.getText()));
+            data = Long.toString(Long.parseLong(text));
+        } else if (ctx.REGEX() != null) {
+            type = "regex";
+            data = text.substring(1, text.lastIndexOf('/'));
+            this.dirs.attr("flags", text.substring(text.lastIndexOf('/') + 1));
         } else if (ctx.HEX() != null) {
             type = "int";
             data = Long.toString(
                 // @checkstyle MagicNumberCheck (1 line)
-                Long.parseLong(ctx.getText().substring(2), 16)
+                Long.parseLong(text.substring(2), 16)
             );
         } else if (ctx.STRING() != null) {
             type = "string";
-            data = ctx.getText().substring(1, ctx.getText().length() - 1);
+            data = text.substring(1, text.length() - 1);
         } else {
             throw new ParsingException("Unknown data type");
         }

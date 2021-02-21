@@ -24,6 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
@@ -39,7 +40,7 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOsubTest {
 
     @Test
-    public void subtractsNumber() {
+    public void subtractsNumber() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
         final Phi sub = new PhWith(
@@ -47,7 +48,7 @@ public final class EOintEOsubTest {
             0, right
         );
         MatcherAssert.assertThat(
-            new Data.Take(sub).take(Long.class),
+            new Datarized(sub).take(Long.class),
             Matchers.equalTo(29L)
         );
     }

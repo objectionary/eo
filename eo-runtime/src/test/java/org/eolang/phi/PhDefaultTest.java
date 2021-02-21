@@ -37,24 +37,24 @@ import org.junit.jupiter.api.Test;
 public final class PhDefaultTest {
 
     @Test
-    public void makesCopy() {
+    public void makesCopy() throws Exception {
         final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(new PhEta());
         final Phi phi = new PhDefaultTest.Foo(parent);
         phi.attr(0).put(num);
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            new Data.Take(copy).take(String.class),
+            new Datarized(copy).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
         MatcherAssert.assertThat(
-            phi.attr("x").get().attr("data"),
+            phi.attr("x").get().attr("Δ"),
             Matchers.notNullValue()
         );
     }
 
     @Test
-    public void setsFreeAttributeOnlyOnce() {
+    public void setsFreeAttributeOnlyOnce() throws Exception {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo(new PhEta());
         phi.attr(0).put(num);

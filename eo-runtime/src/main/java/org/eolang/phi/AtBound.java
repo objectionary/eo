@@ -52,7 +52,7 @@ public final class AtBound implements Attr {
     }
 
     @Override
-    public Phi get() {
+    public Phi get() throws java.lang.Exception {
         return this.origin.get();
     }
 

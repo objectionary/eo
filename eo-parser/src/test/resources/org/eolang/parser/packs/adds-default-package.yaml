@@ -7,6 +7,7 @@ tests:
   - /program/objects[count(o)=1]
   - //o[@base='org.eolang.and' and @line='7']
   - //o[@base='$']
+  - //o[@base='^']
 eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdin org.eolang.io.stdin
@@ -18,3 +19,4 @@ eo: |
       (scanner stdin).nextLine > line!
       (stdout "You entered" line).print
       $
+      ^.i

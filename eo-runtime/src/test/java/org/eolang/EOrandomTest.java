@@ -23,7 +23,7 @@
  */
 package org.eolang;
 
-import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,11 +37,11 @@ import org.junit.jupiter.api.Test;
 public final class EOrandomTest {
 
     @Test
-    public void readsTwice() {
+    public void readsTwice() throws Exception {
         final Phi rnd = new EOrandom();
-        final Double first = new Data.Take(rnd).take(Double.class);
+        final Double first = new Datarized(rnd).take(Double.class);
         MatcherAssert.assertThat(
-            new Data.Take(rnd).take(Double.class),
+            new Datarized(rnd).take(Double.class),
             Matchers.not(Matchers.equalTo(first))
         );
     }

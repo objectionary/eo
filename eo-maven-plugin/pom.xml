@@ -34,6 +34,7 @@ SOFTWARE.
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
+    <runtime.version>0.1.17</runtime.version>
     <maven.version>3.3.9</maven.version>
   </properties>
   <dependencies>
@@ -66,6 +67,11 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
+      <version>${maven.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
       <version>${maven.version}</version>
     </dependency>
     <dependency>
@@ -123,7 +129,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.12</version>
+      <version>${runtime.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

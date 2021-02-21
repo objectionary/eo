@@ -28,6 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -42,17 +43,17 @@ public class EObool$EOand extends PhDefault {
         super(parent);
         this.add("x", new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            Boolean term = new Data.Take(
+            Boolean term = new Datarized(
                 self.attr("ρ").get()
             ).take(Boolean.class);
-            final Phi[] args = new Data.Take(
+            final Phi[] args = new Datarized(
                 self.attr("x").get()
             ).take(Phi[].class);
             for (final Phi arg : args) {
-                term &= new Data.Take(arg).take(Boolean.class);
                 if (!term) {
                     break;
                 }
+                term &= new Datarized(arg).take(Boolean.class);
             }
             return new Data.ToPhi(term);
         })));
