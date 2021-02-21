@@ -290,7 +290,30 @@ This section covers the basic principles that the EO programming language relies
 ### Objects
 **Objects** are a centric notion of the EO programming language. Essentially, an **object** is a set of *attributes*. An object connects with and links other objects through its attributes to compose a new concept that the object abstracts.  
 An **abstract object** is an object that has at least one [free attribute](#free--bound-attributes-binding).  
-A **closed object** is an object whose all attributes are [bound](#free--bound-attributes-binding). 
+This is an example of an abstract object:  
+```
+[a b] > sum
+  a.add b > @
+  a > leftOperand
+  b > rightOperand
+```  
+A **closed object** is an object whose all attributes are [bound](#free--bound-attributes-binding).  
+These are examples of closed objects:  
+```
+# Application can turn an abstract object to a closed one
+sum 2 5 > closedCopyOfSum
+# Abstraction can declare closed objects
+[] > zero
+  0 > @
+  "0" > stringValue
+  # Closed objects may have abstract attributes
+  [x] > add
+    sum 0 x > @ 
+  # And closed attributes, too
+  [] > neg
+    -0 > @
+  $.add 1 > addOne
+```  
 ### Attributes
 An **attribute** is a pair of a name and a value, where a value of an attribute is another object. That is because `Everything in EO is an object`. Hence, for instance, an attribute `name` of an object `person` may be also referred to as plainly the object `name` of the object `person`.  
 #### Free & Bound Attributes. Binding
