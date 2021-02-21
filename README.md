@@ -389,6 +389,13 @@ NAME ::= [a-z][a-z0-9_A-Z]*
         accumulator
         current.toInt
 
+# inline anonymous abstraction
+[args...] > app
+  reduce. > sum
+    args
+    0
+    # inline anonymous abstraction
+    [accumulator current] accumulator.add (current.toInt)
 ``` 
 ### Application
 `TODO: syntax, comparison to abstraction, partial application, named attributes, examples`.
