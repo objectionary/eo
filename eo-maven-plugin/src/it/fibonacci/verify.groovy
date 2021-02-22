@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-assert new File(basedir, 'target/generated-sources/eo/EOapp.java').exists()
+assert new File(basedir, 'target/generated-sources/org/eolang/examples/EOapp.java').exists()
 assert new File(basedir, 'target/eo/01-parse/org/eolang/examples/app.eo.xml').exists()
 assert new File(basedir, 'target/eo/02-steps/org/eolang/examples/app.eo.xml').exists()
 assert new File(basedir, 'target/eo/03-optimize/org/eolang/examples/app.eo.xml').exists()

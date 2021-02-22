@@ -92,6 +92,11 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:attribute>
     <xsl:attribute name="java-name">
+      <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
+      <xsl:if test="$pkg">
+        <xsl:value-of select="$pkg"/>
+        <xsl:text>.</xsl:text>
+      </xsl:if>
       <xsl:value-of select="eo:class-name(.)"/>
     </xsl:attribute>
   </xsl:template>
@@ -101,12 +106,12 @@ SOFTWARE.
       <xsl:element name="java">
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="/program" mode="license"/>
-        <xsl:apply-templates select="//meta[head='package']"/>
+        <xsl:apply-templates select="//meta[head='package']" mode="head"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>import org.eolang.phi.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="//meta[head='junit']"/>
+        <xsl:apply-templates select="//meta[head='junit']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
@@ -408,14 +413,14 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="meta[head='package']">
+  <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
     <xsl:value-of select="tail"/>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="meta[head='junit']">
+  <xsl:template match="meta[head='junit']" mode="head">
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>

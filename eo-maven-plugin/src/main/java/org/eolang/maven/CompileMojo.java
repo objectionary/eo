@@ -73,7 +73,7 @@ public final class CompileMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/generated-sources/eo"
+        defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
 
@@ -172,7 +172,9 @@ public final class CompileMojo extends AbstractMojo {
                     this.generatedDir.toPath().resolve(
                         Paths.get(
                             String.format(
-                                "%s.java", java.xpath("@java-name").get(0)
+                                "%s.java",
+                                java.xpath("@java-name").get(0)
+                                    .replace(".", "/")
                             )
                         )
                     )
