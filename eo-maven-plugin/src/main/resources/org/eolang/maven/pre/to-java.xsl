@@ -364,7 +364,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
       <xsl:variable name="n">
         <xsl:value-of select="$name"/>
         <xsl:text>_</xsl:text>
@@ -378,7 +378,7 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
