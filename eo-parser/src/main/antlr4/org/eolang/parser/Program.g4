@@ -171,6 +171,9 @@ htail
     SPACE
     application
     suffix
+    |
+    SPACE
+    anonymous
   )+
   ;
 
