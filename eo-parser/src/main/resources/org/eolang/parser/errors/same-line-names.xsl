@@ -34,7 +34,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o" mode="check">
     <xsl:variable name="x" select="."/>
-    <xsl:for-each select="preceding::o[@name=$x/@name and @line=$x/@line] | ancestor::o[@name=$x/@name and @line=$x/@line]">
+    <xsl:for-each select="(following::o | descendant::o)[@name=$x/@name and @line=$x/@line]">
       <xsl:element name="error">
         <xsl:attribute name="check">
           <xsl:text>same-line-names</xsl:text>
