@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package org.eolang.txt;
+package org.eolang;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

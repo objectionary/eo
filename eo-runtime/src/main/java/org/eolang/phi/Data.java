@@ -29,11 +29,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import org.eolang.EOarray;
 import org.eolang.EObool;
+import org.eolang.EOchar;
 import org.eolang.EOfloat;
 import org.eolang.EOint;
+import org.eolang.EOregex;
 import org.eolang.EOstring;
-import org.eolang.EOchar;
-import org.eolang.txt.EOregex;
 
 /**
  * A data container.

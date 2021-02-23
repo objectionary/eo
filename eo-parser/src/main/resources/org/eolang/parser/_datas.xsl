@@ -31,6 +31,6 @@ SOFTWARE.
     <a>org.eolang.bool</a>
     <a>org.eolang.double</a>
     <a>org.eolang.char</a>
-    <a>org.eolang.txt.regex</a>
+    <a>org.eolang.regex</a>
   </xsl:variable>
 </xsl:stylesheet>
