@@ -47,6 +47,10 @@ SOFTWARE.
     <xsl:variable name="n">
       <xsl:for-each select="$object/ancestor-or-self::o">
         <xsl:choose>
+          <xsl:when test="eo:abstract(.) and not(@name)">
+            <xsl:text>&#x3B1;</xsl:text>
+            <xsl:value-of select="count(preceding-sibling::o)"/>
+          </xsl:when>
           <xsl:when test="eo:abstract(.)">
             <xsl:value-of select="@name"/>
           </xsl:when>
@@ -120,9 +124,11 @@ SOFTWARE.
       <xsl:attribute name="name">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>
-      <xsl:attribute name="original-name">
-        <xsl:value-of select="@name"/>
-      </xsl:attribute>
+      <xsl:if test="@name">
+        <xsl:attribute name="original-name">
+          <xsl:value-of select="@name"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
       <xsl:if test="count($ancestors) &gt; 1">
         <xsl:attribute name="ancestors">
