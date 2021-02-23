@@ -215,6 +215,43 @@ SOFTWARE.
     <xsl:text>})</xsl:text>
     <xsl:text>))</xsl:text>
   </xsl:template>
+  <xsl:template match="array">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'a'"/>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>Phi[] </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>_a = new Phi[</xsl:text>
+    <xsl:value-of select="count(*)"/>
+    <xsl:text>];</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:for-each select="*">
+      <xsl:variable name="n">
+        <xsl:value-of select="$name"/>
+        <xsl:text>_a</xsl:text>
+        <xsl:value-of select="position() - 1"/>
+      </xsl:variable>
+      <xsl:apply-templates select=".">
+        <xsl:with-param name="indent" select="$indent"/>
+        <xsl:with-param name="name" select="$n"/>
+      </xsl:apply-templates>
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text>_a[</xsl:text>
+      <xsl:value-of select="position() - 1"/>
+      <xsl:text>] = </xsl:text>
+      <xsl:value-of select="$n"/>
+      <xsl:text>;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:for-each>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>Phi </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text> = new PhWith(new EOarray(self), "&#x394;", new Data.Value&lt;Phi[]&gt;(</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>_a));</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
   <xsl:template match="o[not(@base) and @name]">
     <xsl:text>/</xsl:text>
     <xsl:text>* default */</xsl:text>
@@ -281,10 +318,10 @@ SOFTWARE.
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
   </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.') and o]">
+  <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:apply-templates select="o[1]">
+    <xsl:apply-templates select="*[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
         <xsl:text>_base</xsl:text>
@@ -324,7 +361,7 @@ SOFTWARE.
       <xsl:with-param name="skip" select="1"/>
     </xsl:apply-templates>
   </xsl:template>
-  <xsl:template match="o" mode="application">
+  <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
