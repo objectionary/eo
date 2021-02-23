@@ -9,6 +9,8 @@ tests:
   - //o[@base='.trim' and count(./o)=2]
   - //o[@base='.trim']/o[1][@base='.get']
   - //o[@base='.trim']/o[2][@base='int']
+  - //o[@base='a' and @name='xxx']
+  - //o[@base='.f2' and not(@name)]
 eo: |
   [args] > app
     stdout
@@ -16,3 +18,6 @@ eo: |
         "%dth Fibonacci number is %d"
         (args.get.trim 1).foo.tohex > n!
         fibo n
+    a > xxx
+    .f1
+    .f2

@@ -1,10 +1,10 @@
 xsls: []
 tests:
   - //objects[count(o)=5]
-  - //o[@base='x' and @name='@']
-  - //o[@base='a' and @name='@']
+  - //o[@base='.add' and @name='a']
+  - //o[@base='int' and @name='@' and text()='5']
 eo: |
-  [x] x.add 1
+  [x] (x.add 1 > a) (5 > @)
 
   [a b] (a.add 6).add b
 

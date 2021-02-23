@@ -177,7 +177,7 @@ public final class XeListener implements ProgramListener {
     @Override
     public void exitAnonymous(final ProgramParser.AnonymousContext ctx) {
         this.enter();
-        this.dirs.xpath("o[@base][1]").attr("name", "@").up().up();
+        this.dirs.xpath("o[@base][1]").up().up();
     }
 
     @Override
