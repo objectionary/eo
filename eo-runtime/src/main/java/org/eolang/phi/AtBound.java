@@ -52,13 +52,13 @@ public final class AtBound implements Attr {
     }
 
     @Override
-    public Phi get() throws java.lang.Exception {
+    public Phi get() {
         return this.origin.get();
     }
 
     @Override
     public void put(final Phi phi) {
-        throw new IllegalStateException(
+        throw new Attr.Exception(
             String.format(
                 "You can't overwrite %s",
                 this.origin

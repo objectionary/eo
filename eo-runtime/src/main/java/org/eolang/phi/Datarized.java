@@ -46,9 +46,8 @@ public final class Datarized {
     /**
      * Take the object, no matter the type.
      * @return The data
-     * @throws Exception If it fails
      */
-    public Object take() throws Exception {
+    public Object take() {
         Phi src = this.phi;
         if (!(src instanceof Data)) {
             src = src.attr("Δ").get();

@@ -45,9 +45,8 @@ public interface Data<T> {
     /**
      * Take the data.
      * @return The data
-     * @throws Exception If fails
      */
-    T take() throws Exception;
+    T take();
 
     final class Once<T> implements Data<T> {
         private final Data<T> src;
@@ -58,14 +57,10 @@ public interface Data<T> {
         }
         @Override
         public String toString() {
-            try {
-                return this.take().toString();
-            } catch (final Exception ex) {
-                throw new IllegalStateException(ex);
-            }
+            return this.take().toString();
         }
         @Override
-        public T take() throws Exception {
+        public T take() {
             if (this.ref.get() == null) {
                 this.ref.set(this.src.take());
             }

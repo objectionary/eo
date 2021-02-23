@@ -44,7 +44,7 @@ public interface Attr {
      *
      * @return The object
      */
-    Phi get() throws java.lang.Exception;
+    Phi get();
 
     /**
      * Put a new object in.
@@ -54,6 +54,9 @@ public interface Attr {
     void put(Phi phi);
 
     /**
+     * The exception raised when something is not right inside
+     * attributes.
+     *
      * @since 0.1
      */
     final class Exception extends RuntimeException {

@@ -47,25 +47,21 @@ public class PhOnce implements Phi {
 
     @Override
     public final String toString() {
-        try {
-            return this.object.take().toString();
-        } catch (final Exception ex) {
-            throw new IllegalStateException(ex);
-        }
+        return this.object.take().toString();
     }
 
     @Override
-    public final Phi copy() throws Exception {
+    public final Phi copy() {
         return this.object.take().copy();
     }
 
     @Override
-    public final Attr attr(final int pos) throws Exception {
+    public final Attr attr(final int pos) {
         return this.object.take().attr(pos);
     }
 
     @Override
-    public final Attr attr(final String name) throws Exception {
+    public final Attr attr(final String name) {
         return this.object.take().attr(name);
     }
 }

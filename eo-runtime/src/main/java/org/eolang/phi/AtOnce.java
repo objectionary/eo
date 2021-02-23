@@ -51,13 +51,13 @@ public final class AtOnce implements Attr {
     }
 
     @Override
-    public Phi get() throws java.lang.Exception {
+    public Phi get() {
         return this.data.take();
     }
 
     @Override
     public void put(final Phi phi) {
-        throw new IllegalStateException(
+        throw new Attr.Exception(
             String.format(
                 "You can't overwrite %s",
                 this.origin

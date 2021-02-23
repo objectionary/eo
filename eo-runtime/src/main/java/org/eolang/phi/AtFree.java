@@ -59,7 +59,7 @@ public final class AtFree implements Attr {
     }
 
     @Override
-    public Phi get() throws java.lang.Exception {
+    public Phi get() {
         final Phi phi = this.origin.get();
         if (phi.equals(new PhEta())) {
             throw new Attr.Exception(
