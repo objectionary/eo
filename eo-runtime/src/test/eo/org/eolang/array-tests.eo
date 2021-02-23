@@ -1,5 +1,6 @@
 +package org.eolang
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.txt.sprintf
++alias org.eolang.io.stdout
 +junit
 
 [] > makes-array-through-special-syntax
@@ -11,6 +12,14 @@
   eq. > @
     0
     *.length
+
+[] > iterates-with-each
+  *
+    "one"
+    "two"
+    "three"
+  .each > @
+    [i] (stdout i > @)
 
 # check that an empty array's .length equals to zero
 [] > emptyArrayLengthTest

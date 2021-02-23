@@ -27,33 +27,37 @@ package org.eolang;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
+import org.eolang.phi.Data;
 import org.eolang.phi.Datarized;
+import org.eolang.phi.PhCopy;
 import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 
 /**
- * REDUCE.
+ * EACH.
  *
  * @since 1.0
  */
-public class EOarray$EOreduce extends PhDefault {
+public class EOarray$EOeach extends PhDefault {
 
-    public EOarray$EOreduce(final Phi parent) {
+    public EOarray$EOeach(final Phi parent) {
         super(parent);
-        this.add("a", new AtFree());
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Datarized(
                 self.attr("ρ").get()
             ).take(Phi[].class);
-            Phi out = self.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
+            for (final Phi item : array) {
+                new Datarized(
+                    new PhWith(
+                        new PhCopy(self.attr("f").get()),
+                        0,
+                        item
+                    )
+                ).take();
             }
-            return out;
+            return new Data.ToPhi(true);
         })));
     }
 

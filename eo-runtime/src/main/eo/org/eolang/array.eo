@@ -20,6 +20,9 @@
   # Reduce from start "a" using the function "f"
   [a f] > reduce /a
 
+  # For each array element dataize the object
+  [f] > each /bool
+
   # Map with index. Here "f" must be an abstract
   # object with two free attributes. The first
   # one for the element of the array, the second one
