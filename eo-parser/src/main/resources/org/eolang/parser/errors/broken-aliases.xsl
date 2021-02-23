@@ -28,7 +28,7 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="/program/metas/meta[head='alias']">
-        <xsl:if test="not(matches(tail, '^[a-z]+ [a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$'))">
+        <xsl:if test="not(matches(tail, '^([a-z]+ )?[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$'))">
           <xsl:element name="error">
             <xsl:attribute name="check">
               <xsl:text>broken-aliases</xsl:text>

@@ -1,7 +1,7 @@
 xsls:
   - org/eolang/parser/errors/broken-aliases.xsl
 tests:
-  - /program/errors[count(error)=3]
+  - /program/errors[count(error)=2]
   - /program/errors/error[@line='2']
 eo: |
   +alias org.eolang.io.stdout
