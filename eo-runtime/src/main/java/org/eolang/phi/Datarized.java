@@ -60,9 +60,8 @@ public final class Datarized {
      * @param type The type
      * @param <T> The type
      * @return The data
-     * @throws Exception If fails
      */
-    public <T> T take(final Class<T> type) throws Exception {
+    public <T> T take(final Class<T> type) {
         return type.cast(this.take());
     }
 }
