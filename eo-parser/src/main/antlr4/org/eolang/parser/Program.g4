@@ -185,6 +185,8 @@ head
   |
   SELF
   |
+  STAR
+  |
   NAME
   |
   NAME DOT
@@ -222,6 +224,7 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 REGEX: SLASH ~[\r\n]+ SLASH [a-z]*;
 
+STAR: '*';
 DOTS: '...';
 CONST: '!';
 SLASH: '/';

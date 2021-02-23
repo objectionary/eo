@@ -1,0 +1,13 @@
+xsls: []
+tests:
+  - //objects[count(.//o[@base='array' and @data='array'])=4]
+eo: |
+  * 1 2 3
+
+  *
+    foo
+    3.14
+    "hello"
+
+  foo > hey
+  .with (* 1 (* 2 3))
