@@ -74,7 +74,8 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '&#x3C6;'), '\$', '\$EO'))"/>
+    <xsl:variable name="clean" select="replace(replace(replace($c, '-', '_'), '@', '&#x3C6;'), '\$', '\$EO')"/>
+    <xsl:value-of select="concat($p, 'EO', $clean)"/>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>

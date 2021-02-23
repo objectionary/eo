@@ -2,13 +2,13 @@
 +alias regex org.eolang.txt.regex
 +junit
 
-[] > matchesStringAgainstPattern
+[] > matches-string-against-pattern
   /([a-z]+)/i
   .match "hello"
   .empty
   .not > @
 
-[] > doesntMatchStringAgainstPattern
+[] > doesnt-match-string-against-pattern
   /([A-Z]{2})/
   .matches "Hello, World!"
   .not > @

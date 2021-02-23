@@ -3,7 +3,7 @@
 +alias stdout org.eolang.io.stdout
 +junit
 
-[] > printsStringToConsole
+[] > prints-string-to-console
   stdout > @
     sprintf
       "This is the random number %f, %s!\n"
