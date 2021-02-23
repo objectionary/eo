@@ -106,7 +106,6 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
-        <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="/program" mode="license"/>
         <xsl:apply-templates select="//meta[head='package']" mode="head"/>
         <xsl:text>import org.eolang.*;</xsl:text>
