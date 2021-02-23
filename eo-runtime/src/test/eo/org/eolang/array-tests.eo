@@ -7,6 +7,11 @@
     2
     (* 1 2).length
 
+[] > gets-lengths-of-empty-array-through-special-syntax
+  eq. > @
+    0
+    *.length
+
 # check that an empty array's .length equals to zero
 [] > emptyArrayLengthTest
   [elements...] > arr
