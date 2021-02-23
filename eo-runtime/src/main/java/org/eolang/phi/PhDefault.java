@@ -75,11 +75,12 @@ public class PhDefault implements Phi, Cloneable {
             )
         );
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            final int idx = this.order.indexOf(ent.getKey());
             list.add(
                 String.format(
-                    "%s(%d)=%s",
+                    "%s%s=%s",
                     ent.getKey(),
-                    this.order.indexOf(ent.getKey()),
+                    idx >=0 ? String.format("(%d)", idx) : "",
                     ent.getValue().toString().replace("\n", "\n  ")
                 )
             );
