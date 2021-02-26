@@ -74,7 +74,6 @@ whether it's leap or not:
 
 ```
 +alias org.eolang.io.stdout
-+alias org.eolang.io.stdin
 
 [args...] > main
   [y] > leap
