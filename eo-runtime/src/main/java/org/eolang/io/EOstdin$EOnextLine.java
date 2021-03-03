@@ -43,13 +43,12 @@ public class EOstdin$EOnextLine extends PhDefault {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             try (Scanner sc = new Scanner(System.in)) {
-                if (sc.hasNextLine()) {
-                    return new Data.ToPhi(sc.nextLine());
-                }
-                else {
+                if (!sc.hasNextLine()) {
                     final Phi msg = new Data.ToPhi("There is no line in the standard input stream to consume");
                     return new PhWith(new org.eolang.EOerror(), "msg", msg);
                 }
+
+                return new Data.ToPhi(sc.nextLine());
             }
         })));
     }
