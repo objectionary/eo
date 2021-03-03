@@ -36,7 +36,7 @@ public interface Phi {
      *
      * @return A copy
      */
-    Phi copy() throws Exception;
+    Phi copy();
 
     /**
      * Get attribute by position.
@@ -44,7 +44,7 @@ public interface Phi {
      * @param pos The position of the attribute
      * @return The attr
      */
-    Attr attr(int pos) throws Exception;
+    Attr attr(int pos);
 
     /**
      * Get attribute.
@@ -52,6 +52,6 @@ public interface Phi {
      * @param name The name of the attribute
      * @return The attr
      */
-    Attr attr(String name) throws Exception;
+    Attr attr(String name);
 
 }

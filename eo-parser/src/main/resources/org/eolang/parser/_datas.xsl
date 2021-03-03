@@ -22,31 +22,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="broken-aliases" version="2.0">
-  <xsl:strip-space elements="*"/>
-  <xsl:template match="/program/errors">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="/program/metas/meta[head='alias']">
-        <xsl:if test="not(matches(tail, '^([a-z]+ )?[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$'))">
-          <xsl:element name="error">
-            <xsl:attribute name="check">
-              <xsl:text>broken-aliases</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:text>The alias is invalid: "</xsl:text>
-            <xsl:value-of select="tail"/>
-            <xsl:text>"</xsl:text>
-          </xsl:element>
-        </xsl:if>
-      </xsl:for-each>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="node()|@*">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
-  </xsl:template>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+  <xsl:variable name="data-objects" as="element()*">
+    <a>org.eolang.string</a>
+    <a>org.eolang.array</a>
+    <a>org.eolang.int</a>
+    <a>org.eolang.float</a>
+    <a>org.eolang.bool</a>
+    <a>org.eolang.double</a>
+    <a>org.eolang.char</a>
+    <a>org.eolang.regex</a>
+  </xsl:variable>
 </xsl:stylesheet>

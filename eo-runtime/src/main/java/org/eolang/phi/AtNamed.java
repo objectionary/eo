@@ -58,7 +58,7 @@ public final class AtNamed implements Attr {
     }
 
     @Override
-    public Phi get() throws java.lang.Exception {
+    public Phi get() {
         try {
             return this.origin.get();
         } catch (final Attr.Exception ex) {

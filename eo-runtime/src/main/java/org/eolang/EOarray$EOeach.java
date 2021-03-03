@@ -22,48 +22,43 @@
  * SOFTWARE.
  */
 
-package org.eolang.phi;
+package org.eolang;
+
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtLambda;
+import org.eolang.phi.Data;
+import org.eolang.phi.Datarized;
+import org.eolang.phi.PhCopy;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
+import org.eolang.phi.Phi;
 
 /**
- * Bound attribute.
+ * EACH.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class AtBound implements Attr {
+public class EOarray$EOeach extends PhDefault {
 
-    private final Attr origin;
-
-    public AtBound(final Phi phi) {
-        this(new AtSimple(phi));
-    }
-
-    public AtBound(final Attr attr) {
-        this.origin = attr;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%sB", this.origin.toString());
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtBound(this.origin.copy(self));
-    }
-
-    @Override
-    public Phi get() {
-        return this.origin.get();
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        throw new Attr.Exception(
-            String.format(
-                "You can't overwrite %s",
-                this.origin
-            )
-        );
+    public EOarray$EOeach(final Phi parent) {
+        super(parent);
+        this.add("f", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final Phi[] array = new Datarized(
+                self.attr("ρ").get()
+            ).take(Phi[].class);
+            for (final Phi item : array) {
+                new Datarized(
+                    new PhWith(
+                        new PhCopy(self.attr("f").get()),
+                        0,
+                        item
+                    )
+                ).take();
+            }
+            return new Data.ToPhi(true);
+        })));
     }
 
 }

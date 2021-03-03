@@ -22,31 +22,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="same-line-names" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data-objects" version="2.0">
+  <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:strip-space elements="*"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@line and @name]">
-        <xsl:apply-templates select="." mode="check"/>
+      <xsl:for-each select="//o[not(@data) and @base=$data-objects/text()]">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>data-objects</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>Data objects can't be used directly: "</xsl:text>
+          <xsl:value-of select="@base"/>
+          <xsl:text>"</xsl:text>
+        </xsl:element>
       </xsl:for-each>
     </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o" mode="check">
-    <xsl:variable name="x" select="."/>
-    <xsl:for-each select="(following::o | descendant::o)[@name=$x/@name and @line=$x/@line]">
-      <xsl:element name="error">
-        <xsl:attribute name="check">
-          <xsl:text>same-line-names</xsl:text>
-        </xsl:attribute>
-        <xsl:attribute name="line">
-          <xsl:value-of select="@line"/>
-        </xsl:attribute>
-        <xsl:text>The name "</xsl:text>
-        <xsl:value-of select="@name"/>
-        <xsl:text>" was already used on the same line</xsl:text>
-      </xsl:element>
-    </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

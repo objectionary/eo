@@ -171,6 +171,9 @@ htail
     SPACE
     application
     suffix
+    |
+    SPACE
+    anonymous
   )+
   ;
 
@@ -181,6 +184,8 @@ head
   PARENT
   |
   SELF
+  |
+  STAR
   |
   NAME
   |
@@ -219,6 +224,7 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 REGEX: SLASH ~[\r\n]+ SLASH [a-z]*;
 
+STAR: '*';
 DOTS: '...';
 CONST: '!';
 SLASH: '/';

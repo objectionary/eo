@@ -34,7 +34,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test case for optimize-packs.
+ * Test case for packs.
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)

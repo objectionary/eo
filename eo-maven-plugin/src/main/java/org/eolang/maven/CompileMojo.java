@@ -73,7 +73,7 @@ public final class CompileMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/generated-sources/eo"
+        defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
 
@@ -161,6 +161,7 @@ public final class CompileMojo extends AbstractMojo {
                     "org/eolang/maven/pre/junit.xsl",
                     "org/eolang/maven/pre/attrs.xsl",
                     "org/eolang/maven/pre/varargs.xsl",
+                    "org/eolang/maven/pre/arrays.xsl",
                     "org/eolang/maven/pre/data.xsl",
                     "org/eolang/maven/pre/to-java.xsl"
                 )
@@ -172,7 +173,9 @@ public final class CompileMojo extends AbstractMojo {
                     this.generatedDir.toPath().resolve(
                         Paths.get(
                             String.format(
-                                "%s.java", java.xpath("@java-name").get(0)
+                                "%s.java",
+                                java.xpath("@java-name").get(0)
+                                    .replace(".", "/")
                             )
                         )
                     )

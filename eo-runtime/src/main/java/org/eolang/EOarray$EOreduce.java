@@ -32,7 +32,7 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * IF.
+ * REDUCE.
  *
  * @since 1.0
  */

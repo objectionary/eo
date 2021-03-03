@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
+  <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:strip-space elements="*"/>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
@@ -74,7 +75,8 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, 'EO', replace(replace($c, '@', '&#x3C6;'), '\$', '\$EO'))"/>
+    <xsl:variable name="clean" select="replace(replace(replace($c, '-', '_'), '@', '&#x3C6;'), '\$', '\$EO')"/>
+    <xsl:value-of select="concat($p, 'EO', $clean)"/>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -92,6 +94,11 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:attribute>
     <xsl:attribute name="java-name">
+      <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
+      <xsl:if test="$pkg">
+        <xsl:value-of select="$pkg"/>
+        <xsl:text>.</xsl:text>
+      </xsl:if>
       <xsl:value-of select="eo:class-name(.)"/>
     </xsl:attribute>
   </xsl:template>
@@ -99,14 +106,13 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
-        <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="/program" mode="license"/>
-        <xsl:apply-templates select="//meta[head='package']"/>
+        <xsl:apply-templates select="//meta[head='package']" mode="head"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>import org.eolang.phi.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="//meta[head='junit']"/>
+        <xsl:apply-templates select="//meta[head='junit']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
@@ -154,18 +160,8 @@ SOFTWARE.
         <xsl:text>super(parent);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:variable name="atoms" as="element()*">
-      <a>org.eolang.string</a>
-      <a>org.eolang.array</a>
-      <a>org.eolang.int</a>
-      <a>org.eolang.float</a>
-      <a>org.eolang.bool</a>
-      <a>org.eolang.double</a>
-      <a>org.eolang.char</a>
-      <a>org.eolang.txt.regex</a>
-    </xsl:variable>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$atoms[text()=$type]">
+    <xsl:if test="$data-objects[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("&#x394;", new AtFree());</xsl:text>
     </xsl:if>
@@ -217,6 +213,43 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
     <xsl:text>))</xsl:text>
+  </xsl:template>
+  <xsl:template match="array">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'a'"/>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>Phi[] </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>_a = new Phi[</xsl:text>
+    <xsl:value-of select="count(*)"/>
+    <xsl:text>];</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:for-each select="*">
+      <xsl:variable name="n">
+        <xsl:value-of select="$name"/>
+        <xsl:text>_a</xsl:text>
+        <xsl:value-of select="position() - 1"/>
+      </xsl:variable>
+      <xsl:apply-templates select=".">
+        <xsl:with-param name="indent" select="$indent"/>
+        <xsl:with-param name="name" select="$n"/>
+      </xsl:apply-templates>
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text>_a[</xsl:text>
+      <xsl:value-of select="position() - 1"/>
+      <xsl:text>] = </xsl:text>
+      <xsl:value-of select="$n"/>
+      <xsl:text>;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:for-each>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>Phi </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text> = new PhWith(new EOarray(self), "&#x394;", new Data.Value&lt;Phi[]&gt;(</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>_a));</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o[not(@base) and @name]">
     <xsl:text>/</xsl:text>
@@ -284,10 +317,10 @@ SOFTWARE.
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
   </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.') and o]">
+  <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:apply-templates select="o[1]">
+    <xsl:apply-templates select="*[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
         <xsl:text>_base</xsl:text>
@@ -327,11 +360,11 @@ SOFTWARE.
       <xsl:with-param name="skip" select="1"/>
     </xsl:apply-templates>
   </xsl:template>
-  <xsl:template match="o" mode="application">
+  <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
       <xsl:variable name="n">
         <xsl:value-of select="$name"/>
         <xsl:text>_</xsl:text>
@@ -345,7 +378,7 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:for-each select="o[position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
@@ -408,14 +441,14 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="meta[head='package']">
+  <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
     <xsl:value-of select="tail"/>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="meta[head='junit']">
+  <xsl:template match="meta[head='junit']" mode="head">
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>

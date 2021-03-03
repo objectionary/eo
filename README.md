@@ -73,9 +73,7 @@ Here is a simple program that gets a year from command line and tells you
 whether it's leap or not:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias stdin org.eolang.io.stdin
-+alias scanner org.eolang.txt.scanner
++alias org.eolang.io.stdout
 
 [args...] > main
   [y] > leap

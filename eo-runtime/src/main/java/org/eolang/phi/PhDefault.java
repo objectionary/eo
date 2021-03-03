@@ -75,11 +75,12 @@ public class PhDefault implements Phi, Cloneable {
             )
         );
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            final int idx = this.order.indexOf(ent.getKey());
             list.add(
                 String.format(
-                    "%s(%d)=%s",
+                    "%s%s=%s",
                     ent.getKey(),
-                    this.order.indexOf(ent.getKey()),
+                    idx >=0 ? String.format("(%d)", idx) : "",
                     ent.getValue().toString().replace("\n", "\n  ")
                 )
             );
@@ -108,7 +109,7 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Attr attr(final int pos) throws Exception {
+    public final Attr attr(final int pos) {
         if (this.order.isEmpty()) {
             throw new Attr.Exception(
                 "There are no attributes here"
@@ -124,7 +125,7 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Attr attr(final String name) throws Exception {
+    public final Attr attr(final String name) {
         Attr attr = this.attrs.get(name);
         if (attr != null) {
             return attr;
@@ -174,7 +175,7 @@ public class PhDefault implements Phi, Cloneable {
             return new AtChild(this.origin.copy(self));
         }
         @Override
-        public Phi get() throws java.lang.Exception {
+        public Phi get() {
             final Phi phi = this.origin.get();
             if (phi instanceof Data) {
                 return phi;
