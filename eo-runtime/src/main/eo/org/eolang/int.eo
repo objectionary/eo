@@ -2,8 +2,23 @@
 +rt jvm org.eolang:eo-runtime:0.1.18
 
 [] > int
-  # Equals to another number
+  # Tests that $ = x
   [x] > eq /bool
+
+  # Tests that $ ≠ x
+  [x] > neq /bool
+
+  # Tests that $ < x
+  [x] > less /bool
+
+  # Tests that $ ≤ x
+  [x] > leq /bool
+
+  # Tests that $ > x
+  [x] > greater /bool
+
+  # Tests that $ ≥ x
+  [x] > geq /bool
 
   # Change the sign of the number
   [] > neg /int
@@ -26,9 +41,6 @@
 
   # Make it power x
   [x] > pow /int
-
-  # It is less than the argument provided?
-  [x] > less /bool
 
   # Converts this to float
   [] > toFloat /float

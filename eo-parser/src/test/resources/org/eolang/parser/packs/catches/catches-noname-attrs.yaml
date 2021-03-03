@@ -17,3 +17,7 @@ eo: |
   [args] > main
     (stdout "Hello!").print
 
+  [] > test
+    a > @
+    .b
+    .c

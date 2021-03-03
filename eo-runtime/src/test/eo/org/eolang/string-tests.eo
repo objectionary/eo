@@ -1,7 +1,10 @@
 +package org.eolang
 +junit
 
-[] > trimsString
+[] > matches-against-regular-expression
+  (/([a-z])+/.matches "dude") > @
+
+[] > trims-string
   eq. > @
     "Hello, dude"
     "Hello, dude  ".trim

@@ -100,6 +100,9 @@ public final class Scenario {
                 failures.add(xpath);
             }
         }
+        if (!failures.isEmpty()) {
+            Logger.info(this, "Broken XML:\n%s", out);
+        }
         return failures;
     }
 

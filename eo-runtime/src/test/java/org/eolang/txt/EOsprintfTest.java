@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 public final class EOsprintfTest {
 
     @Test
-    public void printsString() {
+    public void printsString() throws Exception {
         final Phi format = new Data.ToPhi("Hello, %d!");
         final Phi num = new Data.ToPhi(1L);
         final Phi phi = new PhWith(
@@ -59,7 +59,7 @@ public final class EOsprintfTest {
     }
 
     @Test
-    public void printsStringWithVarargs() {
+    public void printsStringWithVarargs() throws Exception {
         final Phi format = new Data.ToPhi("Hello, %s %s!");
         final Phi num = new Data.ToPhi(5L);
         Phi phi = new EOsprintf(new PhEta());

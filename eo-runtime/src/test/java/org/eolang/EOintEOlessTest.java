@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOlessTest {
 
     @Test
-    public void comparesWithAnotherNumber() {
+    public void comparesWithAnotherNumber() throws Exception {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
         final Phi less = left.attr("less").get();

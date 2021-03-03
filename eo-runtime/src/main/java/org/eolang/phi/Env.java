@@ -31,8 +31,19 @@ package org.eolang.phi;
  */
 public interface Env {
 
-    Phi get(Phi self);
+    /**
+     * Get the phi.
+     * @param self Self
+     * @return The Phi
+     * @throws Exception If anything goes wrong
+     */
+    Phi get(Phi self) throws Exception;
 
+    /**
+     * Simple implementation.
+     *
+     * @since 0.1
+     */
     class Simple implements Env {
         private final Phi phi;
         public Simple(final Phi src) {

@@ -32,7 +32,7 @@ SOFTWARE.
   global or just a mistake.
   -->
   <xsl:strip-space elements="*"/>
-  <xsl:template match="o[@base]">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and @base!='$' and @base!='^']">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:variable name="p" select="ancestor::*[o[@name=$o/@base]][1]"/>
@@ -50,6 +50,8 @@ SOFTWARE.
             <xsl:message terminate="yes">
               <xsl:text>Duplicate names inside "</xsl:text>
               <xsl:value-of select="@name"/>
+              <xsl:text>", the base is "</xsl:text>
+              <xsl:value-of select="@base"/>
               <xsl:text>"</xsl:text>
             </xsl:message>
           </xsl:if>

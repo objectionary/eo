@@ -40,7 +40,7 @@ public final class AtLambda implements Attr {
     }
 
     public AtLambda(final Phi self, final Env env) {
-        this(env, () -> env.get(self));
+        this(env, AtLambda.toData(env, self));
     }
 
     private AtLambda(final Env env, final Data<Phi> data) {
@@ -55,7 +55,7 @@ public final class AtLambda implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtLambda(this.code, () -> this.code.get(self));
+        return new AtLambda(this.code, AtLambda.toData(this.code, self));
     }
 
     @Override
@@ -65,9 +65,25 @@ public final class AtLambda implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new IllegalStateException(
+        throw new Attr.Exception(
             "You can't overwrite static code"
         );
+    }
+
+    /**
+     * Turn ENV into DATA.
+     * @param env The env
+     * @param self Self
+     * @return Data
+     */
+    private static Data<Phi> toData(final Env env, final Phi self) {
+        return () -> {
+            try {
+                return env.get(self);
+            } catch (final java.lang.Exception ex) {
+                throw new IllegalArgumentException(ex);
+            }
+        };
     }
 
 }

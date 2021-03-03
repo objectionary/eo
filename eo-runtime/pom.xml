@@ -61,7 +61,7 @@ SOFTWARE.
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources/eo</generatedDir>
+              <generatedDir>${project.basedir}/target/generated-test-sources</generatedDir>
             </configuration>
           </execution>
         </executions>

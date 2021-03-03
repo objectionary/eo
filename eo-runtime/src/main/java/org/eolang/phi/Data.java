@@ -26,12 +26,14 @@ package org.eolang.phi;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import org.eolang.EOarray;
 import org.eolang.EObool;
+import org.eolang.EOchar;
 import org.eolang.EOfloat;
 import org.eolang.EOint;
+import org.eolang.EOregex;
 import org.eolang.EOstring;
-import org.eolang.EOchar;
 
 /**
  * A data container.
@@ -40,6 +42,10 @@ import org.eolang.EOchar;
  */
 public interface Data<T> {
 
+    /**
+     * Take the data.
+     * @return The data
+     */
     T take();
 
     final class Once<T> implements Data<T> {
@@ -77,11 +83,16 @@ public interface Data<T> {
                         phi = new EOchar();
                     } else if (obj instanceof Double) {
                         phi = new EOfloat();
+                    } else if (obj instanceof Pattern) {
+                        phi = new EOregex();
                     } else if (obj instanceof Phi[]) {
                         phi = new EOarray();
                     } else {
                         throw new IllegalArgumentException(
-                            "Unknown type"
+                            String.format(
+                                "Unknown type of data: %s",
+                                obj.getClass().getCanonicalName()
+                            )
                         );
                     }
                     return new PhWith(phi, "Δ", new Data.Value<>(obj));
