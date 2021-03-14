@@ -28,7 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.AtVararg;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
@@ -48,11 +48,11 @@ public class EOseq extends PhDefault {
         super(parent);
         this.add("steps", new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Phi[] args = new Datarized(
+            final Phi[] args = new Dataized(
                 self.attr("steps").get()
             ).take(Phi[].class);
             for (final Phi arg : args) {
-                new Datarized(arg).take();
+                new Dataized(arg).take();
             }
             return new Data.ToPhi(true);
         })));

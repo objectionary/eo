@@ -24,7 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,7 +42,7 @@ public final class EOstringEOtrimTest {
         final Phi str = new Data.ToPhi("Hello, world!  ");
         final Phi phi = new EOstring$EOtrim(str);
         MatcherAssert.assertThat(
-            new Datarized(phi).take(String.class),
+            new Dataized(phi).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
     }

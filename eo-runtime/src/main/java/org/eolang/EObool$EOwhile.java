@@ -28,7 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -45,7 +45,7 @@ public class EObool$EOwhile extends PhDefault {
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             long count = 0L;
             while (true) {
-                final Boolean term = new Datarized(
+                final Boolean term = new Dataized(
                     self.attr("ρ").get()
                 ).take(Boolean.class);
                 if (!term) {
@@ -53,7 +53,7 @@ public class EObool$EOwhile extends PhDefault {
                 }
                 final Phi body = self.attr("f").get().copy();
                 body.attr(0).put(new Data.ToPhi(count));
-                new Datarized(body).take();
+                new Dataized(body).take();
                 ++count;
             }
             return new Data.ToPhi(count);

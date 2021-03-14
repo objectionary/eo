@@ -25,7 +25,7 @@ package org.eolang.txt;
 
 import java.util.regex.Pattern;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
@@ -44,7 +44,7 @@ public final class EOregexEOmatchTest {
     public void matchesString() throws Exception {
         final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 new PhWith(
                     new PhMethod(regex, "match"),
                     "txt",
@@ -59,7 +59,7 @@ public final class EOregexEOmatchTest {
     public void doesntMatchString() throws Exception {
         final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 new PhWith(
                     new PhMethod(regex, "match"),
                     "txt",

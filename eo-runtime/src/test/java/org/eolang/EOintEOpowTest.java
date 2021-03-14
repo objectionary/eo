@@ -25,7 +25,7 @@ package org.eolang;
 
 import org.eolang.phi.Phi;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.hamcrest.MatcherAssert;
@@ -43,7 +43,7 @@ public final class EOintEOpowTest {
     @Test
     public void powersNumber() throws Exception {
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(2L), "pow"),
                     0,
@@ -57,7 +57,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToZeroPower() throws Exception {
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
@@ -71,7 +71,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToOnePower() throws Exception {
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
@@ -85,7 +85,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToTwoPower() throws Exception {
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(0L), "pow"),
                     0,
@@ -104,13 +104,13 @@ public final class EOintEOpowTest {
             new Data.ToPhi(-1L)
         );
         MatcherAssert.assertThat(
-            new Datarized(
+            new Dataized(
                 result.attr("msg").get()
             ).take(String.class),
             Matchers.equalTo("0 cannot be raised to a negative power")
         );
         Assertions.assertThrows(org.eolang.phi.Attr.Exception.class, () -> {
-            new Datarized(result).take(Long.class);
+            new Dataized(result).take(Long.class);
         });
     }
 

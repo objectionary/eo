@@ -24,7 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,7 +44,7 @@ public final class EOboolEOandTest {
         final Phi and = left.attr("and").get();
         and.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Datarized(and).take(Boolean.class),
+            new Dataized(and).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

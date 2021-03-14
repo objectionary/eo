@@ -24,7 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,7 +44,7 @@ public final class EOintEOlessTest {
         final Phi less = left.attr("less").get();
         less.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Datarized(less).take(Boolean.class),
+            new Dataized(less).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

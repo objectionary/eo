@@ -37,8 +37,8 @@ public class EOint$EOdiv extends PhDefault {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            long ρ = new Datarized(self.attr("ρ").get()).take(Long.class);
-            long x = new Datarized(self.attr("x").get()).take(Long.class);
+            long ρ = new Dataized(self.attr("ρ").get()).take(Long.class);
+            long x = new Dataized(self.attr("x").get()).take(Long.class);
             if (x == 0L) {
                 final Phi msg = new Data.ToPhi("Division by zero is undefined");
                 return new PhWith(new org.eolang.EOerror(), "msg", msg);

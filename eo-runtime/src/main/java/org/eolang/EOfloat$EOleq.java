@@ -28,7 +28,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -43,9 +43,9 @@ public class EOfloat$EOleq extends PhDefault {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            new Datarized(self.attr("ρ").get()).take(Double.class)
+            new Dataized(self.attr("ρ").get()).take(Double.class)
             <=
-            new Datarized(self.attr("x").get()).take(Double.class)
+            new Dataized(self.attr("x").get()).take(Double.class)
         ))));
     }
 

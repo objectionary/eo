@@ -48,16 +48,26 @@ public final class Main {
         this.stdout = out;
     }
 
+    /**
+     * The method caled by JVM when the program starts.
+     * @param args Command line args
+     * @throws Exception If fails
+     */
     public static void main(final String... args) throws Exception {
         new Main(System.out).exec(args);
     }
 
+    /**
+     * The same method, but not static.
+     * @param args Command line args
+     * @throws Exception If fails
+     */
     public void exec(final String... args) throws Exception {
         if (args.length == 0 || "--version".equals(args[0])) {
             this.version();
             return;
         }
-        final String path = args[0].replaceAll("([^\\.]+)$", "EO$1");
+        final String path = args[0].replaceAll("([^.]+)$", "EO$1");
         final Phi app = Phi.class.cast(
             Class.forName(path).getConstructor().newInstance()
         );
@@ -67,13 +77,17 @@ public final class Main {
             phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr("args").put(phi);
         }
-        if (!new Datarized(app).take(Boolean.class)) {
+        if (!new Dataized(app).take(Boolean.class)) {
             throw new IllegalStateException(
-                "Runtime failure"
+                "Runtime dataization failure"
             );
         }
     }
 
+    /**
+     * Read the version from resources and prints it.
+     * @throws IOException If fails
+     */
     private void version() throws IOException {
         try (BufferedReader input =
             new BufferedReader(

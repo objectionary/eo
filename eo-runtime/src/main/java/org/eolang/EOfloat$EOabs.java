@@ -27,7 +27,7 @@ package org.eolang;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -41,7 +41,7 @@ public class EOfloat$EOabs extends PhDefault {
     public EOfloat$EOabs(final Phi parent) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            Math.abs(new Datarized(self.attr("ρ").get()).take(Double.class))
+            Math.abs(new Dataized(self.attr("ρ").get()).take(Double.class))
         ))));
     }
 

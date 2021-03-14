@@ -24,7 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhMethod;
 import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
@@ -48,7 +48,7 @@ public final class EOintEOsubTest {
             0, right
         );
         MatcherAssert.assertThat(
-            new Datarized(sub).take(Long.class),
+            new Dataized(sub).take(Long.class),
             Matchers.equalTo(29L)
         );
     }

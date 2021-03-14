@@ -25,11 +25,11 @@
 package org.eolang.phi;
 
 /**
- * A datarized object.
+ * A dataized object.
  *
  * @since 0.1
  */
-public final class Datarized {
+public final class Dataized {
     /**
      * The object to datarize.
      */
@@ -39,7 +39,7 @@ public final class Datarized {
      * Ctor.
      * @param src The object
      */
-    public Datarized(final Phi src) {
+    public Dataized(final Phi src) {
         this.phi = src;
     }
 

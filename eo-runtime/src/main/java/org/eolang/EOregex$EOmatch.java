@@ -30,7 +30,7 @@ import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
@@ -45,10 +45,10 @@ public class EOregex$EOmatch extends PhDefault {
         super(parent);
         this.add("txt", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Pattern pattern = new Datarized(
+            final Pattern pattern = new Dataized(
                 self.attr("ρ").get()
             ).take(Pattern.class);
-            final String txt = new Datarized(
+            final String txt = new Dataized(
                 self.attr("txt").get()
             ).take(String.class);
             final Matcher matcher = pattern.matcher(txt);

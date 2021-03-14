@@ -23,7 +23,7 @@
  */
 package org.eolang;
 
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,9 +39,9 @@ public final class EOrandomTest {
     @Test
     public void readsTwice() throws Exception {
         final Phi rnd = new EOrandom();
-        final Double first = new Datarized(rnd).take(Double.class);
+        final Double first = new Dataized(rnd).take(Double.class);
         MatcherAssert.assertThat(
-            new Datarized(rnd).take(Double.class),
+            new Dataized(rnd).take(Double.class),
             Matchers.not(Matchers.equalTo(first))
         );
     }

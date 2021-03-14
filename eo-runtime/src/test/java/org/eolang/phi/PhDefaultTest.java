@@ -44,7 +44,7 @@ public final class PhDefaultTest {
         phi.attr(0).put(num);
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            new Datarized(copy).take(String.class),
+            new Dataized(copy).take(String.class),
             Matchers.equalTo("Hello, world!")
         );
         MatcherAssert.assertThat(

@@ -24,7 +24,7 @@
 package org.eolang;
 
 import org.eolang.phi.Data;
-import org.eolang.phi.Datarized;
+import org.eolang.phi.Dataized;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,7 +44,7 @@ public final class EOintEOaddTest {
         final Phi add = left.attr("add").get();
         add.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Datarized(add).take(Long.class),
+            new Dataized(add).take(Long.class),
             Matchers.equalTo(55L)
         );
     }
