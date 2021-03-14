@@ -127,25 +127,34 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public final Attr attr(final String name) {
         Attr attr = this.attrs.get(name);
-        if (attr != null) {
-            return attr;
-        }
-        final Attr sub = this.attrs.get("φ");
-        if (sub != null) {
-            attr = sub.get().attr(name);
-            if (!(attr instanceof AtAbsent)) {
-                return new AtChild(attr);
+        if (attr == null) {
+            final Attr sub = this.attrs.get("φ");
+            if (sub == null) {
+                attr = new AtNamed(
+                    String.format(
+                        "%s#%s",
+                        this.getClass().getCanonicalName(),
+                        name
+                    ),
+                    new AtAbsent(name)
+                );
+            } else {
+                attr = sub.get().attr(name);
+                if (!(attr instanceof AtAbsent)) {
+                    attr = new AtChild(attr);
+                }
             }
-            return attr;
         }
-        return new AtNamed(
-            String.format("%s#%s", this.getClass().getCanonicalName(), name),
-            new AtAbsent(name)
-        );
+        return attr;
     }
 
     /**
      * Add new attribute.
+     *
+     * This method can only be called from child classes, in their
+     * constructors, when the declare their attributes. This is why it's
+     * protected. Not the brightest design, I admit.
+     *
      * @param name The name
      * @param attr The attr
      */
