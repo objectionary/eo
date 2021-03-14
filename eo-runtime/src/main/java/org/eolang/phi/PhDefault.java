@@ -136,6 +136,7 @@ public class PhDefault implements Phi, Cloneable {
             if (!(attr instanceof AtAbsent)) {
                 return new AtChild(attr);
             }
+            return attr;
         }
         return new AtNamed(
             String.format("%s#%s", this.getClass().getCanonicalName(), name),
