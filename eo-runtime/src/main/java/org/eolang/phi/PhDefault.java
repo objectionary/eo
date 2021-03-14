@@ -141,7 +141,7 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 attr = sub.get().attr(name);
                 if (!(attr instanceof AtAbsent)) {
-                    attr = new AtChild(attr);
+                    attr = new PhDefault.AtChild(attr, this);
                 }
             }
         }
@@ -175,22 +175,40 @@ public class PhDefault implements Phi, Cloneable {
         );
     }
 
-    private final class AtChild implements Attr {
+    /**
+     * When a child object is taken from the \phi object, this class
+     * replaces the \rho attribute of it on the fly.
+     *
+     * @since 0.1
+     */
+    private static final class AtChild implements Attr {
+        /**
+         * The original attribute we decorate.
+         */
         private final Attr origin;
-        AtChild(final Attr attr) {
+        /**
+         * The parent to put into \rho attribute of the original object.
+         */
+        private final Phi parent;
+        /**
+         * Ctor.
+         * @param attr The origin
+         * @param prnt The value of \rho to use
+         */
+        AtChild(final Attr attr, final Phi prnt) {
             this.origin = attr;
+            this.parent = prnt;
         }
         @Override
         public Attr copy(final Phi self) {
-            return new AtChild(this.origin.copy(self));
+            return new PhDefault.AtChild(this.origin.copy(self), this.parent);
         }
         @Override
         public Phi get() {
             final Phi phi = this.origin.get();
-            if (phi instanceof Data) {
-                return phi;
+            if (!(phi instanceof Data)) {
+                phi.attr("ρ").put(this.parent);
             }
-            phi.attr("ρ").put(PhDefault.this);
             return phi;
         }
         @Override
