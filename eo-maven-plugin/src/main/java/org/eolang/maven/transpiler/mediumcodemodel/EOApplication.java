@@ -151,6 +151,10 @@ public class EOApplication extends EOSourceEntity {
         }
 
         EOAbstraction abstractionScope = (EOAbstraction) scope;
+        if (abstractionScope.getXmlName().equals(appliedObject)) {
+            // recursive reference
+            return String.format("new %s", abstractionScope.getTargetName().get());
+        }
         Optional<EOInputAttribute> attr = abstractionScope.getFreeAttributes().stream().filter(a -> a.getName().equals(appliedObject)).findAny();
         if (attr.isPresent()) {
             return String.format("this.%s", attr.get().getTargetName());
