@@ -32,39 +32,36 @@ SOFTWARE.
   <artifactId>eo-runtime</artifactId>
   <packaging>jar</packaging>
   <name>eo-runtime</name>
-  <description>eolang runtime library</description>
+  <version>1.0-SNAPSHOT</version>
+  <description>org.eolang runtime library</description>
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
   <build>
     <plugins>
       <plugin>
-        <groupId>org.eolang</groupId>
-        <artifactId>eo-maven-plugin</artifactId>
-        <version>${project.version}</version>
+        <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
-            <id>compile</id>
-            <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
-            </goals>
+            <id>default-compile</id>
             <configuration>
-              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.basedir}/target/eo-test</targetDir>
-              <addSourcesRoot>false</addSourcesRoot>
-              <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources</generatedDir>
+              <showWarnings>true</showWarnings>
+              <compilerArgument>-Xlint:none</compilerArgument>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <index>true</index>
+            <manifestEntries>
+              <EO-Version>${project.version}</EO-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>

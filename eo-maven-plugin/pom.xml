@@ -33,15 +33,24 @@ SOFTWARE.
   <packaging>maven-plugin</packaging>
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
+  <version>1.0-SNAPSHOT</version>
   <properties>
-    <runtime.version>0.1.17</runtime.version>
+    <runtime.version>1.0-SNAPSHOT</runtime.version>
     <maven.version>3.3.9</maven.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <kotlin.version>1.4.32</kotlin.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ainslec</groupId>
+      <artifactId>picocog</artifactId>
+      <version>1.0.7</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
@@ -130,7 +139,22 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <version>${runtime.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit</artifactId>
+      <version>${kotlin.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.googlejavaformat</groupId>
+      <artifactId>google-java-format</artifactId>
+      <version>1.10.0</version>
     </dependency>
   </dependencies>
   <build>
@@ -142,6 +166,23 @@ SOFTWARE.
           <systemPropertyVariables>
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
           </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmTarget>11</jvmTarget>
         </configuration>
       </plugin>
       <plugin>
@@ -161,37 +202,21 @@ SOFTWARE.
         <executions>
           <execution>
             <id>default-compile</id>
-            <configuration>
-              <excludes>
-                <exclude>**/HelpMojo.java</exclude>
-              </excludes>
-            </configuration>
+            <phase>none</phase>
           </execution>
           <execution>
-            <id>default-testCompile</id>
-            <configuration>
-              <compilerArgument>-Xlint:-processing</compilerArgument>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile-helpmojo</id>
+            <id>compile</id>
+            <phase>compile</phase>
             <goals>
               <goal>compile</goal>
             </goals>
             <configuration>
-              <includes>
-                <include>**/HelpMojo.java</include>
-              </includes>
-              <compilerArgument>-Xlint:-unchecked,-rawtypes</compilerArgument>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <showWarnings>true</showWarnings>
+              <compilerArgument>-Xlint:-serial</compilerArgument>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <configuration>
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
       </plugin>
     </plugins>
   </build>

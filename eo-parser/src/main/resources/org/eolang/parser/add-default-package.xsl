@@ -31,7 +31,7 @@ SOFTWARE.
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and @base!='@' and @base!='^' and @base!='$']">
     <xsl:copy>
       <xsl:attribute name="base">
-        <xsl:text>org.eolang.</xsl:text>
+        <xsl:text>org.org.eolang.</xsl:text>
         <xsl:value-of select="@base"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>

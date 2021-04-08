@@ -1,9 +1,0 @@
-xsls:
-  - org/eolang/maven/optimize/abstracts-float-up.xsl
-  - org/eolang/parser/errors/duplicate-names.xsl
-tests:
-  - /program/errors[count(error)=0]
-eo: |
-  *
-    [x] x.zz
-    [x] x.tt

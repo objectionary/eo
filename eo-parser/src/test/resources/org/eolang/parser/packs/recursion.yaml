@@ -1,8 +1,0 @@
-tests:
-  - /program/errors[count(*)=0]
-  - //o[@name='f' and @line='2']
-  - //o[@base='f' and @ref='2']
-eo: |
-  [args...] > main
-    [n] > f
-      f 5 > @

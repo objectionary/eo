@@ -25,12 +25,13 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -39,11 +40,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.cactoos.io.OutputTo;
-import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
-import org.eolang.parser.Xsline;
+import org.eolang.maven.transpiler.medium2target.Medium2TargetTranspiler;
+import org.eolang.maven.transpiler.mediumcodemodel.EOSourceEntity;
+import org.eolang.maven.transpiler.mediumcodemodel.EOSourceFile;
+import org.eolang.maven.transpiler.mediumcodemodel.EOTargetFile;
+import org.eolang.maven.transpiler.xml2medium.XML2MediumParser;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -146,50 +149,30 @@ public final class CompileMojo extends AbstractMojo {
      * @param file XML file
      */
     private void compile(final Path file) {
-        final Path temp = this.targetDir.toPath().resolve("05-compile");
-        final Path pre = this.targetDir.toPath().resolve("04-pre");
+        File xmlFile = new File(file.toUri());
+        XML2MediumParser xml = new XML2MediumParser(xmlFile);
         try {
-            final XML input = new XMLDocument(file);
-            final String name = input.xpath("/program/@name").get(0);
-            final Path target = CompileMojo.resolve(temp, name);
-            new Xsline(
-                input,
-                new OutputTo(CompileMojo.resolve(temp, name)),
-                new TargetSpy(CompileMojo.resolve(pre, name)),
-                new ListOf<>(
-                    "org/eolang/maven/pre/classes.xsl",
-                    "org/eolang/maven/pre/junit.xsl",
-                    "org/eolang/maven/pre/attrs.xsl",
-                    "org/eolang/maven/pre/varargs.xsl",
-                    "org/eolang/maven/pre/arrays.xsl",
-                    "org/eolang/maven/pre/data.xsl",
-                    "org/eolang/maven/pre/to-java.xsl"
-                )
-            ).pass();
-            final XML after = this.noErrors(new XMLDocument(target), name);
-            for (final XML java : after.nodes("//class[java and not(@atom)]")) {
-                new Save(
-                    java.xpath("java/text()").get(0),
-                    this.generatedDir.toPath().resolve(
-                        Paths.get(
-                            String.format(
-                                "%s.java",
-                                java.xpath("@java-name").get(0)
-                                    .replace(".", "/")
+            EOSourceEntity smth = xml.parse();
+            ArrayList<EOTargetFile> code = Medium2TargetTranspiler.transpile((EOSourceFile) smth);
+            code.forEach(javaFile -> {
+                try {
+                    new Save(
+                            javaFile.getContents(),
+                            this.generatedDir.toPath().resolve(
+                                    Paths.get(
+                                            javaFile.getFileName()
+                                    )
                             )
-                        )
-                    )
-                ).save();
-            }
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "Can't pass %s into %s",
-                    file, this.generatedDir
-                ),
-                ex
-            );
+                    ).save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (XML2MediumParser.XML2MediumParserException e) {
+            e.printStackTrace();
         }
+
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
     }
 

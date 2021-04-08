@@ -1,64 +1,35 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2021 Yegor Bugayenko
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 package org.eolang.txt;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
-import org.eolang.phi.AtVararg;
-import org.eolang.phi.Data;
-import org.eolang.phi.Dataized;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.Phi;
+import org.eolang.core.EOObject;
+import org.eolang.core.data.EOData;
+
+import java.util.Arrays;
 
 /**
- * Sprintf.
- *
- * @since 0.2
+ * Объект осуществляющий создание форматированых строк.
  */
-public class EOsprintf extends PhDefault {
+public class EOsprintf extends EOObject {
+    private EOObject format;
+    private EOObject[] data;
 
-    public EOsprintf(final Phi parent) {
-        super(parent);
-        this.add("format", new AtFree());
-        this.add("args", new AtVararg());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final String format = new Dataized(
-                self.attr("format").get()
-            ).take(String.class);
-            final Phi[] args = new Dataized(
-                self.attr("args").get()
-            ).take(Phi[].class);
-            final Collection<Object> items = new LinkedList<>();
-            for (final Phi arg : args) {
-                items.add(new Dataized(arg).take());
-            }
-            return new Data.ToPhi(String.format(format, items.toArray()));
-        })));
+    public EOsprintf(EOObject format, EOObject... data) {
+        this.format = format._setParent(this);
+        this.data = data;
+        for (EOObject item : data) {
+            item._setParent(this);
+        }
     }
 
+    @Override
+    public EOData _getData() {
+        String sFormat = format._getData().toString();
+        Object[] objects = Arrays.stream(data).map(obj -> obj._getData().toObject()).toArray();
+        //_freeAttributes();
+        return new EOData(
+                String.format(
+                        sFormat,
+                        objects
+                )
+        );
+    }
 }

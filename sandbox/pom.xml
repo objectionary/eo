@@ -28,22 +28,17 @@ SOFTWARE.
   <artifactId>quick-start</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <eolang.version>0.1.15</eolang.version>
+    <org.eolang.version>1.0-SNAPSHOT</org.eolang.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>8</source>
-          <target>8</target>
-        </configuration>
-      </plugin>
+
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>${eolang.version}</version>
+        <version>${org.eolang.version}</version>
         <executions>
           <execution>
             <goals>
@@ -72,7 +67,7 @@ SOFTWARE.
                 <artifactItem>
                   <groupId>org.eolang</groupId>
                   <artifactId>eo-runtime</artifactId>
-                  <version>${eolang.version}</version>
+                  <version>${org.eolang.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -89,7 +84,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>${eolang.version}</version>
+      <version>${org.eolang.version}</version>
     </dependency>
   </dependencies>
 </project>

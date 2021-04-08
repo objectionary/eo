@@ -129,7 +129,7 @@ public final class PullMojo extends AbstractMojo {
      * Pull one dep.
      *
      * @param dir The dir
-     * @param name Name of the object, e.g. "org.eolang.io.stdout"
+     * @param name Name of the object, e.g. "org.org.eolang.io.stdout"
      * @throws IOException If fails
      */
     private void pull(final Path dir, final String name) throws IOException {

@@ -13,7 +13,7 @@
 [![Hits-of-Code](https://hitsofcode.com/github/cqfn/eo)](https://hitsofcode.com/view/github/cqfn/eo)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/eo/blob/master/LICENSE.txt)
 ![Lines of code](https://img.shields.io/tokei/lines/github/cqfn/eo)
-[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
+[![Maven Central](https://img.shields.io/maven-central/v/org.org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.org.eolang/eo-parent)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
@@ -40,7 +40,7 @@ see whether they can work. It's an experiment, a prototype, a proof-of-concept.
 If you want to contribute, please join our
 [Telegram chat](https://t.me/elegantobjects) first.
 
-Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
+Our Twitter tag is [#org.eolang](https://twitter.com/search?q=%23eolang).
 
 These things we **don't tolerate**:
 
@@ -132,9 +132,9 @@ Here is a simple program that gets a year from the command line and tells you
 whether it's leap or not:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias stdin org.eolang.io.stdin
-+alias scanner org.eolang.txt.scanner
++alias stdout org.org.eolang.io.stdout
++alias stdin org.org.eolang.io.stdin
++alias scanner org.org.eolang.txt.scanner
 
 [args...] > main
   [y] > leap
@@ -154,12 +154,13 @@ In order to compile this program, put it into `src/main/eo/main.eo` and then
 create a file `pom.xml` with this content (it's just a sample):
 
 ```xml
+
 <project>
   [...]
   <build>
     <plugins>
       <plugin>
-        <groupId>org.eolang</groupId>
+        <groupId>org.org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
         <version>0.1.10</version>
         <executions>
@@ -184,7 +185,7 @@ create a file `pom.xml` with this content (it's just a sample):
           </execution>
         </executions>
         <configuration>
-          <mainClass>org.eolang.phi.Main</mainClass>
+          <mainClass>org.org.eolang.phi.Main</mainClass>
           <arguments>
             <argument>main</argument>
             <argument>2008</argument>
@@ -195,7 +196,7 @@ create a file `pom.xml` with this content (it's just a sample):
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.eolang</groupId>
+      <groupId>org.org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <version>0.1.10</version>
     </dependency>
@@ -215,7 +216,7 @@ More examples are [here](https://github.com/cqfn/eo/tree/master/eo-maven-plugin/
 Let's start with a simple EO program:
 
 ```
-+alias stdout org.eolang.io.stdout
++alias stdout org.org.eolang.io.stdout
 
 [] > app
   stdout > @
@@ -248,8 +249,8 @@ we may want to create a copy of the object `stdout` with a more complex
 argument: a copy of the object `sprintf`:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
 
 [] > app
   stdout > @
@@ -263,8 +264,8 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`. This prog
 can be written using the horizontal notation:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
 
 [] > app
   (stdout (sprintf "Hello, %s!" "Jeffrey")) > @
@@ -280,8 +281,8 @@ attributes. For example, it's possible to define a new abstract object
 inside `app` and use it to build the output string:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
 
 [] > app
   stdout (msg "Jeffrey") > @
@@ -296,8 +297,8 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
 
 [] > app
   memory > x
@@ -557,7 +558,7 @@ This section covers *The EO Standard Object Collection* which is a library of ut
 *The EO Programming Language* and *The EO Standard Object Collection* defines these data type objects: `bool`, `int`, `float`, `string`, `char`. 
 #### `bool` Data Type Object
 The `bool` data type object represents a boolean value (either `true` or `false`) that can be used for performing logical operations.  
-**Fully Qualified Name:** `org.eolang.bool` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.bool` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
 The `bool` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for `bool` values are as follows.  
 **EBNF Notation**  
@@ -570,8 +571,8 @@ BOOL     ::= 'true'
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 [args...] > app
   stdout > @
     sprintf
@@ -597,8 +598,8 @@ If the `if` attribute object is fully applied, it represents the corresponding s
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -635,8 +636,8 @@ The `not` attribute object has no free attributes.
 In this example, all the answers from the previous example (the `if` attribute section) are inversed with the `not` attribute.  
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -675,8 +676,8 @@ If the `and` attribute object is applied, it represents the conjunction of the b
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   true > a
@@ -711,8 +712,8 @@ If the `or` attribute object is applied, it represents the disjunction of the ba
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   false > a
@@ -747,8 +748,8 @@ Since objects are immutable, the `memory` object should be used as the loop cond
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
 
 [args...] > app
   memory > x
@@ -781,7 +782,7 @@ IN$:
 ```
 #### `float` Data Type Object
 The `float` data type object represents a double-precision 64-bit IEEE 754 floating-point number and can be used to perform various `FPU` computations.  
-**Fully Qualified Name:** `org.eolang.float` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.float` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
 The `float` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -793,8 +794,8 @@ FLOAT    ::= ( '+' | '-' )? [0-9]+ '.' [0-9]+
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -818,8 +819,8 @@ If the `eq` attribute object is applied, it represents the result of the equalit
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -838,7 +839,7 @@ IN$:
 ```
 #### `string` Data Type Object
 The `string` data type object represents a string literal.  
-**Fully Qualified Name:** `org.eolang.string` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.string` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
 The `string` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -850,8 +851,8 @@ STRING   ::= '"' ( '\"' | [^"] )* '"'
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -875,8 +876,8 @@ If the `eq` attribute object is fully applied, it represents the result of the e
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -902,8 +903,8 @@ If the `trim` attribute object is applied (called), it represents the resulting 
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -932,8 +933,8 @@ If the `toInt` attribute object is applied (called), it represents the parsed `i
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -956,7 +957,7 @@ IN$:
 ```
 #### `int` Data Type Object
 The `int` data type object represents a 64-bit integer number.  
-**Fully Qualified Name:** `org.eolang.int` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.int` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
 The `int` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -974,8 +975,8 @@ And an alternative notation for HEX integers:
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1003,8 +1004,8 @@ If the `eq` attribute object is fully applied, it represents the result of the e
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1029,8 +1030,8 @@ If the `less` attribute object is fully applied, it represents the result of the
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1055,8 +1056,8 @@ If the `add` attribute object is fully applied, it represents the resulting sum 
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1081,8 +1082,8 @@ If the `sub` attribute object is fully applied, it represents the resulting diff
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1107,8 +1108,8 @@ If the `neg` attribute object is applied (called), it represents the resulting n
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1135,8 +1136,8 @@ If the `mul` attribute object is fully applied, it represents the resulting prod
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1173,8 +1174,8 @@ The relationship between the `mod` and `div` operations is as follows:
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1205,8 +1206,8 @@ If the `pow` attribute object is fully applied, it represents the resulting powe
 ###### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1233,7 +1234,7 @@ Here, `2^(-10)` results in `0` as well as raising all the integer numbers (excep
 #### `char` Data Type Object
 The `char` data type object represents a single character.  
 **The `char` object is not implemented yet, hence the `char` cannot be used for now.**  
-**Fully Qualified Name:** `org.eolang.char` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.char` (no aliasing or FQN reference required since the object is automatically imported).  
 ##### Syntax
 The `char` data type object may be parsed by the EO compiler directly from the source code. The syntax rules for values are as follows.  
 **EBNF Notation**  
@@ -1246,7 +1247,7 @@ CHAR     ::= "'" [0-9a-zA-Z] "'"
 *The EO Standard Object Collection* contains two objects for the CLI output: `sprintf` for strings formatting and `stdout` for plain text output. 
 #### Plain Text Output. `stdout`
 For plain text output, the `stdout` object is used.   
-**Fully Qualified Name:** `org.eolang.io.stdout`.
+**Fully Qualified Name:** `org.org.eolang.io.stdout`.
 ##### Usage <!-- omit in toc -->
 The `stdout` object has one free attribute `text` that should be bound to the text to print.  
 The object bound to the `text` attribute must be of `string` type.  
@@ -1255,7 +1256,7 @@ For the complete list of escape sequences supported by `stdout`, see the corresp
 ##### Example 1. The Plain Old “Hello, World” <!-- omit in toc -->
 ```
 +package sandbox
-+alias stdout org.eolang.io.stdout
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   (stdout "Hello, World!\n") > @
@@ -1270,7 +1271,7 @@ IN$:
 ##### Example 2. Print the First Word of the User's Input <!-- omit in toc -->
 ```
 +package sandbox
-+alias stdout org.eolang.io.stdout
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1288,7 +1289,7 @@ OUT>: HelloIN$:
 #### Formatting Strings. `sprintf`
 For strings formatting, the `sprintf` object is used.  
 String formatting is the process of data injection into the string, optionally applying format patterns to the data.  
-**Fully Qualified Name:** `org.eolang.txt.sprintf`.
+**Fully Qualified Name:** `org.org.eolang.txt.sprintf`.
 ##### Usage <!-- omit in toc -->
 The `sprintf` object has two free attributes:  
 1. `format` for the format `string` that describes the formatting of the resulting `string`.
@@ -1299,8 +1300,8 @@ For the `format` syntax reference, see [this article](https://docs.oracle.com/ja
 ##### Example. Format 'Em All <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   sprintf > formatted_string
@@ -1320,7 +1321,7 @@ IN$:
 ```
 ### Random Number Generation. `random`
 *The EO Standard Object Collection* contains the `random` object for generating a cryptographically strong random number.  
-**Fully Qualified Name:** `org.eolang.random` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.random` (no aliasing or FQN reference required since the object is automatically imported).  
 #### Usage <!-- omit in toc -->
 The `random` object has no free attributes. When applied, the `random` object represents the generated random number that is immutable (i.e. cannot be changed). So, every time the new random number is needed, the new application (initialization) of the `random` object is needed.     
 The resulting random number represented by the `random` object is of type `float`.  
@@ -1328,8 +1329,8 @@ The value is in the range `0.0` (inclusive) to `1.0` (exclusive).
 #### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   sprintf > formatted_string
@@ -1351,7 +1352,7 @@ IN$:
 ```
 ### Arrays
 *The EO Standard Object Collection* contains the `array` object for working with arrays of objects.  
-**Fully Qualified Name:** `org.eolang.array` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.array` (no aliasing or FQN reference required since the object is automatically imported).  
 #### `get` Attribute
 The `get` attribute object is used to retrieve an object stored at the position `i` of the base `array` object.  
 The position `i` must be within 0 and the length of the `array` inclusively.  
@@ -1359,8 +1360,8 @@ When applied, the `get` attribute object represents the object stored at the pos
 ##### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   stdout > @
@@ -1384,8 +1385,8 @@ When applied, the `append` attribute object represents the resulting `array` obj
 ##### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   args.append "New Element!" > argsExtended
@@ -1419,8 +1420,8 @@ When applied, the `reduce` attribute object represents the resulting reduced acc
 ##### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   [accumulator current] > reduceFunction
@@ -1455,12 +1456,12 @@ IN$:
 The `seq` object has one free attribute `steps` that may have an arbitrary number of steps that will be evaluated one by one, from the beginning to the end in the sequential order.  
 The `seq` object starts the *datarization* process for each of the objects bound to the `steps` attribute of it.  
 On datarization, the `seq` object evaluates into the `bool` object `true`.   
-**Fully Qualified Name:** `org.eolang.seq` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.seq` (no aliasing or FQN reference required since the object is automatically imported).  
 #### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   seq > @
@@ -1481,7 +1482,7 @@ IN$:
 ```
 ### Mutable Storage in Memory. `memory`
 *The EO Standard Object Collection* contains the `memory` object for mutable storage in RAM.  
-**Fully Qualified Name:** `org.eolang.memory` (no aliasing or FQN reference required since the object is automatically imported).  
+**Fully Qualified Name:** `org.org.eolang.memory` (no aliasing or FQN reference required since the object is automatically imported).  
 **Usage**
 To use the `memory` object, the following steps are needed:  
 1. Make a copy of the `memory` object and bound it to some attribute.  
@@ -1490,8 +1491,8 @@ To use the `memory` object, the following steps are needed:
 ##### Example <!-- omit in toc -->
 ```
 +package sandbox
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
++alias sprintf org.org.eolang.txt.sprintf
++alias stdout org.org.eolang.io.stdout
 
 [args...] > app
   memory > m
@@ -1516,7 +1517,7 @@ binary code consists of a few steps, which must be done
 one after another:
 
   * **Parsing**.
-    It's done by the `org.eolang.parser.Syntax` class in the `eo-parser` module. It takes
+    It's done by the `org.Syntax` class in the `eo-parser` module. It takes
     the source code in a plain text format and parses into an XML document,
     using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
     The output of the parser you can find in the `target/eo/parse` directory.
@@ -1526,13 +1527,13 @@ one after another:
     that need to be done
     with the XML document in order to make it ready for compilation.
     Each transformation has its own `.xsl` file in the `eo-parser` directory.
-    The class `org.eolang.parser.Program` is responsible for making XSLT
+    The class `org.org.eolang.parser.Program` is responsible for making XSLT
     transformations and the entire list of them is stored in the
-    `org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
+    `org.org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
     The output of each transformation you can find in the `target/eo/optimize` directory.
 
   * **Compilation**.
-    The class `org.eolang.maven.CompileMojo` in the `eo-maven-plugin` module is responsible
+    The class `org.org.eolang.maven.CompileMojo` in the `eo-maven-plugin` module is responsible
     for putting parsing and optimization steps together and then transforming
     the XML document into a collection of `.java` files. There are a number
     of transformations that do this, they all exist in `.xsl` files.

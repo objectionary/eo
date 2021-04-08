@@ -1,9 +1,0 @@
-xsls:
-  - org/eolang/parser/errors/self-naming.xsl
-tests:
-  - /program/errors[count(error)=1]
-  - /program/errors/error[@line='2']
-  - /program/objects/o[@name='first']/o[@name='a']
-eo: |
-  [] > first
-    a > a
