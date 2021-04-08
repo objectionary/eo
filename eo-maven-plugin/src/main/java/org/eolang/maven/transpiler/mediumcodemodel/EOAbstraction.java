@@ -147,11 +147,11 @@ public class EOAbstraction extends EOSourceEntity {
 
             ArrayList<EOTargetFile> result = new ArrayList<>();
             String formattedJava;
-            /*try {
+            try {
                 formattedJava = new Formatter().formatSource(w.toString());
             } catch (FormatterException e) {
                 throw new RuntimeException("Can't format the output");
-            }*/
+            }
             formattedJava = w.toString();
 
             result.add(new EOTargetFile(String.format("%s.java", this.targetName.get()), formattedJava));
