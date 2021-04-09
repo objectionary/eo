@@ -4,6 +4,7 @@ import org.eolang.core.data.EOData;
 import org.eolang.core.data.EODataObject;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Optional;
 
 
@@ -61,21 +62,24 @@ public abstract class EOObject implements Cloneable {
 
     public EOObject _getAttribute(String name, EOObject... freeAtt) {
         try {
-            Method method = this.getClass().getDeclaredMethod("EO" + name, EOObject.class);
+            Method method = Arrays.stream(this.getClass().getMethods()).filter(mthd -> mthd.getName().equals(name)).findFirst().get();
             method.setAccessible(true);
             return (EOObject) method.invoke(this, freeAtt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(String.format("Can't access the %s attribute of the %s object", name, this.getClass().getName()));
+        }
+    }
+/*
+    public EOObject _getAttribute(String name) {
+        try {
+            Method method = this.getClass().getDeclaredMethod(name);
+            method.setAccessible(true);
+            return (EOObject) method.invoke(this);
         } catch (Exception e) {
             throw new RuntimeException(String.format("Can't access the %s attribute of the %s object", name, this.getClass().getName()));
         }
     }
 
-    public EOObject _getAttribute(String name) {
-        try {
-            Method method = this.getClass().getDeclaredMethod(name);
-            method.setAccessible(true);
-            return (EOObject) method.invoke(this, null);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("Can't access the %s attribute of the %s object", name, this.getClass().getName()));
-        }
-    }
+ */
 }
