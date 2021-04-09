@@ -4,8 +4,7 @@
 +alias sprintf org.eolang.txt.sprintf
 
 [args...] > app
-  stdout > @
-    sprintf
-      "%dth Fibonacci number is %d\n"
-      (args.get 0).toInt > n
-      fibonacci n
+  sprintf > @
+    "%dth Fibonacci number is %d\n"
+    (args.get 0).toInt > n
+    fibonacci n
