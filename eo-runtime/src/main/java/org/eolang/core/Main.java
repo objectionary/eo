@@ -53,8 +53,8 @@ public class Main {
         List<Object> appValues = new ArrayList<Object>();
         for(int i=0; i<appParams.length; i++){
             if(appParams[i].getType().getCanonicalName().endsWith("[]")){
-                List<EODataObject> objs = Arrays.stream(args).skip(i+1).map(arg -> new EODataObject(arg)).collect(Collectors.toList());
-                appValues.add(objs.toArray(new EODataObject[0]));
+                List<EOstring> objs = Arrays.stream(args).skip(i+1).map(arg -> new EOstring(arg)).collect(Collectors.toList());
+                appValues.add(objs.toArray(new EOstring[0]));
             }else{
                 Object obj = new EODataObject(args[i+1]);
                 appValues.add(obj);
