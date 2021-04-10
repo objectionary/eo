@@ -13,18 +13,14 @@ public class EOsprintf extends EOObject {
     private EOObject[] data;
 
     public EOsprintf(EOObject format, EOObject... data) {
-        this.format = format._setParent(this);
+        this.format = format;
         this.data = data;
-        for (EOObject item : data) {
-            item._setParent(this);
-        }
     }
 
     @Override
     public EOData _getData() {
         String sFormat = format._getData().toString();
         Object[] objects = Arrays.stream(data).map(obj -> obj._getData().toObject()).toArray();
-        //_freeAttributes();
         return new EOData(
                 String.format(
                         sFormat,

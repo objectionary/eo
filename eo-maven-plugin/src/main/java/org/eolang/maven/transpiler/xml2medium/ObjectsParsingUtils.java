@@ -1,13 +1,12 @@
 package org.eolang.maven.transpiler.xml2medium;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.eolang.maven.transpiler.mediumcodemodel.*;
 
+import javax.print.Doc;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -27,6 +26,7 @@ public class ObjectsParsingUtils {
     public static ArrayList<EOAbstraction> parseObjects(File file, Document doc, XPath xPath, EOSourceFile fileScope) throws XML2MediumParser.XML2MediumParserException {
 
         ArrayList<EOAbstraction> abstractions = parseAbstractions(file, doc, xPath);
+        abstractions.addAll(parseGlobalApplications(file, doc, xPath));
         abstractions = deflateAbstractions(abstractions, fileScope);
 
         return abstractions;
@@ -168,6 +168,52 @@ public class ObjectsParsingUtils {
 
         return false;
 
+    }
+
+    private static ArrayList<EOAbstraction> parseGlobalApplications(File file, Document doc, XPath xPath) throws XML2MediumParser.XML2MediumParserException {
+        ArrayList<EOAbstraction> abstractions = new ArrayList<>();
+        NodeList applicationDeclarations;
+        try {
+            applicationDeclarations = (NodeList) xPath.evaluate
+                    (
+                            "/program/objects/o[./o[@base and not(@name)]]",
+                            doc,
+                            XPathConstants.NODESET
+                    );
+        } catch (Exception e) {
+            throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing global application declarations in File " + file.getName() + ".");
+        }
+
+        for (int i = 0; i < applicationDeclarations.getLength(); i++) {
+            Node applicationDeclaration = applicationDeclarations.item(i);
+            /* retrieving the number of the line */
+            String lineNumber = parseLineNumber(file.getName(), applicationDeclaration);
+            /* retrieving the name attr (which contains a special name with hierarchy encoded into it) */
+            String xmlName = parseAbstractionXMLName(file.getName(), lineNumber, applicationDeclaration);
+            /* retrieving the original-name attr (which contains the normal name) */
+            Optional<String> name = parseAbstractionName(file.getName(), lineNumber, applicationDeclaration);
+            /* applications cannot have free attributes, no need for parsing here */
+            ArrayList<EOInputAttribute> attributes = new ArrayList<>();
+
+
+            EOAbstraction abstraction = new EOAbstraction(xmlName, name, attributes);
+            /* we need to transform the tag to make it parsable */
+            try {
+                Element body = (Element) xPath.evaluate("./o", applicationDeclaration, XPathConstants.NODE);
+                body.setAttribute(NAME_ATTR, "@");
+            } catch (Exception e) {
+                throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing global application '" + xmlName + "' declaration's body in File " + file.getName() + ".");
+            }
+            // now, we parse the body of the global application as if it were application-based decoratee
+            ArrayList<EOApplication> applications = parseApplications(file, applicationDeclaration, xPath, abstraction);
+
+
+            abstraction.setApplications(applications);
+            abstractions.add(abstraction);
+        }
+
+
+        return abstractions;
     }
 
     private static ArrayList<EOAbstraction> parseAbstractions(File file, Document doc, XPath xPath) throws XML2MediumParser.XML2MediumParserException {

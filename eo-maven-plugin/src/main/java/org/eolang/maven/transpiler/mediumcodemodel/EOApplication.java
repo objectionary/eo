@@ -164,8 +164,8 @@ public class EOApplication extends EOSourceEntity {
             return String.format("this.%s", application.get().targetName.get());
         }
 
-        if(!(abstractionScope.getScope() instanceof EOSourceFile)) {
-            throw new RuntimeException(String.format("Cannot find referenced %s.", appliedObject));
+        while(!(abstractionScope.getScope() instanceof EOSourceFile)) {
+            abstractionScope = (EOAbstraction) abstractionScope.getScope();
         }
 
         EOSourceFile eoSourceFileScope = (EOSourceFile) abstractionScope.getScope();
@@ -249,6 +249,11 @@ public class EOApplication extends EOSourceEntity {
     }
 
     private void transpileApplication(PicoWriter w) {
+        // anonymous-abstraction based application
+        if (name.isEmpty() && wrappedAbstraction != null) {
+            wrappedAbstraction.transpile(w);
+            return;
+        }
         // data stored inside application
         if (data.isPresent()) {
             data.get().transpile(w);

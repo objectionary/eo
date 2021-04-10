@@ -5,7 +5,6 @@ import com.google.googlejavaformat.java.FormatterException;
 import org.ainslec.picocog.PicoWriter;
 import org.eolang.EOarray;
 import org.eolang.core.EOObject;
-import org.eolang.core.EOObjectArray;
 import org.eolang.maven.transpiler.medium2target.TranslationCommons;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ public class EOAbstraction extends EOSourceEntity {
     private final Optional<String> targetName;
     private ArrayList<EOApplication> boundAttributes;
     private EOSourceEntity scope;
+    private final Optional<String> anonymousName;
 
     public EOAbstraction(String xmlName, Optional<String> instanceName, ArrayList<EOInputAttribute> freeAttributes) {
         this.xmlName = xmlName;
@@ -29,8 +29,10 @@ public class EOAbstraction extends EOSourceEntity {
         this.subAbstractions = new ArrayList<>();
         if (instanceName.isPresent()) {
             targetName = Optional.of("EO" + instanceName.get());
+            anonymousName = Optional.empty();
         } else {
             targetName = Optional.empty();
+            anonymousName = Optional.of("anonymousEOObject$");
         }
     }
 
@@ -256,7 +258,7 @@ public class EOAbstraction extends EOSourceEntity {
                 EOInputAttribute attr = freeAttributes.get(i);
                 String wrapper;
                 if (attr.isVararg()) {
-                    wrapper = String.format("new %s(new %s(%s))", EOarray.class.getSimpleName(), EOObjectArray.class.getSimpleName(), attr.getTargetName());
+                    wrapper = String.format("new %s(%s)", EOarray.class.getSimpleName(), attr.getTargetName());
                 } else {
                     wrapper = attr.getTargetName();
                 }
@@ -271,7 +273,7 @@ public class EOAbstraction extends EOSourceEntity {
             for (int i = 0; i < freeAttributes.size(); i++) {
                 EOInputAttribute attr = freeAttributes.get(i);
                 String type = attr.isVararg() ? EOarray.class.getSimpleName() : EOObject.class.getSimpleName();
-                TranslationCommons.bigComment(w, String.format("Returns the object bound to the `%s` input attribute.", attr.getName()));
+                TranslationCommons.bigComment(w, String.format("Returns the object bound to the '%s' input attribute.", attr.getName()));
                 w.writeln_r(String.format("public %s %s() {", type, attr.getTargetName()));
                 w.writeln(String.format("return this.%s;", attr.getTargetName()));
                 w.writeln_l("}");

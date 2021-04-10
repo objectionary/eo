@@ -7,7 +7,7 @@ import org.eolang.core.data.EODataObject;
  * Represents an array
  * @version %I%, %G%
  */
-public class EOarray {
+public class EOarray extends EOObject {
     private final EOObject[] _array;
 
     public EOarray(){

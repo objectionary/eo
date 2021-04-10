@@ -12,19 +12,18 @@ public class EOstdout extends EOObject {
     private EOObject out;
 
     /**
-     * Instantiates a new E ostdout.
+     * Instantiates a new stdout.
      *
      * @param out the out
      */
     public EOstdout(EOObject out) {
-        this.out = out._setParent(this);
+        this.out = out;
     }
 
     @Override
     public EOData _getData() {
         EOData res = out._getData();
         System.out.println(res);
-        //_freeAttributes();
         return res;
     }
 }
