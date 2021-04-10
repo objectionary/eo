@@ -10,6 +10,9 @@ import org.eolang.core.data.EOData;
 public class EOstring extends EOObject {
     private final String stringValue;
 
+    public EOstring(){
+        stringValue = "";
+    }
     public EOstring(String stringValue) {
         this.stringValue = stringValue;
     }
