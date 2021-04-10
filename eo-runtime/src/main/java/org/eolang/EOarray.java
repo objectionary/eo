@@ -1,24 +1,21 @@
 package org.eolang;
 
 import org.eolang.core.EOObject;
-import org.eolang.core.EOObjectArray;
-import org.eolang.core.data.EOData;
 import org.eolang.core.data.EODataObject;
 
 /***
  * Represents an array
  * @version %I%, %G%
  */
-public class EOarray extends EOObject {
-    private final EOObjectArray array;
+public class EOarray {
+    private final EOObject[] _array;
 
-    public EOarray(EOObjectArray array) {
-        this.array = array;
+    public EOarray(){
+        this._array = new EOObject[]{};
     }
 
-    @Override
-    public EOData _getData() {
-        return array._getData();
+    public EOarray(EOObject... objects) {
+        _array = objects;
     }
 
     /***
@@ -26,7 +23,7 @@ public class EOarray extends EOObject {
      * @return A boolean object, true if empty and false if not empty
      */
     public EObool EOisEmpty() {
-        return new EObool(array.get_array().length == 0);
+        return new EObool(_array.length == 0);
     }
 
     /***
@@ -34,7 +31,7 @@ public class EOarray extends EOObject {
      * @return An object representing the length of the array
      */
     public EOint EOlength() {
-        return new EOint(array.get_array().length);
+        return new EOint(_array.length);
     }
 
     /***
@@ -43,66 +40,55 @@ public class EOarray extends EOObject {
      * @return An object representing the value at the {@code position} free attribute index of the array
      */
     public EOObject EOget(EOObject position) {
-        return array.get_array()[position._getData().toInt().intValue()];
+        if (_array.length <= position._getData().toInt().intValue()) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Can't get() the %dth element of the array, there are just %d of them",
+                            position._getData().toInt().intValue(), _array.length
+                    )
+            );
+        }
+        return _array[position._getData().toInt().intValue()];
     }
 
     /***
      * Appends the object of the free attribute {@code eoObject} to the array
      * @param eoObject An object to append to this array
-     * @return An object representing the a new array with the appended object of the free attribute {@code eoObject}
+     * @return An object representing the new array with the appended object of the free attribute {@code eoObject}
      */
-    public EOObjectArray EOappend(EOObject eoObject) {
-        EOObject[] newArray = new EOObject[this.array.get_array().length + 1];
-        for (int i = 0; i < this.array.get_array().length; i++) {
-            newArray[i] = this.array.get_array()[i];
+    public EOarray EOappend(EOObject eoObject) {
+        EOObject[] newArray = new EOObject[this._array.length + 1];
+        System.arraycopy(_array, 0, newArray, 0, _array.length);
+        newArray[this._array.length] = eoObject;
+        return new EOarray(newArray);
+    }
+
+    /***
+     * Performs the reduction operation of the base array object
+     * @param accumulator a partial/subtotal result
+     * @param reduceFunction represents the reduction function
+     * @return An object representing the final accumulated value of the reduce operation
+     */
+    public EOObject EOreduce(EOObject accumulator, EOObject reduceFunction) {
+        EOObject out = accumulator;
+        for (EOObject eoObject: this._array) {
+            out = reduceFunction._getAttribute("reduce", out, eoObject);
         }
-        newArray[this.array.get_array().length] = eoObject;
-        return new EOObjectArray(newArray);
+        return out;
     }
 
     /***
-     * TO DO
-     * Performs the reduction operation of its base array object
-     * @param accumulator a partial result
-     * @param reducefunction represents the reduction function
-     * @return
+     * Performs a map operation on the base array object
+     * @param mapFunction represents the map function
+     * @return An {@code EOarray} object containing mapped elements
      */
-    public EOObject EOreduce(EOObject accumulator, EOObject reducefunction) {
-//        TO DO
-        return new EODataObject(0);
-    }
-
-    /***
-     * To Do
-     * @param falsy
-     * @return
-     */
-    public EObool EOeach(EObool falsy) {
-        for (EOObject eoObject : array.get_array()) {
-//            TO DO
+    public EOarray EOmap(EOObject mapFunction) {
+        int length = this._array.length;
+        EOObject[] mappedArray = new EOObject[length];
+        for (int i=0;i<length;i++) {
+            mappedArray[i] = mapFunction._getAttribute("map", _array[i]);
         }
-        return new EObool(true);
+        return new EOarray(mappedArray);
     }
-
-    /***
-     * TO Do
-     * @param falsy
-     * @return
-     */
-    public EOObject EOmap(EObool falsy) {
-//        TO DO
-        return new EODataObject(-1);
-    }
-
-    /***
-     * TO DO
-     * @param falsy
-     * @return
-     */
-    public EOObject EOmapi(EObool falsy) {
-//        To DO
-        return new EODataObject(-1);
-    }
-
 
 }

@@ -39,7 +39,9 @@ public class EOint extends EOObject {
     }
 
     public EOint EOdiv(EOObject divisor) {
-        // TODO add check if divisor == 0 then return exception object
+        if(divisor._getData().toInt() == 0){
+            throw new ArithmeticException("Division by zero not possible");
+        }
         return new EOint(Math.floorDiv(this.value, divisor._getData().toInt()));
     }
 
@@ -140,7 +142,7 @@ public class EOint extends EOObject {
      * @return An object representing the remainder of the division by  ({@code divisor} free attribute)
      */
     public EOint EOmod(EOObject divisor) {
-        return new EOint((long) Math.floorMod(this.value, divisor._getData().toInt()));
+        return new EOint(Math.floorMod(this.value, divisor._getData().toInt()));
     }
 
 }
