@@ -9,7 +9,8 @@
   inputshapes 0 args > shapes
     each. > @
       shapes
-        [f]
+      []
+        [f] > compute
           stdout > @
             sprintf
               "%s\n"

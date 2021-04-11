@@ -4,20 +4,26 @@
 +alias sprintf org.eolang.txt.sprintf
 
 
-[x left right] > between
-  and. > @
-    leq.
-      left
-      x
-    leq.
-      x
-      right
+[n] > factorial
+  [n acc] > subfFactorial
+    if. > @
+      less.
+        n
+        2
+      acc
+      subfFactorial
+        sub.
+          n
+          1
+        mul.
+          acc
+          n
+  subfFactorial > @
+    n
+    1
 
 [args...] > app
-  stdout > @
-    sprintf
-      "%b"
-      between
-        2
-        1
-        3
+  sprintf > @
+    "%d! = %d\n"
+    (args.get 0).toInt > n
+    factorial n
