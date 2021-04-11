@@ -61,7 +61,7 @@ public class Main {
             }
         }
         EOObject app = (EOObject)appConstructor.newInstance(appValues.toArray());
-        System.out.println(app._getData().toString());
+        System.out.println(String.format("The program has dataized to: %s", app._getData().toString()));
     }
 
     /**
