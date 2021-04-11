@@ -192,7 +192,12 @@ public class EOAbstraction extends EOSourceEntity {
             w.writeln_r(String.format("public class %s extends %s {", this.targetName.get(), EOObject.class.getSimpleName()));
         } else if (getScopeType().equals("attribute")) {
             TranslationCommons.bigComment(w, (getNestedChain() + ".").replaceFirst("a", "A").split("\n"));
-            w.writeln_r(String.format("private class %s extends %s {", this.targetName.get(), EOObject.class.getSimpleName()));
+            if (getScope() instanceof EOAbstraction && ((EOAbstraction) getScope()).anonymousName!=null) {
+                w.writeln_r(String.format("class %s extends %s {", this.targetName.get(), EOObject.class.getSimpleName()));
+            }
+            else {
+                w.writeln_r(String.format("private class %s extends %s {", this.targetName.get(), EOObject.class.getSimpleName()));
+            }
         }
         else {
             TranslationCommons.bigComment(w, String.format("Anonymous object with an assigned pseudo-name '%s'.", getAnonymousName()));
