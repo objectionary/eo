@@ -25,7 +25,7 @@ public class EOarray extends EOObject {
      * @return A boolean object, true if empty and false if not empty
      */
     public EObool EOisEmpty() {
-        return new EObool(_array.size() == 0);
+        return new EObool(_array.isEmpty());
     }
 
     /***
@@ -59,10 +59,10 @@ public class EOarray extends EOObject {
      * @return An object representing the new array with the appended object of the free attribute {@code eoObject}
      */
     public EOarray EOappend(EOObject eoObject) {
-        EOObject[] newArray = new EOObject[_array.size() + 1];
-        System.arraycopy(_array, 0, newArray, 0, _array.size());
-        newArray[_array.size()] = eoObject;
-        return new EOarray(newArray);
+        List<EOObject> newList = new java.util.ArrayList<>(_array);
+        newList.add(eoObject);
+        EOObject[] newArray = new EOObject[newList.size()];
+        return new EOarray(newList.toArray(newArray));
     }
 
     /***
@@ -74,7 +74,7 @@ public class EOarray extends EOObject {
     public EOObject EOreduce(EOObject accumulator, EOObject reduceFunction) {
         EOObject out = accumulator;
         for (EOObject eoObject: this._array) {
-            out = reduceFunction._getAttribute("reduce", out, eoObject);
+            out = reduceFunction._getAttribute("EOreduce", out, eoObject);
         }
         return out;
     }
@@ -88,7 +88,21 @@ public class EOarray extends EOObject {
         int length = _array.size();
         EOObject[] mappedArray = new EOObject[length];
         for (int i=0;i<length;i++) {
-            mappedArray[i] = mapFunction._getAttribute("map", _array.get(i));
+            mappedArray[i] = mapFunction._getAttribute("EOmap", _array.get(i));
+        }
+        return new EOarray(mappedArray);
+    }
+
+    /***
+     * Performs a map index operation on the base array object
+     * @param mapiFunction represents the map function
+     * @return An {@code EOarray} object containing mapped elements
+     */
+    public EOarray EOmapi(EOObject mapiFunction) {
+        int length = _array.size();
+        EOObject[] mappedArray = new EOObject[length];
+        for (int i=0;i<length;i++) {
+            mappedArray[i] = mapiFunction._getAttribute("EOmapi", _array.get(i), new EODataObject(i));
         }
         return new EOarray(mappedArray);
     }
