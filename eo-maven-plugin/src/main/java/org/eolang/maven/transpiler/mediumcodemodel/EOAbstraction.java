@@ -94,7 +94,11 @@ public class EOAbstraction extends EOSourceEntity {
             if (scope.getScopeType().equals("attribute")) {
                 format = format + String.format(" attribute object '%s' \nof the", scope.instanceName.get());
                 scope = (EOAbstraction) scope.getScope();
-            } else {
+            } else if (scope.anonymousName != null) {
+                format = format + String.format(" anonymous object with an assigned pseudo-name '%s'", scope.anonymousName);
+                break;
+            }
+            else {
                 format = format + String.format(" package-scope object '%s'", scope.instanceName.get());
                 break;
             }
@@ -154,9 +158,9 @@ public class EOAbstraction extends EOSourceEntity {
             transpileClass(w);
 
             ArrayList<EOTargetFile> result = new ArrayList<>();
+            String unformattedCode = w.toString();
             String formattedJava;
             try {
-                String unformattedCode = w.toString();
                 formattedJava = new Formatter().formatSource(unformattedCode);
             } catch (FormatterException e) {
                 throw new RuntimeException("Can't format the output");

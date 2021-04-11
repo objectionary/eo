@@ -1,4 +1,11 @@
 +package sandbox
++alias sprintf org.eolang.txt.sprintf
+
+[args...] > appfibonacci
+  sprintf > @
+    "%dth Fibonacci number is %d\n"
+    (args.get 0).toInt > n
+    fibonacci n
 
 [n] > fibonacci
   if. > @
@@ -15,10 +22,7 @@
   [n minus1 minus2] > rec
     if. > @
       eq.
-        []
-          ^.n > @
-        []
-          [] > @
-            3 > @
+        n
+        3
       minus1.add minus2
       rec (n.sub 1) (minus1.add minus2) minus1
