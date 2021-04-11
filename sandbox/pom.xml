@@ -49,6 +49,9 @@ SOFTWARE.
             <configuration>
               <sourcesDir>${project.basedir}/eo</sourcesDir>
               <targetDir>${project.basedir}/target</targetDir>
+              <!--<excludes>
+                <exclude>${project.basedir}/eo/*shapes.eo</exclude>
+              </excludes> -->
             </configuration>
           </execution>
         </executions>
