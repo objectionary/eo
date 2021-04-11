@@ -77,26 +77,4 @@ public class EObool extends EOObject {
         }
         return new EObool(eoBool);
     }
-
-    /***
-     * /TO DO
-     * Evaluate the {@code falseObject} free attribute until this baseBool object is not false
-     * @param falseObject a false bool object to evaluate with
-     * @return An object representing the number of successful cycles
-     */
-    public EOObject EOwhile(EOObject falseObject) {
-//        TO DO
-        long count = 0L;
-        while (true) {
-            Boolean eoBool = this.baseBool;
-            if (!eoBool) {
-                break;
-            }
-            EOObject eoObject = falseObject;
-            eoObject._setParent(new EODataObject(count));
-            ++count;
-        }
-        return new EODataObject(count);
-    }
-
 }

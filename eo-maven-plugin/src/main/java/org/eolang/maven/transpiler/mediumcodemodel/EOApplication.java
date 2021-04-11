@@ -62,7 +62,10 @@ public class EOApplication extends EOSourceEntity {
      */
     private EOApplication dotNotationBase;
 
-
+    /***
+     * Anonymous objects that are referenced in the scope of this application.
+     */
+    private ArrayList<EOAbstraction> anonymousObjects = new ArrayList<>();
 
 
     public EOApplication(boolean isDotNotation, String appliedObject, Optional<String> name, Optional<EOData> data) {
@@ -84,10 +87,12 @@ public class EOApplication extends EOSourceEntity {
     }
 
     public void setWrappedAbstraction(EOAbstraction wrappedAbstraction) {
-        if (this.wrappedAbstraction != null) {
+        if (this.wrappedAbstraction == null || this.wrappedAbstraction.getXmlName().equals(wrappedAbstraction.getXmlName())) {
+            this.wrappedAbstraction = wrappedAbstraction;
+        }
+        else {
             throw new RuntimeException("application already has the wrapped abstraction");
         }
-        this.wrappedAbstraction = wrappedAbstraction;
     }
 
     public EOSourceEntity getScope() {
@@ -124,6 +129,14 @@ public class EOApplication extends EOSourceEntity {
 
     public Optional<String> getName() {
         return name;
+    }
+
+    public void addAnonymous(EOAbstraction anonymous) {
+        if (anonymousObjects.stream().anyMatch(a -> a.getAnonymousName().equals(anonymous.getAnonymousName()))) {
+            return;
+        }
+        anonymousObjects.add(anonymous);
+        anonymous.setAnonymousName(String.format("anonymous$%d", anonymousObjects.size()));
     }
 
     private EOApplication isAccessible(String base) {
@@ -164,8 +177,8 @@ public class EOApplication extends EOSourceEntity {
             return String.format("this.%s", application.get().targetName.get());
         }
 
-        if(!(abstractionScope.getScope() instanceof EOSourceFile)) {
-            throw new RuntimeException(String.format("Cannot find referenced %s.", appliedObject));
+        while(!(abstractionScope.getScope() instanceof EOSourceFile)) {
+            abstractionScope = (EOAbstraction) abstractionScope.getScope();
         }
 
         EOSourceFile eoSourceFileScope = (EOSourceFile) abstractionScope.getScope();
@@ -223,16 +236,20 @@ public class EOApplication extends EOSourceEntity {
                 TranslationCommons.bigComment(w, String.format("Abstraction-based bound attribute object '%s'", this.name.get()));
             }
             w.writeln_r(String.format("public %s %s(%s) {", EOObject.class.getSimpleName(), methodName, wrappedAbstraction.getArgsString()));
+
+            if(anonymousObjects.size() > 0) {
+                TranslationCommons.bigComment(w, "Anonymous objects used in the scope of this method");
+                for (EOAbstraction anonymous: anonymousObjects) {
+                    anonymous.transpile(w);
+                }
+            }
+
             if (wrappedAbstraction.getInstanceName().get().equals("@")) {
                 // anonymous-abstraction based decoratee (special case)
-                w.write("return ");
-                wrappedAbstraction.transpile(w);
-                w.write(";");
-                w.writeln_l("}");
+                w.write(String.format("return new %s(%s);", wrappedAbstraction.getAnonymousName(), wrappedAbstraction.getArgsString()));
             }
             else {
                 w.write(String.format("return new %s(%s);", wrappedAbstraction.getTargetName().get(), wrappedAbstraction.getArgsString(false)));
-                w.writeln_l("}");
             }
         }
         else {
@@ -241,14 +258,27 @@ public class EOApplication extends EOSourceEntity {
                 TranslationCommons.bigComment(w, String.format("Application-based bound attribute object '%s'", this.name.get()));
             }
             w.writeln_r(String.format("public %s %s() {", EOObject.class.getSimpleName(), methodName));
+
+            if(anonymousObjects.size() > 0) {
+                TranslationCommons.bigComment(w, "Anonymous objects used in the scope of this method");
+                for (EOAbstraction anonymous: anonymousObjects) {
+                    anonymous.transpile(w);
+                }
+            }
+
             w.write("return ");
             transpileApplication(w);
             w.writeln(";");
-            w.writeln_l("}");
         }
+        w.writeln_l("}");
     }
 
     private void transpileApplication(PicoWriter w) {
+        // anonymous-abstraction based application
+        if (name.isEmpty() && wrappedAbstraction != null) {
+            w.write(String.format("new %s(%s)", wrappedAbstraction.getAnonymousName(), wrappedAbstraction.getArgsString()));
+            return;
+        }
         // data stored inside application
         if (data.isPresent()) {
             data.get().transpile(w);
@@ -294,12 +324,6 @@ public class EOApplication extends EOSourceEntity {
     private void transpileArgs(PicoWriter w) {
         for (int i = 0; i < arguments.size(); i++) {
             EOApplication arg = arguments.get(i);
-            if (arg.wrappedAbstraction != null) {
-                if (!arg.wrappedAbstraction.getInstanceName().isPresent()) {
-                    arg.wrappedAbstraction.transpile(w);
-                    return;
-                }
-            }
             arg.transpileApplication(w);
             if (i != arguments.size() - 1) {
                 w.write(", ");
