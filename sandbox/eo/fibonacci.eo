@@ -14,6 +14,11 @@
 
   [n minus1 minus2] > rec
     if. > @
-      n.eq 3
+      eq.
+        []
+          ^.n > @
+        []
+          [] > @
+            3 > @
       minus1.add minus2
       rec (n.sub 1) (minus1.add minus2) minus1

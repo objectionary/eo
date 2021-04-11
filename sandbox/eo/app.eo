@@ -3,8 +3,21 @@
 +alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 
+
+[x left right] > between
+  and. > @
+    leq.
+      left
+      x
+    leq.
+      x
+      right
+
 [args...] > app
-  sprintf > @
-    "%dth Fibonacci number is %d\n"
-    (args.get 0).toInt > n
-    fibonacci n
+  stdout > @
+    sprintf
+      "%b"
+      between
+        2
+        1
+        3
