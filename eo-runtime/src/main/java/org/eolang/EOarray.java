@@ -74,7 +74,7 @@ public class EOarray extends EOObject {
     public EOObject EOreduce(EOObject accumulator, EOObject reduceFunction) {
         EOObject out = accumulator;
         for (EOObject eoObject: this._array) {
-            out = reduceFunction._getAttribute("EOreduce", out, eoObject);
+            out = reduceFunction._getAttribute("EOreduce", out, eoObject)._getDecoratedObject();
         }
         return out;
     }
