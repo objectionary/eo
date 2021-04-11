@@ -1,6 +1,7 @@
 package org.eolang.maven.transpiler.mediumcodemodel;
 
 import org.ainslec.picocog.PicoWriter;
+import org.eolang.EOarray;
 import org.eolang.core.EOObject;
 import org.eolang.maven.transpiler.medium2target.TranslationCommons;
 
@@ -159,6 +160,9 @@ public class EOApplication extends EOSourceEntity {
 
     private String getCorrectReference() {
         if (appliedObject.contains(".")) {
+            if (appliedObject.equals("org.eolang.array")) {
+                return String.format("new %s", EOarray.class.getSimpleName());
+            }
             // some outer object with a fully qualified name
             return String.format("new %s", aliasToNormalForm());
         }

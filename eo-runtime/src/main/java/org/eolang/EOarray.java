@@ -107,4 +107,17 @@ public class EOarray extends EOObject {
         return new EOarray(mappedArray);
     }
 
+    /***
+     * Applies the {@code eachFunction} to all the elements of the array
+     * @param eachFunction represents the function to apply to each object of the array
+     * @return EObool(True)
+     */
+    public EObool EOeach(EOObject eachFunction) {
+        int length = _array.size();
+        for (int i=0;i<length;i++) {
+            eachFunction._getAttribute("EOeach", _array.get(i));
+        }
+        return new EObool(true);
+    }
+
 }

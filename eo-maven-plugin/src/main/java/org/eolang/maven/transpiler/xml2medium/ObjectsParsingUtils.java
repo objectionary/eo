@@ -415,6 +415,9 @@ public class ObjectsParsingUtils {
             return Optional.empty();
         } else {
             String type = dataNode.getNodeValue();
+            if (type.equals("array")) {
+                return Optional.empty(); // arrays are handled in another way
+            }
             String value = null;
             try {
                 value = application.getFirstChild().getNodeValue();

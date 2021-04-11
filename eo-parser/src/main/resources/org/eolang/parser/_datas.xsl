@@ -24,13 +24,13 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:variable name="data-objects" as="element()*">
-    <a>org.org.eolang.string</a>
-    <a>org.org.eolang.array</a>
-    <a>org.org.eolang.int</a>
-    <a>org.org.eolang.float</a>
-    <a>org.org.eolang.bool</a>
-    <a>org.org.eolang.double</a>
-    <a>org.org.eolang.char</a>
-    <a>org.org.eolang.regex</a>
+    <a>org.eolang.string</a>
+    <a>org.eolang.array</a>
+    <a>org.eolang.int</a>
+    <a>org.eolang.float</a>
+    <a>org.eolang.bool</a>
+    <a>org.eolang.double</a>
+    <a>org.eolang.char</a>
+    <a>org.eolang.regex</a>
   </xsl:variable>
 </xsl:stylesheet>
