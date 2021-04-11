@@ -104,7 +104,7 @@ class EOarrayTest {
                 return new EODataObject(
                         new EOint(
                                 subtotal._getData().toInt()
-                        )._getAttribute("add", element)._getData().toInt()
+                        )._getAttribute("EOadd", element)._getData().toInt()
                 );
             }
         });
@@ -136,7 +136,7 @@ class EOarrayTest {
                 return new EODataObject(
                         new EOint(
                                 element._getData().toInt()
-                        )._getAttribute("pow", new EODataObject(2))._getData().toInt()
+                        )._getAttribute("EOpow", new EODataObject(2))._getData().toInt()
                 );
             }
         });
@@ -146,4 +146,34 @@ class EOarrayTest {
                     Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));
     }
 
+    @Test
+    void EOmapi() {
+        EOarray array = new EOarray(
+                new EODataObject(1),
+                new EODataObject(3),
+                new EODataObject(5),
+                new EODataObject(7),
+                new EODataObject(9)
+        );
+        EOarray expectedArray = new EOarray(
+                new EODataObject(1),
+                new EODataObject(2),
+                new EODataObject(3),
+                new EODataObject(4),
+                new EODataObject(5)
+        );
+        EOarray newArray = array.EOmapi(new EOObject() {
+            public EOObject EOmapi(EOObject currentElement, EOObject index) {
+                return new EODataObject(
+                        new EOint(
+                                currentElement._getData().toInt()
+                        )._getAttribute("EOsub", index)._getData().toInt()
+                );
+            }
+        });
+        for(int i=0;i<array.EOlength()._getData().toInt();i++)
+            MatcherAssert.assertThat(
+                    newArray.EOget(new EODataObject(i))._getData().toInt(),
+                    Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));
+    }
 }
