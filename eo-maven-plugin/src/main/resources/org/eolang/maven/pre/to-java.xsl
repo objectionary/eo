@@ -108,9 +108,9 @@ SOFTWARE.
       <xsl:element name="java">
         <xsl:apply-templates select="/program" mode="license"/>
         <xsl:apply-templates select="//meta[head='package']" mode="head"/>
-        <xsl:text>import org.org.eolang.*;</xsl:text>
+        <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:text>import org.org.eolang.phi.*;</xsl:text>
+        <xsl:text>import org.eolang.phi.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="//meta[head='junit']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>

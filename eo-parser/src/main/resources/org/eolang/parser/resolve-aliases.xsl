@@ -27,7 +27,7 @@ SOFTWARE.
   Here we go through all objects that DON'T have @ref attributes
   and try to find their references in aliases. If we find them,
   we change their @base attributes. If not, we decide that they
-  are in org.org.eolang package and also change the @base attribute.
+  are in org.eolang package and also change the @base attribute.
 
   At the end of this transformation all aliases are deleted.
 

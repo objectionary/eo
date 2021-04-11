@@ -50,7 +50,7 @@ public class Main {
         Constructor<?> appConstructor = Arrays.stream(Class.forName(path).getConstructors())
                 .findFirst().get();
         Parameter[] appParams = appConstructor.getParameters();
-        List<Object> appValues = new ArrayList<Object>();
+        List<Object> appValues = new ArrayList<>();
         for(int i=0; i<appParams.length; i++){
             if(appParams[i].getType().getCanonicalName().endsWith("[]")){
                 List<EOstring> objs = Arrays.stream(args).skip(i+1).map(arg -> new EOstring(arg)).collect(Collectors.toList());
