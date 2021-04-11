@@ -110,6 +110,9 @@ public class ObjectsParsingUtils {
                 throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": there are more than one application-based wrappers for the sub-abstraction " + wrappedAbstraction.getXmlName());
             }
             wrappers[0].setWrappedAbstraction(wrappedAbstraction);
+            if (wrappedAbstraction.getInstanceName().get().equals("@")) {
+                wrappers[0].addAnonymous(wrappedAbstraction);
+            }
         } else {
             // for anonymous objects we need to traverse applications
             boolean dereferenced = false;
@@ -118,6 +121,7 @@ public class ObjectsParsingUtils {
                 dereferenced = dereferenced || dereferenceApplicationsForAnonymous(boundAttributes.get(i), wrappedAbstraction);
 
                 if (dereferenced == true) {
+                    boundAttributes.get(i).addAnonymous(wrappedAbstraction);
                     break;
                 }
             }

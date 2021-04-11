@@ -20,7 +20,7 @@ public class EOAbstraction extends EOSourceEntity {
     private final Optional<String> targetName;
     private ArrayList<EOApplication> boundAttributes;
     private EOSourceEntity scope;
-    private final Optional<String> anonymousName;
+    private String anonymousName;
 
     public EOAbstraction(String xmlName, Optional<String> instanceName, ArrayList<EOInputAttribute> freeAttributes) {
         this.xmlName = xmlName;
@@ -29,10 +29,8 @@ public class EOAbstraction extends EOSourceEntity {
         this.subAbstractions = new ArrayList<>();
         if (instanceName.isPresent()) {
             targetName = Optional.of("EO" + instanceName.get());
-            anonymousName = Optional.empty();
         } else {
             targetName = Optional.empty();
-            anonymousName = Optional.of("anonymousEOObject$");
         }
     }
 
@@ -129,6 +127,14 @@ public class EOAbstraction extends EOSourceEntity {
         return result;
     }
 
+    public void setAnonymousName(String anonymousName) {
+        this.anonymousName = anonymousName;
+    }
+
+    public String getAnonymousName() {
+        return anonymousName;
+    }
+
     @Override
     public String toString() {
         if (instanceName.isPresent()) {
@@ -150,19 +156,15 @@ public class EOAbstraction extends EOSourceEntity {
             ArrayList<EOTargetFile> result = new ArrayList<>();
             String formattedJava;
             try {
-                formattedJava = new Formatter().formatSource(w.toString());
+                String unformattedCode = w.toString();
+                formattedJava = new Formatter().formatSource(unformattedCode);
             } catch (FormatterException e) {
                 throw new RuntimeException("Can't format the output");
             }
-            formattedJava = w.toString();
-
             result.add(new EOTargetFile(String.format("%s.java", this.targetName.get()), formattedJava));
             return result;
-        } else if (getScopeType().equals("attribute")) {
-            transpileClass(parentWriter);
-            return new ArrayList<>();
         } else {
-            transpileClassAnonymous(parentWriter);
+            transpileClass(parentWriter);
             return new ArrayList<>();
         }
     }
@@ -189,15 +191,10 @@ public class EOAbstraction extends EOSourceEntity {
             w.writeln_r(String.format("private class %s extends %s {", this.targetName.get(), EOObject.class.getSimpleName()));
         }
         else {
+            TranslationCommons.bigComment(w, String.format("Anonymous object with an assigned pseudo-name '%s'.", getAnonymousName()));
+            w.writeln_r(String.format("class %s extends %s {", this.anonymousName, EOObject.class.getSimpleName()));
 
         }
-        transpileClassContents(w);
-        w.writeln_l("}");
-        w.writeln("");
-    }
-
-    private void transpileClassAnonymous(PicoWriter w) {
-        w.writeln_r(String.format("new %s() {", EOObject.class.getSimpleName()));
         transpileClassContents(w);
         w.writeln_l("}");
         w.writeln("");
@@ -209,11 +206,8 @@ public class EOAbstraction extends EOSourceEntity {
             transpileFreeAttributes(w);
         }
 
-        if (!getScopeType().equals("anonymous")) {
-            w.writeln("");
-            transpileConstructor(w);
-            w.writeln("");
-        }
+
+        transpileConstructor(w);
         transpileParentObject(w);
         transpileDecoratee(w);
         transpileFreeAttrsGetters(w);
@@ -232,6 +226,7 @@ public class EOAbstraction extends EOSourceEntity {
     }
 
     private void transpileConstructor(PicoWriter w) {
+        w.writeln("");
         ArrayList<String> commentParams = new ArrayList<>();
         switch (getScopeType()) {
             case "package":
@@ -239,6 +234,9 @@ public class EOAbstraction extends EOSourceEntity {
                 break;
             case "attribute":
                 commentParams.addAll(Arrays.asList(String.format("Constructs (via one-time-full application) the %s.", getNestedChain()).split("\n")));
+                break;
+            case "anonymous":
+                commentParams.add(String.format("Constructs (via one-time-full application) the anonymous object with the pseudo-name '%s'.", this.anonymousName));
                 break;
         }
         if (freeAttributes.size() > 0) {
@@ -248,7 +246,12 @@ public class EOAbstraction extends EOSourceEntity {
             }
         }
         TranslationCommons.bigComment(w, commentParams.toArray(String[]::new));
-        w.write(String.format("public %s(", this.targetName.get()));
+        if (getScopeType().equals("anonymous")) {
+            w.write(String.format("public %s(", this.anonymousName));
+        }
+        else {
+            w.write(String.format("public %s(", this.targetName.get()));
+        }
         if (freeAttributes.size() == 0) {
             w.writeln(") {}");
         } else {
@@ -266,6 +269,8 @@ public class EOAbstraction extends EOSourceEntity {
             }
             w.writeln_l("}");
         }
+
+        w.writeln("");
     }
 
     private void transpileFreeAttrsGetters(PicoWriter w) {
@@ -283,12 +288,22 @@ public class EOAbstraction extends EOSourceEntity {
     }
 
     private void transpileParentObject(PicoWriter w) {
-        if (getScopeType().equals("attribute")) {
+        if (!getScopeType().equals("package")) {
             EOAbstraction scope = (EOAbstraction) getScope();
-            TranslationCommons.bigComment(w, String.format("Returns the parent object '%s' of this object", scope.getInstanceName().get()));
+            if (scope.anonymousName != null) {
+                TranslationCommons.bigComment(w, String.format("Returns the parent object '%s' of this object", scope.anonymousName));
+            }
+            else {
+                TranslationCommons.bigComment(w, String.format("Returns the parent object '%s' of this object", scope.getInstanceName().get()));
+            }
             w.writeln("@Override");
             w.writeln_r(String.format("public %s _getParentObject() {", EOObject.class.getSimpleName()));
-            w.writeln(String.format("return %s.this;", scope.targetName.get()));
+            if (scope.anonymousName != null) {
+                w.writeln(String.format("return %s.this;", scope.anonymousName));
+            }
+            else {
+                w.writeln(String.format("return %s.this;", scope.targetName.get()));
+            }
             w.writeln_l("}");
             w.writeln("");
         }
