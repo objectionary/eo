@@ -1,4 +1,14 @@
 +package sandbox
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[args...] > apppi
+  stdout > @
+    sprintf
+      "%f"
+      compute.
+        pi
+        (args.get 0).toInt
 
 [] > pi
   3.1415926535 > @
@@ -9,12 +19,12 @@
       subCompute
         1.0
         3.0
-        one
+        1
         add.
           n
-          one
+          1
 
-    [accumulator divider in] > subCompute
+    [accum divider i n] > subCompute
       if. > @
         less.
           i
@@ -37,6 +47,6 @@
             2.0
           add.
             i
-            one
+            1
           n
         accum

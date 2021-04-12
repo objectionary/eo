@@ -1,5 +1,4 @@
 +package sandbox
-+alias fibonacci sandbox.fibonacci
 +alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 
@@ -21,7 +20,7 @@
     n
     1
 
-[args...] > app
+[args...] > appfactorial
   sprintf > @
     "%d! = %d\n"
     (args.get 0).toInt > n

@@ -19,8 +19,9 @@ Then, compile the code (you will need
 and [Java SDK 8+](https://www.java.com/en/download/) installed):
 
 ```bash
-$ mvn compile
-```
+$ mvn clean compile
+```  
+**Note**: do not forget to compile the transpiler and runtime (see ../README.md).
 
 Intermediary `*.xml` files will be generated in the `target` directory (it will
 be created). Also, there will be `*.java` and `*.class` files. Feel free to analyze
@@ -28,14 +29,15 @@ them: EO is parsed into XML, then translated to Java, and then compiled
 by Java SDK to Java bytecode. Finally, just run the bytecode program through JRE:
 
 ```bash
-$ ./run.sh 9
+$ ./run.sh appfibonacci 9
 9th Fibonacci number is 34
-```
+```  
+First argument to `./run.sh` is the name of the object to be datarized, and all other arguments will be passed to that object as its free attributes.  
 
 Should work. If it doesn't, [submit an issue](https://github.com/cqfn/eo/issues),
 we will fix it.
 
-Then, you can modify `*.eo` files, run `mvn compile` to compile them
+Then, you can modify `*.eo` files, run `mvn clean compile` to compile them
 again and `run.sh` to run it again.
 
 [Have fun!](https://www.elegantobjects.org)
