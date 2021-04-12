@@ -183,6 +183,7 @@ public class EOAbstraction extends EOSourceEntity {
         /* import the base language objects */
         w.writeln(String.format("import org.eolang.*;"));
         w.writeln(String.format("import org.eolang.core.*;"));
+        w.writeln(String.format("import java.util.function.Supplier;"));
         w.writeln("");
     }
 
