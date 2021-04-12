@@ -88,7 +88,7 @@ public class EOarray extends EOObject {
         int length = _array.size();
         EOObject[] mappedArray = new EOObject[length];
         for (int i=0;i<length;i++) {
-            mappedArray[i] = mapFunction._getAttribute("EOmap", _array.get(i));
+            mappedArray[i] = mapFunction._getAttribute("EOmap", _array.get(i))._getDecoratedObject();
         }
         return new EOarray(mappedArray);
     }
@@ -102,7 +102,7 @@ public class EOarray extends EOObject {
         int length = _array.size();
         EOObject[] mappedArray = new EOObject[length];
         for (int i=0;i<length;i++) {
-            mappedArray[i] = mapiFunction._getAttribute("EOmapi", _array.get(i), new EODataObject(i));
+            mappedArray[i] = mapiFunction._getAttribute("EOmapi", _array.get(i), new EODataObject(i))._getDecoratedObject();
         }
         return new EOarray(mappedArray);
     }
@@ -115,7 +115,7 @@ public class EOarray extends EOObject {
     public EObool EOeach(EOObject eachFunction) {
         int length = _array.size();
         for (int i=0;i<length;i++) {
-            eachFunction._getAttribute("EOeach", _array.get(i));
+            eachFunction._getAttribute("EOeach", _array.get(i))._getData();
         }
         return new EObool(true);
     }
