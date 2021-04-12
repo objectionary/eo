@@ -1,0 +1,42 @@
++package sandbox
+
+[] > pi
+  3.1415926535 > @
+
+  [n] > compute
+    mul. > @
+      4.0
+      subCompute
+        1.0
+        3.0
+        one
+        add.
+          n
+          one
+
+    [accumulator divider in] > subCompute
+      if. > @
+        less.
+          i
+          n
+        subCompute
+          add.
+            accum
+            div.
+              1.0
+              if.
+                eq.
+                  mod.
+                    i
+                    2
+                  0
+                divider
+                divider.neg
+          add.
+            divider
+            2.0
+          add.
+            i
+            one
+          n
+        accum
