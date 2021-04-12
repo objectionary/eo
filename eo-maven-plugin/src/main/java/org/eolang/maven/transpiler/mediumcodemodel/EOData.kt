@@ -6,7 +6,6 @@ import org.eolang.EOchar
 import org.eolang.EOfloat
 import org.eolang.EOint
 import org.eolang.EOstring
-import java.util.ArrayList
 
 /***
  * Represents EO data type objects

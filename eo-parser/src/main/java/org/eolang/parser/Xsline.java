@@ -23,12 +23,7 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.ClasspathSources;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
-import java.io.IOException;
+import com.jcabi.xml.*;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
@@ -39,6 +34,8 @@ import org.cactoos.list.Mapped;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
+
+import java.io.IOException;
 
 /**
  * Pipeline of XSL transformations.

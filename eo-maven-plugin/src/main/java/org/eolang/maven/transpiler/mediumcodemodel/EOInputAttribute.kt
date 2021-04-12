@@ -1,12 +1,9 @@
 package org.eolang.maven.transpiler.mediumcodemodel
 
-import org.eolang.maven.transpiler.mediumcodemodel.EOSourceEntity
 import org.ainslec.picocog.PicoWriter
-import org.eolang.maven.transpiler.mediumcodemodel.EOTargetFile
-import org.eolang.maven.transpiler.medium2target.TranslationCommons
 import org.eolang.EOarray
 import org.eolang.core.EOObject
-import java.util.ArrayList
+import org.eolang.maven.transpiler.medium2target.TranslationCommons
 
 /***
  * Represents an input (free) attribute

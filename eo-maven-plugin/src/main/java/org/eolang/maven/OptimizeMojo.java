@@ -25,11 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,6 +35,12 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Optimize XML files.

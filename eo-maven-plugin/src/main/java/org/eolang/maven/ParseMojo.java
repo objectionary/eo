@@ -24,15 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -44,6 +35,16 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.set.SetOf;
 import org.eolang.parser.Syntax;
 import org.slf4j.impl.StaticLoggerBinder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Parse EO to XML.

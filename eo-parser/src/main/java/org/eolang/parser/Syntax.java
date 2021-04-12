@@ -25,13 +25,7 @@ package org.eolang.parser;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Output;
@@ -41,6 +35,8 @@ import org.cactoos.io.UncheckedInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
+
+import java.io.IOException;
 
 /**
  * Syntax parser, from plain text to XML using ANTLR4.

@@ -24,14 +24,15 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
 
 /**
  * Save a file operation.

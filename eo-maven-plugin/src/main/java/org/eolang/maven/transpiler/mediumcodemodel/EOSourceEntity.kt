@@ -1,7 +1,6 @@
 package org.eolang.maven.transpiler.mediumcodemodel
 
 import org.ainslec.picocog.PicoWriter
-import java.util.*
 
 /***
  * Represent an EO source code entity

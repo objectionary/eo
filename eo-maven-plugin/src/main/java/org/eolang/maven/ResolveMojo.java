@@ -25,13 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -41,6 +34,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.impl.StaticLoggerBinder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 /**
  * Find all required runtime dependencies and add

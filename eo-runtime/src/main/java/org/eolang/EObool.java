@@ -2,7 +2,6 @@ package org.eolang;
 
 import org.eolang.core.EOObject;
 import org.eolang.core.data.EOData;
-import org.eolang.core.data.EODataObject;
 
 /***
  * Represents a boolean type

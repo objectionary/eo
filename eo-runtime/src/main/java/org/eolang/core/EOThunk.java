@@ -1,6 +1,7 @@
 package org.eolang.core;
 
 import org.eolang.core.data.EOData;
+
 import java.util.function.Supplier;
 
 public class EOThunk extends EOObject {
