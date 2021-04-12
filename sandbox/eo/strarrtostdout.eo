@@ -1,0 +1,16 @@
++package sandbox
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
+
+[args...] > appStrarrtostdout
+  strarrtostdout args > @
+
+[arr] > strarrtostdout
+  each. > @
+    arr
+    []
+      [current] > each
+        stdout > @
+          sprintf
+            "%s "
+            current
