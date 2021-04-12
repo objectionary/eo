@@ -39,6 +39,14 @@ public class EOstring extends EOObject {
     }
 
     /***
+     * Parses a floating-point number from this string
+     * @return An object representing the float value of this string
+     */
+    public EOfloat EOtoFloat() {
+        return new EOfloat(Double.parseDouble(stringValue));
+    }
+
+    /***
      * Compares this string to the {@code rightString} free attribute
      * @param rightString a string to compare with
      * @return An object representing the truth value of the comparison of this string with the {@code rightString} free attribute
