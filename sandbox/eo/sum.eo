@@ -1,0 +1,10 @@
++package sandbox
+
+[arr] > sum
+  reduce. > @
+    arr
+    0
+    [accum current]
+      add. > @
+        accum
+        current
