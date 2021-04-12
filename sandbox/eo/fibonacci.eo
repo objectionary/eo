@@ -1,4 +1,5 @@
 +package sandbox
++alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 
 [args...] > appfibonacci

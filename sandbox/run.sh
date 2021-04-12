@@ -1,3 +1,4 @@
 #!/bin/bash
-
-java -cp target/classes:target/eo-runtime.jar -Xss40m  org.eolang.core.Main sandbox.app "$@"
+object_to_run=$1
+shift
+java -cp target/classes:target/eo-runtime.jar -Xss40m  org.eolang.core.Main sandbox.${object_to_run:-app} "$@"
