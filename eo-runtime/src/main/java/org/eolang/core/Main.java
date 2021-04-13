@@ -55,6 +55,7 @@ public class Main {
             if(appParams[i].getType().getCanonicalName().endsWith("[]")){
                 List<EOstring> objs = Arrays.stream(args).skip(i+1).map(arg -> new EOstring(arg)).collect(Collectors.toList());
                 appValues.add(objs.toArray(new EOstring[0]));
+                break;
             }else{
                 Object obj = new EODataObject(args[i+1]);
                 appValues.add(obj);

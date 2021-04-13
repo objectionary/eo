@@ -41,6 +41,7 @@ public abstract class EOObject implements Cloneable {
             if(methodParams[i].getType().getCanonicalName().endsWith("[]")){
                 List<EOObject> objs = Arrays.stream(freeAtt).skip(i).collect(Collectors.toList());
                 methodValues.add(objs.toArray(new EOObject[0]));
+                break;
             }else{
                 methodValues.add(freeAtt[i]);
             }
