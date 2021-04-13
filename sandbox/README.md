@@ -55,6 +55,7 @@ we will fix it.
 ## Examples
 - [Examples](#examples)
     - [between](#between)
+    - [contains](#contains)
     - [count](#count)
     - [factorial](#factorial)
     - [factorialTail](#factorialtail)
@@ -83,6 +84,24 @@ The program has dataized to: 1 is within [-5;9]:yes
 real	0m0.177s
 user	0m0.179s
 sys	0m0.028s
+```
+#### [contains](eo/contains.eo)
+Checks if the first argument is in the input array (the rest arguments).  
+*Expects string array in the stdin*  
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appContains 1 8 9 0 9 5 1
+```  
+
+**Result:**  
+```
+The program has dataized to: true
+
+real	0m0.245s
+user	0m0.305s
+sys	0m0.045s
 ```
 
 #### [count](eo/count.eo)
