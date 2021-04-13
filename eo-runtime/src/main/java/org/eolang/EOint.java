@@ -149,7 +149,7 @@ public class EOint extends EOObject {
      * Convert an integer to a float type
      * @return An object representing the {@code EOfloat} value of this int
      */
-    public EOfloat EOtoEOfloat(){
+    public EOfloat EOtoFloat(){
         return new EOfloat((double) this.value);
     }
 
