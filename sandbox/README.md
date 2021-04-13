@@ -55,6 +55,7 @@ we will fix it.
 ## Examples
 - [Examples](#examples)
     - [between](#between)
+    - [count](#count)
     - [factorial](#factorial)
     - [factorialTail](#factorialtail)
     - [fibonacciTail](#fibonaccitail)
@@ -81,6 +82,25 @@ The program has dataized to: 1 is within [-5;9]:yes
 real	0m0.177s
 user	0m0.179s
 sys	0m0.028s
+```
+
+#### [count](eo/count.eo)
+Count all the occurences of the first argument in the input array (the rest arguments).  
+*Expects string array in the stdin*  
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appCount a a b c d e f g a
+```  
+
+**Result:**  
+```
+The program has dataized to: 2
+
+real	0m0.195s
+user	0m0.217s
+sys	0m0.034s
 ```
 
 #### [factorial](eo/factorial.eo)
