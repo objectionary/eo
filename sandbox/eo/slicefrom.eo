@@ -1,0 +1,8 @@
++package sandbox
++alias slice sandbox.slice
+
+[arr start] > slicefrom
+  slice > @
+    arr
+    start
+    arr.length

@@ -1,0 +1,9 @@
++package sandbox
++alias arrtostrarr sandbox.arrtostrarr
++alias strarrtostdout sandbox.strarrtostdout
+
+[arr format] > arrtostdout
+  strarrtostdout > @
+    arrtostrarr
+      arr
+      format

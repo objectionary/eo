@@ -1,0 +1,8 @@
++package sandbox
++alias slice sandbox.slice
+
+[arr end] > sliceto
+  slice > @
+    arr
+    0
+    end

@@ -1,0 +1,7 @@
++package sandbox
++alias arrtostdout sandbox.arrtostdout
+
+[arr] > floatarrtostdout
+  arrtostdout > @
+    arr
+    "%f"

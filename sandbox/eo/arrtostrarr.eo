@@ -1,0 +1,11 @@
++package sandbox
++alias sprintf org.eolang.txt.sprintf
+
+[arr format] > arrtostrarr
+  map. > @
+    arr
+    []
+      [current] > map
+        sprintf > @
+          ^.^.format
+          current

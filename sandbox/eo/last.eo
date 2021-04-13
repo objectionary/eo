@@ -1,0 +1,8 @@
++package sandbox
+
+[arr] > last
+  get. > @
+    arr
+    sub.
+      arr.length
+      1

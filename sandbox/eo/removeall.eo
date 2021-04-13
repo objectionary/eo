@@ -1,0 +1,27 @@
++package sandbox
++alias sandbox.remove
++alias sandbox.first
++alias sandbox.strarrtostdout
++alias sandbox.slicefrom
++alias sandbox.slice
+
+[args...] > appRemoveAll
+  strarrtostdout > @
+    removeall
+      slicefrom args 3
+      slice args 0 3
+
+[arr1 arr2] > removeall
+  if. > @
+    or.
+      arr1.isEmpty
+      arr2.isEmpty
+    arr1
+    removeall
+      remove
+        arr1
+        first
+          arr2
+      slicefrom
+        arr2
+        1

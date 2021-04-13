@@ -1,0 +1,16 @@
++package sandbox
++alias merge sandbox.merge
++alias slice sandbox.slice
+
+[arr position] > removeat
+  merge > @
+    slice
+      arr
+      0
+      position
+    slice
+      arr
+      add.
+        position
+        1
+      arr.length
