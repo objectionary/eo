@@ -61,6 +61,7 @@ we will fix it.
     - [fibonacciTail](#fibonaccitail)
     - [mergesort](#mergesort)
     - [pi](#pi)
+    - [selectionsort](#selectionsort)
     - [strarrtostdout](#strarrtostdout)
     - [sum](#sum)
     - [unique](#unique)
@@ -202,6 +203,27 @@ The program has dataized to: Actual value = 3.1415926535; computed value(n=10000
 real	0m1.468s
 user	0m2.042s
 sys	0m0.090s
+```
+
+#### [selectionsort](eo/selectionsort.eo)
+Performs the selection sorting of the input array.  
+*Expects integer array in the stdin only*  
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appSelectionsort 5 1
+```  
+
+**Result:**  
+```
+1 
+5 
+The program has dataized to: true
+
+real	0m2.706s
+user	0m3.420s
+sys	0m0.140s
 ```
 
 #### [strarrtostdout](eo/strarrtostdout.eo)
