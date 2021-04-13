@@ -58,6 +58,7 @@ we will fix it.
     - [factorial](#factorial)
     - [factorialTail](#factorialtail)
     - [fibonacciTail](#fibonaccitail)
+    - [mergesort](#mergesort)
     - [pi](#pi)
     - [strarrtostdout](#strarrtostdout)
     - [sum](#sum)
@@ -138,6 +139,30 @@ The program has dataized to: 100th Fibonacci number is 3736710778780434371
 real	0m0.188s
 user	0m0.205s
 sys	0m0.046s
+```
+#### [mergesort](eo/mergesort.eo)
+Performs the merge sorting of the input array.  
+*Expects integer array in the stdin only*  
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appMergesort 5 9 4 3 1 0
+```  
+
+**Result:**  
+```
+0 
+1 
+3 
+4 
+5 
+9 
+The program has dataized to: true
+
+real	0m5.741s
+user	0m6.557s
+sys	0m0.178s
 ```
 
 #### [pi](eo/pi.eo)
