@@ -61,6 +61,16 @@ we will fix it.
     - [factorial](#factorial)
     - [factorialTail](#factorialtail)
     - [fibonacciTail](#fibonaccitail)
+    - [first](#first)
+    - [floatarrtostdout](#floatarrtostdout)
+    - [floatarrtostrarr](#floatarrtostrarr)
+    - [imax](#imax)
+    - [imin](#imin)
+    - [indexof](#indexof)
+    - [last](#last)
+    - [max](#max)
+    - [min](#min)
+    - [merge](#merge)
     - [mergesort](#mergesort)
     - [pi](#pi)
     - [remove](#remove)
@@ -214,6 +224,223 @@ real	0m0.188s
 user	0m0.205s
 sys	0m0.046s
 ```
+
+#### [first](eo/first.eo)
+Returns the first element of the given array[5,2,3] or returns error if array is empty  
+ 
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appFirst
+```  
+
+**Result:**  
+```
+The program has dataized to: 5
+
+real    0m0.288s
+user    0m0.139s
+sys     0m0.094s
+
+```
+
+#### [floatarrtostdout](eo/floatarrtostdout.eo)
+Prints an array of floating point numbers to the console.  
+ 
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appFloatArrToStdOut
+```  
+
+**Result:**  
+```
+5.000000 
+2.200000 
+3.100000 
+The program has dataized to: true
+
+real    0m0.184s
+user    0m0.139s
+sys     0m0.046s
+
+```
+
+#### [floatarrtostrarr](eo/floatarrtostrarr.eo)
+Converts an array of floats to a string array.
+ 
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appFloatArrToStrArr
+```  
+
+**Result:**  
+```
+5.000000 
+2.200000 
+3.100000 
+The program has dataized to: true
+
+real    0m0.168s
+user    0m0.133s
+sys     0m0.045s
+
+```
+
+#### [imax](eo/imax.eo)
+Returns the index of the max element in the array[5,2,3] or error if empty 
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appImax
+```  
+
+**Result:**  
+```
+0
+The program has dataized to: 0
+
+real    0m0.207s
+user    0m0.144s
+sys     0m0.048s
+
+```
+
+#### [imin](eo/imin.eo)
+Returns the index of the min element in the array[5,2,3] or error if empty 
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appImin
+```  
+
+**Result:**  
+```
+1
+The program has dataized to: 1
+
+real    0m0.210s
+user    0m0.156s
+sys     0m0.047s
+
+```
+
+#### [indexof](eo/indexof.eo)
+Returns the index of the first element in the array[5,2,3] equal to the given one[3], otherwise returns -1. 
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appIndexOf
+```  
+
+**Result:**  
+```
+2
+The program has dataized to: 2
+
+real    0m0.217s
+user    0m0.144s
+sys     0m0.051s
+
+```
+
+#### [last](eo/last.eo)
+Returns the last element of the array or error if empty 
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appLast
+```  
+
+**Result:**  
+```
+4
+The program has dataized to: 4
+
+real    0m0.677s
+user    0m0.178s
+sys     0m0.115s
+
+```
+
+#### [max](eo/max.eo)
+Returns the max element of the array or error if empty 
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appMax
+```  
+
+**Result:**  
+```
+5
+The program has dataized to: 5
+
+real    0m0.478s
+user    0m0.173s
+sys     0m0.104s
+
+```
+
+#### [min](eo/min.eo)
+Returns the min element of the array[5,2,4] or error if empty 
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appMin
+```  
+
+**Result:**  
+```
+2
+The program has dataized to: 2
+
+real    0m0.304s
+user    0m0.138s
+sys     0m0.049s
+
+```
+
+#### [merge](eo/merge.eo)
+Performs the merge of to arrays[1,2] and [3,4].  
+
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appMerge 
+```  
+
+**Result:**  
+```
+1 
+2 
+3 
+4 
+The program has dataized to: true
+
+real    0m0.203s
+user    0m0.149s
+sys     0m0.047s
+
+```
+
 #### [mergesort](eo/mergesort.eo)
 Performs the merge sorting of the input array.  
 *Expects integer array in the stdin only*  

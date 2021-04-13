@@ -1,4 +1,6 @@
 +package sandbox
++alias sandbox.floatarrtostdout
++alias sandbox.strarrtointarr
 
 [arr] > intarrtofloatarr
   map. > @
@@ -6,3 +8,9 @@
     []
       [current] > map
         current.toFloat > @
+
+[args...] > appIntArrToFloat
+  floatarrtostdout > @
+    intarrtofloatarr
+      strarrtointarr
+        args

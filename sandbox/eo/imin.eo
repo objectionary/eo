@@ -1,9 +1,21 @@
 +package sandbox
 +alias indexof sandbox.indexof
 +alias min sandbox.min
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 
 [arr] > imin
   indexof > @
     arr
     min
       arr
+
+[args...] > appImin
+  stdout > @
+    sprintf
+      "%d"
+      imin
+        *
+          5
+          2
+          3
