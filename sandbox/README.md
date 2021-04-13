@@ -62,6 +62,7 @@ we will fix it.
     - [fibonacciTail](#fibonaccitail)
     - [mergesort](#mergesort)
     - [pi](#pi)
+    - [remove](#remove)
     - [selectionsort](#selectionsort)
     - [strarrtostdout](#strarrtostdout)
     - [sum](#sum)
@@ -85,6 +86,7 @@ real	0m0.177s
 user	0m0.179s
 sys	0m0.028s
 ```
+
 #### [contains](eo/contains.eo)
 Checks if the first argument is in the input array (the rest arguments).  
 *Expects string array in the stdin*  
@@ -222,6 +224,31 @@ The program has dataized to: Actual value = 3.1415926535; computed value(n=10000
 real	0m1.468s
 user	0m2.042s
 sys	0m0.090s
+```
+
+#### [remove](eo/remove.eo)
+Removes the first argument from the input array (the rest arguments).  
+*Expects string array in the stdin*  
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appRemove 1 0 5 7 8 9 1 4
+```  
+
+**Result:**  
+```
+0 
+5 
+7 
+8 
+9 
+4 
+The program has dataized to: true
+
+real	0m0.461s
+user	0m0.998s
+sys	0m0.055s
 ```
 
 #### [selectionsort](eo/selectionsort.eo)
