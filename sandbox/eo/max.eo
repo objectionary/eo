@@ -1,4 +1,6 @@
 +package sandbox
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 
 [arr] > max
   reduce. > @
@@ -14,3 +16,13 @@
             current
           current
           accum
+
+[args...] > appMax
+  stdout > @
+    sprintf
+      "%d"
+      max
+        *
+          5
+          2
+          4

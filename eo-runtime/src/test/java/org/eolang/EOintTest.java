@@ -272,7 +272,7 @@ class EOintTest {
     @Test
     void EOtoEOfloat() {
         final EOint left = new EOint(2L);
-        final EOfloat floatValue = left.EOtoEOfloat();
+        final EOfloat floatValue = left.EOtoFloat();
 
         MatcherAssert.assertThat(floatValue._getData().toFloat(), Matchers.equalTo(2.0));
     }

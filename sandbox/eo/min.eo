@@ -1,4 +1,6 @@
 +package sandbox
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 
 [arr] > min
   reduce. > @
@@ -14,3 +16,13 @@
             current
           current
           accum
+
+[args...] > appMin
+  stdout > @
+    sprintf
+      "%d"
+      min
+        *
+          5
+          2
+          4
