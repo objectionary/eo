@@ -55,6 +55,7 @@ we will fix it.
 ## Examples
 - [Examples](#examples)
     - [between](#between)
+    - [binarytree](#binarytree)
     - [contains](#contains)
     - [count](#count)
     - [factorial](#factorial)
@@ -85,6 +86,37 @@ The program has dataized to: 1 is within [-5;9]:yes
 real	0m0.177s
 user	0m0.179s
 sys	0m0.028s
+```
+
+#### [binarytree](eo/binarytree.eo)
+Constructs this binary tree in RAM:  
+```
+                |--- nil
+      |--- 2 ---|
+      |         |--- nil
+1 --- |
+      |         |--- 4
+      |--- 3 ---|
+                |--- nil
+```  
+And then sums its nodes and counts them.  
+*Expects no arguments in stdin*  
+[Back to Contents](#examples)  
+
+**How to Run**
+```
+./run.sh appBinaryTree
+```  
+
+**Result:**  
+```
+The program has dataized to: Sum of nodes: 10
+Count of nodes:4
+
+
+real	0m0.210s
+user	0m0.197s
+sys	0m0.045s
 ```
 
 #### [contains](eo/contains.eo)
@@ -227,13 +259,13 @@ sys	0m0.090s
 ```
 
 #### [remove](eo/remove.eo)
-Removes the first argument from the input array (the rest arguments).  
+Removes the first occurence of the first argument from the input array (the rest arguments).  
 *Expects string array in the stdin*  
 [Back to Contents](#examples)  
 
 **How to Run**
 ```
-./run.sh appRemove 1 0 5 7 8 9 1 4
+./run.sh appRemove 1 0 5 7 8 9 1 4 1
 ```  
 
 **Result:**  
@@ -244,6 +276,7 @@ Removes the first argument from the input array (the rest arguments).
 8 
 9 
 4 
+1
 The program has dataized to: true
 
 real	0m0.461s
