@@ -1,4 +1,5 @@
 +package sandbox
++alias intarrtostdout sandbox.intarrtostdout
 
 [arr1 arr2] > merge
   reduce. > @
@@ -9,3 +10,13 @@
         append. > @
           accum
           current
+
+[args...] > appMerge
+  intarrtostdout > @
+    merge
+      *
+        1
+        2
+      *
+        3
+        4

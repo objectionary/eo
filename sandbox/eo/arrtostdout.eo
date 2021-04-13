@@ -7,3 +7,8 @@
     arrtostrarr
       arr
       format
+
+[args...] > appArrStdOut
+  arrtostdout > @
+    (* 1 2 3)
+    "%d"
