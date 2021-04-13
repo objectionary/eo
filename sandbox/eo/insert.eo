@@ -1,0 +1,15 @@
++package sandbox
++alias merge sandbox.merge
++alias slicefrom sandbox.slicefrom
++alias sliceto sandbox.sliceto
+
+[arr element position] > insert
+  merge > @
+    append.
+      sliceto
+        arr
+        position
+      element
+    slicefrom
+      arr
+      position

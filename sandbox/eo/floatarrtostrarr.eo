@@ -1,0 +1,7 @@
++package sandbox
++alias arrtostrarr sandbox.arrtostrarr
+
+[arr] > floatarrtostrarr
+  arrtostrarr > @
+    arr
+    "%f"

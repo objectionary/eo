@@ -21,19 +21,9 @@ public class EOData {
         if (_data.getClass().equals(String.class)) {
             return (String) _data;
         }
-        if (_data.getClass().equals(Long.class)) {
+        else {
             return _data.toString();
         }
-        if (_data.getClass().equals(Integer.class)) {
-            return _data.toString();
-        }
-        if (_data.getClass().equals(Double.class)) {
-            return _data.toString();
-        }
-        if (_data.getClass().equals(Float.class)) {
-            return _data.toString();
-        }
-        return "";
     }
 
     /**

@@ -25,14 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -48,6 +40,14 @@ import org.eolang.maven.transpiler.mediumcodemodel.EOSourceFile;
 import org.eolang.maven.transpiler.mediumcodemodel.EOTargetFile;
 import org.eolang.maven.transpiler.xml2medium.XML2MediumParser;
 import org.slf4j.impl.StaticLoggerBinder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Compile.

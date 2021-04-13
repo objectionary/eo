@@ -1,0 +1,27 @@
++package sandbox
+
+[arr element] > indexof
+  subIndexOf > @
+    arr
+    element
+    0
+
+[arr element i] > subIndexOf
+  if. > @
+    eq.
+      arr.length
+      i
+    -1
+    if.
+      eq.
+        element
+        get.
+          arr
+          i
+      i
+      subIndexOf
+        arr
+        element
+        add.
+          i
+          1

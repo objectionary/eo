@@ -1,0 +1,26 @@
++package sandbox
+
+[arr predicate] > findindex
+  subFindIndex > @
+    arr
+    predicate
+    0
+
+[arr predicate i] > subFindIndex
+  if. > @
+    eq.
+      arr.length
+      i
+    -1
+    if.
+      predicate.execute
+        get.
+          arr
+          i
+      i
+      subFindIndex
+        arr
+        predicate
+        add.
+          i
+          1

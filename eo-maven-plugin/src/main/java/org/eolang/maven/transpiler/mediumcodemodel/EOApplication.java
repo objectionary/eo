@@ -3,6 +3,7 @@ package org.eolang.maven.transpiler.mediumcodemodel;
 import org.ainslec.picocog.PicoWriter;
 import org.eolang.EOarray;
 import org.eolang.core.EOObject;
+import org.eolang.core.EOThunk;
 import org.eolang.maven.transpiler.medium2target.TranslationCommons;
 
 import java.util.ArrayList;
@@ -328,7 +329,9 @@ public class EOApplication extends EOSourceEntity {
     private void transpileArgs(PicoWriter w) {
         for (int i = 0; i < arguments.size(); i++) {
             EOApplication arg = arguments.get(i);
+            w.write(String.format("new %s(() -> (", EOThunk.class.getSimpleName()));
             arg.transpileApplication(w);
+            w.write("))");
             if (i != arguments.size() - 1) {
                 w.write(", ");
             }

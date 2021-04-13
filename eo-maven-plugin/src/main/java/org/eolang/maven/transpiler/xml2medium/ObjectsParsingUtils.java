@@ -1,12 +1,10 @@
 package org.eolang.maven.transpiler.xml2medium;
 
-import org.w3c.dom.*;
 import org.eolang.maven.transpiler.mediumcodemodel.*;
+import org.w3c.dom.*;
 
-import javax.print.Doc;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;

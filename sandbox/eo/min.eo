@@ -1,0 +1,16 @@
++package sandbox
+
+[arr] > min
+  reduce. > @
+    arr
+    get.
+      arr
+      0
+    []
+      [accum current] > reduce
+        if. > @
+          greater.
+            accum
+            current
+          current
+          accum

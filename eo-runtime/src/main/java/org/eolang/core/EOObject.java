@@ -1,8 +1,6 @@
 package org.eolang.core;
 
-import org.eolang.EOstring;
 import org.eolang.core.data.EOData;
-import org.eolang.core.data.EODataObject;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

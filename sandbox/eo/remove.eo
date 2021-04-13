@@ -1,0 +1,25 @@
++package sandbox
++alias sandbox.indexof
++alias sandbox.removeat
++alias sandbox.strarrtostdout
++alias sandbox.slicefrom
+
+[args...] > appRemove
+  strarrtostdout > @
+    remove
+      slicefrom args 1
+      args.get 0
+
+[arr element] > remove
+  indexof > position
+    arr
+    element
+
+  if. > @
+    eq.
+      -1
+      position
+    arr
+    removeat
+      arr
+      position

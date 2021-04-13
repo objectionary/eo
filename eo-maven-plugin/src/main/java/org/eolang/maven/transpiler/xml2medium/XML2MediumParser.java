@@ -1,10 +1,10 @@
 package org.eolang.maven.transpiler.xml2medium;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 import org.eolang.maven.transpiler.mediumcodemodel.EOAbstraction;
 import org.eolang.maven.transpiler.mediumcodemodel.EOSourceEntity;
 import org.eolang.maven.transpiler.mediumcodemodel.EOSourceFile;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

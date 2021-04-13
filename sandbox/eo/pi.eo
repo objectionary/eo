@@ -1,14 +1,14 @@
 +package sandbox
-+alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 
-[args...] > apppi
-  stdout > @
-    sprintf
-      "%f"
-      compute.
-        pi
-        (args.get 0).toInt
+[args...] > appPi
+  sprintf > @
+    "Actual value = %.10f; computed value(n=%d) = %.10f"
+    pi
+    (args.get 0).toInt > n
+    compute.
+      pi
+      n
 
 [] > pi
   3.1415926535 > @

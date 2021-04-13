@@ -27,10 +27,11 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
+import org.eolang.parser.Spy;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.eolang.parser.Spy;
 
 /**
  * The spy to log all results.

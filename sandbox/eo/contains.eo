@@ -1,0 +1,15 @@
++package sandbox
++alias indexof sandbox.indexof
++alias sandbox.slicefrom
+
+[args...] > appContains
+  contains > @
+    slicefrom args 1
+    args.get 0
+
+[arr element] > contains
+  greater. > @
+    indexof
+      arr
+      element
+    -1

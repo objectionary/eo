@@ -1,0 +1,9 @@
++package sandbox
++alias indexof sandbox.indexof
++alias min sandbox.min
+
+[arr] > imin
+  indexof > @
+    arr
+    min
+      arr

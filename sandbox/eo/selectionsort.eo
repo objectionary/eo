@@ -1,0 +1,29 @@
++package sandbox
++alias remove sandbox.remove
++alias min sandbox.min
++alias sandbox.intarrtostdout
++alias sandbox.strarrtointarr
+
+[args...] > appSelectionsort
+  intarrtostdout > @
+    selectionsort
+      strarrtointarr
+        args
+
+[arr] > selectionsort
+  subSelectionSort > @
+    *
+    arr
+  [accum arr] > subSelectionSort
+    if. > @
+      arr.isEmpty
+      accum
+      subSelectionSort
+        append.
+          accum
+          min
+            arr
+        remove
+          arr
+          min
+            arr

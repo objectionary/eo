@@ -1,0 +1,53 @@
++package sandbox
++alias merge sandbox.merge
++alias slicefrom sandbox.slicefrom
++alias insert sandbox.insert
++alias first sandbox.first
+
+[arr] > insertionsort
+  subInsertionSort > @
+    *
+    arr
+
+[accum arr] > subInsertionSort
+  if. > @
+    arr.isEmpty
+    accum
+    subInsertionSort
+      insert
+        accum
+        first
+          arr
+        insertionIndexOf
+          accum
+          first
+            arr
+      slicefrom
+        arr
+        1
+
+[arr element] > insertionIndexOf
+  subInsertionIndexOf > @
+    arr
+    element
+    0
+
+[arr element i] > subInsertionIndexOf
+  if. > @
+    eq.
+      i
+      arr.length
+    i
+    if.
+      less.
+        get.
+          arr
+          i
+        element
+      subInsertionIndexOf
+        arr
+        element
+        add.
+          i
+          1
+      i
