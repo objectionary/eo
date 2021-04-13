@@ -1,7 +1,5 @@
 +package sandbox
-+alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
-
 
 [x left right] > between
   and. > @
@@ -12,10 +10,16 @@
       x
       right
 
-[args...] > appbetween
-   sprintf > @
-    "%b"
-    between
-      2
-      1
-      3
+[args...] > appBetween
+  sprintf > @
+    "%d is within [%d;%d]:%s"
+    x
+    left
+    right
+    if.
+      between
+        (args.get 0).toInt > x
+        (args.get 1).toInt > left
+        (args.get 2).toInt > right
+      "yes"
+      "no"
