@@ -69,7 +69,7 @@ public class EObool extends EOObject {
     public EObool EOor(EOObject... eoObjects) {
         Boolean eoBool = this.baseBool;
         for (EOObject eoObject : eoObjects) {
-            if (!eoBool) {
+            if (eoBool) {
                 break;
             }
             eoBool |= eoObject._getData().toBoolean();

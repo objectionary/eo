@@ -35,12 +35,11 @@
       0.0
 
 [start input] > inputshapes
-  if. > type
-    start.geq (input.length)
-    0
-    (input.get start).toInt
+  toEObooInt. > type
+    input.get
+      start
   if. > @
-    0.eq type
+    (start.geq (input.length)).or (0.eq type)
     *
     if.
       1.eq
