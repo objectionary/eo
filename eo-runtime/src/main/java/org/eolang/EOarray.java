@@ -12,7 +12,7 @@ import java.util.List;
 public class EOarray extends EOObject {
     private final List<EOObject> _array;
 
-    public EOarray(){
+    public EOarray() {
         _array = List.of();
     }
 
@@ -73,7 +73,7 @@ public class EOarray extends EOObject {
      */
     public EOObject EOreduce(EOObject accumulator, EOObject reduceFunction) {
         EOObject out = accumulator;
-        for (EOObject eoObject: this._array) {
+        for (EOObject eoObject : this._array) {
             out = reduceFunction._getAttribute("EOreduce", out, eoObject)._getDecoratedObject();
         }
         return out;
@@ -87,7 +87,7 @@ public class EOarray extends EOObject {
     public EOarray EOmap(EOObject mapFunction) {
         int length = _array.size();
         EOObject[] mappedArray = new EOObject[length];
-        for (int i=0;i<length;i++) {
+        for (int i = 0; i < length; i++) {
             mappedArray[i] = mapFunction._getAttribute("EOmap", _array.get(i))._getDecoratedObject();
         }
         return new EOarray(mappedArray);
@@ -101,7 +101,7 @@ public class EOarray extends EOObject {
     public EOarray EOmapi(EOObject mapiFunction) {
         int length = _array.size();
         EOObject[] mappedArray = new EOObject[length];
-        for (int i=0;i<length;i++) {
+        for (int i = 0; i < length; i++) {
             mappedArray[i] = mapiFunction._getAttribute("EOmapi", _array.get(i), new EODataObject(i))._getDecoratedObject();
         }
         return new EOarray(mappedArray);
@@ -114,7 +114,7 @@ public class EOarray extends EOObject {
      */
     public EObool EOeach(EOObject eachFunction) {
         int length = _array.size();
-        for (int i=0;i<length;i++) {
+        for (int i = 0; i < length; i++) {
             eachFunction._getAttribute("EOeach", _array.get(i))._getData();
         }
         return new EObool(true);
