@@ -20,8 +20,7 @@ public class EOData {
     public String toString() {
         if (_data.getClass().equals(String.class)) {
             return (String) _data;
-        }
-        else {
+        } else {
             return _data.toString();
         }
     }

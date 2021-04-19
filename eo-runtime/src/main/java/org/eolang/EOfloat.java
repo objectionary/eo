@@ -44,7 +44,7 @@ public class EOfloat extends EOObject {
      * @return An object representing the quotient of this float divided by the {@code divisor} free attribute
      */
     public EOfloat EOdiv(EOObject divisor) {
-        if(divisor._getData().toFloat() == 0.0){
+        if (divisor._getData().toFloat() == 0.0) {
             throw new ArithmeticException("Division by zero not possible");
         }
         return new EOfloat(this.value / divisor._getData().toFloat());

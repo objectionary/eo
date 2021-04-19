@@ -301,13 +301,13 @@ public class EOAbstraction extends EOSourceEntity {
         if (!getScopeType().equals("package")) {
             EOAbstraction scope = (EOAbstraction) getScope();
             if (scope.anonymousName != null) {
-                TranslationCommons.bigComment(w, String.format("Returns the parent object '%s' of this object", scope.anonymousName));
+                TranslationCommons.bigComment(w, String.format("Declares the parent object '%s' of this object.", scope.anonymousName));
             }
             else {
-                TranslationCommons.bigComment(w, String.format("Returns the parent object '%s' of this object", scope.getInstanceName().get()));
+                TranslationCommons.bigComment(w, String.format("Declares the parent object '%s' of this object.", scope.getInstanceName().get()));
             }
             w.writeln("@Override");
-            w.writeln_r(String.format("public %s _getParentObject() {", EOObject.class.getSimpleName()));
+            w.writeln_r(String.format("protected %s _parent() {", EOObject.class.getSimpleName()));
             if (scope.anonymousName != null) {
                 w.writeln(String.format("return %s.this;", scope.anonymousName));
             }
@@ -322,7 +322,7 @@ public class EOAbstraction extends EOSourceEntity {
     private void transpileDecoratee(PicoWriter w) {
         Optional<EOApplication> decoratee = boundAttributes.stream().filter(o -> o.getName().orElse("").equals("@")).findFirst();
         if (decoratee.isPresent()) {
-            TranslationCommons.bigComment(w, "The decoratee of this object.");
+            TranslationCommons.bigComment(w, "Declares the decoratee of this object.");
             decoratee.get().transpile(w);
             // remove it to avoid double transpilation
             boundAttributes.remove(decoratee.get());

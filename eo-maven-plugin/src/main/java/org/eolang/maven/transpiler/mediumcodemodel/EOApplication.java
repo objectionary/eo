@@ -228,19 +228,20 @@ public class EOApplication extends EOSourceEntity {
         if (name.get().equals("@")) {
             // decoration
             w.writeln("@Override");
-            methodName = "_getDecoratedObject";
+            methodName = "_decoratee";
         }
         else {
             // bound attribute of some type
             methodName = targetName.get();
         }
 
+        boolean isDecoratee = name.get().equals("@");
         if (wrappedAbstraction != null) {
             // abstraction-based bound attribute
-            if (!name.get().equals("@")){
+            if (!isDecoratee){
                 TranslationCommons.bigComment(w, String.format("Abstraction-based bound attribute object '%s'", this.name.get()));
             }
-            w.writeln_r(String.format("public %s %s(%s) {", EOObject.class.getSimpleName(), methodName, wrappedAbstraction.getArgsString()));
+            w.writeln_r(String.format("%s %s %s(%s) {", isDecoratee ? "protected" : "public", EOObject.class.getSimpleName(), methodName, wrappedAbstraction.getArgsString()));
 
             if(anonymousObjects.size() > 0) {
                 TranslationCommons.bigComment(w, "Anonymous objects used in the scope of this method");
@@ -259,10 +260,10 @@ public class EOApplication extends EOSourceEntity {
         }
         else {
             // application based bound attribute
-            if (!name.get().equals("@")){
+            if (!isDecoratee){
                 TranslationCommons.bigComment(w, String.format("Application-based bound attribute object '%s'", this.name.get()));
             }
-            w.writeln_r(String.format("public %s %s() {", EOObject.class.getSimpleName(), methodName));
+            w.writeln_r(String.format("%s %s %s() {", isDecoratee ? "protected" : "public", EOObject.class.getSimpleName(), methodName));
 
             if(anonymousObjects.size() > 0) {
                 TranslationCommons.bigComment(w, "Anonymous objects used in the scope of this method");

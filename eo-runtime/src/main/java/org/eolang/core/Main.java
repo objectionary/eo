@@ -21,6 +21,7 @@ public class Main {
 
     /**
      * Constructor
+     *
      * @param out The output
      */
     public Main(final PrintStream out) {
@@ -29,6 +30,7 @@ public class Main {
 
     /**
      * The method called by JVM when the program starts.
+     *
      * @param args Command line args
      * @throws Exception If fails
      */
@@ -38,6 +40,7 @@ public class Main {
 
     /**
      * The same method, but not static.
+     *
      * @param args Command line args
      * @throws Exception If fails
      */
@@ -51,22 +54,23 @@ public class Main {
                 .findFirst().get();
         Parameter[] appParams = appConstructor.getParameters();
         List<Object> appValues = new ArrayList<>();
-        for(int i=0; i<appParams.length; i++){
-            if(appParams[i].getType().getCanonicalName().endsWith("[]")){
-                List<EOstring> objs = Arrays.stream(args).skip(i+1).map(arg -> new EOstring(arg)).collect(Collectors.toList());
+        for (int i = 0; i < appParams.length; i++) {
+            if (appParams[i].getType().getCanonicalName().endsWith("[]")) {
+                List<EOstring> objs = Arrays.stream(args).skip(i + 1).map(arg -> new EOstring(arg)).collect(Collectors.toList());
                 appValues.add(objs.toArray(new EOstring[0]));
                 break;
-            }else{
-                Object obj = new EODataObject(args[i+1]);
+            } else {
+                Object obj = new EODataObject(args[i + 1]);
                 appValues.add(obj);
             }
         }
-        EOObject app = (EOObject)appConstructor.newInstance(appValues.toArray());
+        EOObject app = (EOObject) appConstructor.newInstance(appValues.toArray());
         System.out.println(String.format("The program has dataized to: %s", app._getData().toString()));
     }
 
     /**
      * Reads the version from resources and prints it.
+     *
      * @throws IOException If fails
      */
     private void version() throws IOException {
@@ -77,7 +81,7 @@ public class Main {
                                      StandardCharsets.UTF_8)
                      )
         ) {
-            if(input.lines().findFirst().isPresent()){
+            if (input.lines().findFirst().isPresent()) {
                 this.stdout.printf(
                         "Eolang Runtime v.%s",
                         input.lines().findFirst().get()

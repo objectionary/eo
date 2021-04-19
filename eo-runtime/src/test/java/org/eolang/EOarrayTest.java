@@ -140,7 +140,7 @@ class EOarrayTest {
                 );
             }
         });
-        for(int i=0;i<array.EOlength()._getData().toInt();i++)
+        for (int i = 0; i < array.EOlength()._getData().toInt(); i++)
             MatcherAssert.assertThat(
                     newArray.EOget(new EODataObject(i))._getData().toInt(),
                     Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));
@@ -171,7 +171,7 @@ class EOarrayTest {
                 );
             }
         });
-        for(int i=0;i<array.EOlength()._getData().toInt();i++)
+        for (int i = 0; i < array.EOlength()._getData().toInt(); i++)
             MatcherAssert.assertThat(
                     newArray.EOget(new EODataObject(i))._getData().toInt(),
                     Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));

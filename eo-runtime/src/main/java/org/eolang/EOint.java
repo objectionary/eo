@@ -39,7 +39,7 @@ public class EOint extends EOObject {
     }
 
     public EOint EOdiv(EOObject divisor) {
-        if(divisor._getData().toInt() == 0){
+        if (divisor._getData().toInt() == 0) {
             throw new ArithmeticException("Division by zero not possible");
         }
         return new EOint(Math.floorDiv(this.value, divisor._getData().toInt()));
@@ -147,9 +147,10 @@ public class EOint extends EOObject {
 
     /**
      * Convert an integer to a float type
+     *
      * @return An object representing the {@code EOfloat} value of this int
      */
-    public EOfloat EOtoFloat(){
+    public EOfloat EOtoFloat() {
         return new EOfloat((double) this.value);
     }
 
