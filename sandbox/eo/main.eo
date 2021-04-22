@@ -1,0 +1,9 @@
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias util org.eolang.java.util
++alias java org.eolang.java
+
+[args...] > appMain
+  sprintf > @
+    "Today's date is %s\n"
+    (java.new "java.util.Date")
