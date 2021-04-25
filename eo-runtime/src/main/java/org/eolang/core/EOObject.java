@@ -102,9 +102,8 @@ public abstract class EOObject implements Cloneable {
             method.setAccessible(true);
             return (EOObject) method.invoke(this, _prepareFreeAtt(methodParams, arguments));
         } catch (Exception e) {
-            if (_getDecoratedObject() != null && _getDecoratedObject() != this) {
-                EOObject decorateeAttribute = _getDecoratedObject()._getAttribute(name, arguments);
-                return decorateeAttribute;
+            if (_decoratee() != null && _decoratee() != this) {
+                return _decoratee()._getAttribute(name, arguments);
             } else {
                 e.printStackTrace();
                 throw new RuntimeException(String.format("Can't access the %s attribute of the %s object", name, getClass().getTypeName()));
