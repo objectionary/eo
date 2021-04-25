@@ -1,9 +1,9 @@
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
-+alias util org.eolang.java.util
 +alias java org.eolang.java
 
 [args...] > appMain
   sprintf > @
-    "Today's date is %s\n"
+    "\nThe current time in milliseconds is %s\nToday's date is %s\n"
+    (java.exec "java.lang.System" "currentTimeMillis")
     (java.new "java.util.Date")
