@@ -5,5 +5,5 @@
 [args...] > appMain
   sprintf > @
     "\nThe current time in milliseconds is %s\nToday's date is %s\n"
-    (java.exec "java.lang.System" "currentTimeMillis")
+    (java.static "java.lang.System" "currentTimeMillis")
     (java.new "java.util.Date")

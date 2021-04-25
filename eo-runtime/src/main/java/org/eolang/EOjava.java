@@ -42,7 +42,7 @@ public class EOjava extends EOObject {
      * @param arguments EO string object(s) representing the arguments to pass to the java method
      * @return an {@code EOObject} representing the results of executing the java method
      */
-    public EOObject EOexec(EOObject javaClass, EOObject methodName, EOObject... arguments) {
+    public EOObject EOstatic(EOObject javaClass, EOObject methodName, EOObject... arguments) {
         EOObject result = new EOstring();
         try {
             Class<?> cls = Class.forName(javaClass._getData().toString());
