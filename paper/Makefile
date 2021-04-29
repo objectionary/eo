@@ -1,15 +1,8 @@
-all: article.pdf
-
-install:
-	gem install texsc
-	gem install texqc
-
-fast:
-	pdflatex --shell-escape article.tex
+all: eolang-paper.pdf
 
 clean:
 	rm -rf .DS_Store *.aux *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.pdf *.out
-	rm -rf _minted-article
+	rm -rf _minted-*
 
 %.pdf: %.tex main.bib *.tex
 	latexmk -pdf $<
