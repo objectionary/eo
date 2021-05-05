@@ -80,6 +80,21 @@ public class EOarray extends EOObject {
     }
 
     /***
+     * Performs the couple reduction operation of the base array object
+     * @param accumulator a partial/subtotal result
+     * @param reduceFunction represents the reduction function
+     * @return An object representing the final accumulated value of the coupled reduce operation
+     */
+    public EOObject EOcouplereduce(EOObject accumulator, EOObject reduceFunction) {
+        EOObject out = accumulator;
+        for (EOObject eoObject1 : this._array) {
+            for(EOObject eoObject2 : this._array){
+            out = reduceFunction._getAttribute("EOcouplereduce", out, eoObject1,eoObject2)._getDecoratedObject();
+        }}
+        return out;
+    }
+
+    /***
      * Performs a map operation on the base array object
      * @param mapFunction represents the map function
      * @return An {@code EOarray} object containing mapped elements
