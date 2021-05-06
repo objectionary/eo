@@ -17,7 +17,7 @@ class EOarrayTest {
      * checks if an array is empty
      */
     @Test
-    void isEmpty() {
+    void EOisEmpty() {
         EOarray array = new EOarray();
         MatcherAssert.assertThat(
                 array.EOisEmpty()._getData().toBoolean(),
@@ -31,7 +31,7 @@ class EOarrayTest {
      * checks if the length of the array is returned
      */
     @Test
-    void length() {
+    void EOlength() {
         EOarray array = new EOarray(
                 new EODataObject(1),
                 new EODataObject(3),
@@ -50,7 +50,7 @@ class EOarrayTest {
      * checks if the element at a specified position of the array is returned
      */
     @Test
-    void get() {
+    void EOget() {
         EOarray array = new EOarray(
                 new EODataObject(1),
                 new EODataObject(3),
@@ -70,7 +70,7 @@ class EOarrayTest {
      * checks if an element successfully appends to an array
      */
     @Test
-    void append() {
+    void EOappend() {
         EOarray array = new EOarray(
                 new EODataObject(1),
                 new EODataObject(3),
@@ -91,7 +91,7 @@ class EOarrayTest {
      * Checks if the reduction operation returns the correct subtotal/results
      */
     @Test
-    void reduce() {
+    void EOreduce() {
         EOarray array = new EOarray(
                 new EODataObject(1),
                 new EODataObject(3),
@@ -116,7 +116,7 @@ class EOarrayTest {
      * Checks if the map operation correctly maps each element of an array to another value (the square) correctly
      */
     @Test
-    void map() {
+    void EOmap() {
         EOarray array = new EOarray(
                 new EODataObject(1),
                 new EODataObject(3),
@@ -176,4 +176,5 @@ class EOarrayTest {
                     newArray.EOget(new EODataObject(i))._getData().toInt(),
                     Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));
     }
+
 }

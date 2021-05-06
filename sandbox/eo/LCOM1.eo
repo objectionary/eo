@@ -1,0 +1,21 @@
++package sandbox
+
+[name methods atts] > class
+
+[name atts] > method
+  couplereduce. > @
+  atts
+  methods
+    [res current comp] > couplereduce
+      if.> @
+       eq.
+         current
+         comp.name
+       add.
+         res
+         1
+
+[name] > att
+
+[graph] > lcom1/lcom3
+[] > @
