@@ -3,17 +3,33 @@
 [name methods atts] > class
 
 [name atts] > method
-  couplereduce. > @
-  atts
-  methods
-    [res current comp] > couplereduce
-      if.> @
-       eq.
-         current
-         comp.name
-       add.
-         res
-         1
+  true > nonworked
+
+[current compare] > mcohesion
+    if.
+      couplereduce. > @
+        current
+        compare
+        0
+        []
+          [cur comp] > couplereduce
+            if. > @
+             eq.
+              cur.atts
+              comp.atts
+                1
+            0
+//вернуть reduce первоначальный(Memory)
+
+
+
+
+
+//дальше нужно запустить рекурсию по списку методов класса, чтобы посчитать для каждого(заменяя его в массиве методов класса, на 0 или 1))
+// посчитать количество 0 и 1 в методе и найти разницу(LCOM1)
+
+
+
 
 [name] > att
 
