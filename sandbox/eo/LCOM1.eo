@@ -18,6 +18,91 @@
 +alias sprintf org.eolang.txt.sprintf
 +alias sandbox.count
 
+att "A" > testAttA
+att "B" > testAttB
+att "C" > testAttC
+
+* > testAtts
+  testAttA
+  testAttB
+  testAttC
+
+method > testMethodA
+  "onlyA"
+  *
+    testAttA
+method > testMethodB
+  "onlyB"
+  *
+    testAttB
+method > testMethodC
+  "onlyC"
+  *
+    testAttC
+method > testMethodAB
+  "methodAB"
+  *
+    testAttA
+    testAttB
+method > testMethodAC
+  "methodAC"
+  *
+    testAttA
+    testAttC
+method > testMethodBC
+  "methodBC"
+  *
+    testAttB
+    testAttC
+method > testMethodABC
+  "methodABC"
+  *
+    testAttA
+    testAttB
+    testAttC
+
+* > testMethods
+  testMethodA
+  testMethodB
+  testMethodC
+  testMethodAB
+  testMethodAC
+  testMethodBC
+  testMethodABC
+
+class > testClass
+  "testClass"
+  testMethods
+  testAtts
+
+[name methods atts] > class
+  pairsofmethods methods > pairs
+
+[name atts] > method
+  atts > listofatts
+  name > mthdname
+
+[name] > att
+  name > attname
+
+[a b] > tuple
+
+[methods] > pairsofmethods
+  reducei. > @
+    methods
+    *
+    []
+      [accum cur1 i1] > reducei
+        reducei. > @
+          (^.methods)
+          accum
+          []
+            [el cur2 i2] > reducei
+              if. > @
+                (i2.leq (^.i1))
+                (^.accum)
+                (^.accum).append (tuple (^.cur1) (^.cur2))
+
 [args...] > appLCOM1
   rec1 (class.pairs) 0 > subres
   lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
@@ -32,32 +117,6 @@
     sub.
       p
       q
-
-[name methods atts] > class
-  pairsofmethods methods > pairs
-
-[name atts] > method
-  atts > listofatts
-  name > mthdname
-
-[name] > att
-  name > attname
-
-[methods] > pairsofmethods
-  reducei. > @
-    methods
-    *
-    []
-    [accum cur1 i1] > reducei
-      reducei. > @
-        (^.methods)
-        accum
-        [el cur2 i2]
-          if (i2.leq (^.i1)) > @
-            accum
-            accum.append (tuple cur1 cur2)
-
-[a b] > tuple
 
 [arr index] > rec1
   if. > @
