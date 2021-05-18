@@ -1,0 +1,67 @@
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias sandbox.count
+
+[args...] > appLCOM1
+   rec1 (class.pairs) 0 > subres
+   lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
+    sprintf > @
+    "LCOM1 metric is %d\n"
+    res
+
+[p q] > lcom1
+  if. > @
+    q.less p
+    0
+    sub.
+    p
+    q
+
+[name methods atts] > class
+  pairsofmethods methods > pairs
+
+[name atts] > method
+  atts > listofatts
+  name > mthdname
+
+[name] > att
+  name > attname
+
+[methods] > pairsofmethods
+  reducei. > @
+    methods
+    *
+    []
+    [accum cur1 i1] > reducei
+      reducei. > @
+        ^.methods
+        accum
+        [el cur2 i2]
+          if (i2.leq ^.i1) > @
+            accum
+            accum.append (tuple cur1 cur2)
+
+[a b] > tuple
+
+[arr index] > rec1
+  if. > @
+    index.less (arr.length)
+      arr.get(index) > comp1
+      arr.get(index.add 1) > comp2
+        rec2 (comp1.listofatts) (comp2.listofatts) 0 > paircohesion
+          * > mthdscohesion
+          append.
+          paircohesion
+     rec1 arr (index.add 1)
+
+[att1 att2 index] > rec2
+  if. > @
+    index.less (att1.length)
+      each. > @
+        att2
+        []
+           [current] > each
+             if ((current.attname)eq (att1.get(index)).attname) > @
+               1
+             0
+     rec2 att1 att2 (index.add 1)

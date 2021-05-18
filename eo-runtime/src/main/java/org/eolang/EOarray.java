@@ -82,15 +82,30 @@ public class EOarray extends EOObject {
     /***
      * Performs the couple reduction operation of the base array object
      * @param accumulator a partial/subtotal result
-     * @param reduceFunction represents the reduction function
+     * @param couplereduceFunction represents the reduction function
      * @return An object representing the final accumulated value of the coupled reduce operation
      */
-    public EOObject EOcouplereduce(EOObject accumulator, EOObject reduceFunction) {
+    public EOObject EOcouplereduce(EOObject accumulator, EOObject couplereduceFunction) {
         EOObject out = accumulator;
         for (EOObject eoObject1 : this._array) {
             for(EOObject eoObject2 : this._array){
-            out = reduceFunction._getAttribute("EOcouplereduce", out, eoObject1,eoObject2)._getDecoratedObject();
+            out = couplereduceFunction._getAttribute("EOcouplereduce", out, eoObject1,eoObject2)._getDecoratedObject();
         }}
+        return out;
+    }
+
+    /***
+     * Performs the reduction operation of the base array object
+     * @param accumulator a partial/subtotal result
+     * @param reduceiFunction represents the reduction function
+     * @return An object representing the final accumulated value of the reduce operation
+     */
+    public EOObject EOreducei(EOObject accumulator, EOObject reduceiFunction) {
+        EOObject out = accumulator;
+        int length =_array.size();
+        for(int i = 0; i < length;i++){
+            out = reduceiFunction._getAttribute("EOreducei", out,_array.get(i),new EODataObject(i))._getDecoratedObject();
+            }
         return out;
     }
 
