@@ -7,7 +7,6 @@ import java.util.List;
 
 /***
  * Represents an array
- * @version %I%, %G%
  */
 public class EOarray extends EOObject {
     private final List<EOObject> _array;
@@ -80,7 +79,7 @@ public class EOarray extends EOObject {
     }
 
     /***
-     * Performs the couple reduction operation of the base array object
+     * Performs the reduction operation of the base array object
      * @param accumulator a partial/subtotal result
      * @param couplereduceFunction represents the reduction function
      * @return An object representing the final accumulated value of the coupled reduce operation
@@ -91,16 +90,11 @@ public class EOarray extends EOObject {
             for(EOObject eoObject2 : this._array){
             out = couplereduceFunction._getAttribute("EOcouplereduce", out, eoObject1,eoObject2)._getDecoratedObject();
         }}
-        return out;
-    }
-
-    /***
-     * Performs the reduction operation of the base array object
-     * @param accumulator a partial/subtotal result
+     /***
      * @param reduceiFunction represents the reduction function
      * @return An object representing the final accumulated value of the reduce operation
      */
-    public EOObject EOreducei(EOObject accumulator, EOObject reduceiFunction) {
+    public EOObject EOreducei(EOObject accumulator,EOObject reduceiFunction) {
         EOObject out = accumulator;
         int length =_array.size();
         for(int i = 0; i < length;i++){

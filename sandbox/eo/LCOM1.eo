@@ -1,11 +1,36 @@
+<<<<<<< HEAD
+=======
+# lcom1(основное вычисление метрики, передаем количество пустых и непустых) и если непустых больше чем пустых, то 0, иначе разность пустых и непустых)
+#
+#  pairsofmethods  было(получили массив всех уникальных пар методов)
+#
+#  rec1(принимает массив пар методов и начальный индекс 0)
+#  проверяет  индекс с длинной массива
+#  берет первую пару(метод(0) и метод(0+1)), присваивает их в переменные соответственно
+#  запускает рекурсию для списка атрибутов двух методов(передаем список атрибутов одного и второго и индекс 0), рекурсия возвращает результат 0 или 1 присваиваем переменной paircohesion
+#  создаем пустой массив и присваиваем переменной mthdscohesion(он содержит массив нулей и единиц в зависимости от cohesion пары методов)
+#  запускаем рекурсию для следующей пары элементов потому что перечедаем индекс начальный +1+1, то есть перескакиваем на следующую пару методов
+#
+#  rec2(принимает массив атрибутов одного метода(atts1) и массив атрибутов другого(atts2), начальный индекс 0)
+#  для каждого элемента массива atts2 проверяем, если совпадает имя с текущим atts1 от индекса(начальный 0), то возвращаем 1
+#  иначе 0
+#  и запускаем рекурсию для следующего(здесь единственное, я не додумался как сделать так чтобы при первом совпадении рекурсия завершалась и возвращала 1)
+#  соответственно передаем в повторную рекурсию те же два списка атрибутов и индекс увеличенный на единицу
+>>>>>>> upstream/master
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
 +alias sandbox.count
 
 [args...] > appLCOM1
+<<<<<<< HEAD
    rec1 (class.pairs) 0 > subres
    lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
     sprintf > @
+=======
+  rec1 (class.pairs) 0 > subres
+  lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
+  sprintf > @
+>>>>>>> upstream/master
     "LCOM1 metric is %d\n"
     res
 
@@ -14,8 +39,13 @@
     q.less p
     0
     sub.
+<<<<<<< HEAD
     p
     q
+=======
+      p
+      q
+>>>>>>> upstream/master
 
 [name methods atts] > class
   pairsofmethods methods > pairs
@@ -34,10 +64,17 @@
     []
     [accum cur1 i1] > reducei
       reducei. > @
+<<<<<<< HEAD
         ^.methods
         accum
         [el cur2 i2]
           if (i2.leq ^.i1) > @
+=======
+        (^.methods)
+        accum
+        [el cur2 i2]
+          if (i2.leq (^.i1)) > @
+>>>>>>> upstream/master
             accum
             accum.append (tuple cur1 cur2)
 
@@ -57,6 +94,7 @@
 [att1 att2 index] > rec2
   if. > @
     index.less (att1.length)
+<<<<<<< HEAD
       each. > @
         att2
         []
@@ -65,3 +103,16 @@
                1
              0
      rec2 att1 att2 (index.add 1)
+=======
+    each. > @
+      att2
+      []
+        [current] > each
+          if. > @
+            eq.
+              current.attname
+              (att1.get index).attname
+            1
+            0
+    rec2 att1 att2 (index.add 1)
+>>>>>>> upstream/master
