@@ -89,7 +89,7 @@ public class EOarray extends EOObject {
         int length =_array.size();
         for(int i = 0; i < length;i++){
             out = reduceiFunction._getAttribute("EOreducei", out,_array.get(i),new EODataObject(i))._getDecoratedObject();
-            }
+        }
         return out;
     }
 

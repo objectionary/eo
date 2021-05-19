@@ -104,7 +104,8 @@ class > testClass
                 (^.accum).append (tuple (^.cur1) (^.cur2))
 
 [args...] > appLCOM1
-  rec1 (class.pairs) 0 > subres
+  * > mthdscohesion
+  rec1 (class.pairs) 0 mthdscohesion > subres
   lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
   sprintf > @
     "LCOM1 metric is %d\n"
@@ -118,16 +119,12 @@ class > testClass
       p
       q
 
-[arr index] > rec1
+[arr index mthdscohesion] > rec1
   if. > @
     index.less (arr.length)
-      arr.get(index) > comp1
-      arr.get(index.add 1) > comp2
-        rec2 (comp1.listofatts) (comp2.listofatts) 0 > paircohesion
-          * > mthdscohesion
-          append.
-          paircohesion
-     rec1 arr (index.add 1)
+    mthdscohesion.append
+     rec2 (arr.get(index).listofatts) (arr.get(index.add 1).listofatts) 0
+    rec1 arr (index.add 1) mthdscohesion
 
 [att1 att2 index] > rec2
   if. > @
