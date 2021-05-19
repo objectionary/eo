@@ -25,7 +25,6 @@ att "C" > testAttC
 * > testAtts
   testAttA
   testAttB
-  testAttC
 
 method > testMethodA
   "onlyA"
@@ -64,11 +63,8 @@ method > testMethodABC
 * > testMethods
   testMethodA
   testMethodB
-  testMethodC
   testMethodAB
-  testMethodAC
-  testMethodBC
-  testMethodABC
+
 
 class > testClass
   "testClass"
@@ -108,16 +104,17 @@ class > testClass
 [att1 att2 index] > rec2
   if. > @
     index.less (att1.length)
-    each.
+    reduce.
       att2
+      0
       []
-        [current] > each
+        [current accum] > reduce
           if. > @
             eq.
               current.attname
               (^.^.att1.get (^.^.index)).attname
             1
-            0
+            accum
     rec2 att1 att2 (index.add 1)
 
 [arr index mthdscohesion] > rec1
@@ -136,8 +133,9 @@ class > testClass
       q
 
 [args...] > appLCOM1
+  testClass > name1
   * > mthdscohesion
-  rec1 (testClass.pairs) 0 mthdscohesion > subres
+  rec1 (name1.pairs) 0 mthdscohesion > subres
   lcom1 (count (subres.mthdscohesion) 0) (count (subres.mthdscohesion) 1) > res
   sprintf > @
     "LCOM1 metric is %d\n"
