@@ -106,7 +106,6 @@ class > testClass
 [args...] > appLCOM1
   * > mthdscohesion
   rec1 (class.pairs) 0 mthdscohesion > subres
-  rec1 (class.pairs) 0 > subres
   lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
   sprintf > @
     "LCOM1 metric is %d\n"
