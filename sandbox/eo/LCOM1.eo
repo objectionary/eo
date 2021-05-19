@@ -88,28 +88,44 @@ class > testClass
 [a b] > tuple
 
 [methods] > pairsofmethods
+  [i1 accum cur1] > reducer2
+    [el cur2 i2] > reducei
+      if. > @
+        (i2.leq (^.i1))
+        (^.accum)
+        (^.accum).append (tuple (^.cur1) (^.cur2))
+  [] > reducer
+    [accum cur1 i1] > reducei
+      reducei. > @
+        (^.methods)
+        accum
+        ((^.reducer2) i1 accum cur1)
   reducei. > @
     methods
     *
-    []
-      [accum cur1 i1] > reducei
-        reducei. > @
-          (^.methods)
-          accum
-          []
-            [el cur2 i2] > reducei
-              if. > @
-                (i2.leq (^.i1))
-                (^.accum)
-                (^.accum).append (tuple (^.cur1) (^.cur2))
+    reducer
 
-[args...] > appLCOM1
-  * > mthdscohesion
-  rec1 (class.pairs) 0 mthdscohesion > subres
-  lcom1 (count subres.mthdscohesion 0) (count subres.mthdscohesion 1) > res
-  sprintf > @
-    "LCOM1 metric is %d\n"
-    res
+[att1 att2 index] > rec2
+  if. > @
+    index.less (att1.length)
+    each.
+      att2
+      []
+        [current] > each
+          if. > @
+            eq.
+              current.attname
+              (^.^.att1.get (^.^.index)).attname
+            1
+            0
+    rec2 att1 att2 (index.add 1)
+
+[arr index mthdscohesion] > rec1
+  if. > @
+    index.less (arr.length)
+    mthdscohesion.append
+     rec2 ((arr.get index).listofatts) ((arr.get (index.add 1)).listofatts) 0
+    rec1 arr (index.add 1) mthdscohesion
 
 [p q] > lcom1
   if. > @
@@ -119,24 +135,10 @@ class > testClass
       p
       q
 
-[arr index mthdscohesion] > rec1
-  if. > @
-    index.less (arr.length)
-    mthdscohesion.append
-     rec2 (arr.get(index).listofatts) (arr.get(index.add 1).listofatts) 0
-    rec1 arr (index.add 1) mthdscohesion
-
-[att1 att2 index] > rec2
-  if. > @
-    index.less (att1.length)
-    each. > @
-      att2
-      []
-        [current] > each
-          if. > @
-            eq.
-              current.attname
-              (att1.get index).attname
-            1
-            0
-    rec2 att1 att2 (index.add 1)
+[args...] > appLCOM1
+  * > mthdscohesion
+  rec1 (testClass.pairs) 0 mthdscohesion > subres
+  lcom1 (count (subres.mthdscohesion) 0) (count (subres.mthdscohesion) 1) > res
+  sprintf > @
+    "LCOM1 metric is %d\n"
+    res
