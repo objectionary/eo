@@ -121,7 +121,7 @@ class > testClass
   if. > @
     index.less (arr.length)
     mthdscohesion.append
-     rec2 (((arr.get index).a).listofatts) (((arr.get index).a).listofatts) 0
+     rec2 (((arr.get index).a).listofatts) (((arr.get index).b).listofatts) 0
     rec1 arr (index.add 1) mthdscohesion
 
 [p q] > lcom1
