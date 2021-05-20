@@ -2,6 +2,7 @@ package org.eolang;
 
 import org.eolang.core.EOObject;
 import org.eolang.core.data.EODataObject;
+import org.paukov.combinatorics3.Generator;
 
 import java.util.List;
 
@@ -132,6 +133,14 @@ public class EOarray extends EOObject {
             eachFunction._getAttribute("EOeach", _array.get(i))._getData();
         }
         return new EObool(true);
+    }
+
+    public EOarray EOpairs() {
+        return new EOarray(Generator.combination(this._array.toArray(EOObject[]::new))
+                .simple(2)
+                .stream()
+                .map(pair -> new EOtuple(pair.get(0), pair.get(1)))
+                .toArray(EOObject[]::new));
     }
 
 }

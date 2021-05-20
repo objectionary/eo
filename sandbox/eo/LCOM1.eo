@@ -17,6 +17,8 @@
 +package sandbox
 +alias sprintf org.eolang.txt.sprintf
 +alias sandbox.count
++alias sandbox.strarrtostdout
++alias sandbox.intarrtostdout
 
 att "A" > testAttA
 att "B" > testAttB
@@ -25,6 +27,7 @@ att "C" > testAttC
 * > testAtts
   testAttA
   testAttB
+  testAttC
 
 method > testMethodA
   "onlyA"
@@ -64,7 +67,10 @@ method > testMethodABC
   testMethodA
   testMethodB
   testMethodAB
-
+  testMethodAC
+  testMethodBC
+  testMethodABC
+  testMethodC
 
 class > testClass
   "testClass"
@@ -72,57 +78,44 @@ class > testClass
   testAtts
 
 [name methods atts] > class
-  pairsofmethods methods > pairs
 
 [name atts] > method
-  atts > listofatts
-  name > mthdname
 
 [name] > att
-  name > attname
 
-[a b] > tuple
-
-[methods] > pairsofmethods
-  [i1 accum cur1] > reducer2
-    [el cur2 i2] > reducei
-      if. > @
-        (i2.leq (^.i1))
-        (^.accum)
-        (^.accum).append (tuple (^.cur1) (^.cur2))
-  [] > reducer
-    [accum cur1 i1] > reducei
-      reducei. > @
-        (^.methods)
-        accum
-        ((^.reducer2) i1 accum cur1)
-  reducei. > @
-    methods
-    *
-    reducer
-
-[att1 att2 index] > rec2
+[att1 att2 index result] > rec2
   if. > @
-    index.less (att1.length)
-    reduce.
-      att2
-      0
-      []
-        [current accum] > reduce
-          if. > @
-            eq.
-              current.attname
-              (^.^.att1.get (^.^.index)).attname
-            1
-            accum
-    rec2 att1 att2 (index.add 1)
+    index.geq (att1.length)
+    result
+    if.
+      (result.greater 0)
+      result
+      rec2
+        att1
+        att2
+        (index.add 1)
+        reduce.
+          att2
+          0
+          []
+            [accum current] > reduce
+              if. > @
+                eq.
+                  current.name
+                  (^.^.att1.get (^.^.index)).name
+                1
+                accum
 
 [arr index mthdscohesion] > rec1
   if. > @
-    index.less (arr.length)
-    mthdscohesion.append
-     rec2 (((arr.get index).a).listofatts) (((arr.get index).a).listofatts) 0
-    rec1 arr (index.add 1) mthdscohesion
+    index.geq (arr.length)
+    mthdscohesion
+    rec1
+      arr
+      (index.add 1)
+      append.
+        mthdscohesion
+        rec2 (((arr.get index).fst).atts) (((arr.get index).snd).atts) 0 0
 
 [p q] > lcom1
   if. > @
@@ -132,11 +125,36 @@ class > testClass
       p
       q
 
+#[args...] > appLCOM1
+#  strarrtostdout > @
+#    map.
+#      pairs.
+#        methods.
+#          testClass
+#      []
+#        [current] > map
+#          sprintf > @
+#            "(%s;%s)"
+#            current.fst.name
+#            current.snd.name
 [args...] > appLCOM1
-  testClass > name1
-  * > mthdscohesion
-  rec1 (name1.pairs) 0 mthdscohesion > subres
-  lcom1 (count (subres.mthdscohesion) 0) (count (subres.mthdscohesion) 1) > res
+  rec1 (testClass.methods.pairs) 0 * > subres
+  lcom1 (count subres 0) (count subres 1) > res
+  strarrtostdout > pairsString
+    map.
+      pairs.
+        methods.
+          testClass
+      []
+        [current] > map
+          sprintf > @
+            "\n(%s;%s)"
+            current.fst.name
+            current.snd.name
+  intarrtostdout subres > subresString
+  sprintf "LCOM1 metric is %d\n" res > resString
   sprintf > @
-    "LCOM1 metric is %d\n"
-    res
+    "PAIRS:%s\nSUBRES:%s\nRESULT_METRIC:%s\n"
+    pairsString
+    subresString
+    resString
