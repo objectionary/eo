@@ -120,10 +120,10 @@ class > testClass
 [p q] > lcom1
   if. > @
     q.less p
-    0
     sub.
       p
       q
+    0
 
 #[args...] > appLCOM1
 #  strarrtostdout > @
