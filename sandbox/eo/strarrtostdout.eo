@@ -6,11 +6,12 @@
   strarrtostdout args > @
 
 [arr] > strarrtostdout
-  each. > @
+  reduce. > @
     arr
+    "result:"
     []
-      [current] > each
-        stdout > @
-          sprintf
-            "%s "
-            current
+      [accum current] > reduce
+        sprintf > @
+          "%s %s"
+          accum
+          current
