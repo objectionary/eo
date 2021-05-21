@@ -1,0 +1,131 @@
++package sandbox
++alias sprintf org.eolang.txt.sprintf
++alias sandbox.count
++alias sandbox.strarrtostdout
++alias sandbox.floatarrtostdout
+
+att "A" > testAttA
+att "B" > testAttB
+att "C" > testAttC
+
+* > testAtts
+  testAttA
+  testAttB
+  testAttC
+
+method > testMethodA
+  "onlyA"
+  *
+    testAttA
+method > testMethodB
+  "onlyB"
+  *
+    testAttB
+method > testMethodC
+  "onlyC"
+  *
+    testAttC
+method > testMethodAB
+  "methodAB"
+  *
+    testAttA
+    testAttB
+method > testMethodAC
+  "methodAC"
+  *
+    testAttA
+    testAttC
+method > testMethodBC
+  "methodBC"
+  *
+    testAttB
+    testAttC
+method > testMethodABC
+  "methodABC"
+  *
+    testAttA
+    testAttB
+    testAttC
+
+* > testMethods
+  testMethodA
+  testMethodB
+  testMethodAB
+  testMethodAC
+  testMethodBC
+  testMethodABC
+  testMethodC
+
+class > testClass
+  "testClass"
+  testMethods
+  testAtts
+
+[name methods atts] > class
+
+[name atts] > method
+
+[name] > att
+
+[att1 att2 index result] > rec2
+  if. > @
+    index.geq (att1.length)
+    result
+    if.
+      (result.greater 0)
+      result
+      rec2
+        att1
+        att2
+        (index.add 1)
+        reduce.
+          att2
+          0
+          []
+            [accum current] > reduce
+              if. > @
+                eq.
+                  current.name
+                  (^.^.att1.get (^.^.index)).name
+                1
+                accum
+
+[arr arr1 index mthdscohesion] > rec0
+  if. > @
+    index.geq (arr.length)
+    mthdscohesion
+    rec0
+      arr
+      arr1
+      (index.add 1)
+      append.
+        mthdscohesion
+        rec2 ((arr.get index).atts) arr1 0 0
+
+[m a mA summA] > lcom3
+  if. > @
+    or.
+      m.less 2
+      a.less 1
+    0
+    div.
+      ((m.toFloat).sub ((summA.toFloat).div (a.toFloat)))
+      ((m.toFloat).sub 1.0)
+
+[class] > res
+  if. > @
+    or.
+      (((class.atts).length).less 1)
+      (((class.methods).length).less 2)
+    0
+    lcom3
+      class.methods.length
+      class.atts.length
+      count (rec0 (class.methods) (class.atts) 0 *) 1
+      count (rec0 (class.methods) (class.atts) 0 *) 0
+
+[args...] > appLCOM3
+  res testClass > result
+  sprintf > @
+    "RESULT_METRIC_LCOM3:%s\n"
+    result
