@@ -117,38 +117,36 @@ class EOarrayTest {
     }
 
     /***
-     * Test for {@code EOmap}
-     * Checks if the map operation correctly maps each element of an array to another value (the square) correctly
+     * Checks that {@code EOmap} is able to map an int array to an array of squares of its elements.
      */
     @Test
-    void EOmap() {
-        EOarray array = new EOarray(
+    void EOmapTransformsIntArrayToItsSquares() {
+        EOarray inputArray = new EOarray(
                 new EOint(1),
                 new EOint(3),
                 new EOint(5),
                 new EOint(7),
                 new EOint(9)
         );
-        EOarray expectedArray = new EOarray(
+        EOarray expectedResultArray = new EOarray(
                 new EOint(1),
                 new EOint(9),
                 new EOint(25),
                 new EOint(49),
                 new EOint(81)
         );
-        EOarray newArray = array.EOmap(new EOObject() {
-            public EOObject EOmap(EOObject element) {
-                return new EODataObject(
-                        new EOint(
-                                element._getData().toInt()
-                        )._getAttribute("EOpow", new EODataObject(2))._getData().toInt()
-                );
+        EOObject mapperObject = new EOObject() {
+            public EOObject EOmap(EOint element) {
+                return new EOObject() {
+                    @Override
+                    protected EOObject _decoratee() {
+                        return element.EOpow(new EOint(2));
+                    }
+                };
             }
-        });
-        for (int i = 0; i < array.EOlength()._getData().toInt(); i++)
-            MatcherAssert.assertThat(
-                    newArray.EOget(new EODataObject(i))._getData().toInt(),
-                    Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));
+        };
+        EOarray resultArray = inputArray.EOmap(mapperObject);
+        MatcherAssert.assertThat(resultArray, Matchers.is(expectedResultArray));
     }
 
     @Test

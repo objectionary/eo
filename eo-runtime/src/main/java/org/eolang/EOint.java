@@ -3,6 +3,8 @@ package org.eolang;
 import org.eolang.core.EOObject;
 import org.eolang.core.data.EOData;
 
+import java.util.Objects;
+
 /***
  * Represents an integer number
  * @version %I%, %G%
@@ -154,4 +156,12 @@ public class EOint extends EOObject {
         return new EOfloat((double) this.value);
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EOint eOint = (EOint) o;
+        return value == eOint.value;
+    }
 }

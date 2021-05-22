@@ -5,6 +5,7 @@ import org.eolang.core.data.EODataObject;
 import org.paukov.combinatorics3.Generator;
 
 import java.util.List;
+import java.util.Objects;
 
 /***
  * Represents an array
@@ -143,4 +144,11 @@ public class EOarray extends EOObject {
                 .toArray(EOObject[]::new));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EOarray eOarray = (EOarray) o;
+        return _array.equals(eOarray._array);
+    }
 }
