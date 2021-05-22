@@ -87,28 +87,33 @@ class EOarrayTest {
     }
 
     /***
-     * Test for {@code EOreduce}
-     * Checks if the reduction operation returns the correct subtotal/results
+     * Checks that {@code EOreduce} is able to reduce an int array to a sum of its elements.
      */
     @Test
-    void EOreduce() {
-        EOarray array = new EOarray(
-                new EODataObject(1),
-                new EODataObject(3),
-                new EODataObject(5),
-                new EODataObject(7),
-                new EODataObject(9)
+    void EOreduceSumsIntArray() {
+        EOarray inputArray = new EOarray(
+                new EOint(1),
+                new EOint(3),
+                new EOint(5),
+                new EOint(7),
+                new EOint(9)
         );
-        EOObject a = array.EOreduce(new EODataObject(0), new EOObject() {
-            public EOObject EOreduce(EOObject subtotal, EOObject element) {
-                return new EODataObject(
-                        new EOint(
-                                subtotal._getData().toInt()
-                        )._getAttribute("EOadd", element)._getData().toInt()
-                );
+        Long expectedResult = 25L;
+        EOObject reducerObject = new EOObject() {
+            public EOObject EOreduce(EOint subtotal, EOObject element) {
+                return new EOObject() {
+                    @Override
+                    protected EOObject _decoratee() {
+                        // adds the current element of the array to the subtotal
+                        return subtotal.EOadd(element);
+                    }
+                };
             }
-        });
-        MatcherAssert.assertThat(a._getData().toInt(), Matchers.equalTo(25L));
+        };
+        EOint initialAccumulator = new EOint(0);
+        EOObject reducedValue = inputArray.EOreduce(initialAccumulator, reducerObject);
+
+        MatcherAssert.assertThat(reducedValue._getData().toInt(), Matchers.equalTo(expectedResult));
     }
 
     /***
@@ -118,18 +123,18 @@ class EOarrayTest {
     @Test
     void EOmap() {
         EOarray array = new EOarray(
-                new EODataObject(1),
-                new EODataObject(3),
-                new EODataObject(5),
-                new EODataObject(7),
-                new EODataObject(9)
+                new EOint(1),
+                new EOint(3),
+                new EOint(5),
+                new EOint(7),
+                new EOint(9)
         );
         EOarray expectedArray = new EOarray(
-                new EODataObject(1),
-                new EODataObject(9),
-                new EODataObject(25),
-                new EODataObject(49),
-                new EODataObject(81)
+                new EOint(1),
+                new EOint(9),
+                new EOint(25),
+                new EOint(49),
+                new EOint(81)
         );
         EOarray newArray = array.EOmap(new EOObject() {
             public EOObject EOmap(EOObject element) {
