@@ -3,6 +3,8 @@ package org.eolang;
 import org.eolang.core.EOObject;
 import org.eolang.core.data.EOData;
 
+import java.util.Objects;
+
 /***
  * Represents a string type
  * @version %I%, %G%
@@ -54,5 +56,23 @@ public class EOstring extends EOObject {
      */
     public EObool EOeq(EOObject rightString) {
         return new EObool(stringValue.equals(rightString._getData().toString()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof EOObject)) return false;
+        EOObject eoObject = (EOObject) o;
+        return this.EOeq(eoObject)._getData().toBoolean();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stringValue);
+    }
+
+    @Override
+    public String toString() {
+        return "\""+stringValue+"\"";
     }
 }

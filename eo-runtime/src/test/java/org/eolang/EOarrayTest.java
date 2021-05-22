@@ -2,6 +2,7 @@ package org.eolang;
 
 import org.eolang.core.EOObject;
 import org.eolang.core.data.EODataObject;
+import org.eolang.txt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -149,35 +150,42 @@ class EOarrayTest {
         MatcherAssert.assertThat(resultArray, Matchers.is(expectedResultArray));
     }
 
+    /***
+     * Checks that {@code EOmapi} is able to map a string array
+     * to an array of strings with indices concatenated to its elements.
+     */
     @Test
-    void EOmapi() {
-        EOarray array = new EOarray(
-                new EODataObject(1),
-                new EODataObject(3),
-                new EODataObject(5),
-                new EODataObject(7),
-                new EODataObject(9)
+    void EOmapiTransformsStringArrayUsingIndices() {
+        EOarray inputArray = new EOarray(
+                new EOstring("this"),
+                new EOstring("is"),
+                new EOstring("a"),
+                new EOstring("test"),
+                new EOstring("strings array")
         );
-        EOarray expectedArray = new EOarray(
-                new EODataObject(1),
-                new EODataObject(2),
-                new EODataObject(3),
-                new EODataObject(4),
-                new EODataObject(5)
+        EOarray expectedResultArray = new EOarray(
+                new EOstring("this0"),
+                new EOstring("is1"),
+                new EOstring("a2"),
+                new EOstring("test3"),
+                new EOstring("strings array4")
         );
-        EOarray newArray = array.EOmapi(new EOObject() {
-            public EOObject EOmapi(EOObject currentElement, EOObject index) {
-                return new EODataObject(
-                        new EOint(
-                                currentElement._getData().toInt()
-                        )._getAttribute("EOsub", index)._getData().toInt()
-                );
+        EOObject mapperObject = new EOObject() {
+            public EOObject EOmapi(EOstring element, EOint index) {
+                return new EOObject() {
+                    @Override
+                    protected EOObject _decoratee() {
+                        return new EOsprintf(
+                                    new EOstring("%s%d"),
+                                    element,
+                                    index
+                        );
+                    }
+                };
             }
-        });
-        for (int i = 0; i < array.EOlength()._getData().toInt(); i++)
-            MatcherAssert.assertThat(
-                    newArray.EOget(new EODataObject(i))._getData().toInt(),
-                    Matchers.equalTo(expectedArray.EOget(new EODataObject(i))._getData().toInt()));
+        };
+        EOarray resultArray = inputArray.EOmapi(mapperObject);
+        MatcherAssert.assertThat(resultArray, Matchers.is(expectedResultArray));
     }
 
 }

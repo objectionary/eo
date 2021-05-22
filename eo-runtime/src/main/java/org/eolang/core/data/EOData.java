@@ -1,5 +1,7 @@
 package org.eolang.core.data;
 
+import java.util.Objects;
+
 /**
  * Объект представляющий данные - результат датаризации в EO.
  */

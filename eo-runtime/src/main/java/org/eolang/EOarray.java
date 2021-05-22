@@ -118,7 +118,7 @@ public class EOarray extends EOObject {
         int length = _array.size();
         EOObject[] mappedArray = new EOObject[length];
         for (int i = 0; i < length; i++) {
-            mappedArray[i] = mapiFunction._getAttribute("EOmapi", _array.get(i), new EODataObject(i))._getDecoratedObject();
+            mappedArray[i] = mapiFunction._getAttribute("EOmapi", _array.get(i), new EOint(i))._getDecoratedObject();
         }
         return new EOarray(mappedArray);
     }
@@ -150,5 +150,21 @@ public class EOarray extends EOObject {
         if (o == null || getClass() != o.getClass()) return false;
         EOarray eOarray = (EOarray) o;
         return _array.equals(eOarray._array);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_array);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("array([");
+        for (EOObject o:_array) {
+            sb.append(o.toString()).append(", ");
+        }
+        sb.delete(sb.length()-2, sb.length());
+        sb.append("])");
+        return sb.toString();
     }
 }

@@ -160,8 +160,21 @@ public class EOint extends EOObject {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EOint eOint = (EOint) o;
-        return value == eOint.value;
+        if (o == null || !(o instanceof EOObject)) return false;
+        EOObject eoObject = (EOObject) o;
+        return this.EOeq(eoObject)._getData().toBoolean();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("int(");
+        sb.append(value);
+        sb.append(')');
+        return sb.toString();
     }
 }
