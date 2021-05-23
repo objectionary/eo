@@ -31,6 +31,19 @@ public class EOsprintf extends EOObject {
         );
     }
 
+    /**
+     * !!!For testing purposes only!!!
+     *
+     * Determines if this object is equal to the {@code o} object.
+     * To do it, this method checks that the {@code o} object is
+     * of the {@code EOObject} type and its dataization result is the same
+     * as the result of dataization of this object. This is a simplified
+     * equality check sufficient for checking equality of runtime object
+     * for testing purposes.
+     *
+     * This method can be called only in the testing environment
+     * since all methods within the EO environment have the 'EO' prefix.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,13 +52,21 @@ public class EOsprintf extends EOObject {
         return _getData().toString().equals(eoObject._getData().toString());
     }
 
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(format);
-        result = 31 * result + Arrays.hashCode(data);
-        return result;
-    }
-
+    /**
+     * !!!For testing purposes only!!!
+     *
+     * Produces a string that represents this object.
+     * The resulting string has the following form:
+     * sprintf(format:"format string", data:array([arg1, arg2, arg3])),
+     * where each argN is converted to a string, too.
+     *
+     * Example:
+     * sprintf(format:"The winner is %s, and he got %d points!",
+     * data:array(["Mike", int(100)])).
+     *
+     * This method can be called only in the testing environment
+     * since all methods within the EO environment have the 'EO' prefix.
+     */
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("sprintf(");

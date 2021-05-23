@@ -156,7 +156,20 @@ public class EOint extends EOObject {
         return new EOfloat((double) this.value);
     }
 
-
+    /**
+     * !!!For testing purposes only!!!
+     *
+     * Determines if this object is equal to the {@code o} object.
+     * To do it, this method checks that the {@code o} object is
+     * of the {@code EOObject} type and its dataization result is the same
+     * as the result of dataization of this object by delegating the check
+     * to the standard {@code int.eq} attribute. This is a simplified
+     * equality check sufficient for checking equality of runtime object
+     * for testing purposes.
+     *
+     * This method can be called only in the testing environment
+     * since all methods within the EO environment have the 'EO' prefix.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -165,11 +178,19 @@ public class EOint extends EOObject {
         return this.EOeq(eoObject)._getData().toBoolean();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
+    /**
+     * !!!For testing purposes only!!!
+     *
+     * Produces a string that represents this object.
+     * The resulting string has the following form:
+     * int(value).
+     *
+     * Example:
+     * int(100).
+     *
+     * This method can be called only in the testing environment
+     * since all methods within the EO environment have the 'EO' prefix.
+     */
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("int(");

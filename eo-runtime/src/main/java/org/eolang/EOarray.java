@@ -144,6 +144,17 @@ public class EOarray extends EOObject {
                 .toArray(EOObject[]::new));
     }
 
+    /**
+     * !!!For testing purposes only!!!
+     *
+     * Determines if this array is equal to the {@code o} object.
+     * To do it, this method checks that the {@code o} object is an array
+     * and it contains similar elements by delegating equality checks to
+     * the elements themselves.
+     *
+     * This method can be called only in the testing environment
+     * since all methods within the EO environment have the 'EO' prefix.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -152,11 +163,22 @@ public class EOarray extends EOObject {
         return _array.equals(eOarray._array);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(_array);
-    }
-
+    /**
+     * !!!For testing purposes only!!!
+     *
+     * Produces a string that represents this array.
+     * The resulting string has the following form:
+     * array([elem1, elem2, elem3, elem4]),
+     * where each elemN is converted to a string, too.
+     *
+     * Example:
+     * Say, an array has three int elements: 1, 2, 3.
+     * Then, the string representation of the array is:
+     * array([int(1), int(2), int(3)]).
+     *
+     * This method can be called only in the testing environment
+     * since all methods within the EO environment have the 'EO' prefix.
+     */
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("array([");
