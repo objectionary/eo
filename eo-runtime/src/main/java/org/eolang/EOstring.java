@@ -97,4 +97,9 @@ public class EOstring extends EOObject {
     public String toString() {
         return "\""+stringValue+"\"";
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stringValue);
+    }
 }

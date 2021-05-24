@@ -198,4 +198,9 @@ public class EOint extends EOObject {
         sb.append(')');
         return sb.toString();
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }

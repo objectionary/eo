@@ -76,4 +76,11 @@ public class EOsprintf extends EOObject {
         sb.append(')');
         return sb.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(format);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
+    }
 }
