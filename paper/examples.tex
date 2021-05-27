@@ -73,8 +73,9 @@ The same functionality would require the following code in \eo{}:
       "Enter a year:"
     stdout
       concat
-        scanner > year
-          stdin.nextInt
+        scanner
+          stdin
+        .nextInt > year
         " is a leap year?"
         or.
           and.
