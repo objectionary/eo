@@ -1,0 +1,307 @@
+The following examples demonstrate simple Java programs and their alternatives
+in \eo{}.
+
+\subsection{Fibonacci Number}
+
+Fibonacci sequence is a sequence of positive integers such that
+each number is the sum of the two preceding ones, starting from $0$ and $1$, where:
+\begin{equation*}
+F_n = F_{n-1} + F_{n-2}.
+\end{equation*}
+
+The formula can be implemented in Java using recursion, as suggested
+by~\citet[p.743]{deitel2007java} (code style is modified):
+
+\begin{eocode}
+public class FibonacciCalculator {
+  public long fibonacci(long n) {
+    if (n < 2) {
+      return n;
+    } else {
+      return fibonacci(n-1) + fibonacci(n-2);
+    }
+  }
+}
+\end{eocode}
+
+The same functionality would look in \eo{} like the following:
+
+\begin{eocode}
+[n] > fibo
+  if. > @
+    n.less 2
+    n
+    add.
+      fibo (n.sub 1)
+      fibo (n.sub 2)
+\end{eocode}
+
+\subsection{Determining Leap Year}
+
+Consider a simple program to determine whether the year, provided
+by the user as console input, is leap or not. The Java code,
+as suggested by~\citet[pp.105--106]{liang2012}, would look like this
+(the code style was slightly modified):
+
+\begin{eocode}
+import java.util.Scanner;
+public class LeapYear {
+  public static void main(String[] args) {
+    Scanner input = new Scanner(System.in);
+    System.out.print("Enter a year: ");
+    int year = input.nextInt();
+    boolean isLeapYear =
+      (year % 4 == 0 && year % 100 != 0) ||
+      (year % 400 == 0);
+    System.out.println(year +
+      " is a leap year? " + isLeapYear);
+  }
+}
+\end{eocode}
+
+The same functionality would require the following code in \eo{}:
+
+\begin{eocode}
++alias org.eolang.*
++alias org.eolang.io.stdout
++alias org.eolang.io.stdin
++alias org.eolang.txt.scanner
+
+[args] > main
+  seq. > @
+    stdout
+      "Enter a year:"
+    stdout
+      concat
+        scanner > year
+          stdin.nextInt
+        " is a leap year?"
+        or.
+          and.
+            eq. (mod. year 4) 0
+            not. (eq. (mod. year 100) 0)
+          eq. (mod. year 400) 0
+\end{eocode}
+
+\subsection{Division by Zero}
+
+As was explained by~\citet[p.314]{eckel2006thinking}, since division by zero
+leads to a runtime exception, it is recommended to throw a more meaningful
+exception to notify the user about the exceptional situation. This is how
+it would be done in Java:
+
+\begin{eocode}
+class Balance {
+  // Calculate how much each user should
+  // get, if we have this amount of users
+  float share(int users) {
+    if (users == 0) {
+      throw new RuntimeException(
+        "The number of users can't be zero"
+      );
+    }
+    // Do the math and return the number
+  }
+}
+\end{eocode}
+
+This is how this functionality would look in \eo{}:
+
+\begin{eocode}
+[] > balance
+  [users] > share
+    if. > @
+      (eq. users 0)
+      []
+        "The number can't be zero" > msg
+        "InvalidInput" > type
+      # Do the math and return
+\end{eocode}
+
+If the \f{users} argument is zero, an abstract object
+will be returned, with a free body and two bound attributes
+\f{msg} and \f{type}:
+
+\begin{eocode}
+[]
+  "The number of users can't be zero" > msg
+  "InvalidInput" > type
+\end{eocode}
+
+Once this object will be touched by the runtime, it will cause
+the entire program to halt. This behavior is similar to what
+is happening in Java with exceptions.
+
+\subsection{Date Builder}
+
+Creating a date/time object is a common task for most programs, which
+is resolved in JDK8~\citep{jdk8} through the \f{Calendar.Builder} class,
+which suggests method cascading~\citep{beck1997smalltalk},
+also known as fluent interface~\cite{fluentinterface}, for its users
+(an innacurate and simplified example):
+
+\begin{eocode}
+Calendar c = new Calendar.Builder()
+  .setYear(2013)
+  .setMonth(4)
+  .setDay(6)
+  .build();
+\end{eocode}
+
+The implementation of an immutable version of the \f{Calendar.Builder}
+class would look like this in Java:
+
+\begin{eocode}
+class Builder {
+  private final int year;
+  private final int month;
+  private final int day;
+  Builder(int y, int m, int d) {
+    this.year = y;
+    this.month = m;
+    this.day = d;
+  }
+  Builder setYear(int y) {
+    return new Builder(y, this.month, this.day);
+  }
+  Builder setMonth(int m) {
+    return new Builder(this.year, m, this.day);
+  }
+  Builder setDay(int d) {
+    return new Builder(this.year, this.month, d);
+  }
+  Calendar build() {
+    return new Calendar(this.year, this.month, this.day);
+  }
+}
+\end{eocode}
+
+This is how this functionality would look in \eo{}, combining
+the builder and the calendar in one object:
+
+\begin{eocode}
+[year month day] > calendar
+  and. > @
+    [y] > setYear
+      calendar y month day > @
+    [m] > setMonth
+      calendar year m day > @
+    [d] > setDay
+      calendar year month d > @
+    []
+      # The functionality of the calendar
+      # goes in here: the body of "calendar"
+\end{eocode}
+
+This is how it would be used in \eo{}:
+
+\begin{eocode}
+calendar
+.setYear 2013
+.setMonth 4
+.setDay 6
+\end{eocode}
+
+Here, the object \f{calendar} has three bound
+attributes: \f{year}, \f{month}, and \f{day}. Because there
+are three free attributes in the \f{calendar}, it can't be used ``as is''
+without copying. The attribute \f{setYear} constructs an object
+with a single free attribute \f{y} and a body, which makes a copy
+of the object \f{calendar} with a different set of arguments:
+
+\begin{eocode}
+[y] > setYear
+  calendar y month day > @
+\end{eocode}
+
+The \f{calendar} object itself has a body, which constructs
+an object that is the calendar. The body is anonymous, this is why
+the \f{=} symbol is not prepended by anything.
+
+\subsection{Streams}
+
+Working with a flow of binary or text data requires the use
+of stream objects, as explained by~\citet[p.226]{metsker2002}.
+A non-canonical Java stream may be presented by a simple
+two-methods interface and a simple implementation of it:
+
+\begin{eocode}
+interface Stream {
+  void print(String text);
+  void close();
+}
+class ConsoleStream implements Stream {
+  @Override
+  void print(String text) {
+    System.out.println(text);
+  }
+  @Override
+  void close() {
+    // Maybe something else
+  }
+}
+\end{eocode}
+
+Then, it may be required to prepend all lines with a prefix. In order
+to do this a decorator design pattern may be used,
+as explained by~\citet[p.196]{gamma1994design}:
+
+\begin{eocode}
+class PrefixedStream implements Stream {
+  private final Stream origin;
+  PrefixedStream(Stream s) {
+    this.origin = s;
+  }
+  @Override
+  void print(String text) {
+    this.origin.print("DEBUG: " + text);
+  }
+  @Override
+  void close() {
+    this.origin.close();
+  }
+}
+\end{eocode}
+
+The \f{PrefixedStream} encapsulates an object of the same type it
+implements. The decorator modifies the behavior of some methods (e.g., \f{print()}), while
+remain others untouched (e.g., \f{close()}). This is how the same design
+would look in \eo{}:
+
+\begin{eocode}
+[] > console_stream
+  [text] > print
+    stdout > @
+      text
+  [] > close
+    # Do something here
+\end{eocode}
+
+Then, the decorator would look like this:
+
+\begin{eocode}
+[@] > prefixed_stream
+  [text] > print
+    @.print
+      concat
+        "DEBUG: "
+        text
+\end{eocode}
+
+Here, the \f{@} attribute is the one that is being decorated.
+The object \f{prefixed\char`_stream} has attribute \f{close} even
+though it is not declared explicitly.
+
+If the object is used like this, where \f{stdout} is another stream,
+printing texts to the console:
+
+\begin{eocode}
+prefixed_stream(stdout).print("Hello, world!")
+\end{eocode}
+
+Then the console will print:
+
+\begin{eocode}
+DEBUG: Hello, world!
+\end{eocode}
+
