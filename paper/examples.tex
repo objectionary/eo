@@ -73,9 +73,9 @@ The same functionality would require the following code in \eo{}:
       "Enter a year:"
     stdout
       concat
-        scanner
+        scanner > year
           stdin
-        .nextInt > year
+        .nextInt
         " is a leap year?"
         or.
           and.
@@ -112,7 +112,7 @@ This is how this functionality would look in \eo{}:
 [] > balance
   [users] > share
     if. > @
-      (eq. users 0)
+      eq. users 0
       []
         "The number can't be zero" > msg
         "InvalidInput" > type
@@ -163,16 +163,24 @@ class Builder {
     this.day = d;
   }
   Builder setYear(int y) {
-    return new Builder(y, this.month, this.day);
+    return new Builder(
+      y, this.month, this.day
+    );
   }
   Builder setMonth(int m) {
-    return new Builder(this.year, m, this.day);
+    return new Builder(
+      this.year, m, this.day
+    );
   }
   Builder setDay(int d) {
-    return new Builder(this.year, this.month, d);
+    return new Builder(
+      this.year, this.month, d
+    );
   }
   Calendar build() {
-    return new Calendar(this.year, this.month, this.day);
+    return new Calendar(
+      this.year, this.month, this.day
+    );
   }
 }
 \end{eocode}
@@ -202,22 +210,6 @@ calendar
 .setMonth 4
 .setDay 6
 \end{eocode}
-
-Here, the object \f{calendar} has three bound
-attributes: \f{year}, \f{month}, and \f{day}. Because there
-are three free attributes in the \f{calendar}, it can't be used ``as is''
-without copying. The attribute \f{setYear} constructs an object
-with a single free attribute \f{y} and a body, which makes a copy
-of the object \f{calendar} with a different set of arguments:
-
-\begin{eocode}
-[y] > setYear
-  calendar y month day > @
-\end{eocode}
-
-The \f{calendar} object itself has a body, which constructs
-an object that is the calendar. The body is anonymous, this is why
-the \f{=} symbol is not prepended by anything.
 
 \subsection{Streams}
 
