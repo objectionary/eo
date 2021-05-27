@@ -98,21 +98,22 @@ public class EOarray extends EOObject {
      * @return a copy of this array with {@code obj} appended as its last element.
      */
     public EOarray EOappendAll(EOObject obj) {
-        if(this.getClass().equals(obj.getClass())){
-            EOarray array2 = (EOarray) obj;
-            int array2Size = array2.EOlength()._getData().toInt().intValue();
+        try{
+
+            int array2Size = obj._getAttribute("EOlength")._getData().toInt().intValue();
             if(array2Size > 0){
                 EOObject[] newArray;
                 newArray = new EOObject[_array.size() + array2Size];
                 System.arraycopy(_array.toArray(), 0, newArray, 0, _array.size());
                 for(int i = _array.size(); i < newArray.length; ++i){
-                    newArray[i] = array2.EOget(new EODataObject(i-_array.size()));
+                    newArray[i] = obj._getAttribute("EOget", new EODataObject(i -_array.size()));
                 }
                 return new EOarray(newArray);
             }
             return this;
+        }catch (Exception e){
+            return EOappend(obj);
         }
-        return EOappend(obj);
     }
 
     /**
