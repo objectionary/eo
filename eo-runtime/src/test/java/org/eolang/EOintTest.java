@@ -1,5 +1,6 @@
 package org.eolang;
 
+import org.eolang.core.EOObject;
 import org.eolang.core.data.EODataObject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -90,12 +91,26 @@ class EOintTest {
     @Test
     void EOeq() {
         final EOint left = new EOint(12L);
-        final EOint right = new EOint(12L);
+        final EOObject right = new EOint(12L);
         final EObool eq = new EObool(left.EOeq(right)._getData().toBoolean());
 
         MatcherAssert.assertThat(
                 eq._getData().toBoolean(),
                 Matchers.equalTo(true)
+        );
+
+        final EOObject right2 = new EOint(24L);
+        final EObool eq2 = new EObool(left.EOeq(right2)._getData().toBoolean());
+        MatcherAssert.assertThat(
+                eq2._getData().toBoolean(),
+                Matchers.equalTo(false)
+        );
+
+        final EOObject right3 = new EOstring("Wrong type test");
+        final EObool eq3 = new EObool(left.EOeq(right3)._getData().toBoolean());
+        MatcherAssert.assertThat(
+                eq3._getData().toBoolean(),
+                Matchers.equalTo(false)
         );
     }
 

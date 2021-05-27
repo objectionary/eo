@@ -57,7 +57,12 @@ public class EOint extends EOObject {
      * @return A boolean representing the truth value of the comparison of this int with the {@code rightInt} free attribute
      */
     public EObool EOeq(EOObject rightInt) {
-        return new EObool(this.value == rightInt._getData().toInt());
+        try{
+            return new EObool(this.value == rightInt._getData().toInt());
+        }catch (Exception e){
+            return new EObool(false);
+        }
+
     }
 
     /***
