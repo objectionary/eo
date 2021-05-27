@@ -99,7 +99,6 @@ public class EOarray extends EOObject {
      */
     public EOarray EOappendAll(EOObject obj) {
         try{
-
             int array2Size = obj._getAttribute("EOlength")._getData().toInt().intValue();
             if(array2Size > 0){
                 EOObject[] newArray;
