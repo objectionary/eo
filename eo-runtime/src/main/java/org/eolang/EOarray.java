@@ -80,10 +80,39 @@ public class EOarray extends EOObject {
      * @return a copy of this array with {@code obj} appended as its last element.
      */
     public EOarray EOappend(EOObject obj) {
-        List<EOObject> newList = new java.util.ArrayList<>(_array);
-        newList.add(obj);
-        EOObject[] newArray = new EOObject[newList.size()];
-        return new EOarray(newList.toArray(newArray));
+        /*List<EOObject> newList = new java.util.ArrayList<>(_array);
+        newList.add(obj);*/
+        EOObject[] newArray = new EOObject[_array.size() + 1];
+        System.arraycopy(_array.toArray(), 0, newArray, 0, _array.size());
+        newArray[_array.size()] = obj;
+        return new EOarray(newArray);
+    }
+
+    /**
+     * If {@code obj} is an EOarray appends item of {@code obj} to to the end of this array.
+     * Otherwise appends {@code obj} to the end of this array.
+     *
+     * This operation does not mutate the original array.
+     * Instead, it produces a copy of this array and appends {@code obj} to the end of it.
+     *
+     * @return a copy of this array with {@code obj} appended as its last element.
+     */
+    public EOarray EOappendAll(EOObject obj) {
+        if(this.getClass().equals(obj.getClass())){
+            EOarray array2 = (EOarray) obj;
+            int array2Size = array2.EOlength()._getData().toInt().intValue();
+            if(array2Size > 0){
+                EOObject[] newArray;
+                newArray = new EOObject[_array.size() + array2Size];
+                System.arraycopy(_array.toArray(), 0, newArray, 0, _array.size());
+                for(int i = _array.size(); i < newArray.length; ++i){
+                    newArray[i] = array2.EOget(new EODataObject(i-_array.size()));
+                }
+                return new EOarray(newArray);
+            }
+            return this;
+        }
+        return EOappend(obj);
     }
 
     /**
