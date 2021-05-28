@@ -1,3 +1,7 @@
+.SHELLFLAGS = -e -c
+
+.ONESHELL:
+
 all: eolang-paper.pdf
 
 clean:
@@ -5,6 +9,7 @@ clean:
 	rm -rf _minted-*
 
 %.pdf: %.tex main.bib *.tex
+	texliveonfly -a '--shell-escape' $<
 	latexmk -pdf $<
 	texqc --ignore 'You have requested document class' $< \
 		--ignore 'Token not allowed in a PDF string' \
