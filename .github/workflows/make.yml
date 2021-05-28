@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: yegor256/latex-make-action@0.1.7
+      - uses: yegor256/latex-make-action@0.1.8
         with:
           path: paper
