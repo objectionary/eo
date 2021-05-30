@@ -23,7 +23,7 @@ public class EOstdout extends EOObject {
     @Override
     public EOData _getData() {
         EOData res = out._getData();
-        System.out.println(res);
+        System.out.print(res);
         return res;
     }
 }
