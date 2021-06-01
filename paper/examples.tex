@@ -190,16 +190,14 @@ the builder and the calendar in one object:
 
 \begin{eocode}
 [year month day] > calendar
-  and. > @
-    [y] > setYear
-      calendar y month day > @
-    [m] > setMonth
-      calendar year m day > @
-    [d] > setDay
-      calendar year month d > @
-    []
-      # The functionality of the calendar
-      # goes in here: the body of "calendar"
+  [y] > setYear
+    calendar y month day > @
+  [m] > setMonth
+    calendar year m day > @
+  [d] > setDay
+    calendar year month d > @
+  # The functionality of the calendar
+  # goes in here...
 \end{eocode}
 
 This is how it would be used in \eo{}:

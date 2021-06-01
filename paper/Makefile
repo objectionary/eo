@@ -1,4 +1,4 @@
-.SHELLFLAGS = -e -c
+.SHELLFLAGS = -e -x -c
 
 .ONESHELL:
 
