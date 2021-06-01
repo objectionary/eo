@@ -68,7 +68,7 @@ The same functionality would require the following code in \eo{}:
 +alias org.eolang.txt.scanner
 
 [args] > main
-  seq. > @
+  seq > @
     stdout
       "Enter a year:"
     stdout
@@ -273,13 +273,13 @@ Then, the decorator would look like this:
 \begin{eocode}
 [@] > prefixed_stream
   [text] > print
-    @.print
+    ^.@.print
       concat
         "DEBUG: "
         text
 \end{eocode}
 
-Here, the \f{@} attribute is the one that is being decorated.
+Here, the \f{\^.@} attribute is the one that is being decorated.
 The object \f{prefixed\char`_stream} has attribute \f{close} even
 though it is not declared explicitly.
 
