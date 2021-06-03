@@ -414,7 +414,7 @@ An object may extend another object by \emph{decorating} it:
 [center radius] > cirle |$\label{ln:circle}$|
   center > @ |$\label{ln:circle-phi}$|
   [p] > is-inside
-    .leq > @
+    leq. > @
       ^.@.distance $.p  |$\label{ln:circle-phi-2}$|
       ^.radius |$\label{ln:circle-end}$|
 \end{eocode}
@@ -517,12 +517,12 @@ in order to use it as a substitute for \f{\%s} and the second time for
 obviously is not correct. The exclamation mark at the \f{x!} solves the
 problem, making the object by the name \f{x} a \emph{constant}. This means
 that all attributes of \f{x} are \emph{cached}. Important to notice
-that the chache is \emph{not deep}: the attributes of attributes are not cached.
+that the cache is \emph{not deep}: the attributes of attributes are not cached.
 
 \subsection{Metas and License}
 
 A program may have a comment at the beginning of the file, which
-is called a \emph{licese}. The license may be followed by an optional
+is called a \emph{license}. The license may be followed by an optional
 list of \emph{meta} statements, which are passed to the compiler
 as is. The meaning of them depends on the compiler and may vary
 between target platforms. This program instructs the compiler

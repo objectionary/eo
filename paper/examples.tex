@@ -51,7 +51,7 @@ public class LeapYear {
     System.out.print("Enter a year: ");
     int year = input.nextInt();
     boolean isLeapYear =
-      (year % 4 == 0 && year % 100 != 0) ||
+      (year % 4 == 0 && year % 100 != 0) |\textbar\textbar|
       (year % 400 == 0);
     System.out.println(year +
       " is a leap year? " + isLeapYear);
@@ -68,7 +68,7 @@ The same functionality would require the following code in \eo{}:
 +alias org.eolang.txt.scanner
 
 [args] > main
-  seq. > @
+  seq > @
     stdout
       "Enter a year:"
     stdout
@@ -190,16 +190,14 @@ the builder and the calendar in one object:
 
 \begin{eocode}
 [year month day] > calendar
-  and. > @
-    [y] > setYear
-      calendar y month day > @
-    [m] > setMonth
-      calendar year m day > @
-    [d] > setDay
-      calendar year month d > @
-    []
-      # The functionality of the calendar
-      # goes in here: the body of "calendar"
+  [y] > setYear
+    calendar y month day > @
+  [m] > setMonth
+    calendar year m day > @
+  [d] > setDay
+    calendar year month d > @
+  # The functionality of the calendar
+  # goes in here...
 \end{eocode}
 
 This is how it would be used in \eo{}:
@@ -275,13 +273,13 @@ Then, the decorator would look like this:
 \begin{eocode}
 [@] > prefixed_stream
   [text] > print
-    @.print
+    ^.@.print
       concat
         "DEBUG: "
         text
 \end{eocode}
 
-Here, the \f{@} attribute is the one that is being decorated.
+Here, the \f{\^.@} attribute is the one that is being decorated.
 The object \f{prefixed\char`_stream} has attribute \f{close} even
 though it is not declared explicitly.
 
