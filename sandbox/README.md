@@ -20,6 +20,8 @@ $ cd eo/sandbox
 
 ## In docker
 
+If you don't have Maven or JDK installed on your system, you can compile and run the application in docker. You must have [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/) installed to use this method.
+
 ### Compile
 
 Compile the sources in `eo/` using maven in docker container. The output of the compilation will be in the `target/` directory.
