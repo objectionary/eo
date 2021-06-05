@@ -322,7 +322,6 @@ public class EOAbstraction extends EOSourceEntity {
     private void transpileDecoratee(PicoWriter w) {
         Optional<EOApplication> decoratee = boundAttributes.stream().filter(o -> o.getName().orElse("").equals("@")).findFirst();
         if (decoratee.isPresent()) {
-            TranslationCommons.bigComment(w, "Declares the decoratee of this object.");
             decoratee.get().transpile(w);
             // remove it to avoid double transpilation
             boundAttributes.remove(decoratee.get());

@@ -225,14 +225,20 @@ public class EOApplication extends EOSourceEntity {
     // transpiles to a Java method
     private void transpileWrapperForBoundAttribute(PicoWriter w) {
         String methodName;
+        String cachedFieldName;
         if (name.get().equals("@")) {
             // decoration
-            w.writeln("@Override");
             methodName = "_decoratee";
+            cachedFieldName = "_cachedDecoratee";
+            transpileCachingField(w, cachedFieldName);
+            TranslationCommons.bigComment(w, "Declares the decoratee of this object.");
+            w.writeln("@Override");
         }
         else {
             // bound attribute of some type
             methodName = targetName.get();
+            cachedFieldName = "_cached" + methodName;
+            transpileCachingField(w, cachedFieldName);
         }
 
         boolean isDecoratee = name.get().equals("@");
@@ -252,10 +258,20 @@ public class EOApplication extends EOSourceEntity {
 
             if (wrappedAbstraction.getInstanceName().get().equals("@")) {
                 // anonymous-abstraction based decoratee (special case)
-                w.write(String.format("return new %s(%s);", wrappedAbstraction.getAnonymousName(), wrappedAbstraction.getArgsString()));
+                transpileCachingRoutine(
+                        w,
+                        cachedFieldName,
+                        () -> w.write(String.format("new %s(%s)",
+                                wrappedAbstraction.getAnonymousName(),
+                                wrappedAbstraction.getArgsString())));
             }
             else {
-                w.write(String.format("return new %s(%s);", wrappedAbstraction.getTargetName().get(), wrappedAbstraction.getArgsString(false)));
+                transpileCachingRoutine(
+                        w,
+                        cachedFieldName,
+                        () -> w.write(String.format("new %s(%s)",
+                                wrappedAbstraction.getTargetName().get(),
+                                wrappedAbstraction.getArgsString(false))));
             }
         }
         else {
@@ -272,11 +288,37 @@ public class EOApplication extends EOSourceEntity {
                 }
             }
 
-            w.write("return ");
-            transpileApplication(w);
-            w.writeln(";");
+            transpileCachingRoutine(w, cachedFieldName, () -> transpileApplication(w));
         }
         w.writeln_l("}");
+    }
+
+    private void transpileCachingField(PicoWriter w, String cachedFieldName) {
+        if (wrappedAbstraction != null && !wrappedAbstraction.getFreeAttributes().isEmpty()) {
+            // for bound abstractions, no caching is performed
+        }
+        else {
+            w.writeln();
+            TranslationCommons.bigComment(w, String.format("Field for caching the '%s' attribute.", this.name.get()));
+            w.writeln(String.format("private EOObject %s = null;", cachedFieldName));
+        }
+    }
+
+    private void transpileCachingRoutine(PicoWriter w, String cachedFieldName, Runnable returnExpression) {
+        if (wrappedAbstraction != null && !wrappedAbstraction.getFreeAttributes().isEmpty()) {
+            // for bound abstractions, no caching is performed
+            w.write("return ");
+            returnExpression.run();
+            w.writeln(";");
+        }
+        else {
+            w.writeln_r(String.format("if (%s == null) {", cachedFieldName));
+            w.write(String.format("%s = ", cachedFieldName));
+            returnExpression.run();
+            w.writeln(";");
+            w.writeln_l("}");
+            w.writeln(String.format("return %s;", cachedFieldName));
+        }
     }
 
     private void transpileApplication(PicoWriter w) {

@@ -328,62 +328,6 @@ class EOarrayTest {
     }
 
     /**
-     * Checks that {@code EOpairs} returns empty arrays when working with empty arrays.
-     */
-    @Test
-    void EOpairsWorksWithEmptyArrays() {
-        EOarray inputArray = new EOarray();
-        EOarray resultArray = inputArray.EOpairs();
-        MatcherAssert.assertThat(resultArray.EOisEmpty()._getData().toBoolean(), is(true));
-    }
-
-    /**
-     * Checks that {@code EOpairs} is able to produce 2-Combinations when the elements of the array are unique.
-     */
-    @Test
-    void EOpairsProduces2Combinations() {
-        EOarray inputArray = new EOarray(
-                new EOint(1),
-                new EOint(2),
-                new EOint(3),
-                new EOint(4)
-        );
-        EOarray expectedResultArray = new EOarray(
-                new EOtuple(new EOint(1), new EOint(2)),
-                new EOtuple(new EOint(1), new EOint(3)),
-                new EOtuple(new EOint(1), new EOint(4)),
-                new EOtuple(new EOint(2), new EOint(3)),
-                new EOtuple(new EOint(2), new EOint(4)),
-                new EOtuple(new EOint(3), new EOint(4))
-        );
-        EOarray resultArray = inputArray.EOpairs();
-        MatcherAssert.assertThat(resultArray, is(expectedResultArray));
-    }
-
-    /**
-     * Checks that {@code EOpairs} does not guarantee uniqueness of pairs when elements of an array are not unique.
-     */
-    @Test
-    void EOpairsDoesNotGuaranteeUniqueness() {
-        EOarray inputArray = new EOarray(
-                new EOint(1),
-                new EOint(2),
-                new EOint(2),
-                new EOint(4)
-        );
-        EOarray expectedResultArray = new EOarray(
-                new EOtuple(new EOint(1), new EOint(2)),
-                new EOtuple(new EOint(1), new EOint(2)),
-                new EOtuple(new EOint(1), new EOint(4)),
-                new EOtuple(new EOint(2), new EOint(2)),
-                new EOtuple(new EOint(2), new EOint(4)),
-                new EOtuple(new EOint(2), new EOint(4))
-        );
-        EOarray resultArray = inputArray.EOpairs();
-        MatcherAssert.assertThat(resultArray, is(expectedResultArray));
-    }
-
-    /**
      * Checks that {@code EOmap} is able to map a non-empty int array to an array of squares of its elements.
      */
     @Test
@@ -495,6 +439,62 @@ class EOarrayTest {
             }
         };
         EOarray resultArray = inputArray.EOmapi(mapperObject);
+        MatcherAssert.assertThat(resultArray.EOisEmpty()._getData().toBoolean(), is(true));
+    }
+
+    /**
+     * Checks that {@code EOpairs} does not guarantee uniqueness of pairs when elements of an array are not unique.
+     */
+    @Test
+    void EOpairsDoesNotGuaranteeUniqueness() {
+        EOarray inputArray = new EOarray(
+                new EOint(1),
+                new EOint(2),
+                new EOint(2),
+                new EOint(4)
+        );
+        EOarray expectedResultArray = new EOarray(
+                new EOtuple(new EOint(1), new EOint(2)),
+                new EOtuple(new EOint(1), new EOint(2)),
+                new EOtuple(new EOint(1), new EOint(4)),
+                new EOtuple(new EOint(2), new EOint(2)),
+                new EOtuple(new EOint(2), new EOint(4)),
+                new EOtuple(new EOint(2), new EOint(4))
+        );
+        EOarray resultArray = inputArray.EOpairs();
+        MatcherAssert.assertThat(resultArray, is(expectedResultArray));
+    }
+
+    /**
+     * Checks that {@code EOpairs} is able to produce 2-Combinations when the elements of the array are unique.
+     */
+    @Test
+    void EOpairsProduces2Combinations() {
+        EOarray inputArray = new EOarray(
+                new EOint(1),
+                new EOint(2),
+                new EOint(3),
+                new EOint(4)
+        );
+        EOarray expectedResultArray = new EOarray(
+                new EOtuple(new EOint(1), new EOint(2)),
+                new EOtuple(new EOint(1), new EOint(3)),
+                new EOtuple(new EOint(1), new EOint(4)),
+                new EOtuple(new EOint(2), new EOint(3)),
+                new EOtuple(new EOint(2), new EOint(4)),
+                new EOtuple(new EOint(3), new EOint(4))
+        );
+        EOarray resultArray = inputArray.EOpairs();
+        MatcherAssert.assertThat(resultArray, is(expectedResultArray));
+    }
+
+    /**
+     * Checks that {@code EOpairs} returns empty arrays when working with empty arrays.
+     */
+    @Test
+    void EOpairsWorksWithEmptyArrays() {
+        EOarray inputArray = new EOarray();
+        EOarray resultArray = inputArray.EOpairs();
         MatcherAssert.assertThat(resultArray.EOisEmpty()._getData().toBoolean(), is(true));
     }
 
