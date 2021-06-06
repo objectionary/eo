@@ -504,11 +504,12 @@ have a name.
 that this code would read the input stream two times:
 
 \begin{eocode}
-stdout
-  sprintf
-    "The length of %s is %d"
-    stdin.nextLine > x!
-    x.length
+[] > hello
+  stdout > say
+    sprintf
+      "The length of %s is %d"
+      stdin.nextLine > x!
+      x.length
 \end{eocode}
 
 The \f{sprintf} object will go to the \f{x} two times. First time,
@@ -518,6 +519,11 @@ obviously is not correct. The exclamation mark at the \f{x!} solves the
 problem, making the object by the name \f{x} a \emph{constant}. This means
 that all attributes of \f{x} are \emph{cached}. Important to notice
 that the cache is \emph{not deep}: the attributes of attributes are not cached.
+
+Here, \f{x} is an attribute of the object \f{hello}, even though
+it's not defined as explicitly as \f{say}. Anywhere a new new
+name shows up after the \f{>} symbol, it's a declaration of a new
+attribute in the closest object abstraction.
 
 \subsection{Metas and License}
 
