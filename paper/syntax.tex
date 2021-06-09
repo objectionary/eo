@@ -241,7 +241,7 @@ to an XML document. The abstract object \f{vector} would produce
 this XML tree of elements and attributes:
 
 \begin{eocode}
-<o>
+<o name="vector">
   <o name="dx"/>
   <o name="dy"/>
   <o name="length" base=".sqrt">
@@ -325,16 +325,16 @@ which looks similar to object copying:
 
 \begin{eocode}
 * "Lucy" "Jeff" 3.14 |$\label{ln:array-1}$|
-* |$\label{ln:array-2a}$|
+* > a |$\label{ln:array-2a}$|
   (* 'a')
   true |$\label{ln:array-2b}$|
-* |$\label{ln:array-3}$|
+* > b |$\label{ln:array-3}$|
 \end{eocode}
 
 The code at \lref{array-1} makes an array of three elements: two strings
-and one float. The code at \lrefs{array-2a}{array-2b} make an array with another
+and one float. The code at \lrefs{array-2a}{array-2b} makes an array named \f{a} with another
 array as its first element and \f{true} as the second item.
-The code at \lref{array-3} is an empty array.
+The code at \lref{array-3} is an empty array with the name \f{b}.
 
 \subsection{Varargs}
 
@@ -504,11 +504,12 @@ have a name.
 that this code would read the input stream two times:
 
 \begin{eocode}
-stdout
-  sprintf
-    "The length of %s is %d"
-    stdin.nextLine > x!
-    x.length
+[] > hello
+  stdout > say
+    sprintf
+      "The length of %s is %d"
+      stdin.nextLine > x!
+      x.length
 \end{eocode}
 
 The \f{sprintf} object will go to the \f{x} two times. First time,
@@ -518,6 +519,11 @@ obviously is not correct. The exclamation mark at the \f{x!} solves the
 problem, making the object by the name \f{x} a \emph{constant}. This means
 that all attributes of \f{x} are \emph{cached}. Important to notice
 that the cache is \emph{not deep}: the attributes of attributes are not cached.
+
+Here, \f{x} is an attribute of the object \f{hello}, even though
+it's not defined as explicitly as \f{say}. Anywhere a new
+name shows up after the \f{>} symbol, it's a declaration of a new
+attribute in the nearest object abstraction.
 
 \subsection{Metas and License}
 
