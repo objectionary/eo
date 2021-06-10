@@ -15,33 +15,12 @@
     }%
   }%
 }
-\newenvironment{ingraph}%
-  {\vspace{3pt}\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
-  {\end{tikzpicture}\vspace{3pt}}
 \newenvironment{algo}
   {\begin{tcolorbox}[enhanced,before skip=3pt,after skip=3pt,colback=white,frame hidden,left=3pt,top=0pt,bottom=0pt,borderline west={1pt}{0pt}{gray}]
   \newcommand\kw[1]{{\color{red!30!black}\bfseries\sffamily ##1}}
   \newcommand\tab{{\hspace*{1em}}}
   \noindent}
   {\end{tcolorbox}}
-
-\nospell{
-\tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
-\tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
-\tikzstyle{object} = [thing,circle]
-\tikzstyle{dup} = [thing,rectangle,draw=none,minimum height=1.5em,inner sep=3pt]
-\tikzstyle{empty} = [object]
-\tikzstyle{transforms} = [fill=white!80!black, single arrow, minimum height=0.5cm, minimum width=0.5cm,single arrow head extend=2mm]
-\tikzstyle{rho} = [draw,color=orange]
-\tikzstyle{ref} = []
-\tikzstyle{edge-name} = [circle,font=\scriptsize,near start,sloped,fill=white,inner sep=0pt,sloped/.append style={transform shape}]
-\tikzstyle{parent} = [draw,color=blue!70!black]
-\tikzstyle{atom} = [object,double]
-\tikzstyle{lambda} = [xshift=-5pt,yshift=3pt,draw,fill=white,rectangle,thin,minimum width=1.2em,anchor=north west,font={\scriptsize}]
-\tikzstyle{attr} = [midway,sloped,inner sep=0pt,above=2pt,sloped/.append style={transform shape},font={\scriptsize},color=black]
-\tikzstyle{locator} = [attr,below=2pt]
-\tikzstyle{Phi} = [font={\scriptsize}]
-}
 
 In order to explain how declarative expressions of \phic{} can
 be translated into imperative instructions of a target computing platform, we
