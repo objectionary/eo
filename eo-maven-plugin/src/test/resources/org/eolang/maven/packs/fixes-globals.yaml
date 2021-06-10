@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/maven/optimize/globals-to-abstracts.xsl
+  - org/eolang/parser/optimize/globals-to-abstracts.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=2]

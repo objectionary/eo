@@ -1,7 +1,7 @@
 xsls:
-  - org/eolang/maven/optimize/remove-refs.xsl
-  - org/eolang/maven/optimize/abstracts-float-up.xsl
-  - org/eolang/maven/optimize/remove-levels.xsl
+  - org/eolang/parser/optimize/remove-refs.xsl
+  - org/eolang/parser/optimize/abstracts-float-up.xsl
+  - org/eolang/parser/optimize/remove-levels.xsl
   - org/eolang/parser/add-refs.xsl
   - org/eolang/parser/errors/same-line-names.xsl
   - org/eolang/parser/errors/duplicate-names.xsl
