@@ -9,7 +9,6 @@
 \newenvironment{ingraph}%
   {\vspace{3pt}\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
   {\end{tikzpicture}\vspace{3pt}}
-\nospell{
 \tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
 \tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
 \tikzstyle{object} = [thing,circle]
@@ -25,4 +24,3 @@
 \tikzstyle{attr} = [midway,sloped,inner sep=0pt,above=2pt,sloped/.append style={transform shape},font={\scriptsize},color=black]
 \tikzstyle{locator} = [attr,below=2pt]
 \tikzstyle{Phi} = [font={\scriptsize}]
-}
