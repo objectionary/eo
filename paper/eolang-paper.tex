@@ -23,6 +23,7 @@
 \documentclass[sigplan,nonacm=true]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \usepackage[utf8]{inputenc}
+\usepackage{ffcode}
 \usepackage{CJKutf8}
 \usepackage{paralist}
 \usepackage{anyfontsize} % To get rid of font not found warnings
@@ -37,11 +38,6 @@
 \usepackage{pgffor} % to enable \foreach
 \usepackage{stmaryrd}
 \usepackage{mathtools}
-\usepackage{minted}
-  \setminted{breaklines}
-  \usemintedstyle{bw}
-  \renewcommand{\theFancyVerbLine}{\textcolor{gray}{\tiny\oldstylenums{\ttfamily\arabic{FancyVerbLine}}}}
-  \newminted[eocode]{text}{firstnumber=last,linenos,numbersep=2pt,framesep=6pt,framerule=1pt,rulecolor=gray,frame=leftline,escapeinside=||,mathescape} % ,samepage
 \setlength{\footskip}{14pt}
 \newcommand\nospell[1]{#1}
 \newcommand{\br}{\\[-4pt]}
@@ -62,11 +58,6 @@
 \hbadness=1200
 \raggedbottom
 
-\usepackage{tcolorbox}
-  \newtcbox{\codebox}{nobeforeafter,colframe=gray!80!white,colback=gray!5!white,boxrule=0.1pt,arc=1pt,
-  boxsep=1.2pt,left=0.5pt,right=0.5pt,top=0.2pt,bottom=0.2pt,tcbox raise base}
-\newcommand{\fe}[1]{\vrule height 6pt depth 1pt width 0pt\texttt{#1}}
-\newcommand{\f}[1]{\codebox{\fe{#1}}}
 \newcommand{\figcap}[1]{\caption{#1}\Description{#1}}
 \newcommand{\phic}{{$\varphi$-calculus}}
 \newcommand{\eo}{{\sffamily EO}}

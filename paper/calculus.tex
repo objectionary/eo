@@ -17,12 +17,12 @@ in typewriter font.
 The object at \lref{book} may be represented as
 \begin{equation}\label{eq:book}
 \begin{split}
-\f{book} & = \left\{\begin{matrix*}[l]
-  (\f{isbn}, \emptyset) \\
+\ff{book} & = \left\{\begin{matrix*}[l]
+  (\ff{isbn}, \emptyset) \\
 \end{matrix*}\right\},
 \end{split}
 \end{equation}
-where \f{isbn} is an identifier and $\emptyset$ is an empty
+where \ff{isbn} is an identifier and $\emptyset$ is an empty
 set, which is a proper object, according to the Def.~\ref{def:object}.
 
 \begin{eodefinition}\label{def:data}
@@ -39,15 +39,15 @@ string literals, and boolean values.
 The object at \lrefs{book2}{book2-end} may be represented as
 \begin{equation}\label{eq:book2}
 \begin{split}
-\f{book2} & = \left\{\begin{matrix*}[l]
-  (\f{isbn}, \emptyset) \\
-  (\f{title}, \f{"Object Thinking"}) \\
-  (\f{price}, \f{memory}) \\
+\ff{book2} & = \left\{\begin{matrix*}[l]
+  (\ff{isbn}, \emptyset) \\
+  (\ff{title}, \ff{"Object Thinking"}) \\
+  (\ff{price}, \ff{memory}) \\
 \end{matrix*}\right\}, \\
 \end{split}
 \end{equation}
-where \f{isbn}, \f{title}, and \f{price} are identifiers,
-\f{memory} is an object defined somewhere else,
+where \ff{isbn}, \ff{title}, and \ff{price} are identifiers,
+\ff{memory} is an object defined somewhere else,
 and the text in double quotes is data.
 
 \subsection{Attributes}
@@ -58,9 +58,9 @@ iff $(a, \emptyset) \in x$; it is a bound attribute
 iff $\exists (a, v)\in x$ and $v\not=\emptyset$.
 \end{eodefinition}
 
-In the Eq.~\ref{eq:book2}, identifiers \f{isbn}, \f{title}, and \f{price}
-are the attributes of the object \f{book2}.
-The attribute \f{isbn} is free, while the other two are bound.
+In the Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
+are the attributes of the object \ff{book2}.
+The attribute \ff{isbn} is free, while the other two are bound.
 
 \begin{eodefinition}\label{def:dot}
 If $x$ is an object and $\exists (a, v) \in x$, then $v$ may be referenced as $x.a$;
@@ -73,9 +73,9 @@ visibility restriction in \phic{}:
 all attributes are visible to all objects outside of the one they belong to.
 
 It's possible to chain attribute references using dot notation, for example
-$\f{book2}.\f{price}.\f{neg}$ is a valid expression, which means
-``taking the attribute \f{price} from the object \f{book2} and then
-taking the attribute \f{neg} from it.''
+$\ff{book2}.\ff{price}.\ff{neg}$ is a valid expression, which means
+``taking the attribute \ff{price} from the object \ff{book2} and then
+taking the attribute \ff{neg} from it.''
 
 \begin{eodefinition}\label{def:scope}
 If $x(a_i, v_i)$ is an object, than $\hat{x}$, a set consisting of all $a_i$,
@@ -84,7 +84,7 @@ the \textbf{arity} of $x$.
 \end{eodefinition}
 
 For example, the scope of the object at the Eq.~\ref{eq:book2} consists of three identifiers:
-\f{isbn}, \f{title}, and \f{price}.
+\ff{isbn}, \ff{title}, and \ff{price}.
 
 \subsection{Abstraction}
 
@@ -101,9 +101,9 @@ which represent bound attributes, stay on the right side, in double-square brack
 The Eq.~\ref{eq:book2} may be written as
 \begin{equation}\label{eq:book2-compact}
 \begin{split}
-& \f{book2}(\f{isbn}) \mapsto \llbracket \br
-& \quad \f{title} \mapsto \f{"Object Thinking"}, \br
-& \quad \f{price} \mapsto \f{memory} \br
+& \ff{book2}(\ff{isbn}) \mapsto \llbracket \br
+& \quad \ff{title} \mapsto \ff{"Object Thinking"}, \br
+& \quad \ff{price} \mapsto \ff{memory} \br
 & \rrbracket. \\
 \end{split}
 \end{equation}
@@ -136,15 +136,15 @@ while objects $P$ provided as arguments stay on the right side,
 in the brackets. For example, the object at \lref{point-copy} may be written as
 \begin{equation}\label{eq:point}
 \begin{split}
-& \f{point}(\f{x} \mapsto \f{5}, \f{y} \mapsto \f{-3}).\f{distance}(\br
-& \quad \f{p} \mapsto \f{point}(\f{x} \mapsto \f{13}, \f{y} \mapsto \f{3.9}) \br
+& \ff{point}(\ff{x} \mapsto \ff{5}, \ff{y} \mapsto \ff{-3}).\ff{distance}(\br
+& \quad \ff{p} \mapsto \ff{point}(\ff{x} \mapsto \ff{13}, \ff{y} \mapsto \ff{3.9}) \br
 & ),
 \end{split}
 \end{equation}
 and may further be simplified since the order of parameters is obvious:
 \begin{equation}
 \begin{split}
-\f{point}(\f{5}, \f{-3}).\f{distance}(\f{point}(\f{13}, \f{3.9})).
+\ff{point}(\ff{5}, \ff{-3}).\ff{distance}(\ff{point}(\ff{13}, \ff{3.9})).
 \end{split}
 \end{equation}
 
@@ -158,20 +158,20 @@ an object, which is not bound to any attributes, is called \textbf{anonymous}.
 \end{eodefinition}
 
 For example, the object at \lrefs{book3}{book3-end}
-has three inner objects bound to attributes \f{title}, \f{price}, and \f{set-price}:
+has three inner objects bound to attributes \ff{title}, \ff{price}, and \ff{set-price}:
 \begin{equation}\label{eq:book3}
 \begin{split}
-& \f{book3}(\f{isbn}) \mapsto \llbracket \br
-& \quad \f{title} \mapsto \f{"Object Thinking"}, \br
-& \quad \f{price} \mapsto \f{memory}, \br
-& \quad \f{set-price}(\f{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\f{price}.\f{write}(\f{p}) \br
+& \ff{book3}(\ff{isbn}) \mapsto \llbracket \br
+& \quad \ff{title} \mapsto \ff{"Object Thinking"}, \br
+& \quad \ff{price} \mapsto \ff{memory}, \br
+& \quad \ff{set-price}(\ff{p}) \mapsto \llbracket \br
+& \quad \quad \varphi \mapsto \rho.\ff{price}.\ff{write}(\ff{p}) \br
 & \quad \rrbracket \br
 & \rrbracket, \\
 \end{split}
 \end{equation}
-where $\rho.\f{price}$ refers to the attribute \f{price}
-of the parent object \f{book3}. It's not always required to mention
+where $\rho.\ff{price}$ refers to the attribute \ff{price}
+of the parent object \ff{book3}. It's not always required to mention
 $\rho$ explicitly, however it it may be present for the sake of
 disambiguation.
 
@@ -194,10 +194,10 @@ For example, the object at \lrefs{circle}{circle-end} would
 be denoted by this formula:
 \begin{equation}\label{eq:c-empty}
 \begin{split}
-& \f{circle}(\f{center}, \f{radius}) \mapsto \llbracket \br
-& \quad \varphi \mapsto \f{center}, \br
-& \quad \f{is-inside}(\f{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\varphi.\f{distance}(\f{p}).\f{leq}(\f{radius}) \br
+& \ff{circle}(\ff{center}, \ff{radius}) \mapsto \llbracket \br
+& \quad \varphi \mapsto \ff{center}, \br
+& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
+& \quad \quad \varphi \mapsto \rho.\varphi.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket,
 \end{split}
@@ -205,44 +205,44 @@ be denoted by this formula:
 while the application of it would look like:
 \begin{equation}
 \begin{split}
-\f{c} & \mapsto \f{circle}(\f{point}(\f{-3}, \f{9}), \f{40}),
+\ff{c} & \mapsto \ff{circle}(\ff{point}(\ff{-3}, \ff{9}), \ff{40}),
 \end{split}
 \end{equation}
 producing:
 \begin{equation}\label{eq:c-fin}
 \begin{split}
-& \f{c} \mapsto \llbracket \br
-& \quad \f{center} \mapsto \f{point}(\f{-3}, \f{9}), \br
-& \quad \f{radius} \mapsto \f{40}, \br
-& \quad \varphi \mapsto \f{center}, \br
-& \quad \f{is-inside}(\f{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\f{distance}(\f{p}).\f{leq}(\f{radius}) \br
+& \ff{c} \mapsto \llbracket \br
+& \quad \ff{center} \mapsto \ff{point}(\ff{-3}, \ff{9}), \br
+& \quad \ff{radius} \mapsto \ff{40}, \br
+& \quad \varphi \mapsto \ff{center}, \br
+& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket.
 \end{split}
 \end{equation}
 
 Because of decoration, the expression
-$\rho$.$\varphi$.\f{distance} in the Eq.~\ref{eq:c-empty} is semantically equivalent to the expression
-$\rho$.\f{distance} in the Eq.~\ref{eq:c-fin}.
+$\rho$.$\varphi$.\ff{distance} in the Eq.~\ref{eq:c-empty} is semantically equivalent to the expression
+$\rho$.\ff{distance} in the Eq.~\ref{eq:c-fin}.
 
-This expression makes a new object \f{is}, which represents
-a sequence of object applications ending with a copy of \f{leq}:
+This expression makes a new object \ff{is}, which represents
+a sequence of object applications ending with a copy of \ff{leq}:
 \begin{equation}\label{eq:is}
 \begin{split}
-& \f{is} \mapsto \f{c}.\f{is-inside}(\f{point}(\f{1}, \f{7})),
+& \ff{is} \mapsto \ff{c}.\ff{is-inside}(\ff{point}(\ff{1}, \ff{7})),
 \end{split}
 \end{equation}
 producing:
 \begin{equation}\label{eq:c-fin2}
 \begin{split}
-& \f{c} \mapsto \llbracket \br
-& \quad \f{center} \mapsto \f{point}(\f{-3}, \f{9}), \br
-& \quad \f{radius} \mapsto \f{40}, \br
-& \quad \varphi \mapsto \f{center}, \br
-& \quad \f{is-inside} \mapsto \llbracket \br
-& \quad \quad \f{p} \mapsto \f{point}(\f{1}, \f{7}), \br
-& \quad \quad \varphi \mapsto \rho.\f{distance}(\f{p}).\f{leq}(\f{radius}) \br
+& \ff{c} \mapsto \llbracket \br
+& \quad \ff{center} \mapsto \ff{point}(\ff{-3}, \ff{9}), \br
+& \quad \ff{radius} \mapsto \ff{40}, \br
+& \quad \varphi \mapsto \ff{center}, \br
+& \quad \ff{is-inside} \mapsto \llbracket \br
+& \quad \quad \ff{p} \mapsto \ff{point}(\ff{1}, \ff{7}), \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket.
 \end{split}
@@ -258,22 +258,22 @@ than it's an abstract object called an \textbf{atom} and $M$ is its $\lambda$~te
 For example, the atom at \lref{sum-def} would be represented as
 \begin{equation}
 \begin{split}
-& \f{sum}(\f{x}) \mapsto \lambda s . \sum\limits_{i=0}^{|s[0]| - 1} s[0].\f{x}.\f{get}(i),
+& \ff{sum}(\ff{x}) \mapsto \lambda s . \sum\limits_{i=0}^{|s[0]| - 1} s[0].\ff{x}.\ff{get}(i),
 \end{split}
 \end{equation}
 where the function calculates an arithmetic sum of all items
-in the array \f{x} and returns the result as a data. The argument of
+in the array \ff{x} and returns the result as a data. The argument of
 the function is a vector $s$ where the first element is the object under
 consideration, the second element is its parent object, the third element
 is the parent of the parent, and so on. Thus, $s[0]$ is the object
-\f{sum} itself, while $s[0].\f{x}$ is its inner object \f{x},
-and $s[0].\f{x}.\f{get}(0)$ is the first element of it, if it's an array.
+\ff{sum} itself, while $s[0].\ff{x}$ is its inner object \ff{x},
+and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it's an array.
 
 Atoms may have their $\lambda$~terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
 \begin{equation}
 \begin{split}
-& \f{stdout}(\f{text}) \mapsto \lambda s.M_\text{stdout},
+& \ff{stdout}(\ff{text}) \mapsto \lambda s.M_\text{stdout},
 \end{split}
 \end{equation}
 where $M_\text{stdout}$ is a $\lambda$~term defined externally.
@@ -289,13 +289,13 @@ Locators are used to avoid ambiguity when referencing objects.
 For example, the Eq.~\ref{eq:c-fin} may be refined as
 \begin{equation}
 \begin{split}
-& \f{c} \mapsto \llbracket \br
-& \quad \f{center} \mapsto \Phi.\f{point}(\Phi.\f{-3}, \Phi.\f{9}), \br
-& \quad \f{radius} \mapsto \Phi.\f{40}, \br
-& \quad \varphi \mapsto \xi.\f{center}, \br
-& \quad \f{is-inside}(\f{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\f{distance}(\xi.\f{p}).\f{leq}( \br
-& \quad \quad \quad \rho.\f{radius} \br
+& \ff{c} \mapsto \llbracket \br
+& \quad \ff{center} \mapsto \Phi.\ff{point}(\Phi.\ff{-3}, \Phi.\ff{9}), \br
+& \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
+& \quad \varphi \mapsto \xi.\ff{center}, \br
+& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\xi.\ff{p}).\ff{leq}( \br
+& \quad \quad \quad \rho.\ff{radius} \br
 & \quad \quad ) \br
 & \quad \rrbracket \br
 & \rrbracket,
@@ -312,16 +312,16 @@ Eq.~\ref{eq:c-fin2} would also include attribute names for
 the object application:
 \begin{equation}
 \begin{split}
-& \f{c} \mapsto \llbracket \br
-& \quad \f{center} \mapsto \Phi.\f{point}( \br
-& \quad \quad \f{x} \mapsto \Phi.\f{-3}, \br
-& \quad \quad \f{y} \mapsto \Phi.\f{9} \br
+& \ff{c} \mapsto \llbracket \br
+& \quad \ff{center} \mapsto \Phi.\ff{point}( \br
+& \quad \quad \ff{x} \mapsto \Phi.\ff{-3}, \br
+& \quad \quad \ff{y} \mapsto \Phi.\ff{9} \br
 & \quad ), \br
-& \quad \f{radius} \mapsto \Phi.\f{40}, \br
-& \quad \varphi \mapsto \xi.\f{center}, \br
-& \quad \f{is-inside}(\f{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \xi.\rho.\f{distance}(\f{to} \mapsto \xi.\f{p}).\f{leq}( \br
-& \quad \quad \quad \f{other} \mapsto \xi.\rho.\f{radius} \br
+& \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
+& \quad \varphi \mapsto \xi.\ff{center}, \br
+& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
+& \quad \quad \varphi \mapsto \xi.\rho.\ff{distance}(\ff{to} \mapsto \xi.\ff{p}).\ff{leq}( \br
+& \quad \quad \quad \ff{other} \mapsto \xi.\rho.\ff{radius} \br
 & \quad \quad ) \br
 & \quad \rrbracket \br
 & \rrbracket.
