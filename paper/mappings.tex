@@ -144,3 +144,32 @@ c.radius.write 45.0
 
 This code makes an instance of \ff{circle} with the radius of \ff{42.0}.
 Then, the radius is replaced with \ff{45.0}.
+
+\subsection{Type Reflection}
+
+There are no types in \eo{}, while Java not only have at least one type
+for each object, but also enable the retrieval of this information in
+runtime. For example, it's possible to detect the type of the shape
+with this code:
+
+\begin{ffcode}
+if (s instanceof Circle) {
+  System.out.println("It's a circle!");
+}
+\end{ffcode}
+
+In \eo{} this meta-information about objects must be stored
+explicitly in object attribute, in order to enable similar
+reflection on types:
+
+\begin{ffcode}
+[height radius] > circle
+  "circle" > type
+  # The rest of the object
+\end{ffcode}
+
+Now, checking the type of the object is as easy as reading the
+value of its attribute \ff{type}. The mechanism can be extended
+with more additional information during the transition from
+Java to \eo{}, such as information about attributes, decoratee, etc.
+
