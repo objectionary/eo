@@ -1,0 +1,146 @@
+There are many language features in modern object-oriented programming
+languages, which do not exist in \eo{}, for example:
+  multiple inheritance,
+  annotations,
+  encapsulation and information hiding,
+  mixins and traits,
+  constructors,
+  classes,
+  assertions,
+  static blocks,
+  aspects,
+  generics,
+  lambda functions,
+  exception handling,
+  reflection and type casting,
+  and so on.
+We assume that all of them may be represented with the primitive
+language features of \eo{}. There is no complete mapping mechanism
+implemented yet, but there are a few examples in this section
+that demonstrate how some features may be mapped from Java to \eo{}.
+
+\subsection{Inheritance}
+
+This Java code utilizes inheritance in order to reuse the functionality
+provided by the parent class \ff{Shape} in the child class \ff{Circle}:
+
+\begin{twocols}
+\begin{ffcode}
+abstract class Shape { |$\label{ln:java-shape}$|
+  private float height;
+  Shape(float h) {
+    height = h;
+  }
+  float volume() {
+    return square() * height;
+  }
+  abstract float square();
+} |$\label{ln:java-shape-end}$|
+final class Circle extends Shape { |$\label{ln:java-cicle}$|
+  private float radius;
+  Circle(float h, float r) {
+    super(h);
+    radius = r;
+  }
+  float square() {
+    return 3.14 * radius * radius;
+  }
+}; |$\label{ln:java-circle-end}$|
+\end{ffcode}
+\end{twocols}
+
+The method \ff{volume} relies on the functionality provided by the
+abstract method \ff{square}, which is not implemented in the parent
+class \ff{Shape}: this is why the class is declared as \ff{abstract}
+and the method \ff{square} also has a modifier \ff{abstract}.
+It's impossible to make an instance of the class \ff{Shape}. A child
+class has to be define, which will inherit the functionality of
+\ff{Shape} and implement the missing abstract method.
+
+The class \ff{Cirle} does exactly that: it \ff{extends} the class
+\ff{Shape} and implements the method \ff{square} with the functionality
+that calculates the square of the circle using the radius.
+The method \ff{volume} is present in the \ff{Circle} class, even
+though it's implemented in the parent class.
+
+This code would be represented in \eo{} as the following:
+
+\begin{ffcode}
+[child height] > shape
+  [] > volume
+    child.square.mul ^.height
+[height radius] > circle |$\label{ln:eo-circle}$|
+  shape $ height > @
+  [] > square
+    3.14.mul
+      radius.mul
+        radius |$\label{ln:eo-circle-end}$|
+\end{ffcode}
+
+There is not mechanism of inheritance in \eo{}, but decorating replaces
+it with a slight modification of the structure of objects: the parent
+object \ff{shape} has an additional attribute \ff{child}, which was
+not explicitly present in Java. This attribute is the link to the object
+that inherits \ff{shape}. Once the \ff{volume} is used, the attribute
+refers to the child object and the functionality from \ff{circle} is used.
+The same mechanism is implemented in Java ``under the hood'': \eo{}
+makes it explicitly visible.
+
+\subsection{Classes and Constructors}
+
+There are no classes in \eo{} but only objects. Java, on the other hand,
+is a class-oriented language. In the snippet
+at the lines~\lrefs{java-shape}{java-circle-end}, \ff{Shape} is a class
+and a better way of mapping it to \eo{} would be the following:
+
+\begin{ffcode}
+[] > shapes
+  [c h] > new
+    # Some extra functionality here, which
+    # stays in the class constructor in Java
+    []
+      c > child
+      h > height
+      [] > volume
+        child.square.mul ^.height
+\end{ffcode}
+
+Here, \ff{shapes} is the representation of Java class \ff{Shape}. It technically
+is a factory of objects. In order to make a new, its attribute \ff{new}
+must be used, which is very similar to the operator \ff{new} in Java.
+The functionality of a Java constructor may also be implemented
+in the attribute \ff{new}, such as a validation of inputs or
+an initialization of local variables not passed through the constructor.
+
+\subsection{Mutability}
+
+All objects in \eo{} are immutable, which means that their attributes
+can't be changed after an object is created. Java, on the other hand,
+enables mutability. For example, both \ff{height} and \ff{radius} in the
+lines~\lrefs{java-shape}{java-circle-end} are mutable attributes,
+which can be modified after an object is instantiated. However,
+the attribute \ff{radius} of the \eo{} object \ff{circle} at the
+lines~\lrefs{eo-circle}{eo-circle-end} can't be modified. This
+may be fixed by using the object \ff{memory}:
+
+\begin{ffcode}
+[height r] > circle
+  memory r > radius
+  shape $ height > @
+  [] > square
+    3.14.mul
+      radius.mul
+        radius
+\end{ffcode}
+
+An instance of the object \ff{memory} is created when the object \ff{circle}
+is created, with the initial value of \ff{r}. Then, replacing the
+object stored in the \ff{memory} is possible through its attribute \ff{write}:
+
+\begin{ffcode}
+circle 1.5 42.0 > c
+c.radius.write 45.0
+\end{ffcode}
+
+This code makes an instance of \ff{circle} with the radius of \ff{42.0}.
+Then, the radius is replaced with \ff{45.0}.
