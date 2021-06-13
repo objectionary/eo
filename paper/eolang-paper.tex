@@ -38,9 +38,6 @@
 \usepackage{pgffor} % to enable \foreach
 \usepackage{stmaryrd}
 \usepackage{mathtools}
-\setlength{\footskip}{14pt}
-\newcommand\nospell[1]{#1}
-\newcommand{\br}{\\[-4pt]}
 \newtheoremstyle{theorems}
   {} % Space above
   {} % Space below
@@ -54,16 +51,18 @@
 \newtheorem{eodefinition}{Definition}
 \newtheorem{eotheorem}{Theorem}
 
+\setlength{\footskip}{14pt}
 \tolerance=1500
-\hbadness=1200
 \raggedbottom
 
-\newcommand{\figcap}[1]{\caption{#1}\Description{#1}}
-\newcommand{\phic}{{$\varphi$-calculus}}
-\newcommand{\eo}{{\sffamily EO}}
-\newcommand{\tbd}[1]{{\color{red}#1}}
-\newcommand{\lref}[1]{the line no.~\ref{ln:#1}}
-\newcommand{\lrefs}[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
+\newcommand\nospell[1]{#1}
+\newcommand\br{\\[-4pt]}
+\newcommand\figcap[1]{\caption{#1}\Description{#1}}
+\newcommand\phic{{$\varphi$-calculus}}
+\newcommand\eo{{\sffamily EO}}
+\newcommand\tbd[1]{{\color{red}#1}}
+\newcommand\lref[1]{the line no.~\ref{ln:#1}}
+\newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
 
 \acmBooktitle{untitled}
 \title{EOLANG and $\varphi$-calculus}
