@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  maven:
+    image: maven:3.8.1-jdk-8-openj9
+    container_name: eo-sandbox-maven
+    environment:
+      {}
+    working_dir: /usr/src/mymaven
+    volumes:
+      - ./:/usr/src/mymaven
+      - maven-repo:/root/.m2
+    command:
+      - mvn
+      - compile
+
+  app:
+    image: openjdk:8
+    container_name: eo-sandbox-app
+    environment:
+      { }
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+    entrypoint:
+      - ./run.sh
+
+volumes:
+  maven-repo:
