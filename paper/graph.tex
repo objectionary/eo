@@ -2,17 +2,17 @@
 \begin{ingraph}
   \node[object] (v0) {$\Phi$};
   \node[object] (v1) [right of=v0] {$v_1$};
-    \draw (v0) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v1) node [attr] {\fe{circle}};
+    \draw (v0) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v1) node [attr] {\ff{circle}};
   \node[object] (v2) [below of=v1] {$v_2$};
-    \draw (v1) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v2) node [attr] {\fe{center}};
+    \draw (v1) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v2) node [attr] {\ff{center}};
   \node[object] (v3) [below left of=v1] {$v_3$};
-    \draw (v1) -- pic[sloped,rho,auto,swap]{parallel arrow={-0.3,-0.15}} (v3) node [attr] {\fe{radius}};
+    \draw (v1) -- pic[sloped,rho,auto,swap]{parallel arrow={-0.3,-0.15}} (v3) node [attr] {\ff{radius}};
   \node[object] (v4) [below right of=v1] {$v_4$};
-    \draw (v1) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v4) node [attr] {\fe{is-inside}};
+    \draw (v1) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v4) node [attr] {\ff{is-inside}};
   \node[object] (v6) [below right=1cm of v4] {$v_6$};
-    \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v6) node [attr] {\fe{p}};
-  \node[dup] (v2d1) [right=1.8cm of v1] {$v_2$};
-    \draw[ref] (v1) -- (v2d1) node [attr] {$\varphi$}  node [locator] {$\xi.\fe{center}$};
+    \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v6) node [attr] {\ff{p}};
+  \node[dup] (v2d1) [right=2.1cm of v1] {$v_2$};
+    \draw[ref] (v1) -- (v2d1) node [attr] {$\varphi$}  node [locator] {$\xi.\ff{center}$};
   \node[atom] (v5) [above right=0.5cm and 3cm of v4] {$v_5$}
     node[lambda] at (v5.south east) {$M_5$};
   \node[dup] (v4d1) [above left=0.5cm of v5] {$v_4$};
@@ -21,70 +21,70 @@
     \draw[parent] (v25) -- (v5);
   \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v25) node [attr] {$\varphi$};
   \node[dup] (v3d1) [below=1.5cm of v25] {$v_3$};
-    \draw[ref] (v25) -- (v3d1) node [attr] {\fe{other}}  node [locator] {$\rho.\rho.\fe{radius}$};
+    \draw[ref] (v25) -- (v3d1) node [attr] {\ff{other}}  node [locator] {$\rho.\rho.\ff{radius}$};
   \node[atom] (v7) [right=2cm of v5] {$v_7$}
     node[lambda] at (v7.south east) {$M_7$};
   \node[dup] (v5d1) [above left=0.5cm of v7] {$v_5$};
     \draw[rho] (v7) -- (v5d1);
   \node[object] (v24) [below=0.6cm of v7] {$v_{24}$};
     \draw[parent] (v24) -- (v7);
-    \draw (v5) edge[bend left=30] node [attr] {\fe{t}} pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v24);
+    \draw (v5) edge[bend left=30] node [attr] {\ff{t}} pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v24);
   \node[dup] (v6d1) [below=1cm of v24] {$v_6$};
-    \draw[ref] (v24) -- (v6d1) node [attr] {\fe{to}}  node [locator] {$\rho.\rho.\fe{p}$};
+    \draw[ref] (v24) -- (v6d1) node [attr] {\ff{to}}  node [locator] {$\rho.\rho.\ff{p}$};
   \node[dup] (v2d1) [right=1.8cm of v7] {$v_2$};
-    \draw[ref] (v7) -- (v2d1) node [attr] {\fe{t}}  node [locator] {$\rho.\rho.\rho.\varphi$};
+    \draw[ref] (v7) -- (v2d1) node [attr] {\ff{t}}  node [locator] {$\rho.\rho.\rho.\varphi$};
 
   \node[object] (v15) [below=0.6cm of v2] {$v_{15}$};
     \node[dup] (v0d1) [left=1cm of v15] {$\Phi$};
-    \draw (v0d1) -- (v15) node [attr] {\fe{point}};
+    \draw (v0d1) -- (v15) node [attr] {\ff{point}};
   \node[object] (v16) [below left=1cm of v15] {$v_{16}$};
-    \draw (v15) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v16) node [attr] {\fe{x}};
+    \draw (v15) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v16) node [attr] {\ff{x}};
   \node[object] (v17) [below right=1cm of v15] {$v_{17}$};
-    \draw (v15) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v17) node [attr] {\fe{y}};
+    \draw (v15) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v17) node [attr] {\ff{y}};
   \node[atom] (v14) [below=2cm of v15] {$v_{14}$} node[lambda] at (v14.south east) {$M_{14}$};
-    \draw (v15) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v14) node [attr] {\fe{distance}};
+    \draw (v15) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v14) node [attr] {\ff{distance}};
   \node[object] (v18) [left=1cm of v14] {$v_{18}$};
-    \draw (v14) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v18) node [attr] {\fe{to}};
+    \draw (v14) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v18) node [attr] {\ff{to}};
 
   \node[object] (v10) [below right=1cm and 5cm of v15] {$v_{10}$};
     \node[dup] (v0d2) [left=1cm of v10] {$\Phi$};
-    \draw (v0d2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v10) node [attr] {\fe{c}};
+    \draw (v0d2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v10) node [attr] {\ff{c}};
   \node[dup] (v1d1) [above right=0.8cm of v10] {$v_{1}$};
     \draw[parent] (v10) -- (v1d1);
   \node[object] (v19) [below left=1.5cm of v10] {$v_{19}$};
-    \draw (v10) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v19) node [attr] {\fe{radius}};
+    \draw (v10) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v19) node [attr] {\ff{radius}};
   \node[object] (d19) [below left=1cm of v19] {$d_{19}$};
     \draw (v19) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d19) node [attr] {$\delta$};
   \node[object] (v11) [below right=2cm and 0.5cm of v10] {$v_{11}$};
-    \draw (v10) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v11) node [attr] {\fe{center}};
+    \draw (v10) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v11) node [attr] {\ff{center}};
   \node[dup] (v15d1) [left=1cm of v11] {$v_{15}$};
     \draw[parent] (v11) -- (v15d1);
   \node[object] (v20) [below left=1cm of v11] {$v_{20}$};
-    \draw (v11) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v20) node [attr] {\fe{x}};
+    \draw (v11) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v20) node [attr] {\ff{x}};
   \node[object] (d20) [below=1cm of v20] {$d_{20}$};
     \draw (v20) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d20) node [attr] {$\delta$};
   \node[object] (v21) [below right=1cm of v11] {$v_{21}$};
-    \draw (v11) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v21) node [attr] {\fe{y}};
+    \draw (v11) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v21) node [attr] {\ff{y}};
   \node[object] (d21) [below=1cm of v21] {$d_{21}$};
     \draw (v21) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d21) node [attr] {$\delta$};
 
   \node[object] (v12) [above right=0.2cm and 4cm of v10] {$v_{12}$};
     \node[dup] (v0d3) [left=1cm of v12] {$\Phi$};
-    \draw (v0d3) -- (v12) node [attr] {\fe{is}};
+    \draw (v0d3) -- (v12) node [attr] {\ff{is}};
   \node[dup] (v1d2) [above left=0.8cm of v12] {$v_{1}$};
     \draw[parent] (v12) -- (v1d2);
   \node[dup] (v10d2) [right=1cm of v12] {$v_{10}$};
     \draw[rho] (v12) -- (v10d2);
   \node[object] (v13) [below right=1cm and 0.5cm of v12] {$v_{13}$};
-    \draw (v12) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v13) node [attr] {\fe{p}};
+    \draw (v12) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v13) node [attr] {\ff{p}};
   \node[dup] (v15d2) [left=1cm of v13] {$v_{15}$};
     \draw[parent] (v13) -- (v15d2);
   \node[object] (v22) [below left=1cm of v13] {$v_{22}$};
-    \draw (v13) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v22) node [attr] {\fe{x}};
+    \draw (v13) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v22) node [attr] {\ff{x}};
   \node[object] (d22) [below=1cm of v22] {$d_{22}$};
     \draw (v22) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d22) node [attr] {$\delta$};
   \node[object] (v23) [below right=1cm of v13] {$v_{23}$};
-    \draw (v13) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v23) node [attr] {\fe{y}};
+    \draw (v13) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v23) node [attr] {\ff{y}};
   \node[object] (d23) [below=1cm of v23] {$d_{23}$};
     \draw (v23) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d23) node [attr] {$\delta$};
 
@@ -95,8 +95,8 @@
     $d_{21} \to +9$ \\
     $d_{22} \to +1$ \\
     $d_{23} \to +7$ \\
-    $M_{14} \to \sqrt{\begin{matrix*}[l](\mathbb{R}(\xi.\fe{to}.\fe{x}, \delta, s)-\mathbb{R}(\rho.\fe{x}, \delta, s))^2 + \\ + (\mathbb{R}(\xi.\fe{to}.\fe{y}, \delta, s)-\mathbb{R}(\rho.\fe{y}, \delta, s))^2\end{matrix*}}$ \\
-    $M_5 \to \mathbb{R}(\xi.\fe{t}, \fe{leq}, s)$ \\
-    $M_7 \to \mathbb{R}(\xi.\fe{t}, \fe{distance}, s)$ \\
+    $M_{14} \to \sqrt{\begin{matrix*}[l](\mathbb{R}(\xi.\ff{to}.\ff{x}, \delta, s)-\mathbb{R}(\rho.\ff{x}, \delta, s))^2 + \\ + (\mathbb{R}(\xi.\ff{to}.\ff{y}, \delta, s)-\mathbb{R}(\rho.\ff{y}, \delta, s))^2\end{matrix*}}$ \\
+    $M_5 \to \mathbb{R}(\xi.\ff{t}, \ff{leq}, s)$ \\
+    $M_7 \to \mathbb{R}(\xi.\ff{t}, \ff{distance}, s)$ \\
   \end{minipage}};
 \end{ingraph}}

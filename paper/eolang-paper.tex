@@ -23,6 +23,7 @@
 \documentclass[sigplan,nonacm=true]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \usepackage[utf8]{inputenc}
+\usepackage{ffcode}
 \usepackage{CJKutf8}
 \usepackage{paralist}
 \usepackage{anyfontsize} % To get rid of font not found warnings
@@ -37,14 +38,6 @@
 \usepackage{pgffor} % to enable \foreach
 \usepackage{stmaryrd}
 \usepackage{mathtools}
-\usepackage{minted}
-  \setminted{breaklines}
-  \usemintedstyle{bw}
-  \renewcommand{\theFancyVerbLine}{\textcolor{gray}{\tiny\oldstylenums{\ttfamily\arabic{FancyVerbLine}}}}
-  \newminted[eocode]{text}{firstnumber=last,linenos,numbersep=2pt,framesep=6pt,framerule=1pt,rulecolor=gray,frame=leftline,escapeinside=||,mathescape} % ,samepage
-\setlength{\footskip}{14pt}
-\newcommand\nospell[1]{#1}
-\newcommand{\br}{\\[-4pt]}
 \newtheoremstyle{theorems}
   {} % Space above
   {} % Space below
@@ -59,21 +52,21 @@
 \newtheorem{eotheorem}{Theorem}
 
 \tolerance=1500
-\hbadness=1200
 \raggedbottom
 
-\usepackage{tcolorbox}
-  \newtcbox{\codebox}{nobeforeafter,colframe=gray!80!white,colback=gray!5!white,boxrule=0.1pt,arc=1pt,
-  boxsep=1.2pt,left=0.5pt,right=0.5pt,top=0.2pt,bottom=0.2pt,tcbox raise base}
-\newcommand{\fe}[1]{\vrule height 6pt depth 1pt width 0pt\texttt{#1}}
-\newcommand{\f}[1]{\codebox{\fe{#1}}}
-\newcommand{\figcap}[1]{\caption{#1}\Description{#1}}
-\newcommand{\phic}{{$\varphi$-calculus}}
-\newcommand{\eo}{{\sffamily EO}}
-\newcommand{\tbd}[1]{{\color{red}#1}}
-\newcommand{\lref}[1]{the line no.~\ref{ln:#1}}
-\newcommand{\lrefs}[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
+\newcommand\nospell[1]{#1}
+\newcommand\br{\\[-4pt]}
+\newcommand\figcap[1]{\caption{#1}\Description{#1}}
+\newcommand\phic{{$\varphi$-calculus}}
+\newcommand\eo{{\sffamily EO}}
+\newcommand\XMIR{{\sffamily XMIR}}
+\newcommand\tbd[1]{{\color{red}#1}}
+\newcommand\lref[1]{the line no.~\ref{ln:#1}}
+\newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
 
+\newenvironment{twocols}{}{}
+
+\acmBooktitle{untitled}
 \title{EOLANG and $\varphi$-calculus}
 \author{Yegor Bugayenko}{}{}
 \email{yegor256@gmail.com}
@@ -103,8 +96,22 @@ programming language based on \phic{}.
 
 \maketitle
 
-\section{Overview}
+\section{Introduction}
+\label{sec:intro}
+\input{intro}
 \input{overview}
+
+The rest of the paper is dedicated to the discussion of the
+syntax of the language we created based on the calculus,
+the calculus itself, its semantics, and pragmatics.
+In order to make it easier to understand, we start
+the discussion with the syntax of the language, while the calculus
+is derived from it. Then, we discuss the
+key features of \eo{} and the differences between it and other
+programming languages. We also discuss how the absence of traditional
+OOP features, such as mutability or inheritance, affect the complexity of code.
+At the end of the paper we overview the work done by others in the area of
+formalization of OOP.
 
 \section{Syntax}
 \label{sec:syntax}
@@ -126,28 +133,28 @@ programming language based on \phic{}.
 \label{sec:examples}
 \input{examples}
 
-\section{Acknowledgments}
+\section{Mappings}
+\label{sec:mappings}
+\input{mappings}
 
-Many thanks to (in alphabetic order of last names)
-  \nospell{Fabricio Cabral},
-  \nospell{Kirill Chernyavskiy},
-  \nospell{Piotr Chmielowski},
-  \nospell{Konstantin Gukov},
-  \nospell{Ali-Sultan Kirgizbaev},
-  \nospell{Tymur $\lambda$ysenko},
-  \nospell{Alonso A. Ortega},
-  \nospell{John Page},
-  \nospell{Alex Panov},
-  \nospell{Alexander Pushkarev},
-  \nospell{Marcos Douglas B. Santos},
-  \nospell{Alex Semenyuk},
-  \nospell{Sergei Skliar},
-  \nospell{Stian Soiland-Reyes},
-  \nospell{Viacheslav Tradunskyi},
-  \nospell{Ilya Trub},
-  and
-  \nospell{César Soto Valero}
-for their contribution to the development of \eo{} and \phic{}.
+\section{Key Features}
+\label{sec:features}
+\input{features}
+
+\section{Four Principles of OOP}
+\label{sec:four}
+\input{four}
+
+\section{Complexity}
+\label{sec:complexity}
+\input{complexity}
+
+\section{Related Works}
+\label{sec:related}
+\input{related}
+
+\section{Acknowledgments}
+\input{acks}
 
 \bibliographystyle{ACM-Reference-Format}
 \raggedright
