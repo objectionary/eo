@@ -54,6 +54,11 @@ SOFTWARE.
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <!-- to make sure it stays in the "compile" scope no matter what profile is used -->
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
     </dependency>
