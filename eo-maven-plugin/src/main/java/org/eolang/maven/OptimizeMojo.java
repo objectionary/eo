@@ -103,14 +103,14 @@ public final class OptimizeMojo extends AbstractMojo {
                 new TargetSpy(dir)
             ).with(
                 new ListOf<>(
-                    "org/eolang/maven/optimize/globals-to-abstracts.xsl",
-                    "org/eolang/maven/optimize/remove-refs.xsl",
-                    "org/eolang/maven/optimize/abstracts-float-up.xsl",
-                    "org/eolang/maven/optimize/remove-levels.xsl",
+                    "org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                    "org/eolang/parser/optimize/remove-refs.xsl",
+                    "org/eolang/parser/optimize/abstracts-float-up.xsl",
+                    "org/eolang/parser/optimize/remove-levels.xsl",
                     "org/eolang/parser/add-refs.xsl",
-                    "org/eolang/maven/optimize/fix-missed-names.xsl",
+                    "org/eolang/parser/optimize/fix-missed-names.xsl",
                     "org/eolang/parser/errors/broken-refs.xsl"
-                )
+                    )
             ).pass();
             final Path target = this.targetDir.toPath()
                 .resolve("03-optimize")

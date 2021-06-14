@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/maven/optimize/abstracts-float-up.xsl
+  - org/eolang/parser/optimize/abstracts-float-up.xsl
   - org/eolang/parser/errors/duplicate-names.xsl
 tests:
   - /program/errors[count(error)=0]
