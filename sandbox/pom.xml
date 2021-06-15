@@ -28,13 +28,12 @@ SOFTWARE.
   <artifactId>quick-start</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <org.eolang.version>1.0-SNAPSHOT</org.eolang.version>
+    <org.eolang.version>0.1.25</org.eolang.version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
@@ -49,9 +48,6 @@ SOFTWARE.
             <configuration>
               <sourcesDir>${project.basedir}/eo</sourcesDir>
               <targetDir>${project.basedir}/target</targetDir>
-              <!--<excludes>
-                <exclude>${project.basedir}/eo/*shapes.eo</exclude>
-              </excludes> -->
             </configuration>
           </execution>
         </executions>

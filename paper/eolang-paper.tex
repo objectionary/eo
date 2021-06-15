@@ -1,0 +1,164 @@
+% The MIT License (MIT)
+%
+% Copyright (c) 2020-2021 Yegor Bugayenko
+%
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+% copies of the Software, and to permit persons to whom the Software is
+% furnished to do so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included
+% in all copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+% FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+% AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+% LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+% SOFTWARE.
+
+\documentclass[sigplan,nonacm=true]{acmart}
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
+\usepackage[utf8]{inputenc}
+\usepackage{ffcode}
+\usepackage{CJKutf8}
+\usepackage{paralist}
+\usepackage{anyfontsize} % To get rid of font not found warnings
+\usepackage{tabularx} % for special tables
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{tcolorbox} % for algorithm
+  \tcbuselibrary{skins}
+\usepackage{fdsymbol} % for \mathbb
+\usepackage{algpseudocode} % for algorithms
+\usepackage{multicol} % for two cols in BNF
+\usepackage{pgffor} % to enable \foreach
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\newtheoremstyle{theorems}
+  {} % Space above
+  {} % Space below
+  {} % Theorem body font % (default is "\upshape")
+  {} % Indent amount
+  {\scshape} % Theorem head font % (default is \mdseries)
+  {.} % Punctuation after theorem head % default: no punctuation
+  { } % Space after theorem head
+  {} % Theorem head spec
+\theoremstyle{theorems}
+\newtheorem{eodefinition}{Definition}
+\newtheorem{eotheorem}{Theorem}
+
+\tolerance=1500
+\raggedbottom
+
+\newcommand\nospell[1]{#1}
+\newcommand\br{\\[-4pt]}
+\newcommand\figcap[1]{\caption{#1}\Description{#1}}
+\newcommand\phic{{$\varphi$-calculus}}
+\newcommand\eo{{\sffamily EO}}
+\newcommand\XMIR{{\sffamily XMIR}}
+\newcommand\tbd[1]{{\color{red}#1}}
+\newcommand\lref[1]{the line no.~\ref{ln:#1}}
+\newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
+
+\newenvironment{twocols}{}{}
+
+\acmBooktitle{untitled}
+\title{EOLANG and $\varphi$-calculus}
+\author{Yegor Bugayenko}{}{}
+\email{yegor256@gmail.com}
+\affiliation{
+  \institution{}
+  \city{Moscow}
+  \country{Russia}
+}
+\ccsdesc[300]{Software and its engineering~Software notations and tools~Formal language definitions}
+\keywords{Object-Oriented Programming, Object Calculus}
+
+\input{tikz-config}
+\begin{document}
+
+\begin{abstract}
+Object-oriented programming (OOP) is one of the most popular
+paradigms used for building software systems. However, despite
+its industrial and academic popularity, OOP is still missing
+a formal apparatus similar to $\lambda$-calculus, which functional
+programming is based on. There were a number of attempts to formalize
+OOP, but none of them managed to cover all the features available in
+modern OO programming languages, such as C++ or Java.
+We've made yet another attempt and created \phic{}. We also
+created EOLANG (also called \eo{}), an experimental
+programming language based on \phic{}.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:intro}
+\input{intro}
+\input{overview}
+
+The rest of the paper is dedicated to the discussion of the
+syntax of the language we created based on the calculus,
+the calculus itself, its semantics, and pragmatics.
+In order to make it easier to understand, we start
+the discussion with the syntax of the language, while the calculus
+is derived from it. Then, we discuss the
+key features of \eo{} and the differences between it and other
+programming languages. We also discuss how the absence of traditional
+OOP features, such as mutability or inheritance, affect the complexity of code.
+At the end of the paper we overview the work done by others in the area of
+formalization of OOP.
+
+\section{Syntax}
+\label{sec:syntax}
+\input{syntax}
+
+\section{Calculus}
+\label{sec:calculus}
+\input{calculus}
+
+\section{Semantics}
+\label{sec:semantics}
+\input{semantics}
+
+\section{Pragmatics}
+\label{sec:pragmatics}
+\input{pragmatics}
+
+\section{Examples}
+\label{sec:examples}
+\input{examples}
+
+\section{Mappings}
+\label{sec:mappings}
+\input{mappings}
+
+\section{Key Features}
+\label{sec:features}
+\input{features}
+
+\section{Four Principles of OOP}
+\label{sec:four}
+\input{four}
+
+\section{Complexity}
+\label{sec:complexity}
+\input{complexity}
+
+\section{Related Works}
+\label{sec:related}
+\input{related}
+
+\section{Acknowledgments}
+\input{acks}
+
+\bibliographystyle{ACM-Reference-Format}
+\raggedright
+\bibliography{main}
+\clearpage
+
+\end{document}

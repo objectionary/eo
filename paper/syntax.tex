@@ -1,0 +1,589 @@
+\newcommand\sntx[1]{{\color{blue!50!black}\sffamily #1}}
+
+The Fig.~\ref{fig:bnf} demonstrates the entire syntax of \eo{} language in BNF.
+Similar to Python~\citep{lutz2013learning}, indentation in \eo{} is part of the syntax:
+the scope of a code block is determined by its horizontal position
+in relation to other blocks, which is also known as ``off-side rule''~\citep{landin1966next}.
+
+There are no keywords in \eo{} but only a few special symbols
+denoting grammar constructs:
+  \ff{>} for the attributes naming,
+  \ff{.} for the dot notation,
+  \ff{[]} for the specification of parameters of abstract objects,
+  \ff{()} for scope limitations,
+  \ff{!} for turning objects into constants,
+  \ff{:} for naming arguments,
+  \ff{"} (double quotes) for string literals,
+  \ff{'} (single quotes) for one-character literals,
+  \ff{@} for the \nospell{decoratee},
+  \ff{\^{}} for referring to the parent object,
+  and
+  \ff{\$} for referring to the current object.
+Attributes, which are the only identifiers that exist in \eo{}, may have
+any Unicode symbols in their names, as long as they start with a small English letter
+and don't contain spaces or line breaks:
+\ff{test-File} and
+\begin{CJK}{UTF8}{gbsn}
+\ff{i文件}
+\end{CJK}
+ are valid identifiers.
+Java-notation is used for numbers, strings, and character literals.
+
+\begin{figure*}
+\raggedright
+\small
+\setlength\columnsep{24pt}
+\newcommand\T[1]{\sntx{#1}}
+\newcommand\V[1]{{\ttfamily `#1'}}
+\newcommand\RE[1]{{\ttfamily \textcolor{gray}{/}#1\textcolor{gray}{/}}}
+\newcommand\alt{ \textcolor{gray}{|} }
+\newcommand\grp[1]{\textcolor{gray}{(} #1 \textcolor{gray}{)}}
+\newcommand\opt[1]{\textcolor{gray}{[} #1 \textcolor{gray}{]}}
+\newcommand\few[1]{\textcolor{gray}{\{} #1 \textcolor{gray}{\}}}
+\newcommand\lex[1]{{\scshape\textcolor{darkgray}{#1}}}
+\newcommand\df{\>{\ttfamily\textcolor{gray}{::=} }}
+\begin{multicols}{2}
+\begin{tabbing}
+\hspace*{1.6cm}\= \kill
+
+\T{program} \df \opt{\T{license}} \opt{\T{metas}} \few{\T{object} \lex{eol}} \\
+\T{license} \df \few{\T{comment} \lex{eol}} \lex{eol} \\
+\T{metas} \df \few{\T{meta} \lex{eol}} \lex{eol} \\
+\T{comment} \df \V{\#} \lex{any} \lex{eol} \\
+\T{meta} \df \V{+} \T{name} \V{␣} \lex{any} \lex{eol} \\
+\T{name} \df \RE{[a-z][\^{}␣]*} \\
+\T{object} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
+\T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
+\T{tail} \df \lex{eol} \lex{tab} \few{\T{object} \lex{eol}} \lex{untab} \\
+\T{vtail} \df \lex{eol} \T{method} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
+\T{abstraction} \df \T{attributes} \opt{ \T{suffix} \opt{ \V{␣ /} \T{name} } } \\
+\T{attributes} \df \V{[} \T{attribute} \few{\V{␣} \T{attribute}} \V{]} \\
+\T{attribute} \df \V{@} \alt \T{name} \opt{\V{...}} \\
+\T{suffix} \df \V{␣} \V{>} \V{␣} \grp{\V{@} \alt \T{name}} \opt{\V{!}} \\
+\T{method} \df \V{.} \grp{ \T{name} \alt \V{\^{}} } \\
+\T{application} \df \T{head} \opt{\T{htail}} \\
+\T{htail} \df \T{application} \T{method} \\
+  \> \alt \V{(} \T{application} \V{)} \\
+  \> \alt \T{application} \V{:} \T{name} \\
+  \> \alt \T{application} \T{suffix} \\
+  \> \alt \T{application} \V{␣} \T{application} \\
+\T{head} \df \T{name} \alt \T{data} \alt \V{@} \alt \V{\$} \\
+  \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \\
+\T{data} \df \T{bytes} \alt \T{string} \alt \T{integer} \\
+  \> \alt \T{char} \alt \T{float} \alt \T{regex} \\
+\T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \\
+\T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
+\T{string} \df \RE{"[\^{}"]*"} \\
+\T{integer} \df \RE{[+-]?\textbackslash{}d+|0x[a-f\textbackslash{}d]+} \\
+\T{char} \df \RE{'([\^{}']|\textbackslash{}\textbackslash{}\textbackslash{}d+)'} \\
+\T{regex} \df \RE{/.+/[a-z]*} \\
+\T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{\T{exp}} \\
+\T{exp} \df \RE{e(+|-)?\textbackslash{}d+} \\
+\end{tabbing}
+\end{multicols}
+\figcap{The full syntax of \eo{} in BNF.
+  \lex{eol} is a line ending that preserves the indentation of the previous line.
+  \lex{tab} is a right-shift of the indentation, while \lex{untab} is a left-shift.
+  \lex{any} is any symbol excluding \lex{eol}.
+  The texts between forward slashes are Perl-style regular expressions.}
+\label{fig:bnf}
+\end{figure*}
+
+\subsection{Identity, State, and Behavior}
+
+According to~\citet{grady2007object}, an object in OOP has state, behavior, and identity:
+``The state of an object encompasses all of the properties of
+the object plus the current values of each of these properties.
+Behavior is how an object acts and reacts, in terms of its state changes and message passing.
+Identity is that property of an object which distinguishes it from all other objects.''
+The syntax of \eo{} makes the difference between these three categories obvious.
+
+This is a declaration of an abstract object \ff{book},
+which has a single \emph{identity} attribute \ff{isbn}:
+
+\begin{ffcode}
+[isbn] > book |$\label{ln:book}$|
+\end{ffcode}
+
+To make a new object with a specific ISBN, the \ff{book}
+has to \emph{copied}, with the \emph{data} as an argument:
+
+\begin{ffcode}
+book "978-1519166913" > b1
+\end{ffcode}
+
+Here, \ff{b1} is a new object created.
+Its only attribute is accessible as \ff{b1.isbn}.
+
+A similar abstract object, but with two new \emph{state} attributes, would
+look like:
+
+\begin{ffcode}
+[isbn] > book2  |$\label{ln:book2}$|
+  "Object Thinking" > title
+  memory > price |$\label{ln:book2-end}$|
+\end{ffcode}
+
+The attribute \ff{title} is a constant, while the \ff{price}
+represents a mutable chunk of bytes in computing memory. They both are
+accessible similar to the \ff{isbn}, via \ff{book2.title}
+and \ff{book2.price}. It's legal to access them in the abstract
+object, since they are bound to objects. However, accessing \ff{book2.isbn}
+will lead to an error, since the attribute \ff{isbn} is free
+in the abstract object \ff{book2}.
+
+A \emph{behavior} may be added to an object with a new \emph{inner}
+abstract object \ff{set-price}:
+
+\begin{ffcode}
+[isbn] > book3 |$\label{ln:book3}$|
+  "Object Thinking" > title
+  memory > price
+  [p] > set-price
+    ^.price.write p > @ |$\label{ln:book3-end}$|
+\end{ffcode}
+
+The price of the book may be changed with this one-liner:
+
+\begin{ffcode}
+book3.set-price 19.99
+\end{ffcode}
+
+\subsection{Indentation}
+
+This is an example of a simple abstract object \ff{vector}, where
+spaces are replaced with the ``␣'' symbol in order to demonstrate
+the importance of their presence in specific quantity
+(for example, there has to be exactly one space after the closing square bracket at the
+second line and the \ff{>} symbol, while two spaces will break the syntax):
+
+\begin{ffcode}
+#␣This is a vector in 2D space |$\label{ln:comment}$|
+[dx␣dy]␣>␣vector |$\label{ln:vector}$|
+␣␣sqrt.␣>␣length |$\label{ln:length}$|
+␣␣␣␣add.
+␣␣␣␣␣␣dx.pow 2
+␣␣␣␣␣␣dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
+\end{ffcode}
+
+The code at \lref{comment} is a \emph{comment}.
+Two \emph{free attributes} \ff{dx} and \ff{dy}
+are listed in square brackets at \lref{vector}.
+The \emph{name} of the object goes after the \ff{>} symbol.
+The code at \lref{length} defines
+a \emph{bound attribute} \ff{length}. Anywhere when an object
+has to get a name, the \ff{>} symbol can be added after the object.
+
+The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
+can be written in one line, using \emph{dot notation}:
+
+\begin{ffcode}
+((dx.pow 2).add (dy.pow 2)).sqrt > length
+\end{ffcode}
+
+An \emph{inverse} dot notation is used in order to simplify
+the syntax. The identifier that goes after the dot is written
+first, the dot follows, and the next line contains the part
+that is supposed to stay before the dot. It's also possible to rewrite
+this expression in multiple lines without the usage of
+inverse notation, but it will look less readable:
+
+\begin{ffcode}
+dx.pow 2 |$\label{ln:dx-pow}$|
+.add
+  dy.pow 2 |$\label{ln:dx-pow-2}$|
+.sqrt > length |$\label{ln:dx-pow-3}$|
+\end{ffcode}
+
+Here, \lref{dx-pow} is the application of the object \ff{dx.pow} with
+a new argument \ff{2}. Then, the next line is the object \ff{add} taken
+from the object created at the first line, using the dot notation. Then,
+\lref{dx-pow-2} is the argument passed to the object \ff{add}.
+The code at \lref{dx-pow-3} takes the object \ff{sqrt} from the object constructed
+at the previous line, and gives it the name \ff{length}.
+
+Indentation is used for two purposes: either to define attributes
+of an abstract object or to specify arguments for object application, also
+known as making a \emph{copy}.
+A definition of an abstract object starts with a list of free attributes
+in square brackets on one line, followed by a list of bound attributes
+each in its own line. For example, this is an abstract \emph{anonymous} object
+(it doesn't have a name)
+with one free attribute \ff{x} and two bound attributes \ff{succ} and \ff{prev}:
+
+\begin{ffcode}
+[x]
+  x.add 1 > succ
+  x.sub 1 > prev
+\end{ffcode}
+
+The arguments of \ff{add} and \ff{sub} are provided in a \emph{horizontal}
+mode, without the use of indentation. It's possible to rewrite this code
+in a \emph{vertical} mode, where indentation will be required:
+
+\begin{ffcode}
+[x] |$\label{ln:succ}$|
+  x.add > succ
+    1
+  x.sub > prev
+    1 |$\label{ln:succ-end}$|
+\end{ffcode}
+
+This abstract object can also be written in a horizontal mode,
+because it's anonymous:
+
+\begin{ffcode}
+[x] (x.add 1 > succ) (x.sub 1 > prev)
+\end{ffcode}
+
+\subsection{\eo{} to XML}\label{sec:xml}
+
+Due the nesting nature of \eo{}, its program can be transformed
+to an XML document. The abstract object \ff{vector} would produce
+this XML tree of elements and attributes:
+
+\begin{ffcode}
+<o name="vector">
+  <o name="dx"/>
+  <o name="dy"/>
+  <o name="length" base=".sqrt">
+    <o base=".add">
+      <o base=".pow">
+        <o base="dx"/>
+        <o base="int" data="int">2</>
+      </o>
+      <o base=".pow">
+        <o base="dy"/>
+        <o base="int" data="int">2</>
+      </o>
+    </o>
+  </o>
+</o>
+\end{ffcode}
+
+Each object is represented by an \ff{<o/>} XML element with a few
+optional attributes, such as \ff{name} and \ff{base}. Each
+attribute is either a named reference to an object (if the attribute is bound,
+such as \ff{length}), or a name without a reference (if it's free,
+such as \ff{dx} and \ff{dy}).
+
+\subsection{Data Objects and Arrays}
+
+There are a few abstract objects which can't be directly copied, such as
+\ff{float} and \ff{int}. They are created by the compiler when it meets
+a special syntax for data, for example:
+
+\begin{ffcode}
+[r] > circle
+  r.mul 2 3.14 > circumference
+\end{ffcode}
+
+This syntax would be translated to XML:
+
+\begin{ffcode}
+<o name="circle"> |$\label{ln:xml-circle}$|
+  <o name="r"/>
+  <o base=".mul" name="circumference">
+    <o base="r"/>  |$\label{ln:xml-circle-r}$|
+    <o base="int" data="int">2</o>
+    <o base="float" data="float">3.14</o>
+  </o>
+</o> |$\label{ln:xml-circle-end}$|
+\end{ffcode}
+
+Each object, if it's not abstract, has a ``base'' attribute in XML,
+which contains that name of an abstract object to be copied. The
+objects \ff{int} and \ff{float} are abstracts, but their names
+can't be used directly in a program, similar to how \ff{r} or \ff{mul}
+are used. The only way to make a copy of the abstract object \ff{int}
+is to use a numeric literal like \ff{2}. The literal \ff{3.14}
+is turned into a copy of the object \ff{float}.
+
+The abstract objects which can't be used directly and can only be
+created by the compiler through \sntx{data}---are called \emph{data}.
+The examples of some possible data are in the Tab.~\ref{tab:types}.
+
+\begin{table}[H]
+\begin{tabular}{|l|l|}
+\hline
+Data & Example \\
+\hline
+\ff{string} & \ff{"Hello, world!"} \\
+\ff{char} & \ff{'X'} or \ff{'\textbackslash{}07'} \\
+\ff{int} & \ff{42} \\
+\ff{float} & \ff{3.1415926} or \ff{2.4e-34} \\
+\ff{bytes} & \ff{1F-E5-77-A6} \\
+\ff{bool} & \ff{true} or \ff{false} \\
+\ff{regex} & \ff{/[a-z]+.+/m} \\
+\hline
+\end{tabular}
+\figcap{The syntax of all data with examples.}
+\label{tab:types}
+\end{table}
+
+The \ff{array} is yet another data, which can't be copied
+directly. There is a special syntax for making arrays,
+which looks similar to object copying:
+
+\begin{ffcode}
+* "Lucy" "Jeff" 3.14 |$\label{ln:array-1}$|
+* > a |$\label{ln:array-2a}$|
+  (* 'a')
+  true |$\label{ln:array-2b}$|
+* > b |$\label{ln:array-3}$|
+\end{ffcode}
+
+The code at \lref{array-1} makes an array of three elements: two strings
+and one float. The code at \lrefs{array-2a}{array-2b} makes an array named \ff{a} with another
+array as its first element and \ff{true} as the second item.
+The code at \lref{array-3} is an empty array with the name \ff{b}.
+
+\subsection{Varargs}
+
+The last free attribute in an abstract class may be a \emph{vararg},
+meaning that any number or zero arguments may be provided. All of them
+will be packaged in an array by the compiler, for example:
+
+\begin{ffcode}
+[x...] > sum |$\label{ln:sum-def}$|
+sum 8 13 -9 |$\label{ln:sum-instance}$|
+\end{ffcode}
+
+Here, at the first line the abstract object \ff{sum} is defined
+with a free vararg attribute \ff{x}. At the second line a copy of the
+abstract object is made with three arguments. The internals of
+the \ff{sum} will see \ff{x} as an \ff{array} with three
+elements inside.
+
+\subsection{Scope Brackets}
+
+Brackets can be used to group object arguments in horizontal mode:
+
+\begin{ffcode}
+sum (div 45 5) 10  |$\label{ln:sum}$|
+\end{ffcode}
+
+The \ff{(div 45 5)} is a copy of the abstract object \ff{div}
+with two arguments \ff{45} and \ff{5}. This object is itself
+the first argument of the copy of the object \ff{sum}. Its second
+argument is \ff{10}. Without brackets the syntax would read differently:
+
+\begin{ffcode}
+sum div 45 5 10
+\end{ffcode}
+
+This expression denotes a copy of \ff{sum} with four arguments.
+
+\subsection{Inner Objects}
+
+An abstract object may have other abstract objects as its attributes,
+for example:
+
+\begin{ffcode}
+# A point on a 2D canvas
+[x y] > point
+  [to] > distance
+    length. > len
+      vector
+        to.x.sub (^.x)
+        to.y.sub (^.y)
+\end{ffcode}
+
+The object \ff{point} has two free attributes \ff{x} and \ff{y}
+and the attribute \ff{distance}, which is bound to an abstract
+object with one free attribute \ff{to} and one bound attribute \ff{len}.
+The \emph{inner} abstract object \ff{distance} may only be copied
+with a reference to its \emph{parent} object \ff{point}:
+
+\begin{ffcode}
+(point 5:x -3:y).distance |$\label{ln:point-copy}$|
+  (point 13 3.9):to
+\end{ffcode}
+
+The parent object is \ff{(point 5 -3)}, while the object \ff{(point 13 3.9)}
+is the argument for the free attribute \ff{to} of the object \ff{distance}.
+Suffixes \ff{:x}, \ff{:y}, and \ff{:to} are optional and may be used
+to denote the exact name of the free attribute to be bound to the
+provided argument.
+
+Inner object may refer to the parent object by using the \ff{\^{}} symbol.
+
+\subsection{Decorators}
+
+An object may extend another object by \emph{decorating} it:
+
+\begin{ffcode}
+[center radius] > cirle |$\label{ln:circle}$|
+  center > @ |$\label{ln:circle-phi}$|
+  [p] > is-inside
+    leq. > @
+      ^.@.distance $.p  |$\label{ln:circle-phi-2}$|
+      ^.radius |$\label{ln:circle-end}$|
+\end{ffcode}
+
+The object \ff{circle} has a special attribute \ff{@}
+at \lref{circle-phi}, which denotes
+the \emph{decoratee}: an object to be extended. The \emph{decorator} \ff{circle}
+has the same attributes as its decoratee \ff{center}, but also
+its own attribute \ff{is-inside}. The attribute \ff{@} may be used
+the same way as other attributes, including in dot notation, as it's done
+at \lref{circle-phi-2}. However, this line
+may be re-written in a more compact way, omitting the explicit
+reference to the \ff{@} attribute, because all attributes
+of the \ff{center} are present in the \ff{cirle};
+and omitting the reference to \ff{\$} because the default scope of visibility of
+\ff{p} is the object \ff{is-inside}:
+
+\begin{ffcode}
+^.distance p
+\end{ffcode}
+
+The inner object \ff{is-inside} also has the \ff{@} attribute: it
+decorates the object \ff{leq} (stands for ``less than equal'').
+The expression at \lref{circle-phi} means:
+take the parent object of \ff{is-inside},
+take the attribute \ff{@} from it, then take the inner object \ff{distance}
+from there, and then make a copy of it with the attribute \ff{p}
+taken from the current object (denoted by the \ff{\$} symbol).
+
+The object \ff{circle} may be used like this, to understand whether
+the $(0,0)$ point is inside the circle at $(-3,9)$ with the radius $40$:
+
+\begin{ffcode}
+circle (point -3 9) 40 > c  |$\label{ln:circle-c}$|
+c.is-inside (point 0 0) > i
+\end{ffcode}
+
+Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{true}
+because \ff{leq} decorates \ff{bool}.
+
+It's also possible to make decoratee free, similar to other free
+attributes, specifying it in the list of free attributes in
+square brackets.
+
+\subsection{Anonymous Abstract Objects}
+
+An abstract object may be used as an argument of another object while
+making a copy of it, for example:
+
+\begin{ffcode}
+files
+  "/tmp"
+  *
+    [f]
+      f.isDir > @
+\end{ffcode}
+
+Here the object \ff{files} is copied with two arguments, the string
+\ff{"/tmp"} and the array with a single element, which is an
+abstract object with a single free attribute \ff{f}. The \ff{files}
+will use this abstract object, which doesn't have a name, in order
+to filter out files while traversing the tree of directories. It will
+make a copy of the abstract object and then treat it as a boolean
+value in order to make a decision about the file.
+
+The syntax may be simplified and the abstract object may be inlined
+(the array is also inlined):
+
+\begin{ffcode}
+files
+  "/tmp"
+  * ([f] (f.isDir > @))
+\end{ffcode}
+
+An anonymous abstract object many have multiple attributes:
+
+\begin{ffcode}
+[x] (x.add 1 > succ) (x.sub 1 > prev)
+\end{ffcode}
+
+This object has two attributes \ff{succ} and \ff{prev}, and doesn't
+have a name.
+
+\subsection{Constants}
+
+\eo{} is a declarative language with lazy evaluations. This means
+that this code would read the input stream two times:
+
+\begin{ffcode}
+[] > hello
+  stdout > say
+    sprintf
+      "The length of %s is %d"
+      stdin.nextLine > x!
+      x.length
+\end{ffcode}
+
+The \ff{sprintf} object will go to the \ff{x} two times. First time,
+in order to use it as a substitute for \ff{\%s} and the second time for
+\ff{\%d}. There will be two round-trips to the standard input stream, which
+obviously is not correct. The exclamation mark at the \ff{x!} solves the
+problem, making the object by the name \ff{x} a \emph{constant}. This means
+that all attributes of \ff{x} are \emph{cached}. Important to notice
+that the cache is \emph{not deep}: the attributes of attributes are not cached.
+
+Here, \ff{x} is an attribute of the object \ff{hello}, even though
+it's not defined as explicitly as \ff{say}. Anywhere a new
+name shows up after the \ff{>} symbol, it's a declaration of a new
+attribute in the nearest object abstraction.
+
+\subsection{Metas and License}
+
+A program may have a comment at the beginning of the file, which
+is called a \emph{license}. The license may be followed by an optional
+list of \emph{meta} statements, which are passed to the compiler
+as is. The meaning of them depends on the compiler and may vary
+between target platforms. This program instructs the compiler
+to put all objects from the file into the package \ff{org.example}
+and helps it resolve the name \ff{stdout}, which is external
+to the file:
+
+\begin{ffcode}
+# (c) John Doe, 2021
+# All rights reserved.
+# The license is MIT
+
++package org.example
++alias org.eolang.io.stdout
+
+[args...] > app
+  stdout > @
+    "Hello, world!\n"
+\end{ffcode}
+
+\subsection{Atoms}
+
+Some objects in \eo{} programs may need to be platform specific
+and can't be composed from other existing objects---they are called
+\emph{atoms}.
+The object \ff{app} uses the object \ff{stdout},
+which is an atom. Its implementation would be provided by the
+runtime. This is how the object may be defined:
+
+\begin{ffcode}
++rt jvm org.eolang:eo-runtime:0.1.24
++rt ruby eolang:0.1.0
+
+[text] > stdout /bool |$\label{ln:stdout}$|
+\end{ffcode}
+
+The \ff{/bool} suffix informs the compiler that this object must
+not be compiled from \eo{} to the target language. The object
+with this suffix already exists in the target language and most
+probably could be found in the library specified by the \ff{rt}
+meta. The exact library to import has to be selected by the compiler.
+In the example above, there are two libraries specified: for JVM and
+for Ruby.
+
+The \ff{bool} part after the \ff{/} is the name of
+object, which \ff{stdout} decorates.
+
+Atoms in \eo{} are similar to ``native'' methods in Java and ``\nospell{extern}'' methods
+in C\#.
+
+
+
+
+
+
+

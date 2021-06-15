@@ -1,0 +1,13 @@
+xsls:
+  - org/eolang/parser/optimize/remove-refs.xsl
+  - org/eolang/parser/optimize/abstracts-float-up.xsl
+  - org/eolang/parser/optimize/remove-levels.xsl
+  - org/eolang/parser/add-refs.xsl
+  - org/eolang/parser/optimize/fix-missed-names.xsl
+tests:
+  - //o[@base='first$second' and @line='4']
+eo: |
+  [a] > first
+    [b] > second
+      print
+        second 1

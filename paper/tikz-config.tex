@@ -1,0 +1,26 @@
+\usepackage{tikz}
+  \usetikzlibrary{arrows}
+  \usetikzlibrary{decorations}
+  \usetikzlibrary{intersections}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{backgrounds}
+  \usetikzlibrary{calc}
+  \usetikzlibrary{shapes.arrows}
+\newenvironment{ingraph}%
+  {\vspace{3pt}\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
+  {\end{tikzpicture}\vspace{3pt}}
+\tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
+\tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
+\tikzstyle{object} = [thing,circle]
+\tikzstyle{dup} = [thing,rectangle,draw=none,minimum height=1.5em,inner sep=3pt]
+\tikzstyle{empty} = [object]
+\tikzstyle{transforms} = [fill=white!80!black, single arrow, minimum height=0.5cm, minimum width=0.5cm,single arrow head extend=2mm]
+\tikzstyle{rho} = [draw,color=orange]
+\tikzstyle{ref} = []
+\tikzstyle{edge-name} = [circle,font=\scriptsize,near start,sloped,fill=white,inner sep=0pt,sloped/.append style={transform shape}]
+\tikzstyle{parent} = [draw,color=blue!70!black]
+\tikzstyle{atom} = [object,double]
+\tikzstyle{lambda} = [xshift=-5pt,yshift=3pt,draw,fill=white,rectangle,thin,minimum width=1.2em,anchor=north west,font={\scriptsize}]
+\tikzstyle{attr} = [midway,sloped,inner sep=0pt,above=2pt,sloped/.append style={transform shape},font={\scriptsize},color=black]
+\tikzstyle{locator} = [attr,below=2pt]
+\tikzstyle{Phi} = [font={\scriptsize}]
