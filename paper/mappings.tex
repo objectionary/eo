@@ -18,30 +18,31 @@ We assume that all of them may be represented with the primitive
 language features of \eo{}. There is no complete mapping mechanism
 implemented yet, but there are a few examples in this section
 that demonstrate how some features may be mapped from Java to \eo{}.
-The Tab.~\ref{tab:mapping} shows the list of most popular Java~8 features and explains
-how they may be mapped to \eo{}.
 
-\begin{figure}
-\begin{tabularx}{\columnwidth}{|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}X|}
-\hline
-Java~8 Feature & Equivalent implementation in \eo{} \\
-\hline
-Generics & The information generics provide may be embedded into objects as attributes. \\
-Inheritance & Decorators may be used instead of inheritance. \\
-Annotations & Annotation may be represented by decorators for the classes they annotate. \\
-Lambda Functions & Functions may be implemented as no-attribute objects. \\
-Reflection & Objects may have meta information embedded through regular attributes, accessible by other objects. \\
-\ff{assert} & May be implemented as a normal validator with a special exception thrown in case of error. \\
-Static Blocks & Each block may be represented by an object with. \\
-Static Methods & Each static method may be an attribute in a class/factory. \\
-\ff{finalize} & The object with \ff{finalize} may be decorated by a special decorator that receives a signal from garbage collector when it's time to destroy the object. \\
-\ff{catch} & Each \ff{try/catch} block may be represented with a special object that validates the output of the object it decorates and if the returned value has no body, it does what the \ff{catch} block is supposed to do. \\
-\ff{for}, \ff{while}, \ff{if}, \ff{switch}, \ff{break}, and \ff{continue} & All control-flow statements may be implemented as special objects in \eo{}, each of which is equivalent for the corresponding statement. \\
-\hline
-\end{tabularx}
-\figcap{Most popular features in Java~8 and their possible representations in \eo{}.}
-\label{tab:mapping}
-\end{figure}
+% The Tab.~\ref{tab:mapping} shows the list of most popular Java~8 features and explains
+% how they may be mapped to \eo{}.
+
+% \begin{figure}
+% \begin{tabularx}{\columnwidth}{|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}X|}
+% \hline
+% Java~8 Feature & Equivalent implementation in \eo{} \\
+% \hline
+% Generics & The information generics provide may be embedded into objects as attributes. \\
+% Inheritance & Decorators may be used instead of inheritance. \\
+% Annotations & Annotation may be represented by decorators for the classes they annotate. \\
+% Lambda Functions & Functions may be implemented as no-attribute objects. \\
+% Reflection & Objects may have meta information embedded through regular attributes, accessible by other objects. \\
+% \ff{assert} & May be implemented as a normal validator with a special exception thrown in case of error. \\
+% Static Blocks & Each block may be represented by an object with. \\
+% Static Methods & Each static method may be an attribute in a class/factory. \\
+% \ff{finalize} & The object with \ff{finalize} may be decorated by a special decorator that receives a signal from garbage collector when it's time to destroy the object. \\
+% \ff{catch} & Each \ff{try/catch} block may be represented with a special object that validates the output of the object it decorates and if the returned value has no body, it does what the \ff{catch} block is supposed to do. \\
+% \ff{for}, \ff{while}, \ff{if}, \ff{switch}, \ff{break}, and \ff{continue} & All control-flow statements may be implemented as special objects in \eo{}, each of which is equivalent for the corresponding statement. \\
+% \hline
+% \end{tabularx}
+% \figcap{Most popular features in Java~8 and their possible representations in \eo{}.}
+% \label{tab:mapping}
+% \end{figure}
 
 \subsection{Inheritance}
 
@@ -196,4 +197,42 @@ Now, checking the type of the object is as easy as reading the
 value of its attribute \ff{type}. The mechanism can be extended
 with more additional information during the transition from
 Java to \eo{}, such as information about attributes, decoratee, etc.
+
+\subsection{Exception Handling}
+
+There are no exceptions in \eo{}, but there are objects that
+can't dataized. A traditional Java \ff{try/catch/finally} statements
+may be represented by an object \ff{try} provided by \eo{} runtime.
+For example, consider this Java code:
+
+\begin{ffcode}
+try {
+  Files.write(file, data);
+} catch (IOException e) {
+  System.out.println("Can't write to file");
+} finally {
+  System.out.println("This happens anyway");
+}
+\end{ffcode}
+
+It may be translated to \eo{}:
+
+\begin{ffcode}
+try
+  []
+    files.write > @
+      file
+      data
+  []
+    stdout.print > @
+      "Can't write to file"
+  []
+    stdout.print > @
+      "This happens anyway"
+\end{ffcode}
+
+Now, throwing an exception is returning an object that can't be
+dataized and handling the exception is checking for whether the
+object has $\varphi$ attribute or not. All of this is done
+by the object \ff{try}.
 
