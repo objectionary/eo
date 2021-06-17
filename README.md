@@ -1,7 +1,21 @@
+## What this repository is for?
+This repository proposes a new transcompilation model of EO programs to Java source codes. Moreover, this repository has the documentation on the language and its standard library as well as a collection of examples (see the `sandbox` directory). 
+The old (CQFN) model is depicted [here](https://miro.com/app/board/o9J_lM0FZHk=/).
+And the visualization of our model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).
+Also you might want to read [a draft of our paper](docs/EO%20Programming%20Language%20Transcompilation%20Model%20for%20Java%20Source%20Code%20Generation.pdf) that describes the model.
+## How is this transpiler better?
+Our transcompilation model has two great advantages:
+1. It if much faster than the CQFN original implementation.
+2. The output Java code is much easier to read and comprehend. The runtime library is also much more readable and understandable.
+
+You can see the difference in performance of the old and the new models below:
+![This model is faster!](docs/faster.png "This model is faster!") 
+Please, refer to [this Google Sheet](https://docs.google.com/spreadsheets/d/1YsalbO6piExC3begifeNNsaz7PEDsqlV3Xx7c6TGbOU/edit?usp=sharing) for more comparisons.
+
 ## Table of Contents
-- [Table of Contents](#table-of-contents)
 - [What this repository is for?](#what-this-repository-is-for)
 - [How is this transpiler better?](#how-is-this-transpiler-better)
+- [Table of Contents](#table-of-contents)
 - [The EO Programming Language Reference](#the-eo-programming-language-reference)
   - [Objects](#objects)
   - [Attributes](#attributes)
@@ -58,19 +72,6 @@
   - [Sequencing Computations. `seq`](#sequencing-computations-seq)
   - [Mutable Storage in Memory. `memory`](#mutable-storage-in-memory-memory)
 - [How to Contribute](#how-to-contribute)
-## What this repository is for?
-This repository proposes a new transcompilation model of EO programs to Java source codes. Moreover, this repository has the documentation on the language and its standard library as well as a collection of examples (see the `sandbox` directory). 
-The old (CQFN) model is depicted [here](https://miro.com/app/board/o9J_lM0FZHk=/).
-And the visualization of our model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).
-Also you might want to read [a draft of our paper](docs/EO%20Programming%20Language%20Transcompilation%20Model%20for%20Java%20Source%20Code%20Generation.pdf) that describes the model.
-## How is this transpiler better?
-Our transcompilation model has two great advantages:
-1. It if much faster than the CQFN original implementation.
-2. The output Java code is much easier to read and comprehend. The runtime library is also much more readable and understandable.
-
-You can see the difference in performance of the old and the new models below:
-![This model is faster!](docs/faster.png "This model is faster!") 
-Please, refer to [this Google Sheet](https://docs.google.com/spreadsheets/d/1YsalbO6piExC3begifeNNsaz7PEDsqlV3Xx7c6TGbOU/edit?usp=sharing) for more comparisons.
 
 ## The EO Programming Language Reference
 This section covers the basic principles that the EO programming language relies on. These are objects, attributes, and four elemental operations — abstraction, application, decoration, and dataization.
