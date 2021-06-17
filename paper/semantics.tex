@@ -291,7 +291,7 @@ $x$ and the ``tail'' of the expression as $E$.
 In the conclusion part of the rule a vertice is found using the locator $x$
 and then a new edge is added, starting from the current vertice and arriving
 to the vertice found. Strictly, $x$ must be a single identifier. However,
-in a more relaxed mode it's possible to have a longer locator as the head
+in a more relaxed mode it is possible to have a longer locator as the head
 of the expression. For example, the expression $\rho.\rho.\ff{p}$ can be split
 strictly on $\rho$ as the head and $\rho.\ff{p}$ as the tail; but it
 also can be split on $\rho.\rho$ as the head and $\ff{p}$ as the tail. Longer
@@ -299,7 +299,7 @@ locators in the head part of the expression are only allowed if the vertice
 they refer to already exists on the graph.
 \rrule{attribute} also processes $x$ in the conclusion part,
 providing other rules the opportunity to deal with it.
-In particular, \rrule{data} may process $x$ if it's data.
+In particular, \rrule{data} may process $x$ if it is data.
 
 The tranformation of the internals of \ff{is-inside} with \rrule{attribute}
 would look like the following:
@@ -311,7 +311,7 @@ would look like the following:
 Here $\rho$ represents the $x$ part of the premise and the expression
 that starts with a dot represents the $E$ part. At the conclusion,
 $x$ is being replaced with $v_5$, because $\rho$ from the vertice $v_{12}$ points
-to it: it's the parent object of $v_{12}$. The edge $e_{14}$ created by the \ff{REF}
+to it: it is the parent object of $v_{12}$. The edge $e_{14}$ created by the \ff{REF}
 is used in the expression that finishes the conclusion, triggering the processing
 of the tail part of the formula: the head is the $\rho$, while the tail
 is the dot and everything that goes after it.
@@ -480,7 +480,7 @@ counting starts with zero.
 The notation $(\lambda s.M \; v + S)$ means creating a function from
 the $\lambda$~term $M$ with one parameter $s$ and then calculating
 it with the argument $v + S$. The vector $s$, provided to the
-function as its parameter, is used in $M$ when it's necessary
+function as its parameter, is used in $M$ when it is necessary
 to use $\mathbb{R}$ in order to find some object.
 
 For example, $\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},

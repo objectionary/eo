@@ -127,7 +127,7 @@ look like:
 The attribute \ff{title} is a constant, while the \ff{price}
 represents a mutable chunk of bytes in computing memory. They both are
 accessible similar to the \ff{isbn}, via \ff{book2.title}
-and \ff{book2.price}. It's legal to access them in the abstract
+and \ff{book2.price}. It is legal to access them in the abstract
 object, since they are bound to objects. However, accessing \ff{book2.isbn}
 will lead to an error, since the attribute \ff{isbn} is free
 in the abstract object \ff{book2}.
@@ -184,7 +184,7 @@ can be written in one line, using \emph{dot notation}:
 An \emph{inverse} dot notation is used in order to simplify
 the syntax. The identifier that goes after the dot is written
 first, the dot follows, and the next line contains the part
-that is supposed to stay before the dot. It's also possible to rewrite
+that is supposed to stay before the dot. It is also possible to rewrite
 this expression in multiple lines without the usage of
 inverse notation, but it will look less readable:
 
@@ -218,7 +218,7 @@ with one free attribute \ff{x} and two bound attributes \ff{succ} and \ff{prev}:
 \end{ffcode}
 
 The arguments of \ff{add} and \ff{sub} are provided in a \emph{horizontal}
-mode, without the use of indentation. It's possible to rewrite this code
+mode, without the use of indentation. It is possible to rewrite this code
 in a \emph{vertical} mode, where indentation will be required:
 
 \begin{ffcode}
@@ -230,7 +230,7 @@ in a \emph{vertical} mode, where indentation will be required:
 \end{ffcode}
 
 This abstract object can also be written in a horizontal mode,
-because it's anonymous:
+because it is anonymous:
 
 \begin{ffcode}
 [x] (x.add 1 > succ) (x.sub 1 > prev)
@@ -264,7 +264,7 @@ this XML tree of elements and attributes:
 Each object is represented by an \ff{<o/>} XML element with a few
 optional attributes, such as \ff{name} and \ff{base}. Each
 attribute is either a named reference to an object (if the attribute is bound,
-such as \ff{length}), or a name without a reference (if it's free,
+such as \ff{length}), or a name without a reference (if it is free,
 such as \ff{dx} and \ff{dy}).
 
 \subsection{Data Objects and Arrays}
@@ -291,7 +291,7 @@ This syntax would be translated to XML:
 </o> |$\label{ln:xml-circle-end}$|
 \end{ffcode}
 
-Each object, if it's not abstract, has a ``base'' attribute in XML,
+Each object, if it is not abstract, has a ``base'' attribute in XML,
 which contains that name of an abstract object to be copied. The
 objects \ff{int} and \ff{float} are abstracts, but their names
 can't be used directly in a program, similar to how \ff{r} or \ff{mul}
@@ -426,7 +426,7 @@ at \lref{circle-phi}, which denotes
 the \emph{decoratee}: an object to be extended. The \emph{decorator} \ff{circle}
 has the same attributes as its decoratee \ff{center}, but also
 its own attribute \ff{is-inside}. The attribute \ff{@} may be used
-the same way as other attributes, including in dot notation, as it's done
+the same way as other attributes, including in dot notation, as it is done
 at \lref{circle-phi-2}. However, this line
 may be re-written in a more compact way, omitting the explicit
 reference to the \ff{@} attribute, because all attributes
@@ -457,7 +457,7 @@ c.is-inside (point 0 0) > i
 Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{true}
 because \ff{leq} decorates \ff{bool}.
 
-It's also possible to make decoratee free, similar to other free
+It is also possible to make decoratee free, similar to other free
 attributes, specifying it in the list of free attributes in
 square brackets.
 
@@ -523,8 +523,8 @@ that all attributes of \ff{x} are \emph{cached}. Important to notice
 that the cache is \emph{not deep}: the attributes of attributes are not cached.
 
 Here, \ff{x} is an attribute of the object \ff{hello}, even though
-it's not defined as explicitly as \ff{say}. Anywhere a new
-name shows up after the \ff{>} symbol, it's a declaration of a new
+it is not defined as explicitly as \ff{say}. Anywhere a new
+name shows up after the \ff{>} symbol, it is a declaration of a new
 attribute in the nearest object abstraction.
 
 \subsection{Metas and License}

@@ -35,7 +35,7 @@ that demonstrate how some features may be mapped from Java to \eo{}.
 % \ff{assert} & May be implemented as a normal validator with a special exception thrown in case of error. \\
 % Static Blocks & Each block may be represented by an object with. \\
 % Static Methods & Each static method may be an attribute in a class/factory. \\
-% \ff{finalize} & The object with \ff{finalize} may be decorated by a special decorator that receives a signal from garbage collector when it's time to destroy the object. \\
+% \ff{finalize} & The object with \ff{finalize} may be decorated by a special decorator that receives a signal from garbage collector when it is time to destroy the object. \\
 % \ff{catch} & Each \ff{try/catch} block may be represented with a special object that validates the output of the object it decorates and if the returned value has no body, it does what the \ff{catch} block is supposed to do. \\
 % \ff{for}, \ff{while}, \ff{if}, \ff{switch}, \ff{break}, and \ff{continue} & All control-flow statements may be implemented as special objects in \eo{}, each of which is equivalent for the corresponding statement. \\
 % \hline
@@ -78,7 +78,7 @@ The method \ff{volume} relies on the functionality provided by the
 abstract method \ff{square}, which is not implemented in the parent
 class \ff{Shape}: this is why the class is declared as \ff{abstract}
 and the method \ff{square} also has a modifier \ff{abstract}.
-It's impossible to make an instance of the class \ff{Shape}. A child
+It is impossible to make an instance of the class \ff{Shape}. A child
 class has to be define, which will inherit the functionality of
 \ff{Shape} and implement the missing abstract method.
 
@@ -86,7 +86,7 @@ The class \ff{Cirle} does exactly that: it \ff{extends} the class
 \ff{Shape} and implements the method \ff{square} with the functionality
 that calculates the square of the circle using the radius.
 The method \ff{volume} is present in the \ff{Circle} class, even
-though it's implemented in the parent class.
+though it is implemented in the parent class.
 
 This code would be represented in \eo{} as the following:
 
@@ -174,7 +174,7 @@ Then, the radius is replaced with \ff{45.0}.
 
 There are no types in \eo{}, while Java not only have at least one type
 for each object, but also enable the retrieval of this information in
-runtime. For example, it's possible to detect the type of the shape
+runtime. For example, it is possible to detect the type of the shape
 with this code:
 
 \begin{ffcode}
