@@ -71,7 +71,7 @@ the dot notation. There is no such thing as
 visibility restriction in \phic{}:
 all attributes are visible to all objects outside of the one they belong to.
 
-It's possible to chain attribute references using dot notation, for example
+It is possible to chain attribute references using dot notation, for example
 $\ff{book2}.\ff{price}.\ff{neg}$ is a valid expression, which means
 ``taking the attribute \ff{price} from the object \ff{book2} and then
 taking the attribute \ff{neg} from it.''
@@ -170,7 +170,7 @@ has three inner objects bound to attributes \ff{title}, \ff{price}, and \ff{set-
 \end{split}
 \end{equation}
 where $\rho.\ff{price}$ refers to the attribute \ff{price}
-of the parent object \ff{book3}. It's not always required to mention
+of the parent object \ff{book3}. It is not always required to mention
 $\rho$ explicitly, however it it may be present for the sake of
 disambiguation.
 
@@ -251,7 +251,7 @@ producing:
 
 \begin{eodefinition}\label{def:atom}
 If $\lambda s.M$ is a function of one argument $s$ returning an object,
-than it's an abstract object called an \textbf{atom} and $M$ is its $\lambda$~term.
+than it is an abstract object called an \textbf{atom} and $M$ is its $\lambda$~term.
 \end{eodefinition}
 
 For example, the atom at \lref{sum-def} would be represented as
@@ -266,7 +266,7 @@ the function is a vector $s$ where the first element is the object under
 consideration, the second element is its parent object, the third element
 is the parent of the parent, and so on. Thus, $s[0]$ is the object
 \ff{sum} itself, while $s[0].\ff{x}$ is its inner object \ff{x},
-and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it's an array.
+and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it is an array.
 
 Atoms may have their $\lambda$~terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
@@ -303,7 +303,7 @@ For example, the Eq.~\ref{eq:c-fin} may be refined as
 where $\xi$ denotes the current abstract object
 and $\Phi$ refers to the anonymous abstract ``root'' object.
 Defining an object in a global scope
-means binding it to the object $\Phi$, unless it's an anonymous
+means binding it to the object $\Phi$, unless it is an anonymous
 object, as the one at \lrefs{succ}{succ-end}.
 
 The most precise and complete formula for the object in the
