@@ -1,4 +1,4 @@
-There are many language features in modern object-oriented programming
+There are language features in modern object-oriented programming
 languages, which do not exist in \eo{}, for example:
   multiple inheritance,
   annotations,
@@ -9,40 +9,17 @@ languages, which do not exist in \eo{}, for example:
   assertions,
   static blocks,
   aspects,
+  NULL references,
   generics,
   lambda functions,
   exception handling,
-  reflection and type casting,
+  reflection,
+  type casting,
   and so on.
 We assume that all of them may be represented with the primitive
 language features of \eo{}. There is no complete mapping mechanism
 implemented yet, but there are a few examples in this section
 that demonstrate how some features may be mapped from Java to \eo{}.
-
-% The Tab.~\ref{tab:mapping} shows the list of most popular Java~8 features and explains
-% how they may be mapped to \eo{}.
-
-% \begin{figure}
-% \begin{tabularx}{\columnwidth}{|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}X|}
-% \hline
-% Java~8 Feature & Equivalent implementation in \eo{} \\
-% \hline
-% Generics & The information generics provide may be embedded into objects as attributes. \\
-% Inheritance & Decorators may be used instead of inheritance. \\
-% Annotations & Annotation may be represented by decorators for the classes they annotate. \\
-% Lambda Functions & Functions may be implemented as no-attribute objects. \\
-% Reflection & Objects may have meta information embedded through regular attributes, accessible by other objects. \\
-% \ff{assert} & May be implemented as a normal validator with a special exception thrown in case of error. \\
-% Static Blocks & Each block may be represented by an object with. \\
-% Static Methods & Each static method may be an attribute in a class/factory. \\
-% \ff{finalize} & The object with \ff{finalize} may be decorated by a special decorator that receives a signal from garbage collector when it is time to destroy the object. \\
-% \ff{catch} & Each \ff{try/catch} block may be represented with a special object that validates the output of the object it decorates and if the returned value has no body, it does what the \ff{catch} block is supposed to do. \\
-% \ff{for}, \ff{while}, \ff{if}, \ff{switch}, \ff{break}, and \ff{continue} & All control-flow statements may be implemented as special objects in \eo{}, each of which is equivalent for the corresponding statement. \\
-% \hline
-% \end{tabularx}
-% \figcap{Most popular features in Java~8 and their possible representations in \eo{}.}
-% \label{tab:mapping}
-% \end{figure}
 
 \subsection{Inheritance}
 
@@ -132,7 +109,7 @@ and a better way of mapping it to \eo{} would be the following:
 
 Here, \ff{shapes} is the representation of Java class \ff{Shape}. It technically
 is a factory of objects. In order to make a new, its attribute \ff{new}
-must be used, which is very similar to the operator \ff{new} in Java.
+must be used, which is similar to the operator \ff{new} in Java.
 The functionality of a Java constructor may also be implemented
 in the attribute \ff{new}, such as a validation of inputs or
 an initialization of local variables not passed through the constructor.
