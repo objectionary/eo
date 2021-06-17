@@ -233,14 +233,15 @@ while (i < 100) {
 This code may be translated to \eo{} as the following:
 
 \begin{ffcode}
-memory > i
-while.
-  i.less 100
-  seq
-    if.
-      eq. (i.mod 2 0)
-      stdout "even!"
-    i.write (i.add 1)
+[]
+  memory > i
+  while. > @
+    i.less 100
+    seq
+      if.
+        eq. (i.mod 2 0)
+        stdout "even!"
+      i.write (i.add 1)
 \end{ffcode}
 
 Here, \ff{while} and \ff{if} are the objects referred to as attributes
