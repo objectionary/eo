@@ -1,6 +1,7 @@
 \usepackage{tikz}
   \usetikzlibrary{arrows}
   \usetikzlibrary{decorations}
+  \usetikzlibrary{decorations.pathmorphing}
   \usetikzlibrary{intersections}
   \usetikzlibrary{positioning}
   \usetikzlibrary{backgrounds}
@@ -15,7 +16,7 @@
 \tikzstyle{dup} = [thing,rectangle,draw=none,minimum height=1.5em,inner sep=3pt]
 \tikzstyle{empty} = [object]
 \tikzstyle{transforms} = [fill=white!80!black, single arrow, minimum height=0.5cm, minimum width=0.5cm,single arrow head extend=2mm]
-\tikzstyle{rho} = [draw,color=orange]
+\tikzstyle{rho} = [draw,decorate,decoration={snake,amplitude=.4mm,segment length=2mm,post length=1mm}]
 \tikzstyle{ref} = []
 \tikzstyle{edge-name} = [circle,font=\scriptsize,near start,sloped,fill=white,inner sep=0pt,sloped/.append style={transform shape}]
 \tikzstyle{parent} = [draw,color=blue!70!black]

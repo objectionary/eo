@@ -79,7 +79,7 @@ is the text \ff{"Object Thinking"}.
 There are six graphical elements that may be present on an object graph:
 A \emph{circle} with a name inside it is an object.
 A \emph{named edge} from a circle to another circle is an attribute of the departing object.
-An \emph{orange} edge is the $\rho$ attribute.
+A \emph{snake} edge is the $\rho$ attribute.
 A \emph{blue} edge connects a copy with the origin.
 A \emph{double-bordered} circle is an atom.
 A \emph{rectangle} attached to a circle contains the $\lambda$~term of the atom.
@@ -110,7 +110,7 @@ $\ff{ADD}(v_1)$
 $\ff{BIND}(v_1, v_2, a)$
   \>
   \tabfill{Adds a solid labeled uni-directed edge $a$ from an existing vertice $v_1$ to an existing vertice $v_2$,
-  making the edge orange if $a$ equals to $\rho$ and adding a reverse orange edge otherwise:}
+  making a snake edge if $a$ equals to $\rho$ and adding a reverse snake edge otherwise:}
   \\
   \> \begin{ingraph}
     \node[object] (v1) {$v_1$};
