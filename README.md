@@ -1,7 +1,8 @@
 ## What this repository is for?
-This repository proposes a new transcompilation model of EO programs to Java source codes. Moreover, this repository has the documentation on the language and its standard library as well as a collection of examples (see the `sandbox` directory). 
+This repository proposes a new transcompilation model of EO programs to Java source codes.  
+Moreover, this repository has the documentation on the language and its standard library as well as a collection of examples (see the `sandbox` directory). 
 The old (CQFN) model is depicted [here](https://miro.com/app/board/o9J_lM0FZHk=/).
-And the visualization of our model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).
+And the visualization of our model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).  
 Also you might want to read [a draft of our paper](docs/EO%20Programming%20Language%20Transcompilation%20Model%20for%20Java%20Source%20Code%20Generation.pdf) that describes the model.
 ## How is this transpiler better?
 Our transcompilation model has two great advantages:
