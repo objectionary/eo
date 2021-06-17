@@ -80,7 +80,7 @@ There are six graphical elements that may be present on an object graph:
 A \emph{circle} with a name inside it is an object.
 A \emph{named edge} from a circle to another circle is an attribute of the departing object.
 A \emph{snake} edge is the $\rho$ attribute.
-A \emph{blue} edge connects a copy with the origin.
+A \emph{dotted} edge connects a copy with the origin.
 A \emph{double-bordered} circle is an atom.
 A \emph{rectangle} attached to a circle contains the $\lambda$~term of the atom.
 
@@ -145,7 +145,7 @@ $\ff{COPY}(e_1, v_3, e_2)$
   \tabfill{Breaks the edge $e_1$ going from $v_1$ to $v_2$,
     adding a new vertice $v_3$,
     connecting $v_1$ and $v_3$ with an edge $e_2$ labed the same way as $e_1$,
-    and connecting $v_3$ and $v_2$ with a blue edge:}
+    and connecting $v_3$ and $v_2$ with a dotted edge:}
   \\
   \> \begin{ingraph}
     \node[object] (v1) {$v_1$};
@@ -467,7 +467,7 @@ returns its attribute $a$:
   \tab \kw{if} $v = \rho$ \kw{then} $v \gets S[1]$ \\
   \tab \kw{if} $v$ has $a$-edge to $v'$ \kw{then} \kw{return} $v'$ \\
   \tab \kw{if} $v$ has $\varphi$-edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, v' + S)$ \\
-  \tab \kw{if} $v$ has a blue edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, S)$ \\
+  \tab \kw{if} $v$ has a dotted edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, S)$ \\
   \tab \kw{if} $v$ has $M$ \kw{then} \kw{return} $\mathbb{R}((\lambda s.M \; v + S), a, S)$ \\
   \tab \kw{return} $\perp$ \\
 \kw{end}
