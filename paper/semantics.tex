@@ -37,7 +37,7 @@ Consider the object from lines~\ref{ln:book2}--\ref{ln:book2-end},
 which is also represented by the expression in the Eq.~\ref{eq:book}.
 The Fig.~\ref{fig:book2} represents it as a graph.
 
-\begin{figure}
+\begin{figure}[t!]
 \begin{ingraph}
   \node[object] (v0) {$\Phi$};
   \node[object] (v2) [below right=0.5cm and 1.8cm of v0] {$v_2$};
@@ -190,6 +190,7 @@ if they are called more than once with the same input parameters.
 The object graph at the Fig.~\ref{fig:book2} may be generated with the
 following ordered sequence of GMIs:
 
+\begin{twocols}
 \begin{ffcode}
 ADD(|$\Phi$|)
 ADD(|$v_1$|);
@@ -205,6 +206,7 @@ REF(e, |$v_2$|, |$\Phi$|.memory, price);
 ADD(|$d_4$|);
 BIND(|$v_4$|, |$d_4$|, |$\delta$|);
 \end{ffcode}
+\end{twocols}
 
 \subsection{Transformation Rules}
 
