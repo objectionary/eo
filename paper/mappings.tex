@@ -201,10 +201,10 @@ try
       file
       data
   []
-    stdout.print > @
+    stdout > @
       "Can't write to file"
   []
-    stdout.print > @
+    stdout > @
       "This happens anyway"
 \end{ffcode}
 
@@ -213,3 +213,35 @@ dataized and handling the exception is checking for whether the
 object has $\varphi$ attribute or not. All of this is done
 by the object \ff{try}.
 
+\subsection{Control Flow Statements}
+
+Java has a few control flow statements, such as
+\ff{for}, \ff{while}, \ff{do}, \ff{if}, \ff{continue}, \ff{break}.
+They don't exist in \eo{}. However, \eo{} may have objects
+that implement the required functionality in runtime, often with the
+help of mutable objects:
+
+\begin{ffcode}
+while (i < 100) {
+  if (i % 2 == 0) {
+    System.out.prinln("even!");
+  }
+  i++;
+}
+\end{ffcode}
+
+This code may be translated to \eo{} as the following:
+
+\begin{ffcode}
+memory > i
+while.
+  i.less 100
+  seq
+    if.
+      eq. (i.mod 2 0)
+      stdout "even!"
+    i.write (i.add 1)
+\end{ffcode}
+
+Here, \ff{while} and \ff{if} are the objects referred to as attributes
+\ff{bool}.
