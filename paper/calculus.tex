@@ -77,7 +77,7 @@ $\ff{book2}.\ff{price}.\ff{neg}$ is a valid expression, which means
 taking the attribute \ff{neg} from it.''
 
 \begin{eodefinition}\label{def:scope}
-If $x(a_i, v_i)$ is an object, than $\hat{x}$, a set consisting of all $a_i$,
+If $x(a_i, v_i)$ is an object, then $\hat{x}$, a set consisting of all $a_i$,
 is its \textbf{scope} and the cardinality of $|\hat{x}|$ is
 the \textbf{arity} of $x$.
 \end{eodefinition}
@@ -110,7 +110,7 @@ The Eq.~\ref{eq:book2} may be written as
 \subsection{Application}
 
 \begin{eodefinition}\label{def:application}
-If $x$ and $y$ are objects, than an \textbf{application} of $y$ to $x$ is
+If $x$ and $y$ are objects, then an \textbf{application} of $y$ to $x$ is
   a \textbf{copy} of $x$, a new object that consists of pairs $(a\in\hat{x},v)$ such that
   $v=y.a$ if $x.a=\emptyset$ and $v=x.a$ otherwise.
 \end{eodefinition}
@@ -151,7 +151,7 @@ and may further be simplified since the order of parameters is obvious:
 
 \begin{eodefinition}\label{def:parent}
 If an object $x$ is bound to an attribute of
-an object $y$, than $x.\rho$ denotes $y$;
+an object $y$, then $x.\rho$ denotes $y$;
 the object $x$ is \textbf{inner} object, while $y$ is its \textbf{parent};
 an object, which is not bound to any attributes, is called \textbf{anonymous}.
 \end{eodefinition}
@@ -251,7 +251,7 @@ producing:
 
 \begin{eodefinition}\label{def:atom}
 If $\lambda s.M$ is a function of one argument $s$ returning an object,
-than it is an abstract object called an \textbf{atom} and $M$ is its $\lambda$~term.
+then it is an abstract object called an \textbf{atom} and $M$ is its $\lambda$~term.
 \end{eodefinition}
 
 For example, the atom at \lref{sum-def} would be represented as
