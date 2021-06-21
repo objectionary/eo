@@ -11,7 +11,6 @@ clean:
 %.pdf: %.tex main.bib *.tex
 	latexmk -pdf $<
 	texqc --ignore 'You have requested document class' $< \
-		--ignore 'Token not allowed in a PDF string' \
-		--ignore '\\vspace should only be used to provide space'
+		--ignore 'Token not allowed in a PDF string'
 	texsc $<
 	biblint check main.bib

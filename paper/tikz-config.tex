@@ -8,8 +8,8 @@
   \usetikzlibrary{calc}
   \usetikzlibrary{shapes.arrows}
 \newenvironment{ingraph}%
-  {\vspace{3pt}\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
-  {\end{tikzpicture}\vspace{3pt}}
+  {\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
+  {\end{tikzpicture}}
 \tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
 \tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
 \tikzstyle{object} = [thing,circle]
