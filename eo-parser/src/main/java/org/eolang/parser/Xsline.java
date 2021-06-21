@@ -151,6 +151,20 @@ public final class Xsline {
     }
 
     /**
+     * Add this sheet to the list.
+     * @param sheet The sheet
+     * @return New object
+     * @since 0.1.27
+     */
+    public Xsline with(final XSL sheet) {
+        return new Xsline(
+            this.input, this.target,
+            new Joined<>(sheet, this.xsls),
+            this.spy
+        );
+    }
+
+    /**
      * Compile it to XML and save to output.
      *
      * @throws IOException If fails
