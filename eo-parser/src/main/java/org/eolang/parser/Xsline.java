@@ -29,7 +29,11 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Map;
+import org.cactoos.Func;
 import org.cactoos.Output;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
@@ -61,7 +65,7 @@ public final class Xsline {
     /**
      * XSLs to use.
      */
-    private final Iterable<XSL> xsls;
+    private final Iterable<Map.Entry<XSL, Func<XML, Boolean>>> xsls;
 
     /**
      * The spy to use.
@@ -129,7 +133,8 @@ public final class Xsline {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     private Xsline(final XML dom, final Output tgt,
-        final Iterable<XSL> sheets, final Spy aspy) {
+        final Iterable<Map.Entry<XSL, Func<XML, Boolean>>> sheets,
+        final Spy aspy) {
         this.input = dom;
         this.target = tgt;
         this.xsls = sheets;
@@ -159,7 +164,31 @@ public final class Xsline {
     public Xsline with(final XSL sheet) {
         return new Xsline(
             this.input, this.target,
-            new Joined<>(sheet, this.xsls),
+            new Joined<>(
+                new AbstractMap.SimpleEntry<>(
+                    sheet,
+                    xml -> false
+                ),
+                this.xsls
+            ),
+            this.spy
+        );
+    }
+
+    /**
+     * Add this sheet to the list.
+     * @param sheet The sheet
+     * @param func The func that returns TRUE if the XSL has to be applied again
+     * @return New object
+     * @since 0.1.28
+     */
+    public Xsline with(final XSL sheet, final Func<XML, Boolean> func) {
+        return new Xsline(
+            this.input, this.target,
+            new Joined<>(
+                new AbstractMap.SimpleEntry<>(sheet, func),
+                this.xsls
+            ),
             this.spy
         );
     }
@@ -175,14 +204,20 @@ public final class Xsline {
         ).with(new ClasspathSources(Xsline.class));
         int index = 0;
         XML before = this.input;
-        for (final XSL xsl : this.xsls) {
-            final XML dom = new XMLDocument(xsl.toString());
-            final XML after = each.with("step", index)
-                .with("sheet", dom.xpath("/*/@id").get(0))
-                .transform(xsl.transform(before));
-            this.spy.push(index, xsl, after);
-            ++index;
-            before = after;
+        for (final Map.Entry<XSL, Func<XML, Boolean>> pair : this.xsls) {
+            final XSL xsl = pair.getKey();
+            final UncheckedFunc<XML, Boolean> func =
+                new UncheckedFunc<>(pair.getValue());
+            XML dom;
+            do {
+                dom = new XMLDocument(xsl.toString());
+                final XML after = each.with("step", index)
+                    .with("sheet", dom.xpath("/*/@id").get(0))
+                    .transform(xsl.transform(before));
+                this.spy.push(index, xsl, after);
+                ++index;
+                before = after;
+            } while (func.apply(dom));
         }
         new Unchecked<>(
             new LengthOf(
@@ -199,13 +234,17 @@ public final class Xsline {
      * @param sheets Names
      * @return Objects
      */
-    private static Iterable<XSL> mapped(final Iterable<String> sheets) {
+    private static Iterable<Map.Entry<XSL, Func<XML, Boolean>>> mapped(
+        final Iterable<String> sheets) {
         return new Mapped<>(
-            doc -> new XSLDocument(
-                new TextOf(
-                    new ResourceOf(doc)
-                ).asString()
-            ).with(new ClasspathSources()),
+            name -> new AbstractMap.SimpleEntry<>(
+                new XSLDocument(
+                    new TextOf(
+                        new ResourceOf(name)
+                    ).asString()
+                ).with(new ClasspathSources()),
+                xml -> false
+            ),
             sheets
         );
     }
