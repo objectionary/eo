@@ -37,6 +37,7 @@ import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.Mapped;
@@ -165,11 +166,13 @@ public final class Xsline {
         return new Xsline(
             this.input, this.target,
             new Joined<>(
-                new AbstractMap.SimpleEntry<>(
-                    sheet,
-                    xml -> false
-                ),
-                this.xsls
+                this.xsls,
+                new IterableOf<Map.Entry<XSL, Func<XML, Boolean>>>(
+                    new AbstractMap.SimpleEntry<>(
+                        sheet,
+                        xml -> false
+                    )
+                )
             ),
             this.spy
         );
@@ -186,8 +189,10 @@ public final class Xsline {
         return new Xsline(
             this.input, this.target,
             new Joined<>(
-                new AbstractMap.SimpleEntry<>(sheet, func),
-                this.xsls
+                this.xsls,
+                new IterableOf<Map.Entry<XSL, Func<XML, Boolean>>>(
+                    new AbstractMap.SimpleEntry<>(sheet, func)
+                )
             ),
             this.spy
         );
@@ -208,16 +213,16 @@ public final class Xsline {
             final XSL xsl = pair.getKey();
             final UncheckedFunc<XML, Boolean> func =
                 new UncheckedFunc<>(pair.getValue());
-            XML dom;
+            final XML dom = new XMLDocument(xsl.toString());
+            XML after;
             do {
-                dom = new XMLDocument(xsl.toString());
-                final XML after = each.with("step", index)
+                after = each.with("step", index)
                     .with("sheet", dom.xpath("/*/@id").get(0))
                     .transform(xsl.transform(before));
                 this.spy.push(index, xsl, after);
                 ++index;
                 before = after;
-            } while (func.apply(dom));
+            } while (func.apply(after));
         }
         new Unchecked<>(
             new LengthOf(
