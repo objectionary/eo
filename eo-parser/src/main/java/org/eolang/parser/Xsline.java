@@ -162,6 +162,7 @@ public final class Xsline {
      * @return New object
      * @since 0.1.27
      */
+    @SuppressWarnings("unchecked")
     public Xsline with(final XSL sheet) {
         return new Xsline(
             this.input, this.target,
@@ -185,6 +186,7 @@ public final class Xsline {
      * @return New object
      * @since 0.1.28
      */
+    @SuppressWarnings("unchecked")
     public Xsline with(final XSL sheet, final Func<XML, Boolean> func) {
         return new Xsline(
             this.input, this.target,
