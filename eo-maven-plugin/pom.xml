@@ -36,6 +36,9 @@ SOFTWARE.
   <properties>
     <runtime.version>0.1.17</runtime.version>
     <maven.version>3.3.9</maven.version>
+    <kotlin.version>1.4.32</kotlin.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>
@@ -132,9 +135,53 @@ SOFTWARE.
       <version>${runtime.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime-hse</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ainslec</groupId>
+      <artifactId>picocog</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit</artifactId>
+      <version>${kotlin.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.googlejavaformat</groupId>
+      <artifactId>google-java-format</artifactId>
+      <version>1.7</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmTarget>${maven.compiler.target}</jvmTarget>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -161,6 +208,16 @@ SOFTWARE.
         <executions>
           <execution>
             <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals> <goal>compile</goal> </goals>
             <configuration>
               <excludes>
                 <exclude>**/HelpMojo.java</exclude>
@@ -168,7 +225,9 @@ SOFTWARE.
             </configuration>
           </execution>
           <execution>
-            <id>default-testCompile</id>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals> <goal>testCompile</goal> </goals>
             <configuration>
               <compilerArgument>-Xlint:-processing</compilerArgument>
             </configuration>

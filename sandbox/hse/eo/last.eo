@@ -1,0 +1,20 @@
++package sandbox.hse
++alias stdout org.eolang.hse.io.stdout
++alias sprintf org.eolang.hse.txt.sprintf
+
+[arr] > last
+  get. > @
+    arr
+    sub.
+      arr.length
+      1
+
+[args...] > appLast
+  stdout > @
+    sprintf
+      "%d"
+      last
+        *
+          5
+          2
+          4

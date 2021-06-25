@@ -1,0 +1,21 @@
++package sandbox.hse
++alias indexof sandbox.hse.indexof
++alias min sandbox.hse.min
++alias stdout org.eolang.hse.io.stdout
++alias sprintf org.eolang.hse.txt.sprintf
+
+[arr] > imin
+  indexof > @
+    arr
+    min
+      arr
+
+[args...] > appImin
+  stdout > @
+    sprintf
+      "%d"
+      imin
+        *
+          5
+          2
+          3

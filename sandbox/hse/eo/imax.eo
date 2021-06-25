@@ -1,0 +1,21 @@
++package sandbox.hse
++alias indexof sandbox.hse.indexof
++alias max sandbox.hse.max
++alias stdout org.eolang.hse.io.stdout
++alias sprintf org.eolang.hse.txt.sprintf
+
+[arr] > imax
+  indexof > @
+    arr
+    max
+      arr
+
+[args...] > appImax
+  stdout > @
+    sprintf
+      "%d"
+      imax
+        *
+          5
+          2
+          3

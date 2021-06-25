@@ -1,0 +1,8 @@
++package sandbox.hse
++alias slice sandbox.hse.slice
+
+[arr start] > slicefrom
+  slice > @
+    arr
+    start
+    arr.length

@@ -1,0 +1,11 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
+
+[arr format] > arrtostrarr
+  map. > @
+    arr
+    []
+      [current] > map
+        sprintf > @
+          ^.^.format
+          current

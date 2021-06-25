@@ -1,0 +1,28 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
+
+[args...] > appFibonacciTail
+  sprintf > @
+    "%dth Fibonacci number is %d\n"
+    (args.get 0).toInt > n
+    fibonacciTail n
+
+[n] > fibonacciTail
+  if. > @
+    n.less 3
+    small n
+    rec n 1 1
+
+  [n] > small
+    if. > @
+      n.eq 2
+      1
+      n
+
+  [n minus1 minus2] > rec
+    if. > @
+      eq.
+        n
+        3
+      minus1.add minus2
+      rec (n.sub 1) (minus1.add minus2) minus1

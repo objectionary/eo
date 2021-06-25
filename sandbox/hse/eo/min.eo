@@ -1,0 +1,28 @@
++package sandbox.hse
++alias stdout org.eolang.hse.io.stdout
++alias sprintf org.eolang.hse.txt.sprintf
+
+[arr] > min
+  reduce. > @
+    arr
+    get.
+      arr
+      0
+    []
+      [accum current] > reduce
+        if. > @
+          greater.
+            accum
+            current
+          current
+          accum
+
+[args...] > appMin
+  stdout > @
+    sprintf
+      "%d"
+      min
+        *
+          5
+          2
+          4

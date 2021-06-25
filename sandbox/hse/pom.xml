@@ -24,83 +24,68 @@ SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <dependencies>
-    <dependency>
-      <groupId>com.github.dpaukov</groupId>
-      <artifactId>combinatoricslib3</artifactId>
-      <version>3.3.1</version>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
-  <parent>
-    <groupId>org.eolang</groupId>
-    <artifactId>eo-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>eo-runtime</artifactId>
-  <packaging>jar</packaging>
-  <name>eo-runtime</name>
-  <description>eolang runtime library</description>
+  <groupId>org.eolang</groupId>
+  <artifactId>quick-start-hse</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <properties>
+    <org.eolang.version>1.0-SNAPSHOT</org.eolang.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <build>
     <plugins>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${org.eolang.version}</version>
+        <configuration>
+          <sourcesDir>${project.basedir}/eo</sourcesDir>
+          <targetDir>${project.basedir}/target</targetDir>
+          <compiler>hse</compiler>
+        </configuration>
         <executions>
           <execution>
-            <id>compile</id>
             <goals>
               <goal>parse</goal>
               <goal>optimize</goal>
               <goal>compile</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.basedir}/target/eo-test</targetDir>
-              <addSourcesRoot>false</addSourcesRoot>
-              <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources</generatedDir>
-            </configuration>
+
           </execution>
         </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.eolang</groupId>
+                  <artifactId>eo-runtime-hse</artifactId>
+                  <version>${org.eolang.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <destFileName>eo-runtime.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>qulice</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.qulice</groupId>
-            <artifactId>qulice-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>checkstyle:.*</exclude>
-                <exclude>pmd:.*</exclude>
-              </excludes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime-hse</artifactId>
+      <version>${org.eolang.version}</version>
+    </dependency>
+  </dependencies>
 </project>

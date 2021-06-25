@@ -1,0 +1,25 @@
++package sandbox.hse
++alias sandbox.hse.indexof
++alias sandbox.hse.removeat
++alias sandbox.hse.strarrtostdout
++alias sandbox.hse.slicefrom
+
+[args...] > appRemove
+  strarrtostdout > @
+    remove
+      slicefrom args 1
+      args.get 0
+
+[arr element] > remove
+  indexof > position
+    arr
+    element
+
+  if. > @
+    eq.
+      -1
+      position
+    arr
+    removeat
+      arr
+      position

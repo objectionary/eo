@@ -33,6 +33,10 @@ SOFTWARE.
   <packaging>jar</packaging>
   <name>eo-parser</name>
   <description>EO-to-XML Parser</description>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>

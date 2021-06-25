@@ -1,0 +1,22 @@
++package sandbox.hse
++alias sandbox.hse.slicefrom
+
+[args...] > appCount
+  count > @
+    slicefrom args 1
+    args.get 0
+
+[arr element] > count
+  reduce. > @
+    arr
+    0
+    []
+      [accum current] > reduce
+        if. > @
+          eq.
+            current
+            ^.^.element
+          add.
+            accum
+            1
+          accum

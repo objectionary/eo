@@ -1,0 +1,26 @@
++package sandbox.hse
+
+[arr start end] > slice
+  subSlice > @
+    arr
+    *
+    start
+    end
+
+[arr accum start end] > subSlice
+  if. > @
+    less.
+      start
+      end
+    subSlice
+      arr
+      append.
+        accum
+        get.
+          arr
+          start
+      add.
+        start
+        1
+      end
+    accum

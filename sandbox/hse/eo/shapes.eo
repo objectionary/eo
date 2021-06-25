@@ -1,0 +1,108 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
++alias stdout org.eolang.hse.io.stdout
+
+[args...] > appShapes
+  inputshapes 0 args > shapes
+  each. > @
+    shapes
+    []
+      [f] > each
+        stdout > @
+          sprintf
+            "%s\n"
+            printshape f
+
+[shape] > printshape
+  sprintf > @
+    "%s:\n  Perimeter: %f\n  Area: %f "
+    if.
+      1.eq
+        shape
+      "Triangle"
+      if.
+        2.eq
+          shape
+        "Rectangle"
+        "Geometric shape"
+    if.
+      0.leq shape
+      shape.perimeter
+      0.0
+    if.
+      0.leq shape
+      shape.area
+      0.0
+
+[start input] > inputshapes
+  toInt. > type
+    input.get
+      start
+  if. > @
+    (start.geq (input.length)).or (0.eq type)
+    *
+    if.
+      1.eq
+        type
+      append.
+        inputshapes
+          start.add 4
+          input
+        triangle
+          (input.get (start.add 1)).toFloat
+          (input.get (start.add 2)).toFloat
+          (input.get (start.add 3)).toFloat
+      if.
+        2.eq
+          type
+        append.
+          inputshapes
+            start.add 3
+            input
+          rectangle
+            (input.get (start.add 1)).toFloat
+            (input.get (start.add 2)).toFloat
+        inputshapes
+          start.add 1
+          input
+
+[a b c] > triangle
+  1 > @
+  [] > perimeter
+    add. > @
+      add.
+        ^.a
+        ^.b
+      ^.c
+  [] > area
+    mul. > hp
+      ^.perimeter
+      0.5
+    pow. > @
+      mul.
+        hp
+        mul.
+          sub.
+            hp
+            ^.a
+          mul.
+            sub.
+              hp
+              ^.b
+            sub.
+              hp
+              ^.c
+      0.5
+
+[a b] > rectangle
+  2 > @
+  [] > perimeter
+    mul. > @
+      add.
+        ^.a
+        ^.b
+      2.0
+  [] > area
+    mul. > @
+      ^.a
+      ^.b

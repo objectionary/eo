@@ -1,0 +1,15 @@
++package sandbox.hse
+
+[arr predicate] > findcount
+  reduce. > @
+    arr
+    0
+    []
+      [accum current] > reduce
+        if. > @
+          ^.^.predicate.execute
+            current
+          add.
+            accum
+            1
+          accum

@@ -1,0 +1,9 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
++alias java org.eolang.hse.java
+
+[args...] > appMain
+  sprintf > @
+    "\nThe current time in milliseconds is %s\nToday's date is %s\n"
+    (java.static "java.lang.System" "currentTimeMillis")
+    (java.new "java.util.Date")

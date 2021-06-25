@@ -1,0 +1,52 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
+
+[args...] > appPi
+  sprintf > @
+    "Actual value = %.10f; computed value(n=%d) = %.10f"
+    pi
+    (args.get 0).toInt > n
+    compute.
+      pi
+      n
+
+[] > pi
+  3.1415926535 > @
+
+  [n] > compute
+    mul. > @
+      4.0
+      subCompute
+        1.0
+        3.0
+        1
+        add.
+          n
+          1
+
+    [accum divider i n] > subCompute
+      if. > @
+        less.
+          i
+          n
+        subCompute
+          add.
+            accum
+            div.
+              1.0
+              if.
+                eq.
+                  mod.
+                    i
+                    2
+                  0
+                divider
+                divider.neg
+          add.
+            divider
+            2.0
+          add.
+            i
+            1
+          n
+        accum

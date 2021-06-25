@@ -1,0 +1,16 @@
++package sandbox.hse
++alias sandbox.hse.floatarrtostdout
++alias sandbox.hse.strarrtointarr
+
+[arr] > intarrtofloatarr
+  map. > @
+    arr
+    []
+      [current] > map
+        current.toFloat > @
+
+[args...] > appIntArrToFloat
+  floatarrtostdout > @
+    intarrtofloatarr
+      strarrtointarr
+        args

@@ -1,0 +1,59 @@
++package sandbox.hse
++alias org.eolang.hse.txt.sprintf
+
+[args...] > appBinaryTree
+  binarytree > tree
+    node
+      1
+      node
+        2
+        leaf
+        leaf
+      node
+        3
+        node
+          4
+          leaf
+          leaf
+        leaf
+  sprintf > @
+    "Sum of nodes: %d\nCount of nodes:%d\n"
+    tree.sum
+    tree.count
+
+[] > leaf
+  true > empty
+
+[v l r] > node
+  v > value
+  l > left
+  r > right
+  false > empty
+
+[root] > binarytree
+  [current] > subSum
+    if. > @
+      current.empty
+      0
+      add.
+        current.value
+        add.
+          subSum
+            current.left
+          subSum
+            current.right
+  [current] > subCount
+    if. > @
+      current.empty
+      0
+      add.
+        1
+        add.
+          subCount
+            current.left
+          subCount
+            current.right
+  subSum > sum
+    root
+  subCount > count
+    root

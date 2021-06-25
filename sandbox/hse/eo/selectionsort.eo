@@ -1,0 +1,29 @@
++package sandbox.hse
++alias remove sandbox.hse.remove
++alias min sandbox.hse.min
++alias sandbox.hse.intarrtostdout
++alias sandbox.hse.strarrtointarr
+
+[args...] > appSelectionsort
+  intarrtostdout > @
+    selectionsort
+      strarrtointarr
+        args
+
+[arr] > selectionsort
+  subSelectionSort > @
+    *
+    arr
+  [accum arr] > subSelectionSort
+    if. > @
+      arr.isEmpty
+      accum
+      subSelectionSort
+        append.
+          accum
+          min
+            arr
+        remove
+          arr
+          min
+            arr

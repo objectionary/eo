@@ -1,0 +1,16 @@
++package sandbox.hse
++alias arrtostrarr sandbox.hse.arrtostrarr
++alias strarrtostdout sandbox.hse.strarrtostdout
+
+[arr] > floatarrtostrarr
+  arrtostrarr > @
+    arr
+    "%f"
+
+[args...] > appFloatArrToStrArr
+  strarrtostdout > @
+    floatarrtostrarr
+      *
+        5.0
+        2.2
+        3.1

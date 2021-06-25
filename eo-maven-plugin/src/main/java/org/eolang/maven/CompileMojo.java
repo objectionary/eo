@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -43,6 +44,11 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.transpiler.medium2target.Medium2TargetTranspiler;
+import org.eolang.maven.transpiler.mediumcodemodel.EOSourceEntity;
+import org.eolang.maven.transpiler.mediumcodemodel.EOSourceFile;
+import org.eolang.maven.transpiler.mediumcodemodel.EOTargetFile;
+import org.eolang.maven.transpiler.xml2medium.XML2MediumParser;
 import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -60,6 +66,9 @@ import org.slf4j.impl.StaticLoggerBinder;
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class CompileMojo extends AbstractMojo {
+
+    public static final String COMPILER_ORIGINAL = "original";
+    public static final String COMPILER_HSE = "hse";
 
     /**
      * Maven project.
@@ -102,6 +111,12 @@ public final class CompileMojo extends AbstractMojo {
     @Parameter
     private boolean addTestSourcesRoot;
 
+    @Parameter(
+            property = "compiler",
+            defaultValue = COMPILER_ORIGINAL
+    )
+    private String compiler;
+
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -110,9 +125,19 @@ public final class CompileMojo extends AbstractMojo {
         }
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
         try {
-            Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .forEach(this::compile);
+            switch (compiler){
+                case COMPILER_HSE:
+                    Files.walk(dir)
+                            .filter(file -> !file.toFile().isDirectory())
+                            .forEach(this::compileHSE);
+                    break;
+                case COMPILER_ORIGINAL:
+                default:
+                    Files.walk(dir)
+                            .filter(file -> !file.toFile().isDirectory())
+                            .forEach(this::compile);
+            }
+
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 new UncheckedText(
@@ -190,6 +215,39 @@ public final class CompileMojo extends AbstractMojo {
                 ex
             );
         }
+        Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+    }
+
+    /**
+     * Compile one XML file.
+     *
+     * @param file XML file
+     */
+    private void compileHSE(final Path file) {
+        File xmlFile = new File(file.toUri());
+        XML2MediumParser xml = new XML2MediumParser(xmlFile);
+        try {
+            EOSourceEntity smth = xml.parse();
+            ArrayList<EOTargetFile> code = Medium2TargetTranspiler.transpile((EOSourceFile) smth);
+            code.forEach(javaFile -> {
+                try {
+                    new Save(
+                            javaFile.getContents(),
+                            this.generatedDir.toPath().resolve(
+                                    Paths.get(
+                                            javaFile.getFileName()
+                                    )
+                            )
+                    ).save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (XML2MediumParser.XML2MediumParserException e) {
+            e.printStackTrace();
+        }
+
         Logger.info(this, "%s compiled to %s", file, this.generatedDir);
     }
 

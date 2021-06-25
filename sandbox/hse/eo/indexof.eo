@@ -1,0 +1,40 @@
++package sandbox.hse
++alias stdout org.eolang.hse.io.stdout
++alias sprintf org.eolang.hse.txt.sprintf
+
+[arr element] > indexof
+  subIndexOf > @
+    arr
+    element
+    0
+
+[arr element i] > subIndexOf
+  if. > @
+    eq.
+      arr.length
+      i
+    -1
+    if.
+      eq.
+        element
+        get.
+          arr
+          i
+      i
+      subIndexOf
+        arr
+        element
+        add.
+          i
+          1
+
+[args...] > appIndexOf
+  stdout > @
+    sprintf
+      "%d"
+      indexof
+        *
+          5
+          2
+          3
+        3

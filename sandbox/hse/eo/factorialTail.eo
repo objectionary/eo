@@ -1,0 +1,27 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
+
+[n] > factorialTail
+  [n acc] > subFactorial
+    if. > @
+      less.
+        n
+        2
+      acc
+      subFactorial
+        sub.
+          n
+          1
+        mul.
+          acc
+          n
+  subFactorial > @
+    n
+    1
+
+[args...] > appFactorialTail
+  sprintf > @
+    "%d! = %d\n"
+    (args.get 0).toInt > n
+    factorialTail n
+

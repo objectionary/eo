@@ -1,0 +1,25 @@
++package sandbox.hse
++alias sprintf org.eolang.hse.txt.sprintf
+
+[x left right] > between
+  and. > @
+    leq.
+      left
+      x
+    leq.
+      x
+      right
+
+[args...] > appBetween
+  sprintf > @
+    "%d is within [%d;%d]:%s"
+    x
+    left
+    right
+    if.
+      between
+        (args.get 0).toInt > x
+        (args.get 1).toInt > left
+        (args.get 2).toInt > right
+      "yes"
+      "no"
