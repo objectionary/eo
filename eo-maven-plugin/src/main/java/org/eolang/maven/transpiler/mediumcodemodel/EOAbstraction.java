@@ -251,8 +251,7 @@ public class EOAbstraction extends EOSourceEntity {
                 break;
         }
         if (freeAttributes.size() > 0) {
-            for (int i = 0; i < freeAttributes.size(); i++) {
-                EOInputAttribute attr = freeAttributes.get(i);
+            for (EOInputAttribute attr : freeAttributes) {
                 commentParams.add(String.format("@param %s the object to bind to the %s.", attr.getTargetName(), attr.getDescription()));
             }
         }
@@ -269,8 +268,7 @@ public class EOAbstraction extends EOSourceEntity {
         } else {
             w.write(getArgsString());
             w.writeln_r(") {");
-            for (int i = 0; i < freeAttributes.size(); i++) {
-                EOInputAttribute attr = freeAttributes.get(i);
+            for (EOInputAttribute attr : freeAttributes) {
                 String wrapper;
                 if (attr.isVararg()) {
                     wrapper = String.format("new %s(%s)", EOarray.class.getSimpleName(), attr.getTargetName());
@@ -287,8 +285,7 @@ public class EOAbstraction extends EOSourceEntity {
 
     private void transpileFreeAttrsGetters(PicoWriter w) {
         if (freeAttributes.size() > 0) {
-            for (int i = 0; i < freeAttributes.size(); i++) {
-                EOInputAttribute attr = freeAttributes.get(i);
+            for (EOInputAttribute attr : freeAttributes) {
                 String type = attr.isVararg() ? EOarray.class.getSimpleName() : EOObject.class.getSimpleName();
                 TranslationCommons.bigComment(w, String.format("Returns the object bound to the '%s' input attribute.", attr.getName()));
                 w.writeln_r(String.format("public %s %s() {", type, attr.getTargetName()));
@@ -333,15 +330,15 @@ public class EOAbstraction extends EOSourceEntity {
 
 
     private void transpileSubAbstractions(PicoWriter w) {
-        for (int i = 0; i < subAbstractions.size(); i++) {
-            subAbstractions.get(i).transpile(w);
+        for (EOAbstraction subAbstraction : subAbstractions) {
+            subAbstraction.transpile(w);
             w.writeln("");
         }
     }
 
     private void transpileApplications(PicoWriter w) {
-        for (int i = 0; i < boundAttributes.size(); i++) {
-            boundAttributes.get(i).transpile(w);
+        for (EOApplication boundAttribute : boundAttributes) {
+            boundAttribute.transpile(w);
             w.writeln("");
         }
     }

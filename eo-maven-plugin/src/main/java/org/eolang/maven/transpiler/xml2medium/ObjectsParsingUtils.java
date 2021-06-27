@@ -115,11 +115,11 @@ public class ObjectsParsingUtils {
             // for anonymous objects we need to traverse applications
             boolean dereferenced = false;
 
-            for (int i = 0; i < boundAttributes.size(); i++) {
-                dereferenced = dereferenced || dereferenceApplicationsForAnonymous(boundAttributes.get(i), wrappedAbstraction);
+            for (EOApplication boundAttribute : boundAttributes) {
+                dereferenced = dereferenced || dereferenceApplicationsForAnonymous(boundAttribute, wrappedAbstraction);
 
                 if (dereferenced == true) {
-                    boundAttributes.get(i).addAnonymous(wrappedAbstraction);
+                    boundAttribute.addAnonymous(wrappedAbstraction);
                     break;
                 }
             }
@@ -140,9 +140,7 @@ public class ObjectsParsingUtils {
         }
         ArrayList<EOApplication> arguments = root.getArguments();
 
-        for (int i = 0; i < arguments.size(); i++) {
-            EOApplication argument = arguments.get(i);
-
+        for (EOApplication argument : arguments) {
             if (argument.getAppliedObject().equals(wrappedName)) {
                 argument.setWrappedAbstraction(wrappedAbstraction);
                 return true;
@@ -158,8 +156,7 @@ public class ObjectsParsingUtils {
         }
 
         // let's try to find the wrapper recursively
-        for (int i = 0; i < arguments.size(); i++) {
-            EOApplication argument = arguments.get(i);
+        for (EOApplication argument : arguments) {
             if (dereferenceApplicationsForAnonymous(argument, wrappedAbstraction)) {
                 return true;
             }
