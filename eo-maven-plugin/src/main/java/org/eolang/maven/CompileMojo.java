@@ -67,7 +67,14 @@ import org.slf4j.impl.StaticLoggerBinder;
 @SuppressWarnings("PMD.LongVariable")
 public final class CompileMojo extends AbstractMojo {
 
+    /**
+     * The flag which indicates that the original compiler is used.
+     */
     public static final String COMPILER_ORIGINAL = "original";
+
+    /**
+     * The flag which indicates that the HSE compiler is used.
+     */
     public static final String COMPILER_HSE = "hse";
 
     /**
@@ -111,11 +118,14 @@ public final class CompileMojo extends AbstractMojo {
     @Parameter
     private boolean addTestSourcesRoot;
 
+    /**
+     * Which compiler to use: original or HSE.
+     */
     @Parameter(
-            property = "compiler",
-            defaultValue = COMPILER_ORIGINAL
+        property = "compiler",
+        defaultValue = CompileMojo.COMPILER_ORIGINAL
     )
-    private String compiler = COMPILER_ORIGINAL;
+    private String compiler;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -125,19 +135,22 @@ public final class CompileMojo extends AbstractMojo {
         }
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
         try {
-            switch (compiler){
-                case COMPILER_HSE:
+            if (this.compiler == null) {
+                this.compiler = CompileMojo.COMPILER_ORIGINAL;
+            }
+            switch (this.compiler) {
+                case CompileMojo.COMPILER_HSE:
                     Files.walk(dir)
-                            .filter(file -> !file.toFile().isDirectory())
-                            .forEach(this::compileHSE);
+                        .filter(file -> !file.toFile().isDirectory())
+                        .forEach(this::compileHse);
                     break;
-                case COMPILER_ORIGINAL:
+                case CompileMojo.COMPILER_ORIGINAL:
                 default:
                     Files.walk(dir)
-                            .filter(file -> !file.toFile().isDirectory())
-                            .forEach(this::compile);
+                        .filter(file -> !file.toFile().isDirectory())
+                        .forEach(this::compile);
+                    break;
             }
-
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 new UncheckedText(
@@ -215,40 +228,55 @@ public final class CompileMojo extends AbstractMojo {
                 ex
             );
         }
-        Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+        Logger.info(this, "%s compiled to %s with the original compiler", file, this.generatedDir);
     }
 
     /**
      * Compile one XML file.
      *
-     * @param file XML file
+     * @param path The path to the XML file being compiled.
      */
-    private void compileHSE(final Path file) {
-        File xmlFile = new File(file.toUri());
-        XML2MediumParser xml = new XML2MediumParser(xmlFile);
+    private void compileHse(final Path path) {
+        final File file = new File(path.toUri());
+        final XML2MediumParser xml = new XML2MediumParser(file);
         try {
-            EOSourceEntity smth = xml.parse();
-            ArrayList<EOTargetFile> code = Medium2TargetTranspiler.transpile((EOSourceFile) smth);
-            code.forEach(javaFile -> {
-                try {
-                    new Save(
+            final EOSourceEntity smth = xml.parse();
+            final ArrayList<EOTargetFile> code =
+                Medium2TargetTranspiler.transpile(
+                    (EOSourceFile) smth
+                );
+            code.forEach(
+                javaFile -> {
+                    try {
+                        new Save(
                             javaFile.getContents(),
                             this.generatedDir.toPath().resolve(
-                                    Paths.get(
-                                            javaFile.getFileName()
-                                    )
+                                Paths.get(
+                                    javaFile.getFileName()
+                                )
                             )
-                    ).save();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        ).save();
+                    } catch (final IOException exception) {
+                        throw new IllegalStateException(
+                            String.format(
+                                "Can't read the path %s",
+                                path
+                            ),
+                            exception
+                        );
+                    }
                 }
-            });
-
-        } catch (XML2MediumParser.XML2MediumParserException e) {
-            e.printStackTrace();
+            );
+        } catch (final XML2MediumParser.XML2MediumParserException exception) {
+            throw new IllegalStateException(
+                String.format(
+                    "The HSE compiler failed to parse the %s file.",
+                    file
+                ),
+                exception
+            );
         }
-
-        Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+        Logger.info(this, "%s compiled to %s with the HSE compiler", path, this.generatedDir);
     }
 
     /**
