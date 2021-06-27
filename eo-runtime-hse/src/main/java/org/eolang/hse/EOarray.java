@@ -199,11 +199,11 @@ public class EOarray extends EOObject {
      */
     public EOarray EOpairs() {
         return new EOarray(
-                (EOObject[])(Generator.combination((EOObject[])this._array.toArray())
+                Generator.combination(this._array)
                         .simple(2)
                         .stream()
                         .map(pair -> new EOtuple(pair.get(0), pair.get(1)))
-                        .toArray())
+                        .toArray(size -> new EOObject[size])
         );
     }
 

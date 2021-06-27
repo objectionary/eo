@@ -115,7 +115,7 @@ public final class CompileMojo extends AbstractMojo {
             property = "compiler",
             defaultValue = COMPILER_ORIGINAL
     )
-    private String compiler;
+    private String compiler = COMPILER_ORIGINAL;
 
     @Override
     public void execute() throws MojoFailureException {
