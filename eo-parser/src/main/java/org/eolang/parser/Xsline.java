@@ -31,9 +31,9 @@ import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
-import org.cactoos.Func;
+import org.cactoos.BiFunc;
 import org.cactoos.Output;
-import org.cactoos.func.UncheckedFunc;
+import org.cactoos.func.UncheckedBiFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
@@ -66,7 +66,7 @@ public final class Xsline {
     /**
      * XSLs to use.
      */
-    private final Iterable<Map.Entry<XSL, Func<XML, Boolean>>> xsls;
+    private final Iterable<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>> xsls;
 
     /**
      * The spy to use.
@@ -134,7 +134,7 @@ public final class Xsline {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     private Xsline(final XML dom, final Output tgt,
-        final Iterable<Map.Entry<XSL, Func<XML, Boolean>>> sheets,
+        final Iterable<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>> sheets,
         final Spy aspy) {
         this.input = dom;
         this.target = tgt;
@@ -168,10 +168,10 @@ public final class Xsline {
             this.input, this.target,
             new Joined<>(
                 this.xsls,
-                new IterableOf<Map.Entry<XSL, Func<XML, Boolean>>>(
+                new IterableOf<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
                     new AbstractMap.SimpleEntry<>(
                         sheet,
-                        xml -> false
+                        (before, after) -> false
                     )
                 )
             ),
@@ -187,12 +187,12 @@ public final class Xsline {
      * @since 0.1.28
      */
     @SuppressWarnings("unchecked")
-    public Xsline with(final XSL sheet, final Func<XML, Boolean> func) {
+    public Xsline with(final XSL sheet, final BiFunc<XML, XML, Boolean> func) {
         return new Xsline(
             this.input, this.target,
             new Joined<>(
                 this.xsls,
-                new IterableOf<Map.Entry<XSL, Func<XML, Boolean>>>(
+                new IterableOf<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
                     new AbstractMap.SimpleEntry<>(sheet, func)
                 )
             ),
@@ -211,20 +211,21 @@ public final class Xsline {
         ).with(new ClasspathSources(Xsline.class));
         int index = 0;
         XML before = this.input;
-        for (final Map.Entry<XSL, Func<XML, Boolean>> pair : this.xsls) {
+        for (final Map.Entry<XSL, BiFunc<XML, XML, Boolean>> pair : this.xsls) {
             final XSL xsl = pair.getKey();
-            final UncheckedFunc<XML, Boolean> func =
-                new UncheckedFunc<>(pair.getValue());
+            final UncheckedBiFunc<XML, XML, Boolean> func =
+                new UncheckedBiFunc<>(pair.getValue());
             final XML dom = new XMLDocument(xsl.toString());
-            XML after;
+            boolean more;
             do {
-                after = each.with("step", index)
+                final XML after = each.with("step", index)
                     .with("sheet", dom.xpath("/*/@id").get(0))
                     .transform(xsl.transform(before));
                 this.spy.push(index, xsl, after);
                 ++index;
+                more = func.apply(before, after);
                 before = after;
-            } while (func.apply(after));
+            } while (more);
         }
         new Unchecked<>(
             new LengthOf(
@@ -241,7 +242,7 @@ public final class Xsline {
      * @param sheets Names
      * @return Objects
      */
-    private static Iterable<Map.Entry<XSL, Func<XML, Boolean>>> mapped(
+    private static Iterable<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>> mapped(
         final Iterable<String> sheets) {
         return new Mapped<>(
             name -> new AbstractMap.SimpleEntry<>(
@@ -250,7 +251,7 @@ public final class Xsline {
                         new ResourceOf(name)
                     ).asString()
                 ).with(new ClasspathSources()),
-                xml -> false
+                (before, after) -> false
             ),
             sheets
         );
