@@ -48,7 +48,7 @@ import org.eolang.maven.transpiler.medium2target.Medium2TargetTranspiler;
 import org.eolang.maven.transpiler.mediumcodemodel.EOSourceEntity;
 import org.eolang.maven.transpiler.mediumcodemodel.EOSourceFile;
 import org.eolang.maven.transpiler.mediumcodemodel.EOTargetFile;
-import org.eolang.maven.transpiler.xml2medium.XML2MediumParser;
+import org.eolang.maven.transpiler.xml2medium.Xml2MediumParser;
 import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -238,7 +238,7 @@ public final class CompileMojo extends AbstractMojo {
      */
     private void compileHse(final Path path) {
         final File file = new File(path.toUri());
-        final XML2MediumParser xml = new XML2MediumParser(file);
+        final Xml2MediumParser xml = new Xml2MediumParser(file);
         try {
             final EOSourceEntity smth = xml.parse();
             final ArrayList<EOTargetFile> code =
@@ -267,7 +267,7 @@ public final class CompileMojo extends AbstractMojo {
                     }
                 }
             );
-        } catch (final XML2MediumParser.XML2MediumParserException exception) {
+        } catch (final Xml2MediumParser.Xml2MediumParserException exception) {
             throw new IllegalStateException(
                 String.format(
                     "The HSE compiler failed to parse the %s file.",

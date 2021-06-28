@@ -21,7 +21,7 @@ public class ObjectsParsingUtils {
     private static final String DATA_ATTR = "data";
 
 
-    public static ArrayList<EOAbstraction> parseObjects(File file, Document doc, XPath xPath, EOSourceFile fileScope) throws XML2MediumParser.XML2MediumParserException {
+    public static ArrayList<EOAbstraction> parseObjects(File file, Document doc, XPath xPath, EOSourceFile fileScope) throws Xml2MediumParser.Xml2MediumParserException {
 
         ArrayList<EOAbstraction> abstractions = parseAbstractions(file, doc, xPath);
         abstractions.addAll(parseGlobalApplications(file, doc, xPath));
@@ -31,7 +31,7 @@ public class ObjectsParsingUtils {
     }
 
 
-    private static ArrayList<EOAbstraction> deflateAbstractions(ArrayList<EOAbstraction> flattenedAbstractions, EOSourceFile fileScope) throws XML2MediumParser.XML2MediumParserException {
+    private static ArrayList<EOAbstraction> deflateAbstractions(ArrayList<EOAbstraction> flattenedAbstractions, EOSourceFile fileScope) throws Xml2MediumParser.Xml2MediumParserException {
         ArrayList<EOAbstraction> fileLevelAbstractions = new ArrayList<>();
 
         for (int i = 0; i < flattenedAbstractions.size(); i++) {
@@ -60,7 +60,7 @@ public class ObjectsParsingUtils {
         return fileLevelAbstractions;
     }
 
-    private static void deflateAbstraction(ArrayList<EOAbstraction> flattenedAbstractions, EOAbstraction nestedAbstraction, String parentXmlName, String fileName) throws XML2MediumParser.XML2MediumParserException {
+    private static void deflateAbstraction(ArrayList<EOAbstraction> flattenedAbstractions, EOAbstraction nestedAbstraction, String parentXmlName, String fileName) throws Xml2MediumParser.Xml2MediumParserException {
         Optional<String> name = nestedAbstraction.getInstanceName();
         Optional<EOAbstraction> parent =
                 flattenedAbstractions
@@ -68,7 +68,7 @@ public class ObjectsParsingUtils {
                         .filter(abstraction -> abstraction.getXmlName().equals(parentXmlName))
                         .findFirst();
         if (!parent.isPresent()) {
-            throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > abstraction " + nestedAbstraction.getXmlName() + ": could not find its parent with the name " + parentXmlName);
+            throw new Xml2MediumParser.Xml2MediumParserException("File " + fileName + " > abstraction " + nestedAbstraction.getXmlName() + ": could not find its parent with the name " + parentXmlName);
         }
 
         // this abstraction is scoped to its parent
@@ -90,7 +90,7 @@ public class ObjectsParsingUtils {
 
     }
 
-    private static void dereferenceWrapperApplications(EOAbstraction parent, EOAbstraction wrappedAbstraction, String fileName) throws XML2MediumParser.XML2MediumParserException {
+    private static void dereferenceWrapperApplications(EOAbstraction parent, EOAbstraction wrappedAbstraction, String fileName) throws Xml2MediumParser.Xml2MediumParserException {
         ArrayList<EOApplication> boundAttributes = parent.getBoundAttributes();
 
         if (wrappedAbstraction.getInstanceName().isPresent()) {
@@ -102,10 +102,10 @@ public class ObjectsParsingUtils {
                             .toArray(EOApplication[]::new);
 
             if (wrappers.length == 0) {
-                throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": there is no application-based wrapper for the sub-abstraction " + wrappedAbstraction.getXmlName());
+                throw new Xml2MediumParser.Xml2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": there is no application-based wrapper for the sub-abstraction " + wrappedAbstraction.getXmlName());
             }
             if (wrappers.length > 1) {
-                throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": there are more than one application-based wrappers for the sub-abstraction " + wrappedAbstraction.getXmlName());
+                throw new Xml2MediumParser.Xml2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": there are more than one application-based wrappers for the sub-abstraction " + wrappedAbstraction.getXmlName());
             }
             wrappers[0].setWrappedAbstraction(wrappedAbstraction);
             if (wrappedAbstraction.getInstanceName().get().equals("@")) {
@@ -125,14 +125,14 @@ public class ObjectsParsingUtils {
             }
 
             if (!dereferenced) {
-                throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": could not dereference the anonymous abstraction (no reference is present in application) " + wrappedAbstraction.getXmlName());
+                throw new Xml2MediumParser.Xml2MediumParserException("File " + fileName + " > abstraction " + parent.getXmlName() + ": could not dereference the anonymous abstraction (no reference is present in application) " + wrappedAbstraction.getXmlName());
             }
         }
 
 
     }
 
-    private static boolean dereferenceApplicationsForAnonymous(EOApplication root, EOAbstraction wrappedAbstraction) throws XML2MediumParser.XML2MediumParserException {
+    private static boolean dereferenceApplicationsForAnonymous(EOApplication root, EOAbstraction wrappedAbstraction) throws Xml2MediumParser.Xml2MediumParserException {
         String wrappedName = wrappedAbstraction.getXmlName();
         if (root.getAppliedObject().equals(wrappedName)) {
             root.setWrappedAbstraction(wrappedAbstraction);
@@ -169,7 +169,7 @@ public class ObjectsParsingUtils {
 
     }
 
-    private static ArrayList<EOAbstraction> parseGlobalApplications(File file, Document doc, XPath xPath) throws XML2MediumParser.XML2MediumParserException {
+    private static ArrayList<EOAbstraction> parseGlobalApplications(File file, Document doc, XPath xPath) throws Xml2MediumParser.Xml2MediumParserException {
         ArrayList<EOAbstraction> abstractions = new ArrayList<>();
         NodeList applicationDeclarations;
         try {
@@ -180,7 +180,7 @@ public class ObjectsParsingUtils {
                             XPathConstants.NODESET
                     );
         } catch (Exception e) {
-            throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing global application declarations in File " + file.getName() + ".");
+            throw new Xml2MediumParser.Xml2MediumParserException("Internal error occurred while parsing global application declarations in File " + file.getName() + ".");
         }
 
         for (int i = 0; i < applicationDeclarations.getLength(); i++) {
@@ -201,7 +201,7 @@ public class ObjectsParsingUtils {
                 Element body = (Element) xPath.evaluate("./o", applicationDeclaration, XPathConstants.NODE);
                 body.setAttribute(NAME_ATTR, "@");
             } catch (Exception e) {
-                throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing global application '" + xmlName + "' declaration's body in File " + file.getName() + ".");
+                throw new Xml2MediumParser.Xml2MediumParserException("Internal error occurred while parsing global application '" + xmlName + "' declaration's body in File " + file.getName() + ".");
             }
             // now, we parse the body of the global application as if it were application-based decoratee
             ArrayList<EOApplication> applications = parseApplications(file, applicationDeclaration, xPath, abstraction);
@@ -215,7 +215,7 @@ public class ObjectsParsingUtils {
         return abstractions;
     }
 
-    private static ArrayList<EOAbstraction> parseAbstractions(File file, Document doc, XPath xPath) throws XML2MediumParser.XML2MediumParserException {
+    private static ArrayList<EOAbstraction> parseAbstractions(File file, Document doc, XPath xPath) throws Xml2MediumParser.Xml2MediumParserException {
         ArrayList<EOAbstraction> abstractions = new ArrayList<>();
         NodeList abstractionDeclarations;
         try {
@@ -226,7 +226,7 @@ public class ObjectsParsingUtils {
                             XPathConstants.NODESET
                     );
         } catch (Exception e) {
-            throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing abstraction declarations in File " + file.getName() + ".");
+            throw new Xml2MediumParser.Xml2MediumParserException("Internal error occurred while parsing abstraction declarations in File " + file.getName() + ".");
         }
 
         for (int i = 0; i < abstractionDeclarations.getLength(); i++) {
@@ -253,11 +253,11 @@ public class ObjectsParsingUtils {
     /***
      * Parses the 'line' attribute that contains the line number on which the {@code declaration} occurred.
      */
-    private static String parseLineNumber(String filename, Node declaration) throws XML2MediumParser.XML2MediumParserException {
+    private static String parseLineNumber(String filename, Node declaration) throws Xml2MediumParser.Xml2MediumParserException {
         NamedNodeMap declarationAttributes = declaration.getAttributes();
         Node lineNumberNode = declarationAttributes.getNamedItem(LINE_ATTR);
         if (lineNumberNode == null) {
-            throw new XML2MediumParser.XML2MediumParserException("File " + filename + ": one of the declarations in the <objects> tag does not contain the required 'line' attribute.");
+            throw new Xml2MediumParser.Xml2MediumParserException("File " + filename + ": one of the declarations in the <objects> tag does not contain the required 'line' attribute.");
         }
         String lineNumber = lineNumberNode.getNodeValue();
 
@@ -267,11 +267,11 @@ public class ObjectsParsingUtils {
     /***
      * Parses the 'name' attribute that contains the name of the abstraction {@code declaration} with a special structure reflecting objects hierarchy.
      */
-    private static String parseAbstractionXMLName(String filename, String lineNumber, Node declaration) throws XML2MediumParser.XML2MediumParserException {
+    private static String parseAbstractionXMLName(String filename, String lineNumber, Node declaration) throws Xml2MediumParser.Xml2MediumParserException {
         NamedNodeMap declarationAttributes = declaration.getAttributes();
         Node xmlNameNode = declarationAttributes.getNamedItem(NAME_ATTR);
         if (xmlNameNode == null) {
-            throw new XML2MediumParser.XML2MediumParserException("File " + filename + ", line #" + lineNumber + ": abstraction declaration does not contain the required 'name' attribute.");
+            throw new Xml2MediumParser.Xml2MediumParserException("File " + filename + ", line #" + lineNumber + ": abstraction declaration does not contain the required 'name' attribute.");
         }
         String xmlName = xmlNameNode.getNodeValue();
 
@@ -282,7 +282,7 @@ public class ObjectsParsingUtils {
      * Parses the 'original-name' attribute that contains the normal name (i.e. in the form it is present in the source program)
      * of the abstraction {@code declaration}.
      */
-    private static Optional<String> parseAbstractionName(String filename, String lineNumber, Node declaration) throws XML2MediumParser.XML2MediumParserException {
+    private static Optional<String> parseAbstractionName(String filename, String lineNumber, Node declaration) throws Xml2MediumParser.Xml2MediumParserException {
         NamedNodeMap declarationAttributes = declaration.getAttributes();
         Node nameNode = declarationAttributes.getNamedItem(ORIGINAL_NAME_ATTR);
         // it is optional. anonymous objects don't have the original-name
@@ -299,7 +299,7 @@ public class ObjectsParsingUtils {
     /***
      * Parses the free attributes of the abstraction {@code declaration}.
      */
-    private static ArrayList<EOInputAttribute> parseAbstractionFreeAttributes(String filename, String lineNumber, Node abstractionDeclaration, XPath xPath) throws XML2MediumParser.XML2MediumParserException {
+    private static ArrayList<EOInputAttribute> parseAbstractionFreeAttributes(String filename, String lineNumber, Node abstractionDeclaration, XPath xPath) throws Xml2MediumParser.Xml2MediumParserException {
         ArrayList<EOInputAttribute> attributes = new ArrayList<>();
         NodeList attributesDeclarations;
         try {
@@ -310,7 +310,7 @@ public class ObjectsParsingUtils {
                             XPathConstants.NODESET
                     );
         } catch (Exception e) {
-            throw new XML2MediumParser.XML2MediumParserException("File " + filename + ", line #" + lineNumber + ": internal error occurred while parsing free attributes of the abstraction.");
+            throw new Xml2MediumParser.Xml2MediumParserException("File " + filename + ", line #" + lineNumber + ": internal error occurred while parsing free attributes of the abstraction.");
         }
 
         for (int i = 0; i < attributesDeclarations.getLength(); i++) {
@@ -319,7 +319,7 @@ public class ObjectsParsingUtils {
             /* retrieving the name of the attribute */
             Node nameNode = declarationAttributes.getNamedItem(NAME_ATTR);
             if (nameNode == null) {
-                throw new XML2MediumParser.XML2MediumParserException("File " + filename + ", line #" + lineNumber + ": free attribute declaration inside abstraction declaration does not contain the required 'name' attribute.");
+                throw new Xml2MediumParser.Xml2MediumParserException("File " + filename + ", line #" + lineNumber + ": free attribute declaration inside abstraction declaration does not contain the required 'name' attribute.");
             }
             String name = nameNode.getNodeValue();
             /* retrieving information if the attribute is variable-length */
@@ -334,7 +334,7 @@ public class ObjectsParsingUtils {
         return attributes;
     }
 
-    private static ArrayList<EOApplication> parseApplications(File file, Node abstractionDeclaration, XPath xPath, EOAbstraction baseAbstraction) throws XML2MediumParser.XML2MediumParserException {
+    private static ArrayList<EOApplication> parseApplications(File file, Node abstractionDeclaration, XPath xPath, EOAbstraction baseAbstraction) throws Xml2MediumParser.Xml2MediumParserException {
         ArrayList<EOApplication> applications = new ArrayList<>();
         NodeList applicationDeclarations;
         try {
@@ -345,7 +345,7 @@ public class ObjectsParsingUtils {
                             XPathConstants.NODESET
                     );
         } catch (Exception e) {
-            throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing application declarations in File " + file.getName() + " for abstraction + " + baseAbstraction.getXmlName() + ".");
+            throw new Xml2MediumParser.Xml2MediumParserException("Internal error occurred while parsing application declarations in File " + file.getName() + " for abstraction + " + baseAbstraction.getXmlName() + ".");
         }
 
         for (int i = 0; i < applicationDeclarations.getLength(); i++) {
@@ -357,7 +357,7 @@ public class ObjectsParsingUtils {
         return applications;
     }
 
-    private static EOApplication parseApplicationRecursively(String fileName, XPath xPath, Node application, EOAbstraction scope) throws XML2MediumParser.XML2MediumParserException {
+    private static EOApplication parseApplicationRecursively(String fileName, XPath xPath, Node application, EOAbstraction scope) throws Xml2MediumParser.Xml2MediumParserException {
         String lineNumber = parseLineNumber(fileName, application);
         String base = parseApplicationBase(fileName, lineNumber, application);
         boolean isDotNotation = parseHasMethodAttr(application) || base.startsWith(".");
@@ -382,7 +382,7 @@ public class ObjectsParsingUtils {
                             XPathConstants.NODESET
                     );
         } catch (Exception e) {
-            throw new XML2MediumParser.XML2MediumParserException("Internal error occurred while parsing application argument declarations in File " + fileName + " at line + " + lineNumber + ".");
+            throw new Xml2MediumParser.Xml2MediumParserException("Internal error occurred while parsing application argument declarations in File " + fileName + " at line + " + lineNumber + ".");
         }
 
         for (int i = 0; i < argumentsDeclarations.getLength(); i++) {
@@ -403,7 +403,7 @@ public class ObjectsParsingUtils {
         return eoApplication;
     }
 
-    private static Optional<EOData> parseData(String fileName, Node application, String lineNumber) throws XML2MediumParser.XML2MediumParserException {
+    private static Optional<EOData> parseData(String fileName, Node application, String lineNumber) throws Xml2MediumParser.Xml2MediumParserException {
         NamedNodeMap declarationAttributes = application.getAttributes();
         Node dataNode = declarationAttributes.getNamedItem(DATA_ATTR);
         if (dataNode == null) {
@@ -428,11 +428,11 @@ public class ObjectsParsingUtils {
                     case "string":
                         return Optional.of(new EOstring(value));
                     default:
-                        throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > line #" + lineNumber + ": unknown data type '" + type + "'");
+                        throw new Xml2MediumParser.Xml2MediumParserException("File " + fileName + " > line #" + lineNumber + ": unknown data type '" + type + "'");
 
                 }
             } catch (Exception e) {
-                throw new XML2MediumParser.XML2MediumParserException("File " + fileName + " > line #" + lineNumber + ": could not cast '" + value + "' to type '" + type + "'");
+                throw new Xml2MediumParser.Xml2MediumParserException("File " + fileName + " > line #" + lineNumber + ": could not cast '" + value + "' to type '" + type + "'");
             }
         }
     }
@@ -464,11 +464,11 @@ public class ObjectsParsingUtils {
         return methodNode != null;
     }
 
-    private static String parseApplicationBase(String filename, String lineNumber, Node declaration) throws XML2MediumParser.XML2MediumParserException {
+    private static String parseApplicationBase(String filename, String lineNumber, Node declaration) throws Xml2MediumParser.Xml2MediumParserException {
         NamedNodeMap declarationAttributes = declaration.getAttributes();
         Node baseNode = declarationAttributes.getNamedItem(BASE_ATTR);
         if (baseNode == null) {
-            throw new XML2MediumParser.XML2MediumParserException("File " + filename + ", line #" + lineNumber + ": application declaration does not contain the required 'base' attribute.");
+            throw new Xml2MediumParser.Xml2MediumParserException("File " + filename + ", line #" + lineNumber + ": application declaration does not contain the required 'base' attribute.");
         }
         String base = baseNode.getNodeValue();
 
