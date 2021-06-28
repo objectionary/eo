@@ -34,7 +34,7 @@ abstract class EOData : EOSourceEntity()
  * Represents integer numerals.
  */
 class EOint(val value: Long) : EOData() {
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {
         w?.write("new ${EOint::class.java.simpleName}(${value}L)")
         return null
     }
@@ -44,7 +44,7 @@ class EOint(val value: Long) : EOData() {
  * Represents floating-point numerals.
  */
 class EOfloat(val value: Double) : EOData() {
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {
         w?.write("new ${EOfloat::class.java.simpleName}(${value}D)")
         return null
     }
@@ -54,7 +54,7 @@ class EOfloat(val value: Double) : EOData() {
  * Represents booleans.
  */
 class EObool(val value: Boolean) : EOData() {
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {
         w?.write("new ${EObool::class.java.simpleName}(${value})")
         return null
     }
@@ -64,7 +64,7 @@ class EObool(val value: Boolean) : EOData() {
  * Represents strings.
  */
 class EOstring(val value: String) : EOData() {
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {
         w?.write("new ${EOstring::class.java.simpleName}(\"${value}\")")
         return null
     }
@@ -74,7 +74,7 @@ class EOstring(val value: String) : EOData() {
  * Represents characters.
  */
 class EOchar(val value: Char) : EOData() {
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {
         w?.write("new ${EOchar::class.java.simpleName}('$value')")
         return null
     }

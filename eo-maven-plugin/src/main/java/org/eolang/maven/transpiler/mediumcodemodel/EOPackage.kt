@@ -46,5 +46,5 @@ class EOPackage(val packageName: String) : EOSourceEntity() {
     /**
      * Packages are not transpiled in the current implementation of the transpiler.
      */
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {return null}
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {return null}
 }

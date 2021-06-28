@@ -37,5 +37,5 @@ abstract class EOSourceEntity {
      * @return A list of target Java files generated through translation
      *         (may be absent for source entities that map to file fragments, not separate Java files).
      */
-    abstract fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>?
+    abstract fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>?
 }

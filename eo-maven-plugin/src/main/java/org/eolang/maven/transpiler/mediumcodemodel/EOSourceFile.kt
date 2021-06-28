@@ -48,9 +48,9 @@ class EOSourceFile(val fileName: String, val eoPackage: EOPackage) : EOSourceEnt
      * Each EO source code file transpiles to N target Java files,
      * where N is the number of package-scoped objects in the EO source file.
      */
-    override fun transpile(w: PicoWriter?): ArrayList<EOTargetFile?>? {
+    override fun transpile(w: PicoWriter): ArrayList<EOTargetFile?>? {
         val result = ArrayList<EOTargetFile?>()
-        objects.forEach { result.addAll(it.transpile(null)!!) }
+        objects.forEach { result.addAll(it.transpile(PicoWriter())!!) }
         return result
     }
 }
