@@ -64,10 +64,30 @@ public interface Spy {
      * @since 0.1
      */
     final class Verbose implements Spy {
+        /**
+         * The logging target.
+         */
+        private final Object target;
+
+        /**
+         * Default ctor.
+         */
+        public Verbose() {
+            this(Verbose.class);
+        }
+
+        /**
+         * Ctor.
+         * @param tgt The logging target to use
+         */
+        public Verbose(final Object tgt) {
+            this.target = tgt;
+        }
+
         @Override
         public void push(final int index, final XSL xsl, final XML xml) {
             Logger.debug(
-                this,
+                this.target,
                 "Parsed #%d via %s\n%s",
                 index,
                 new XMLDocument(xsl.toString()).xpath("/*/@id").get(0),
