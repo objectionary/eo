@@ -406,6 +406,28 @@ The last rule deals with data, such as integers, string literals, and so on:
   \jrule{data}
 \end{equation*}
 
+There is also one rule, which transforms atoms to the object graph by \rrule{lambda}
+attaching lambda expressions to vertices:
+\begin{equation*}
+\dfrac
+  {e_i | \mapsto \lambda s . M}
+  {\ff{ATOM}(e_i, M)}
+  \jrule{lambda}
+\end{equation*}
+Visually, the rule would produce the following modifications on the graph
+for the Eq.~\ref{def:stdout}:
+
+\begin{center}\begin{ingraph}
+  \node[object] (phi) {$\Phi$};
+  \node[object, below right=1cm of phi] (v1) {$v_{1}$};
+    \draw (phi) -- (v1) node [attr] {\ff{stdout}};
+  \node[transforms, right=1cm of phi] {};
+  \node[object, right=2cm of phi] (phi-d) {$\Phi$};
+  \node[atom, below right=1cm of phi-d] (v1d) {$v_{1}$}
+    node[lambda] at (v1d.south east) {$M_\text{stdout}$};
+    \draw (phi-d) -- (v1d) node [attr] {\ff{stdout}};
+\end{ingraph}\end{center}
+
 In order to demonstrate a larger example, the Fig.~\ref{fig:is} shows
 an object graph, which the described rules
 would generate by transforming the object \ff{is} from the Eq.~\ref{eq:is}.
@@ -454,7 +476,7 @@ three arguments $v_3$, $v_4$, and $v_5$, would produce an arithmetic
 sum of three integers calculated by the $\lambda$~term of $v_1$.
 
 We suggest the following recursive object discovery
-algorithm, which finds an object in a graph by its locator $l$ and
+algorithm, which finds a vertice in a graph by its locator $l$ and
 returns a vertice connected to it as an attribute $a$:
 
 \begin{algo}
@@ -467,7 +489,7 @@ returns a vertice connected to it as an attribute $a$:
   \tab \kw{end if} \\
   \tab \kw{if} $v = \xi$ \kw{then} $v \gets S[0]$ \\
   \tab \kw{if} $v = \rho$ \kw{then} $v \gets S[1]$ \\
-  \tab \kw{if} $v$ has $a$-edge to $\tau$ \kw{then} \kw{return} $v'$ \\
+  \tab \kw{if} $v$ has $a$-edge to $\tau$ \kw{then} \kw{return} $\tau$ \\
   \tab \kw{if} $v$ has $\varphi$-edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, \tau + S)$ \\
   \tab \kw{if} $v$ has a dotted edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, S)$ \\
   \tab \kw{if} $v$ has $M$ \kw{then} \kw{return} $\mathbb{R}((\lambda s.M \; v + S), a, S)$ \\
@@ -481,13 +503,16 @@ The notation $S[i]$ denotes the $i$-th element of the vector, while
 counting starts with zero.
 The notation $(\lambda s.M \; v + S)$ means creating a function from
 the $\lambda$~term $M$ with one parameter $s$ and then calculating
-it with the argument $v + S$. The vector $s$, provided to the
+it with the argument $v + S$.
+It is expected that the function returns a locator of a vertice or
+the vertice itself, where the locator can be derived.
+The vector $s$, provided to the
 function as its parameter, is used in $M$ when it is necessary
 to use $\mathbb{R}$ in order to find some object.
 
 For example, $\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},
 \delta, \emptyset)$ being executed on the graph presented at the
-Fig.~\ref{fig:is} would return $+9$.
+Fig.~\ref{fig:is} would return the vertice $d_{21}$, which is $+9$.
 
 We also define a dataization function, which turns an object into data:
 
