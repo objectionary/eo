@@ -455,7 +455,7 @@ sum of three integers calculated by the $\lambda$~term of $v_1$.
 
 We suggest the following recursive object discovery
 algorithm, which finds an object in a graph by its locator $l$ and
-returns its attribute $a$:
+returns a vertice connected to it as an attribute $a$:
 
 \begin{algo}
 \kw{function} $\mathbb{R}(l,a,S)$ \\
@@ -467,9 +467,9 @@ returns its attribute $a$:
   \tab \kw{end if} \\
   \tab \kw{if} $v = \xi$ \kw{then} $v \gets S[0]$ \\
   \tab \kw{if} $v = \rho$ \kw{then} $v \gets S[1]$ \\
-  \tab \kw{if} $v$ has $a$-edge to $v'$ \kw{then} \kw{return} $v'$ \\
-  \tab \kw{if} $v$ has $\varphi$-edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, v' + S)$ \\
-  \tab \kw{if} $v$ has a dotted edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, S)$ \\
+  \tab \kw{if} $v$ has $a$-edge to $\tau$ \kw{then} \kw{return} $v'$ \\
+  \tab \kw{if} $v$ has $\varphi$-edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, \tau + S)$ \\
+  \tab \kw{if} $v$ has a dotted edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, S)$ \\
   \tab \kw{if} $v$ has $M$ \kw{then} \kw{return} $\mathbb{R}((\lambda s.M \; v + S), a, S)$ \\
   \tab \kw{return} $\perp$ \\
 \kw{end}
