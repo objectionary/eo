@@ -1,4 +1,4 @@
-name: make
+name: latexmk
 on:
   push:
     branches: [ master ]
@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: yegor256/latex-make-action@0.1.8
+      - uses: yegor256/latexmk-action@0.1.20
         with:
           path: paper
+          packages: acmart

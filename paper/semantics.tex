@@ -16,11 +16,10 @@
   }%
 }
 \newenvironment{algo}
-  {\begin{tcolorbox}[enhanced,before skip=3pt,after skip=3pt,colback=white,frame hidden,left=3pt,top=0pt,bottom=0pt,borderline west={1pt}{0pt}{gray}]
-  \newcommand\kw[1]{{\bfseries\sffamily ##1}}
+  {\newcommand\kw[1]{{\bfseries\sffamily ##1}}
   \newcommand\tab{{\hspace*{1em}}}
   \noindent}
-  {\end{tcolorbox}}
+  {}
 
 In order to explain how declarative expressions of \phic{} can
 be translated into imperative instructions of a target computing platform, we
@@ -479,6 +478,7 @@ We suggest the following recursive object discovery
 algorithm, which finds a vertice in a graph by its locator $l$ and
 returns a vertice connected to it as an attribute $a$:
 
+\begin{twocols}
 \begin{algo}
 \kw{function} $\mathbb{R}(l,a,S)$ \\
   \tab $v \gets l$ \\
@@ -496,6 +496,7 @@ returns a vertice connected to it as an attribute $a$:
   \tab \kw{return} $\perp$ \\
 \kw{end}
 \end{algo}
+\end{twocols}
 
 Here, $S$ is a vector of vertices, while $v+S$ produces a new vector
 where $v$ stays at the first position and all other elements of $S$ follow.
