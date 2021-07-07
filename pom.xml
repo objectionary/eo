@@ -115,21 +115,40 @@ SOFTWARE.
       </build>
     </profile>
     <profile>
-      <id>coveralls</id>
+      <id>jacoco</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.eluder.coveralls</groupId>
-            <artifactId>coveralls-maven-plugin</artifactId>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.5</version>
+            <configuration>
+              <output>file</output>
+            </configuration>
             <executions>
               <execution>
-                <phase>site</phase>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-initialize-integration</id>
+                <goals>
+                  <goal>prepare-agent-integration</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-report</id>
                 <goals>
                   <goal>report</goal>
                 </goals>
-                <configuration>
-                  <repoToken>${coveralls.token}</repoToken>
-                </configuration>
+              </execution>
+              <execution>
+                <id>jacoco-report-integration</id>
+                <goals>
+                  <goal>report-integration</goal>
+                </goals>
               </execution>
             </executions>
           </plugin>
