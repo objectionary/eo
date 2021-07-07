@@ -12,4 +12,5 @@ jobs:
       - uses: yegor256/latexmk-action@0.1.20
         with:
           path: paper
+          opts: -pdf eolang-paper
           packages: acmart
