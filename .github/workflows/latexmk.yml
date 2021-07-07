@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: yegor256/latexmk-action@0.1.20
+      - uses: yegor256/latexmk-action@0.2.1
         with:
           path: paper
           opts: -pdf eolang-paper
