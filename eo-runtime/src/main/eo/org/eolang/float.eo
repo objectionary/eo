@@ -20,11 +20,11 @@
   # Tests that $ ≥ x
   [x] > geq /bool
 
-  # Multiplication of $ and x
-  [x] > mul /float
+  # Multiplication of $ and elements of x
+  [x...] > mul /float
 
-  # Sum of $ and x
-  [x] > add /float
+  # Sum of $ and elements of x
+  [x...] > add /float
 
   # Negation of $
   [] > neg /float

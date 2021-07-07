@@ -23,15 +23,15 @@
   # Change the sign of the number
   [] > neg /int
 
-  # Add to the current one
-  [x] > add /int
+  # Sum of $ and elements of x
+  [x...] > add /int
 
   # Subtract from the current one
   [x] > sub
     ^.add (x.neg) > @
 
-  # Multiply this one by another int
-  [x] > mul /int
+  # Multiplication of $ and elements of x
+  [x...] > mul /int
 
   # Divide this one by another int
   [x] > div /int
