@@ -340,7 +340,7 @@ The code at \lref{array-3} is an empty array with the name \ff{b}.
 
 \subsection{Varargs}
 
-The last free attribute in an abstract class may be a \emph{vararg},
+The last free attribute in an abstract object may be a \emph{vararg},
 meaning that any number or zero arguments may be provided. All of them
 will be packaged in an array by the compiler, for example:
 
@@ -396,8 +396,13 @@ The \emph{inner} abstract object \ff{distance} may only be copied
 with a reference to its \emph{parent} object \ff{point}:
 
 \begin{ffcode}
-(point 5:x -3:y).distance |$\label{ln:point-copy}$|
-  (point 13 3.9):to
+.distance |$\label{ln:point-copy}$|
+  point
+    5:x
+    -3:y
+  point:to
+    13:x
+    3.9:y
 \end{ffcode}
 
 The parent object is \ff{(point 5 -3)}, while the object \ff{(point 13 3.9)}
