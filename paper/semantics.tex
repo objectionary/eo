@@ -512,6 +512,11 @@ The vector $s$, provided to the
 function as its parameter, is used in $M$ when it is necessary
 to use $\mathbb{R}$ in order to find some object.
 
+If a function returns data, which doesn't have a locator, a new vertice
+$v_i$ is created implicitly with the locator $\Phi.v_i$, and
+a single attribute $\delta$ connected to the data returned, where
+$i$ is the next available index in the graph.
+
 For example, $\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},
 \delta, \emptyset)$ being executed on the graph presented at the
 Fig.~\ref{fig:is} would return the vertice $d_{21}$, which is $+9$.
