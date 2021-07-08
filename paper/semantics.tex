@@ -409,8 +409,8 @@ There is also one rule, which transforms atoms to the object graph by \rrule{lam
 attaching lambda expressions to vertices:
 \begin{equation*}
 \dfrac
-  {e_i | \mapsto \lambda s . M}
-  {\ff{ATOM}(e_i, M)}
+  {v | \mapsto \lambda s . M}
+  {\ff{ATOM}(v, M)}
   \jrule{lambda}
 \end{equation*}
 Visually, the rule would produce the following modifications on the graph
