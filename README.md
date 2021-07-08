@@ -103,7 +103,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.1.10</version>
+        <version><!-- check Maven Central --></version>
         <executions>
           <execution>
             <goals>
@@ -139,7 +139,7 @@ create a file `pom.xml` with this content (it's just a sample):
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.10</version>
+      <version><!-- check Maven Central --></version>
     </dependency>
   </dependencies>
 </project>
