@@ -4,7 +4,7 @@
 \newcommand\rrule[1]{{\scshape\sffamily\ref{rule:#1}}}
 \newcommand{\jrule}[1]{%
   \refstepcounter{rule}\label{rule:#1}%
-  \text{\color{red!50!black}\textbf{\rrule{#1}}}}
+  \text{\textbf{\rrule{#1}}}}
 \newcommand*{\ohat}[2]{%
   \stackrel{\textcolor{gray}{#1}}{%
     \textcolor{gray}{%
@@ -370,7 +370,7 @@ with an edge instead of a vertice:
 \begin{equation*}
 \dfrac
   {e_i | (E_1) \; E_2}
-  {\ff{COPY}(e_i, v_{i\rr 1}, e_{i\rr 2}) \quad v|E}
+  {\ff{COPY}(e_i, v_{i\rr 1}, e_{i\rr 2}) \quad v_{i\rr 1}|E_1 \quad e_{i\rr 2}|E_2}
   \jrule{copy}
 \end{equation*}
 To continue the processing of the expression inside the abstract object
@@ -378,7 +378,7 @@ To continue the processing of the expression inside the abstract object
 \begin{equation*}
 \dfrac
   {e_{16} | \ohat{E_1}{(\ff{p})} \; \ohat{E_2}{.\ff{leq}(\ff{radius})}}
-  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad e_{18}|.\ff{leq}(\ff{radius})}
+  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad v_{17}|\ff{p} \quad e_{18}|.\ff{leq}(\ff{radius})}
 \end{equation*}
 Visually, this rule would produce the following modifications on the graph:
 
@@ -392,9 +392,9 @@ Visually, this rule would produce the following modifications on the graph:
   \node[atom, above right=1cm and 0cm of v12d] (v15d) {$v_{15}$}
     node[lambda] at (v15d.south east) {$M_{15}$};
     \draw (v12) -- (v15) node [attr] {$\varphi$} node [edge-name] {$e_{16}$};
-  \node[object, above right=0cm and 1.5cm of v12d] (v16) {$v_{16}$};
-    \draw (v12d) -- (v16) node [attr] {$\varphi$} node [edge-name] {$e_{18}$};
-    \draw[parent] (v16) edge [bend right=30] (v15d);
+  \node[object, above right=0cm and 1.5cm of v12d] (v17) {$v_{17}$};
+    \draw (v12d) -- (v17) node [attr] {$\varphi$} node [edge-name] {$e_{18}$};
+    \draw[parent] (v17) edge [bend right=30] (v15d);
 \end{ingraph}\end{center}
 
 The last rule deals with data, such as integers, string literals, and so on:
