@@ -491,7 +491,7 @@ returns a vertice connected to it as an attribute $a$:
   \tab \kw{if} $v = \rho$ \kw{then} $v \gets S[1]$ \\
   \tab \kw{if} $v$ has $a$-edge to $\tau$ \kw{then} \kw{return} $\tau$ \\
   \tab \kw{if} $v$ has $\varphi$-edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, \tau + S)$ \\
-  \tab \kw{if} $v$ has a dotted edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, S)$ \\
+  \tab \kw{if} $v$ has a dotted edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, \xi.a, \tau + S)$ \\
   \tab \kw{if} $v$ has $M$ \kw{then} \kw{return} $\mathbb{R}((\lambda s.M \; v + S), a, S)$ \\
   \tab \kw{return} $\perp$ \\
 \kw{end}
