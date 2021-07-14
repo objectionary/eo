@@ -33,10 +33,13 @@ public final class AtNamed implements Attr {
 
     private final Attr origin;
 
+    private final Phi phi;
+
     private final String name;
 
-    public AtNamed(final String nme, final Attr attr) {
+    public AtNamed(final String nme, final Phi src, final Attr attr) {
         this.name = nme;
+        this.phi = src;
         this.origin = attr;
     }
 
@@ -48,7 +51,7 @@ public final class AtNamed implements Attr {
     @Override
     public Attr copy(final Phi self) {
         try {
-            return new AtNamed(this.name, this.origin.copy(self));
+            return new AtNamed(this.name, this.phi, this.origin.copy(self));
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error in %s at %s", self, this.name),
@@ -63,19 +66,19 @@ public final class AtNamed implements Attr {
             return this.origin.get();
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
-                String.format("Error at %s", this.name),
+                String.format("Error at %s in %s", this.name, this.phi),
                 ex
             );
         }
     }
 
     @Override
-    public void put(final Phi phi) {
+    public void put(final Phi src) {
         try {
-            this.origin.put(phi);
+            this.origin.put(src);
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
-                String.format("Error at %s", this.name),
+                String.format("Error at %s in %s", this.name, this.phi),
                 ex
             );
         }
