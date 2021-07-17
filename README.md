@@ -17,6 +17,7 @@
 [![Hits-of-Code](https://hitsofcode.com/github/cqfn/eo)](https://hitsofcode.com/view/github/cqfn/eo)
 ![Lines of code](https://img.shields.io/tokei/lines/github/cqfn/eo)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/eo/blob/master/LICENSE.txt)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcqfn%2Feo?ref=badge_shield)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
