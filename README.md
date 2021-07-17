@@ -1,6 +1,7 @@
 <img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
 
 [![Donate via Zerocracy](https://www.0crat.com/contrib-badge/C63314D6Z.svg)](https://www.0crat.com/contrib/C63314D6Z)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcqfn%2Feo?ref=badge_shield)
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/C63314D6Z.svg)](https://www.0crat.com/p/C63314D6Z)
@@ -314,3 +315,7 @@ $ mvn clean install -Pqulice
 
 You will need Maven 3.3+ and Java 8+.
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcqfn%2Feo?ref=badge_large)
