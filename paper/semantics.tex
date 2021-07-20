@@ -446,7 +446,7 @@ it knows how to calculate it. Once being asked to turn itself into
 data it will ask all its three inner object the same question:
 ``What data you represent?'' They are integers and will return the
 data they have attached to their attributes $\delta$. Then, the object
-\ff{sum}, using its $\lambda$~term, will calculate the arithmetic
+\ff{sum}, using its $\lambda$-term, will calculate the arithmetic
 sum of the numbers returned by its inner objects.
 
 Visually, the object \ff{sum} from \lref{sum-instance} may be represented
@@ -505,6 +505,7 @@ Here, $S$ is a vector of vertices, while $v+S$ produces a new vector
 where $v$ stays at the first position and all other elements of $S$ follow.
 The notation $S[i]$ denotes the $i$-th element of the vector, while
 counting starts with zero.
+
 The notation $(\lambda s.M \; v + S)$ means creating a function from
 the $\lambda$~term $M$ with one parameter $s$ and then calculating
 it with the argument $v + S$.
