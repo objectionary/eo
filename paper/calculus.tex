@@ -1,5 +1,5 @@
 The proposed \phic{} is based on set theory~\citep{jech2013set} and lambda calculus,
-representing objects as sets of pairs and their internals as $\lambda$~terms.
+representing objects as sets of pairs and their internals as $\lambda$-terms.
 The rest of the section contains formal definitions of
 data, objects, attributes, abstraction, application, decoration, and dataization.
 
@@ -253,7 +253,7 @@ producing:
 
 \begin{eodefinition}\label{def:atom}
 If $\lambda s.M$ is a function of one argument $s$ returning an object,
-then it is an abstract object called an \textbf{atom}, $M$ is its $\lambda$~term,
+then it is an abstract object called an \textbf{atom}, $M$ is its $\lambda$-term,
 and $s$ is its free attribute.
 \end{eodefinition}
 
@@ -273,14 +273,14 @@ and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it is an array.
 It is expected that the array has an attribute \ff{size} representing
 the total number of elements in the array.
 
-Atoms may have their $\lambda$~terms defined outside of \phic{} formal scope.
+Atoms may have their $\lambda$-terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
 \begin{equation}\label{def:stdout}
 \begin{split}
 & \ff{stdout}(\ff{text}) \mapsto \lambda s.M_\text{stdout},
 \end{split}
 \end{equation}
-where $M_\text{stdout}$ is a $\lambda$~term defined externally.
+where $M_\text{stdout}$ is a $\lambda$-term defined externally.
 
 \subsection{Locators}
 

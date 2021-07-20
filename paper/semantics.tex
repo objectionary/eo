@@ -70,7 +70,7 @@ identifier \ff{isbn}. Even though the object $v_3$ is $\emptyset$, the graph
 depicts it as any other object.
 
 The rectangle attached to the vertice $v_1$ makes it an atom (see Def.~\ref{def:atom})
-and $M_1$, the content of the rectangle, is its $\lambda$~term. Atoms
+and $M_1$, the content of the rectangle, is its $\lambda$-term. Atoms
 are depicted with double-lined circles. The data $d_4$
 attached to the vertice $v_4$ by the named edge $\delta$
 is the text \ff{"Object Thinking"}.
@@ -81,7 +81,7 @@ A \emph{named edge} from a circle to another circle is an attribute of the depar
 A \emph{snake} edge is the $\rho$ attribute.
 A \emph{dotted} edge connects a copy with the origin.
 A \emph{double-bordered} circle is an atom.
-A \emph{rectangle} attached to a circle contains the $\lambda$~term of the atom.
+A \emph{rectangle} attached to a circle contains the $\lambda$-term of the atom.
 
 \subsection{GMI}
 
@@ -475,7 +475,7 @@ by the following object graph:
 
 The dataization of $v_2$, which is an anonymous copy of \ff{sum} with
 three arguments $v_3$, $v_4$, and $v_5$, would produce an arithmetic
-sum of three integers calculated by the $\lambda$~term of $v_1$.
+sum of three integers calculated by the $\lambda$-term of $v_1$.
 
 We suggest the following recursive object discovery
 algorithm, which finds a vertice in a graph by its locator $l$ and
@@ -507,7 +507,7 @@ The notation $S[i]$ denotes the $i$-th element of the vector, while
 counting starts with zero.
 
 The notation $(\lambda s.M \; v + S)$ means creating a function from
-the $\lambda$~term $M$ with one parameter $s$ and then calculating
+the $\lambda$-term $M$ with one parameter $s$ and then calculating
 it with the argument $v + S$.
 It is expected that the function returns a locator of a vertice or
 the vertice itself, where the locator can be derived as
