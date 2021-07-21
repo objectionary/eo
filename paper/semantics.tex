@@ -400,13 +400,15 @@ Visually, this rule would produce the following modifications on the graph:
     \draw[parent] (v17) edge [bend right=30] (v15d);
 \end{ingraph}\end{center}
 
-The last rule deals with data, such as integers, string literals, and so on:
+The last rule deals with data, such as integers, string literals, and so on
+(together referred to as $\Gamma$):
 \begin{equation*}
 \dfrac
-  {v_i | d_i}
-  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\delta)}
+  {v_i | \Gamma}
+  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\delta) \quad d_i \to \Gamma}
   \jrule{data}
 \end{equation*}
+Here the mapping $d_i \to \Gamma$ is added to the graph as a comment.
 
 There is also one rule, which transforms atoms to the object graph by \rrule{lambda}
 attaching lambda expressions to vertices:
