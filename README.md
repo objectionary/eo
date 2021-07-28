@@ -41,6 +41,9 @@ examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
 see whether they can work. It's an experiment, a prototype, a proof-of-concept.
 
+EO is based on 𝜑-calculus (if you want to see its description, 
+join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
+
 If you want to contribute, please join our
 [Telegram chat](https://t.me/elegantobjects) first.
 
@@ -53,9 +56,9 @@ These things we **don't tolerate**:
   * implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
   * mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html))
   * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
-  * global variables/procedures
-  * reflection
+  * global scope ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
   * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+  * reflection
   * scalar types and data primitives
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
   * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
@@ -70,6 +73,15 @@ already available.
 We also want to have an ability to compile it to any other language, like
 Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
 independent.
+
+## Friendly Products
+
+There are products that use EO or 𝜑-calculus:
+
+  * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
+  * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
+
+If you want yours to be in the list, submit a pull request.
 
 ## Quick Start
 
