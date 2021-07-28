@@ -74,8 +74,6 @@ We also want to have an ability to compile it to any other language, like
 Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
 independent.
 
-## Friendly Products
-
 There are products that use EO or 𝜑-calculus:
 
   * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
