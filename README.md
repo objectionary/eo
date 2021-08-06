@@ -79,6 +79,7 @@ There are products that use EO or 𝜑-calculus
 
   * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
   * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
+  * [try-phi](https://github.com/fizruk/try-phi) is an online interpreter of 𝜑-calculus expressions
 
 ## Quick Start
 
