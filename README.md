@@ -21,9 +21,8 @@
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
-is an object-oriented programming language. It's still a prototype.
-It's the future of OOP. Please [contribute](https://github.com/cqfn/eo#how-to-contribute)!
-By the way, we're aware of popular semi-OOP languages and we don't think
+is an object-oriented programming language.
+We're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
 [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29),
@@ -46,7 +45,7 @@ join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
 
 Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
 
-These things we **don't tolerate**:
+These things we **don't** tolerate:
 
   * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
   * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
