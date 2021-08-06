@@ -39,13 +39,10 @@ we want. Our main goal is to prove to ourselves that true object-oriented
 programming is practically possible. Not just in books and abstract
 examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
-see whether they can work. It's an experiment, a prototype, a proof-of-concept.
+see whether they can work.
 
 EO is based on 𝜑-calculus (if you want to see its description, 
 join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
-
-If you want to contribute, please join our
-[Telegram chat](https://t.me/elegantobjects) first.
 
 Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
 
@@ -65,14 +62,6 @@ These things we **don't tolerate**:
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
-
-We want EO to be compilable to Java. We want to stay as close to Java and JVM
-as possible, mostly in order to re-use the eco-system and libraries
-already available.
-
-We also want to have an ability to compile it to any other language, like
-Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
-independent.
 
 There are products that use EO or 𝜑-calculus 
 (if you want yours to be in the list, submit a pull request):
