@@ -26,6 +26,7 @@ release:
     git reset --hard
     sudo /bin/bash -c "cd '$(pwd)'; git clean -fd"
     cp /tmp/XMIR.xsd .
+    sed -i "s|SNAPSHOT|${tag}|" XMIR.xsd
     git add XMIR.xsd
     git commit -am "${tag}"
     git checkout "${branch}"
