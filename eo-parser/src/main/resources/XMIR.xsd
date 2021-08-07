@@ -49,7 +49,15 @@ SOFTWARE.
       <xs:element name="errors">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="error" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="error" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:simpleContent>
+                  <xs:extension base="xs:string">
+                    <xs:attribute name="line" use="required"/>
+                  </xs:extension>
+                </xs:simpleContent>
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
