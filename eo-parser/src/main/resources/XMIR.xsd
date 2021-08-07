@@ -37,11 +37,11 @@ SOFTWARE.
     <xs:attribute name="base"/>
     <xs:attribute name="data"/>
     <xs:attribute name="as"/>
+    <xs:attribute name="atom"/>
+    <xs:attribute name="flags"/>
     <xs:attribute name="vararg" type="empty"/>
     <xs:attribute name="method" type="empty"/>
-    <xs:attribute name="atom"/>
     <xs:attribute name="const" type="empty"/>
-    <xs:attribute name="flags"/>
   </xs:complexType>
   <xs:complexType name="program">
     <xs:sequence>
@@ -85,10 +85,10 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:sequence>
-    <xs:attribute name="ms" type="xs:string"/>
-    <xs:attribute name="name" type="xs:string"/>
-    <xs:attribute name="time" type="xs:string"/>
-    <xs:attribute name="version" type="xs:string"/>
+    <xs:attribute name="ms" type="xs:decimal" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="time" type="xs:dateTime" use="required"/>
+    <xs:attribute name="version" type="xs:string" use="required"/>
   </xs:complexType>
   <xs:element name="program" type="program"/>
 </xs:schema>
