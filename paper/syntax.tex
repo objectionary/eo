@@ -55,14 +55,14 @@ Java-notation is used for numbers, strings, and character literals.
 \T{object} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
 \T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
 \T{tail} \df \lex{eol} \lex{tab} \few{\T{object} \lex{eol}} \lex{untab} \\
-\T{vtail} \df \lex{eol} \T{method} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
+\T{vtail} \df \lex{eol} \T{ref} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
 \T{abstraction} \df \T{attributes} \opt{ \T{suffix} \opt{ \V{␣ /} \T{name} } } \\
 \T{attributes} \df \V{[} \T{attribute} \few{\V{␣} \T{attribute}} \V{]} \\
 \T{attribute} \df \V{@} \alt \T{name} \opt{\V{...}} \\
 \T{suffix} \df \V{␣} \V{>} \V{␣} \grp{\V{@} \alt \T{name}} \opt{\V{!}} \\
-\T{method} \df \V{.} \grp{ \T{name} \alt \V{\^{}} } \\
+\T{ref} \df \V{.} \grp{ \T{name} \alt \V{\^{}} } \\
 \T{application} \df \T{head} \opt{\T{htail}} \\
-\T{htail} \df \T{application} \T{method} \\
+\T{htail} \df \T{application} \T{ref} \\
   \> \alt \V{(} \T{application} \V{)} \\
   \> \alt \T{application} \V{:} \T{name} \\
   \> \alt \T{application} \T{suffix} \\
