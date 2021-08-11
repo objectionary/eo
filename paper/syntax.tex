@@ -49,8 +49,8 @@ Java-notation is used for numbers, strings, and character literals.
 \T{program} \df \opt{\T{license}} \opt{\T{metas}} \few{\T{object} \lex{eol}} \\
 \T{license} \df \few{\T{comment}} \lex{eol} \\
 \T{metas} \df \few{\T{meta}} \lex{eol} \\
-\T{comment} \df \V{\#} \lex{any} \lex{eol} \\
-\T{meta} \df \V{+} \T{name} \V{␣} \lex{any} \lex{eol} \\
+\T{comment} \df \V{\#} \few{\lex{any}} \lex{eol} \\
+\T{meta} \df \V{+} \T{name} \opt{\V{␣} \few{\lex{any}}} \lex{eol} \\
 \T{name} \df \RE{[a-z][\^{}␣]*} \\
 \T{object} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
 \T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
