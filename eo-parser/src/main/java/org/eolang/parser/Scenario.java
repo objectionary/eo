@@ -81,13 +81,13 @@ public final class Scenario {
             xsline = new Xsline(
                 xml,
                 new OutputTo(baos),
-                new Spy.Verbose()
+                new Spy.Verbose(Scenario.class)
             );
         } else {
             xsline = new Xsline(
                 xml,
                 new OutputTo(baos),
-                new Spy.Verbose(),
+                new Spy.Verbose(Scenario.class),
                 xsls
             );
         }

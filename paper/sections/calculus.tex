@@ -1,5 +1,5 @@
 The proposed \phic{} is based on set theory~\citep{jech2013set} and lambda calculus,
-representing objects as sets of pairs and their internals as $\lambda$~terms.
+representing objects as sets of pairs and their internals as $\lambda$-terms.
 The rest of the section contains formal definitions of
 data, objects, attributes, abstraction, application, decoration, and dataization.
 
@@ -110,12 +110,14 @@ The Eq.~\ref{eq:book2} may be written as
 \subsection{Application}
 
 \begin{eodefinition}\label{def:application}
-If $x$ and $y$ are objects, then an \textbf{application} of $y$ to $x$ is
+If $x$ is an abstract object and $y$ is an object
+  where $\hat{y}\subseteq\hat{x}$,
+  then an \textbf{application} of $y$ to $x$ is
   a \textbf{copy} of $x$, a new object that consists of pairs $(a\in\hat{x},v)$ such that
   $v=y.a$ if $x.a=\emptyset$ and $v=x.a$ otherwise.
 \end{eodefinition}
 
-Abstraction makes some free attributes of $x$ bound---by binding objects to them.
+Application makes some free attributes of $x$ bound---by binding objects to them.
 The produced object has exactly the same set of attributes, but some of them,
 which were free before, become bound.
 
@@ -125,7 +127,7 @@ to creating a new abstract object. To the contrary,
 if all free attributes are substituted with \emph{arguments} during copying,
 a newly created object will be \emph{closed}.
 
-Once set, bound attributes may not be reset
+Once set, bound attributes may not be reset.
 This may be interpreted as \emph{immutability} property of objects.
 
 Arrow notation may also be used to denote object copying,
@@ -251,13 +253,14 @@ producing:
 
 \begin{eodefinition}\label{def:atom}
 If $\lambda s.M$ is a function of one argument $s$ returning an object,
-then it is an abstract object called an \textbf{atom} and $M$ is its $\lambda$~term.
+then it is an abstract object called an \textbf{atom}, $M$ is its $\lambda$-term,
+and $s$ is its free attribute.
 \end{eodefinition}
 
 For example, the atom at \lref{sum-def} would be represented as
 \begin{equation}
 \begin{split}
-& \ff{sum}(\ff{x}) \mapsto \lambda s . \sum\limits_{i=0}^{|s[0]| - 1} s[0].\ff{x}.\ff{get}(i),
+& \ff{sum}(\ff{x}) \mapsto \lambda s . \sum\limits_{i=0}^{s[0].\ff{x}.\ff{size} - 1} s[0].\ff{x}.\ff{get}(i),
 \end{split}
 \end{equation}
 where the function calculates an arithmetic sum of all items
@@ -267,15 +270,17 @@ consideration, the second element is its parent object, the third element
 is the parent of the parent, and so on. Thus, $s[0]$ is the object
 \ff{sum} itself, while $s[0].\ff{x}$ is its inner object \ff{x},
 and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it is an array.
+It is expected that the array has an attribute \ff{size} representing
+the total number of elements in the array.
 
-Atoms may have their $\lambda$~terms defined outside of \phic{} formal scope.
+Atoms may have their $\lambda$-terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
-\begin{equation}
+\begin{equation}\label{def:stdout}
 \begin{split}
 & \ff{stdout}(\ff{text}) \mapsto \lambda s.M_\text{stdout},
 \end{split}
 \end{equation}
-where $M_\text{stdout}$ is a $\lambda$~term defined externally.
+where $M_\text{stdout}$ is a $\lambda$-term defined externally.
 
 \subsection{Locators}
 

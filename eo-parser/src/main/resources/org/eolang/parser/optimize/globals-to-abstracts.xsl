@@ -34,7 +34,7 @@ SOFTWARE.
   Would be converted to:
 
   [] > c
-    mul
+    mul > @
       2
       pi
   -->
@@ -44,6 +44,9 @@ SOFTWARE.
     <xsl:element name="o">
       <xsl:apply-templates select="@name|@line|@ref"/>
       <xsl:copy>
+        <xsl:attribute name="name">
+          <xsl:text>@</xsl:text>
+        </xsl:attribute>
         <xsl:apply-templates select="node()|@* except @name"/>
       </xsl:copy>
     </xsl:element>

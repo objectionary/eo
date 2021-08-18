@@ -44,8 +44,12 @@ public final class AtFree implements Attr {
     }
 
     public AtFree(final Attr attr) {
+        this(attr, false);
+    }
+
+    public AtFree(final Attr attr, final boolean used) {
         this.origin = attr;
-        this.set = false;
+        this.set = used;
     }
 
     @Override
@@ -55,7 +59,7 @@ public final class AtFree implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtFree(this.origin.copy(self));
+        return new AtFree(this.origin.copy(self), this.set);
     }
 
     @Override

@@ -9,3 +9,9 @@
   eq. > @
     a 42
     42
+
+[] > throwsWhenAppliesToClosedObject
+  [x] > a
+    x > @
+  a false > closed
+  closed true > @

@@ -46,23 +46,24 @@ Java-notation is used for numbers, strings, and character literals.
 \begin{tabbing}
 \hspace*{1.6cm}\= \kill
 
-\T{program} \df \opt{\T{license}} \opt{\T{metas}} \few{\T{object} \lex{eol}} \\
-\T{license} \df \few{\T{comment} \lex{eol}} \lex{eol} \\
-\T{metas} \df \few{\T{meta} \lex{eol}} \lex{eol} \\
-\T{comment} \df \V{\#} \lex{any} \lex{eol} \\
-\T{meta} \df \V{+} \T{name} \V{␣} \lex{any} \lex{eol} \\
-\T{name} \df \RE{[a-z][\^{}␣]*} \\
+\T{program} \df \opt{\T{license}} \opt{\T{metas}} \T{objects} \\
+\T{objects} \df \T{object} \lex{eol} \few{\T{object} \lex{eol}} \\
+\T{license} \df \few{\T{comment}} \lex{eol} \\
+\T{metas} \df \few{\T{meta}} \lex{eol} \\
+\T{comment} \df \V{\#} \few{\lex{any}} \lex{eol} \\
+\T{meta} \df \V{+} \T{name} \opt{\V{␣} \lex{any} \few{\lex{any}}} \lex{eol} \\
+\T{name} \df \RE{[a-z]} \few{\lex{any}} \\
 \T{object} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
 \T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
 \T{tail} \df \lex{eol} \lex{tab} \few{\T{object} \lex{eol}} \lex{untab} \\
-\T{vtail} \df \lex{eol} \T{method} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
+\T{vtail} \df \lex{eol} \T{ref} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
 \T{abstraction} \df \T{attributes} \opt{ \T{suffix} \opt{ \V{␣ /} \T{name} } } \\
 \T{attributes} \df \V{[} \T{attribute} \few{\V{␣} \T{attribute}} \V{]} \\
 \T{attribute} \df \V{@} \alt \T{name} \opt{\V{...}} \\
 \T{suffix} \df \V{␣} \V{>} \V{␣} \grp{\V{@} \alt \T{name}} \opt{\V{!}} \\
-\T{method} \df \V{.} \grp{ \T{name} \alt \V{\^{}} } \\
+\T{ref} \df \V{.} \grp{ \T{name} \alt \V{\^{}} } \\
 \T{application} \df \T{head} \opt{\T{htail}} \\
-\T{htail} \df \T{application} \T{method} \\
+\T{htail} \df \T{application} \T{ref} \\
   \> \alt \V{(} \T{application} \V{)} \\
   \> \alt \T{application} \V{:} \T{name} \\
   \> \alt \T{application} \T{suffix} \\
@@ -84,7 +85,7 @@ Java-notation is used for numbers, strings, and character literals.
 \figcap{The full syntax of \eo{} in BNF.
   \lex{eol} is a line ending that preserves the indentation of the previous line.
   \lex{tab} is a right-shift of the indentation, while \lex{untab} is a left-shift.
-  \lex{any} is any symbol excluding \lex{eol}.
+  \lex{any} is any symbol excluding \lex{eol} and \V{␣}.
   The texts between forward slashes are Perl-style regular expressions.}
 \label{fig:bnf}
 \end{figure*}
@@ -340,7 +341,7 @@ The code at \lref{array-3} is an empty array with the name \ff{b}.
 
 \subsection{Varargs}
 
-The last free attribute in an abstract class may be a \emph{vararg},
+The last free attribute in an abstract object may be a \emph{vararg},
 meaning that any number or zero arguments may be provided. All of them
 will be packaged in an array by the compiler, for example:
 
@@ -396,8 +397,13 @@ The \emph{inner} abstract object \ff{distance} may only be copied
 with a reference to its \emph{parent} object \ff{point}:
 
 \begin{ffcode}
-(point 5:x -3:y).distance |$\label{ln:point-copy}$|
-  (point 13 3.9):to
+.distance |$\label{ln:point-copy}$|
+  point
+    5:x
+    -3:y
+  point:to
+    13:x
+    3.9:y
 \end{ffcode}
 
 The parent object is \ff{(point 5 -3)}, while the object \ff{(point 13 3.9)}
@@ -413,7 +419,7 @@ Inner object may refer to the parent object by using the \ff{\^{}} symbol.
 An object may extend another object by \emph{decorating} it:
 
 \begin{ffcode}
-[center radius] > cirle |$\label{ln:circle}$|
+[center radius] > circle |$\label{ln:circle}$|
   center > @ |$\label{ln:circle-phi}$|
   [p] > is-inside
     leq. > @
@@ -430,7 +436,7 @@ the same way as other attributes, including in dot notation, as it is done
 at \lref{circle-phi-2}. However, this line
 may be re-written in a more compact way, omitting the explicit
 reference to the \ff{@} attribute, because all attributes
-of the \ff{center} are present in the \ff{cirle};
+of the \ff{center} are present in the \ff{circle};
 and omitting the reference to \ff{\$} because the default scope of visibility of
 \ff{p} is the object \ff{is-inside}:
 
@@ -440,7 +446,7 @@ and omitting the reference to \ff{\$} because the default scope of visibility of
 
 The inner object \ff{is-inside} also has the \ff{@} attribute: it
 decorates the object \ff{leq} (stands for ``less than equal'').
-The expression at \lref{circle-phi} means:
+The expression at \lref{circle-phi-2} means:
 take the parent object of \ff{is-inside},
 take the attribute \ff{@} from it, then take the inner object \ff{distance}
 from there, and then make a copy of it with the attribute \ff{p}

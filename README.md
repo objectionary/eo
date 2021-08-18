@@ -7,19 +7,22 @@
 [![DevOps By Rultor.com](http://www.rultor.com/b/cqfn/eo)](http://www.rultor.com/p/cqfn/eo)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
+[![mvn](https://github.com/cqfn/eo/actions/workflows/mvn.yml/badge.svg)](https://github.com/cqfn/eo/actions/workflows/mvn.yml)
 [![Build Status](https://travis-ci.org/cqfn/eo.svg?branch=master)](https://travis-ci.org/cqfn/eo)
 [![PDD status](http://www.0pdd.com/svg?name=cqfn/eo)](http://www.0pdd.com/p?name=cqfn/eo)
 [![Maintainability](https://api.codeclimate.com/v1/badges/e4f7ed144919f7f0d58c/maintainability)](https://codeclimate.com/github/cqfn/eo/maintainability)
-[![Hits-of-Code](https://hitsofcode.com/github/cqfn/eo)](https://hitsofcode.com/view/github/cqfn/eo)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/eo/blob/master/LICENSE.txt)
-![Lines of code](https://img.shields.io/tokei/lines/github/cqfn/eo)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
+
+[![codecov](https://codecov.io/gh/cqfn/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/cqfn/eo)
+[![Hits-of-Code](https://hitsofcode.com/github/cqfn/eo)](https://hitsofcode.com/view/github/cqfn/eo)
+![Lines of code](https://img.shields.io/tokei/lines/github/cqfn/eo)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/eo/blob/master/LICENSE.txt)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/reports/0ebb3149-4934-4565-bf6f-6fa41aed3b49)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
-is an object-oriented programming language. It's still a prototype.
-It's the future of OOP. Please [contribute](https://github.com/cqfn/eo#how-to-contribute)!
-By the way, we're aware of popular semi-OOP languages and we don't think
+is an object-oriented programming language.
+We're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
 [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29),
@@ -35,23 +38,23 @@ we want. Our main goal is to prove to ourselves that true object-oriented
 programming is practically possible. Not just in books and abstract
 examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
-see whether they can work. It's an experiment, a prototype, a proof-of-concept.
+see whether they can work.
 
-If you want to contribute, please join our
-[Telegram chat](https://t.me/elegantobjects) first.
+EO is based on 𝜑-calculus (if you want to see its description, 
+join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
 
 Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
 
-These things we **don't tolerate**:
+These things we **don't** tolerate:
 
   * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
   * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
   * implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
   * mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html))
   * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
-  * global variables/procedures
-  * reflection
+  * global scope ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
   * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+  * reflection
   * scalar types and data primitives
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
   * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
@@ -59,13 +62,12 @@ These things we **don't tolerate**:
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
 
-We want EO to be compilable to Java. We want to stay as close to Java and JVM
-as possible, mostly in order to re-use the eco-system and libraries
-already available.
+There are products that use EO or 𝜑-calculus 
+(if you want yours to be in the list, submit a pull request):
 
-We also want to have an ability to compile it to any other language, like
-Python, C/C++, Ruby, C#, etc. In other words, EO must be platform
-independent.
+  * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
+  * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
+  * [try-phi](https://github.com/fizruk/try-phi) is an online interpreter of 𝜑-calculus expressions
 
 ## Quick Start
 
@@ -100,7 +102,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.1.10</version>
+        <version><!-- check Maven Central --></version>
         <executions>
           <execution>
             <goals>
@@ -136,7 +138,7 @@ create a file `pom.xml` with this content (it's just a sample):
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>0.1.10</version>
+      <version><!-- check Maven Central --></version>
     </dependency>
   </dependencies>
 </project>

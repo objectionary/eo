@@ -430,16 +430,36 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public void testWorks() throws java.lang.Exception {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>Assertions.assertTrue(</xsl:text>
-    <xsl:value-of select="eo:eol(3)"/>
-    <xsl:text>new Dataized(new </xsl:text>
-    <xsl:value-of select="eo:class-name(@name)"/>
-    <xsl:text>()).take(Boolean.class)</xsl:text>
-    <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>);</xsl:text>
+    <xsl:choose>
+      <xsl:when test="starts-with(@name, 'throws')">
+        <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:apply-templates select="." mode="assert">
+          <xsl:with-param name="indent" select="1"/>
+        </xsl:apply-templates>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>});</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="assert">
+          <xsl:with-param name="indent" select="0"/>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="class" mode="assert">
+    <xsl:param name="indent"/>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:text>Assertions.assertTrue(</xsl:text>
+    <xsl:value-of select="eo:eol(3 + $indent)"/>
+    <xsl:text>new Dataized(new </xsl:text>
+    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:text>()).take(Boolean.class)</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>);</xsl:text>
   </xsl:template>
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>

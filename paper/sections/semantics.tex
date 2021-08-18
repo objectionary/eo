@@ -4,7 +4,7 @@
 \newcommand\rrule[1]{{\scshape\sffamily\ref{rule:#1}}}
 \newcommand{\jrule}[1]{%
   \refstepcounter{rule}\label{rule:#1}%
-  \text{\color{red!50!black}\textbf{\rrule{#1}}}}
+  \text{\textbf{\rrule{#1}}}}
 \newcommand*{\ohat}[2]{%
   \stackrel{\textcolor{gray}{#1}}{%
     \textcolor{gray}{%
@@ -16,11 +16,10 @@
   }%
 }
 \newenvironment{algo}
-  {\begin{tcolorbox}[enhanced,before skip=3pt,after skip=3pt,colback=white,frame hidden,left=3pt,top=0pt,bottom=0pt,borderline west={1pt}{0pt}{gray}]
-  \newcommand\kw[1]{{\bfseries\sffamily ##1}}
+  {\newcommand\kw[1]{{\bfseries\sffamily ##1}}
   \newcommand\tab{{\hspace*{1em}}}
   \noindent}
-  {\end{tcolorbox}}
+  {}
 
 In order to explain how declarative expressions of \phic{} can
 be translated into imperative instructions of a target computing platform, we
@@ -33,7 +32,7 @@ be translated into imperative instructions of a target computing platform, we
 
 \subsection{Object Graph}
 
-Consider the object from lines~\ref{ln:book2}--\ref{ln:book2-end},
+Consider the object from lines~\lrefs{book2}{book2-end},
 which is also represented by the expression in the Eq.~\ref{eq:book}.
 The Fig.~\ref{fig:book2} represents it as a graph.
 
@@ -56,7 +55,7 @@ The Fig.~\ref{fig:book2} represents it as a graph.
     $d_{4} \to \ff{"Object Thinking"}$
   \end{minipage}};
 \end{ingraph}
-\figcap{The object graph with a few objects from the Eq.~\ref{eq:book}, where
+\figcap{The object graph with a few objects from the Eq.~\ref{eq:book2}, where
 $d_4$ is \ff{"Object Thinking"} data and $M_1$ is a lambda expression defined
 in the runtime.}
 \label{fig:book2}
@@ -71,7 +70,7 @@ identifier \ff{isbn}. Even though the object $v_3$ is $\emptyset$, the graph
 depicts it as any other object.
 
 The rectangle attached to the vertice $v_1$ makes it an atom (see Def.~\ref{def:atom})
-and $M_1$, the content of the rectangle, is its $\lambda$~term. Atoms
+and $M_1$, the content of the rectangle, is its $\lambda$-term. Atoms
 are depicted with double-lined circles. The data $d_4$
 attached to the vertice $v_4$ by the named edge $\delta$
 is the text \ff{"Object Thinking"}.
@@ -82,7 +81,7 @@ A \emph{named edge} from a circle to another circle is an attribute of the depar
 A \emph{snake} edge is the $\rho$ attribute.
 A \emph{dotted} edge connects a copy with the origin.
 A \emph{double-bordered} circle is an atom.
-A \emph{rectangle} attached to a circle contains the $\lambda$~term of the atom.
+A \emph{rectangle} attached to a circle contains the $\lambda$-term of the atom.
 
 \subsection{GMI}
 
@@ -175,7 +174,10 @@ $\ff{REF}(e_1, v_1, l, a)$
   \>
   \tabfill{Starting from the vertice $v_1$,
     finds a vertice $v_2$ by the locator $l$
-    and links them with a green edge $e_1$ named as $a$ with a supplementary label $l$:}
+    and links them with an edge $e_1$ named as $a$ with a supplementary label $l$
+    (omitting the circle around the vertice $v_2$ is a visual
+    trick that helps avoid a long arrow, which would need to be drawn from $v_1$ to the
+    found $v_2$ otherwise):}
   \\
   \> \begin{ingraph}
     \node[object] (v1) {$v_1$};
@@ -371,15 +373,15 @@ with an edge instead of a vertice:
 \begin{equation*}
 \dfrac
   {e_i | (E_1) \; E_2}
-  {\ff{COPY}(e_i, v_{i\rr 1}, e_{i\rr 2}) \quad v|E}
+  {\ff{COPY}(e_i, v_{i\rr 1}, e_{i\rr 2}) \quad v_{i\rr 1}|E_1 \quad e_{i\rr 2}|E_2}
   \jrule{copy}
 \end{equation*}
 To continue the processing of the expression inside the abstract object
 \ff{is-inside} the rule may be applied as the following:
 \begin{equation*}
 \dfrac
-  {e_{16} | \ohat{E_1}{(\ff{p})} \; \ohat{E_2}{.\ff{leq}(\ff{radius})}}
-  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad e_{18}|.\ff{leq}(\ff{radius})}
+  {e_{16} | \ohat{E_1}{(\ff{to} \mapsto \xi.\ff{p})} \; \ohat{E_2}{.\ff{leq}(\ff{radius})}}
+  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad v_{17}|\ff{to} \mapsto \xi.\ff{p} \quad e_{18}|.\ff{leq}(\ff{radius})}
 \end{equation*}
 Visually, this rule would produce the following modifications on the graph:
 
@@ -393,18 +395,42 @@ Visually, this rule would produce the following modifications on the graph:
   \node[atom, above right=1cm and 0cm of v12d] (v15d) {$v_{15}$}
     node[lambda] at (v15d.south east) {$M_{15}$};
     \draw (v12) -- (v15) node [attr] {$\varphi$} node [edge-name] {$e_{16}$};
-  \node[object, above right=0cm and 1.5cm of v12d] (v16) {$v_{16}$};
-    \draw (v12d) -- (v16) node [attr] {$\varphi$} node [edge-name] {$e_{18}$};
-    \draw[parent] (v16) edge [bend right=30] (v15d);
+  \node[object, above right=0cm and 1.5cm of v12d] (v17) {$v_{17}$};
+    \draw (v12d) -- (v17) node [attr] {$\varphi$} node [edge-name] {$e_{18}$};
+    \draw[parent] (v17) edge [bend right=30] (v15d);
 \end{ingraph}\end{center}
 
-The last rule deals with data, such as integers, string literals, and so on:
+The last rule deals with data, such as integers, string literals, and so on
+(together referred to as $\Gamma$):
 \begin{equation*}
 \dfrac
-  {v_i | d_i}
-  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\delta)}
+  {v_i | \Gamma}
+  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\delta) \quad d_i \to \Gamma}
   \jrule{data}
 \end{equation*}
+Here the mapping $d_i \to \Gamma$ is added to the graph as a comment.
+
+There is also one rule, which transforms atoms to the object graph by \rrule{lambda}
+attaching lambda expressions to vertices:
+\begin{equation*}
+\dfrac
+  {v | \lambda s . M}
+  {\ff{ATOM}(v, M)}
+  \jrule{lambda}
+\end{equation*}
+Visually, the rule would produce the following modifications on the graph
+for the Eq.~\ref{def:stdout}:
+
+\begin{center}\begin{ingraph}
+  \node[object] (phi) {$\Phi$};
+  \node[object, below right=1cm of phi] (v1) {$v_{1}$};
+    \draw (phi) -- (v1) node [attr] {\ff{stdout}};
+  \node[transforms, right=1cm of phi] {};
+  \node[object, right=2cm of phi] (phi-d) {$\Phi$};
+  \node[atom, below right=1cm of phi-d] (v1d) {$v_{1}$}
+    node[lambda] at (v1d.south east) {$M_\text{stdout}$};
+    \draw (phi-d) -- (v1d) node [attr] {\ff{stdout}};
+\end{ingraph}\end{center}
 
 In order to demonstrate a larger example, the Fig.~\ref{fig:is} shows
 an object graph, which the described rules
@@ -422,7 +448,7 @@ it knows how to calculate it. Once being asked to turn itself into
 data it will ask all its three inner object the same question:
 ``What data you represent?'' They are integers and will return the
 data they have attached to their attributes $\delta$. Then, the object
-\ff{sum}, using its $\lambda$~term, will calculate the arithmetic
+\ff{sum}, using its $\lambda$-term, will calculate the arithmetic
 sum of the numbers returned by its inner objects.
 
 Visually, the object \ff{sum} from \lref{sum-instance} may be represented
@@ -432,31 +458,32 @@ by the following object graph:
   \node[object] (v0) {$\Phi$};
   \node[atom, below right=1cm of v0] (v1) {$v_{1}$}
     node[lambda] at (v1.south east) {$\sum a_i$};
-    \draw (v0) -- (v1) node [attr] {\ff{sum}};
+    \draw (v0) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v1) node [attr] {\ff{sum}};
   \node[object, above right=1.2cm and 2.8cm of v1] (v2) {$v_{2}$};
     \draw[parent] (v2) edge [bend right=30] (v1);
   \node[object, below left=1cm of v2] (v3) {$v_{3}$};
-    \draw (v2) -- (v3) node [attr] {$a_1$};
-  \node[object, below=0.6cm of v3] (d3) {\ff{8}};
-    \draw (v3) -- (d3) node [attr] {$\delta$};
+    \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v3) node [attr] {$a_1$};
+  \node[object, below=0.7cm of v3] (d3) {\ff{8}};
+    \draw (v3) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d3) node [attr] {$\delta$};
   \node[object, below=1cm of v2] (v4) {$v_{4}$};
-    \draw (v2) -- (v4) node [attr] {$a_2$};
-  \node[object, below=0.6cm of v4] (d4) {\ff{13}};
-    \draw (v4) -- (d4) node [attr] {$\delta$};
+    \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v4) node [attr] {$a_2$};
+  \node[object, below=0.7cm of v4] (d4) {\ff{13}};
+    \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d4) node [attr] {$\delta$};
   \node[object, below right=1cm of v2] (v5) {$v_{5}$};
-    \draw (v2) -- (v5) node [attr] {$a_3$};
-  \node[object, below=0.6cm of v5] (d5) {\ff{-9}};
-    \draw (v5) -- (d5) node [attr] {$\delta$};
+    \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v5) node [attr] {$a_3$};
+  \node[object, below=0.7cm of v5] (d5) {\ff{-9}};
+    \draw (v5) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d5) node [attr] {$\delta$};
 \end{ingraph}\end{center}
 
 The dataization of $v_2$, which is an anonymous copy of \ff{sum} with
 three arguments $v_3$, $v_4$, and $v_5$, would produce an arithmetic
-sum of three integers calculated by the $\lambda$~term of $v_1$.
+sum of three integers calculated by the $\lambda$-term of $v_1$.
 
 We suggest the following recursive object discovery
-algorithm, which finds an object in a graph by its locator $l$ and
-returns its attribute $a$:
+algorithm, which finds a vertice in a graph by its locator $l$ and
+returns a vertice connected to it as an attribute $a$:
 
+\begin{twocols}
 \begin{algo}
 \kw{function} $\mathbb{R}(l,a,S)$ \\
   \tab $v \gets l$ \\
@@ -467,27 +494,38 @@ returns its attribute $a$:
   \tab \kw{end if} \\
   \tab \kw{if} $v = \xi$ \kw{then} $v \gets S[0]$ \\
   \tab \kw{if} $v = \rho$ \kw{then} $v \gets S[1]$ \\
-  \tab \kw{if} $v$ has $a$-edge to $v'$ \kw{then} \kw{return} $v'$ \\
-  \tab \kw{if} $v$ has $\varphi$-edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, v' + S)$ \\
-  \tab \kw{if} $v$ has a dotted edge to $v'$ \kw{then} \kw{return} $\mathbb{R}(v', a, S)$ \\
+  \tab \kw{if} $v$ has $a$-edge to $\tau$ \kw{then} \kw{return} $\tau$ \\
+  \tab \kw{if} $v$ has $\varphi$-edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, a, \tau + S)$ \\
+  \tab \kw{if} $v$ has a dotted edge to $\tau$ \kw{then} \kw{return} $\mathbb{R}(\tau, \xi.a, \tau + S)$ \\
   \tab \kw{if} $v$ has $M$ \kw{then} \kw{return} $\mathbb{R}((\lambda s.M \; v + S), a, S)$ \\
   \tab \kw{return} $\perp$ \\
 \kw{end}
 \end{algo}
+\end{twocols}
 
 Here, $S$ is a vector of vertices, while $v+S$ produces a new vector
 where $v$ stays at the first position and all other elements of $S$ follow.
 The notation $S[i]$ denotes the $i$-th element of the vector, while
 counting starts with zero.
+
 The notation $(\lambda s.M \; v + S)$ means creating a function from
-the $\lambda$~term $M$ with one parameter $s$ and then calculating
-it with the argument $v + S$. The vector $s$, provided to the
+the $\lambda$-term $M$ with one parameter $s$ and then calculating
+it with the argument $v + S$.
+It is expected that the function returns a locator of a vertice or
+the vertice itself, where the locator can be derived as
+the shortest path from $\Phi$ to the given vertice.
+The vector $s$, provided to the
 function as its parameter, is used in $M$ when it is necessary
 to use $\mathbb{R}$ in order to find some object.
 
+If a function returns data, which doesn't have a locator, a new vertice
+$v_i$ is created implicitly with the locator $\Phi.v_i$, and
+a single attribute $\delta$ connected to the data returned, where
+$i$ is the next available index in the graph.
+
 For example, $\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},
 \delta, \emptyset)$ being executed on the graph presented at the
-Fig.~\ref{fig:is} would return $+9$.
+Fig.~\ref{fig:is} would return the vertice $d_{21}$, which is $+9$.
 
 We also define a dataization function, which turns an object into data:
 
@@ -502,7 +540,7 @@ The execution of the function $\mathbb{D}(x)$, where $x$ is the
 Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
 
 \begin{figure*}
-\input{graph}
+\input{sections/graph}
 \figcap{The graph of the object \ff{is} from the Eq.~\ref{eq:is}.}
 \label{fig:is}
 \end{figure*}
