@@ -26,13 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import io.github.hse_eolang.transpiler.Transpiler;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -44,13 +38,15 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.transpiler.medium2target.Medium2TargetTranspiler;
-import org.eolang.maven.transpiler.mediumcodemodel.EOSourceEntity;
-import org.eolang.maven.transpiler.mediumcodemodel.EOSourceFile;
-import org.eolang.maven.transpiler.mediumcodemodel.EOTargetFile;
-import org.eolang.maven.transpiler.xml2medium.Xml2MediumParser;
 import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Compile.
@@ -140,9 +136,10 @@ public final class CompileMojo extends AbstractMojo {
             }
             switch (this.compiler) {
                 case CompileMojo.COMPILER_HSE:
+                    Transpiler transpiler = new Transpiler(this.generatedDir);
                     Files.walk(dir)
                         .filter(file -> !file.toFile().isDirectory())
-                        .forEach(this::compileHse);
+                        .forEach(transpiler::compileHse);
                     break;
                 case CompileMojo.COMPILER_ORIGINAL:
                 default:
@@ -229,54 +226,6 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         Logger.info(this, "%s compiled to %s with the original compiler", file, this.generatedDir);
-    }
-
-    /**
-     * Compile one XML file.
-     *
-     * @param path The path to the XML file being compiled.
-     */
-    private void compileHse(final Path path) {
-        final File file = new File(path.toUri());
-        final Xml2MediumParser xml = new Xml2MediumParser(file);
-        try {
-            final EOSourceEntity smth = xml.parse();
-            final ArrayList<EOTargetFile> code =
-                Medium2TargetTranspiler.transpile(
-                    (EOSourceFile) smth
-                );
-            code.forEach(
-                javaFile -> {
-                    try {
-                        new Save(
-                            javaFile.getContents(),
-                            this.generatedDir.toPath().resolve(
-                                Paths.get(
-                                    javaFile.getFileName()
-                                )
-                            )
-                        ).save();
-                    } catch (final IOException exception) {
-                        throw new IllegalStateException(
-                            String.format(
-                                "Can't read the path %s",
-                                path
-                            ),
-                            exception
-                        );
-                    }
-                }
-            );
-        } catch (final Xml2MediumParser.Xml2MediumParserException exception) {
-            throw new IllegalStateException(
-                String.format(
-                    "The HSE compiler failed to parse the %s file.",
-                    file
-                ),
-                exception
-            );
-        }
-        Logger.info(this, "%s compiled to %s with the HSE compiler", path, this.generatedDir);
     }
 
     /**

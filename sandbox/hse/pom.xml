@@ -28,47 +28,28 @@ SOFTWARE.
   <artifactId>quick-start-hse</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <org.eolang.version>1.0-SNAPSHOT</org.eolang.version>
+    <eolang.hse.version>1.0.3</eolang.hse.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <eolang.cqfn.version>LATEST</eolang.cqfn.version>
   </properties>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.eolang</groupId>
-        <artifactId>eo-maven-plugin</artifactId>
-        <version>${org.eolang.version}</version>
-        <configuration>
-          <sourcesDir>${project.basedir}/eo</sourcesDir>
-          <targetDir>${project.basedir}/target</targetDir>
-          <compiler>hse</compiler>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
-            </goals>
-
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <phase>compile</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>copy</goal>
             </goals>
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.eolang</groupId>
-                  <artifactId>eo-runtime-hse</artifactId>
-                  <version>${org.eolang.version}</version>
+                  <groupId>io.github.hse-eolang</groupId>
+                  <artifactId>runtime</artifactId>
+                  <version>${eolang.hse.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -79,13 +60,49 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.eolang</groupId>
+        <artifactId>eo-maven-plugin</artifactId>
+        <version>${eolang.cqfn.version}</version>
+        <configuration>
+          <sourcesDir>${project.basedir}/eo</sourcesDir>
+          <targetDir>${project.basedir}/target</targetDir>
+          <compiler>hse</compiler>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>parse</goal>
+              <goal>optimize</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime-hse</artifactId>
-      <version>${org.eolang.version}</version>
+      <groupId>io.github.hse-eolang</groupId>
+      <artifactId>runtime</artifactId>
+      <version>${eolang.hse.version}</version>
     </dependency>
   </dependencies>
 </project>

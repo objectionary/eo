@@ -1,8 +1,8 @@
 +package sandbox.hse
 +alias indexof sandbox.hse.indexof
 +alias max sandbox.hse.max
-+alias stdout org.eolang.hse.io.stdout
-+alias sprintf org.eolang.hse.txt.sprintf
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 
 [arr] > imax
   indexof > @

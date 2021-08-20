@@ -1,6 +1,6 @@
 +package sandbox.hse
-+alias stdout org.eolang.hse.io.stdout
-+alias sprintf org.eolang.hse.txt.sprintf
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 
 [arr] > min
   reduce. > @
