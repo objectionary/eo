@@ -27,6 +27,12 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import io.github.hse_eolang.transpiler.Transpiler;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,13 +46,6 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Xsline;
 import org.slf4j.impl.StaticLoggerBinder;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Compile.
@@ -136,7 +135,7 @@ public final class CompileMojo extends AbstractMojo {
             }
             switch (this.compiler) {
                 case CompileMojo.COMPILER_HSE:
-                    Transpiler transpiler = new Transpiler(this.generatedDir);
+                    final Transpiler transpiler = new Transpiler(this.generatedDir);
                     Files.walk(dir)
                         .filter(file -> !file.toFile().isDirectory())
                         .forEach(transpiler::compileHse);

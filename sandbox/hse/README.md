@@ -2,15 +2,15 @@
 This directory proposes and demonstrates an alternative branch of the EO transpiler based on a new transcompilation model of EO programs to Java source codes.  
 The old (CQFN) model is depicted [here](https://miro.com/app/board/o9J_lM0FZHk=/).
 And the visualization of our model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).  
-Also you might want to read [a draft of our paper](docs/EO%20Programming%20Language%20Transcompilation%20Model%20for%20Java%20Source%20Code%20Generation.pdf) that describes the model.
+Also you might want to read [a draft of our paper](https://github.com/HSE-Eolang/Report-materials/raw/main/eorepo/EO%20Programming%20Language%20Transcompilation%20Model%20for%20Java%20Source%20Code%20Generation.pdf) that describes the model.
 ## How is this transpiler better?
 Our transcompilation model has two great advantages:
 1. It if much faster than the CQFN original implementation.
 2. The output Java code is much easier to read and comprehend. The runtime library is also much more readable and understandable.
 
 You can see the difference in performance of the old and the new models below:
-![This model is faster!](docs/faster.png "This model is faster!") 
-Please, refer to [this Google Sheet](https://docs.google.com/spreadsheets/d/1YsalbO6piExC3begifeNNsaz7PEDsqlV3Xx7c6TGbOU/edit?usp=sharing) for more comparisons.
+![This model is faster!](https://raw.githubusercontent.com/HSE-Eolang/Report-materials/main/eorepo/faster.png) 
+Have a look at this [this Google Sheet](https://docs.google.com/spreadsheets/d/1YsalbO6piExC3begifeNNsaz7PEDsqlV3Xx7c6TGbOU/edit?usp=sharing) for more comparisons.
 
 ## Table of Contents
 - [What this directory is for?](#what-this-directory-is-for)
