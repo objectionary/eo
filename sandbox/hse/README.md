@@ -1,7 +1,7 @@
 ## What this directory is for?
 This directory proposes and demonstrates an alternative branch of the EO transpiler based on a new transcompilation model of EO programs to Java source codes.  
-The old (CQFN) model is depicted [here](https://miro.com/app/board/o9J_lM0FZHk=/).
-And the visualization of our model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).  
+The original (CQFN) model is depicted [here](https://miro.com/app/board/o9J_lM0FZHk=/).
+And the visualization of this (HSE) model can be found [here](https://miro.com/app/board/o9J_lMMDKrk=/).  
 Also you might want to read [a draft of our paper](https://github.com/HSE-Eolang/Report-materials/raw/main/eorepo/EO%20Programming%20Language%20Transcompilation%20Model%20for%20Java%20Source%20Code%20Generation.pdf) that describes the model.
 ## How is this transpiler better?
 Our transcompilation model has two great advantages:
