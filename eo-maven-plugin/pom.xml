@@ -22,7 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eolang</groupId>
@@ -184,7 +185,9 @@ SOFTWARE.
           <execution>
             <id>java-compile</id>
             <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
+            <goals>
+              <goal>compile</goal>
+            </goals>
             <configuration>
               <excludes>
                 <exclude>**/HelpMojo.java</exclude>
@@ -194,7 +197,9 @@ SOFTWARE.
           <execution>
             <id>java-test-compile</id>
             <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
             <configuration>
               <compilerArgument>-Xlint:-processing</compilerArgument>
             </configuration>

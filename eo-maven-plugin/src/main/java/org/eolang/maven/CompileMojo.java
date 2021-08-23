@@ -120,7 +120,8 @@ public final class CompileMojo extends AbstractMojo {
         property = "compiler",
         defaultValue = CompileMojo.COMPILER_ORIGINAL
     )
-    private String compiler;
+    @SuppressWarnings("PMD.ImmutableField")
+    private String compiler = CompileMojo.COMPILER_ORIGINAL;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -130,9 +131,6 @@ public final class CompileMojo extends AbstractMojo {
         }
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
         try {
-            if (this.compiler == null) {
-                this.compiler = CompileMojo.COMPILER_ORIGINAL;
-            }
             switch (this.compiler) {
                 case CompileMojo.COMPILER_HSE:
                     final Transpiler transpiler = new Transpiler(this.generatedDir);
