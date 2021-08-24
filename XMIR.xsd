@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.1.34" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.2.1" elementFormDefault="qualified">
   <xs:simpleType name="empty">
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
@@ -37,11 +37,11 @@ SOFTWARE.
     <xs:attribute name="base"/>
     <xs:attribute name="data"/>
     <xs:attribute name="as"/>
+    <xs:attribute name="atom"/>
+    <xs:attribute name="flags"/>
     <xs:attribute name="vararg" type="empty"/>
     <xs:attribute name="method" type="empty"/>
-    <xs:attribute name="atom"/>
     <xs:attribute name="const" type="empty"/>
-    <xs:attribute name="flags"/>
   </xs:complexType>
   <xs:complexType name="program">
     <xs:sequence>
@@ -49,7 +49,15 @@ SOFTWARE.
       <xs:element name="errors">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="error" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="error" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:simpleContent>
+                  <xs:extension base="xs:string">
+                    <xs:attribute name="line" use="required"/>
+                  </xs:extension>
+                </xs:simpleContent>
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -85,10 +93,10 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:sequence>
-    <xs:attribute name="ms" type="xs:string"/>
-    <xs:attribute name="name" type="xs:string"/>
-    <xs:attribute name="time" type="xs:string"/>
-    <xs:attribute name="version" type="xs:string"/>
+    <xs:attribute name="ms" type="xs:decimal" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="time" type="xs:dateTime" use="required"/>
+    <xs:attribute name="version" type="xs:string" use="required"/>
   </xs:complexType>
   <xs:element name="program" type="program"/>
 </xs:schema>
