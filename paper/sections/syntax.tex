@@ -1,5 +1,3 @@
-\newcommand\sntx[1]{{\sffamily #1}}
-
 The Fig.~\ref{fig:bnf} demonstrates the entire syntax of \eo{} language in BNF.
 Similar to Python~\citep{lutz2013learning}, indentation in \eo{} is part of the syntax:
 the scope of a code block is determined by its horizontal position
@@ -29,6 +27,7 @@ and don't contain spaces or line breaks:
  are valid identifiers.
 Java-notation is used for numbers, strings, and character literals.
 
+\newcommand\sntx[1]{{\sffamily #1}}
 \begin{figure*}
 \raggedright
 \small
@@ -53,11 +52,13 @@ Java-notation is used for numbers, strings, and character literals.
 \T{comment} \df \V{\#} \few{\lex{any}} \lex{eol} \\
 \T{meta} \df \V{+} \T{name} \opt{\V{␣} \lex{any} \few{\lex{any}}} \lex{eol} \\
 \T{name} \df \RE{[a-z]} \few{\lex{any}} \\
-\T{object} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
+\T{object} \df \grp{ \T{foreign} \alt \T{local} } \\
+\T{foreign} \df \T{abstraction} \V{␣ /} \T{name} \\
+\T{local} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
 \T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
 \T{tail} \df \lex{eol} \lex{tab} \few{\T{object} \lex{eol}} \lex{untab} \\
 \T{vtail} \df \lex{eol} \T{ref} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
-\T{abstraction} \df \T{attributes} \opt{ \T{suffix} \opt{ \V{␣ /} \T{name} } } \\
+\T{abstraction} \df \T{attributes} \opt{ \T{suffix} } \\
 \T{attributes} \df \V{[} \T{attribute} \few{\V{␣} \T{attribute}} \V{]} \\
 \T{attribute} \df \V{@} \alt \T{name} \opt{\V{...}} \\
 \T{suffix} \df \V{␣} \V{>} \V{␣} \grp{\V{@} \alt \T{name}} \opt{\V{!}} \\
