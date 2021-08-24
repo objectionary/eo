@@ -4,6 +4,8 @@
 
 This is a more or less formal description of EOLANG and 𝜑-calculus.
 
+This is its compiled version: [eolang-paper.pdf](https://www.eolang.org/eolang-paper.pdf).
+
 To build it, just run:
 
 ```bash
