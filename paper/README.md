@@ -9,7 +9,7 @@ This is its compiled version: [eolang-paper.pdf](https://www.eolang.org/eolang-p
 To build it, just run:
 
 ```bash
-$ make
+$ latexmk -pdf
 ```
 
 You need to have
