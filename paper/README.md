@@ -13,7 +13,6 @@ $ latexmk -pdf
 ```
 
 You need to have
-[`make`](https://www.gnu.org/software/make/),
 [`aspell`](http://aspell.net/),
 LaTeX,
 [`biblint`](https://github.com/Kingsford-Group/biblint),
