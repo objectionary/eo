@@ -10,6 +10,7 @@ jobs:
       - uses: yegor256/latexmk-action@0.2.2
         with:
           path: paper
+          opts: -pdf
           packages: acmart cjk ffcode href-ul datetime fmtcount libertine paralist makecell footmisc currfile enumitem wrapfig lastpage biblatex titling svg trimspaces catchfile transparent textpos fvextra xstring framed environ totpages hyperxmp ifmtarg ncctools comment anyfontsize fdsymbol algpseudocodex algorithmicx stmaryrd preprint
       - run: mkdir paper/pdf
       - run: cp paper/eolang-paper.pdf paper/pdf
