@@ -1,0 +1,22 @@
++package sandbox.hse
++alias intarrtostdout sandbox.hse.intarrtostdout
+
+[arr1 arr2] > merge
+  reduce. > @
+    arr2
+    arr1
+    []
+      [accum current] > reduce
+        append. > @
+          accum
+          current
+
+[args...] > appMerge
+  intarrtostdout > @
+    merge
+      *
+        1
+        2
+      *
+        3
+        4

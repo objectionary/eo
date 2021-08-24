@@ -1,0 +1,72 @@
++package sandbox.hse
++alias sandbox.hse.first
++alias sandbox.hse.slicefrom
++alias sandbox.hse.sliceto
++alias sandbox.hse.merge
++alias sandbox.hse.intarrtostdout
++alias sandbox.hse.strarrtointarr
+
+[args...] > appMergesort
+  intarrtostdout > @
+    mergesort
+      strarrtointarr
+        args
+
+[arr] > mergesort
+  if. > @
+    less.
+      arr.length
+      2
+    arr
+    subMergeSort
+      *
+      mergesort
+        sliceto
+          arr
+          div.
+            arr.length
+            2
+      mergesort
+        slicefrom
+          arr
+          div.
+            arr.length
+            2
+  [accum arr1 arr2] > subMergeSort
+    if. > @
+      arr1.isEmpty
+      if.
+        arr2.isEmpty
+        accum
+        merge
+          accum
+          arr2
+      if.
+        arr2.isEmpty
+        merge
+          accum
+          arr1
+        if.
+          less.
+            first
+              arr1
+            first
+              arr2
+          subMergeSort
+            append.
+              accum
+              first
+                arr1
+            slicefrom
+              arr1
+              1
+            arr2
+          subMergeSort
+            append.
+              accum
+              first
+                arr2
+            arr1
+            slicefrom
+              arr2
+              1

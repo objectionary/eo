@@ -1,0 +1,23 @@
++package sandbox
++alias sandbox.hse.contains
++alias sandbox.hse.strarrtostdout
+
+[args...] > appUnique
+  strarrtostdout > @
+    unique
+      args
+
+[arr] > unique
+  reduce. > @
+    arr
+    *
+    []
+      [accum current] > reduce
+        if. > @
+          contains
+            accum
+            current
+          accum
+          append.
+            accum
+            current

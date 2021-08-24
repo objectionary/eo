@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.hse_eolang.transpiler.Transpiler;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -60,6 +61,16 @@ import org.slf4j.impl.StaticLoggerBinder;
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class CompileMojo extends AbstractMojo {
+
+    /**
+     * The flag which indicates that the original compiler is used.
+     */
+    public static final String COMPILER_ORIGINAL = "original";
+
+    /**
+     * The flag which indicates that the HSE compiler is used.
+     */
+    public static final String COMPILER_HSE = "hse";
 
     /**
      * Maven project.
@@ -102,6 +113,16 @@ public final class CompileMojo extends AbstractMojo {
     @Parameter
     private boolean addTestSourcesRoot;
 
+    /**
+     * Which compiler to use: original or HSE.
+     */
+    @Parameter(
+        property = "compiler",
+        defaultValue = CompileMojo.COMPILER_ORIGINAL
+    )
+    @SuppressWarnings("PMD.ImmutableField")
+    private String compiler = CompileMojo.COMPILER_ORIGINAL;
+
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -110,9 +131,20 @@ public final class CompileMojo extends AbstractMojo {
         }
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
         try {
-            Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .forEach(this::compile);
+            switch (this.compiler) {
+                case CompileMojo.COMPILER_HSE:
+                    final Transpiler transpiler = new Transpiler(this.generatedDir);
+                    Files.walk(dir)
+                        .filter(file -> !file.toFile().isDirectory())
+                        .forEach(transpiler::compileHse);
+                    break;
+                case CompileMojo.COMPILER_ORIGINAL:
+                default:
+                    Files.walk(dir)
+                        .filter(file -> !file.toFile().isDirectory())
+                        .forEach(this::compile);
+                    break;
+            }
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 new UncheckedText(
@@ -190,7 +222,7 @@ public final class CompileMojo extends AbstractMojo {
                 ex
             );
         }
-        Logger.info(this, "%s compiled to %s", file, this.generatedDir);
+        Logger.info(this, "%s compiled to %s with the original compiler", file, this.generatedDir);
     }
 
     /**

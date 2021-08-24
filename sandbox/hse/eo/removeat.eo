@@ -1,0 +1,16 @@
++package sandbox.hse
++alias merge sandbox.hse.merge
++alias slice sandbox.hse.slice
+
+[arr position] > removeat
+  merge > @
+    slice
+      arr
+      0
+      position
+    slice
+      arr
+      add.
+        position
+        1
+      arr.length

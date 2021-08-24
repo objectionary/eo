@@ -1,0 +1,14 @@
++package sandbox.hse
++alias arrtostrarr sandbox.hse.arrtostrarr
++alias strarrtostdout sandbox.hse.strarrtostdout
+
+[arr format] > arrtostdout
+  strarrtostdout > @
+    arrtostrarr
+      arr
+      format
+
+[args...] > appArrStdOut
+  arrtostdout > @
+    (* 1 2 3)
+    "%d"

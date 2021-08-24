@@ -1,0 +1,15 @@
++package sandbox.hse
++alias merge sandbox.hse.merge
++alias slicefrom sandbox.hse.slicefrom
++alias sliceto sandbox.hse.sliceto
+
+[arr element position] > insert
+  merge > @
+    append.
+      sliceto
+        arr
+        position
+      element
+    slicefrom
+      arr
+      position

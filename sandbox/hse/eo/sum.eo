@@ -1,0 +1,16 @@
++package sandbox.hse
++alias sandbox.hse.strarrtointarr
+
+[args...] > appSum
+  sum > @
+    strarrtointarr args
+
+[arr] > sum
+  reduce. > @
+    arr
+    0
+    []
+      [accum current] > reduce
+        add. > @
+          accum
+          current

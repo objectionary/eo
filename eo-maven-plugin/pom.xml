@@ -36,6 +36,9 @@ SOFTWARE.
   <properties>
     <runtime.version>0.1.17</runtime.version>
     <maven.version>3.3.9</maven.version>
+    <kotlin.version>1.4.32</kotlin.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>
@@ -132,6 +135,11 @@ SOFTWARE.
       <version>${runtime.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.github.hse-eolang</groupId>
+      <artifactId>transpiler</artifactId>
+      <version>1.0.5</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -161,6 +169,18 @@ SOFTWARE.
         <executions>
           <execution>
             <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
             <configuration>
               <excludes>
                 <exclude>**/HelpMojo.java</exclude>
@@ -168,7 +188,11 @@ SOFTWARE.
             </configuration>
           </execution>
           <execution>
-            <id>default-testCompile</id>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
             <configuration>
               <compilerArgument>-Xlint:-processing</compilerArgument>
             </configuration>
