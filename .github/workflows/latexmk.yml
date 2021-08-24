@@ -1,9 +1,7 @@
 name: latexmk
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,3 +11,10 @@ jobs:
         with:
           path: paper
           packages: acmart cjk ffcode href-ul datetime fmtcount libertine paralist makecell footmisc currfile enumitem wrapfig lastpage biblatex titling svg trimspaces catchfile transparent textpos fvextra xstring framed environ totpages hyperxmp ifmtarg ncctools comment anyfontsize fdsymbol algpseudocodex algorithmicx stmaryrd preprint
+      - run: mkdir paper/pdf
+      - run: cp paper/eolang-paper.pdf paper/pdf
+      - uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: paper/pdf
+          clean: false
