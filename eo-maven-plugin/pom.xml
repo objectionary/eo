@@ -135,11 +135,6 @@ SOFTWARE.
       <version>${runtime.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>io.github.hse-eolang</groupId>
-      <artifactId>transpiler</artifactId>
-      <version>1.0.5</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

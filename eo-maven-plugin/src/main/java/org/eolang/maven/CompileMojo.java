@@ -26,12 +26,15 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import io.github.hse_eolang.transpiler.Transpiler;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -50,8 +53,8 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Compile.
  *
- * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.1
  */
 @Mojo(
     name = "compile",
@@ -61,17 +64,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class CompileMojo extends AbstractMojo {
-
-    /**
-     * The flag which indicates that the original compiler is used.
-     */
-    public static final String COMPILER_ORIGINAL = "original";
-
-    /**
-     * The flag which indicates that the HSE compiler is used.
-     */
-    public static final String COMPILER_HSE = "hse";
-
     /**
      * Maven project.
      */
@@ -80,6 +72,7 @@ public final class CompileMojo extends AbstractMojo {
 
     /**
      * Target directory.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -90,6 +83,7 @@ public final class CompileMojo extends AbstractMojo {
 
     /**
      * Target directory.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -100,6 +94,7 @@ public final class CompileMojo extends AbstractMojo {
 
     /**
      * Add to source root.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -108,6 +103,7 @@ public final class CompileMojo extends AbstractMojo {
 
     /**
      * Add to test source root.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -117,11 +113,10 @@ public final class CompileMojo extends AbstractMojo {
      * Which compiler to use: original or HSE.
      */
     @Parameter(
-        property = "compiler",
-        defaultValue = CompileMojo.COMPILER_ORIGINAL
+        property = "compiler"
     )
     @SuppressWarnings("PMD.ImmutableField")
-    private String compiler = CompileMojo.COMPILER_ORIGINAL;
+    private String compiler;
 
     @Override
     public void execute() throws MojoFailureException {
@@ -130,31 +125,24 @@ public final class CompileMojo extends AbstractMojo {
             Logger.info(this, "Gen directory created: %s", this.generatedDir);
         }
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
-        try {
-            switch (this.compiler) {
-                case CompileMojo.COMPILER_HSE:
-                    final Transpiler transpiler = new Transpiler(this.generatedDir);
-                    Files.walk(dir)
-                        .filter(file -> !file.toFile().isDirectory())
-                        .forEach(transpiler::compileHse);
-                    break;
-                case CompileMojo.COMPILER_ORIGINAL:
-                default:
-                    Files.walk(dir)
-                        .filter(file -> !file.toFile().isDirectory())
-                        .forEach(this::compile);
-                    break;
+        if (this.compiler == null) {
+            try {
+                Files.walk(dir)
+                    .filter(file -> !file.toFile().isDirectory())
+                    .forEach(this::compile);
+            } catch (final IOException ex) {
+                throw new MojoFailureException(
+                    new UncheckedText(
+                        new FormattedText(
+                            "Can't list EO files in %s",
+                            dir
+                        )
+                    ).asString(),
+                    ex
+                );
             }
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't list EO files in %s",
-                        dir
-                    )
-                ).asString(),
-                ex
-            );
+        } else {
+            this.compileAlternative(dir);
         }
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(
@@ -226,6 +214,113 @@ public final class CompileMojo extends AbstractMojo {
     }
 
     /**
+     * Compiles files in the {@code dir} directory via an alternative compiler.
+     *
+     * @param dir The directory to get optimized xml files from.
+     * @throws MojoFailureException When an alternative compiler fails.
+     */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    private void compileAlternative(final Path dir) throws MojoFailureException {
+        try {
+            final Class<?> clss = Class.forName(this.compiler);
+            final Constructor<?> constructor = clss.getDeclaredConstructor(File.class);
+            final Object transpiler = constructor.newInstance(this.generatedDir);
+            final Method method = Arrays
+                .stream(transpiler.getClass().getMethods())
+                .filter(mthd -> mthd.getName().equals("compile"))
+                .findFirst()
+                .get();
+            method.setAccessible(true);
+            final Path[] paths = Files.walk(dir)
+                .filter(file -> !file.toFile().isDirectory())
+                .toArray((final int size) -> new Path[size]);
+            for (final Path path : paths) {
+                method.invoke(transpiler, path);
+            }
+        } catch (final ClassNotFoundException exception) {
+            throw new MojoFailureException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Can't load an alternative's compiler class %s.",
+                        this.compiler
+                    )
+                ).asString(),
+                exception
+            );
+        } catch (final InvocationTargetException exception) {
+            throw new MojoFailureException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Error has occurred in an alternative's compiler method(s): %s.",
+                        this.compiler
+                    )
+                ).asString(),
+                exception
+            );
+        } catch (final NoSuchMethodException exception) {
+            throw new MojoFailureException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Can't load an alternative's compiler method(s) in class %s.",
+                        this.compiler
+                    )
+                ).asString(),
+                exception
+            );
+        } catch (final InstantiationException exception) {
+            throw new MojoFailureException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Can't instantiate an alternative's compiler class %s.",
+                        this.compiler
+                    )
+                ).asString(),
+                exception
+            );
+        } catch (final IllegalAccessException exception) {
+            throw new MojoFailureException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Not permitted to access class %s (or its method(s)) through reflection.",
+                        this.compiler
+                    )
+                ).asString(),
+                exception
+            );
+        } catch (final IOException exception) {
+            throw new MojoFailureException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Can't list EO files in the %s directory.",
+                        dir
+                    )
+                ).asString(),
+                exception
+            );
+        }
+    }
+
+    /**
+     * Make a relative path.
+     *
+     * @param dir The dir
+     * @param name The name
+     * @return Path
+     */
+    private static Path resolve(final Path dir, final String name) {
+        final Path path = dir.resolve(
+            String.format(
+                "%s.xml",
+                name
+            )
+        );
+        if (path.toFile().getParentFile().mkdirs()) {
+            Logger.info(CompileMojo.class, "%s directory created", dir);
+        }
+        return path;
+    }
+
+    /**
      * Check for errors.
      *
      * @param xml The XML output
@@ -254,25 +349,6 @@ public final class CompileMojo extends AbstractMojo {
             );
         }
         return xml;
-    }
-
-    /**
-     * Make a relative path.
-     * @param dir The dir
-     * @param name The name
-     * @return Path
-     */
-    private static Path resolve(final Path dir, final String name) {
-        final Path path = dir.resolve(
-            String.format(
-                "%s.xml",
-                name
-            )
-        );
-        if (path.toFile().getParentFile().mkdirs()) {
-            Logger.info(CompileMojo.class, "%s directory created", dir);
-        }
-        return path;
     }
 
 }

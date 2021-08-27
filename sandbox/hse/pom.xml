@@ -67,8 +67,15 @@ SOFTWARE.
         <configuration>
           <sourcesDir>${project.basedir}/eo</sourcesDir>
           <targetDir>${project.basedir}/target</targetDir>
-          <compiler>hse</compiler>
+          <compiler>io.github.hse_eolang.transpiler.Transpiler</compiler>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>io.github.hse-eolang</groupId>
+            <artifactId>transpiler</artifactId>
+            <version>1.0.6</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <phase>generate-sources</phase>
