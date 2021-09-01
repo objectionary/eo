@@ -430,7 +430,10 @@ An object may extend another object by \emph{decorating} it:
 
 The object \ff{circle} has a special attribute \ff{@}
 at \lref{circle-phi}, which denotes
-the \emph{decoratee}: an object to be extended. The \emph{decorator} \ff{circle}
+the \emph{decoratee}: an object to be extended,
+also referred to as ``component'' by~\citet{gamma1994design}.
+
+The \emph{decorator} \ff{circle}
 has the same attributes as its decoratee \ff{center}, but also
 its own attribute \ff{is-inside}. The attribute \ff{@} may be used
 the same way as other attributes, including in dot notation, as it is done
