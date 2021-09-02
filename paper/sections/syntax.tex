@@ -306,20 +306,23 @@ created by the compiler through \sntx{data}---are called \emph{data}.
 The examples of some possible data are in the Tab.~\ref{tab:types}.
 
 \begin{table}[H]
-\begin{tabular}{|l|l|}
+\begin{tabular}{|l|l|l|}
 \hline
-Data & Example \\
+Data & Example & Size \\
 \hline
-\ff{string} & \ff{"Hello, world!"} \\
-\ff{char} & \ff{'X'} or \ff{'\textbackslash{}07'} \\
-\ff{int} & \ff{42} \\
-\ff{float} & \ff{3.1415926} or \ff{2.4e-34} \\
-\ff{bytes} & \ff{1F-E5-77-A6} \\
-\ff{bool} & \ff{true} or \ff{false} \\
-\ff{regex} & \ff{/[a-z]+.+/m} \\
+\ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
+\ff{string} & \ff{"Hello, world!"} & 13 \\
+\ff{char} & \ff{'X'} or \ff{'\textbackslash{}07'} & 1 \\
+\ff{int} & \ff{-42} & 4 \\
+\ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 4 \\
+\ff{bool} & \ff{true} or \ff{false} & 1 \\
+\ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
 \hline
 \end{tabular}
-\figcap{The syntax of all data with examples.}
+\figcap{The syntax of all data with examples. The ``Size'' column
+denotes the number of bytes to be used by the value in the column
+``Example''. UTF-8 is the encoding used in \ff{string}, \ff{char},
+and \ff{regex} objects.}
 \label{tab:types}
 \end{table}
 
