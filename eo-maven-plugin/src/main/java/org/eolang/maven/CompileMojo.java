@@ -172,34 +172,45 @@ public final class CompileMojo extends AbstractMojo {
             final XML input = new XMLDocument(file);
             final String name = input.xpath("/program/@name").get(0);
             final Path target = CompileMojo.resolve(temp, name);
-            new Xsline(
-                input,
-                new OutputTo(CompileMojo.resolve(temp, name)),
-                new TargetSpy(CompileMojo.resolve(pre, name)),
-                new ListOf<>(
-                    "org/eolang/maven/pre/classes.xsl",
-                    "org/eolang/maven/pre/junit.xsl",
-                    "org/eolang/maven/pre/attrs.xsl",
-                    "org/eolang/maven/pre/varargs.xsl",
-                    "org/eolang/maven/pre/arrays.xsl",
-                    "org/eolang/maven/pre/data.xsl",
-                    "org/eolang/maven/pre/to-java.xsl"
-                )
-            ).pass();
-            final XML after = this.noErrors(new XMLDocument(target), name);
-            for (final XML java : after.nodes("//class[java and not(@atom)]")) {
-                new Save(
-                    java.xpath("java/text()").get(0),
-                    this.generatedDir.toPath().resolve(
-                        Paths.get(
-                            String.format(
-                                "%s.java",
-                                java.xpath("@java-name").get(0)
-                                    .replace(".", "/")
+            if (Files.exists(target)) {
+                Logger.info(
+                    this, "%s already compiled to %s with the original compiler",
+                    file, this.generatedDir
+                );
+            } else {
+                new Xsline(
+                    input,
+                    new OutputTo(target),
+                    new TargetSpy(CompileMojo.resolve(pre, name)),
+                    new ListOf<>(
+                        "org/eolang/maven/pre/classes.xsl",
+                        "org/eolang/maven/pre/junit.xsl",
+                        "org/eolang/maven/pre/attrs.xsl",
+                        "org/eolang/maven/pre/varargs.xsl",
+                        "org/eolang/maven/pre/arrays.xsl",
+                        "org/eolang/maven/pre/data.xsl",
+                        "org/eolang/maven/pre/to-java.xsl"
+                    )
+                ).pass();
+                final XML after = this.noErrors(new XMLDocument(target), name);
+                for (final XML java : after.nodes("//class[java and not(@atom)]")) {
+                    new Save(
+                        java.xpath("java/text()").get(0),
+                        this.generatedDir.toPath().resolve(
+                            Paths.get(
+                                String.format(
+                                    "%s.java",
+                                    java.xpath("@java-name").get(0)
+                                        .replace(".", "/")
+                                )
                             )
                         )
-                    )
-                ).save();
+                    ).save();
+                }
+                Logger.info(
+                    this, "%s compiled to %s with the original compiler",
+                    file, this.generatedDir
+                );
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(
@@ -210,7 +221,6 @@ public final class CompileMojo extends AbstractMojo {
                 ex
             );
         }
-        Logger.info(this, "%s compiled to %s with the original compiler", file, this.generatedDir);
     }
 
     /**
