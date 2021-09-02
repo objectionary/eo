@@ -95,43 +95,50 @@ public final class OptimizeMojo extends AbstractMojo {
             home.toString().length() + 1
         );
         final Path dir = this.targetDir.toPath().resolve("02-steps").resolve(name);
-        try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Xsline(
-                new XMLDocument(file),
-                new OutputTo(baos),
-                new TargetSpy(dir)
-            ).with(
-                new ListOf<>(
-                    "org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                    "org/eolang/parser/optimize/remove-refs.xsl",
-                    "org/eolang/parser/optimize/abstracts-float-up.xsl",
-                    "org/eolang/parser/optimize/remove-levels.xsl",
-                    "org/eolang/parser/add-refs.xsl",
-                    "org/eolang/parser/optimize/fix-missed-names.xsl",
-                    "org/eolang/parser/errors/broken-refs.xsl"
-                    )
-            ).pass();
-            final Path target = this.targetDir.toPath()
-                .resolve("03-optimize")
-                .resolve(name);
-            new Save(baos.toString(), target).save();
+        final Path target = this.targetDir.toPath()
+            .resolve("03-optimize")
+            .resolve(name);
+        if (Files.exists(target)) {
             Logger.info(
-                this, "%s optimized to %s, all steps are in %s",
+                this, "%s already optimized to %s, all steps are in %s",
                 file, target, dir
             );
-            Logger.debug(
-                this, "Optimized XML saved to %s:\n%s",
-                target, baos.toString()
-            );
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "Can't pass %s into %s",
-                    file, this.targetDir
-                ),
-                ex
-            );
+        } else {
+            try {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                new Xsline(
+                    new XMLDocument(file),
+                    new OutputTo(baos),
+                    new TargetSpy(dir)
+                ).with(
+                    new ListOf<>(
+                        "org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                        "org/eolang/parser/optimize/remove-refs.xsl",
+                        "org/eolang/parser/optimize/abstracts-float-up.xsl",
+                        "org/eolang/parser/optimize/remove-levels.xsl",
+                        "org/eolang/parser/add-refs.xsl",
+                        "org/eolang/parser/optimize/fix-missed-names.xsl",
+                        "org/eolang/parser/errors/broken-refs.xsl"
+                    )
+                ).pass();
+                new Save(baos.toString(), target).save();
+                Logger.info(
+                    this, "%s optimized to %s, all steps are in %s",
+                    file, target, dir
+                );
+                Logger.debug(
+                    this, "Optimized XML saved to %s:\n%s",
+                    target, baos.toString()
+                );
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't pass %s into %s",
+                        file, this.targetDir
+                    ),
+                    ex
+                );
+            }
         }
     }
 

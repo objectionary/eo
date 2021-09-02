@@ -142,24 +142,28 @@ public final class ParseMojo extends AbstractMojo {
         final Path path = this.targetDir.toPath()
             .resolve("01-parse")
             .resolve(xml);
-        try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Syntax(
-                name,
-                new InputOf(file),
-                new OutputTo(baos)
-            ).parse();
-            new Save(baos.toString(), path).save();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "Can't parse %s into %s",
-                    file, this.targetDir
-                ),
-                ex
-            );
+        if (Files.exists(path)) {
+            Logger.info(this, "%s already parsed to %s", file, path);
+        } else {
+            try {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                new Syntax(
+                    name,
+                    new InputOf(file),
+                    new OutputTo(baos)
+                ).parse();
+                new Save(baos.toString(), path).save();
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't parse %s into %s",
+                        file, this.targetDir
+                    ),
+                    ex
+                );
+            }
+            Logger.info(this, "%s parsed to %s", file, path);
         }
-        Logger.info(this, "%s parsed to %s", file, path);
     }
 
 }
