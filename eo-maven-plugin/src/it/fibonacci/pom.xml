@@ -75,11 +75,4 @@ SOFTWARE.
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version>@runtime.version@</version>
-    </dependency>
-  </dependencies>
 </project>

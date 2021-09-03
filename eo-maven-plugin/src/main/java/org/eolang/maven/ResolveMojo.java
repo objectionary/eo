@@ -32,15 +32,20 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.impl.StaticLoggerBinder;
+import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
  * Find all required runtime dependencies and add
@@ -60,8 +65,20 @@ public final class ResolveMojo extends AbstractMojo {
     /**
      * Maven project.
      */
-    @Parameter(defaultValue = "${project}")
+    @Component
     private MavenProject project;
+
+    /**
+     * Maven session.
+     */
+    @Component
+    private MavenSession session;
+
+    /**
+     * Maven plugin manager.
+     */
+    @Component
+    private BuildPluginManager manager;
 
     /**
      * From directory.
@@ -74,15 +91,17 @@ public final class ResolveMojo extends AbstractMojo {
     private File targetDir;
 
     /**
-     * Add to scope or not? If not, it will be a dry run.
+     * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean addToScope = true;
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.outputDirectory}"
+    )
+    private File outputDirectory;
 
     @Override
-    public void execute() throws MojoFailureException {
+    public void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         final Path dir = this.targetDir.toPath().resolve("03-optimize");
         final Collection<Dependency> deps;
@@ -105,22 +124,51 @@ public final class ResolveMojo extends AbstractMojo {
                 ex
             );
         }
+        Logger.info(this, "Found %d dependencie(s)", deps.size());
         for (final Dependency dep : deps) {
-            if (this.addToScope) {
-                this.project.getDependencies().add(dep);
-                Logger.info(
-                    this, "%s:%s:%s added to \"%s\" scope",
-                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-                    dep.getScope()
-                );
-            } else {
-                Logger.info(
-                    this, "%s:%s:%s would be added to \"%s\" scope",
-                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-                    dep.getScope()
-                );
-            }
+            this.unpack(dep);
         }
+    }
+
+    /**
+     * Copy dependency and return its file name.
+     * @param dep The dependency
+     * @throws MojoExecutionException If fails
+     */
+    private void unpack(final Dependency dep) throws MojoExecutionException {
+        MojoExecutor.executeMojo(
+            MojoExecutor.plugin(
+                MojoExecutor.groupId("org.apache.maven.plugins"),
+                MojoExecutor.artifactId("maven-dependency-plugin")
+            ),
+            MojoExecutor.goal("unpack"),
+            MojoExecutor.configuration(
+                MojoExecutor.element(
+                    "artifactItems",
+                    MojoExecutor.element(
+                        "artifactItem",
+                        MojoExecutor.element("groupId", dep.getGroupId()),
+                        MojoExecutor.element("artifactId", dep.getArtifactId()),
+                        MojoExecutor.element("version", dep.getVersion()),
+                        MojoExecutor.element("overWrite", "true"),
+                        MojoExecutor.element(
+                            "outputDirectory",
+                            this.outputDirectory.toString()
+                        )
+                    )
+                )
+            ),
+            MojoExecutor.executionEnvironment(
+                this.project,
+                this.session,
+                this.manager
+            )
+        );
+        Logger.info(
+            this, "%s:%s:%s unpacked to %s",
+            dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
+            this.outputDirectory
+        );
     }
 
     /**
@@ -211,8 +259,8 @@ public final class ResolveMojo extends AbstractMojo {
          */
         private static String toStr(final Dependency dep) {
             return String.format(
-                "%s:%s:%s",
-                dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+                "%s:%s",
+                dep.getGroupId(), dep.getArtifactId()
             );
         }
     }
