@@ -37,7 +37,8 @@ examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
 see whether they can work.
 
-EO is based on 𝜑-calculus (if you want to see its description, 
+EO is based on [𝜑-calculus](https://www.eolang.org/eolang-paper.pdf) 
+(if you want to discuss it, 
 join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
 
 Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
