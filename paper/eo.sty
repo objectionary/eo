@@ -1,0 +1,133 @@
+% (The MIT License)
+%
+% Copyright (c) 2021 Yegor Bugayenko
+%
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the 'Software'), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+% copies of the Software, and to permit persons to whom the Software is
+% furnished to do so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+% FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+% AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+% LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+% SOFTWARE.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{eo}[00.00.0000 0.0.0 Style for EO papers]
+
+\RequirePackage[T2A,T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[russian,english]{babel}
+  \renewcommand\ttdefault{cmtt}
+\RequirePackage{ffcode}
+\RequirePackage{CJKutf8}
+\RequirePackage{paralist}
+\RequirePackage{anyfontsize} % To get rid of font not found warnings
+\RequirePackage{tabularx} % for special tables
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{tcolorbox} % for algorithm
+  \tcbuselibrary{skins}
+\RequirePackage{fdsymbol} % for \mathbb
+\RequirePackage{algpseudocode} % for algorithms
+\RequirePackage{multicol} % for two cols in BNF
+\RequirePackage{pgffor} % to enable \foreach
+\RequirePackage{stmaryrd}
+\RequirePackage{mathtools}
+\newtheoremstyle{theorems}
+  {} % Space above
+  {} % Space below
+  {} % Theorem body font % (default is "\upshape")
+  {} % Indent amount
+  {\scshape} % Theorem head font % (default is \mdseries)
+  {.} % Punctuation after theorem head % default: no punctuation
+  { } % Space after theorem head
+  {} % Theorem head spec
+\theoremstyle{theorems}
+\newtheorem{eodefinition}{Definition}
+\newtheorem{eotheorem}{Theorem}
+
+\makeatletter\newcommand\anon[2]{%
+  \if@ACM@anonymous%
+    {\color{gray}#1}%
+  \else%
+    #2%
+  \fi%
+}\makeatother
+
+\tolerance=1500
+\raggedbottom
+\setlength\headheight{21pt}
+
+\newcommand\nospell[1]{#1}
+\newcommand\br{\\[-4pt]}
+\newcommand\figcap[1]{\caption{#1}\Description{#1}}
+\newcommand\phic{\anon{X}{$\varphi$}-calculus}
+\newcommand\eo{\anon{XYZ}{\sffamily EO}}
+\newcommand\XMIR{\anon{XML'}{\sffamily XMIR}}
+\newcommand\tbd[1]{{\color{red}#1}}
+\newcommand\lref[1]{the line no.~\ref{ln:#1}}
+\newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
+
+\newenvironment{twocols}{}{}
+
+\RequirePackage{tikz}
+  \usetikzlibrary{arrows}
+  \usetikzlibrary{decorations}
+  \usetikzlibrary{decorations.pathmorphing}
+  \usetikzlibrary{intersections}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{backgrounds}
+  \usetikzlibrary{calc}
+  \usetikzlibrary{shapes.arrows}
+\newenvironment{ingraph}%
+  {\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
+  {\end{tikzpicture}}
+\tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
+\tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
+\tikzstyle{object} = [thing,circle]
+\tikzstyle{dup} = [thing,rectangle,draw=none,minimum height=1.5em,inner sep=3pt]
+\tikzstyle{empty} = [object]
+\tikzstyle{transforms} = [fill=white!80!black, single arrow, minimum height=0.5cm, minimum width=0.5cm,single arrow head extend=2mm]
+\tikzstyle{rho} = [draw,decorate,decoration={snake,amplitude=.4mm,segment length=2mm,post length=1mm}]
+\tikzstyle{ref} = []
+\tikzstyle{edge-name} = [circle,font=\scriptsize,near start,sloped,fill=white,inner sep=0pt,sloped/.append style={transform shape}]
+\tikzstyle{parent} = [draw,dotted]
+\tikzstyle{atom} = [object,double]
+\tikzstyle{lambda} = [xshift=-5pt,yshift=3pt,draw,fill=white,rectangle,thin,minimum width=1.2em,anchor=north west,font={\scriptsize}]
+\tikzstyle{attr} = [midway,sloped,inner sep=0pt,above=2pt,sloped/.append style={transform shape},font={\scriptsize},color=black]
+\tikzstyle{locator} = [attr,below=2pt]
+\tikzstyle{Phi} = [font={\scriptsize}]
+
+\newcounter{rule}
+\renewcommand\therule{R\arabic{rule}}
+\newcommand\rr{\smalltriangleright{}}
+\newcommand\rrule[1]{{\scshape\sffamily\ref{rule:#1}}}
+\newcommand{\jrule}[1]{%
+  \refstepcounter{rule}\label{rule:#1}%
+  \text{\textbf{\rrule{#1}}}}
+\newcommand*{\ohat}[2]{%
+  \stackrel{\textcolor{gray}{#1}}{%
+    \textcolor{gray}{%
+      \overlinesegment{\textcolor{black}{%
+        \vrule height 8pt depth 1pt width 0pt%
+        #2%
+      }}%
+    }%
+  }%
+}
+\newenvironment{algo}
+  {\newcommand\kw[1]{{\bfseries\sffamily ##1}}
+  \newcommand\tab{{\hspace*{1em}}}
+  \noindent}
+  {}
+
+\endinput

@@ -22,52 +22,7 @@
 
 \documentclass[sigplan,nonacm=true]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
-\usepackage[T2A,T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[russian,english]{babel}
-  \renewcommand\ttdefault{cmtt}
-\usepackage{ffcode}
-\usepackage{CJKutf8}
-\usepackage{paralist}
-\usepackage{anyfontsize} % To get rid of font not found warnings
-\usepackage{tabularx} % for special tables
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{tcolorbox} % for algorithm
-  \tcbuselibrary{skins}
-\usepackage{fdsymbol} % for \mathbb
-\usepackage{algpseudocode} % for algorithms
-\usepackage{multicol} % for two cols in BNF
-\usepackage{pgffor} % to enable \foreach
-\usepackage{stmaryrd}
-\usepackage{mathtools}
-\newtheoremstyle{theorems}
-  {} % Space above
-  {} % Space below
-  {} % Theorem body font % (default is "\upshape")
-  {} % Indent amount
-  {\scshape} % Theorem head font % (default is \mdseries)
-  {.} % Punctuation after theorem head % default: no punctuation
-  { } % Space after theorem head
-  {} % Theorem head spec
-\theoremstyle{theorems}
-\newtheorem{eodefinition}{Definition}
-\newtheorem{eotheorem}{Theorem}
-
-\tolerance=1500
-\raggedbottom
-
-\newcommand\nospell[1]{#1}
-\newcommand\br{\\[-4pt]}
-\newcommand\figcap[1]{\caption{#1}\Description{#1}}
-\newcommand\phic{{$\varphi$-calculus}}
-\newcommand\eo{{\sffamily EO}}
-\newcommand\XMIR{{\sffamily XMIR}}
-\newcommand\tbd[1]{{\color{red}#1}}
-\newcommand\lref[1]{the line no.~\ref{ln:#1}}
-\newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
-
-\newenvironment{twocols}{}{}
+\usepackage{eo}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{$\varphi$}{phi}-calculus}
@@ -81,7 +36,6 @@
 \ccsdesc[300]{Software and its engineering~Software notations and tools~Formal language definitions}
 \keywords{Object-Oriented Programming, Object Calculus}
 
-\input{sections/tikz-config}
 \begin{document}
 
 \begin{abstract}
