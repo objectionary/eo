@@ -25,10 +25,7 @@ package org.eolang.parser;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XSDDocument;
 import java.io.IOException;
-import java.util.Collection;
-import javax.xml.transform.dom.DOMSource;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -39,16 +36,14 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.io.UncheckedInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
-import org.xml.sax.SAXParseException;
 
 /**
- * Syntax parser, from plain text to XML using ANTLR4.
+ * Syntax parser, from EO to XMIR, using ANTLR4.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -123,26 +118,7 @@ public final class Syntax {
         final XeListener xel = new XeListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = xel.xml();
-        final Collection<SAXParseException> violations = new XSDDocument(
-            new TextOf(new ResourceOf("XMIR.xsd")).asString()
-        ).validate(new DOMSource(dom.node()));
-        if (!violations.isEmpty()) {
-            Logger.error(this, "XML with XSD failures:%n%s", dom);
-            for (final SAXParseException violation : violations) {
-                Logger.error(
-                    this, "XSD failure at #%d:%d %s",
-                    violation.getLineNumber(),
-                    violation.getColumnNumber(),
-                    violation.getLocalizedMessage()
-                );
-            }
-            throw new IllegalStateException(
-                String.format(
-                    "There are %d XSD violation(s), see the log",
-                    violations.size()
-                )
-            );
-        }
+        new Schema(dom).check();
         Logger.debug(this, "Raw XML:\n%s", dom.toString());
         new Unchecked<>(
             new LengthOf(
