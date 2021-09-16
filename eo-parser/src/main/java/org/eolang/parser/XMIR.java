@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XSLDocument;
 
 /**
  * Prints XMIR to EO.
@@ -52,7 +53,9 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
-        return this.xml.toString();
+        return new XSLDocument(
+            this.getClass().getResourceAsStream("xmir-to-eo.xsl")
+        ).applyTo(this.xml);
     }
 
 }

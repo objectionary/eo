@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import org.cactoos.io.InputOf;
@@ -31,29 +32,30 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link XMIR}.
  *
  * @since 0.5
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 public final class XMIRTest {
 
     @Test
-    @Disabled
     public void printsToEO() throws Exception {
         final String src = new TextOf(
-            new ResourceOf("org/eolang/parser/fibonacci.eo")
+            new ResourceOf("org/eolang/parser/idiomatic.eo")
         ).asString();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test", new InputOf(src), new OutputTo(baos)
         );
         syntax.parse();
+        final XML xml = new XMLDocument(new String(baos.toByteArray()));
         MatcherAssert.assertThat(
-            new XMIR(new XMLDocument(new String(baos.toByteArray()))).toEO(),
+            new XMIR(xml).toEO(),
             Matchers.equalTo(src)
         );
     }
