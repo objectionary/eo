@@ -123,12 +123,17 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <xsl:template match="o[@data='char']" mode="inside">
+    <xsl:text>'</xsl:text>
+    <xsl:value-of select="text()"/>
+    <xsl:text>'</xsl:text>
+  </xsl:template>
   <xsl:template match="o[@data='string']" mode="inside">
     <xsl:text>"</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>"</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='string']" mode="inside">
+  <xsl:template match="o[@data and @data!='char' and @data!='string']" mode="inside">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="node()|@*">
