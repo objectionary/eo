@@ -93,6 +93,11 @@ SOFTWARE.
         <artifactId>cactoos</artifactId>
         <version>0.46</version>
       </dependency>
+      <dependency>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-xml</artifactId>
+        <version>0.23.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <profiles>

@@ -24,13 +24,23 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
 
 /**
  * Prints XMIR to EO.
  *
+ * This class will help you turn XMIR (XML document) into EOLANG
+ * plain text source code. It's as simple as this:
+ *
+ * <pre> String eo = new XMIR(xml).toEO();</pre>
+ *
+ * Here, the {@code xml} is a {@code String} or an instance
+ * of {@code XML} from the jcabi-xml package.
+ *
  * @since 0.5
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
+ * @link https://xml.jcabi.com
  */
 public final class XMIR {
 
@@ -38,6 +48,14 @@ public final class XMIR {
      * The XML content.
      */
     private final XML xml;
+
+    /**
+     * Ctor.
+     * @param src The source
+     */
+    public XMIR(final String src) {
+        this(new XMLDocument(src));
+    }
 
     /**
      * Ctor.
