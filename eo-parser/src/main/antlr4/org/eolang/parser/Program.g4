@@ -268,7 +268,7 @@ fragment BYTE: [0-9A-F][0-9A-F] MINUS;
 BYTES: BYTE (BYTE* [0-9A-F][0-9A-F])?;
 
 BOOL: 'true' | 'false';
-CHAR: '\'' [0-9a-zA-Z] '\'';
+CHAR: '\'' ~'\'' '\'';
 STRING: '"' ('\\"' | ~'"')* '"';
 INT: (PLUS | MINUS)? [0-9]+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;

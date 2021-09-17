@@ -23,58 +23,42 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
-import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Assertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Xsline}.
+ * Test case for {@link XMIR}.
  *
- * @since 0.1
+ * @since 0.5
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-public final class SyntaxTest {
+public final class XMIRTest {
 
     @Test
-    public void compilesSimpleCode() throws Exception {
+    public void printsToEO() throws Exception {
+        final String src = new TextOf(
+            new ResourceOf("org/eolang/parser/idiomatic.eo")
+        ).asString();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
-            "test",
-            new ResourceOf("org/eolang/parser/fibonacci.eo"),
-            new OutputTo(baos)
+            "test", new InputOf(src), new OutputTo(baos)
         );
         syntax.parse();
+        final XML xml = new XMLDocument(new String(baos.toByteArray()));
+        final String eolang = new XMIR(xml).toEO();
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new String(baos.toByteArray())
-            ),
-            XhtmlMatchers.hasXPath(
-                "/program[@name='test']",
-                "/program[@ms and @time and @version]",
-                "/program/listing",
-                "/program/metas/meta[head='meta2']",
-                "/program/objects/o[@name='fibo']"
-            )
-        );
-    }
-
-    @Test
-    public void failsOnBrokenSyntax() {
-        Assertions.assertThrows(
-            ParsingException.class,
-            () -> {
-                final Syntax syntax = new Syntax(
-                    "test-it",
-                    new InputOf("this code is definitely wrong"),
-                    new DeadOutput()
-                );
-                syntax.parse();
-            }
+            String.format("XMIR:%n%s%n%nEO:%n%s", xml, eolang),
+            eolang,
+            Matchers.equalTo(src)
         );
     }
 
