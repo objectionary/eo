@@ -2,13 +2,7 @@ assets:
   settings.xml: cqfn/secrets#settings.xml
   pubring.gpg: cqfn/secrets#pubring.gpg
   secring.gpg: cqfn/secrets#secring.gpg
-env:
-  MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
-  JAVA_OPTS: -XX:MaxPermSize=256m -Xmx1g
 install: |
-  sudo update-java-alternatives -s java-1.8.0-openjdk-amd64
-  sudo gem install pdd
-  sudo gem install xcop
   pdd --file=/dev/null
 merge:
   script: |
