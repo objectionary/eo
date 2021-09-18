@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.examples
++package org.eolang.примерыПрограмм
 
 # This is the main abstract object that
 # represents n-th Fibonacci number
-[n] > fibonacci
+[n] > н-ное_число_Фибоначчи
   if. > @
     less. n 2
     n
     add.
-      fibonacci (sub. n 1)
-      fibonacci (sub. n 2)
+      н-ное_число_Фибоначчи (sub. n 1)
+      н-ное_число_Фибоначчи (sub. n 2)

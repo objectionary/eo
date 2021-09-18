@@ -1,0 +1,15 @@
+xsls: []
+tests:
+  - /program/errors[count(*)=0]
+  - /program/objects[count(o)=1]
+  - //o[@name='ПрИвЕт_кАк-дЕла123_你好' and @line='1']
+eo: |
+  [a я ты-друг] > ПрИвЕт_кАк-дЕла123_你好
+    process. > @
+      a
+      я
+      ты-друг
+      ПрИвЕт_кАк-дЕла123_你好
+        ты-друг
+        я
+        a

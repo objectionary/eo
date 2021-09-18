@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.examples
-+alias fibonacci org.eolang.examples.fibonacci
++package org.eolang.примерыПрограмм
++alias fibonacci org.eolang.примерыПрограмм.н-ное_число_Фибоначчи
 +alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
 +rt jvm org.eolang:eo-runtime:0.6.0
