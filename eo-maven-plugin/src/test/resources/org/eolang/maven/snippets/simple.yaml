@@ -1,7 +1,7 @@
 exit: 0
 in: ""
 out:
-  - ".*Hello, dear Jeff.*"
+  - ".*Hello, дорогой Jeff.*"
 args: ["main", "Jeff"]
 eo: |
   +alias stdout org.eolang.io.stdout
@@ -10,5 +10,5 @@ eo: |
   [args...] > main
     stdout > @
       sprintf
-        "Hello, dear %s!"
+        "Hello, дорогой %s!"
         args.get 0

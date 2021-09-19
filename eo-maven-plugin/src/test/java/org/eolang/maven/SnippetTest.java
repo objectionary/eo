@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,7 +83,7 @@ public final class SnippetTest {
         Logger.info(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
-                stdout.toString(),
+                new String(stdout.toByteArray(), StandardCharsets.UTF_8),
                 Matchers.matchesPattern(
                     Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
                 )

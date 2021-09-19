@@ -28,6 +28,7 @@ import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.AbstractMojo;
@@ -127,8 +128,8 @@ public final class OptimizeMojo extends AbstractMojo {
                     file, target, dir
                 );
                 Logger.debug(
-                    this, "Optimized XML saved to %s:\n%s",
-                    target, baos.toString()
+                    this, "Optimized XML saved to %s:\n%s", target,
+                    new String(baos.toByteArray(), StandardCharsets.UTF_8)
                 );
             } catch (final IOException ex) {
                 throw new IllegalStateException(

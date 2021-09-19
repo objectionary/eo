@@ -25,6 +25,7 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
@@ -51,7 +52,7 @@ public final class SyntaxTest {
         syntax.parse();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new String(baos.toByteArray())
+                new String(baos.toByteArray(), StandardCharsets.UTF_8)
             ),
             XhtmlMatchers.hasXPath(
                 "/program[@name='test']",
