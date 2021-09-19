@@ -53,7 +53,7 @@ public final class XMIRTest {
             "test", new InputOf(src), new OutputTo(baos)
         );
         syntax.parse();
-        final XML xml = new XMLDocument(new String(baos.toByteArray()));
+        final XML xml = new XMLDocument(baos.toByteArray());
         final String eolang = new XMIR(xml).toEO();
         MatcherAssert.assertThat(
             String.format("XMIR:%n%s%n%nEO:%n%s", xml, eolang),

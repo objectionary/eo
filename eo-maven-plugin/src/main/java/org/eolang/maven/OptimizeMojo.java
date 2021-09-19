@@ -121,7 +121,7 @@ public final class OptimizeMojo extends AbstractMojo {
                         "org/eolang/parser/errors/broken-refs.xsl"
                     )
                 ).pass();
-                new Save(baos.toString(), target).save();
+                new Save(baos.toByteArray(), target).save();
                 Logger.info(
                     this, "%s optimized to %s, all steps are in %s",
                     file, target, dir

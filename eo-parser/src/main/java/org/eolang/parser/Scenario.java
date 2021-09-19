@@ -73,7 +73,7 @@ public final class Scenario {
             new InputOf(String.format("%s\n", map.get("eo"))),
             new OutputTo(baos)
         ).parse();
-        final XML xml = new XMLDocument(baos.toString());
+        final XML xml = new XMLDocument(baos.toByteArray());
         baos.reset();
         final Collection<String> xsls = (Collection<String>) map.get("xsls");
         final Xsline xsline;
@@ -92,7 +92,7 @@ public final class Scenario {
             );
         }
         xsline.pass();
-        final XML out = new XMLDocument(baos.toString());
+        final XML out = new XMLDocument(baos.toByteArray());
         Logger.debug(this, "Output XML:\n%s", out);
         final Collection<String> failures = new LinkedList<>();
         for (final String xpath : (Iterable<String>) map.get("tests")) {

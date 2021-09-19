@@ -152,7 +152,7 @@ public final class ParseMojo extends AbstractMojo {
                     new InputOf(file),
                     new OutputTo(baos)
                 ).parse();
-                new Save(baos.toString(), path).save();
+                new Save(baos.toByteArray(), path).save();
             } catch (final IOException ex) {
                 throw new IllegalStateException(
                     String.format(

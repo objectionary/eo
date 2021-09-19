@@ -27,11 +27,13 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.scalar.LengthOf;
 
 /**
  * Save a file operation.
@@ -43,7 +45,7 @@ public final class Save {
     /**
      * Content.
      */
-    private final String content;
+    private final Input content;
 
     /**
      * Path.
@@ -54,20 +56,9 @@ public final class Save {
      * Ctor.
      * @param input The input
      * @param file File to save to
-     * @throws IOException If fails
      */
-    public Save(final InputStream input, final Path file) throws IOException {
+    public Save(final InputStream input, final Path file) {
         this(new InputOf(input), file);
-    }
-
-    /**
-     * Ctor.
-     * @param input The input
-     * @param file File to save to
-     * @throws IOException If fails
-     */
-    public Save(final Input input, final Path file) throws IOException {
-        this(new TextOf(input).asString(), file);
     }
 
     /**
@@ -77,7 +68,26 @@ public final class Save {
      * @param file The path
      */
     public Save(final String txt, final Path file) {
-        this.content = txt;
+        this(new InputOf(txt), file);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param bytes The content
+     * @param file The path
+     */
+    public Save(final byte[] bytes, final Path file) {
+        this(new InputOf(bytes), file);
+    }
+
+    /**
+     * Ctor.
+     * @param input The input
+     * @param file File to save to
+     */
+    public Save(final Input input, final Path file) {
+        this.content = input;
         this.path = file;
     }
 
@@ -91,9 +101,15 @@ public final class Save {
         if (dir.mkdirs()) {
             Logger.debug(Save.class, "%s directory created", dir);
         }
-        final byte[] bytes = this.content.getBytes();
-        Files.write(this.path, bytes);
-        Logger.info(this, "File %s saved (%d bytes)", this.path, bytes.length);
+        final double bytes = new IoChecked<>(
+            new LengthOf(
+                new TeeInput(
+                    this.content,
+                    new OutputTo(this.path)
+                )
+            )
+        ).value();
+        Logger.info(this, "File %s saved (%d bytes)", this.path, bytes);
     }
 
 }
