@@ -23,16 +23,25 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Collection;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
+import org.cactoos.list.Mapped;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link XMIR}.
@@ -43,22 +52,65 @@ import org.junit.jupiter.api.Test;
  */
 public final class XMIRTest {
 
-    @Test
-    public void printsToEO() throws Exception {
+    @ParameterizedTest
+    @MethodSource("samples")
+    public void printsToEO(final String sample) throws Exception {
         final String src = new TextOf(
-            new ResourceOf("org/eolang/parser/idiomatic.eo")
+            new ResourceOf(sample)
         ).asString();
+        Logger.debug(this, "Original EOLANG:%n%s", src);
+        final XML first = XMIRTest.clean(XMIRTest.parse(src));
+        Logger.debug(this, "First:%n%s", first);
+        final String eolang = new XMIR(first).toEO();
+        Logger.debug(this, "EOLANG:%n%s", eolang);
+        final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
+        Logger.debug(this, "Second:%n%s", second);
+        MatcherAssert.assertThat(
+            first.toString(),
+            Matchers.equalTo(second.toString())
+        );
+    }
+
+    /**
+     * Parse EO code to XMIR.
+     * @param source The source
+     * @return XMIR
+     * @throws IOException If fails
+     */
+    private static XML parse(final String source) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
-            "test", new InputOf(src), new OutputTo(baos)
+            "test", new InputOf(source), new OutputTo(baos)
         );
         syntax.parse();
-        final XML xml = new XMLDocument(baos.toByteArray());
-        final String eolang = new XMIR(xml).toEO();
-        MatcherAssert.assertThat(
-            String.format("XMIR:%n%s%n%nEO:%n%s", xml, eolang),
-            eolang,
-            Matchers.equalTo(src)
+        final XSL wrap = new XSLDocument(
+            XMIRTest.class.getResourceAsStream("wrap-method-calls.xsl")
+        ).with(new ClasspathSources());
+        return wrap.transform(new XMLDocument(baos.toByteArray()));
+    }
+
+    /**
+     * Take the clean version of XML, without the noise.
+     * @param xmir The original
+     * @return Clean one
+     * @throws IOException If fails
+     */
+    private static XML clean(final XML xmir) throws IOException {
+        return new XSLDocument(
+            XMIRTest.class.getResourceAsStream("strip-xmir.xsl")
+        ).with(new ClasspathSources()).transform(xmir);
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Collection<String> samples() throws IOException {
+        final String dir = "org/eolang/parser/xmir-samples/";
+        return new Mapped<>(
+            file -> String.format("%s%s", dir, file),
+            new ListOf<>(
+                new TextOf(
+                    new ResourceOf(dir)
+                ).asString().split("\n")
+            )
         );
     }
 

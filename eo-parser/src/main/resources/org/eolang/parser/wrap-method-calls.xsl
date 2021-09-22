@@ -43,7 +43,7 @@ SOFTWARE.
   <xsl:template match="o[@method]" mode="#all">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>
     <xsl:copy>
-      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="@* except @method"/>
       <xsl:apply-templates select="$target" mode="full"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
