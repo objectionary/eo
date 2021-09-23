@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Bridge between Java CLI and EO.
@@ -67,7 +69,9 @@ public final class Main {
             this.version();
             return;
         }
-        final String path = args[0].replaceAll("([^.]+)$", "EO$1");
+        final String path = Arrays.stream(args[0].split("\\."))
+            .map(p -> String.format("EO%s", p))
+            .collect(Collectors.joining("."));
         final Phi app = Phi.class.cast(
             Class.forName(path).getConstructor().newInstance()
         );
