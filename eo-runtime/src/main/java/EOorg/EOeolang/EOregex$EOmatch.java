@@ -21,30 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOrandom;
+package EOorg.EOeolang;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtLambda;
+import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * REGEX.
  *
- * @since 0.1
+ * @since 0.2
  */
-public final class EOrandomTest {
+public class EOregex$EOmatch extends PhDefault {
 
-    @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
-        );
+    public EOregex$EOmatch(final Phi parent) {
+        super(parent);
+        this.add("txt", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final Pattern pattern = new Dataized(
+                self.attr("ρ").get()
+            ).take(Pattern.class);
+            final String txt = new Dataized(
+                self.attr("txt").get()
+            ).take(String.class);
+            final Matcher matcher = pattern.matcher(txt);
+            if (matcher.matches()) {
+                final Phi[] dest = new Phi[matcher.groupCount()];
+                return new Data.ToPhi(dest);
+            } else {
+                return new Data.ToPhi(new Phi[] {});
+            }
+        })));
     }
 
 }

@@ -21,30 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOrandom;
-import org.eolang.phi.Dataized;
+package EOorg.EOeolang;
+
+import java.security.SecureRandom;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtLambda;
+import org.eolang.phi.Data;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * RANDOM.
  *
  * @since 0.1
  */
-public final class EOrandomTest {
+public class EOrandom extends PhDefault {
 
-    @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
-        );
+    public EOrandom() {
+        this(new PhEta());
+    }
+
+    public EOrandom(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            new SecureRandom().nextDouble()
+        ))));
     }
 
 }

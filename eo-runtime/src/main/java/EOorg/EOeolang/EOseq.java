@@ -21,30 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOrandom;
+package EOorg.EOeolang;
+
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtLambda;
+import org.eolang.phi.AtVararg;
+import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * SEQ.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOrandomTest {
+public class EOseq extends PhDefault {
 
-    @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
-        );
+    public EOseq() {
+        this(new PhEta());
+    }
+
+    public EOseq(final Phi parent) {
+        super(parent);
+        this.add("steps", new AtVararg());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final Phi[] args = new Dataized(
+                self.attr("steps").get()
+            ).take(Phi[].class);
+            for (final Phi arg : args) {
+                new Dataized(arg).take();
+            }
+            return new Data.ToPhi(true);
+        })));
     }
 
 }

@@ -23,7 +23,7 @@
  */
 package org.eolang.phi;
 
-import org.eolang.txt.EOsprintf;
+import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

@@ -21,31 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOstring$EOtoInt;
+package EOorg.EOeolang;
+
+import java.util.concurrent.atomic.AtomicReference;
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhEta;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * MEMORY.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOstringEOtoIntTest {
+public class EOmemory extends PhDefault {
 
-    @Test
-    public void toIntString() throws Exception {
-        final Phi str = new Data.ToPhi("42");
-        final Phi phi = new EOstring$EOtoInt(str);
-        MatcherAssert.assertThat(
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(42L)
-        );
+    private final AtomicReference<Phi> phi = new AtomicReference<>(new PhEta());
+
+    public EOmemory() {
+        this(new PhEta());
+    }
+
+    public EOmemory(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtBound(new AtLambda(this, self -> this.phi.get())));
+        this.add("write", new AtBound(new AtLambda(this, EOmemory.Write::new)));
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("<%s>", this.phi.get());
+    }
+
+    private final class Write extends PhDefault {
+        Write(final Phi parent) {
+            super(parent);
+            this.add("x", new AtFree());
+            this.add("φ", new AtBound(new AtLambda(this, self -> {
+                final Object obj = new Dataized(self.attr("x").get()).take();
+                EOmemory.this.phi.set(new Data.ToPhi(obj));
+                return new Data.ToPhi(true);
+            })));
+        }
     }
 
 }

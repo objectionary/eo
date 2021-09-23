@@ -48,7 +48,7 @@ public final class CompileMojoTest {
     public void testSimpleCompilation() throws Exception {
         final String java = this.compile(
             new ResourceOf("org/eolang/maven/mess.eo"),
-            "org/eolang/examples/EOmessTest.java"
+            "EOorg/EOeolang/EOexamples/EOmessTest.java"
         );
         MatcherAssert.assertThat(
             java, Matchers.containsString("class EOmessTest")
@@ -59,7 +59,7 @@ public final class CompileMojoTest {
     public void testRealCompilation() throws Exception {
         final String java = this.compile(
             new ResourceOf("org/eolang/maven/array.eo"),
-            "org/eolang/EOarray.java"
+            "EOorg/EOeolang/EOarray.java"
         );
         MatcherAssert.assertThat(java, Matchers.containsString("class"));
     }

@@ -21,29 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package EOorg.EOeolang.EOtxt;
 
-import EOorg.EOeolang.EOrandom;
+import java.util.regex.Pattern;
+import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhMethod;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * Test case for {@link EOregex$EOmatch}.
  *
  * @since 0.1
  */
-public final class EOrandomTest {
+public final class EOregexEOmatchTest {
 
     @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
+    public void matchesString() throws Exception {
+        final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
         MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
+            new Dataized(
+                new PhWith(
+                    new PhMethod(regex, "match"),
+                    "txt",
+                    new Data.ToPhi("hello")
+                )
+            ).take(Phi[].class).length,
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void doesntMatchString() throws Exception {
+        final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(regex, "match"),
+                    "txt",
+                    new Data.ToPhi("Hello, World!")
+                )
+            ).take(Phi[].class).length,
+            Matchers.equalTo(0)
         );
     }
 

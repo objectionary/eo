@@ -54,13 +54,17 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <xsl:function name="eo:clean" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:value-of select="concat('EO', replace(replace(replace($n, '-', '_'), '@', '&#x3C6;'), '\$', '\$EO'))"/>
+  </xsl:function>
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\.')"/>
     <xsl:variable name="p">
       <xsl:for-each select="$parts">
         <xsl:if test="position()!=last()">
-          <xsl:value-of select="."/>
+          <xsl:value-of select="eo:clean(.)"/>
           <xsl:text>.</xsl:text>
         </xsl:if>
       </xsl:for-each>
@@ -75,8 +79,7 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:variable name="clean" select="replace(replace(replace($c, '-', '_'), '@', '&#x3C6;'), '\$', '\$EO')"/>
-    <xsl:value-of select="concat($p, 'EO', $clean)"/>
+    <xsl:value-of select="concat($p, eo:clean($c))"/>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -96,7 +99,7 @@ SOFTWARE.
     <xsl:attribute name="java-name">
       <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
-        <xsl:value-of select="$pkg"/>
+        <xsl:value-of select="eo:class-name($pkg)"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
       <xsl:value-of select="eo:class-name(.)"/>
@@ -463,7 +466,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
-    <xsl:value-of select="tail"/>
+    <xsl:value-of select="eo:class-name(tail)"/>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>

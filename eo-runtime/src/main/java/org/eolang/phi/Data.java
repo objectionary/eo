@@ -24,16 +24,16 @@
 
 package org.eolang.phi;
 
+import EOorg.EOeolang.EOarray;
+import EOorg.EOeolang.EObool;
+import EOorg.EOeolang.EOchar;
+import EOorg.EOeolang.EOfloat;
+import EOorg.EOeolang.EOint;
+import EOorg.EOeolang.EOregex;
+import EOorg.EOeolang.EOstring;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
-import org.eolang.EOarray;
-import org.eolang.EObool;
-import org.eolang.EOchar;
-import org.eolang.EOfloat;
-import org.eolang.EOint;
-import org.eolang.EOregex;
-import org.eolang.EOstring;
 
 /**
  * A data container.

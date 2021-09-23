@@ -21,30 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOrandom;
-import org.eolang.phi.Dataized;
-import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package EOorg.EOeolang;
+
+import org.eolang.phi.*;
 
 /**
- * Test case for {@link EOrandom}.
+ * DIV.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOrandomTest {
+public class EOint$EOdiv extends PhDefault {
 
-    @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
-        );
+    public EOint$EOdiv(final Phi parent) {
+        super(parent);
+        this.add("x", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            long ρ = new Dataized(self.attr("ρ").get()).take(Long.class);
+            long x = new Dataized(self.attr("x").get()).take(Long.class);
+            if (x == 0L) {
+                final Phi msg = new Data.ToPhi("Division by zero is undefined");
+                return new PhWith(new EOerror(), "msg", msg);
+            }
+            return new Data.ToPhi(Math.floorDiv(ρ, x));
+        })));
     }
 
 }

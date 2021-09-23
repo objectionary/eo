@@ -24,12 +24,12 @@
 
 package org.eolang.phi;
 
+import EOorg.EOeolang.EOstring;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import org.eolang.EOstring;
 
 /**
  * Bridge between Java CLI and EO.

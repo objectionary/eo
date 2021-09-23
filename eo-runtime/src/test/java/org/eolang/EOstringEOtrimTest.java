@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOstring$EOtrim;
 import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
 import org.eolang.phi.Phi;

@@ -21,30 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOrandom;
+package EOorg.EOeolang;
+
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
+import org.eolang.phi.AtLambda;
+import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhCopy;
+import org.eolang.phi.PhDefault;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * EACH.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOrandomTest {
+public class EOarray$EOeach extends PhDefault {
 
-    @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
-        );
+    public EOarray$EOeach(final Phi parent) {
+        super(parent);
+        this.add("f", new AtFree());
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final Phi[] array = new Dataized(
+                self.attr("ρ").get()
+            ).take(Phi[].class);
+            for (final Phi item : array) {
+                new Dataized(
+                    new PhWith(
+                        new PhCopy(self.attr("f").get()),
+                        0,
+                        item
+                    )
+                ).take();
+            }
+            return new Data.ToPhi(true);
+        })));
     }
 
 }

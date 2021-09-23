@@ -21,29 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package EOorg.EOeolang.EOtxt;
 
-import EOorg.EOeolang.EOrandom;
+import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhEta;
+import org.eolang.phi.PhWith;
 import org.eolang.phi.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * Test case for {@link EOsprintf}.
  *
  * @since 0.1
  */
-public final class EOrandomTest {
+public final class EOsprintfTest {
 
     @Test
-    public void readsTwice() throws Exception {
-        final Phi rnd = new EOrandom();
-        final Double first = new Dataized(rnd).take(Double.class);
+    public void printsString() throws Exception {
+        final Phi format = new Data.ToPhi("Hello, %d!");
+        final Phi num = new Data.ToPhi(1L);
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOsprintf(new PhEta()),
+                "format",
+                format
+            ),
+            "args",
+            num
+        );
         MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("Hello, 1!")
+        );
+    }
+
+    @Test
+    public void printsStringWithVarargs() throws Exception {
+        final Phi format = new Data.ToPhi("Hello, %s %s!");
+        final Phi num = new Data.ToPhi(5L);
+        Phi phi = new EOsprintf(new PhEta());
+        phi = phi.copy();
+        phi = new PhWith(phi, 0, format);
+        phi = new PhWith(phi, 1, num);
+        phi = new PhWith(phi, 2, num);
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("Hello, 5 5!")
         );
     }
 

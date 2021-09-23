@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOmemory;
 import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
 import org.eolang.phi.PhCopy;
@@ -42,7 +43,7 @@ public final class EOmemoryTest {
 
     @Test
     public void readsAndWrites() throws Exception {
-        final Phi mem = new org.eolang.EOmemory();
+        final Phi mem = new EOmemory();
         final Phi text = new Data.ToPhi("Hello, world!");
         final Phi write = mem.attr("write").get();
         write.attr(0).put(text);
@@ -55,7 +56,7 @@ public final class EOmemoryTest {
 
     @Test
     public void comparesForEquality() throws Exception {
-        final Phi mem = new org.eolang.EOmemory();
+        final Phi mem = new EOmemory();
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, "write")),
@@ -76,7 +77,7 @@ public final class EOmemoryTest {
 
     @Test
     public void writesAndRewrites() throws Exception {
-        final Phi mem = new org.eolang.EOmemory();
+        final Phi mem = new EOmemory();
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, "write")),
@@ -97,7 +98,7 @@ public final class EOmemoryTest {
 
     @Test
     public void makeCorrectCopy() throws Exception {
-        final Phi mem = new org.eolang.EOmemory();
+        final Phi mem = new EOmemory();
         final Phi text = new Data.ToPhi(1L);
         final Phi write = mem.attr("write").get();
         write.attr(0).put(text);
@@ -110,7 +111,7 @@ public final class EOmemoryTest {
 
     @Test
     public void comparesOnFly() throws Exception {
-        final Phi mem = new org.eolang.EOmemory();
+        final Phi mem = new EOmemory();
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, "write")),
@@ -140,7 +141,7 @@ public final class EOmemoryTest {
 
     @Test
     public void rewritesItself() throws Exception {
-        final Phi mem = new org.eolang.EOmemory();
+        final Phi mem = new EOmemory();
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, "write")),
