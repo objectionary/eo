@@ -24,7 +24,7 @@
 +alias fibonacci org.eolang.examples.fibonacci
 +alias stdout org.eolang.io.stdout
 +alias sprintf org.eolang.txt.sprintf
-+rt jvm org.eolang:eo-runtime:0.4.0
++rt jvm org.eolang:eo-runtime:0.6.0
 
 [args...] > app
   and. > @

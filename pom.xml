@@ -86,6 +86,9 @@ SOFTWARE.
       <url>https://github.com/cqfn/eo</url>
     </site>
   </distributionManagement>
+  <properties>
+    <eo.stable>0.6.0</eo.stable>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>

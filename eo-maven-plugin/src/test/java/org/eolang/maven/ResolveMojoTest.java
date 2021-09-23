@@ -46,7 +46,7 @@ public final class ResolveMojoTest {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new Save(
-            "+rt jvm org.eolang:eo-runtime:0.1.18\n\n[] > foo /int\n",
+            "+rt jvm org.eolang:eo-runtime:0.6.0\n\n[] > foo /int\n",
             src.resolve("foo.eo")
         ).save();
         final Path target = temp.resolve("target");
