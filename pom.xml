@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.54.0</version>
+    <version>0.54.1</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -39,7 +39,7 @@ SOFTWARE.
     <module>eo-maven-plugin</module>
     <module>eo-runtime</module>
   </modules>
-  <description>EO Language</description>
+  <description>EO Language Compiler and Runtime</description>
   <url>https://github.com/cqfn/eo</url>
   <inceptionYear>2016</inceptionYear>
   <organization>
@@ -92,11 +92,6 @@ SOFTWARE.
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
         <version>0.46</version>
-      </dependency>
-      <dependency>
-        <groupId>com.jcabi</groupId>
-        <artifactId>jcabi-xml</artifactId>
-        <version>0.23.0</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
