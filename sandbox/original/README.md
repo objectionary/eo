@@ -27,7 +27,7 @@ If you don't have Maven or JDK installed on your system, you can compile and run
 Compile the sources in `eo/` using maven in docker container. The output of the compilation will be in the `target/` directory.
 
 ```bash
-docker-compose -p eo-lang run maven
+$ docker-compose -p eo-lang run maven
 ```
 
 > **Overriding the default command**
@@ -42,7 +42,7 @@ docker-compose -p eo-lang run maven
 After the compilation, the resulting Java program can be run in docker via:
 
 ```bash
-docker-compose -p eo-lang run app
+$ docker-compose -p eo-lang run app
 ```
 
 > **Passing command line arguments**
