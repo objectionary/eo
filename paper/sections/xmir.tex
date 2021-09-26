@@ -19,7 +19,7 @@ It will be compiled to the following XMIR:
     line="2" name="n">42</o>   |$\label{ln:xml-data}$|
   <o line="3" name="read">
     <o line="3" name="t"/>
-    <o base=".sub" line="4">
+    <o base=".sub" line="4"> |$\label{ln:xml-sub}$|
       <o base="n" line="5"/> |$\label{ln:method-start}$|
       <o base=".neg" line="5" method=""/>
       <o base="t" line="6"/> |$\label{ln:method-end}$|
@@ -45,11 +45,18 @@ further steps of XMIR transformations to modify the code
 at \lrefs{method-start}{method-end} to the following:
 
 \begin{ffcode}
-<o base=".neg" line="5"/>
+<o base=".neg" line="5"/> |$\label{ln:xml-neg}$|
   <o base="n" line="5"/>
   <o base="t" line="6"/>
-</o>
+</o>  |$\label{ln:xml-neg-end}$|
 \end{ffcode}
+
+The semantics of the element \ff{.sub} at~\lref{xml-sub}
+and the element \ff{.neg} at~\lref{xml-neg} are similar: prefix
+notation for child-parent relationships. The XML element at~\lrefs{xml-neg}{xml-neg-end}
+means `.neg(n,t)`, which in~\eo{} means `n.neg t` or `neg. n t`. The
+leading dot at the attribute \ff{base} means means that the first
+child of this XML element is the \eo{} parent of it.
 
 The attribute \ff{data} is used when the object is data. In this
 case, the data itself is in the text of the object, as in~\lref{xml-data}.
