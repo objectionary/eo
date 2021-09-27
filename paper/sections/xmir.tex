@@ -23,7 +23,7 @@ It will be compiled to the following XMIR:
       <o base="n" line="5"/> |$\label{ln:method-start}$|
       <o base=".neg" line="5" method=""/>  |$\label{ln:method-end}$|
       <o base="t" line="6"/>
-    </o>
+    </o> |$\label{ln:xml-sub-end}$|
   </o>
 </o>
 \end{ffcode}
@@ -42,12 +42,16 @@ that it refers to the first \ff{<o>} child.
 
 The attribute \ff{method} may be temporarily present, suggesting
 further steps of XMIR transformations to modify the code
-at \lrefs{method-start}{method-end} to the following:
+at \lrefs{xml-sub}{xml-sub-end} to the following (the attribute \ff{method}
+goes away):
 
 \begin{ffcode}
-<o base=".neg" line="5"/> |$\label{ln:xml-neg}$|
-  <o base="n" line="5"/>
-</o>  |$\label{ln:xml-neg-end}$|
+<o base=".sub" line="4">
+  <o base=".neg" line="5"/> |$\label{ln:xml-neg}$|
+    <o base="n" line="5"/>
+  </o> |$\label{ln:xml-neg-end}$|
+  <o base="t" line="6"/>
+</o>
 \end{ffcode}
 
 The semantics of the element \ff{.sub} at~\lref{xml-sub}
