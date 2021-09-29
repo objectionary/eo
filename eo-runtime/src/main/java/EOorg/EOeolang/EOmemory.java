@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.phi.AtBound;
 import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
+import org.eolang.phi.Attr;
 import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
 import org.eolang.phi.PhDefault;
@@ -41,7 +42,7 @@ import org.eolang.phi.Phi;
  */
 public class EOmemory extends PhDefault {
 
-    private final AtomicReference<Phi> phi = new AtomicReference<>(new PhEta());
+    private final AtomicReference<Phi> phi = new AtomicReference<>();
 
     public EOmemory() {
         this(new PhEta());
@@ -49,7 +50,23 @@ public class EOmemory extends PhDefault {
 
     public EOmemory(final Phi parent) {
         super(parent);
-        this.add("φ", new AtBound(new AtLambda(this, self -> this.phi.get())));
+        this.add(
+            "φ",
+            new AtBound(
+                new AtLambda(
+                    this,
+                    self -> {
+                        final Phi object = this.phi.get();
+                        if (object == null) {
+                            throw new Attr.Exception(
+                                "The memory is not yet written"
+                            );
+                        }
+                        return object;
+                    }
+                )
+            )
+        );
         this.add("write", new AtBound(new AtLambda(this, EOmemory.Write::new)));
     }
 
