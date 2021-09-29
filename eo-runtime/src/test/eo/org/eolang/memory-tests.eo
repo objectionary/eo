@@ -26,9 +26,9 @@
 [] > memoryInOuterScope
   [] > outer
     memory > x
-  outer > a
+  outer.x > a
   seq > @
-    a.x.write 1
+    a.write 1
     stdout
-      sprintf "%d" a.x
+      sprintf "%d" a
 
