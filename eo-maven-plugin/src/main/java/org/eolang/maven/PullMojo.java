@@ -30,12 +30,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
@@ -43,21 +44,21 @@ import org.cactoos.io.InputOf;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
- * Pull EO XML files.
+ * Pull EO XML files from Objectionary.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "pull",
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
 )
 public final class PullMojo extends AbstractMojo {
 
     /**
-     * From directory.
+     * Where we have .eo.xml files just parsed (we pull new .eo.xml
+     * files right here too).
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -82,11 +83,13 @@ public final class PullMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("03-optimize");
+        final Path dir = this.targetDir.toPath().resolve("01-parse");
         try {
-            Files.walk(dir)
+            final List<Path> files = Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
-                .forEach(file -> this.pull(dir, file));
+                .collect(Collectors.toList());
+            Logger.info(this, "%d eo.xml files found", files.size());
+            files.forEach(file -> this.pull(dir, file));
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
@@ -106,12 +109,10 @@ public final class PullMojo extends AbstractMojo {
      */
     private void pull(final Path dir, final Path file) {
         try {
-            final String xpath = String.join(
-                "",
-                "//o[@base and contains(@base, '.') ",
-                "and not(starts-with(@base, '.'))]/@base"
+            final List<String> names = new XMLDocument(file).xpath(
+                "//meta[head='alias']/part[2]/text()"
             );
-            for (final String name : new XMLDocument(file).xpath(xpath)) {
+            for (final String name : names) {
                 this.pull(dir, name);
             }
         } catch (final IOException ex) {
@@ -137,9 +138,13 @@ public final class PullMojo extends AbstractMojo {
             String.format("%s.eo.xml", name.replace(".", "/"))
         );
         if (path.toFile().exists()) {
-            Logger.debug(this, "The file %s already exists", path);
+            Logger.info(this, "The file %s already exists", path);
         } else {
-            new Save(new IoCheckedFunc<>(this.repo).apply(name), path).save();
+            new Save(
+                new IoCheckedFunc<>(this.repo).apply(name),
+                path
+            ).save();
+            Logger.info(this, "Object %s pulled to %s", name, path);
         }
     }
 

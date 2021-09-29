@@ -58,7 +58,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  */
 @Mojo(
     name = "compile",
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+    defaultPhase = LifecyclePhase.COMPILE,
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )

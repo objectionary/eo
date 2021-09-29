@@ -59,9 +59,6 @@ public final class PullMojoTest {
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
         new Mojo<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with("repo", (Func<String, Input>) input -> new InputOf("test"))
@@ -69,7 +66,7 @@ public final class PullMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    "03-optimize/org/eolang/io/stdout.eo.xml"
+                    "01-parse/org/eolang/io/stdout.eo.xml"
                 )
             ),
             Matchers.is(true)

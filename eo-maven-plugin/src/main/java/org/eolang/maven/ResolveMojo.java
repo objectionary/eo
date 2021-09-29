@@ -42,7 +42,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
@@ -56,9 +55,8 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  */
 @Mojo(
     name = "resolve",
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
 )
 public final class ResolveMojo extends AbstractMojo {
 
