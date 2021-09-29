@@ -109,7 +109,7 @@ public final class Save {
                 )
             )
         ).value();
-        Logger.info(this, "File %s saved (%.0f bytes)", this.path, bytes);
+        Logger.debug(this, "File %s saved (%.0f bytes)", this.path, bytes);
     }
 
 }
