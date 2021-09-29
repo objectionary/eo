@@ -27,12 +27,8 @@
   [] > outer
     memory > x
   outer > a
-  outer > b
   seq > @
     a.x.write 1
-    b.x.write 2
     stdout
       sprintf "%d" a.x
-    stdout
-      sprintf "%d" b.x
 
