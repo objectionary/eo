@@ -188,7 +188,8 @@ If $x$ and $y$ are objects and $x.\varphi = y$, then
   this means that $x$ is \textbf{decorating} $y$.
 \end{eodefinition}
 
-Here, $\varphi$ is a special identifier denoting the object being decorated
+Here, $\varphi$ is a special identifier denoting the object,
+known as a \emph{decoratee}, being decorated
 within the scope of the decorator.
 
 For example, the object at \lrefs{circle}{circle-end} would
@@ -248,6 +249,9 @@ producing:
 & \rrbracket.
 \end{split}
 \end{equation}
+
+It is important to notice that attributes of a decoratee
+don't belong to the scope of its decorator.
 
 \subsection{Atoms}
 
