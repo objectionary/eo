@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -101,7 +102,14 @@ public final class PullMojo extends AbstractMojo {
                 .filter(file -> !file.toFile().isDirectory())
                 .collect(Collectors.toList());
             Logger.info(this, "%d eo.xml files found", files.size());
-            files.forEach(this::process);
+            final Collection<String> foreign = new HashSet<>(0);
+            for (final Path xml : files) {
+                foreign.addAll(this.process(xml));
+            }
+            Logger.info(this, "%d foreign objects found", foreign.size());
+            for (final String name : foreign) {
+                this.process(name);
+            }
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
@@ -117,43 +125,33 @@ public final class PullMojo extends AbstractMojo {
      * Pull all deps found in the provided XML file.
      *
      * @param file The .eo.xml file
+     * @throws FileNotFoundException If not found
      */
-    private void process(final Path file) {
-        try {
-            final XML xml = new XSLDocument(
-                PullMojo.class.getResourceAsStream("pull-extract.xsl")
-            ).transform(new XMLDocument(file));
-            final Collection<String> foreign = new HashSet<>(
-                new ListOf<>(
-                    new Filtered<>(
-                        obj -> !obj.isEmpty(),
-                        xml.xpath("//o/@foreign")
-                    )
+    private Collection<String> process(final Path file)
+        throws FileNotFoundException {
+        final XML xml = new XSLDocument(
+            PullMojo.class.getResourceAsStream("pull-extract.xsl")
+        ).transform(new XMLDocument(file));
+        final Collection<String> foreign = new HashSet<>(
+            new ListOf<>(
+                new Filtered<>(
+                    obj -> !obj.isEmpty(),
+                    xml.xpath("//o/@foreign")
                 )
+            )
+        );
+        if (foreign.isEmpty()) {
+            Logger.info(
+                this, "Didn't find any foreign objects in %s",
+                file
             );
-            if (foreign.isEmpty()) {
-                Logger.info(
-                    this, "Didn't find any foreign objects in %s",
-                    file
-                );
-            } else {
-                Logger.info(
-                    this, "Found %d foreign objects in %s: %s",
-                    foreign.size(), file, foreign
-                );
-            }
-            for (final String name : foreign) {
-                this.process(name);
-            }
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "Can't process %s into %s",
-                    file, this.targetDir
-                ),
-                ex
+        } else {
+            Logger.info(
+                this, "Found %d foreign objects in %s: %s",
+                foreign.size(), file, foreign
             );
         }
+        return foreign;
     }
 
     /**
