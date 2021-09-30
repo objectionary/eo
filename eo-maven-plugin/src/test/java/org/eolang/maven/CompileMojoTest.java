@@ -34,6 +34,7 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link CompileMojo}.
@@ -45,8 +46,10 @@ import org.junit.jupiter.api.Test;
 public final class CompileMojoTest {
 
     @Test
-    public void testSimpleCompilation() throws Exception {
+    public void testSimpleCompilation(@TempDir final Path temp)
+        throws Exception {
         final String java = this.compile(
+            temp,
             new ResourceOf("org/eolang/maven/mess.eo"),
             "EOorg/EOeolang/EOexamples/EOmessTest.java"
         );
@@ -56,8 +59,10 @@ public final class CompileMojoTest {
     }
 
     @Test
-    public void testRealCompilation() throws Exception {
+    public void testRealCompilation(@TempDir final Path temp)
+        throws Exception {
         final String java = this.compile(
+            temp,
             new ResourceOf("org/eolang/maven/array.eo"),
             "EOorg/EOeolang/EOarray.java"
         );
@@ -71,9 +76,8 @@ public final class CompileMojoTest {
      * @return All Java code
      * @throws Exception If fails
      */
-    private String compile(final Input code,
+    private String compile(final Path temp, final Input code,
         final String file) throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new Save(code, src.resolve("code.eo")).save();
         final Path target = temp.resolve("target");

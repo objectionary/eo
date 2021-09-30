@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link OptimizeMojo}.
@@ -39,8 +40,7 @@ import org.junit.jupiter.api.Test;
 public final class OptimizeMojoTest {
 
     @Test
-    public void testSimpleOptimize() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testSimpleOptimize(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             "[args] > main\n  (stdout \"Hello!\").print > @\n",
@@ -55,7 +55,11 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("02-steps/main.eo.xml")),
+            Files.exists(
+                target.resolve(
+                    String.format("%s/main.eo.xml", OptimizeMojo.STEPS)
+                )
+            ),
             Matchers.is(true)
         );
     }

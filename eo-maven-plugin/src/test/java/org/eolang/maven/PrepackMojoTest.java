@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link PrepackMojo}.
@@ -37,8 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class PrepackMojoTest {
 
     @Test
-    public void testCleaning() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testCleaning(@TempDir final Path temp) throws Exception {
         final Path generated = temp.resolve("generated");
         final Path classes = temp.resolve("classes");
         final Path foo = classes.resolve("a/b/c/foo.class");

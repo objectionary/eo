@@ -49,6 +49,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
@@ -67,7 +68,7 @@ public final class SnippetTest {
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
-    public void testFullRun(final String yml) throws Exception {
+    public void testFullRun(@TempDir final Path temp, final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             SnippetTest.class.getResourceAsStream(
@@ -76,6 +77,7 @@ public final class SnippetTest {
         );
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         final int result = SnippetTest.run(
+            temp,
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
             new InputOf(map.get("in").toString()),
@@ -114,9 +116,8 @@ public final class SnippetTest {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings("unchecked")
-    private static int run(final Input code, final List<String> args,
+    private static int run(final Path temp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new Save(code, src.resolve("code.eo")).save();
         final Path target = temp.resolve("target");

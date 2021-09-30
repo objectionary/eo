@@ -30,6 +30,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ParseMojo}.
@@ -41,8 +42,7 @@ import org.junit.jupiter.api.Test;
 public final class ParseMojoTest {
 
     @Test
-    public void testSimpleParsing() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path target = temp.resolve("target");
         new Save(
@@ -54,14 +54,18 @@ public final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("01-parse/main.eo.xml")),
+            Files.exists(
+                target.resolve(
+                    String.format("%s/main.eo.xml", ParseMojo.DIR)
+                )
+            ),
             Matchers.is(true)
         );
     }
 
     @Test
-    public void testCrashOnInvalidSyntax() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testCrashOnInvalidSyntax(@TempDir final Path temp)
+        throws Exception {
         final Path src = temp.resolve("src");
         final Path target = temp.resolve("target");
         new Save("something is wrong here", src.resolve("f.eo")).save();

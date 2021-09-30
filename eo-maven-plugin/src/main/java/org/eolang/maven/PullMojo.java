@@ -24,12 +24,16 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
@@ -41,10 +45,12 @@ import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.InputOf;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.list.ListOf;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
- * Pull EO XML files from Objectionary.
+ * Pull EO XML files from Objectionary and parse them into XML.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -57,8 +63,13 @@ import org.slf4j.impl.StaticLoggerBinder;
 public final class PullMojo extends AbstractMojo {
 
     /**
-     * Where we have .eo.xml files just parsed (we pull new .eo.xml
-     * files right here too).
+     * The directory where to process to.
+     */
+    public static final String DIR = "02-pull";
+
+    /**
+     * Where we have .eo.xml files just parsed (we process new .eo
+     * files right here too, and parse them here too).
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -74,7 +85,8 @@ public final class PullMojo extends AbstractMojo {
     private Func<String, Input> repo = name -> new InputOf(
         new URL(
             String.format(
-                "https://www.objectionary.com/xml/%s.eo.xml",
+                // @checkstyle LineLength (1 line)
+                "https://raw.githubusercontent.com/yegor256/objectionary/master/objects/%s.eo",
                 name.replace(".", "/")
             )
         )
@@ -83,18 +95,18 @@ public final class PullMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("01-parse");
+        final Path sources = this.targetDir.toPath().resolve(ParseMojo.DIR);
         try {
-            final List<Path> files = Files.walk(dir)
+            final List<Path> files = Files.walk(sources)
                 .filter(file -> !file.toFile().isDirectory())
                 .collect(Collectors.toList());
             Logger.info(this, "%d eo.xml files found", files.size());
-            files.forEach(file -> this.pull(dir, file));
+            files.forEach(this::process);
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
                     "Can't list XML files in %s",
-                    dir
+                    sources
                 ),
                 ex
             );
@@ -102,23 +114,41 @@ public final class PullMojo extends AbstractMojo {
     }
 
     /**
-     * Pull all deps found in XML file.
+     * Pull all deps found in the provided XML file.
      *
-     * @param dir The dir
-     * @param file EO file
+     * @param file The .eo.xml file
      */
-    private void pull(final Path dir, final Path file) {
+    private void process(final Path file) {
         try {
-            final List<String> names = new XMLDocument(file).xpath(
-                "//meta[head='alias']/part[2]/text()"
+            final XML xml = new XSLDocument(
+                PullMojo.class.getResourceAsStream("pull-extract.xsl")
+            ).transform(new XMLDocument(file));
+            final Collection<String> foreign = new HashSet<>(
+                new ListOf<>(
+                    new Filtered<>(
+                        obj -> !obj.isEmpty(),
+                        xml.xpath("//o/@foreign")
+                    )
+                )
             );
-            for (final String name : names) {
-                this.pull(dir, name);
+            if (foreign.isEmpty()) {
+                Logger.info(
+                    this, "Didn't find any foreign objects in %s",
+                    file
+                );
+            } else {
+                Logger.info(
+                    this, "Found %d foreign objects in %s: %s",
+                    foreign.size(), file, foreign
+                );
+            }
+            for (final String name : foreign) {
+                this.process(name);
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 String.format(
-                    "Can't pull %s into %s",
+                    "Can't process %s into %s",
                     file, this.targetDir
                 ),
                 ex
@@ -127,25 +157,45 @@ public final class PullMojo extends AbstractMojo {
     }
 
     /**
-     * Pull one dep.
+     * Pull one object by name.
      *
-     * @param dir The dir
-     * @param name Name of the object, e.g. "org.eolang.io.stdout"
+     * @param name The name of the object
      * @throws IOException If fails
      */
-    private void pull(final Path dir, final String name) throws IOException {
-        final Path path = dir.resolve(
-            String.format("%s.eo.xml", name.replace(".", "/"))
+    private void process(final String name) throws IOException {
+        final Path xml = new Place(name).make(
+            this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
         );
-        if (path.toFile().exists()) {
-            Logger.info(this, "The file %s already exists", path);
+        if (xml.toFile().exists()) {
+            Logger.debug(this, "The object %s already parsed at %s", name, xml);
+        } else {
+            new Parsing(this.pull(name)).into(
+                this.targetDir, name
+            );
+        }
+    }
+
+    /**
+     * Pull one object.
+     *
+     * @param name Name of the object, e.g. "org.eolang.io.stdout"
+     * @return The path of .eo file
+     * @throws IOException If fails
+     */
+    private Path pull(final String name) throws IOException {
+        final Path src = new Place(name).make(
+            this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
+        );
+        if (src.toFile().exists()) {
+            Logger.debug(this, "The object %s already pulled to %s", name, src);
         } else {
             new Save(
                 new IoCheckedFunc<>(this.repo).apply(name),
-                path
+                src
             ).save();
-            Logger.info(this, "Object %s pulled to %s", name, path);
+            Logger.info(this, "Sources of object %s pulled to %s", name, src);
         }
+        return src;
     }
 
 }

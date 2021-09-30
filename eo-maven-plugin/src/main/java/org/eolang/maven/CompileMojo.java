@@ -33,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
@@ -58,12 +57,23 @@ import org.slf4j.impl.StaticLoggerBinder;
  */
 @Mojo(
     name = "compile",
-    defaultPhase = LifecyclePhase.COMPILE,
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class CompileMojo extends AbstractMojo {
+
+    /**
+     * The directory where to compile to.
+     */
+    public static final String DIR = "06-compile";
+
+    /**
+     * The directory where to put pre-compile files.
+     */
+    public static final String PRE = "05-pre";
+
     /**
      * Maven project.
      */
@@ -124,7 +134,7 @@ public final class CompileMojo extends AbstractMojo {
         if (this.generatedDir.mkdirs()) {
             Logger.info(this, "Gen directory created: %s", this.generatedDir);
         }
-        final Path dir = this.targetDir.toPath().resolve("03-optimize");
+        final Path dir = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         if (this.compiler == null) {
             try {
                 Files.walk(dir)
@@ -166,8 +176,8 @@ public final class CompileMojo extends AbstractMojo {
      * @param file XML file
      */
     private void compile(final Path file) {
-        final Path temp = this.targetDir.toPath().resolve("05-compile");
-        final Path pre = this.targetDir.toPath().resolve("04-pre");
+        final Path temp = this.targetDir.toPath().resolve(CompileMojo.DIR);
+        final Path pre = this.targetDir.toPath().resolve(CompileMojo.PRE);
         try {
             final XML input = new XMLDocument(file);
             final String name = input.xpath("/program/@name").get(0);
@@ -196,14 +206,8 @@ public final class CompileMojo extends AbstractMojo {
                 for (final XML java : after.nodes("//class[java and not(@atom)]")) {
                     new Save(
                         java.xpath("java/text()").get(0),
-                        this.generatedDir.toPath().resolve(
-                            Paths.get(
-                                String.format(
-                                    "%s.java",
-                                    java.xpath("@java-name").get(0)
-                                        .replace(".", "/")
-                                )
-                            )
+                        new Place(java.xpath("@java-name").get(0)).make(
+                            this.generatedDir.toPath(), "java"
                         )
                     ).save();
                 }

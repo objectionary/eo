@@ -55,6 +55,16 @@ import org.slf4j.impl.StaticLoggerBinder;
 public final class OptimizeMojo extends AbstractMojo {
 
     /**
+     * The directory where to compile to.
+     */
+    public static final String DIR = "04-optimize";
+
+    /**
+     * The directory where to place intermediary files.
+     */
+    public static final String STEPS = "03-steps";
+
+    /**
      * From directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -67,7 +77,7 @@ public final class OptimizeMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("01-parse");
+        final Path dir = this.targetDir.toPath().resolve(ParseMojo.DIR);
         try {
             Files.walk(dir)
                 .filter(file -> !file.toFile().isDirectory())
@@ -93,9 +103,10 @@ public final class OptimizeMojo extends AbstractMojo {
         final String name = file.toString().substring(
             home.toString().length() + 1
         );
-        final Path dir = this.targetDir.toPath().resolve("02-steps").resolve(name);
+        final Path dir = this.targetDir.toPath()
+            .resolve(OptimizeMojo.STEPS).resolve(name);
         final Path target = this.targetDir.toPath()
-            .resolve("03-optimize")
+            .resolve(OptimizeMojo.DIR)
             .resolve(name);
         if (Files.exists(target)) {
             Logger.info(

@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2021 Yegor Bugayenko
@@ -21,11 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-assert new File(basedir, 'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java').exists()
-assert new File(basedir, 'target/eo/01-parse/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/03-steps/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/04-optimize/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/05-pre/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/06-compile/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/classes/EOorg/EOeolang/EOexamples/EOapp.class').exists()
+import java.nio.file.Path;
+
+/**
+ * Make the place for the object.
+ *
+ * @since 0.1
+ */
+final class Place {
+
+    /**
+     * The name of the object, e.g. "org.eolang.io.stdout"
+     */
+    private final String name;
+
+    /**
+     * Ctor.
+     * @param obj The name of the object
+     */
+    Place(final String obj) {
+        this.name = obj;
+    }
+
+    /**
+     * Make a full path.
+     * @param dir The dir
+     * @param ext The ext
+     * @return Full path
+     */
+    public Path make(final Path dir, final String ext) {
+        return dir.resolve(
+            String.format("%s.%s", this.name.replace(".", "/"), ext)
+        );
+    }
+
+}

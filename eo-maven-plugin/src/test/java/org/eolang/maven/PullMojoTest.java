@@ -31,6 +31,7 @@ import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link PullMojo}.
@@ -42,8 +43,7 @@ import org.junit.jupiter.api.Test;
 public final class PullMojoTest {
 
     @Test
-    public void testSimplePull() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testSimplePull(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             String.join(
@@ -61,16 +61,50 @@ public final class PullMojoTest {
             .execute();
         new Mojo<>(PullMojo.class)
             .with("targetDir", target.toFile())
-            .with("repo", (Func<String, Input>) input -> new InputOf("test"))
+            .with(
+                "repo",
+                (Func<String, Input>) input -> new InputOf("[] > hello\n")
+            )
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    "01-parse/org/eolang/io/stdout.eo.xml"
+                    String.format(
+                        "%s/org/eolang/io/stdout.eo.xml",
+                        ParseMojo.DIR
+                    )
                 )
             ),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    public void noPullIfXmlExists(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("src");
+        new Save(
+            String.join(
+                "\n",
+                "+alias sprintf org.eolang.txt.sprintf",
+                "",
+                "[args] > foo\n  sprintf\n"
+            ),
+            src.resolve("foo.eo")
+        ).save();
+        final Path target = temp.resolve("target");
+        new Mojo<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("sourcesDir", src.toFile())
+            .execute();
+        new Save(
+            "<program/>",
+            new Place("org.eolang.txt.sprintf").make(
+                target.resolve(ParseMojo.DIR), "eo.xml"
+            )
+        ).save();
+        new Mojo<>(PullMojo.class)
+            .with("targetDir", target.toFile())
+            .execute();
     }
 
 }

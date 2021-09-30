@@ -101,7 +101,7 @@ public final class ResolveMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("03-optimize");
+        final Path dir = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         final Collection<Dependency> deps;
         try {
             deps = Files.walk(dir)

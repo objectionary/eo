@@ -45,10 +45,10 @@ SOFTWARE.
           <execution>
             <goals>
               <goal>parse</goal>
+              <goal>pull</goal>
               <goal>optimize</goal>
-<!--              <goal>pull</goal>-->
-              <goal>resolve</goal>
               <goal>compile</goal>
+              <goal>resolve</goal>
             </goals>
           </execution>
         </executions>
@@ -67,7 +67,7 @@ SOFTWARE.
         <configuration>
           <mainClass>org.eolang.phi.Main</mainClass>
           <arguments>
-            <argument>EOorg.EOeolang.EOexamples.app</argument>
+            <argument>org.eolang.examples.app</argument>
             <argument>14</argument>
             <argument>377</argument>
           </arguments>

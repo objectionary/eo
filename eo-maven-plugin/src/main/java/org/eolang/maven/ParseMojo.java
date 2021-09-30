@@ -23,13 +23,10 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,10 +36,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.set.SetOf;
-import org.eolang.parser.Syntax;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -59,6 +53,11 @@ import org.slf4j.impl.StaticLoggerBinder;
 )
 @SuppressWarnings("PMD.ImmutableField")
 public final class ParseMojo extends AbstractMojo {
+
+    /**
+     * The directory where to parse to.
+     */
+    public static final String DIR = "01-parse";
 
     /**
      * Target directory.
@@ -108,7 +107,14 @@ public final class ParseMojo extends AbstractMojo {
                         glob -> ParseMojo.matcher(glob).matches(file)
                     )
                 )
-                .forEach(this::parse);
+                .forEach(
+                    file -> {
+                        final String name = file.toString().substring(
+                            this.sourcesDir.toString().length() + 1
+                        ).replaceAll(".eo$", "");
+                        new Parsing(file).into(this.targetDir, name);
+                    }
+                );
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
@@ -128,42 +134,6 @@ public final class ParseMojo extends AbstractMojo {
     private static PathMatcher matcher(final String text) {
         return FileSystems.getDefault()
             .getPathMatcher(String.format("glob:%s", text));
-    }
-
-    /**
-     * Parse EO file to XML.
-     * @param file EO file
-     */
-    private void parse(final Path file) {
-        final String name = file.toString().substring(
-            this.sourcesDir.toString().length() + 1
-        );
-        final String xml = String.format("%s.xml", name);
-        final Path path = this.targetDir.toPath()
-            .resolve("01-parse")
-            .resolve(xml);
-        if (Files.exists(path)) {
-            Logger.info(this, "%s already parsed to %s", file, path);
-        } else {
-            try {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                new Syntax(
-                    name,
-                    new InputOf(file),
-                    new OutputTo(baos)
-                ).parse();
-                new Save(baos.toByteArray(), path).save();
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't parse %s into %s",
-                        file, this.targetDir
-                    ),
-                    ex
-                );
-            }
-            Logger.info(this, "%s parsed to %s", file, path);
-        }
     }
 
 }
