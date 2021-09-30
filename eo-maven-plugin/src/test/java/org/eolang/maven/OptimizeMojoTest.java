@@ -43,8 +43,8 @@ public final class OptimizeMojoTest {
     public void testSimpleOptimize(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
-            "[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src.resolve("main.eo")
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src.resolve("foo/main.eo")
         ).save();
         final Path target = temp.resolve("target");
         new Mojo<>(ParseMojo.class)
@@ -57,7 +57,15 @@ public final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/main.eo.xml", OptimizeMojo.STEPS)
+                    String.format("%s/foo/main.eo.xml", OptimizeMojo.STEPS)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(
+                target.resolve(
+                    String.format("%s/foo/main.eo.xml", OptimizeMojo.DIR)
                 )
             ),
             Matchers.is(true)

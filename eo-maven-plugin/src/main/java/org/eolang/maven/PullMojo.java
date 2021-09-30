@@ -24,9 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -66,7 +64,7 @@ public final class PullMojo extends AbstractMojo {
     /**
      * The directory where to process to.
      */
-    public static final String DIR = "02-pull";
+    public static final String DIR = "04-pull";
 
     /**
      * Where we have .eo.xml files just parsed (we process new .eo
@@ -96,7 +94,7 @@ public final class PullMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path sources = this.targetDir.toPath().resolve(ParseMojo.DIR);
+        final Path sources = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         try {
             final List<Path> files = Files.walk(sources)
                 .filter(file -> !file.toFile().isDirectory())
@@ -129,14 +127,13 @@ public final class PullMojo extends AbstractMojo {
      */
     private Collection<String> process(final Path file)
         throws FileNotFoundException {
-        final XML xml = new XSLDocument(
-            PullMojo.class.getResourceAsStream("pull-extract.xsl")
-        ).transform(new XMLDocument(file));
         final Collection<String> foreign = new HashSet<>(
             new ListOf<>(
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
-                    xml.xpath("//o/@foreign")
+                    new XMLDocument(file).xpath(
+                        "//o[not(starts-with(@base,'.')) and not(@ref)]/@base"
+                    )
                 )
             )
         );

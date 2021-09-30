@@ -46,8 +46,8 @@ public final class ParseMojoTest {
         final Path src = temp.resolve("src");
         final Path target = temp.resolve("target");
         new Save(
-            "[args] > main\n  (stdout \"Hello!\").print\n",
-            src.resolve("main.eo")
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
+            src.resolve("foo/main.eo")
         ).save();
         new Mojo<>(ParseMojo.class)
             .with("sourcesDir", src.toFile())
@@ -56,7 +56,7 @@ public final class ParseMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/main.eo.xml", ParseMojo.DIR)
+                    String.format("%s/foo/main.eo.xml", ParseMojo.DIR)
                 )
             ),
             Matchers.is(true)

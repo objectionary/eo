@@ -50,7 +50,7 @@ public final class PullMojoTest {
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
                 "",
-                "[args] > main\n  (stdout \"Hello!\").print\n"
+                "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("main.eo")
         ).save();
@@ -58,6 +58,9 @@ public final class PullMojoTest {
         new Mojo<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
+            .execute();
+        new Mojo<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
             .execute();
         new Mojo<>(PullMojo.class)
             .with("targetDir", target.toFile())
@@ -96,10 +99,13 @@ public final class PullMojoTest {
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
+        new Mojo<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .execute();
         new Save(
             "<program/>",
             new Place("org.eolang.txt.sprintf").make(
-                target.resolve(ParseMojo.DIR), "eo.xml"
+                target.resolve(OptimizeMojo.DIR), "eo.xml"
             )
         ).save();
         new Mojo<>(PullMojo.class)

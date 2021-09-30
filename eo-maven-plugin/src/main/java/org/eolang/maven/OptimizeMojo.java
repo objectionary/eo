@@ -55,14 +55,14 @@ import org.slf4j.impl.StaticLoggerBinder;
 public final class OptimizeMojo extends AbstractMojo {
 
     /**
-     * The directory where to compile to.
-     */
-    public static final String DIR = "04-optimize";
-
-    /**
      * The directory where to place intermediary files.
      */
-    public static final String STEPS = "03-steps";
+    public static final String STEPS = "02-steps";
+
+    /**
+     * The directory where to compile to.
+     */
+    public static final String DIR = "03-optimize";
 
     /**
      * From directory.
