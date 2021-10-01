@@ -45,8 +45,7 @@ SOFTWARE.
           <execution>
             <goals>
               <goal>parse</goal>
-              <goal>pull</goal>
-              <goal>optimize</goal>
+              <goal>assemble</goal>
               <goal>compile</goal>
               <goal>resolve</goal>
             </goals>

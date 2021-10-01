@@ -99,17 +99,27 @@ public final class Save {
     public void save() throws IOException {
         final File dir = this.path.toFile().getParentFile();
         if (dir.mkdirs()) {
-            Logger.debug(Save.class, "%s directory created", dir);
+            Logger.info(Save.class, "%s directory created", dir);
         }
-        final double bytes = new IoChecked<>(
-            new LengthOf(
-                new TeeInput(
-                    this.content,
-                    new OutputTo(this.path)
+        try {
+            final double bytes = new IoChecked<>(
+                new LengthOf(
+                    new TeeInput(
+                        this.content,
+                        new OutputTo(this.path)
+                    )
                 )
-            )
-        ).value();
-        Logger.debug(this, "File %s saved (%.0f bytes)", this.path, bytes);
+            ).value();
+            Logger.debug(this, "File %s saved (%.0f bytes)", this.path, bytes);
+        } catch (final IOException ex) {
+            throw new IOException(
+                String.format(
+                    "Failed while trying to save to %s",
+                    this.path
+                ),
+                ex
+            );
+        }
     }
 
 }

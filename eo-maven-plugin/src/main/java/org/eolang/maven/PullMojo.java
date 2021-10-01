@@ -29,12 +29,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -96,9 +94,7 @@ public final class PullMojo extends AbstractMojo {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         final Path sources = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         try {
-            final List<Path> files = Files.walk(sources)
-                .filter(file -> !file.toFile().isDirectory())
-                .collect(Collectors.toList());
+            final List<Path> files = new Walk(sources);
             Logger.info(this, "%d eo.xml files found", files.size());
             final Collection<String> foreign = new HashSet<>(0);
             for (final Path xml : files) {

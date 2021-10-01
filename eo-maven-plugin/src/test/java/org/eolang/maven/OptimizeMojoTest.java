@@ -47,11 +47,11 @@ public final class OptimizeMojoTest {
             src.resolve("foo/main.eo")
         ).save();
         final Path target = temp.resolve("target");
-        new Mojo<>(ParseMojo.class)
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
         MatcherAssert.assertThat(

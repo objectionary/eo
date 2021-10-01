@@ -136,21 +136,7 @@ public final class CompileMojo extends AbstractMojo {
         }
         final Path dir = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         if (this.compiler == null) {
-            try {
-                Files.walk(dir)
-                    .filter(file -> !file.toFile().isDirectory())
-                    .forEach(this::compile);
-            } catch (final IOException ex) {
-                throw new MojoFailureException(
-                    new UncheckedText(
-                        new FormattedText(
-                            "Can't list EO files in %s",
-                            dir
-                        )
-                    ).asString(),
-                    ex
-                );
-            }
+            new Walk(dir).forEach(this::compile);
         } else {
             this.compileAlternative(dir);
         }
@@ -245,9 +231,7 @@ public final class CompileMojo extends AbstractMojo {
                 .findFirst()
                 .get();
             method.setAccessible(true);
-            final Path[] paths = Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .toArray((final int size) -> new Path[size]);
+            final Path[] paths = new Walk(dir).toArray(new Path[0]);
             for (final Path path : paths) {
                 method.invoke(transpiler, path);
             }
@@ -297,16 +281,6 @@ public final class CompileMojo extends AbstractMojo {
                     new FormattedText(
                         "Not permitted to access class %s (or its method(s)) through reflection.",
                         this.compiler
-                    )
-                ).asString(),
-                exception
-            );
-        } catch (final IOException exception) {
-            throw new MojoFailureException(
-                new UncheckedText(
-                    new FormattedText(
-                        "Can't list EO files in the %s directory.",
-                        dir
                     )
                 ).asString(),
                 exception

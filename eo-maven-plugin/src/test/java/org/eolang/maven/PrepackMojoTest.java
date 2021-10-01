@@ -45,7 +45,7 @@ public final class PrepackMojoTest {
         new Save("abc", foo).save();
         new Save("xxx", generated.resolve("a/b/c/foo.java")).save();
         new Save("cde", classes.resolve("foo.txt")).save();
-        new Mojo<>(PrepackMojo.class)
+        new Moja<>(PrepackMojo.class)
             .with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())
             .execute();

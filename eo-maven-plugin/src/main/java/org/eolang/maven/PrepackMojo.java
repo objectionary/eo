@@ -83,24 +83,13 @@ public final class PrepackMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        try {
-            Files.walk(this.classesDir.toPath())
-                .filter(file -> !file.toFile().isDirectory())
-                .filter(
-                    file -> this.includes.stream().anyMatch(
-                        glob -> PrepackMojo.matcher(glob).matches(file)
-                    )
+        new Walk(this.classesDir.toPath()).stream()
+            .filter(
+                file -> this.includes.stream().anyMatch(
+                    glob -> PrepackMojo.matcher(glob).matches(file)
                 )
-                .forEach(this::delete);
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list EO files in %s",
-                    this.classesDir
-                ),
-                ex
-            );
-        }
+            )
+            .forEach(this::delete);
     }
 
     /**

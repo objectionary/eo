@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -123,14 +122,14 @@ public final class SnippetTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final MavenProject project = new MavenProjectStub();
-        new Mojo<>(ParseMojo.class)
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
-        new Mojo<>(CompileMojo.class)
+        new Moja<>(CompileMojo.class)
             .with("project", project)
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
@@ -149,9 +148,9 @@ public final class SnippetTest {
                 ).toString()
             )
         );
-        Files.walk(generated)
-            .filter(file -> !file.toFile().isDirectory())
-            .forEach(file -> SnippetTest.javac(file, classes, cpath));
+        new Walk(generated).forEach(
+            file -> SnippetTest.javac(file, classes, cpath)
+        );
         final Process proc = new ProcessBuilder()
             .command(
                 new Joined<>(

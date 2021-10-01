@@ -49,7 +49,7 @@ public final class ParseMojoTest {
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
             src.resolve("foo/main.eo")
         ).save();
-        new Mojo<>(ParseMojo.class)
+        new Moja<>(ParseMojo.class)
             .with("sourcesDir", src.toFile())
             .with("targetDir", target.toFile())
             .execute();
@@ -71,7 +71,7 @@ public final class ParseMojoTest {
         new Save("something is wrong here", src.resolve("f.eo")).save();
         Assertions.assertThrows(
             ParsingException.class,
-            () -> new Mojo<>(ParseMojo.class)
+            () -> new Moja<>(ParseMojo.class)
                 .with("sourcesDir", src.toFile())
                 .with("targetDir", target.toFile())
                 .execute()

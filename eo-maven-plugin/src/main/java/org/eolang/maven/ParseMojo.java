@@ -24,9 +24,7 @@
 package org.eolang.maven;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.PathMatcher;
 import java.util.HashSet;
 import java.util.Set;
@@ -94,36 +92,26 @@ public final class ParseMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        try {
-            Files.walk(this.sourcesDir.toPath())
-                .filter(file -> !file.toFile().isDirectory())
-                .filter(
-                    file -> this.includes.stream().anyMatch(
-                        glob -> ParseMojo.matcher(glob).matches(file)
-                    )
+        new Walk(this.sourcesDir.toPath())
+            .stream()
+            .filter(
+                file -> this.includes.stream().anyMatch(
+                    glob -> ParseMojo.matcher(glob).matches(file)
                 )
-                .filter(
-                    file -> this.excludes.stream().noneMatch(
-                        glob -> ParseMojo.matcher(glob).matches(file)
-                    )
+            )
+            .filter(
+                file -> this.excludes.stream().noneMatch(
+                    glob -> ParseMojo.matcher(glob).matches(file)
                 )
-                .forEach(
-                    file -> {
-                        final String name = file.toString().substring(
-                            this.sourcesDir.toString().length() + 1
-                        ).replaceAll(".eo$", "");
-                        new Parsing(file).into(this.targetDir, name);
-                    }
-                );
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list EO files in %s",
-                    this.sourcesDir
-                ),
-                ex
+            )
+            .forEach(
+                file -> {
+                    final String name = file.toString().substring(
+                        this.sourcesDir.toString().length() + 1
+                    ).replaceAll(".eo$", "");
+                    new Parsing(file).into(this.targetDir, name);
+                }
             );
-        }
     }
 
     /**

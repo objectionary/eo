@@ -50,14 +50,14 @@ public final class ResolveMojoTest {
         ).save();
         final Path target = temp.resolve("target");
         final Path deps = temp.resolve("dependencies");
-        new Mojo<>(ParseMojo.class)
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
-        new Mojo<>(ResolveMojo.class)
+        new Moja<>(ResolveMojo.class)
             .with("targetDir", target.toFile())
             .with("dependenciesDir", deps.toFile())
             .with("project", new MavenProjectStub())

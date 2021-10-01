@@ -25,25 +25,22 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.Func;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PullMojo}.
+ * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class PullMojoTest {
+public final class AssembleMojoTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) throws Exception {
+    public void testSimplePull() throws Exception {
+        final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("src");
         new Save(
             String.join(
@@ -59,15 +56,8 @@ public final class PullMojoTest {
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Moja<>(OptimizeMojo.class)
+        new Moja<>(AssembleMojo.class)
             .with("targetDir", target.toFile())
-            .execute();
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with(
-                "repo",
-                (Func<String, Input>) input -> new InputOf("[] > hello\n")
-            )
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
@@ -80,44 +70,6 @@ public final class PullMojoTest {
             ),
             Matchers.is(true)
         );
-    }
-
-    @Test
-    public void noPullIfXmlExists(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Save(
-            String.join(
-                "\n",
-                "+alias sprintf org.eolang.txt.sprintf",
-                "",
-                "[args] > foo\n  sprintf\n"
-            ),
-            src.resolve("foo.eo")
-        ).save();
-        final Path target = temp.resolve("target");
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
-        new Save(
-            "<program/>",
-            new Place("org.eolang.txt.sprintf").make(
-                target.resolve(OptimizeMojo.DIR), "eo.xml"
-            )
-        ).save();
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
-    }
-
-    @Test
-    public void noPullWithEmptyDir(@TempDir final Path temp) {
-        new Moja<>(PullMojo.class)
-            .with("targetDir", temp.toFile())
-            .execute();
     }
 
 }

@@ -78,19 +78,7 @@ public final class OptimizeMojo extends AbstractMojo {
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         final Path dir = this.targetDir.toPath().resolve(ParseMojo.DIR);
-        try {
-            Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .forEach(file -> this.optimize(dir, file));
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list XML files in %s",
-                    dir
-                ),
-                ex
-            );
-        }
+        new Walk(dir).forEach(file -> this.optimize(dir, file));
     }
 
     /**

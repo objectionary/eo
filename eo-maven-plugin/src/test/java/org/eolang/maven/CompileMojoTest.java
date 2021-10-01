@@ -82,14 +82,14 @@ public final class CompileMojoTest {
         new Save(code, src.resolve("code.eo")).save();
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
-        new Mojo<>(ParseMojo.class)
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
-        new Mojo<>(CompileMojo.class)
+        new Moja<>(CompileMojo.class)
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
