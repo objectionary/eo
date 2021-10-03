@@ -159,7 +159,7 @@ public final class PullMojo extends AbstractMojo {
             Logger.debug(this, "The object %s already parsed at %s", name, xml);
         } else {
             new Parsing(this.pull(name)).into(
-                this.targetDir, name
+                this.targetDir.toPath(), name
             );
         }
     }

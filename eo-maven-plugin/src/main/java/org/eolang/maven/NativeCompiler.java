@@ -29,6 +29,7 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
@@ -65,17 +66,17 @@ final class NativeCompiler implements Compiler {
     public void compile(final Path file, final Path generated) throws IOException {
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
-        final Path target = NativeCompiler.resolve(this.temp, name);
+        final Path target = this.temp.resolve(name);
         if (Files.exists(target)) {
             Logger.info(
-                this, "%s already compiled to %s with the original compiler",
+                this, "%s is already compiled to %s",
                 file, target
             );
         } else {
             new Xsline(
                 input,
                 new OutputTo(target),
-                new TargetSpy(NativeCompiler.resolve(this.pre, name)),
+                new TargetSpy(this.pre.resolve(name)),
                 new ListOf<>(
                     "org/eolang/maven/pre/classes.xsl",
                     "org/eolang/maven/pre/junit.xsl",
@@ -87,7 +88,8 @@ final class NativeCompiler implements Compiler {
                 )
             ).pass();
             final XML after = this.noErrors(new XMLDocument(target), name);
-            for (final XML java : after.nodes("//class[java and not(@atom)]")) {
+            final Collection<XML> nodes = after.nodes("//class[java and not(@atom)]");
+            for (final XML java : nodes) {
                 new Save(
                     java.xpath("java/text()").get(0),
                     new Place(java.xpath("@java-name").get(0)).make(
@@ -96,30 +98,10 @@ final class NativeCompiler implements Compiler {
                 ).save();
             }
             Logger.info(
-                this, "%s compiled to %s with the original compiler",
-                file, generated
+                this, "%s compiled to %s, created %d .java files",
+                file, generated, nodes.size()
             );
         }
-    }
-
-    /**
-     * Make a relative path.
-     *
-     * @param dir The dir
-     * @param name The name
-     * @return Path
-     */
-    private static Path resolve(final Path dir, final String name) {
-        final Path path = dir.resolve(
-            String.format(
-                "%s.xml",
-                name
-            )
-        );
-        if (path.toFile().getParentFile().mkdirs()) {
-            Logger.info(CompileMojo.class, "%s directory created", dir);
-        }
-        return path;
     }
 
     /**

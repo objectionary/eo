@@ -109,7 +109,7 @@ public final class ParseMojo extends AbstractMojo {
                     final String name = file.toString().substring(
                         this.sourcesDir.toString().length() + 1
                     ).replaceAll(".eo$", "");
-                    new Parsing(file).into(this.targetDir, name);
+                    new Parsing(file).into(this.targetDir.toPath(), name);
                 }
             );
     }

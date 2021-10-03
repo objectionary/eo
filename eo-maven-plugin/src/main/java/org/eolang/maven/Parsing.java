@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,9 +58,9 @@ final class Parsing {
      * @param target The "/target" directory
      * @param name Object name, like "org.eolang.io.stdout"
      */
-    void into(final File target, final String name) {
+    void into(final Path target, final String name) {
         final Path path = new Place(name).make(
-            target.toPath().resolve(ParseMojo.DIR), "eo.xml"
+            target.resolve(ParseMojo.DIR), "eo.xml"
         );
         if (Files.exists(path)) {
             Logger.info(this, "%s already parsed to %s", this.source, path);
