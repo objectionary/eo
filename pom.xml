@@ -96,11 +96,6 @@ SOFTWARE.
         <artifactId>cactoos</artifactId>
         <version>0.46</version>
       </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.8.0-beta1</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <profiles>
@@ -114,7 +109,6 @@ SOFTWARE.
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>
-                <exclude>findbugs:.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>

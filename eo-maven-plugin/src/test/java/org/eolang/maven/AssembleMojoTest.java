@@ -25,9 +25,13 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link AssembleMojo}.
@@ -39,8 +43,7 @@ import org.junit.jupiter.api.Test;
 public final class AssembleMojoTest {
 
     @Test
-    public void testSimplePull() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testSimplePull(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             String.join(
@@ -58,6 +61,12 @@ public final class AssembleMojoTest {
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("targetDir", target.toFile())
+            .with(
+                "objectionary",
+                (Func<String, Input>) input -> new InputOf(
+                    "[] > sprintf\n"
+                )
+            )
             .execute();
         MatcherAssert.assertThat(
             Files.exists(

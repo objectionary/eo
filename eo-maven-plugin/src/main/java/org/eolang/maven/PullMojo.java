@@ -28,7 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,7 +40,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.slf4j.impl.StaticLoggerBinder;
@@ -76,18 +74,10 @@ public final class PullMojo extends AbstractMojo {
     private File targetDir;
 
     /**
-     * The repo.
+     * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Func<String, Input> repo = name -> new InputOf(
-        new URL(
-            String.format(
-                // @checkstyle LineLength (1 line)
-                "https://raw.githubusercontent.com/yegor256/objectionary/master/objects/%s.eo",
-                name.replace(".", "/")
-            )
-        )
-    );
+    private Func<String, Input> objectionary = new Objectionary();
 
     @Override
     public void execute() throws MojoFailureException {
@@ -128,7 +118,15 @@ public final class PullMojo extends AbstractMojo {
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
-                        "//o[not(starts-with(@base,'.')) and not(@ref)]/@base"
+                        String.join(
+                            " ",
+                            "//o[",
+                            "not(starts-with(@base,'.'))",
+                            " and @base != '^'",
+                            " and @base != '$'",
+                            " and not(@ref)",
+                            "]/@base"
+                        )
                     )
                 )
             )
@@ -181,7 +179,7 @@ public final class PullMojo extends AbstractMojo {
             Logger.debug(this, "The object %s already pulled to %s", name, src);
         } else {
             new Save(
-                new IoCheckedFunc<>(this.repo).apply(name),
+                new IoCheckedFunc<>(this.objectionary).apply(name),
                 src
             ).save();
             Logger.info(this, "Sources of object %s pulled to %s", name, src);

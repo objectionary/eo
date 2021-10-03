@@ -34,6 +34,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Func;
+import org.cactoos.Input;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -59,6 +61,12 @@ public final class AssembleMojo extends AbstractMojo {
     )
     private File targetDir;
 
+    /**
+     * The objectionary.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private Func<String, Input> objectionary = new Objectionary();
+
     @Override
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -70,15 +78,23 @@ public final class AssembleMojo extends AbstractMojo {
                 .execute();
             new Moja<>(PullMojo.class)
                 .with("targetDir", this.targetDir)
+                .with("objectionary", this.objectionary)
                 .execute();
             final int after = this.files();
             if (after == before) {
                 break;
             }
-            before = after;
             ++cycle;
-            Logger.info(this, "Assemble cycle #%d", cycle);
+            Logger.info(
+                this, "Assemble cycle #%d (%d -> %d)",
+                cycle, before, after
+            );
+            before = after;
         }
+        Logger.info(
+            this, "%d assemble cycle(s) produced %d .eo.xml file(s)",
+            cycle, before
+        );
     }
 
     /**

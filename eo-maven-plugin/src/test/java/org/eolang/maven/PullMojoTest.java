@@ -65,7 +65,7 @@ public final class PullMojoTest {
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with(
-                "repo",
+                "objectionary",
                 (Func<String, Input>) input -> new InputOf("[] > hello\n")
             )
             .execute();
@@ -110,7 +110,24 @@ public final class PullMojoTest {
         ).save();
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
+            .with(
+                "objectionary",
+                (Func<String, Input>) input -> new InputOf(
+                    "[] > sprintf\n"
+                )
+            )
             .execute();
+        MatcherAssert.assertThat(
+            Files.exists(
+                target.resolve(
+                    String.format(
+                        "%s/org/eolang/txt/sprintf.eo.xml",
+                        ParseMojo.DIR
+                    )
+                )
+            ),
+            Matchers.is(true)
+        );
     }
 
     @Test
