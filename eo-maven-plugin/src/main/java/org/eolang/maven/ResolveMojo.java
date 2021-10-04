@@ -97,6 +97,14 @@ public final class ResolveMojo extends AbstractMojo {
     )
     private File outputDirectory;
 
+    /**
+     * Skip artifacts with the version 0.0.0.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.9.0
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private boolean skipZeroVersions;
+
     @Override
     @SuppressWarnings("PMD.GuardLogStatement")
     public void execute() throws MojoFailureException, MojoExecutionException {
@@ -105,6 +113,7 @@ public final class ResolveMojo extends AbstractMojo {
         final Collection<Dependency> deps = new Walk(dir).stream()
             .map(this::artifacts)
             .flatMap(Collection::stream)
+            .filter(dep -> !this.skipZeroVersions || !"0.0.0".equals(dep.getVersion()))
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()

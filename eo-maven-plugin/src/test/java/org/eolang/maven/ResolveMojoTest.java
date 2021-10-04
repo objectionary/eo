@@ -49,7 +49,6 @@ public final class ResolveMojoTest {
             src.resolve("foo.eo")
         ).save();
         final Path target = temp.resolve("target");
-        final Path deps = temp.resolve("dependencies");
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
@@ -59,7 +58,6 @@ public final class ResolveMojoTest {
             .execute();
         new Moja<>(ResolveMojo.class)
             .with("targetDir", target.toFile())
-            .with("dependenciesDir", deps.toFile())
             .with("project", new MavenProjectStub())
             .execute();
         MatcherAssert.assertThat(
