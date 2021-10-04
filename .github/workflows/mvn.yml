@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        java: [1.8, 11, 13]
+        java: [11, 13]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
