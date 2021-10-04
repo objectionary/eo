@@ -116,11 +116,15 @@ public final class ResolveMojo extends AbstractMojo {
             final int after = this.files();
             if (before < after) {
                 Logger.info(
-                    this, "%d new file(s) after unpacking of %s",
-                    after - before, dep
+                    this, "%d new file(s) after unpacking of %s:%s:%s",
+                    after - before,
+                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
                 );
             } else {
-                Logger.warn(this, "No new files after unpacking of %s!", dep);
+                Logger.warn(
+                    this, "No new files after unpacking of %s:%s:%s!",
+                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+                );
             }
         }
     }
