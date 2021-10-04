@@ -124,12 +124,12 @@ public final class CompileMojo extends AbstractMojo {
         final Path dir = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         final Compiler cmp;
         if (this.compiler == null) {
-            cmp = new NativeCompiler(
+            cmp = new CompilerOriginal(
                 this.targetDir.toPath().resolve(CompileMojo.DIR),
                 this.targetDir.toPath().resolve(CompileMojo.PRE)
             );
         } else {
-            cmp = new AlternativeCompiler(this.compiler);
+            cmp = new CompilerAlternative(this.compiler);
         }
         new Walk(dir).forEach(
             file -> {

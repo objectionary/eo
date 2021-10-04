@@ -35,7 +35,7 @@ import java.util.Arrays;
  *
  * @since 0.1
  */
-final class AlternativeCompiler implements Compiler {
+final class CompilerAlternative implements Compiler {
 
     /**
      * The name of it.
@@ -46,11 +46,12 @@ final class AlternativeCompiler implements Compiler {
      * Ctor.
      * @param nam The name
      */
-    AlternativeCompiler(final String nam) {
+    CompilerAlternative(final String nam) {
         this.name = nam;
     }
 
     @Override
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public void compile(final Path file, final Path generated) {
         try {
             final Class<?> clss = Class.forName(this.name);

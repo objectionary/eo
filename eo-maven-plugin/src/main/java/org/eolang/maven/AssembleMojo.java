@@ -68,6 +68,7 @@ public final class AssembleMojo extends AbstractMojo {
     private Func<String, Input> objectionary = new Objectionary();
 
     @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         int before = this.files();

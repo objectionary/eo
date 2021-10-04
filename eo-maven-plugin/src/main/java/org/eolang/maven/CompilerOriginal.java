@@ -40,7 +40,12 @@ import org.eolang.parser.Xsline;
  *
  * @since 0.1
  */
-final class NativeCompiler implements Compiler {
+final class CompilerOriginal implements Compiler {
+
+    /**
+     * Extension.
+     */
+    private static final String EXT = "eo.xml";
 
     /**
      * Temp dir.
@@ -57,7 +62,7 @@ final class NativeCompiler implements Compiler {
      * @param tmp The temp
      * @param ppre The pre
      */
-    NativeCompiler(final Path tmp, final Path ppre) {
+    CompilerOriginal(final Path tmp, final Path ppre) {
         this.temp = tmp;
         this.pre = ppre;
     }
@@ -66,7 +71,8 @@ final class NativeCompiler implements Compiler {
     public void compile(final Path file, final Path generated) throws IOException {
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
-        final Path target = this.temp.resolve(name);
+        final Place place = new Place(name);
+        final Path target = place.make(this.temp, CompilerOriginal.EXT);
         if (Files.exists(target)) {
             Logger.info(
                 this, "%s is already compiled to %s",
@@ -76,7 +82,7 @@ final class NativeCompiler implements Compiler {
             new Xsline(
                 input,
                 new OutputTo(target),
-                new TargetSpy(this.pre.resolve(name)),
+                new TargetSpy(place.make(this.pre, CompilerOriginal.EXT)),
                 new ListOf<>(
                     "org/eolang/maven/pre/classes.xsl",
                     "org/eolang/maven/pre/junit.xsl",

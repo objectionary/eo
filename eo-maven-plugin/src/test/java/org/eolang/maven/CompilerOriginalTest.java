@@ -31,11 +31,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link NativeCompiler}.
+ * Test case for {@link CompilerOriginal}.
  *
  * @since 0.1
  */
-public final class NativeCompilerTest {
+public final class CompilerOriginalTest {
 
     @Test
     public void simpleCompile(@TempDir final Path temp) throws Exception {
@@ -46,7 +46,7 @@ public final class NativeCompilerTest {
         final Path target = temp.resolve("target");
         final Path pre = temp.resolve("pre");
         final Path generated = temp.resolve("generated");
-        new NativeCompiler(target, pre).compile(
+        new CompilerOriginal(target, pre).compile(
             xml.resolve(String.format("%s/foo/bar/hello.eo.xml", ParseMojo.DIR)),
             generated
         );

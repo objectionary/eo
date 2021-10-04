@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -109,15 +110,17 @@ public final class PullMojo extends AbstractMojo {
      * Pull all deps found in the provided XML file.
      *
      * @param file The .eo.xml file
+     * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
     private Collection<String> process(final Path file)
         throws FileNotFoundException {
+        final XML xml = new XMLDocument(file);
         final Collection<String> foreign = new HashSet<>(
             new ListOf<>(
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
-                    new XMLDocument(file).xpath(
+                    xml.xpath(
                         String.join(
                             " ",
                             "//o[",
@@ -131,6 +134,9 @@ public final class PullMojo extends AbstractMojo {
                 )
             )
         );
+        if (!xml.nodes("//o[@vararg]").isEmpty()) {
+            foreign.add("org.eolang.array");
+        }
         if (foreign.isEmpty()) {
             Logger.info(
                 this, "Didn't find any foreign objects in %s",

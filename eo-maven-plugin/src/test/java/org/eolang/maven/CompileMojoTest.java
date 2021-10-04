@@ -71,6 +71,7 @@ public final class CompileMojoTest {
 
     /**
      * Compile EO to Java.
+     * @param temp Temp dir
      * @param code EO sources
      * @param file The file to return
      * @return All Java code

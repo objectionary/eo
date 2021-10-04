@@ -106,6 +106,7 @@ public final class SnippetTest {
 
     /**
      * Compile EO to Java and run.
+     * @param temp Temp dir
      * @param code EO sources
      * @param args Command line arguments
      * @param stdin The input
