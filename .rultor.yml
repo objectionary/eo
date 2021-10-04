@@ -15,6 +15,9 @@ release:
     mvn clean install -Dinvoker.skip
     mvn clean deploy -Pcqfn -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
 
+    mkdir /tmp/objectionary
+    cp -R eo-runtime/src/main/eo /tmp/objectionary/objects
+    cp -R eo-runtime/src/test/eo /tmp/objectionary/tests
     cp eo-parser/src/main/resources/XMIR.xsd /tmp
     branch=$(git rev-parse --abbrev-ref HEAD)
     git checkout gh-pages
@@ -23,5 +26,9 @@ release:
     cp /tmp/XMIR.xsd .
     sed -i "s|SNAPSHOT|${tag}|" XMIR.xsd
     git add XMIR.xsd
-    git commit -am "${tag}"
+    git commit -am "XMIR XSD ${tag}"
+    rm -rf objectionary
+    cp -R /tmp/objectionary .
+    git add objectionary
+    git commit -am "objectionary ${tag}"
     git checkout "${branch}"
