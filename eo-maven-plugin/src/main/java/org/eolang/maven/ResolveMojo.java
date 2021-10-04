@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -99,33 +98,41 @@ public final class ResolveMojo extends AbstractMojo {
     private File outputDirectory;
 
     @Override
+    @SuppressWarnings("PMD.GuardLogStatement")
     public void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         final Path dir = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
-        final Collection<Dependency> deps;
-        try {
-            deps = Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .map(this::artifacts)
-                .flatMap(Collection::stream)
-                .map(ResolveMojo.Wrap::new)
-                .sorted()
-                .distinct()
-                .map(ResolveMojo.Wrap::dep)
-                .collect(Collectors.toList());
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list XML files in %s",
-                    dir
-                ),
-                ex
-            );
-        }
-        Logger.info(this, "Found %d dependencie(s)", deps.size());
+        final Collection<Dependency> deps = new Walk(dir).stream()
+            .map(this::artifacts)
+            .flatMap(Collection::stream)
+            .map(ResolveMojo.Wrap::new)
+            .sorted()
+            .distinct()
+            .map(ResolveMojo.Wrap::dep)
+            .collect(Collectors.toList());
         for (final Dependency dep : deps) {
+            final int before = this.files();
             this.unpack(dep);
+            final int after = this.files();
+            if (before < after) {
+                Logger.info(
+                    this, "%d new file(s) after unpacking of %s",
+                    after - before, dep
+                );
+            } else {
+                Logger.warn(this, "No new files after unpacking of %s!", dep);
+            }
         }
+    }
+
+    /**
+     * How many files in the target dir?
+     *
+     * @return Total count
+     * @throws MojoFailureException If fails
+     */
+    private int files() throws MojoFailureException {
+        return new Walk(this.outputDirectory.toPath()).size();
     }
 
     /**

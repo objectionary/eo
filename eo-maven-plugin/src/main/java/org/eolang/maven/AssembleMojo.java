@@ -25,10 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -104,13 +100,7 @@ public final class AssembleMojo extends AbstractMojo {
      * @throws MojoFailureException If fails
      */
     private int files() throws MojoFailureException {
-        final Path sources = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
-        final List<Path> files = new LinkedList<>();
-        if (Files.exists(sources)) {
-            files.addAll(new Walk(sources));
-            Logger.info(this, "%d files found in %s", files.size(), sources);
-        }
-        return files.size();
+        return new Walk(this.targetDir.toPath().resolve(OptimizeMojo.DIR)).size();
     }
 
 }
