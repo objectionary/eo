@@ -89,18 +89,22 @@ final class NativeCompiler implements Compiler {
             ).pass();
             final XML after = this.noErrors(new XMLDocument(target), name);
             final Collection<XML> nodes = after.nodes("//class[java and not(@atom)]");
-            for (final XML java : nodes) {
-                new Save(
-                    java.xpath("java/text()").get(0),
-                    new Place(java.xpath("@java-name").get(0)).make(
-                        generated, "java"
-                    )
-                ).save();
+            if (nodes.isEmpty()) {
+                Logger.info(this, "%s compiled but no .java files created", file);
+            } else {
+                for (final XML java : nodes) {
+                    new Save(
+                        java.xpath("java/text()").get(0),
+                        new Place(java.xpath("@java-name").get(0)).make(
+                            generated, "java"
+                        )
+                    ).save();
+                }
+                Logger.info(
+                    this, "%s compiled to %s, created %d .java files",
+                    file, generated, nodes.size()
+                );
             }
-            Logger.info(
-                this, "%s compiled to %s, created %d .java files",
-                file, generated, nodes.size()
-            );
         }
     }
 
