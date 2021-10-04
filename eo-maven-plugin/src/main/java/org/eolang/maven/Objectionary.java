@@ -46,7 +46,7 @@ public final class Objectionary implements Func<String, Input> {
             )
         );
         Logger.info(
-            this, "The object '%s' will be pulled from %s",
+            this, "The object '%s' will be pulled from %s...",
             name, url
         );
         return new InputOf(url);
