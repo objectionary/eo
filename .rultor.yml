@@ -11,7 +11,7 @@ release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
-    sed -i "s/0\.0\.0/${tag}/g" $(find . -name '*.eo')
+    find . -name '*.eo' | xargs sed -i "s/0\.0\.0/${tag}/g"
     mvn clean install -Dinvoker.skip
     mvn clean deploy -Pcqfn -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
 
