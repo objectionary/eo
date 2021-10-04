@@ -27,6 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - name: Build it with Maven
+        run: mvn -version
         run: mvn -B verify -Pqulice
   xcop-lint:
     runs-on: ubuntu-latest
