@@ -52,6 +52,10 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  * Find all required runtime dependencies and add
  * them to classpath ("compile" scope).
  *
+ * The motivation for this mojo is simple: Maven doesn't have
+ * a mechanism of adding .JAR files to compile/test classpath in
+ * runtime.
+ *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
