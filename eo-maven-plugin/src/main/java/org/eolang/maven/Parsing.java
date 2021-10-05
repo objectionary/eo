@@ -85,7 +85,8 @@ final class Parsing {
                     String.join(
                         "\n",
                         "action: parse",
-                        String.format("file: %s", this.source),
+                        String.format("source: %s", this.source),
+                        String.format("target: %s", path),
                         String.format("time: %s", Instant.now().toString())
                     ),
                     new Place(name).make(this.protocols, "log")
