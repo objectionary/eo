@@ -48,6 +48,8 @@ SOFTWARE.
               <goal>assemble</goal>
               <goal>compile</goal>
               <goal>resolve</goal>
+              <goal>copy-sources</goal>
+              <goal>prepack</goal>
             </goals>
           </execution>
         </executions>

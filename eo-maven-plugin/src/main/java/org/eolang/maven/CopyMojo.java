@@ -91,9 +91,9 @@ public final class CopyMojo extends AbstractMojo {
             src -> {
                 try {
                     new Save(
-                        CopyMojo.REPLACE.matcher(new TextOf(new InputOf(src)).asString()).replaceAll(
-                            String.format("\1:%s\2", this.version)
-                        ),
+                        CopyMojo.REPLACE
+                            .matcher(new TextOf(new InputOf(src)).asString())
+                            .replaceAll(String.format("\1:%s\2", this.version)),
                         this.classesDir.toPath().resolve("EO-SOURCES").resolve(
                             src.toAbsolutePath().toString().substring(
                                 this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1

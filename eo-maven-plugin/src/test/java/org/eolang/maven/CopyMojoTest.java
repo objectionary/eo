@@ -47,10 +47,11 @@ public final class CopyMojoTest {
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             src.resolve("foo/main.eo")
         ).save();
+        final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())
             .with("classesDir", classes.toFile())
-            .with("version", "1.1.1")
+            .with("version", ver)
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
@@ -61,7 +62,7 @@ public final class CopyMojoTest {
             new String(Files.readAllBytes(out), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("0.0.0"),
-                Matchers.containsString("1.1.1")
+                Matchers.containsString(ver)
             )
         );
     }
