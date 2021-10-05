@@ -1,0 +1,13 @@
++package org.eolang
++junit
+
+[] > matches-string-against-pattern
+  /([a-z]+)/i
+  .match "hello"
+  .empty
+  .not > @
+
+[] > doesnt-match-string-against-pattern
+  /([A-Z]{2})/
+  .matches "Hello, World!"
+  .not > @

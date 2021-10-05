@@ -1,0 +1,17 @@
++package org.eolang
++junit
+
+[] > takesParentObject
+  [x] > a
+    [] > take
+      ^.x > @
+    take > @
+  eq. > @
+    a 42
+    42
+
+[] > throwsWhenAppliesToClosedObject
+  [x] > a
+    x > @
+  a false > closed
+  closed true > @

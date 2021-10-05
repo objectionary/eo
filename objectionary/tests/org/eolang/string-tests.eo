@@ -1,0 +1,16 @@
++package org.eolang
++junit
+
+[] > matches-against-regular-expression
+  (/([a-z])+/.matches "dude") > @
+
+[] > trims-string
+  eq. > @
+    "Hello, dude"
+    "Hello, dude  ".trim
+
+[] > turnsStringIntoInt
+  eq. > @
+    42
+    "42".toInt
+

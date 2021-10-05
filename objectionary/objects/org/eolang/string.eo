@@ -1,0 +1,13 @@
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.10.0
+
+[] > string
+  # Trim it from both sides
+  [] > trim /string
+
+  # Make an integer out of this string
+  [] > toInt /int
+
+  # Is true if both strings are equal
+  [x] > eq /bool
+

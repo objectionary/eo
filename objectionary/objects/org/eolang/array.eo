@@ -1,0 +1,38 @@
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.10.0
+
+[] > array
+
+  # Is it empty?
+  [] > empty /bool
+
+  # Obtain the length of the array.
+  [] > length /int
+
+  # Take one element from the array, at the
+  # given position.
+  [i] > get /object
+
+  # Create a new array with this element added to
+  # the end of it.
+  [x] > append /array
+
+  # Reduce from start "a" using the function "f"
+  [a f] > reduce /a
+
+  # For each array element dataize the object
+  [f] > each /bool
+
+  # Map with index. Here "f" must be an abstract
+  # object with two free attributes. The first
+  # one for the element of the array, the second one
+  # for the index.
+  [f] > mapi /array
+
+  # Map without index. Here "f" must be an abstract
+  # object with one free attribute, for the element
+  # of the array.
+  [f] > map
+    ^.mapi > @
+      [x i]
+        ^.f x > @
