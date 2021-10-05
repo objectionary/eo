@@ -198,6 +198,11 @@ public final class PullMojo extends AbstractMojo {
         );
         if (xml.toFile().exists()) {
             Logger.debug(this, "The object %s already parsed at %s", name, xml);
+        } else if (this.protocol(name).toFile().exists() && !this.overWrite) {
+            Logger.debug(
+                this, "The object '%s' already pulled, according to the protocol at %s",
+                name, this.protocol(name)
+            );
         } else {
             new Parsing(this.pull(name), this.protocolsDir.toPath()).into(
                 this.targetDir.toPath(), name
@@ -216,18 +221,10 @@ public final class PullMojo extends AbstractMojo {
         final Path src = new Place(name).make(
             this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
         );
-        final Path protocol = new Place(name).make(
-            this.protocolsDir.toPath(), "log"
-        );
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
                 name, src
-            );
-        } else if (protocol.toFile().exists() && !this.overWrite) {
-            Logger.debug(
-                this, "The object '%s' already pulled, according to the protocol at %s",
-                name, protocol
             );
         } else {
             new Save(
@@ -241,11 +238,23 @@ public final class PullMojo extends AbstractMojo {
                     String.format("file: %s", src),
                     String.format("time: %s", Instant.now().toString())
                 ),
-                protocol
+                this.protocol(name)
             ).save();
             Logger.info(this, "The sources of the object '%s' pulled to %s", name, src);
         }
         return src;
+    }
+
+    /**
+     * The protocol of the object.
+     *
+     * @param name The name of the object
+     * @return Path to the protocol
+     */
+    private Path protocol(final String name) {
+        return new Place(name).make(
+            this.protocolsDir.toPath(), "log"
+        );
     }
 
 }
