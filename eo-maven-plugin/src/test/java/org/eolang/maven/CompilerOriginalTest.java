@@ -42,7 +42,7 @@ public final class CompilerOriginalTest {
         final Path src = temp.resolve("test.eo");
         new Save("+package foo.bar\n\n[x] > hello\n", src).save();
         final Path xml = temp.resolve("xml");
-        new Parsing(src).into(xml, "foo.bar.hello");
+        new Parsing(src, temp.resolve("1")).into(xml, "foo.bar.hello");
         final Path target = temp.resolve("target");
         final Path pre = temp.resolve("pre");
         final Path generated = temp.resolve("generated");

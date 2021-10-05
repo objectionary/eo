@@ -199,7 +199,7 @@ public final class PullMojo extends AbstractMojo {
         if (xml.toFile().exists()) {
             Logger.debug(this, "The object %s already parsed at %s", name, xml);
         } else {
-            new Parsing(this.pull(name)).into(
+            new Parsing(this.pull(name), this.protocolsDir.toPath()).into(
                 this.targetDir.toPath(), name
             );
         }
@@ -237,6 +237,7 @@ public final class PullMojo extends AbstractMojo {
             new Save(
                 String.join(
                     "\n",
+                    "action: pull",
                     String.format("file: %s", src),
                     String.format("time: %s", Instant.now().toString())
                 ),

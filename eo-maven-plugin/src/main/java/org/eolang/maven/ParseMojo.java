@@ -78,6 +78,18 @@ public final class ParseMojo extends AbstractMojo {
     private File sourcesDir;
 
     /**
+     * The directory where we keep protocols of all pulls and parses, one
+     * .log file per each .eo pulled/parsed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-protocols"
+    )
+    private File protocolsDir;
+
+    /**
      * List of inclusion GLOB filters for finding EO files.
      */
     @Parameter
@@ -109,7 +121,9 @@ public final class ParseMojo extends AbstractMojo {
                     final String name = file.toString().substring(
                         this.sourcesDir.toString().length() + 1
                     ).replaceAll(".eo$", "");
-                    new Parsing(file).into(this.targetDir.toPath(), name);
+                    new Parsing(file, this.protocolsDir.toPath()).into(
+                        this.targetDir.toPath(), name
+                    );
                 }
             );
     }

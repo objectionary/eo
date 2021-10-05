@@ -52,6 +52,7 @@ public final class ParseMojoTest {
         new Moja<>(ParseMojo.class)
             .with("sourcesDir", src.toFile())
             .with("targetDir", target.toFile())
+            .with("protocolsDir", temp.resolve("protocols").toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
@@ -74,6 +75,7 @@ public final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("sourcesDir", src.toFile())
                 .with("targetDir", target.toFile())
+                .with("protocolsDir", temp.resolve("proto").toFile())
                 .execute()
         );
     }

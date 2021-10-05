@@ -50,6 +50,7 @@ public final class OptimizeMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
+            .with("protocolsDir", temp.resolve("1").toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())

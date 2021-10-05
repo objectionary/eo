@@ -58,6 +58,7 @@ public final class PullMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
+            .with("protocolsDir", temp.resolve("1").toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -99,6 +100,7 @@ public final class PullMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
+            .with("protocolsDir", temp.resolve("1").toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())

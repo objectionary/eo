@@ -58,10 +58,11 @@ public final class AssembleMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("sourcesDir", src.toFile())
+            .with("protocolsDir", temp.resolve("1").toFile())
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("targetDir", target.toFile())
-            .with("protocolsDir", temp.resolve("protocols").toFile())
+            .with("protocolsDir", temp.resolve("2").toFile())
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf(

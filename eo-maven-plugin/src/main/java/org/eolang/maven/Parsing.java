@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.eolang.parser.Syntax;
@@ -45,11 +46,18 @@ final class Parsing {
     private final Path source;
 
     /**
+     * The directory with protocols.
+     */
+    private final Path protocols;
+
+    /**
      * Ctor.
      * @param src The source
+     * @param protos The dir with protocols
      */
-    Parsing(final Path src) {
+    Parsing(final Path src, final Path protos) {
         this.source = src;
+        this.protocols = protos;
     }
 
     /**
@@ -73,6 +81,15 @@ final class Parsing {
                     new OutputTo(baos)
                 ).parse();
                 new Save(baos.toByteArray(), path).save();
+                new Save(
+                    String.join(
+                        "\n",
+                        "action: parse",
+                        String.format("file: %s", this.source),
+                        String.format("time: %s", Instant.now().toString())
+                    ),
+                    new Place(name).make(this.protocols, "log")
+                ).save();
             } catch (final IOException ex) {
                 throw new IllegalStateException(
                     String.format(
