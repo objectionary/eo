@@ -153,7 +153,6 @@ public final class ResolveMojo extends AbstractMojo {
                     after.size() - before.size(),
                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
                 );
-
             } else {
                 Logger.warn(
                     this, "No new files after unpacking of %s:%s:%s!",
