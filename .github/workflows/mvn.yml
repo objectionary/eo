@@ -4,9 +4,11 @@ name: mvn
   push:
     branches:
       - master
+    paths-ignore: 'paper/**'
   pull_request:
     branches:
       - master
+    paths-ignore: 'paper/**'
 jobs:
   maven-build:
     runs-on: ${{ matrix.os }}
