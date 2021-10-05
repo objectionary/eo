@@ -48,6 +48,7 @@ public final class PrepackMojoTest {
         new Moja<>(PrepackMojo.class)
             .with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())
+            .with("resolvedList", temp.resolve("a.csv").toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(foo),

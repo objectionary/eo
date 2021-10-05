@@ -60,6 +60,7 @@ public final class ResolveMojoTest {
         new Moja<>(ResolveMojo.class)
             .with("targetDir", target.toFile())
             .with("project", new MavenProjectStub())
+            .with("resolvedList", temp.resolve("a.csv").toFile())
             .execute();
         MatcherAssert.assertThat(
             true,

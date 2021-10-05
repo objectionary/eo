@@ -26,16 +26,20 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Set;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.list.Mapped;
 import org.cactoos.set.SetOf;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -75,6 +79,18 @@ public final class PrepackMojo extends AbstractMojo {
     private File generatedDir;
 
     /**
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files are placed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.outputDirectory}/eo-resolved.csv"
+    )
+    private File resolvedList;
+
+    /**
      * List of inclusion GLOB filters for finding .class files.
      */
     @Parameter
@@ -90,6 +106,35 @@ public final class PrepackMojo extends AbstractMojo {
                 )
             )
             .forEach(this::delete);
+        try {
+            this.clean();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
+     * Clean resolved files.
+     * @throws IOException If fails
+     */
+    private void clean() throws IOException {
+        if (this.resolvedList.exists()) {
+            final Collection<Path> files = new Mapped<>(
+                t -> Paths.get(t),
+                Files.readAllLines(
+                    this.resolvedList.toPath(), StandardCharsets.UTF_8
+                )
+            );
+            for (final Path file : files) {
+                Files.delete(file);
+            }
+            Logger.info(
+                this, "All %d binari(es) deleted, which were found in %s",
+                files.size(), this.resolvedList
+            );
+        } else {
+            Logger.info(this, "The list of resolved binaries is absent: %s", this.resolvedList);
+        }
     }
 
     /**

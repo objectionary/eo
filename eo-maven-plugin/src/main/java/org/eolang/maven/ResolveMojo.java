@@ -29,7 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
@@ -42,6 +44,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.iterable.Mapped;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
@@ -98,6 +101,18 @@ public final class ResolveMojo extends AbstractMojo {
     private File outputDirectory;
 
     /**
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files will be placed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.outputDirectory}/eo-resolved.csv"
+    )
+    private File resolvedList;
+
+    /**
      * Skip artifacts with the version 0.0.0.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
@@ -127,22 +142,37 @@ public final class ResolveMojo extends AbstractMojo {
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+        final Collection<Path> added = new HashSet<>(0);
         for (final Dependency dep : deps) {
-            final int before = this.files();
+            final List<Path> before = this.files();
             this.unpack(dep);
-            final int after = this.files();
-            if (before < after) {
+            final List<Path> after = this.files();
+            if (before.size() < after.size()) {
                 Logger.info(
                     this, "%d new file(s) after unpacking of %s:%s:%s",
-                    after - before,
+                    after.size() - before.size(),
                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
                 );
+
             } else {
                 Logger.warn(
                     this, "No new files after unpacking of %s:%s:%s!",
                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
                 );
             }
+            after.removeAll(before);
+            added.addAll(after);
+        }
+        try {
+            new Save(
+                String.join("\n", new Mapped<>(Path::toString, added)),
+                this.resolvedList.toPath()
+            ).save();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                String.format("Failed to save %s", this.resolvedList),
+                ex
+            );
         }
     }
 
@@ -152,8 +182,8 @@ public final class ResolveMojo extends AbstractMojo {
      * @return Total count
      * @throws MojoFailureException If fails
      */
-    private int files() throws MojoFailureException {
-        return new Walk(this.outputDirectory.toPath()).size();
+    private List<Path> files() throws MojoFailureException {
+        return new Walk(this.outputDirectory.toPath());
     }
 
     /**
