@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +76,26 @@ public final class PullMojo extends AbstractMojo {
     private File targetDir;
 
     /**
+     * The directory where we keep protocols of all pulls, one
+     * .log file per each .eo pulled.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-protocols"
+    )
+    private File protocolsDir;
+
+    /**
+     * Pull again even if the .eo file is already present?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean overWrite;
+
+    /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -86,14 +107,13 @@ public final class PullMojo extends AbstractMojo {
         final Path sources = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
         try {
             final List<Path> files = new Walk(sources);
-            Logger.info(this, "%d eo.xml files found", files.size());
-            final Collection<String> foreign = new HashSet<>(0);
-            for (final Path xml : files) {
-                foreign.addAll(this.process(xml));
-            }
-            Logger.info(this, "%d foreign objects found", foreign.size());
-            for (final String name : foreign) {
-                this.process(name);
+            if (!files.isEmpty()) {
+                Logger.info(this, "%d eo.xml files found", files.size());
+                final Collection<String> foreign = new HashSet<>(0);
+                for (final Path xml : files) {
+                    foreign.addAll(this.process(xml));
+                }
+                this.pull(foreign);
             }
         } catch (final IOException ex) {
             throw new MojoFailureException(
@@ -103,6 +123,21 @@ public final class PullMojo extends AbstractMojo {
                 ),
                 ex
             );
+        }
+    }
+
+    /**
+     * Pull all objects.
+     *
+     * @param foreign List of names
+     * @throws IOException If not found
+     */
+    private void pull(final Collection<String> foreign) throws IOException {
+        if (!foreign.isEmpty()) {
+            Logger.info(this, "%d foreign objects found, pulling...", foreign.size());
+            for (final String name : foreign) {
+                this.process(name);
+            }
         }
     }
 
@@ -181,14 +216,33 @@ public final class PullMojo extends AbstractMojo {
         final Path src = new Place(name).make(
             this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
         );
-        if (src.toFile().exists()) {
-            Logger.debug(this, "The object %s already pulled to %s", name, src);
+        final Path protocol = new Place(name).make(
+            this.protocolsDir.toPath(), "log"
+        );
+        if (src.toFile().exists() && !this.overWrite) {
+            Logger.debug(
+                this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
+                name, src
+            );
+        } else if (protocol.toFile().exists() && !this.overWrite) {
+            Logger.debug(
+                this, "The object '%s' already pulled, according to the protocol at %s",
+                name, protocol
+            );
         } else {
             new Save(
                 new IoCheckedFunc<>(this.objectionary).apply(name),
                 src
             ).save();
-            Logger.info(this, "Sources of object %s pulled to %s", name, src);
+            new Save(
+                String.join(
+                    "\n",
+                    String.format("file: %s", src),
+                    String.format("time: %s", Instant.now().toString())
+                ),
+                protocol
+            ).save();
+            Logger.info(this, "The sources of the object '%s' pulled to %s", name, src);
         }
         return src;
     }

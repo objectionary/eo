@@ -61,6 +61,7 @@ public final class AssembleMojoTest {
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("targetDir", target.toFile())
+            .with("protocolsDir", temp.resolve("protocols").toFile())
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf(

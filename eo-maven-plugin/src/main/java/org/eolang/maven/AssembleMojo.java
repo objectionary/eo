@@ -58,6 +58,26 @@ public final class AssembleMojo extends AbstractMojo {
     private File targetDir;
 
     /**
+     * The directory where we keep protocols of all pulls, one
+     * .log file per each .eo pulled.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-protocols"
+    )
+    private File protocolsDir;
+
+    /**
+     * Pull again even if the .eo file is already present?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean overWrite;
+
+    /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -76,6 +96,8 @@ public final class AssembleMojo extends AbstractMojo {
             new Moja<>(PullMojo.class)
                 .with("targetDir", this.targetDir)
                 .with("objectionary", this.objectionary)
+                .with("protocolsDir", this.protocolsDir)
+                .with("overWrite", this.overWrite)
                 .execute();
             final int after = this.files();
             if (after == before) {

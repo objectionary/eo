@@ -64,6 +64,7 @@ public final class PullMojoTest {
             .execute();
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
+            .with("protocolsDir", temp.resolve("protocols").toFile())
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf("[] > hello\n")
@@ -110,6 +111,7 @@ public final class PullMojoTest {
         ).save();
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
+            .with("protocolsDir", temp.resolve("protocols").toFile())
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf(

@@ -105,6 +105,14 @@ public final class ResolveMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "true")
     private boolean skipZeroVersions;
 
+    /**
+     * Overwrite existing .class files?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private Boolean overWrite;
+
     @Override
     @SuppressWarnings("PMD.GuardLogStatement")
     public void execute() throws MojoFailureException, MojoExecutionException {
@@ -168,7 +176,7 @@ public final class ResolveMojo extends AbstractMojo {
                         MojoExecutor.element("groupId", dep.getGroupId()),
                         MojoExecutor.element("artifactId", dep.getArtifactId()),
                         MojoExecutor.element("version", dep.getVersion()),
-                        MojoExecutor.element("overWrite", "true"),
+                        MojoExecutor.element("overWrite", this.overWrite.toString()),
                         MojoExecutor.element(
                             "outputDirectory",
                             this.outputDirectory.toString()
