@@ -182,14 +182,21 @@ public final class ResolveMojo extends SafeMojo {
     private void jarSources(final String version) throws IOException {
         final Path home = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Unplace unplace = new Unplace(home);
-        for (final Path src : new Walk(home)) {
+        final Collection<Path> sources = new Walk(home);
+        int done = 0;
+        for (final Path src : sources) {
             if (src.endsWith(".eo")) {
                 this.tojos().add(unplace.make(src)).set(
                     AssembleMojo.ATTR_VERSION, version
                 );
+                ++done;
             }
             Files.delete(src);
         }
+        Logger.info(
+            this, "%d source file(s) found, %d program(s) registered",
+            sources.size(), done
+        );
     }
 
     /**

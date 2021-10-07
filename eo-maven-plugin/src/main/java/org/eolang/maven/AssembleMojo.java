@@ -143,14 +143,14 @@ public final class AssembleMojo extends SafeMojo {
                 moja.execute();
             }
             final int after = this.files();
-            if (after == before) {
-                break;
-            }
             ++cycle;
             Logger.info(
                 this, "Assemble cycle #%d (%d -> %d)",
                 cycle, before, after
             );
+            if (after == before) {
+                break;
+            }
             before = after;
         }
         Logger.info(
