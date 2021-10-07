@@ -24,27 +24,19 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.iterable.Filtered;
-import org.cactoos.list.ListOf;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.Tojo;
+import org.eolang.tojos.Tojos;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -57,7 +49,7 @@ import org.slf4j.impl.StaticLoggerBinder;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends AbstractMojo {
+public final class PullMojo extends SafeMojo {
 
     /**
      * The directory where to process to.
@@ -76,18 +68,6 @@ public final class PullMojo extends AbstractMojo {
     private File targetDir;
 
     /**
-     * The directory where we keep protocols of all pulls, one
-     * .log file per each .eo pulled.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.10.0
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo-protocols"
-    )
-    private File protocolsDir;
-
-    /**
      * Pull again even if the .eo file is already present?
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
@@ -96,117 +76,35 @@ public final class PullMojo extends AbstractMojo {
     private boolean overWrite;
 
     /**
+     * File with foreign "file objects".
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/foreign.csv"
+    )
+    private File foreign;
+
+    /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Func<String, Input> objectionary = new Objectionary();
 
     @Override
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path sources = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
-        try {
-            final List<Path> files = new Walk(sources);
-            if (!files.isEmpty()) {
-                Logger.info(this, "%d eo.xml files found", files.size());
-                final Collection<String> foreign = new HashSet<>(0);
-                for (final Path xml : files) {
-                    foreign.addAll(this.process(xml));
-                }
-                this.pull(foreign);
-            }
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list XML files in %s",
-                    sources
-                ),
-                ex
-            );
-        }
-    }
-
-    /**
-     * Pull all objects.
-     *
-     * @param foreign List of names
-     * @throws IOException If not found
-     */
-    private void pull(final Collection<String> foreign) throws IOException {
-        if (!foreign.isEmpty()) {
-            Logger.info(this, "%d foreign objects found, pulling...", foreign.size());
-            for (final String name : foreign) {
-                this.process(name);
-            }
-        }
-    }
-
-    /**
-     * Pull all deps found in the provided XML file.
-     *
-     * @param file The .eo.xml file
-     * @return List of foreign objects found
-     * @throws FileNotFoundException If not found
-     */
-    private Collection<String> process(final Path file)
-        throws FileNotFoundException {
-        final XML xml = new XMLDocument(file);
-        final Collection<String> foreign = new HashSet<>(
-            new ListOf<>(
-                new Filtered<>(
-                    obj -> !obj.isEmpty(),
-                    xml.xpath(
-                        String.join(
-                            " ",
-                            "//o[",
-                            "not(starts-with(@base,'.'))",
-                            " and @base != '^'",
-                            " and @base != '$'",
-                            " and not(@ref)",
-                            "]/@base"
-                        )
-                    )
-                )
-            )
+    public void exec() throws IOException {
+        final Tojos tojos = new CsvTojos(this.foreign);
+        final Collection<Tojo> fobjs = tojos.select(
+            row -> !row.exists("eo") && !row.exists("xmir")
         );
-        if (!xml.nodes("//o[@vararg]").isEmpty()) {
-            foreign.add("org.eolang.array");
-        }
-        if (foreign.isEmpty()) {
-            Logger.info(
-                this, "Didn't find any foreign objects in %s",
-                file
-            );
-        } else {
-            Logger.info(
-                this, "Found %d foreign objects in %s: %s",
-                foreign.size(), file, foreign
-            );
-        }
-        return foreign;
-    }
-
-    /**
-     * Pull one object by name.
-     *
-     * @param name The name of the object
-     * @throws IOException If fails
-     */
-    private void process(final String name) throws IOException {
-        final Path xml = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
-        );
-        if (xml.toFile().exists()) {
-            Logger.debug(this, "The object %s already parsed at %s", name, xml);
-        } else if (this.protocol(name).toFile().exists() && !this.overWrite) {
-            Logger.debug(
-                this, "The object '%s' already pulled, according to the protocol at %s",
-                name, this.protocol(name)
-            );
-        } else {
-            new Parsing(this.pull(name), this.protocolsDir.toPath()).into(
-                this.targetDir.toPath(), name
-            );
+        if (!fobjs.isEmpty()) {
+            Logger.info(this, "%d EO objects found", fobjs.size());
+            for (final Tojo tojo : fobjs) {
+                tojo.set(
+                    "eo",
+                    this.pull(tojo.get("id")).toAbsolutePath().toString()
+                );
+            }
         }
     }
 
@@ -231,30 +129,9 @@ public final class PullMojo extends AbstractMojo {
                 new IoCheckedFunc<>(this.objectionary).apply(name),
                 src
             ).save();
-            new Save(
-                String.join(
-                    "\n",
-                    "action: pull",
-                    String.format("file: %s", src),
-                    String.format("time: %s", Instant.now().toString())
-                ),
-                this.protocol(name)
-            ).save();
             Logger.info(this, "The sources of the object '%s' pulled to %s", name, src);
         }
         return src;
-    }
-
-    /**
-     * The protocol of the object.
-     *
-     * @param name The name of the object
-     * @return Path to the protocol
-     */
-    private Path protocol(final String name) {
-        return new Place(name).make(
-            this.protocolsDir.toPath(), "log"
-        );
     }
 
 }

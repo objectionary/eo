@@ -23,41 +23,39 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Make the place for the object.
+ * Test case for {@link TranspilerCanonical}.
  *
  * @since 0.1
  */
-final class Place {
+public final class TranspilerCanonicalTest {
 
-    /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
-     */
-    private final String name;
-
-    /**
-     * Ctor.
-     * @param obj The name of the object
-     */
-    Place(final String obj) {
-        this.name = obj;
-    }
-
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
+    @Test
+    @Disabled
+    public void simpleCompile(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("test.eo");
+        new Save("+package foo.bar\n\n[x] > hello\n", src).save();
+        final Path xml = temp.resolve("xml");
+//        new Parsing(src, temp.resolve("1")).into(xml, "foo.bar.hello");
+        final Path target = temp.resolve("target");
+        final Path pre = temp.resolve("pre");
+        final Path generated = temp.resolve("generated");
+        new TranspilerCanonical(target, pre).transpile(
+            xml.resolve(String.format("%s/foo/bar/hello.eo.xml", ParseMojo.DIR)),
+            generated
+        );
+        MatcherAssert.assertThat(
+            Files.exists(generated.resolve("EOfoo/EObar/EOhello.java")),
+            Matchers.is(true)
+        );
     }
 
 }

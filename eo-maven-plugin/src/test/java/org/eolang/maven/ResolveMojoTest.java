@@ -51,14 +51,13 @@ public final class ResolveMojoTest {
         final Path target = temp.resolve("target");
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .with("protocolsDir", temp.resolve("1").toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
         new Moja<>(ResolveMojo.class)
             .with("targetDir", target.toFile())
+            .with("outputDir", temp.resolve("out").toFile())
             .with("project", new MavenProjectStub())
             .with("resolvedList", temp.resolve("a.csv").toFile())
             .execute();

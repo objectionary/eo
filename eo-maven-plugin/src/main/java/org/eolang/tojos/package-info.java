@@ -21,24 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 /**
- * An abstract compiler.
+ * TOJOs.
  *
- * @since 0.1
+ * @since 0.12
  */
-interface Compiler {
-
-    /**
-     * Compile a single .eo.xml file to .java.
-     *
-     * @param file The path to the .eo.xml file
-     * @param generated The path to the directory, where .java files to be saved
-     * @throws IOException If any issues with I/O
-     */
-    void compile(Path file, Path generated) throws IOException;
-}
+package org.eolang.tojos;

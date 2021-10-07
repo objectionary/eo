@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.eolang.tojos.CsvTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,24 +42,26 @@ public final class OptimizeMojoTest {
 
     @Test
     public void testSimpleOptimize(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
+        final Path src = temp.resolve("foo/main.eo");
         new Save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src.resolve("foo/main.eo")
+            src
         ).save();
         final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("foreign.csv");
+        new CsvTojos(foreign).add("foo.main").set("eo", src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .with("protocolsDir", temp.resolve("1").toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/foo/main.eo.xml", OptimizeMojo.STEPS)
+                    String.format("%s/foo/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
                 )
             ),
             Matchers.is(true)

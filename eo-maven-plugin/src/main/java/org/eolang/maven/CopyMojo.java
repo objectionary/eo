@@ -25,15 +25,13 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.regex.Pattern;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
-import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Make a file with a listing of all EO objects in this module.
@@ -47,7 +45,12 @@ import org.slf4j.impl.StaticLoggerBinder;
     threadSafe = true
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class CopyMojo extends AbstractMojo {
+public final class CopyMojo extends SafeMojo {
+
+    /**
+     * Dir with sources.
+     */
+    public static final String DIR = "EO-SOURCES";
 
     /**
      * Replacer or version.
@@ -85,26 +88,20 @@ public final class CopyMojo extends AbstractMojo {
     private String version;
 
     @Override
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        new Walk(this.sourcesDir.toPath()).forEach(
-            src -> {
-                try {
-                    new Save(
-                        CopyMojo.REPLACE
-                            .matcher(new TextOf(new InputOf(src)).asString())
-                            .replaceAll(String.format("\1:%s\2", this.version)),
-                        this.classesDir.toPath().resolve("EO-SOURCES").resolve(
-                            src.toAbsolutePath().toString().substring(
-                                this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1
-                            )
-                        )
-                    ).save();
-                } catch (final IOException ex) {
-                    throw new IllegalStateException(ex);
-                }
-            }
-        );
+    public void exec() throws IOException {
+        final Path target = this.classesDir.toPath().resolve(CopyMojo.DIR);
+        for (final Path src : new Walk(this.sourcesDir.toPath())) {
+            new Save(
+                CopyMojo.REPLACE
+                    .matcher(new TextOf(new InputOf(src)).asString())
+                    .replaceAll(String.format("\1:%s\2", this.version)),
+                target.resolve(
+                    src.toAbsolutePath().toString().substring(
+                        this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1
+                    )
+                )
+            ).save();
+        }
     }
 
 }

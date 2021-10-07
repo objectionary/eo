@@ -26,15 +26,16 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
+import java.nio.file.Paths;
+import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.Tojo;
+import org.eolang.tojos.Tojos;
 
 /**
  * Compile.
@@ -43,21 +44,21 @@ import org.slf4j.impl.StaticLoggerBinder;
  * @since 0.1
  */
 @Mojo(
-    name = "compile",
+    name = "transpile",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class CompileMojo extends AbstractMojo {
+public final class TranspileMojo extends SafeMojo {
 
     /**
-     * The directory where to compile to.
+     * The directory where to transpile to.
      */
-    public static final String DIR = "06-compile";
+    public static final String DIR = "06-transpile";
 
     /**
-     * The directory where to put pre-compile files.
+     * The directory where to put pre-transpile files.
      */
     public static final String PRE = "05-pre";
 
@@ -107,62 +108,66 @@ public final class CompileMojo extends AbstractMojo {
     private boolean addTestSourcesRoot;
 
     /**
+     * File with foreign "file objects".
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/foreign.csv"
+    )
+    private File foreign;
+
+    /**
      * Which compiler to use: original or HSE.
      */
     @Parameter(
-        property = "compiler"
+        property = "compiler",
+        defaultValue = "canonical"
     )
     @SuppressWarnings("PMD.ImmutableField")
     private String compiler;
 
     @Override
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        if (this.generatedDir.mkdirs()) {
-            Logger.info(this, "Gen directory created: %s", this.generatedDir);
-        }
-        final Path dir = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
-        final Compiler cmp;
-        if (this.compiler == null) {
-            cmp = new CompilerOriginal(
-                this.targetDir.toPath().resolve(CompileMojo.DIR),
-                this.targetDir.toPath().resolve(CompileMojo.PRE)
+    public void exec() throws IOException {
+        final Transpiler cmp;
+        if ("canonical".equals(this.compiler)) {
+            cmp = new TranspilerCanonical(
+                this.targetDir.toPath().resolve(TranspileMojo.DIR),
+                this.targetDir.toPath().resolve(TranspileMojo.PRE)
             );
         } else {
-            cmp = new CompilerAlternative(this.compiler);
+            cmp = new TranspilerAlternative(this.compiler);
         }
-        new Walk(dir).forEach(
-            file -> {
-                try {
-                    cmp.compile(file, this.generatedDir.toPath());
-                } catch (final IOException ex) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Failed to compile %s to %s",
-                            file, this.generatedDir
-                        ),
-                        ex
-                    );
-                }
-            }
+        final Tojos tojos = new CsvTojos(this.foreign);
+        final Collection<Tojo> sources = tojos.select(
+            row -> row.exists("xmir2")
         );
-        if (this.addSourcesRoot) {
-            this.project.addCompileSourceRoot(
-                this.generatedDir.getAbsolutePath()
-            );
-            Logger.info(
-                this, "The directory added to compile-source-root: %s",
-                this.generatedDir
+        int total = 0;
+        for (final Tojo tojo : sources) {
+            total += cmp.transpile(
+                Paths.get(tojo.get("xmir2")),
+                this.generatedDir.toPath()
             );
         }
-        if (this.addTestSourcesRoot) {
-            this.project.addTestCompileSourceRoot(
-                this.generatedDir.getAbsolutePath()
-            );
-            Logger.info(
-                this, "The directory added to test-compile-source-root: %s",
-                this.generatedDir
-            );
+        if (total > 0) {
+            if (this.addSourcesRoot) {
+                this.project.addCompileSourceRoot(
+                    this.generatedDir.getAbsolutePath()
+                );
+                Logger.info(
+                    this, "The directory added to transpile-source-root: %s",
+                    this.generatedDir
+                );
+            }
+            if (this.addTestSourcesRoot) {
+                this.project.addTestCompileSourceRoot(
+                    this.generatedDir.getAbsolutePath()
+                );
+                Logger.info(
+                    this, "The directory added to test-transpile-source-root: %s",
+                    this.generatedDir
+                );
+            }
         }
     }
 

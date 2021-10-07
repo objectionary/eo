@@ -35,7 +35,7 @@ import java.util.Arrays;
  *
  * @since 0.1
  */
-final class CompilerAlternative implements Compiler {
+final class TranspilerAlternative implements Transpiler {
 
     /**
      * The name of it.
@@ -46,24 +46,25 @@ final class CompilerAlternative implements Compiler {
      * Ctor.
      * @param nam The name
      */
-    CompilerAlternative(final String nam) {
+    TranspilerAlternative(final String nam) {
         this.name = nam;
     }
 
     @Override
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    public void compile(final Path file, final Path generated) {
+    public int transpile(final Path file, final Path generated) {
         try {
             final Class<?> clss = Class.forName(this.name);
             final Constructor<?> constructor = clss.getDeclaredConstructor(File.class);
             final Object obj = constructor.newInstance(generated.toFile());
             final Method method = Arrays
                 .stream(obj.getClass().getMethods())
-                .filter(mtd -> "compile".equals(mtd.getName()))
+                .filter(mtd -> "transpile".equals(mtd.getName()))
                 .findFirst()
                 .get();
             method.setAccessible(true);
             method.invoke(obj, file);
+            return 1;
         } catch (final ClassNotFoundException ex) {
             throw new IllegalArgumentException(
                 String.format(

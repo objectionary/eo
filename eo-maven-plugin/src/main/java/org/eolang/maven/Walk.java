@@ -29,7 +29,6 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.maven.plugin.MojoFailureException;
 import org.cactoos.list.ListEnvelope;
 
 /**
@@ -43,9 +42,9 @@ final class Walk extends ListEnvelope<Path> {
      * Ctor.
      *
      * @param dir The directory
-     * @throws MojoFailureException If fails
+     * @throws IOException If fails
      */
-    Walk(final Path dir) throws MojoFailureException {
+    Walk(final Path dir) throws IOException {
         super(Walk.list(dir));
     }
 
@@ -53,28 +52,18 @@ final class Walk extends ListEnvelope<Path> {
      * List them all.
      * @param dir The dir
      * @return List
-     * @throws MojoFailureException If fails
+     * @throws IOException If fails
      */
-    private static List<Path> list(final Path dir) throws MojoFailureException {
-        try {
-            final List<Path> files = new LinkedList<>();
-            if (Files.exists(dir)) {
-                files.addAll(
-                    Files.walk(dir)
-                        .filter(file -> !file.toFile().isDirectory())
-                        .collect(Collectors.toList())
-                );
-            }
-            return files;
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list XML files in %s",
-                    dir
-                ),
-                ex
+    private static List<Path> list(final Path dir) throws IOException {
+        final List<Path> files = new LinkedList<>();
+        if (Files.exists(dir)) {
+            files.addAll(
+                Files.walk(dir)
+                    .filter(file -> !file.toFile().isDirectory())
+                    .collect(Collectors.toList())
             );
         }
+        return files;
     }
 
 }

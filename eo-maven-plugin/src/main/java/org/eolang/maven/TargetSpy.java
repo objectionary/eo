@@ -64,9 +64,6 @@ final class TargetSpy implements Spy {
         } else {
             file = names.get(0).replaceAll("[^a-z0-9]", "-");
         }
-        if (this.dir.toFile().mkdirs()) {
-            Logger.debug(this, "Directory %s created", this.dir);
-        }
         new Save(
             xml.toString(),
             this.dir.resolve(

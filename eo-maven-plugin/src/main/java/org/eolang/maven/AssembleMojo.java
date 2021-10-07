@@ -25,14 +25,17 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
+import java.io.IOException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
 import org.cactoos.Input;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.eolang.tojos.CsvTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -45,7 +48,25 @@ import org.slf4j.impl.StaticLoggerBinder;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class AssembleMojo extends AbstractMojo {
+public final class AssembleMojo extends SafeMojo {
+
+    /**
+     * Maven project.
+     */
+    @Parameter(defaultValue = "${project}", readonly = true)
+    private MavenProject project;
+
+    /**
+     * Maven session.
+     */
+    @Parameter(defaultValue = "${project}", readonly = true)
+    private MavenSession session;
+
+    /**
+     * Maven plugin manager.
+     */
+    @Component
+    private BuildPluginManager manager;
 
     /**
      * The target folder.
@@ -58,24 +79,24 @@ public final class AssembleMojo extends AbstractMojo {
     private File targetDir;
 
     /**
-     * The directory where we keep protocols of all pulls, one
-     * .log file per each .eo pulled.
+     * Output.
      * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.10.0
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-protocols"
+        defaultValue = "${project.build.outputDirectory}"
     )
-    private File protocolsDir;
+    private File outputDir;
 
     /**
-     * Pull again even if the .eo file is already present?
+     * File with foreign "file objects".
      * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.10.0
      */
-    @Parameter(required = true, defaultValue = "false")
-    private boolean overWrite;
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/foreign.csv"
+    )
+    private File foreign;
 
     /**
      * The objectionary.
@@ -83,22 +104,66 @@ public final class AssembleMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Func<String, Input> objectionary = new Objectionary();
 
+    /**
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files are placed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-resolved.csv"
+    )
+    private File resolvedList;
+
+    /**
+     * Skip artifact with the version 0.0.0.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.9.0
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private boolean skipZeroVersions;
+
+    /**
+     * Overwrite existing .class files?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private Boolean overWrite;
+
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
+    public void exec() throws IOException {
         int before = this.files();
         int cycle = 0;
-        while (true) {
-            new Moja<>(OptimizeMojo.class)
+        final Moja<?>[] mojas = {
+            new Moja<>(ParseMojo.class)
                 .with("targetDir", this.targetDir)
-                .execute();
+                .with("foreign", this.foreign),
+            new Moja<>(OptimizeMojo.class)
+                .with("foreign", this.foreign)
+                .with("targetDir", this.targetDir),
+            new Moja<>(DiscoverMojo.class)
+                .with("foreign", this.foreign),
             new Moja<>(PullMojo.class)
                 .with("targetDir", this.targetDir)
                 .with("objectionary", this.objectionary)
-                .with("protocolsDir", this.protocolsDir)
+                .with("foreign", this.foreign),
+            new Moja<>(ResolveMojo.class)
+                .with("outputDir", this.outputDir)
+                .with("foreign", this.foreign)
+                .with("project", this.project)
+                .with("session", this.session)
+                .with("manager", this.manager)
+                .with("resolvedList", this.resolvedList)
+                .with("skipZeroVersions", this.skipZeroVersions)
                 .with("overWrite", this.overWrite)
-                .execute();
+        };
+        while (true) {
+            for (final Moja<?> moja : mojas) {
+                moja.execute();
+            }
             final int after = this.files();
             if (after == before) {
                 break;
@@ -111,18 +176,18 @@ public final class AssembleMojo extends AbstractMojo {
             before = after;
         }
         Logger.info(
-            this, "%d assemble cycle(s) produced %d .eo.xml file(s)",
+            this, "%d assemble cycle(s) produced %d new object(s)",
             cycle, before
         );
     }
 
     /**
-     * How many files?
+     * How many fobjects in total?
      * @return Total number
-     * @throws MojoFailureException If fails
+     * @throws IOException If fails
      */
-    private int files() throws MojoFailureException {
-        return new Walk(this.targetDir.toPath().resolve(OptimizeMojo.DIR)).size();
+    private int files() throws IOException {
+        return new CsvTojos(this.foreign).size();
     }
 
 }

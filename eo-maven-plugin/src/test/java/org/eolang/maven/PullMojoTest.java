@@ -23,11 +23,13 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.tojos.CsvTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -43,29 +45,13 @@ import org.junit.jupiter.api.io.TempDir;
 public final class PullMojoTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            src.resolve("main.eo")
-        ).save();
+    public void testSimplePull(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .with("protocolsDir", temp.resolve("1").toFile())
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
+        final Path foreign = temp.resolve("foreign.csv");
+        new CsvTojos(foreign).add("org.eolang.io.stdout").set("version", "*.*.*");
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
-            .with("protocolsDir", temp.resolve("protocols").toFile())
+            .with("foreign", foreign.toFile())
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf("[] > hello\n")
@@ -75,70 +61,13 @@ public final class PullMojoTest {
             Files.exists(
                 target.resolve(
                     String.format(
-                        "%s/org/eolang/io/stdout.eo.xml",
-                        ParseMojo.DIR
+                        "%s/org/eolang/io/stdout.eo",
+                        PullMojo.DIR
                     )
                 )
             ),
             Matchers.is(true)
         );
-    }
-
-    @Test
-    public void noPullIfXmlExists(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Save(
-            String.join(
-                "\n",
-                "+alias sprintf org.eolang.txt.sprintf",
-                "",
-                "[args] > foo\n  sprintf\n"
-            ),
-            src.resolve("foo.eo")
-        ).save();
-        final Path target = temp.resolve("target");
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .with("protocolsDir", temp.resolve("1").toFile())
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
-        new Save(
-            "<program/>",
-            new Place("org.eolang.txt.sprintf").make(
-                target.resolve(OptimizeMojo.DIR), "eo.xml"
-            )
-        ).save();
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("protocolsDir", temp.resolve("protocols").toFile())
-            .with(
-                "objectionary",
-                (Func<String, Input>) input -> new InputOf(
-                    "[] > sprintf\n"
-                )
-            )
-            .execute();
-        MatcherAssert.assertThat(
-            Files.exists(
-                target.resolve(
-                    String.format(
-                        "%s/org/eolang/txt/sprintf.eo.xml",
-                        ParseMojo.DIR
-                    )
-                )
-            ),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    public void noPullWithEmptyDir(@TempDir final Path temp) {
-        new Moja<>(PullMojo.class)
-            .with("targetDir", temp.toFile())
-            .execute();
     }
 
 }

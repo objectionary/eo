@@ -23,41 +23,46 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.nio.file.Path;
 
 /**
- * Make the place for the object.
+ * Make program name from path.
  *
  * @since 0.1
  */
-final class Place {
+final class Unplace {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * The parent dir.
      */
-    private final String name;
+    private final Path parent;
 
     /**
      * Ctor.
-     * @param obj The name of the object
+     * @param dir The name of the parent dir
      */
-    Place(final String obj) {
-        this.name = obj;
+    Unplace(final File dir) {
+        this(dir.toPath());
     }
 
     /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
+     * Ctor.
+     * @param dir The name of the parent dir
      */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
+    Unplace(final Path dir) {
+        this.parent = dir;
+    }
+
+    /**
+     * Make a program name.
+     * @param file The file
+     * @return The name of the program
+     */
+    public String make(final Path file) {
+        return file.toString().substring(
+            this.parent.toString().length() + 1
+        ).replaceAll(".eo$", "").replaceAll("/", ".");
     }
 
 }

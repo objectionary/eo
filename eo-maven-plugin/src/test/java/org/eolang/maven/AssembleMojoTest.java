@@ -55,14 +55,17 @@ public final class AssembleMojoTest {
             src.resolve("main.eo")
         ).save();
         final Path target = temp.resolve("target");
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
+        new Moja<>(RegisterMojo.class)
+            .with("foreign", temp.resolve("foreign.csv").toFile())
             .with("sourcesDir", src.toFile())
-            .with("protocolsDir", temp.resolve("1").toFile())
             .execute();
         new Moja<>(AssembleMojo.class)
+            .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
-            .with("protocolsDir", temp.resolve("2").toFile())
+            .with("foreign", temp.resolve("foreign.csv").toFile())
+            .with("resolvedList", temp.resolve("list").toFile())
+            .with("skipZeroVersions", true)
+            .with("overWrite", true)
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf(

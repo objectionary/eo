@@ -21,43 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.tojos;
 
-import java.nio.file.Path;
+import java.io.IOException;
 
 /**
- * Make the place for the object.
+ * One tojo.
  *
- * @since 0.1
+ * @since 0.12
  */
-final class Place {
+public interface Tojo {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * This attribute exists.
+     *
+     * @param key The name of the attribute
+     * @return TRUE if exists
+     * @throws IOException If fails
      */
-    private final String name;
+    boolean exists(String key) throws IOException;
 
     /**
-     * Ctor.
-     * @param obj The name of the object
+     * Get attribute.
+     *
+     * @param key The name of the attribute
+     * @return The value
+     * @throws IOException If fails
      */
-    Place(final String obj) {
-        this.name = obj;
-    }
+    String get(String key) throws IOException;
 
     /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
+     * Set attribute.
+     *
+     * @param key The name of the attribute
+     * @param value The value
+     * @throws IOException If fails
      */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
-    }
+    Tojo set(String key, String value) throws IOException;
 
 }

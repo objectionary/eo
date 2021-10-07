@@ -54,7 +54,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * Test case for {@link CompileMojo}.
+ * Test case for {@link TranspileMojo}.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -130,7 +130,7 @@ public final class SnippetTest {
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .execute();
-        new Moja<>(CompileMojo.class)
+        new Moja<>(TranspileMojo.class)
             .with("project", project)
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())

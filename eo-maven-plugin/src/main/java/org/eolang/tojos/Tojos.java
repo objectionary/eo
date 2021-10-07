@@ -21,43 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.tojos;
 
-import java.nio.file.Path;
+import java.io.IOException;
+import java.util.Collection;
+import org.cactoos.Func;
 
 /**
- * Make the place for the object.
+ * Text Object Java Object (TOJO) in a storage.
  *
- * @since 0.1
+ * @since 0.12
  */
-final class Place {
+public interface Tojos {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * How many out there?
+     *
+     * @return Total count
+     * @throws IOException If fails
      */
-    private final String name;
+    int size() throws IOException;
 
     /**
-     * Ctor.
-     * @param obj The name of the object
+     * Add new object and raise exception if there are version
+     * conflicts.
+     *
+     * @param name The name of the object
+     * @throws IOException If fails
      */
-    Place(final String obj) {
-        this.name = obj;
-    }
+    Tojo add(String name) throws IOException;
 
     /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
+     * Select some fobjects.
+     *
+     * @param filter The filter
+     * @return Collection of them
+     * @throws IOException If fails
      */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
-    }
+    Collection<Tojo> select(Func<Tojo, Boolean> filter) throws IOException;
 
 }

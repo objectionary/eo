@@ -34,14 +34,11 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.Mapped;
 import org.cactoos.set.SetOf;
-import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Goes through all .class files and deletes those that
@@ -57,7 +54,7 @@ import org.slf4j.impl.StaticLoggerBinder;
     threadSafe = true
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class PrepackMojo extends AbstractMojo {
+public final class PrepackMojo extends SafeMojo {
 
     /**
      * Directory with Java classes.
@@ -87,7 +84,7 @@ public final class PrepackMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.outputDirectory}/eo-resolved.csv"
+        defaultValue = "${project.build.directory}/eo-resolved.csv"
     )
     private File resolvedList;
 
@@ -98,8 +95,7 @@ public final class PrepackMojo extends AbstractMojo {
     private Set<String> includes = new SetOf<>("**/*.class");
 
     @Override
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
+    public void exec() throws IOException {
         new Walk(this.classesDir.toPath()).stream()
             .filter(
                 file -> this.includes.stream().anyMatch(
@@ -107,11 +103,7 @@ public final class PrepackMojo extends AbstractMojo {
                 )
             )
             .forEach(this::delete);
-        try {
-            this.clean();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+        this.clean();
     }
 
     /**

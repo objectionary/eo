@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.eolang.parser.ParsingException;
+import org.eolang.tojos.CsvTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -43,39 +44,44 @@ public final class ParseMojoTest {
 
     @Test
     public void testSimpleParsing(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
+        final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
         new Save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
-            src.resolve("foo/main.eo")
+            src
         ).save();
+        final Path foreign = temp.resolve("foreign.csv");
+        new CsvTojos(foreign).add("foo.x.main").set("eo", src.toString());
         new Moja<>(ParseMojo.class)
-            .with("sourcesDir", src.toFile())
             .with("targetDir", target.toFile())
-            .with("protocolsDir", temp.resolve("protocols").toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/foo/main.eo.xml", ParseMojo.DIR)
+                    String.format("%s/foo/x/main.eo.xml", ParseMojo.DIR)
                 )
             ),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new CsvTojos(foreign).select(t -> "foo.x.main".equals(t.get("id"))),
+            Matchers.not(Matchers.emptyIterable())
         );
     }
 
     @Test
     public void testCrashOnInvalidSyntax(@TempDir final Path temp)
         throws Exception {
-        final Path src = temp.resolve("src");
-        final Path target = temp.resolve("target");
-        new Save("something is wrong here", src.resolve("f.eo")).save();
+        final Path src = temp.resolve("bar/src.eo");
+        new Save("something is wrong here", src).save();
+        final Path foreign = temp.resolve("foreign-1.csv");
+        new CsvTojos(foreign).add("bar.src").set("eo", src.toString());
         Assertions.assertThrows(
             ParsingException.class,
             () -> new Moja<>(ParseMojo.class)
-                .with("sourcesDir", src.toFile())
-                .with("targetDir", target.toFile())
-                .with("protocolsDir", temp.resolve("proto").toFile())
+                .with("targetDir", temp.resolve("target").toFile())
+                .with("foreign", foreign.toFile())
                 .execute()
         );
     }

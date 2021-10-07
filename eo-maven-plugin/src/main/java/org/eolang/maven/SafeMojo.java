@@ -23,41 +23,38 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Path;
+import java.io.IOException;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoFailureException;
+import org.slf4j.impl.StaticLoggerBinder;
 
 /**
- * Make the place for the object.
+ * Abstact Mojo for all others.
  *
  * @since 0.1
  */
-final class Place {
+abstract class SafeMojo extends AbstractMojo {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * Exec it.
+     * @throws IOException If fails
      */
-    private final String name;
+    abstract void exec() throws IOException;
 
-    /**
-     * Ctor.
-     * @param obj The name of the object
-     */
-    Place(final String obj) {
-        this.name = obj;
-    }
-
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
+    @Override
+    public final void execute() throws MojoFailureException {
+        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
+        try {
+            this.exec();
+        } catch (final IOException ex) {
+            throw new MojoFailureException(
+                String.format(
+                    "Failed to execute %s",
+                    this.getClass().getCanonicalName()
+                ),
+                ex
+            );
         }
-        return dir.resolve(out.toString());
     }
 
 }

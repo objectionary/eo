@@ -21,43 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.tojos;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Make the place for the object.
+ * Test case for {@link Csv}.
  *
- * @since 0.1
+ * @since 0.12
  */
-final class Place {
+public final class CsvTest {
 
-    /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
-     */
-    private final String name;
-
-    /**
-     * Ctor.
-     * @param obj The name of the object
-     */
-    Place(final String obj) {
-        this.name = obj;
-    }
-
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
+    @Test
+    public void simpleScenario(@TempDir final Path temp) throws IOException {
+        final Csv csv = new Csv(temp.resolve("foo/bar/a.csv"));
+        final Collection<Map<String, String>> rows = csv.read();
+        MatcherAssert.assertThat(
+            csv.read().size(),
+            Matchers.equalTo(0)
+        );
+        final Map<String, String> row = new HashMap<>(0);
+        row.put("id", "hello");
+        rows.add(row);
+        csv.write(rows);
+        MatcherAssert.assertThat(
+            csv.read().iterator().next().get("id"),
+            Matchers.equalTo("hello")
+        );
     }
 
 }

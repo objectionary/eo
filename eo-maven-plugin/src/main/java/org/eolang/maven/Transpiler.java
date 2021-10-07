@@ -23,41 +23,23 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * Make the place for the object.
+ * An abstract compiler.
  *
  * @since 0.1
  */
-final class Place {
+interface Transpiler {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * Transform a single .eo.xml (XMIR) file to .java.
+     *
+     * @param file The path to the .eo.xml file
+     * @param generated The path to the directory, where .java files to be saved
+     * @return How many .java files generated
+     * @throws IOException If any issues with I/O
      */
-    private final String name;
-
-    /**
-     * Ctor.
-     * @param obj The name of the object
-     */
-    Place(final String obj) {
-        this.name = obj;
-    }
-
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
-    }
-
+    int transpile(Path file, Path generated) throws IOException;
 }

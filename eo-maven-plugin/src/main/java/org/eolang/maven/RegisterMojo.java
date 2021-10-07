@@ -23,58 +23,45 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.PathMatcher;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.eolang.parser.Syntax;
+import org.cactoos.set.SetOf;
 import org.eolang.tojos.CsvTojos;
-import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
 
 /**
- * Parse EO to XML.
+ * Register all sources.
  *
- * @since 0.1
+ * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
-    name = "parse",
+    name = "register",
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    threadSafe = true
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends SafeMojo {
+public final class RegisterMojo extends SafeMojo {
 
     /**
-     * Zero version.
-     */
-    public static final String ZERO = "0.0.0";
-
-    /**
-     * The directory where to parse to.
-     */
-    public static final String DIR = "01-parse";
-
-    /**
-     * Target directory.
+     * Directory in which .eo files are located.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo"
+        defaultValue = "${project.basedir}/src/main/eo"
     )
-    private File targetDir;
+    private File sourcesDir;
 
     /**
      * File with foreign "file objects".
@@ -86,38 +73,51 @@ public final class ParseMojo extends SafeMojo {
     )
     private File foreign;
 
+    /**
+     * List of inclusion GLOB filters for finding EO files.
+     */
+    @Parameter
+    private Set<String> includes = new SetOf<>("**/*.eo");
+
+    /**
+     * List of exclusion GLOB filters for finding EO files.
+     */
+    @Parameter
+    private Set<String> excludes = new HashSet<>(0);
+
     @Override
     public void exec() throws IOException {
+        final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
+            .stream()
+            .filter(
+                file -> this.includes.stream().anyMatch(
+                    glob -> RegisterMojo.matcher(glob).matches(file)
+                )
+            )
+            .filter(
+                file -> this.excludes.stream().noneMatch(
+                    glob -> RegisterMojo.matcher(glob).matches(file)
+                )
+            )
+            .collect(Collectors.toList());
         final Tojos tojos = new CsvTojos(this.foreign);
-        for (final Tojo tojo : tojos.select(row -> row.exists("eo") && !row.exists("xmir"))) {
-            this.parse(tojo);
+        final Unplace unplace = new Unplace(this.sourcesDir);
+        for (final Path file : sources) {
+            tojos
+                .add(unplace.make(file))
+                .set("version", ParseMojo.ZERO)
+                .set("eo", file.toAbsolutePath().toString());
         }
     }
 
     /**
-     * Parse EO file to XML.
-     *
-     * @param tojo The tojo
+     * Create glob matcher from text.
+     * @param text The pattern
+     * @return Matcher
      */
-    private void parse(final Tojo tojo) throws IOException {
-        final Path source = Paths.get(tojo.get("eo"));
-        final String name = tojo.get("id");
-        final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
-        );
-        if (Files.exists(target)) {
-            Logger.info(this, "%s already parsed to %s", source, target);
-        } else {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Syntax(
-                name,
-                new InputOf(source),
-                new OutputTo(baos)
-            ).parse();
-            new Save(baos.toByteArray(), target).save();
-            Logger.info(this, "%s parsed to %s", source, target);
-        }
-        tojo.set("xmir", target.toAbsolutePath().toString());
+    private static PathMatcher matcher(final String text) {
+        return FileSystems.getDefault()
+            .getPathMatcher(String.format("glob:%s", text));
     }
 
 }

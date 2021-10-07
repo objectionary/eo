@@ -40,7 +40,7 @@ import org.eolang.parser.Xsline;
  *
  * @since 0.1
  */
-final class CompilerOriginal implements Compiler {
+final class TranspilerCanonical implements Transpiler {
 
     /**
      * Extension.
@@ -62,17 +62,18 @@ final class CompilerOriginal implements Compiler {
      * @param tmp The temp
      * @param ppre The pre
      */
-    CompilerOriginal(final Path tmp, final Path ppre) {
+    TranspilerCanonical(final Path tmp, final Path ppre) {
         this.temp = tmp;
         this.pre = ppre;
     }
 
     @Override
-    public void compile(final Path file, final Path generated) throws IOException {
+    public int transpile(final Path file, final Path generated) throws IOException {
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path target = place.make(this.temp, CompilerOriginal.EXT);
+        final Path target = place.make(this.temp, TranspilerCanonical.EXT);
+        int total = 0;
         if (Files.exists(target)) {
             Logger.info(
                 this, "%s is already compiled to %s",
@@ -82,7 +83,7 @@ final class CompilerOriginal implements Compiler {
             new Xsline(
                 input,
                 new OutputTo(target),
-                new TargetSpy(place.make(this.pre, CompilerOriginal.EXT)),
+                new TargetSpy(place.make(this.pre, TranspilerCanonical.EXT)),
                 new ListOf<>(
                     "org/eolang/maven/pre/classes.xsl",
                     "org/eolang/maven/pre/junit.xsl",
@@ -111,7 +112,9 @@ final class CompilerOriginal implements Compiler {
                     file, generated, nodes.size()
                 );
             }
+            total = nodes.size();
         }
+        return total;
     }
 
     /**

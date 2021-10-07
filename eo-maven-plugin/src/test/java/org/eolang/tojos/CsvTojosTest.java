@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.tojos;
 
-import java.nio.file.Files;
+import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -31,28 +31,42 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link CompilerOriginal}.
+ * Test case for {@link CsvTojos}.
  *
- * @since 0.1
+ * @since 0.12
  */
-public final class CompilerOriginalTest {
+public final class CsvTojosTest {
 
     @Test
-    public void simpleCompile(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("test.eo");
-        new Save("+package foo.bar\n\n[x] > hello\n", src).save();
-        final Path xml = temp.resolve("xml");
-        new Parsing(src, temp.resolve("1")).into(xml, "foo.bar.hello");
-        final Path target = temp.resolve("target");
-        final Path pre = temp.resolve("pre");
-        final Path generated = temp.resolve("generated");
-        new CompilerOriginal(target, pre).compile(
-            xml.resolve(String.format("%s/foo/bar/hello.eo.xml", ParseMojo.DIR)),
-            generated
-        );
+    public void simpleScenario(@TempDir final Path temp) throws IOException {
+        final Tojos tojos = new CsvTojos(temp.resolve("a.csv"));
+        tojos.add("foo").set("k", "v").set("a", "b");
+        tojos.select(t -> t.exists("k")).iterator().next();
         MatcherAssert.assertThat(
-            Files.exists(generated.resolve("EOfoo/EObar/EOhello.java")),
-            Matchers.is(true)
+            tojos.select(t -> t.exists("k")).iterator().next().get("a"),
+            Matchers.equalTo("b")
+        );
+    }
+
+    @Test
+    public void addTojo(@TempDir final Path temp) throws IOException {
+        final Tojos tojos = new CsvTojos(temp.resolve("x.csv"));
+        tojos.add("foo-1");
+        MatcherAssert.assertThat(
+            tojos.size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void uniqueIds(@TempDir final Path temp) throws IOException {
+        final Tojos tojos = new CsvTojos(temp.resolve("x1.csv"));
+        final String name = "foo11";
+        tojos.add(name);
+        tojos.add(name);
+        MatcherAssert.assertThat(
+            tojos.size(),
+            Matchers.equalTo(1)
         );
     }
 
