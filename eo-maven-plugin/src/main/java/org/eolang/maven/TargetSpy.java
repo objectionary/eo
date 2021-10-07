@@ -55,17 +55,12 @@ final class TargetSpy implements Spy {
     @Override
     public void push(final int index, final XSL xsl, final XML xml)
         throws IOException {
-        final List<String> names = new XMLDocument(
-            xsl.toString()
-        ).xpath("/*/@id");
+        final List<String> names = new XMLDocument(xsl.toString()).xpath("/*/@id");
         final String file;
         if (names.isEmpty()) {
             file = String.format("%d", index);
         } else {
             file = names.get(0).replaceAll("[^a-z0-9]", "-");
-        }
-        if (this.dir.toFile().mkdirs()) {
-            Logger.debug(this, "Directory %s created", this.dir);
         }
         new Save(
             xml.toString(),

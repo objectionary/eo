@@ -37,7 +37,7 @@ import org.apache.maven.plugin.MojoFailureException;
  * @param <T> Type of mojo
  * @since 0.1
  */
-final class Mojo<T extends AbstractMojo> {
+final class Moja<T extends AbstractMojo> {
 
     /**
      * The type of mojo.
@@ -54,7 +54,7 @@ final class Mojo<T extends AbstractMojo> {
      *
      * @param tpe The type
      */
-    Mojo(final Class<T> tpe) {
+    Moja(final Class<T> tpe) {
         this.type = tpe;
         this.attrs = new HashMap<>(0);
     }
@@ -66,7 +66,7 @@ final class Mojo<T extends AbstractMojo> {
      * @param value The value
      * @return Itself
      */
-    public Mojo<T> with(final String attr, final Object value) {
+    public Moja<T> with(final String attr, final Object value) {
         this.attrs.put(attr, value);
         return this;
     }

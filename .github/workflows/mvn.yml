@@ -4,16 +4,18 @@ name: mvn
   push:
     branches:
       - master
+    paths-ignore: 'paper/**'
   pull_request:
     branches:
       - master
+    paths-ignore: 'paper/**'
 jobs:
   maven-build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        java: [1.8, 11, 13]
+        java: [11, 13]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -26,6 +28,8 @@ jobs:
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - name: Show versions
+        run: java -version; mvn -version;
       - name: Build it with Maven
         run: mvn -B verify -Pqulice
   xcop-lint:

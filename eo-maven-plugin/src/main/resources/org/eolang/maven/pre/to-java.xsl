@@ -455,7 +455,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
-    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:value-of select="eo:tabs(2 + $indent)"/>
     <xsl:text>Assertions.assertTrue(</xsl:text>
     <xsl:value-of select="eo:eol(3 + $indent)"/>
     <xsl:text>new Dataized(new </xsl:text>

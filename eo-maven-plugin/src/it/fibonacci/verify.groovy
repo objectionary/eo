@@ -22,10 +22,14 @@
  * SOFTWARE.
  */
 
+assert new File(basedir, 'target/eo-foreign.csv').exists()
+assert new File(basedir, 'target/eo-resolved.csv').exists()
+
 assert new File(basedir, 'target/generated-sources/EOorg/EOeolang/EOпримерыПрограмм/EOapp.java').exists()
-assert new File(basedir, 'target/eo/01-parse/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/02-steps/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/03-optimize/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/04-pre/org/eolang/examples/app.eo.xml').exists()
-assert new File(basedir, 'target/eo/05-compile/org/eolang/examples/app.eo.xml').exists()
+assert new File(basedir, 'target/eo/01-parse/org/eolang/примерыПрограмм/app.eo.xml').exists()
+assert new File(basedir, 'target/eo/02-steps/org/eolang/примерыПрограмм/app/00-not-empty-atoms.xml').exists()
+assert new File(basedir, 'target/eo/03-optimize/org/eolang/примерыПрограмм/app.eo.xml').exists()
+assert new File(basedir, 'target/eo/04-pull/org/eolang/array.eo').exists()
+assert new File(basedir, 'target/eo/05-pre/org/eolang/примерыПрограмм/app/00-pre-classes.xml').exists()
+assert new File(basedir, 'target/eo/06-transpile/org/eolang/примерыПрограмм/app.eo.xml').exists()
 assert new File(basedir, 'target/classes/EOorg/EOeolang/EOпримерыПрограмм/EOapp.class').exists()

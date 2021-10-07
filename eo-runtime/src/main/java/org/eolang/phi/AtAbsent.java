@@ -33,8 +33,11 @@ public final class AtAbsent implements Attr {
 
     private final String name;
 
-    public AtAbsent(final String attr) {
+    private final String suffix;
+
+    public AtAbsent(final String attr, final String sfx) {
         this.name = attr;
+        this.suffix = sfx;
     }
 
     @Override
@@ -46,8 +49,8 @@ public final class AtAbsent implements Attr {
     public Attr copy(final Phi self) {
         throw new Attr.Exception(
             String.format(
-                "Can't copy(), attribute \"%s\" is absent",
-                this.name
+                "Can't copy(), attribute \"%s\" is absent%s",
+                this.name, this.suffix
             )
         );
     }
@@ -56,8 +59,8 @@ public final class AtAbsent implements Attr {
     public Phi get() {
         throw new Attr.Exception(
             String.format(
-                "Can't get(), attribute \"%s\" is absent",
-                this.name
+                "Can't get(), attribute \"%s\" is absent%s",
+                this.name, this.suffix
             )
         );
     }
@@ -66,8 +69,8 @@ public final class AtAbsent implements Attr {
     public void put(final Phi phi) {
         throw new Attr.Exception(
             String.format(
-                "Can't put(), attribute \"%s\" is absent",
-                this.name
+                "Can't put(), attribute \"%s\" is absent%s",
+                this.name, this.suffix
             )
         );
     }

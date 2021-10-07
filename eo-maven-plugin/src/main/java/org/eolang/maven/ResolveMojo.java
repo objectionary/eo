@@ -29,66 +29,40 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.cactoos.iterable.Mapped;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojo;
+import org.eolang.tojos.Tojos;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
  * Find all required runtime dependencies and add
- * them to classpath ("compile" scope).
+ * them to classpath ("transpile" scope).
+ *
+ * The motivation for this mojo is simple: Maven doesn't have
+ * a mechanism of adding .JAR files to transpile/test classpath in
+ * runtime.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "resolve",
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
 )
-public final class ResolveMojo extends AbstractMojo {
-
-    /**
-     * Maven project.
-     */
-    @Component
-    private MavenProject project;
-
-    /**
-     * Maven session.
-     */
-    @Component
-    private MavenSession session;
-
-    /**
-     * Maven plugin manager.
-     */
-    @Component
-    private BuildPluginManager manager;
-
-    /**
-     * From directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
+public final class ResolveMojo extends SafeMojo {
 
     /**
      * Output.
@@ -98,36 +72,136 @@ public final class ResolveMojo extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.outputDirectory}"
     )
-    private File outputDirectory;
+    private File outputDir;
+
+    /**
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files are placed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-resolved.csv"
+    )
+    private File resolvedList;
+
+    /**
+     * Skip artifact with the version 0.0.0.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.9.0
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private boolean skipZeroVersions;
+
+    /**
+     * Overwrite existing .class files?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private Boolean overWrite;
 
     @Override
-    public void execute() throws MojoFailureException, MojoExecutionException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("03-optimize");
-        final Collection<Dependency> deps;
-        try {
-            deps = Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .map(this::artifacts)
-                .flatMap(Collection::stream)
-                .map(ResolveMojo.Wrap::new)
-                .sorted()
-                .distinct()
-                .map(ResolveMojo.Wrap::dep)
-                .collect(Collectors.toList());
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list XML files in %s",
-                    dir
-                ),
-                ex
+    @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
+    public void exec() throws IOException {
+        final Collection<Path> added = new HashSet<>(0);
+        for (final Dependency dep : this.deps()) {
+            final List<Path> before = this.files();
+            try {
+                this.unpack(dep);
+            } catch (final MojoExecutionException ex) {
+                throw new IllegalStateException(ex);
+            }
+            final List<Path> after = this.files();
+            if (before.size() < after.size()) {
+                Logger.info(
+                    this, "%d new file(s) after unpacking of %s:%s:%s",
+                    after.size() - before.size(),
+                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+                );
+            } else {
+                Logger.warn(
+                    this, "No new files after unpacking of %s:%s:%s!",
+                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+                );
+            }
+            after.removeAll(before);
+            added.addAll(after);
+        }
+        new Save(
+            String.join("\n", new Mapped<>(Path::toString, added)),
+            this.resolvedList.toPath()
+        ).save();
+    }
+
+    /**
+     * Find all deps for all tojos.
+     *
+     * @return List of them
+     * @throws IOException If fails
+     */
+    private Collection<Dependency> deps() throws IOException {
+        final Tojos tojos = new MonoTojos(this.foreign);
+        final Collection<Tojo> list = tojos.select(
+            t -> t.exists(AssembleMojo.ATTR_XMIR)
+                && !t.exists("jar")
+                && !ParseMojo.ZERO.equals(t.get(AssembleMojo.ATTR_VERSION))
+        );
+        final Collection<Dependency> deps = new HashSet<>(0);
+        for (final Tojo tojo : list) {
+            final Optional<Dependency> dep = ResolveMojo.artifact(
+                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
             );
+            if (!dep.isPresent()) {
+                continue;
+            }
+            final Dependency one = dep.get();
+            deps.add(one);
+            tojo.set(
+                "dependency",
+                String.format(
+                    "%s:%s:%s",
+                    one.getGroupId(), one.getArtifactId(), one.getVersion()
+                )
+            );
+            this.jarSources(tojos, one.getVersion());
         }
-        Logger.info(this, "Found %d dependencie(s)", deps.size());
-        for (final Dependency dep : deps) {
-            this.unpack(dep);
+        return deps.stream()
+            .filter(dep -> !this.skipZeroVersions || !"0.0.0".equals(dep.getVersion()))
+            .map(ResolveMojo.Wrap::new)
+            .sorted()
+            .distinct()
+            .map(ResolveMojo.Wrap::dep)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Take sources from EO-SOURCES dir and register them in the CSV.
+     *
+     * @param tojos The tojos
+     * @param version The version of the JAR
+     * @throws IOException If fails
+     */
+    private void jarSources(final Tojos tojos, final String version) throws IOException {
+        final Path home = this.outputDir.toPath().resolve(CopyMojo.DIR);
+        final Unplace unplace = new Unplace(home);
+        for (final Path src : new Walk(home)) {
+            if (src.endsWith(".eo")) {
+                tojos.add(unplace.make(src)).set(AssembleMojo.ATTR_VERSION, version);
+            }
+            Files.delete(src);
         }
+    }
+
+    /**
+     * How many files in the target dir?
+     *
+     * @return Total count
+     * @throws IOException If fails
+     */
+    private List<Path> files() throws IOException {
+        return new Walk(this.outputDir.toPath());
     }
 
     /**
@@ -150,10 +224,10 @@ public final class ResolveMojo extends AbstractMojo {
                         MojoExecutor.element("groupId", dep.getGroupId()),
                         MojoExecutor.element("artifactId", dep.getArtifactId()),
                         MojoExecutor.element("version", dep.getVersion()),
-                        MojoExecutor.element("overWrite", "true"),
+                        MojoExecutor.element("overWrite", this.overWrite.toString()),
                         MojoExecutor.element(
                             "outputDirectory",
-                            this.outputDirectory.toString()
+                            this.outputDir.toString()
                         )
                     )
                 )
@@ -167,7 +241,7 @@ public final class ResolveMojo extends AbstractMojo {
         Logger.info(
             this, "%s:%s:%s unpacked to %s",
             dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-            this.outputDirectory
+            this.outputDir
         );
     }
 
@@ -175,33 +249,34 @@ public final class ResolveMojo extends AbstractMojo {
      * Find the artifact required by this EO XML.
      *
      * @param file EO file
-     * @return List of artifacts needed
+     * @return List of artifact needed
+     * @throws IOException If fails
      */
-    private Collection<Dependency> artifacts(final Path file) {
-        final Collection<Dependency> artifacts = new LinkedList<>();
-        try {
-            final String xpath = "//meta[head='rt' and part[1]='jvm']/part[2]/text()";
-            for (final String coords : new XMLDocument(file).xpath(xpath)) {
-                final String[] parts = coords.split(":");
-                final Dependency dep = new Dependency();
-                dep.setGroupId(parts[0]);
-                dep.setArtifactId(parts[1]);
-                dep.setVersion(parts[2]);
-                dep.setClassifier("");
-                dep.setType("jar");
-                dep.setScope("compile");
-                artifacts.add(dep);
-            }
-        } catch (final IOException ex) {
+    private static Optional<Dependency> artifact(final Path file) throws IOException {
+        final Collection<String> coords = new XMLDocument(file).xpath(
+            "//meta[head='rt' and part[1]='jvm']/part[2]/text()"
+        );
+        final Optional<Dependency> dep;
+        if (coords.isEmpty()) {
+            dep = Optional.empty();
+        } else if (coords.size() == 1) {
+            final String[] parts = coords.iterator().next().split(":");
+            final Dependency dependency = new Dependency();
+            dependency.setGroupId(parts[0]);
+            dependency.setArtifactId(parts[1]);
+            dependency.setVersion(parts[2]);
+            dependency.setClassifier("");
+            dependency.setScope("transpile");
+            dep = Optional.of(dependency);
+        } else {
             throw new IllegalStateException(
                 String.format(
-                    "Can't pull %s into %s",
-                    file, this.targetDir
-                ),
-                ex
+                    "Too many (%d) dependencies at %s",
+                    coords.size(), file
+                )
             );
         }
-        return artifacts;
+        return dep;
     }
 
     /**

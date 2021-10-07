@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.54.1</version>
+    <version>0.56.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -87,7 +87,7 @@ SOFTWARE.
     </site>
   </distributionManagement>
   <properties>
-    <eo.stable>0.6.0</eo.stable>
+    <eo.stable>0.8.0</eo.stable>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -95,11 +95,6 @@ SOFTWARE.
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
         <version>0.46</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.8.0-beta1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -114,7 +109,6 @@ SOFTWARE.
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>
-                <exclude>findbugs:.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>

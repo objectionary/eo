@@ -48,6 +48,6 @@ public final class PhEta implements Phi {
 
     @Override
     public Attr attr(final String name) {
-        return new AtAbsent(name);
+        return new AtAbsent(name, " in \uD835\uDF02");
     }
 }

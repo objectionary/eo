@@ -1,4 +1,6 @@
 +package org.eolang
++alias stdout org.eolang.io.stdout
++alias sprintf org.eolang.txt.sprintf
 +junit
 
 [] > writesIntoMemory
@@ -20,4 +22,15 @@
     m.write 1
     m.write (m.add 5)
     m.eq 6
+
+[] > memoryInOuterScope
+  [] > outer
+    memory > x
+  outer > a
+  seq > @
+    a.x.write 1
+    stdout
+      sprintf
+        "%d"
+        a.x
 

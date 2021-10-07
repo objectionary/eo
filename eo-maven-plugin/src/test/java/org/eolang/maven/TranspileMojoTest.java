@@ -31,22 +31,26 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link CompileMojo}.
+ * Test case for {@link TranspileMojo}.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class CompileMojoTest {
+public final class TranspileMojoTest {
 
     @Test
-    public void testSimpleCompilation() throws Exception {
+    public void testSimpleCompilation(@TempDir final Path temp)
+        throws Exception {
         final String java = this.compile(
+            temp,
             new ResourceOf("org/eolang/maven/mess.eo"),
             "EOorg/EOeolang/EOexamples/EOmessTest.java"
         );
@@ -56,8 +60,10 @@ public final class CompileMojoTest {
     }
 
     @Test
-    public void testRealCompilation() throws Exception {
+    public void testRealCompilation(@TempDir final Path temp)
+        throws Exception {
         final String java = this.compile(
+            temp,
             new ResourceOf("org/eolang/maven/array.eo"),
             "EOorg/EOeolang/EOarray.java"
         );
@@ -66,29 +72,34 @@ public final class CompileMojoTest {
 
     /**
      * Compile EO to Java.
+     * @param temp Temp dir
      * @param code EO sources
      * @param file The file to return
      * @return All Java code
      * @throws Exception If fails
      */
-    private String compile(final Input code,
+    private String compile(final Path temp, final Input code,
         final String file) throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
-        final Path src = temp.resolve("src");
-        new Save(code, src.resolve("code.eo")).save();
+        final Path src = temp.resolve("foo.src.eo");
+        new Save(code, src).save();
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
-        new Mojo<>(ParseMojo.class)
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new MonoTojos(foreign).add("foo.src").set("eo", src.toString());
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
-        new Mojo<>(CompileMojo.class)
+        new Moja<>(TranspileMojo.class)
+            .with("compiler", "canonical")
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         final Path java = generated.resolve(file);
         MatcherAssert.assertThat(

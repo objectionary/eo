@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
@@ -99,17 +100,49 @@ public final class Save {
     public void save() throws IOException {
         final File dir = this.path.toFile().getParentFile();
         if (dir.mkdirs()) {
-            Logger.debug(Save.class, "%s directory created", dir);
+            Logger.info(
+                Save.class, "%s directory created",
+                Save.rel(this.path.getParent())
+            );
         }
-        final double bytes = new IoChecked<>(
-            new LengthOf(
-                new TeeInput(
-                    this.content,
-                    new OutputTo(this.path)
+        try {
+            final double bytes = new IoChecked<>(
+                new LengthOf(
+                    new TeeInput(
+                        this.content,
+                        new OutputTo(this.path)
+                    )
                 )
-            )
-        ).value();
-        Logger.info(this, "File %s saved (%.0f bytes)", this.path, bytes);
+            ).value();
+            Logger.debug(
+                this, "File %s saved (%.0f bytes)",
+                Save.rel(this.path), bytes
+            );
+        } catch (final IOException ex) {
+            throw new IOException(
+                String.format(
+                    "Failed while trying to save to %s",
+                    Save.rel(this.path)
+                ),
+                ex
+            );
+        }
+    }
+
+    /**
+     * Make relative name from path.
+     * @param file The path of the file or dir
+     * @return Relative name to CWD
+     */
+    private static String rel(final Path file) {
+        final Path cwd = Paths.get("");
+        final String out;
+        if (file.startsWith(cwd)) {
+            out = file.toString().substring(cwd.toString().length() + 1);
+        } else {
+            out = file.toString();
+        }
+        return out;
     }
 
 }

@@ -43,18 +43,20 @@ SOFTWARE.
           <execution>
             <id>compile</id>
             <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
+              <goal>copy-sources</goal>
+              <goal>prepack</goal>
             </goals>
           </execution>
           <execution>
             <id>test-compile</id>
             <phase>compile</phase>
             <goals>
-              <goal>parse</goal>
+              <goal>register</goal>
               <goal>optimize</goal>
-              <goal>compile</goal>
+              <goal>transpile</goal>
             </goals>
             <configuration>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>

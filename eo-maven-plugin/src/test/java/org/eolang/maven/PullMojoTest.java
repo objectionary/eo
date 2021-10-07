@@ -23,14 +23,17 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link PullMojo}.
@@ -42,34 +45,25 @@ import org.junit.jupiter.api.Test;
 public final class PullMojoTest {
 
     @Test
-    public void testSimplePull() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
-        final Path src = temp.resolve("src");
-        new Save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "",
-                "[args] > main\n  (stdout \"Hello!\").print\n"
-            ),
-            src.resolve("main.eo")
-        ).save();
+    public void testSimplePull(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
-        new Mojo<>(ParseMojo.class)
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new MonoTojos(foreign).add("org.eolang.io.stdout").set("version", "*.*.*");
+        new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .execute();
-        new Mojo<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
-        new Mojo<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("repo", (Func<String, Input>) input -> new InputOf("test"))
+            .with("foreign", foreign.toFile())
+            .with(
+                "objectionary",
+                (Func<String, Input>) input -> new InputOf("[] > hello\n")
+            )
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    "03-optimize/org/eolang/io/stdout.eo.xml"
+                    String.format(
+                        "%s/org/eolang/io/stdout.eo",
+                        PullMojo.DIR
+                    )
                 )
             ),
             Matchers.is(true)

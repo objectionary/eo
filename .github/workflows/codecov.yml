@@ -4,9 +4,11 @@ name: codecov
   push:
     branches:
       - master
+    paths-ignore: 'paper/**'
   pull_request:
     branches:
       - master
+    paths-ignore: 'paper/**'
 jobs:
   codecov:
     runs-on: ubuntu-latest

@@ -137,7 +137,14 @@ public class PhDefault implements Phi, Cloneable {
                         name
                     ),
                     this,
-                    new AtAbsent(name)
+                    new AtAbsent(
+                        name,
+                        String.format(
+                            " among other %d attrs (%s)",
+                            this.attrs.size(),
+                            String.join(", ", this.attrs.keySet())
+                        )
+                    )
                 );
             } else {
                 attr = sub.get().attr(name);

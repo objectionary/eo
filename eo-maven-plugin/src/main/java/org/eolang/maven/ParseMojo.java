@@ -25,25 +25,19 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.util.HashSet;
-import java.util.Set;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
+import java.nio.file.Paths;
+import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.set.SetOf;
 import org.eolang.parser.Syntax;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojo;
 
 /**
  * Parse EO to XML.
@@ -58,112 +52,54 @@ import org.slf4j.impl.StaticLoggerBinder;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends AbstractMojo {
+public final class ParseMojo extends SafeMojo {
 
     /**
-     * Target directory.
-     * @checkstyle MemberNameCheck (7 lines)
+     * Zero version.
      */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
+    public static final String ZERO = "0.0.0";
 
     /**
-     * Directory in which .eo files are located.
-     * @checkstyle MemberNameCheck (7 lines)
+     * The directory where to parse to.
      */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.basedir}/src/main/eo"
-    )
-    private File sourcesDir;
-
-    /**
-     * List of inclusion GLOB filters for finding EO files.
-     */
-    @Parameter
-    private Set<String> includes = new SetOf<>("**/*.eo");
-
-    /**
-     * List of exclusion GLOB filters for finding EO files.
-     */
-    @Parameter
-    private Set<String> excludes = new HashSet<>(0);
+    public static final String DIR = "01-parse";
 
     @Override
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        try {
-            Files.walk(this.sourcesDir.toPath())
-                .filter(file -> !file.toFile().isDirectory())
-                .filter(
-                    file -> this.includes.stream().anyMatch(
-                        glob -> ParseMojo.matcher(glob).matches(file)
-                    )
-                )
-                .filter(
-                    file -> this.excludes.stream().noneMatch(
-                        glob -> ParseMojo.matcher(glob).matches(file)
-                    )
-                )
-                .forEach(this::parse);
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list EO files in %s",
-                    this.sourcesDir
-                ),
-                ex
-            );
+    public void exec() throws IOException {
+        final Collection<Tojo> tojos = new MonoTojos(this.foreign).select(
+            row -> row.exists(AssembleMojo.ATTR_EO)
+                && !row.exists(AssembleMojo.ATTR_XMIR)
+        );
+        for (final Tojo tojo : tojos) {
+            this.parse(tojo);
         }
-    }
-
-    /**
-     * Create glob matcher from text.
-     * @param text The pattern
-     * @return Matcher
-     */
-    private static PathMatcher matcher(final String text) {
-        return FileSystems.getDefault()
-            .getPathMatcher(String.format("glob:%s", text));
     }
 
     /**
      * Parse EO file to XML.
-     * @param file EO file
+     *
+     * @param tojo The tojo
+     * @throws IOException If fails
      */
-    private void parse(final Path file) {
-        final String name = file.toString().substring(
-            this.sourcesDir.toString().length() + 1
+    private void parse(final Tojo tojo) throws IOException {
+        final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+        final String name = tojo.get("id");
+        final Path target = new Place(name).make(
+            this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
         );
-        final String xml = String.format("%s.xml", name);
-        final Path path = this.targetDir.toPath()
-            .resolve("01-parse")
-            .resolve(xml);
-        if (Files.exists(path)) {
-            Logger.info(this, "%s already parsed to %s", file, path);
+        if (Files.exists(target)) {
+            Logger.info(this, "%s already parsed to %s", source, target);
         } else {
-            try {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                new Syntax(
-                    name,
-                    new InputOf(file),
-                    new OutputTo(baos)
-                ).parse();
-                new Save(baos.toByteArray(), path).save();
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't parse %s into %s",
-                        file, this.targetDir
-                    ),
-                    ex
-                );
-            }
-            Logger.info(this, "%s parsed to %s", file, path);
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            new Syntax(
+                name,
+                new InputOf(source),
+                new OutputTo(baos)
+            ).parse();
+            new Save(baos.toByteArray(), target).save();
+            Logger.info(this, "%s parsed to %s", source, target);
         }
+        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
     }
 
 }

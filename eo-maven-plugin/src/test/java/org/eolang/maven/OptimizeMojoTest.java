@@ -25,9 +25,11 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link OptimizeMojo}.
@@ -39,23 +41,37 @@ import org.junit.jupiter.api.Test;
 public final class OptimizeMojoTest {
 
     @Test
-    public void testSimpleOptimize() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
-        final Path src = temp.resolve("src");
+    public void testSimpleOptimize(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
         new Save(
-            "[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src.resolve("main.eo")
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src
         ).save();
         final Path target = temp.resolve("target");
-        new Mojo<>(ParseMojo.class)
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new MonoTojos(foreign).add("foo.main").set("eo", src.toString());
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("02-steps/main.eo.xml")),
+            Files.exists(
+                target.resolve(
+                    String.format("%s/foo/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(
+                target.resolve(
+                    String.format("%s/foo/main.eo.xml", OptimizeMojo.DIR)
+                )
+            ),
             Matchers.is(true)
         );
     }

@@ -26,21 +26,20 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
+import java.nio.file.Paths;
+import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojo;
+import org.eolang.tojos.Tojos;
 
 /**
  * Optimize XML files.
@@ -50,97 +49,89 @@ import org.slf4j.impl.StaticLoggerBinder;
  */
 @Mojo(
     name = "optimize",
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
 )
-public final class OptimizeMojo extends AbstractMojo {
+public final class OptimizeMojo extends SafeMojo {
 
     /**
-     * From directory.
-     * @checkstyle MemberNameCheck (7 lines)
+     * The directory where to place intermediary files.
      */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
+    public static final String STEPS = "02-steps";
+
+    /**
+     * The directory where to transpile to.
+     */
+    public static final String DIR = "03-optimize";
 
     @Override
-    public void execute() throws MojoFailureException {
-        StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        final Path dir = this.targetDir.toPath().resolve("01-parse");
-        try {
-            Files.walk(dir)
-                .filter(file -> !file.toFile().isDirectory())
-                .forEach(file -> this.optimize(dir, file));
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Can't list XML files in %s",
-                    dir
-                ),
-                ex
+    public void exec() throws IOException {
+        final Tojos tojos = new MonoTojos(this.foreign);
+        final Collection<Tojo> sources = tojos.select(
+            row -> row.exists(AssembleMojo.ATTR_XMIR)
+                && !row.exists(AssembleMojo.ATTR_XMIR2)
+        );
+        for (final Tojo source : sources) {
+            source.set(
+                AssembleMojo.ATTR_XMIR2,
+                this.optimize(
+                    Paths.get(source.get(AssembleMojo.ATTR_XMIR))
+                ).toAbsolutePath().toString()
             );
         }
+        Logger.info(this, "%d XMIR programs optimized", sources.size());
     }
 
     /**
      * Optimize XML file after parsing.
      *
-     * @param home Where it was found
      * @param file EO file
+     * @return The file with optimized XMIR
+     * @throws IOException If fails
      */
-    private void optimize(final Path home, final Path file) {
-        final String name = file.toString().substring(
-            home.toString().length() + 1
+    private Path optimize(final Path file) throws IOException {
+        final Place place = new Place(
+            new XMLDocument(file).xpath("/program/@name").get(0)
         );
-        final Path dir = this.targetDir.toPath().resolve("02-steps").resolve(name);
-        final Path target = this.targetDir.toPath()
-            .resolve("03-optimize")
-            .resolve(name);
+        final Path dir = place.make(
+            this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
+        );
+        final Path target = place.make(
+            this.targetDir.toPath().resolve(OptimizeMojo.DIR), "eo.xml"
+        );
         if (Files.exists(target)) {
             Logger.info(
                 this, "%s already optimized to %s, all steps are in %s",
                 file, target, dir
             );
         } else {
-            try {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                new Xsline(
-                    new XMLDocument(file),
-                    new OutputTo(baos),
-                    new TargetSpy(dir)
-                ).with(
-                    new ListOf<>(
-                        "org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                        "org/eolang/parser/optimize/remove-refs.xsl",
-                        "org/eolang/parser/optimize/abstracts-float-up.xsl",
-                        "org/eolang/parser/optimize/remove-levels.xsl",
-                        "org/eolang/parser/add-refs.xsl",
-                        "org/eolang/parser/optimize/fix-missed-names.xsl",
-                        "org/eolang/parser/errors/broken-refs.xsl"
-                    )
-                ).pass();
-                new Save(baos.toByteArray(), target).save();
-                Logger.info(
-                    this, "%s optimized to %s, all steps are in %s",
-                    file, target, dir
-                );
-                Logger.debug(
-                    this, "Optimized XML saved to %s:\n%s", target,
-                    new String(baos.toByteArray(), StandardCharsets.UTF_8)
-                );
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't pass %s into %s",
-                        file, this.targetDir
-                    ),
-                    ex
-                );
-            }
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            new Xsline(
+                new XMLDocument(file),
+                new OutputTo(baos),
+                new TargetSpy(dir)
+            ).with(
+                new ListOf<>(
+                    "org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                    "org/eolang/parser/optimize/remove-refs.xsl",
+                    "org/eolang/parser/optimize/abstracts-float-up.xsl",
+                    "org/eolang/parser/optimize/remove-levels.xsl",
+                    "org/eolang/parser/add-refs.xsl",
+                    "org/eolang/parser/optimize/fix-missed-names.xsl",
+                    "org/eolang/parser/errors/broken-refs.xsl"
+                )
+            ).pass();
+            new Save(baos.toByteArray(), target).save();
+            Logger.info(
+                this, "%s optimized to %s, all steps are in %s",
+                file, target, dir
+            );
+            Logger.debug(
+                this, "Optimized XML saved to %s:\n%s", target,
+                new String(baos.toByteArray(), StandardCharsets.UTF_8)
+            );
         }
+        return target;
     }
 
 }

@@ -23,13 +23,13 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ResolveMojo}.
@@ -42,26 +42,24 @@ public final class ResolveMojoTest {
 
     @Test
     @Disabled
-    public void testSimpleResolve() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
+    public void testSimpleResolve(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
-            "+rt jvm org.eolang:eo-runtime:0.6.0\n\n[] > foo /int\n",
+            "+rt jvm org.eolang:eo-runtime:0.7.0\n\n[] > foo /int\n",
             src.resolve("foo.eo")
         ).save();
         final Path target = temp.resolve("target");
-        final Path deps = temp.resolve("dependencies");
-        new Mojo<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("sourcesDir", src.toFile())
-            .execute();
-        new Mojo<>(OptimizeMojo.class)
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .execute();
-        new Mojo<>(ResolveMojo.class)
+        new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
-            .with("dependenciesDir", deps.toFile())
+            .execute();
+        new Moja<>(ResolveMojo.class)
+            .with("targetDir", target.toFile())
+            .with("outputDir", temp.resolve("out").toFile())
             .with("project", new MavenProjectStub())
+            .with("resolvedList", temp.resolve("a.csv").toFile())
             .execute();
         MatcherAssert.assertThat(
             true,

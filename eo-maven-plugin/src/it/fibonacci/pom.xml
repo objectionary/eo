@@ -44,11 +44,11 @@ SOFTWARE.
         <executions>
           <execution>
             <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <!-- <goal>pull</goal> -->
-              <goal>resolve</goal>
-              <goal>compile</goal>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
+              <goal>copy-sources</goal>
+              <goal>prepack</goal>
             </goals>
           </execution>
         </executions>
@@ -67,7 +67,7 @@ SOFTWARE.
         <configuration>
           <mainClass>org.eolang.phi.Main</mainClass>
           <arguments>
-            <argument>EOorg.EOeolang.EOпримерыПрограмм.app</argument>
+            <argument>org.eolang.examples.app</argument>
             <argument>14</argument>
             <argument>377</argument>
           </arguments>

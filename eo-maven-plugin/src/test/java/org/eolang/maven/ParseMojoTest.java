@@ -26,10 +26,13 @@ package org.eolang.maven;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.eolang.parser.ParsingException;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.SmartTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ParseMojo}.
@@ -41,35 +44,45 @@ import org.junit.jupiter.api.Test;
 public final class ParseMojoTest {
 
     @Test
-    public void testSimpleParsing() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
-        final Path src = temp.resolve("src");
+    public void testSimpleParsing(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
         new Save(
-            "[args] > main\n  (stdout \"Hello!\").print\n",
-            src.resolve("main.eo")
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
+            src
         ).save();
-        new Mojo<>(ParseMojo.class)
-            .with("sourcesDir", src.toFile())
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new MonoTojos(foreign).add("foo.x.main").set("eo", src.toString());
+        new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(target.resolve("01-parse/main.eo.xml")),
+            Files.exists(
+                target.resolve(
+                    String.format("%s/foo/x/main.eo.xml", ParseMojo.DIR)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new SmartTojos(new MonoTojos(foreign)).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
     }
 
     @Test
-    public void testCrashOnInvalidSyntax() throws Exception {
-        final Path temp = Files.createTempDirectory("eo");
-        final Path src = temp.resolve("src");
-        final Path target = temp.resolve("target");
-        new Save("something is wrong here", src.resolve("f.eo")).save();
+    public void testCrashOnInvalidSyntax(@TempDir final Path temp)
+        throws Exception {
+        final Path src = temp.resolve("bar/src.eo");
+        new Save("something is wrong here", src).save();
+        final Path foreign = temp.resolve("foreign-1.csv");
+        new MonoTojos(foreign).add("bar.src").set("eo", src.toString());
         Assertions.assertThrows(
             ParsingException.class,
-            () -> new Mojo<>(ParseMojo.class)
-                .with("sourcesDir", src.toFile())
-                .with("targetDir", target.toFile())
+            () -> new Moja<>(ParseMojo.class)
+                .with("targetDir", temp.resolve("target").toFile())
+                .with("foreign", foreign.toFile())
                 .execute()
         );
     }
