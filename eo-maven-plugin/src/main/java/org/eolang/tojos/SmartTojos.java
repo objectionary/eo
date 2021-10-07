@@ -28,28 +28,57 @@ import java.util.Collection;
 import org.cactoos.Func;
 
 /**
- * Text Object Java Object (TOJO) in a storage.
+ * All file-objects.
+ *
+ * The class is NOT thread-safe.
  *
  * @since 0.12
  */
-public interface Tojos {
+public final class SmartTojos implements Tojos {
 
     /**
-     * Add new object and raise exception if there are version
-     * conflicts.
-     *
-     * @param name The name of the object
-     * @throws IOException If fails
+     * The original.
      */
-    Tojo add(String name) throws IOException;
+    private final Tojos origin;
 
     /**
-     * Select some fobjects.
+     * Ctor.
      *
-     * @param filter The filter
-     * @return Collection of them
+     * @param tojos The origin
+     */
+    public SmartTojos(final Tojos tojos) {
+        this.origin = tojos;
+    }
+
+    /**
+     * Get one tojo by ID.
+     * @param name The id
+     * @return The tojo if found
      * @throws IOException If fails
      */
-    Collection<Tojo> select(Func<Tojo, Boolean> filter) throws IOException;
+    public Tojo getById(final String name) throws IOException {
+        return this.origin
+            .select(tojo -> name.equals(tojo.get("id")))
+            .iterator()
+            .next();
+    }
 
+    /**
+     * Get size.
+     * @return Total count
+     * @throws IOException If fails
+     */
+    public int size() throws IOException {
+        return this.origin.select(t -> true).size();
+    }
+
+    @Override
+    public Tojo add(final String name) throws IOException {
+        return this.origin.add(name);
+    }
+
+    @Override
+    public Collection<Tojo> select(final Func<Tojo, Boolean> filter) throws IOException {
+        return this.origin.select(filter);
+    }
 }

@@ -52,7 +52,7 @@ public final class Csv implements Mono {
      *
      * @param path The path to the file
      */
-    Csv(final Path path) {
+    public Csv(final Path path) {
         this.file = path;
     }
 

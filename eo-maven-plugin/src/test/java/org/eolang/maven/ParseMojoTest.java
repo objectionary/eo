@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.eolang.parser.ParsingException;
 import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.SmartTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -65,8 +66,8 @@ public final class ParseMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new MonoTojos(foreign).select(t -> "foo.x.main".equals(t.get("id"))),
-            Matchers.not(Matchers.emptyIterable())
+            new SmartTojos(new MonoTojos(foreign)).getById("foo.x.main").exists("xmir"),
+            Matchers.is(true)
         );
     }
 

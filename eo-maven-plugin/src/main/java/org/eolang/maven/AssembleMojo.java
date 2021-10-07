@@ -36,6 +36,7 @@ import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.SmartTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -182,12 +183,12 @@ public final class AssembleMojo extends SafeMojo {
     }
 
     /**
-     * How many fobjects in total?
+     * How many tojos in total?
      * @return Total number
      * @throws IOException If fails
      */
     private int files() throws IOException {
-        return new MonoTojos(this.foreign).size();
+        return new SmartTojos(new MonoTojos(this.foreign)).size();
     }
 
 }

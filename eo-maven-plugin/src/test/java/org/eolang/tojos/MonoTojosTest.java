@@ -53,7 +53,7 @@ public final class MonoTojosTest {
         final Tojos tojos = new MonoTojos(temp.resolve("x.csv"));
         tojos.add("foo-1");
         MatcherAssert.assertThat(
-            tojos.size(),
+            new SmartTojos(tojos).size(),
             Matchers.equalTo(1)
         );
     }
@@ -65,7 +65,7 @@ public final class MonoTojosTest {
         tojos.add(name);
         tojos.add(name);
         MatcherAssert.assertThat(
-            tojos.size(),
+            new SmartTojos(tojos).size(),
             Matchers.equalTo(1)
         );
     }

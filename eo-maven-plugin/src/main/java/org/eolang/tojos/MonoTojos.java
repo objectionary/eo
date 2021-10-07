@@ -76,11 +76,6 @@ public final class MonoTojos implements Tojos {
     }
 
     @Override
-    public int size() throws IOException {
-        return this.mono.read().size();
-    }
-
-    @Override
     public Tojo add(final String name) throws IOException {
         final Collection<Map<String, String>> rows = this.mono.read();
         final Optional<Map<String, String>> before = rows.stream().filter(
