@@ -41,7 +41,7 @@ import org.cactoos.text.TextOf;
  */
 @Mojo(
     name = "copy-sources",
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+    defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
 @SuppressWarnings("PMD.ImmutableField")
@@ -94,7 +94,7 @@ public final class CopyMojo extends SafeMojo {
             new Save(
                 CopyMojo.REPLACE
                     .matcher(new TextOf(new InputOf(src)).asString())
-                    .replaceAll(String.format("\1:%s\2", this.version)),
+                    .replaceAll(String.format("$1:%s$2", this.version)),
                 target.resolve(
                     src.toAbsolutePath().toString().substring(
                         this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1

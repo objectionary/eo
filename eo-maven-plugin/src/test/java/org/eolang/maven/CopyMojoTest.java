@@ -61,6 +61,7 @@ public final class CopyMojoTest {
         MatcherAssert.assertThat(
             new String(Files.readAllBytes(out), StandardCharsets.UTF_8),
             Matchers.allOf(
+                Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),
                 Matchers.containsString(ver)
             )
