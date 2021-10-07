@@ -62,7 +62,7 @@ final class Unplace {
     public String make(final Path file) {
         return file.toString().substring(
             this.parent.toString().length() + 1
-        ).replaceAll(".eo$", "").replaceAll(File.separator, ".");
+        ).replaceAll(".eo$", "").replace(File.separator, ".");
     }
 
 }
