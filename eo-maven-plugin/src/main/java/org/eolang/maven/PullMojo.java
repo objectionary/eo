@@ -34,7 +34,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
 
@@ -93,7 +93,7 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new CsvTojos(this.foreign);
+        final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> fobjs = tojos.select(
             row -> !row.exists("eo") && !row.exists("xmir")
         );

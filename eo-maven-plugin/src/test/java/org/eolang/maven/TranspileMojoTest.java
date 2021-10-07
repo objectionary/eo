@@ -31,7 +31,7 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -85,7 +85,7 @@ public final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("foreign.csv");
-        new CsvTojos(foreign).add("foo.src").set("eo", src.toString());
+        new MonoTojos(foreign).add("foo.src").set("eo", src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())

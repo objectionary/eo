@@ -39,7 +39,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.Mapped;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojos;
 
 /**
@@ -68,7 +68,7 @@ public final class DiscoverMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new CsvTojos(this.foreign);
+        final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Path> sources = new Mapped<>(
             row -> Paths.get(row.get("xmir2")),
             tojos.select(row -> row.exists("xmir2"))

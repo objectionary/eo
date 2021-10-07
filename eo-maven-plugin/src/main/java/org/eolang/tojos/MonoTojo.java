@@ -34,12 +34,12 @@ import java.util.Map;
  *
  * @since 0.12
  */
-final class CsvTojo implements Tojo {
+final class MonoTojo implements Tojo {
 
     /**
      * The file.
      */
-    private final Csv csv;
+    private final Mono mono;
 
     /**
      * The name.
@@ -49,17 +49,17 @@ final class CsvTojo implements Tojo {
     /**
      * Ctor.
      *
-     * @param file The CSV
+     * @param mno The CSV
      * @param nme The name
      */
-    CsvTojo(final Csv file, final String nme) {
-        this.csv = file;
+    MonoTojo(final Mono mno, final String nme) {
+        this.mono = mno;
         this.name = nme;
     }
 
     @Override
     public boolean exists(final String key) throws IOException {
-        return this.csv.read().stream()
+        return this.mono.read().stream()
             .filter(row -> row.get("id").equals(this.name))
             .findFirst()
             .get()
@@ -68,7 +68,7 @@ final class CsvTojo implements Tojo {
 
     @Override
     public String get(final String key) throws IOException {
-        final String value = this.csv.read().stream()
+        final String value = this.mono.read().stream()
             .filter(row -> row.get("id").equals(this.name))
             .findFirst()
             .get()
@@ -85,12 +85,12 @@ final class CsvTojo implements Tojo {
 
     @Override
     public Tojo set(final String key, final String value) throws IOException {
-        final Collection<Map<String, String>> rows = this.csv.read();
+        final Collection<Map<String, String>> rows = this.mono.read();
         final Map<String, String> row = rows.stream().filter(
             r -> r.get("id").equals(this.name)
         ).findFirst().get();
         row.put(key, value);
-        this.csv.write(rows);
+        this.mono.write(rows);
         return this;
     }
 }

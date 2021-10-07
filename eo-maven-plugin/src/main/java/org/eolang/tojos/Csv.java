@@ -40,7 +40,7 @@ import java.util.Map;
  *
  * @since 0.12
  */
-final class Csv {
+public final class Csv implements Mono {
 
     /**
      * The file where to keep them.
@@ -56,11 +56,7 @@ final class Csv {
         this.file = path;
     }
 
-    /**
-     * Read them all.
-     * @return The list of all lines
-     * @throws IOException If fails
-     */
+    @Override
     public Collection<Map<String, String>> read() throws IOException {
         final Collection<Map<String, String>> rows = new LinkedList<>();
         if (Files.exists(this.file)) {
@@ -77,11 +73,7 @@ final class Csv {
         return rows;
     }
 
-    /**
-     * Write them all back.
-     * @param rows The list of all lines
-     * @throws IOException If fails
-     */
+    @Override
     public void write(final Collection<Map<String, String>> rows) throws IOException {
         final Collection<String> lines = new ArrayList<>(rows.size());
         for (final Map<String, String> row : rows) {

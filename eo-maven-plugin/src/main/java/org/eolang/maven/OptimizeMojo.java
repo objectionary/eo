@@ -39,7 +39,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
 
@@ -88,7 +88,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new CsvTojos(this.foreign);
+        final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> sources = tojos.select(
             row -> row.exists("xmir") && !row.exists("xmir2")
         );

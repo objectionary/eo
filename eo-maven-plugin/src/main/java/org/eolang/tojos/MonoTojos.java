@@ -41,19 +41,19 @@ import org.cactoos.func.IoCheckedFunc;
  *
  * @since 0.12
  */
-public final class CsvTojos implements Tojos {
+public final class MonoTojos implements Tojos {
 
     /**
-     * The CSV.
+     * The mono.
      */
-    private final Csv csv;
+    private final Mono mono;
 
     /**
      * Ctor.
      *
      * @param path The path to the file
      */
-    public CsvTojos(final File path) {
+    public MonoTojos(final File path) {
         this(path.toPath());
     }
 
@@ -62,27 +62,27 @@ public final class CsvTojos implements Tojos {
      *
      * @param path The path to the file
      */
-    public CsvTojos(final Path path) {
+    public MonoTojos(final Path path) {
         this(new Csv(path));
     }
 
     /**
      * Ctor.
      *
-     * @param file The CSV
+     * @param mno The CSV
      */
-    public CsvTojos(final Csv file) {
-        this.csv = file;
+    public MonoTojos(final Mono mno) {
+        this.mono = mno;
     }
 
     @Override
     public int size() throws IOException {
-        return this.csv.read().size();
+        return this.mono.read().size();
     }
 
     @Override
     public Tojo add(final String name) throws IOException {
-        final Collection<Map<String, String>> rows = this.csv.read();
+        final Collection<Map<String, String>> rows = this.mono.read();
         final Optional<Map<String, String>> before = rows.stream().filter(
             r -> r.get("id").equals(name)
         ).findFirst();
@@ -90,18 +90,18 @@ public final class CsvTojos implements Tojos {
             final Map<String, String> row = new HashMap<>(1);
             row.put("id", name);
             rows.add(row);
-            this.csv.write(rows);
+            this.mono.write(rows);
         }
-        return new CsvTojo(this.csv, name);
+        return new MonoTojo(this.mono, name);
     }
 
     @Override
     public Collection<Tojo> select(final Func<Tojo, Boolean> filter) throws IOException {
-        final Collection<Map<String, String>> rows = this.csv.read();
+        final Collection<Map<String, String>> rows = this.mono.read();
         final Collection<Tojo> tojos = new ArrayList<>(rows.size());
         final IoCheckedFunc<Tojo, Boolean> safe = new IoCheckedFunc<>(filter);
         for (final Map<String, String> row : rows) {
-            final Tojo tojo = new CsvTojo(this.csv, row.get("id"));
+            final Tojo tojo = new MonoTojo(this.mono, row.get("id"));
             if (safe.apply(tojo)) {
                 tojos.add(tojo);
             }

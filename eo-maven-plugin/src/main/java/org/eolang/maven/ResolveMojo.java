@@ -45,7 +45,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.iterable.Mapped;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
@@ -174,7 +174,7 @@ public final class ResolveMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private Collection<Dependency> deps() throws IOException {
-        final Tojos tojos = new CsvTojos(this.foreign);
+        final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> list = tojos.select(
             t -> t.exists("xmir")
                 && !t.exists("jar")

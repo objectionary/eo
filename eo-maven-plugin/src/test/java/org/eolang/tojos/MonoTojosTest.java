@@ -31,15 +31,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link CsvTojos}.
+ * Test case for {@link MonoTojos}.
  *
  * @since 0.12
  */
-public final class CsvTojosTest {
+public final class MonoTojosTest {
 
     @Test
     public void simpleScenario(@TempDir final Path temp) throws IOException {
-        final Tojos tojos = new CsvTojos(temp.resolve("a.csv"));
+        final Tojos tojos = new MonoTojos(temp.resolve("a.csv"));
         tojos.add("foo").set("k", "v").set("a", "b");
         tojos.select(t -> t.exists("k")).iterator().next();
         MatcherAssert.assertThat(
@@ -50,7 +50,7 @@ public final class CsvTojosTest {
 
     @Test
     public void addTojo(@TempDir final Path temp) throws IOException {
-        final Tojos tojos = new CsvTojos(temp.resolve("x.csv"));
+        final Tojos tojos = new MonoTojos(temp.resolve("x.csv"));
         tojos.add("foo-1");
         MatcherAssert.assertThat(
             tojos.size(),
@@ -60,7 +60,7 @@ public final class CsvTojosTest {
 
     @Test
     public void uniqueIds(@TempDir final Path temp) throws IOException {
-        final Tojos tojos = new CsvTojos(temp.resolve("x1.csv"));
+        final Tojos tojos = new MonoTojos(temp.resolve("x1.csv"));
         final String name = "foo11";
         tojos.add(name);
         tojos.add(name);

@@ -33,7 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
 
@@ -138,7 +138,7 @@ public final class TranspileMojo extends SafeMojo {
         } else {
             cmp = new TranspilerAlternative(this.compiler);
         }
-        final Tojos tojos = new CsvTojos(this.foreign);
+        final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> sources = tojos.select(
             row -> row.exists("xmir2")
         );

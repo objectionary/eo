@@ -26,7 +26,7 @@ package org.eolang.maven;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.eolang.parser.ParsingException;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +51,7 @@ public final class ParseMojoTest {
             src
         ).save();
         final Path foreign = temp.resolve("foreign.csv");
-        new CsvTojos(foreign).add("foo.x.main").set("eo", src.toString());
+        new MonoTojos(foreign).add("foo.x.main").set("eo", src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
@@ -65,7 +65,7 @@ public final class ParseMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new CsvTojos(foreign).select(t -> "foo.x.main".equals(t.get("id"))),
+            new MonoTojos(foreign).select(t -> "foo.x.main".equals(t.get("id"))),
             Matchers.not(Matchers.emptyIterable())
         );
     }
@@ -76,7 +76,7 @@ public final class ParseMojoTest {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something is wrong here", src).save();
         final Path foreign = temp.resolve("foreign-1.csv");
-        new CsvTojos(foreign).add("bar.src").set("eo", src.toString());
+        new MonoTojos(foreign).add("bar.src").set("eo", src.toString());
         Assertions.assertThrows(
             ParsingException.class,
             () -> new Moja<>(ParseMojo.class)

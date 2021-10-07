@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.eolang.tojos.CsvTojos;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public final class PullMojoTest {
     public void testSimplePull(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("foreign.csv");
-        new CsvTojos(foreign).add("org.eolang.io.stdout").set("version", "*.*.*");
+        new MonoTojos(foreign).add("org.eolang.io.stdout").set("version", "*.*.*");
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
