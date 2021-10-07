@@ -28,7 +28,7 @@ SOFTWARE.
   <artifactId>quick-start</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <eolang.version>0.6.2</eolang.version>
+    <eolang.version>1.0-SNAPSHOT</eolang.version>
   </properties>
   <build>
     <plugins>
@@ -47,9 +47,9 @@ SOFTWARE.
         <executions>
           <execution>
             <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
             </goals>
             <configuration>
               <sourcesDir>${project.basedir}/eo</sourcesDir>
@@ -58,38 +58,6 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.eolang</groupId>
-                  <artifactId>eo-runtime</artifactId>
-                  <version>${eolang.version}</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <destFileName>eo-runtime.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version>${eolang.version}</version>
-    </dependency>
-  </dependencies>
 </project>

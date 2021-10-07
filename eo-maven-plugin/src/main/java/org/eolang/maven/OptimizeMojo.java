@@ -85,10 +85,10 @@ public final class OptimizeMojo extends SafeMojo {
      * @return The file with optimized XMIR
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private Path optimize(final Path file) throws IOException {
-        final Place place = new Place(
-            new XMLDocument(file).xpath("/program/@name").get(0)
-        );
+        final String name = new XMLDocument(file).xpath("/program/@name").get(0);
+        final Place place = new Place(name);
         final Path dir = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
         );
@@ -114,13 +114,14 @@ public final class OptimizeMojo extends SafeMojo {
                     "org/eolang/parser/optimize/remove-levels.xsl",
                     "org/eolang/parser/add-refs.xsl",
                     "org/eolang/parser/optimize/fix-missed-names.xsl",
+                    "org/eolang/parser/add-refs.xsl",
                     "org/eolang/parser/errors/broken-refs.xsl"
                 )
             ).pass();
             new Save(baos.toByteArray(), target).save();
             Logger.info(
-                this, "Optimized %s to %s, all steps are in %s",
-                Save.rel(file), Save.rel(target), Save.rel(dir)
+                this, "Optimized %s (program:%s) to %s, all steps are in %s",
+                Save.rel(file), name, Save.rel(target), Save.rel(dir)
             );
         }
         return target;
