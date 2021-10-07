@@ -185,7 +185,7 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Path> sources = new Walk(home);
         int done = 0;
         for (final Path src : sources) {
-            if (src.endsWith(".eo")) {
+            if (src.toString().endsWith(".eo")) {
                 this.tojos().add(unplace.make(src)).set(
                     AssembleMojo.ATTR_VERSION, version
                 );
@@ -230,10 +230,7 @@ public final class ResolveMojo extends SafeMojo {
                         MojoExecutor.element("artifactId", dep.getArtifactId()),
                         MojoExecutor.element("version", dep.getVersion()),
                         MojoExecutor.element("overWrite", this.overWrite.toString()),
-                        MojoExecutor.element(
-                            "outputDirectory",
-                            this.outputDir.toString()
-                        )
+                        MojoExecutor.element("outputDirectory", this.outputDir.toString())
                     )
                 )
             ),
