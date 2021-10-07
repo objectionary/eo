@@ -144,14 +144,14 @@ public final class ResolveMojo extends SafeMojo {
     private Collection<Dependency> deps() throws IOException {
         final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> list = tojos.select(
-            t -> t.exists("xmir")
+            t -> t.exists(AssembleMojo.ATTR_XMIR)
                 && !t.exists("jar")
-                && !ParseMojo.ZERO.equals(t.get("version"))
+                && !ParseMojo.ZERO.equals(t.get(AssembleMojo.ATTR_VERSION))
         );
         final Collection<Dependency> deps = new HashSet<>(0);
         for (final Tojo tojo : list) {
             final Optional<Dependency> dep = ResolveMojo.artifact(
-                Paths.get(tojo.get("xmir"))
+                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
             );
             if (!dep.isPresent()) {
                 continue;
@@ -188,7 +188,7 @@ public final class ResolveMojo extends SafeMojo {
         final Unplace unplace = new Unplace(home);
         for (final Path src : new Walk(home)) {
             if (src.endsWith(".eo")) {
-                tojos.add(unplace.make(src)).set("version", version);
+                tojos.add(unplace.make(src)).set(AssembleMojo.ATTR_VERSION, version);
             }
             Files.delete(src);
         }

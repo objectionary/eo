@@ -58,13 +58,13 @@ public final class DiscoverMojo extends SafeMojo {
     public void exec() throws IOException {
         final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Path> sources = new Mapped<>(
-            row -> Paths.get(row.get("xmir2")),
-            tojos.select(row -> row.exists("xmir2"))
+            row -> Paths.get(row.get(AssembleMojo.ATTR_XMIR2)),
+            tojos.select(row -> row.exists(AssembleMojo.ATTR_XMIR2))
         );
         final Collection<String> discovered = new HashSet<>(1);
         for (final Path source : sources) {
             for (final String name : this.discover(source)) {
-                tojos.add(name).set("version", "*.*.*");
+                tojos.add(name).set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 discovered.add(name);
             }
         }

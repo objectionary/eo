@@ -68,12 +68,15 @@ public final class OptimizeMojo extends SafeMojo {
     public void exec() throws IOException {
         final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> sources = tojos.select(
-            row -> row.exists("xmir") && !row.exists("xmir2")
+            row -> row.exists(AssembleMojo.ATTR_XMIR)
+                && !row.exists(AssembleMojo.ATTR_XMIR2)
         );
         for (final Tojo source : sources) {
             source.set(
-                "xmir2",
-                this.optimize(Paths.get(source.get("xmir"))).toAbsolutePath().toString()
+                AssembleMojo.ATTR_XMIR2,
+                this.optimize(
+                    Paths.get(source.get(AssembleMojo.ATTR_XMIR))
+                ).toAbsolutePath().toString()
             );
         }
     }

@@ -95,8 +95,8 @@ public final class RegisterMojo extends SafeMojo {
         for (final Path file : sources) {
             tojos
                 .add(unplace.make(file))
-                .set("version", ParseMojo.ZERO)
-                .set("eo", file.toAbsolutePath().toString());
+                .set(AssembleMojo.ATTR_VERSION, ParseMojo.ZERO)
+                .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());
         }
     }
 

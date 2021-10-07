@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -37,7 +38,6 @@ import org.cactoos.io.OutputTo;
 import org.eolang.parser.Syntax;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
-import org.eolang.tojos.Tojos;
 
 /**
  * Parse EO to XML.
@@ -66,8 +66,11 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new MonoTojos(this.foreign);
-        for (final Tojo tojo : tojos.select(row -> row.exists("eo") && !row.exists("xmir"))) {
+        final Collection<Tojo> tojos = new MonoTojos(this.foreign).select(
+            row -> row.exists(AssembleMojo.ATTR_EO)
+                && !row.exists(AssembleMojo.ATTR_XMIR)
+        );
+        for (final Tojo tojo : tojos) {
             this.parse(tojo);
         }
     }
@@ -79,7 +82,7 @@ public final class ParseMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void parse(final Tojo tojo) throws IOException {
-        final Path source = Paths.get(tojo.get("eo"));
+        final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get("id");
         final Path target = new Place(name).make(
             this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
@@ -96,7 +99,7 @@ public final class ParseMojo extends SafeMojo {
             new Save(baos.toByteArray(), target).save();
             Logger.info(this, "%s parsed to %s", source, target);
         }
-        tojo.set("xmir", target.toAbsolutePath().toString());
+        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
     }
 
 }

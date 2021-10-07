@@ -108,12 +108,12 @@ public final class TranspileMojo extends SafeMojo {
         }
         final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Tojo> sources = tojos.select(
-            row -> row.exists("xmir2")
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
         int total = 0;
         for (final Tojo tojo : sources) {
             final int done = cmp.transpile(
-                Paths.get(tojo.get("xmir2")),
+                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2)),
                 this.generatedDir.toPath()
             );
             total += done;
