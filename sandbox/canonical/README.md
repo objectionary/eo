@@ -1,5 +1,6 @@
 <img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
 
+[![sandbox](https://github.com/cqfn/eo/actions/workflows/sandbox.yml/badge.svg?branch=master)](https://github.com/cqfn/eo/actions/workflows/sandbox.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
 
 You can play with EOLANG here, in a few simple steps:
