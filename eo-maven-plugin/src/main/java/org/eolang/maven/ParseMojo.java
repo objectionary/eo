@@ -25,14 +25,12 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
@@ -65,26 +63,6 @@ public final class ParseMojo extends SafeMojo {
      * The directory where to parse to.
      */
     public static final String DIR = "01-parse";
-
-    /**
-     * Target directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
-
-    /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
 
     @Override
     public void exec() throws IOException {

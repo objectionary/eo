@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,7 +34,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
@@ -65,26 +63,6 @@ public final class OptimizeMojo extends SafeMojo {
      * The directory where to transpile to.
      */
     public static final String DIR = "03-optimize";
-
-    /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
-
-    /**
-     * From directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
 
     @Override
     public void exec() throws IOException {

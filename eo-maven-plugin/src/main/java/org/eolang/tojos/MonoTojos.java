@@ -35,7 +35,7 @@ import org.cactoos.Func;
 import org.cactoos.func.IoCheckedFunc;
 
 /**
- * All file-objects.
+ * All tojos in a {@link Mono}.
  *
  * The class is NOT thread-safe.
  *

@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * One file-object.
+ * One tojo in a {@link Mono}.
  *
  * The class is NOT thread-safe.
  *

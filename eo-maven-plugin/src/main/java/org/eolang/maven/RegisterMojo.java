@@ -64,16 +64,6 @@ public final class RegisterMojo extends SafeMojo {
     private File sourcesDir;
 
     /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
-
-    /**
      * List of inclusion GLOB filters for finding EO files.
      */
     @Parameter

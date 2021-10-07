@@ -51,7 +51,7 @@ public final class ParseMojoTest {
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
             src
         ).save();
-        final Path foreign = temp.resolve("foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.csv");
         new MonoTojos(foreign).add("foo.x.main").set("eo", src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())

@@ -23,9 +23,15 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -34,6 +40,38 @@ import org.slf4j.impl.StaticLoggerBinder;
  * @since 0.1
  */
 abstract class SafeMojo extends AbstractMojo {
+
+    /**
+     * Maven project.
+     */
+    @Parameter(defaultValue = "${project}", readonly = true)
+    protected MavenProject project;
+
+    /**
+     * Maven session.
+     */
+    @Parameter(defaultValue = "${session}", readonly = true)
+    protected MavenSession session;
+
+    /**
+     * Maven plugin manager.
+     */
+    @Component
+    protected BuildPluginManager manager;
+
+    /**
+     * File with foreign "tojos".
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.csv")
+    protected File foreign;
+
+    /**
+     * Target directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(required = true, defaultValue = "${project.build.directory}/eo")
+    protected File targetDir;
 
     /**
      * Exec it.

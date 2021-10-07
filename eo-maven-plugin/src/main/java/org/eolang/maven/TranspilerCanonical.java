@@ -83,7 +83,7 @@ final class TranspilerCanonical implements Transpiler {
             new Xsline(
                 input,
                 new OutputTo(target),
-                new TargetSpy(place.make(this.pre, TranspilerCanonical.EXT)),
+                new TargetSpy(place.make(this.pre, "")),
                 new ListOf<>(
                     "org/eolang/maven/pre/classes.xsl",
                     "org/eolang/maven/pre/junit.xsl",

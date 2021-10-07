@@ -26,13 +26,9 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.BuildPluginManager;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.eolang.tojos.MonoTojos;
@@ -52,34 +48,6 @@ import org.eolang.tojos.SmartTojos;
 public final class AssembleMojo extends SafeMojo {
 
     /**
-     * Maven project.
-     */
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenProject project;
-
-    /**
-     * Maven session.
-     */
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenSession session;
-
-    /**
-     * Maven plugin manager.
-     */
-    @Component
-    private BuildPluginManager manager;
-
-    /**
-     * The target folder.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
-
-    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -88,16 +56,6 @@ public final class AssembleMojo extends SafeMojo {
         defaultValue = "${project.build.outputDirectory}"
     )
     private File outputDir;
-
-    /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
 
     /**
      * The objectionary.

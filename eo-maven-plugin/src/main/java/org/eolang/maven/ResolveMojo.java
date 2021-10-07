@@ -35,15 +35,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.cactoos.iterable.Mapped;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
@@ -69,24 +65,6 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
 public final class ResolveMojo extends SafeMojo {
 
     /**
-     * Maven project.
-     */
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenProject project;
-
-    /**
-     * Maven session.
-     */
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenSession session;
-
-    /**
-     * Maven plugin manager.
-     */
-    @Component
-    private BuildPluginManager manager;
-
-    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -95,16 +73,6 @@ public final class ResolveMojo extends SafeMojo {
         defaultValue = "${project.build.outputDirectory}"
     )
     private File outputDir;
-
-    /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
 
     /**
      * The path to a text file where paths of all added
@@ -305,7 +273,6 @@ public final class ResolveMojo extends SafeMojo {
             dependency.setArtifactId(parts[1]);
             dependency.setVersion(parts[2]);
             dependency.setClassifier("");
-            dependency.setType("jar");
             dependency.setScope("transpile");
             dep = Optional.of(dependency);
         }

@@ -35,16 +35,18 @@ import org.cactoos.Func;
 public interface Tojos {
 
     /**
-     * Add new object and raise exception if there are version
-     * conflicts.
+     * Add new tojo with the given ID.
      *
-     * @param name The name of the object
+     * If another tojo already exists with this ID, it will be returned.
+     *
+     * @param name The ID of the tojo
+     * @return The tojo created or found
      * @throws IOException If fails
      */
     Tojo add(String name) throws IOException;
 
     /**
-     * Select some fobjects.
+     * Select some tojos.
      *
      * @param filter The filter
      * @return Collection of them

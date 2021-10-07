@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -57,33 +56,12 @@ public final class PullMojo extends SafeMojo {
     public static final String DIR = "04-pull";
 
     /**
-     * Where we have .eo.xml files just parsed (we process new .eo
-     * files right here too, and parse them here too).
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
-
-    /**
      * Pull again even if the .eo file is already present?
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
     @Parameter(required = true, defaultValue = "false")
     private boolean overWrite;
-
-    /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
 
     /**
      * The objectionary.

@@ -32,7 +32,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
@@ -63,14 +62,7 @@ public final class TranspileMojo extends SafeMojo {
     public static final String PRE = "05-pre";
 
     /**
-     * Maven project.
-     */
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
-
-    /**
      * Target directory.
-     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -78,17 +70,6 @@ public final class TranspileMojo extends SafeMojo {
         defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
-
-    /**
-     * Target directory.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo"
-    )
-    private File targetDir;
 
     /**
      * Add to source root.
@@ -108,22 +89,9 @@ public final class TranspileMojo extends SafeMojo {
     private boolean addTestSourcesRoot;
 
     /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
-
-    /**
      * Which compiler to use: original or HSE.
      */
-    @Parameter(
-        property = "compiler",
-        defaultValue = "canonical"
-    )
+    @Parameter(property = "compiler", defaultValue = "canonical")
     @SuppressWarnings("PMD.ImmutableField")
     private String compiler;
 

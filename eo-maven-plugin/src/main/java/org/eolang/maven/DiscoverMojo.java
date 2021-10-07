@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,7 +34,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.Mapped;
@@ -55,16 +53,6 @@ import org.eolang.tojos.Tojos;
     threadSafe = true
 )
 public final class DiscoverMojo extends SafeMojo {
-
-    /**
-     * File with foreign "file objects".
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/foreign.csv"
-    )
-    private File foreign;
 
     @Override
     public void exec() throws IOException {
