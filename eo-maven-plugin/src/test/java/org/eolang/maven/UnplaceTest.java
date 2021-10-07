@@ -23,46 +23,29 @@
  */
 package org.eolang.maven;
 
-import java.io.File;
-import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 /**
- * Make program name from path.
+ * Test case for {@link Unplace}.
  *
- * @since 0.1
+ * @since 0.11
  */
-final class Unplace {
+public final class UnplaceTest {
 
-    /**
-     * The parent dir.
-     */
-    private final Path parent;
-
-    /**
-     * Ctor.
-     * @param dir The name of the parent dir
-     */
-    Unplace(final File dir) {
-        this(dir.toPath());
-    }
-
-    /**
-     * Ctor.
-     * @param dir The name of the parent dir
-     */
-    Unplace(final Path dir) {
-        this.parent = dir;
-    }
-
-    /**
-     * Make a program name.
-     * @param file The file
-     * @return The name of the program
-     */
-    public String make(final Path file) {
-        return file.toString().substring(
-            this.parent.toString().length() + 1
-        ).replaceAll(".eo$", "").replaceAll(File.separator, ".");
+    @Test
+    @EnabledOnOs(OS.LINUX)
+    public void makesName() {
+        MatcherAssert.assertThat(
+            new Unplace(Paths.get("/tmp/foo/bar")).make(
+                Paths.get("/tmp/foo/bar/a/b/c.eo")
+            ),
+            Matchers.equalTo("a.b.c")
+        );
     }
 
 }

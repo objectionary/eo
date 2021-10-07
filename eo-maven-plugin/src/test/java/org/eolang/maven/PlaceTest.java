@@ -27,12 +27,15 @@ import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link Place}.
  *
  * @since 0.11
  */
+@EnabledOnOs(OS.LINUX)
 public final class PlaceTest {
 
     @Test

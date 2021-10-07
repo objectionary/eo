@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -53,7 +54,7 @@ final class Place {
      */
     public Path make(final Path dir, final String ext) {
         final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", "/"));
+        out.append(this.name.replace(".", File.separator));
         if (!ext.isEmpty()) {
             out.append('.').append(ext);
         }
