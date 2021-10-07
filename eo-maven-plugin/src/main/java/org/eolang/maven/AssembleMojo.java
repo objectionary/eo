@@ -26,12 +26,13 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
-import org.eolang.tojos.SmartTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -118,7 +119,7 @@ public final class AssembleMojo extends SafeMojo {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void exec() throws IOException {
-        int before = this.files();
+        String before = this.status();
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class)
@@ -147,30 +148,46 @@ public final class AssembleMojo extends SafeMojo {
             for (final Moja<?> moja : mojas) {
                 moja.execute();
             }
-            final int after = this.files();
+            final String after = this.status();
             ++cycle;
             Logger.info(
-                this, "Assemble cycle #%d (%d -> %d)",
+                this, "Assemble cycle #%d (%s -> %s)",
                 cycle, before, after
             );
-            if (after == before) {
+            if (after.equals(before)) {
                 break;
             }
             before = after;
         }
         Logger.info(
-            this, "%d assemble cycle(s) produced %d new object(s)",
+            this, "%d assemble cycle(s) produced some new object(s): %s",
             cycle, before
         );
     }
 
     /**
-     * How many tojos in total?
-     * @return Total number
+     * Status of tojos.
+     * @return Status in text
      * @throws IOException If fails
      */
-    private int files() throws IOException {
-        return new SmartTojos(this.tojos()).size();
+    private String status() throws IOException {
+        final String[] attrs = {
+            AssembleMojo.ATTR_EO,
+            AssembleMojo.ATTR_XMIR,
+            AssembleMojo.ATTR_XMIR2,
+            AssembleMojo.ATTR_DISCOVERED,
+        };
+        final Collection<String> parts = new LinkedList<>();
+        for (final String attr : attrs) {
+            parts.add(
+                String.format(
+                    "%s:%d",
+                    attr,
+                    this.tojos().select(tojo -> tojo.exists(attr)).size()
+                )
+            );
+        }
+        return String.join("/", parts);
     }
 
 }
