@@ -41,9 +41,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Mapped;
-import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
-import org.eolang.tojos.Tojos;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
@@ -113,6 +111,7 @@ public final class ResolveMojo extends SafeMojo {
             } catch (final MojoExecutionException ex) {
                 throw new IllegalStateException(ex);
             }
+            this.jarSources(dep.getVersion());
             final List<Path> after = this.files();
             if (before.size() < after.size()) {
                 Logger.info(
@@ -142,8 +141,7 @@ public final class ResolveMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private Collection<Dependency> deps() throws IOException {
-        final Tojos tojos = new MonoTojos(this.foreign);
-        final Collection<Tojo> list = tojos.select(
+        final Collection<Tojo> list = this.tojos().select(
             t -> t.exists(AssembleMojo.ATTR_XMIR)
                 && !t.exists("jar")
                 && !ParseMojo.ZERO.equals(t.get(AssembleMojo.ATTR_VERSION))
@@ -165,7 +163,6 @@ public final class ResolveMojo extends SafeMojo {
                     one.getGroupId(), one.getArtifactId(), one.getVersion()
                 )
             );
-            this.jarSources(tojos, one.getVersion());
         }
         return deps.stream()
             .filter(dep -> !this.skipZeroVersions || !"0.0.0".equals(dep.getVersion()))
@@ -179,16 +176,17 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Take sources from EO-SOURCES dir and register them in the CSV.
      *
-     * @param tojos The tojos
      * @param version The version of the JAR
      * @throws IOException If fails
      */
-    private void jarSources(final Tojos tojos, final String version) throws IOException {
+    private void jarSources(final String version) throws IOException {
         final Path home = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Unplace unplace = new Unplace(home);
         for (final Path src : new Walk(home)) {
             if (src.endsWith(".eo")) {
-                tojos.add(unplace.make(src)).set(AssembleMojo.ATTR_VERSION, version);
+                this.tojos().add(unplace.make(src)).set(
+                    AssembleMojo.ATTR_VERSION, version
+                );
             }
             Files.delete(src);
         }

@@ -32,6 +32,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -91,6 +93,14 @@ abstract class SafeMojo extends AbstractMojo {
                 ex
             );
         }
+    }
+
+    /**
+     * Tojos to use.
+     * @return Tojos to use
+     */
+    protected final Tojos tojos() {
+        return new MonoTojos(this.foreign);
     }
 
     /**

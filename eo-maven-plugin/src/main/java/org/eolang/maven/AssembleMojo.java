@@ -31,7 +31,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
-import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.SmartTojos;
 
 /**
@@ -166,7 +165,7 @@ public final class AssembleMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private int files() throws IOException {
-        return new SmartTojos(new MonoTojos(this.foreign)).size();
+        return new SmartTojos(this.tojos()).size();
     }
 
 }

@@ -37,8 +37,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.Mapped;
-import org.eolang.tojos.MonoTojos;
-import org.eolang.tojos.Tojos;
 
 /**
  * Read all XMIR files and find foreign objects in them, then
@@ -56,15 +54,14 @@ public final class DiscoverMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new MonoTojos(this.foreign);
         final Collection<Path> sources = new Mapped<>(
             row -> Paths.get(row.get(AssembleMojo.ATTR_XMIR2)),
-            tojos.select(row -> row.exists(AssembleMojo.ATTR_XMIR2))
+            this.tojos().select(row -> row.exists(AssembleMojo.ATTR_XMIR2))
         );
         final Collection<String> discovered = new HashSet<>(1);
         for (final Path source : sources) {
             for (final String name : this.discover(source)) {
-                tojos.add(name).set(AssembleMojo.ATTR_VERSION, "*.*.*");
+                this.tojos().add(name).set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 discovered.add(name);
             }
         }

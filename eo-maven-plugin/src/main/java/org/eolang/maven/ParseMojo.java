@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.eolang.parser.Syntax;
-import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 
 /**
@@ -66,7 +65,7 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = new MonoTojos(this.foreign).select(
+        final Collection<Tojo> tojos = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );

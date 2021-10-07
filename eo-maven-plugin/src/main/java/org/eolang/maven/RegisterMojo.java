@@ -37,8 +37,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
-import org.eolang.tojos.MonoTojos;
-import org.eolang.tojos.Tojos;
 
 /**
  * Register all sources.
@@ -91,10 +89,9 @@ public final class RegisterMojo extends SafeMojo {
                 )
             )
             .collect(Collectors.toList());
-        final Tojos tojos = new MonoTojos(this.foreign);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
-            tojos
+            this.tojos()
                 .add(unplace.make(file))
                 .set(AssembleMojo.ATTR_VERSION, ParseMojo.ZERO)
                 .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());

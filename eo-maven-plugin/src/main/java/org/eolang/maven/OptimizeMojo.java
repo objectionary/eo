@@ -37,9 +37,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
-import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
-import org.eolang.tojos.Tojos;
 
 /**
  * Optimize XML files.
@@ -66,8 +64,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new MonoTojos(this.foreign);
-        final Collection<Tojo> sources = tojos.select(
+        final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
                 && !row.exists(AssembleMojo.ATTR_XMIR2)
         );

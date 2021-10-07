@@ -33,9 +33,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
-import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
-import org.eolang.tojos.Tojos;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -71,8 +69,7 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Tojos tojos = new MonoTojos(this.foreign);
-        final Collection<Tojo> fobjs = tojos.select(
+        final Collection<Tojo> fobjs = this.tojos().select(
             row -> !row.exists("eo") && !row.exists("xmir")
         );
         if (!fobjs.isEmpty()) {

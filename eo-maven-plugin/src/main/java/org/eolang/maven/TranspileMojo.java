@@ -32,9 +32,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
-import org.eolang.tojos.Tojos;
 
 /**
  * Compile.
@@ -106,8 +104,7 @@ public final class TranspileMojo extends SafeMojo {
         } else {
             cmp = new TranspilerAlternative(this.compiler);
         }
-        final Tojos tojos = new MonoTojos(this.foreign);
-        final Collection<Tojo> sources = tojos.select(
+        final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
         int total = 0;
