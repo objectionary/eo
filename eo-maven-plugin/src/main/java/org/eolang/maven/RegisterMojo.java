@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -98,6 +99,7 @@ public final class RegisterMojo extends SafeMojo {
                 .set(AssembleMojo.ATTR_VERSION, ParseMojo.ZERO)
                 .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());
         }
+        Logger.info(this, "%d EO sources registered", sources.size());
     }
 
     /**

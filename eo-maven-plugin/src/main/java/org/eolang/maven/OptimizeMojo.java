@@ -79,6 +79,7 @@ public final class OptimizeMojo extends SafeMojo {
                 ).toAbsolutePath().toString()
             );
         }
+        Logger.info(this, "%d XMIR programs optimized", sources.size());
     }
 
     /**
