@@ -53,7 +53,7 @@ Compile the code (you will need [Maven 3.3+](https://maven.apache.org/)
 and [Java SDK 8+](https://www.java.com/en/download/) installed):
 
 ```bash
-$ mvn compile
+$ mvn clean compile
 ```
 
 Intermediary `*.xml` files will be generated in the `target` directory (it will
