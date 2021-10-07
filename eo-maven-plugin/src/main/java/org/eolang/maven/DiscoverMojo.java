@@ -36,7 +36,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
+import org.eolang.tojos.Tojo;
 
 /**
  * Read all XMIR files and find foreign objects in them, then
@@ -54,26 +54,30 @@ public final class DiscoverMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Path> sources = new Mapped<>(
-            row -> Paths.get(row.get(AssembleMojo.ATTR_XMIR2)),
-            this.tojos().select(row -> row.exists(AssembleMojo.ATTR_XMIR2))
+        final Collection<Tojo> tojos = this.tojos().select(
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && !row.exists(AssembleMojo.ATTR_DISCOVERED)
         );
         final Collection<String> discovered = new HashSet<>(1);
-        for (final Path source : sources) {
-            for (final String name : this.discover(source)) {
-                this.tojos().add(name).set(AssembleMojo.ATTR_VERSION, "*.*.*");
+        for (final Tojo tojo : tojos) {
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final Collection<String> names = this.discover(src);
+            for (final String name : names) {
+                this.tojos().add(name)
+                    .set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 discovered.add(name);
             }
+            tojo.set(AssembleMojo.ATTR_DISCOVERED, Integer.toString(names.size()));
         }
         if (discovered.isEmpty()) {
             Logger.info(
                 this, "No objects discovered in %d sources",
-                sources.size()
+                tojos.size()
             );
         } else {
             Logger.info(
                 this, "Discovered %d objects in %d sources: %s",
-                discovered.size(), sources.size(), discovered
+                discovered.size(), tojos.size(), discovered
             );
         }
     }

@@ -67,6 +67,11 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
+     * Tojo ATTR.
+     */
+    public static final String ATTR_DISCOVERED = "discovered";
+
+    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
