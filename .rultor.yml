@@ -30,5 +30,7 @@ release:
     cp -R /tmp/objectionary .
     find objectionary -name '*.eo' | xargs sed -i "s/0\.0\.0/${tag}/g"
     git add objectionary
+    find objectionary -name '*.eo' > objectionary.lst
+    git add objectionary.lst
     git commit -am "objectionary ${tag}"
     git checkout "${branch}"
