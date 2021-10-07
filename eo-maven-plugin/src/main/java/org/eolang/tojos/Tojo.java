@@ -55,6 +55,7 @@ public interface Tojo {
      *
      * @param key The name of the attribute
      * @param value The value
+     * @return Itself
      * @throws IOException If fails
      */
     Tojo set(String key, String value) throws IOException;

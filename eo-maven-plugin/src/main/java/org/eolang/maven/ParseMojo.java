@@ -76,6 +76,7 @@ public final class ParseMojo extends SafeMojo {
      * Parse EO file to XML.
      *
      * @param tojo The tojo
+     * @throws IOException If fails
      */
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get("eo"));

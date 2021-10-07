@@ -43,25 +43,28 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Maven project.
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     /**
      * Maven session.
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession session;
 
     /**
      * Maven plugin manager.
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Component
     protected BuildPluginManager manager;
 
     /**
      * File with foreign "tojos".
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.csv")
     protected File foreign;
@@ -69,15 +72,10 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Parameter(required = true, defaultValue = "${project.build.directory}/eo")
     protected File targetDir;
-
-    /**
-     * Exec it.
-     * @throws IOException If fails
-     */
-    abstract void exec() throws IOException;
 
     @Override
     public final void execute() throws MojoFailureException {
@@ -94,5 +92,11 @@ abstract class SafeMojo extends AbstractMojo {
             );
         }
     }
+
+    /**
+     * Exec it.
+     * @throws IOException If fails
+     */
+    abstract void exec() throws IOException;
 
 }

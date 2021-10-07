@@ -112,10 +112,11 @@ public final class TranspileMojo extends SafeMojo {
         );
         int total = 0;
         for (final Tojo tojo : sources) {
-            total += cmp.transpile(
+            final int done = cmp.transpile(
                 Paths.get(tojo.get("xmir2")),
                 this.generatedDir.toPath()
             );
+            total += done;
         }
         if (total > 0) {
             if (this.addSourcesRoot) {

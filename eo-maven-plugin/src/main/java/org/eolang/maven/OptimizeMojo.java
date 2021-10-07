@@ -83,6 +83,7 @@ public final class OptimizeMojo extends SafeMojo {
      *
      * @param file EO file
      * @return The file with optimized XMIR
+     * @throws IOException If fails
      */
     private Path optimize(final Path file) throws IOException {
         final Place place = new Place(

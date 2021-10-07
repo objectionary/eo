@@ -117,7 +117,7 @@ public final class AssembleMojo extends SafeMojo {
                 .with("manager", this.manager)
                 .with("resolvedList", this.resolvedList)
                 .with("skipZeroVersions", this.skipZeroVersions)
-                .with("overWrite", this.overWrite)
+                .with("overWrite", this.overWrite),
         };
         while (true) {
             for (final Moja<?> moja : mojas) {

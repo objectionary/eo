@@ -42,19 +42,21 @@ public final class CsvTest {
 
     @Test
     public void simpleScenario(@TempDir final Path temp) throws IOException {
-        final Csv csv = new Csv(temp.resolve("foo/bar/a.csv"));
+        final Mono csv = new Csv(temp.resolve("foo/bar/a.csv"));
         final Collection<Map<String, String>> rows = csv.read();
         MatcherAssert.assertThat(
             csv.read().size(),
             Matchers.equalTo(0)
         );
         final Map<String, String> row = new HashMap<>(0);
-        row.put("id", "hello");
+        final String key = "id";
+        final String value = "привет,\t\r\n друг!";
+        row.put(key, value);
         rows.add(row);
         csv.write(rows);
         MatcherAssert.assertThat(
-            csv.read().iterator().next().get("id"),
-            Matchers.equalTo("hello")
+            csv.read().iterator().next().get(key),
+            Matchers.equalTo(value)
         );
     }
 

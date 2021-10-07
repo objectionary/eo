@@ -103,14 +103,14 @@ public final class ResolveMojo extends SafeMojo {
     private Boolean overWrite;
 
     @Override
-    @SuppressWarnings("PMD.GuardLogStatement")
+    @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
     public void exec() throws IOException {
         final Collection<Path> added = new HashSet<>(0);
         for (final Dependency dep : this.deps()) {
             final List<Path> before = this.files();
             try {
                 this.unpack(dep);
-            } catch (MojoExecutionException ex) {
+            } catch (final MojoExecutionException ex) {
                 throw new IllegalStateException(ex);
             }
             final List<Path> after = this.files();
@@ -150,7 +150,7 @@ public final class ResolveMojo extends SafeMojo {
         );
         final Collection<Dependency> deps = new HashSet<>(0);
         for (final Tojo tojo : list) {
-            final Optional<Dependency> dep = this.artifact(
+            final Optional<Dependency> dep = ResolveMojo.artifact(
                 Paths.get(tojo.get("xmir"))
             );
             if (!dep.isPresent()) {
@@ -252,21 +252,14 @@ public final class ResolveMojo extends SafeMojo {
      * @return List of artifact needed
      * @throws IOException If fails
      */
-    private Optional<Dependency> artifact(final Path file) throws IOException {
+    private static Optional<Dependency> artifact(final Path file) throws IOException {
         final Collection<String> coords = new XMLDocument(file).xpath(
             "//meta[head='rt' and part[1]='jvm']/part[2]/text()"
         );
         final Optional<Dependency> dep;
         if (coords.isEmpty()) {
             dep = Optional.empty();
-        } else if (coords.size() != 1) {
-            throw new IllegalStateException(
-                String.format(
-                    "Too many (%d) dependencies at %s",
-                    coords.size(), file
-                )
-            );
-        } else {
+        } else if (coords.size() == 1) {
             final String[] parts = coords.iterator().next().split(":");
             final Dependency dependency = new Dependency();
             dependency.setGroupId(parts[0]);
@@ -275,6 +268,13 @@ public final class ResolveMojo extends SafeMojo {
             dependency.setClassifier("");
             dependency.setScope("transpile");
             dep = Optional.of(dependency);
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "Too many (%d) dependencies at %s",
+                    coords.size(), file
+                )
+            );
         }
         return dep;
     }

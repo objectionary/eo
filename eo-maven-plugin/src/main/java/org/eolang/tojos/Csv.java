@@ -24,6 +24,9 @@
 package org.eolang.tojos;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,7 +68,7 @@ public final class Csv implements Mono {
                 final String[] cols = line.split("\t");
                 for (final String part : cols) {
                     final String[] parts = part.split(":", 2);
-                    row.put(parts[0], parts[1]);
+                    row.put(Csv.decode(parts[0]), Csv.decode(parts[1]));
                 }
                 rows.add(row);
             }
@@ -79,12 +82,44 @@ public final class Csv implements Mono {
         for (final Map<String, String> row : rows) {
             final Collection<String> cols = new ArrayList<>(row.size());
             for (final Map.Entry<String, String> ent : row.entrySet()) {
-                cols.add(String.format("%s:%s", ent.getKey(), ent.getValue()));
+                cols.add(
+                    String.format(
+                        "%s:%s",
+                        Csv.encode(ent.getKey()),
+                        Csv.encode(ent.getValue())
+                    )
+                );
             }
             lines.add(String.join("\t", cols));
         }
         this.file.toFile().getParentFile().mkdirs();
         Files.write(this.file, lines, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Encode.
+     * @param txt The text to encode
+     * @return Encoded
+     */
+    private static String encode(final String txt) {
+        try {
+            return URLEncoder.encode(txt, StandardCharsets.UTF_8.toString());
+        } catch (final UnsupportedEncodingException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
+     * Decode.
+     * @param txt The text to decode
+     * @return Decoded
+     */
+    private static String decode(final String txt) {
+        try {
+            return URLDecoder.decode(txt, StandardCharsets.UTF_8.toString());
+        } catch (final UnsupportedEncodingException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
 }
