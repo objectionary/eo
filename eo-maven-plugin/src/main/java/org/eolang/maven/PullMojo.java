@@ -69,17 +69,17 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> fobjs = this.tojos().select(
+        final Collection<Tojo> tojos = this.tojos().select(
             row -> !row.exists("eo") && !row.exists("xmir")
         );
-        if (!fobjs.isEmpty()) {
-            Logger.info(this, "%d EO objects found", fobjs.size());
-            for (final Tojo tojo : fobjs) {
+        if (!tojos.isEmpty()) {
+            for (final Tojo tojo : tojos) {
                 tojo.set(
                     "eo",
                     this.pull(tojo.get("id")).toAbsolutePath().toString()
                 );
             }
+            Logger.info(this, "%d program(s) pulled", tojos.size());
         }
     }
 
