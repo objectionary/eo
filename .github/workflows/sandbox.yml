@@ -4,11 +4,11 @@ name: sandbox
   push:
     branches:
       - master
-    paths-ignore: 'paper/**'
+    paths: 'sandbox/canonical/**'
   pull_request:
     branches:
       - master
-    paths-ignore: 'paper/**'
+    paths: 'sandbox/canonical/**'
 jobs:
   maven-build:
     runs-on: ${{ matrix.os }}
