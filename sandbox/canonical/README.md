@@ -12,18 +12,14 @@ installed):
 
 ```bash
 $ git clone https://github.com/cqfn/eo.git
-$ cd eo/sandbox
+$ cd eo/sandbox/canonical
 ```
 
-`eo/app.eo` is the entrypoint of the program. `app` object will be "evaluated", when the program is run, so modify it to make changes to the program. Then, proceed with compilation and run the program in either docker or natively on your system.
-
-# Compile & run
+`eo/sandbox/app.eo` is the entrypoint of the program. `app` object will be "evaluated", when the program is run, so modify it to make changes to the program. Then, proceed with compilation and run the program in either docker or natively on your system.
 
 ## In docker
 
 If you don't have Maven or JDK installed on your system, you can compile and run the application in docker. You must have [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/) installed to use this method.
-
-### Compile
 
 Compile the sources in `eo/` using maven in docker container. The output of the compilation will be in the `target/` directory.
 
@@ -38,8 +34,6 @@ $ docker-compose -p eo-lang run maven
 > docker-compose -p eo-lang run maven mvn clean compile
 > ```
 
-### Run
-
 After the compilation, the resulting Java program can be run in docker via:
 
 ```bash
@@ -53,10 +47,9 @@ $ docker-compose -p eo-lang run app
 > docker-compose -p eo-lang run app "Command line arguments go here" 10
 > ```
 
-## Natively (via system maven and Java)
+## Natively (via system Maven and Java)
 
-Then, compile the code (you will need
-[Maven 3.3+](https://maven.apache.org/)
+Compile the code (you will need [Maven 3.3+](https://maven.apache.org/)
 and [Java SDK 8+](https://www.java.com/en/download/) installed):
 
 ```bash
