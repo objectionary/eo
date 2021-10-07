@@ -122,7 +122,7 @@ public final class TranspileMojo extends SafeMojo {
                 );
                 Logger.info(
                     this, "The directory added to transpile-source-root: %s",
-                    this.generatedDir
+                    Save.rel(this.generatedDir.toPath())
                 );
             }
             if (this.addTestSourcesRoot) {
@@ -131,7 +131,7 @@ public final class TranspileMojo extends SafeMojo {
                 );
                 Logger.info(
                     this, "The directory added to test-transpile-source-root: %s",
-                    this.generatedDir
+                    Save.rel(this.generatedDir.toPath())
                 );
             }
         }

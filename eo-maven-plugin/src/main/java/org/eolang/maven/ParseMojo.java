@@ -87,7 +87,10 @@ public final class ParseMojo extends SafeMojo {
             this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
         );
         if (Files.exists(target)) {
-            Logger.info(this, "%s already parsed to %s", source, target);
+            Logger.info(
+                this, "Already parsed %s to %s",
+                Save.rel(source), Save.rel(target)
+            );
         } else {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             new Syntax(
@@ -96,7 +99,10 @@ public final class ParseMojo extends SafeMojo {
                 new OutputTo(baos)
             ).parse();
             new Save(baos.toByteArray(), target).save();
-            Logger.info(this, "%s parsed to %s", source, target);
+            Logger.info(
+                this, "Parsed %s to %s",
+                Save.rel(source), Save.rel(target)
+            );
         }
         tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
     }

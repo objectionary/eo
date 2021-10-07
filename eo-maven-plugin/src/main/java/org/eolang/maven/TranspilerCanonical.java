@@ -76,8 +76,8 @@ final class TranspilerCanonical implements Transpiler {
         int total = 0;
         if (Files.exists(target)) {
             Logger.info(
-                this, "%s is already compiled to %s",
-                file, target
+                this, "Source %s already compiled to %s",
+                Save.rel(file), Save.rel(target)
             );
         } else {
             new Xsline(
@@ -108,8 +108,8 @@ final class TranspilerCanonical implements Transpiler {
                     ).save();
                 }
                 Logger.info(
-                    this, "%s compiled to %s, created %d .java files",
-                    file, generated, nodes.size()
+                    this, "Compiled %s to %s, created %d .java files",
+                    Save.rel(file), Save.rel(generated), nodes.size()
                 );
             }
             total = nodes.size();

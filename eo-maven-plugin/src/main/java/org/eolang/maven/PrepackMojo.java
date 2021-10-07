@@ -123,10 +123,13 @@ public final class PrepackMojo extends SafeMojo {
             }
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",
-                files.size(), this.resolvedList
+                files.size(), Save.rel(this.resolvedList.toPath())
             );
         } else {
-            Logger.info(this, "The list of resolved binaries is absent: %s", this.resolvedList);
+            Logger.info(
+                this, "The list of resolved binaries is absent: %s",
+                Save.rel(this.resolvedList.toPath())
+            );
         }
     }
 
@@ -157,7 +160,10 @@ public final class PrepackMojo extends SafeMojo {
             } catch (final IOException ex) {
                 throw new IllegalStateException(ex);
             }
-            Logger.info(this, "%s deleted since %s is present", file, java);
+            Logger.info(
+                this, "Deleted %s since %s is present",
+                Save.rel(file), Save.rel(java)
+            );
         }
     }
 

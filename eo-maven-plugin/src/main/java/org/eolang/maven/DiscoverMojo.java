@@ -112,12 +112,12 @@ public final class DiscoverMojo extends SafeMojo {
         if (names.isEmpty()) {
             Logger.info(
                 this, "Didn't find any foreign objects in %s",
-                file
+                Save.rel(file)
             );
         } else {
             Logger.info(
                 this, "Found %d foreign objects in %s: %s",
-                names.size(), file, names
+                names.size(), Save.rel(file), names
             );
         }
         return names;

@@ -23,9 +23,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -90,7 +92,8 @@ public final class CopyMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path target = this.classesDir.toPath().resolve(CopyMojo.DIR);
-        for (final Path src : new Walk(this.sourcesDir.toPath())) {
+        final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
+        for (final Path src : sources) {
             new Save(
                 CopyMojo.REPLACE
                     .matcher(new TextOf(new InputOf(src)).asString())
@@ -102,6 +105,7 @@ public final class CopyMojo extends SafeMojo {
                 )
             ).save();
         }
+        Logger.info(this, "%d sources copied", sources.size());
     }
 
 }

@@ -243,7 +243,7 @@ public final class ResolveMojo extends SafeMojo {
         Logger.info(
             this, "%s:%s:%s unpacked to %s",
             dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-            this.outputDir
+            Save.rel(this.outputDir.toPath())
         );
     }
 
@@ -274,7 +274,7 @@ public final class ResolveMojo extends SafeMojo {
             throw new IllegalStateException(
                 String.format(
                     "Too many (%d) dependencies at %s",
-                    coords.size(), file
+                    coords.size(), Save.rel(file)
                 )
             );
         }

@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -98,8 +97,8 @@ public final class OptimizeMojo extends SafeMojo {
         );
         if (Files.exists(target)) {
             Logger.info(
-                this, "%s already optimized to %s, all steps are in %s",
-                file, target, dir
+                this, "Already optimized %s to %s, all steps are in %s",
+                Save.rel(file), Save.rel(target), Save.rel(dir)
             );
         } else {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -120,12 +119,8 @@ public final class OptimizeMojo extends SafeMojo {
             ).pass();
             new Save(baos.toByteArray(), target).save();
             Logger.info(
-                this, "%s optimized to %s, all steps are in %s",
-                file, target, dir
-            );
-            Logger.debug(
-                this, "Optimized XML saved to %s:\n%s", target,
-                new String(baos.toByteArray(), StandardCharsets.UTF_8)
+                this, "Optimized %s to %s, all steps are in %s",
+                Save.rel(file), Save.rel(target), Save.rel(dir)
             );
         }
         return target;

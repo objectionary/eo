@@ -101,7 +101,7 @@ public final class Save {
         final File dir = this.path.toFile().getParentFile();
         if (dir.mkdirs()) {
             Logger.info(
-                Save.class, "%s directory created",
+                Save.class, "Directory created: %s",
                 Save.rel(this.path.getParent())
             );
         }
@@ -134,11 +134,15 @@ public final class Save {
      * @param file The path of the file or dir
      * @return Relative name to CWD
      */
-    private static String rel(final Path file) {
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static String rel(final Path file) {
         final Path cwd = Paths.get("");
         final String out;
-        if (file.startsWith(cwd)) {
-            out = file.toString().substring(cwd.toString().length() + 1);
+        if (file.toString().startsWith(cwd.toString())) {
+            out = String.format(
+                "./%s",
+                file.toString().substring(cwd.toString().length() + 1)
+            );
         } else {
             out = file.toString();
         }
