@@ -136,17 +136,15 @@ public final class Save {
      */
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static String rel(final Path file) {
-        final Path cwd = Paths.get("");
-        final String out;
-        if (file.toString().startsWith(cwd.toString())) {
-            out = String.format(
+        final String cwd = Paths.get("").toAbsolutePath().toString();
+        String path = file.toAbsolutePath().toString();
+        if (path.startsWith(cwd)) {
+            path = String.format(
                 "./%s",
-                file.toString().substring(cwd.toString().length() + 1)
+                path.substring(cwd.length() + 1)
             );
-        } else {
-            out = file.toString();
         }
-        return out;
+        return path;
     }
 
 }
