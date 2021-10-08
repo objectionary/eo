@@ -85,7 +85,10 @@ public final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.csv");
-        new MonoTojos(foreign).add("foo.src").set("eo", src.toString());
+        new MonoTojos(foreign)
+            .add("foo.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())

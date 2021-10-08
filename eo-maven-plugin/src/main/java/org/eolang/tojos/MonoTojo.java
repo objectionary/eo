@@ -76,7 +76,7 @@ final class MonoTojo implements Tojo {
         if (value == null) {
             throw new IllegalStateException(
                 String.format(
-                    "There is no '%s' key", key
+                    "There is no '%s' key in the tojo", key
                 )
             );
         }

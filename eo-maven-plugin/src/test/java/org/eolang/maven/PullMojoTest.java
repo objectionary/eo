@@ -48,7 +48,10 @@ public final class PullMojoTest {
     public void testSimplePull(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
-        new MonoTojos(foreign).add("org.eolang.io.stdout").set("version", "*.*.*");
+        new MonoTojos(foreign)
+            .add("org.eolang.io.stdout")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())

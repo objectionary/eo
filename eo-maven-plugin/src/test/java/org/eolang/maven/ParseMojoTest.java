@@ -52,7 +52,10 @@ public final class ParseMojoTest {
             src
         ).save();
         final Path foreign = temp.resolve("eo-foreign.csv");
-        new MonoTojos(foreign).add("foo.x.main").set("eo", src.toString());
+        new MonoTojos(foreign)
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
@@ -77,7 +80,10 @@ public final class ParseMojoTest {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something is wrong here", src).save();
         final Path foreign = temp.resolve("foreign-1.csv");
-        new MonoTojos(foreign).add("bar.src").set("eo", src.toString());
+        new MonoTojos(foreign)
+            .add("bar.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
         Assertions.assertThrows(
             ParsingException.class,
             () -> new Moja<>(ParseMojo.class)

@@ -76,7 +76,7 @@ final class TranspilerCanonical implements Transpiler {
         int total = 0;
         if (Files.exists(target)) {
             Logger.info(
-                this, "XMIR (%s) %s already transpiled to %s",
+                this, "XMIR %s (%s) already transpiled to %s",
                 Save.rel(file), name, Save.rel(target)
             );
         } else {

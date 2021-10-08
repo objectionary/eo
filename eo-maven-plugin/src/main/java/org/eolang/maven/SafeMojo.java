@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -32,12 +33,14 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.Func;
 import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
- * Abstact Mojo for all others.
+ * Abstract Mojo for all others.
  *
  * @since 0.1
  */
@@ -79,6 +82,13 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${project.build.directory}/eo")
     protected File targetDir;
 
+    /**
+     * Current scope (either "compile" or "test").
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter
+    protected String scope = "compile";
+
     @Override
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -100,7 +110,23 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      */
     protected final Tojos tojos() {
-        return new MonoTojos(this.foreign);
+        final Tojos tojos = new MonoTojos(this.foreign);
+        return new Tojos() {
+            @Override
+            public Tojo add(final String name) throws IOException {
+                return tojos.add(name)
+                    .set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
+            }
+
+            @Override
+            public Collection<Tojo> select(final Func<Tojo, Boolean> filter) throws IOException {
+                return tojos.select(
+                    t -> filter.apply(t)
+                        && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
+                        || "test".equals(SafeMojo.this.scope))
+                );
+            }
+        };
     }
 
     /**

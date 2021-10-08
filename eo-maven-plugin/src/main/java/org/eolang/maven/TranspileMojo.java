@@ -106,6 +106,7 @@ public final class TranspileMojo extends SafeMojo {
         }
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
         int total = 0;
         for (final Tojo tojo : sources) {

@@ -94,7 +94,7 @@ public final class ParseMojo extends SafeMojo {
         );
         if (Files.exists(target)) {
             Logger.info(
-                this, "Already parsed %s to %s",
+                this, "Already parsed %s to %s (file exists)",
                 Save.rel(source), Save.rel(target)
             );
         } else {
