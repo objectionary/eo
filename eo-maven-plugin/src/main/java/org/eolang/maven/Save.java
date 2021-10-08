@@ -100,7 +100,7 @@ public final class Save {
     public void save() throws IOException {
         final File dir = this.path.toFile().getParentFile();
         if (dir.mkdirs()) {
-            Logger.info(
+            Logger.debug(
                 Save.class, "Directory created: %s",
                 Save.rel(this.path.getParent())
             );

@@ -274,5 +274,5 @@ INT: (PLUS | MINUS)? [0-9]+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
 HEX: '0x' [0-9a-f]+;
 
-NAME: [a-z][a-z0-9_A-Z\-]*;
+NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
 
