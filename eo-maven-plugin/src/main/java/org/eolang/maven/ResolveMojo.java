@@ -104,7 +104,8 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
     public void exec() throws IOException {
         final Collection<Path> added = new HashSet<>(0);
-        for (final Dependency dep : this.deps()) {
+        final Collection<Dependency> deps = this.deps();
+        for (final Dependency dep : deps) {
             final List<Path> before = this.files();
             try {
                 this.unpack(dep);
@@ -132,6 +133,10 @@ public final class ResolveMojo extends SafeMojo {
             String.join("\n", new Mapped<>(Path::toString, added)),
             this.resolvedList.toPath()
         ).save();
+        Logger.info(
+            this, "%d dependencies unpacked",
+            deps.size()
+        );
     }
 
     /**
@@ -143,7 +148,7 @@ public final class ResolveMojo extends SafeMojo {
     private Collection<Dependency> deps() throws IOException {
         final Collection<Tojo> list = this.tojos().select(
             t -> t.exists(AssembleMojo.ATTR_XMIR)
-                && !t.exists("jar")
+                && !t.exists(AssembleMojo.ATTR_JAR)
                 && !ParseMojo.ZERO.equals(t.get(AssembleMojo.ATTR_VERSION))
         );
         final Collection<Dependency> deps = new HashSet<>(0);
@@ -152,17 +157,17 @@ public final class ResolveMojo extends SafeMojo {
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
             );
             if (!dep.isPresent()) {
+                Logger.debug(this, "No dependencies for %s", tojo.get("id"));
                 continue;
             }
             final Dependency one = dep.get();
-            deps.add(one);
-            tojo.set(
-                "dependency",
-                String.format(
-                    "%s:%s:%s",
-                    one.getGroupId(), one.getArtifactId(), one.getVersion()
-                )
+            final String coords = String.format(
+                "%s:%s:%s",
+                one.getGroupId(), one.getArtifactId(), one.getVersion()
             );
+            Logger.debug(this, "Dependency found for %s: %s", tojo.get("id"), coords);
+            deps.add(one);
+            tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
         return deps.stream()
             .filter(dep -> !this.skipZeroVersions || !"0.0.0".equals(dep.getVersion()))

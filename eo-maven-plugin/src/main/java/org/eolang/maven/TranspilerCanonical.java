@@ -76,8 +76,8 @@ final class TranspilerCanonical implements Transpiler {
         int total = 0;
         if (Files.exists(target)) {
             Logger.info(
-                this, "Source %s already compiled to %s",
-                Save.rel(file), Save.rel(target)
+                this, "XMIR (%s) %s already transpiled to %s",
+                Save.rel(file), name, Save.rel(target)
             );
         } else {
             new Xsline(
@@ -97,7 +97,10 @@ final class TranspilerCanonical implements Transpiler {
             final XML after = this.noErrors(new XMLDocument(target), name);
             final Collection<XML> nodes = after.nodes("//class[java and not(@atom)]");
             if (nodes.isEmpty()) {
-                Logger.info(this, "%s compiled but no .java files created", file);
+                Logger.info(
+                    this, "Transpiled %s but no .java files created",
+                    Save.rel(file)
+                );
             } else {
                 for (final XML java : nodes) {
                     new Save(
@@ -108,7 +111,7 @@ final class TranspilerCanonical implements Transpiler {
                     ).save();
                 }
                 Logger.info(
-                    this, "Compiled %s to %s, created %d .java files",
+                    this, "Transpiled %s to %s, created %d .java files",
                     Save.rel(file), Save.rel(generated), nodes.size()
                 );
             }

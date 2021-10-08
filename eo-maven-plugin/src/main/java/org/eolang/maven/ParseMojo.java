@@ -67,9 +67,15 @@ public final class ParseMojo extends SafeMojo {
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_EO)
-                && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         for (final Tojo tojo : tojos) {
+            if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
+                Logger.debug(
+                    this, "Already parsed %s to %s",
+                    tojo.get("id"), Save.rel(Paths.get(tojo.get(AssembleMojo.ATTR_XMIR)))
+                );
+                continue;
+            }
             this.parse(tojo);
         }
     }
