@@ -54,12 +54,22 @@ SOFTWARE.
       <xsl:apply-templates select="@*|node()"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
+          <xsl:comment>
+            <xsl:text>The object "</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>" was moved here, by 'vars-float-up'</xsl:text>
+          </xsl:comment>
           <xsl:apply-templates select="." mode="full"/>
         </xsl:if>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and @name!='@' and ancestor::o[1][not(eo:abstract(.))]]">
+    <xsl:comment>
+      <xsl:text>The named object "</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>" was turned into an attribute of its abstract parent, by 'vars-float-up'</xsl:text>
+    </xsl:comment>
     <xsl:element name="o">
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
