@@ -63,20 +63,22 @@ public final class DiscoverMojo extends SafeMojo {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.discover(src);
             for (final String name : names) {
-                this.tojos().add(name)
-                    .set(AssembleMojo.ATTR_VERSION, "*.*.*");
+                final Tojo ftojo = this.tojos().add(name);
+                if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
+                    ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
+                }
                 discovered.add(name);
             }
             tojo.set(AssembleMojo.ATTR_DISCOVERED, Integer.toString(names.size()));
         }
         if (discovered.isEmpty()) {
             Logger.info(
-                this, "No objects discovered in %d sources",
+                this, "No foreign objects discovered in %d programs",
                 tojos.size()
             );
         } else {
             Logger.info(
-                this, "Discovered %d objects in %d sources: %s",
+                this, "Discovered %d foreign objects in %d programs: %s",
                 discovered.size(), tojos.size(), discovered
             );
         }

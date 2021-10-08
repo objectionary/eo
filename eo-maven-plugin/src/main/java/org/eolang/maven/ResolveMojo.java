@@ -93,6 +93,14 @@ public final class ResolveMojo extends SafeMojo {
     private boolean skipZeroVersions;
 
     /**
+     * Shall we discover JAR artifacts for .EO sources?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.12.0
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean discoverSelf;
+
+    /**
      * Overwrite existing .class files?
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
@@ -134,7 +142,7 @@ public final class ResolveMojo extends SafeMojo {
             this.resolvedList.toPath()
         ).save();
         Logger.info(
-            this, "%d dependencies unpacked",
+            this, "%d new dependencies unpacked",
             deps.size()
         );
     }
@@ -148,16 +156,31 @@ public final class ResolveMojo extends SafeMojo {
     private Collection<Dependency> deps() throws IOException {
         final Collection<Tojo> list = this.tojos().select(
             t -> t.exists(AssembleMojo.ATTR_XMIR)
+                && t.exists(AssembleMojo.ATTR_VERSION)
                 && !t.exists(AssembleMojo.ATTR_JAR)
-                && !ParseMojo.ZERO.equals(t.get(AssembleMojo.ATTR_VERSION))
+        );
+        Logger.info(
+            this, "%d suitable tojo(s) found out of %d",
+            list.size(), this.tojos().select(t -> true).size()
         );
         final Collection<Dependency> deps = new HashSet<>(0);
         for (final Tojo tojo : list) {
+            if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
+                && !this.discoverSelf) {
+                Logger.info(
+                    this, "Program %s skipped due to its zero version",
+                    tojo.get("id")
+                );
+                continue;
+            }
             final Optional<Dependency> dep = ResolveMojo.artifact(
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
             );
             if (!dep.isPresent()) {
-                Logger.debug(this, "No dependencies for %s", tojo.get("id"));
+                Logger.info(
+                    this, "No dependencies for %s/%s",
+                    tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION)
+                );
                 continue;
             }
             final Dependency one = dep.get();
@@ -165,12 +188,22 @@ public final class ResolveMojo extends SafeMojo {
                 "%s:%s:%s",
                 one.getGroupId(), one.getArtifactId(), one.getVersion()
             );
-            Logger.debug(this, "Dependency found for %s: %s", tojo.get("id"), coords);
+            if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
+                Logger.info(
+                    this, "Zero-version dependency for %s/%s skipped: %s",
+                    tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION),
+                    coords
+                );
+                continue;
+            }
+            Logger.info(
+                this, "Dependency found for %s/%s: %s",
+                tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION), coords
+            );
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
         return deps.stream()
-            .filter(dep -> !this.skipZeroVersions || !"0.0.0".equals(dep.getVersion()))
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
@@ -191,9 +224,10 @@ public final class ResolveMojo extends SafeMojo {
         int done = 0;
         for (final Path src : sources) {
             if (src.toString().endsWith(".eo")) {
-                this.tojos().add(unplace.make(src)).set(
-                    AssembleMojo.ATTR_VERSION, version
-                );
+                final Tojo tojo = this.tojos().add(unplace.make(src));
+                if (!tojo.exists(AssembleMojo.ATTR_VERSION)) {
+                    tojo.set(AssembleMojo.ATTR_VERSION, version);
+                }
                 ++done;
             }
             Files.delete(src);
