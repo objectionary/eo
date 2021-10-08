@@ -46,6 +46,16 @@ SOFTWARE.
   <xsl:template match="objects">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="full"/>
+      <xsl:for-each select="o/descendant::o[@name]">
+        <xsl:if test="not(ancestor::o[eo:abstract(.)])">
+          <xsl:comment>
+            <xsl:text>The object "</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>" was moved to the global scope, by 'vars-float-up'</xsl:text>
+          </xsl:comment>
+          <xsl:apply-templates select="." mode="full"/>
+        </xsl:if>
+      </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]" mode="full">
@@ -54,28 +64,20 @@ SOFTWARE.
       <xsl:apply-templates select="@*|node()"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
+          <xsl:apply-templates select="." mode="full"/>
           <xsl:comment>
             <xsl:text>The object "</xsl:text>
             <xsl:value-of select="@name"/>
             <xsl:text>" was moved here, by 'vars-float-up'</xsl:text>
           </xsl:comment>
-          <xsl:apply-templates select="." mode="full"/>
         </xsl:if>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and @name!='@' and ancestor::o[1][not(eo:abstract(.))]]">
-    <xsl:comment>
-      <xsl:text>The named object "</xsl:text>
-      <xsl:value-of select="@name"/>
-      <xsl:text>" was turned into an attribute of its abstract parent, by 'vars-float-up'</xsl:text>
-    </xsl:comment>
     <xsl:element name="o">
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
-      </xsl:attribute>
-      <xsl:attribute name="line">
-        <xsl:value-of select="@line"/>
       </xsl:attribute>
       <xsl:attribute name="ref">
         <xsl:value-of select="@line"/>
@@ -83,7 +85,14 @@ SOFTWARE.
       <xsl:attribute name="cut">
         <xsl:value-of select="count(descendant::o)"/>
       </xsl:attribute>
+      <xsl:apply-templates select="@line"/>
+      <xsl:apply-templates select="@method"/>
     </xsl:element>
+    <xsl:comment>
+      <xsl:text>The named object "</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>" was turned into an attribute of its abstract parent, by 'vars-float-up'</xsl:text>
+    </xsl:comment>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
