@@ -48,11 +48,6 @@ SOFTWARE.
       <xsl:apply-templates select="@*|node()" mode="full"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="not(ancestor::o[eo:abstract(.)])">
-          <xsl:comment>
-            <xsl:text>The object "</xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text>" was moved to the global scope, by 'vars-float-up'</xsl:text>
-          </xsl:comment>
           <xsl:apply-templates select="." mode="full"/>
         </xsl:if>
       </xsl:for-each>
@@ -65,11 +60,6 @@ SOFTWARE.
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
           <xsl:apply-templates select="." mode="full"/>
-          <xsl:comment>
-            <xsl:text>The object "</xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text>" was moved here, by 'vars-float-up'</xsl:text>
-          </xsl:comment>
         </xsl:if>
       </xsl:for-each>
     </xsl:copy>
@@ -88,11 +78,6 @@ SOFTWARE.
       <xsl:apply-templates select="@line"/>
       <xsl:apply-templates select="@method"/>
     </xsl:element>
-    <xsl:comment>
-      <xsl:text>The named object "</xsl:text>
-      <xsl:value-of select="@name"/>
-      <xsl:text>" was turned into an attribute of its abstract parent, by 'vars-float-up'</xsl:text>
-    </xsl:comment>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
