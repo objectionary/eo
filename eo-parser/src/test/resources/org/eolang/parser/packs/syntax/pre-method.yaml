@@ -1,0 +1,9 @@
+xsls: []
+tests:
+  - //o[@base='.a' and @name='one' and count(o)=1]
+  - //o[@base='.b' and @name='two' and count(o)=1]
+  - //o[@base='c' and @name='three' and count(o)=0]
+eo: |
+  a. > one
+    b. > two
+      c > three
