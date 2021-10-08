@@ -119,6 +119,14 @@ public final class AssembleMojo extends SafeMojo {
     private boolean skipZeroVersions;
 
     /**
+     * Shall we discover JAR artifacts for .EO sources?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.12.0
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean discoverSelf;
+
+    /**
      * Overwrite existing .class files?
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
@@ -152,6 +160,7 @@ public final class AssembleMojo extends SafeMojo {
                 .with("manager", this.manager)
                 .with("resolvedList", this.resolvedList)
                 .with("skipZeroVersions", this.skipZeroVersions)
+                .with("discoverSelf", this.discoverSelf)
                 .with("overWrite", this.overWrite),
         };
         while (true) {

@@ -90,7 +90,7 @@ public final class ResolveMojo extends SafeMojo {
      * @since 0.9.0
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean skipZeroVersions;
+    private Boolean skipZeroVersions;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -168,8 +168,8 @@ public final class ResolveMojo extends SafeMojo {
             if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
                 && !this.discoverSelf) {
                 Logger.info(
-                    this, "Program %s skipped due to its zero version",
-                    tojo.get("id")
+                    this, "Program %s/%s skipped due to its zero version",
+                    tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION)
                 );
                 continue;
             }
