@@ -3,7 +3,6 @@ tests:
   - /program/license[text()!='']
   - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']
-  - /program/objects[count(o)=7]
   - //o[@base='bool']
   - //o[@base='string']
   - //o[@base='char' and text()='e']
@@ -49,6 +48,11 @@ eo: |
           z 5
             z
     oops
+
+  [] > obj
+    "some" > @
+    [] > foo
+      ^.@ > @
 
   # Comments are allowed only in front of top-level objects
   []
