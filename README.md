@@ -56,7 +56,6 @@ These things we **don't** tolerate:
   * reflection
   * scalar types and data primitives
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
-  * unchecked exceptions ([why?](http://www.yegor256.com/2015/07/28/checked-vs-unchecked-exceptions.html))
   * operators
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
