@@ -45,6 +45,7 @@ Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
 
 These things we **don't** tolerate:
 
+  * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
   * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
   * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
   * implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
