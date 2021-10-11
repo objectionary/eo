@@ -63,9 +63,8 @@ public final class AssembleMojoTest {
             .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", temp.resolve("eo-foreign.csv").toFile())
-            .with("resolvedList", temp.resolve("list").toFile())
+            .with("placed", temp.resolve("list").toFile())
             .with("skipZeroVersions", true)
-            .with("overWrite", true)
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf(

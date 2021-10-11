@@ -26,55 +26,33 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojos;
 
 /**
- * Copy all .eo files from src/main/eo to target/classes/EO-SOURCES
- * and replace 0.0.0 versions in them to the right numbers.
+ * Take binary files from where ResolveMojo placed them and
+ * copy to target/classes.
  *
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
-    name = "copy-sources",
-    defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
+    name = "place",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
-public final class CopyMojo extends SafeMojo {
+public final class PlaceMojo extends SafeMojo {
 
     /**
-     * Dir with sources.
-     */
-    public static final String DIR = "EO-SOURCES";
-
-    /**
-     * Replacer or version.
-     */
-    private static final Pattern REPLACE = Pattern.compile(
-        "^(\\+rt .+):0\\.0\\.0(.*)$",
-        Pattern.MULTILINE
-    );
-
-    /**
-     * Directory in which .eo files are located.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.basedir}/src/main/eo"
-    )
-    private File sourcesDir;
-
-    /**
-     * Target directory with resources to be packaged in JAR.
+     * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -84,29 +62,44 @@ public final class CopyMojo extends SafeMojo {
     private File outputDir;
 
     /**
-     * The version to use for 0.0.0 replacements.
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files are placed.
      * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.11.0
      */
-    @Parameter(required = true, defaultValue = "${project.version}")
-    private String version;
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-placed.csv"
+    )
+    private File placed;
 
     @Override
     public void exec() throws IOException {
-        final Path target = this.outputDir.toPath().resolve(CopyMojo.DIR);
-        final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
-        for (final Path src : sources) {
-            new Save(
-                CopyMojo.REPLACE
-                    .matcher(new TextOf(new InputOf(src)).asString())
-                    .replaceAll(String.format("$1:%s$2", this.version)),
-                target.resolve(
-                    src.toAbsolutePath().toString().substring(
-                        this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1
-                    )
-                )
-            ).save();
+        final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
+        if (Files.exists(home)) {
+            final Collection<Path> deps = Files.list(home).collect(Collectors.toList());
+            final Tojos tojos = new MonoTojos(this.placed);
+            int copied = 0;
+            for (final Path dep : deps) {
+                for (final Path file : new Walk(dep)) {
+                    final String path = file.toString().substring(dep.toString().length() + 1);
+                    if (path.startsWith(CopyMojo.DIR)) {
+                        continue;
+                    }
+                    final Path target = this.outputDir.toPath().resolve(path);
+                    if (Files.exists(target)) {
+                        continue;
+                    }
+                    new Save(new InputOf(file), target).save();
+                    tojos.add(target.toString());
+                    ++copied;
+                }
+            }
+            Logger.info(
+                this, "Placed %d binary files found in %d dependencies",
+                copied, deps.size()
+            );
         }
-        Logger.info(this, "%d sources copied", sources.size());
     }
 
 }

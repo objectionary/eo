@@ -23,32 +23,39 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
+import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link UnresolveMojo}.
+ * Test case for {@link ExtendMojo}.
  *
- * @since 0.1
+ * @since 0.11
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class UnresolveMojoTest {
+public final class ExtendMojoTest {
 
     @Test
-    public void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo.class");
-        new Save("abc", foo).save();
-        final Path list = temp.resolve("resolved.lst");
-        new Save(foo.toString(), list).save();
-        new Moja<>(UnresolveMojo.class)
-            .with("resolvedList", list.toFile())
+    public void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
+        final Path bins = temp.resolve(ResolveMojo.DIR);
+        new Save(
+            "hi",
+            bins.resolve(String.format("foo:hello:0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
+        ).save();
+        final Path foreign = temp.resolve("placed.csv");
+        new Moja<>(ExtendMojo.class)
+            .with("targetDir", temp.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(false)
+            new MonoTojos(foreign).select(t -> true)
+                .iterator().next()
+                .get(AssembleMojo.ATTR_VERSION),
+            Matchers.equalTo("0.1.8")
         );
     }
+
 }

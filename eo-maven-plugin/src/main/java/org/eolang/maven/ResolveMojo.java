@@ -25,14 +25,12 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
@@ -40,13 +38,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.iterable.Mapped;
 import org.eolang.tojos.Tojo;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
- * Find all required runtime dependencies and add
- * them to classpath ("transpile" scope).
+ * Find all required runtime dependencies, download
+ * them from Maven Central, unpack and place to target/eo.
  *
  * The motivation for this mojo is simple: Maven doesn't have
  * a mechanism of adding .JAR files to transpile/test classpath in
@@ -63,26 +60,9 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
 public final class ResolveMojo extends SafeMojo {
 
     /**
-     * Output.
-     * @checkstyle MemberNameCheck (7 lines)
+     * The directory where to resolve to.
      */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.outputDirectory}"
-    )
-    private File outputDir;
-
-    /**
-     * The path to a text file where paths of all added
-     * .class (and maybe others) files are placed.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.11.0
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo-resolved.csv"
-    )
-    private File resolvedList;
+    public static final String DIR = "06-resolve";
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -100,51 +80,38 @@ public final class ResolveMojo extends SafeMojo {
     @Parameter(required = true, defaultValue = "false")
     private boolean discoverSelf;
 
-    /**
-     * Overwrite existing .class files?
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.10.0
-     */
-    @Parameter(required = true, defaultValue = "true")
-    private Boolean overWrite;
-
     @Override
-    @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
     public void exec() throws IOException {
-        final Collection<Path> added = new HashSet<>(0);
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
-            final List<Path> before = this.files();
+            final String coords = ResolveMojo.coords(dep);
+            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR).resolve(coords);
+            if (Files.exists(dest)) {
+                Logger.info(
+                    this, "Dependency %s already resolved to %s",
+                    coords, Save.rel(dest)
+                );
+                continue;
+            }
             try {
-                this.unpack(dep);
+                this.unpack(dep, dest);
             } catch (final MojoExecutionException ex) {
                 throw new IllegalStateException(ex);
             }
-            this.jarSources(dep.getVersion());
-            final List<Path> after = this.files();
-            if (before.size() < after.size()) {
-                Logger.info(
-                    this, "%d new file(s) after unpacking of %s:%s:%s",
-                    after.size() - before.size(),
-                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+            final int files = new Walk(dest).size();
+            if (files == 0) {
+                Logger.warn(
+                    this, "No new files after unpacking of %s!",
+                    coords
                 );
             } else {
-                Logger.warn(
-                    this, "No new files after unpacking of %s:%s:%s!",
-                    dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+                Logger.info(
+                    this, "Found %d new file(s) after unpacking of %s",
+                    files, coords
                 );
             }
-            after.removeAll(before);
-            added.addAll(after);
         }
-        new Save(
-            String.join("\n", new Mapped<>(Path::toString, added)),
-            this.resolvedList.toPath()
-        ).save();
-        Logger.info(
-            this, "%d new dependencies unpacked",
-            deps.size()
-        );
+        Logger.info(this, "%d new dependencies unpacked", deps.size());
     }
 
     /**
@@ -184,10 +151,7 @@ public final class ResolveMojo extends SafeMojo {
                 continue;
             }
             final Dependency one = dep.get();
-            final String coords = String.format(
-                "%s:%s:%s",
-                one.getGroupId(), one.getArtifactId(), one.getVersion()
-            );
+            final String coords = ResolveMojo.coords(one);
             if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
                 Logger.info(
                     this, "Zero-version dependency for %s/%s skipped: %s",
@@ -212,48 +176,12 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Take sources from EO-SOURCES dir and register them in the CSV.
-     *
-     * @param version The version of the JAR
-     * @throws IOException If fails
-     */
-    private void jarSources(final String version) throws IOException {
-        final Path home = this.outputDir.toPath().resolve(CopyMojo.DIR);
-        final Unplace unplace = new Unplace(home);
-        final Collection<Path> sources = new Walk(home);
-        int done = 0;
-        for (final Path src : sources) {
-            if (src.toString().endsWith(".eo")) {
-                final Tojo tojo = this.tojos().add(unplace.make(src));
-                if (!tojo.exists(AssembleMojo.ATTR_VERSION)) {
-                    tojo.set(AssembleMojo.ATTR_VERSION, version);
-                }
-                ++done;
-            }
-            Files.delete(src);
-        }
-        Logger.info(
-            this, "%d source file(s) found, %d program(s) registered",
-            sources.size(), done
-        );
-    }
-
-    /**
-     * How many files in the target dir?
-     *
-     * @return Total count
-     * @throws IOException If fails
-     */
-    private List<Path> files() throws IOException {
-        return new Walk(this.outputDir.toPath());
-    }
-
-    /**
      * Copy dependency and return its file name.
      * @param dep The dependency
+     * @param dest The dir where to unpack
      * @throws MojoExecutionException If fails
      */
-    private void unpack(final Dependency dep) throws MojoExecutionException {
+    private void unpack(final Dependency dep, final Path dest) throws MojoExecutionException {
         MojoExecutor.executeMojo(
             MojoExecutor.plugin(
                 MojoExecutor.groupId("org.apache.maven.plugins"),
@@ -268,8 +196,7 @@ public final class ResolveMojo extends SafeMojo {
                         MojoExecutor.element("groupId", dep.getGroupId()),
                         MojoExecutor.element("artifactId", dep.getArtifactId()),
                         MojoExecutor.element("version", dep.getVersion()),
-                        MojoExecutor.element("overWrite", this.overWrite.toString()),
-                        MojoExecutor.element("outputDirectory", this.outputDir.toString())
+                        MojoExecutor.element("outputDirectory", dest.toString())
                     )
                 )
             ),
@@ -280,9 +207,8 @@ public final class ResolveMojo extends SafeMojo {
             )
         );
         Logger.info(
-            this, "%s:%s:%s unpacked to %s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-            Save.rel(this.outputDir.toPath())
+            this, "%s unpacked to %s",
+            ResolveMojo.coords(dep), Save.rel(dest)
         );
     }
 
@@ -318,6 +244,18 @@ public final class ResolveMojo extends SafeMojo {
             );
         }
         return dep;
+    }
+
+    /**
+     * Dep to coords.
+     * @param dep The dependency
+     * @return Coords
+     */
+    private static String coords(final Dependency dep) {
+        return String.format(
+            "%s:%s:%s",
+            dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+        );
     }
 
     /**

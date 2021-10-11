@@ -50,7 +50,7 @@ public final class CopyMojoTest {
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())
-            .with("classesDir", classes.toFile())
+            .with("outputDir", classes.toFile())
             .with("version", ver)
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");

@@ -106,9 +106,9 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-resolved.csv"
+        defaultValue = "${project.build.directory}/eo-placed.csv"
     )
-    private File resolvedList;
+    private File placed;
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -125,14 +125,6 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter(required = true, defaultValue = "false")
     private boolean discoverSelf;
-
-    /**
-     * Overwrite existing .class files?
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.10.0
-     */
-    @Parameter(required = true, defaultValue = "true")
-    private Boolean overWrite;
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -153,15 +145,21 @@ public final class AssembleMojo extends SafeMojo {
                 .with("objectionary", this.objectionary)
                 .with("foreign", this.foreign),
             new Moja<>(ResolveMojo.class)
-                .with("outputDir", this.outputDir)
                 .with("foreign", this.foreign)
                 .with("project", this.project)
                 .with("session", this.session)
                 .with("manager", this.manager)
-                .with("resolvedList", this.resolvedList)
+                .with("targetDir", this.targetDir)
                 .with("skipZeroVersions", this.skipZeroVersions)
-                .with("discoverSelf", this.discoverSelf)
-                .with("overWrite", this.overWrite),
+                .with("discoverSelf", this.discoverSelf),
+            new Moja<>(ExtendMojo.class)
+                .with("targetDir", this.targetDir)
+                .with("foreign", this.foreign),
+            new Moja<>(PlaceMojo.class)
+                .with("targetDir", this.targetDir)
+                .with("outputDir", this.outputDir)
+                .with("foreign", this.foreign)
+                .with("placed", this.placed),
         };
         while (true) {
             for (final Moja<?> moja : mojas) {

@@ -26,29 +26,28 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.list.Mapped;
+import org.eolang.tojos.MonoTojos;
+import org.eolang.tojos.Tojo;
 
 /**
- * It deletes binary files, which were previously copied by "resolve" mojo.
+ * It deletes binary files, which were previously copied by "place" mojo.
  *
- * @since 0.1
+ * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
-    name = "unresolve",
+    name = "unplace",
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class UnresolveMojo extends SafeMojo {
+public final class UnplaceMojo extends SafeMojo {
 
     /**
      * The path to a text file where paths of all added
@@ -58,30 +57,25 @@ public final class UnresolveMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-resolved.csv"
+        defaultValue = "${project.build.directory}/eo-placed.csv"
     )
-    private File resolvedList;
+    private File placed;
 
     @Override
     public void exec() throws IOException {
-        if (this.resolvedList.exists()) {
-            final Collection<Path> files = new Mapped<>(
-                t -> Paths.get(t),
-                Files.readAllLines(
-                    this.resolvedList.toPath(), StandardCharsets.UTF_8
-                )
-            );
-            for (final Path file : files) {
-                Files.delete(file);
+        if (this.placed.exists()) {
+            final Collection<Tojo> tojos = new MonoTojos(this.placed).select(t -> true);
+            for (final Tojo tojo : tojos) {
+                Files.delete(Paths.get(tojo.get("id")));
             }
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",
-                files.size(), Save.rel(this.resolvedList.toPath())
+                tojos.size(), Save.rel(this.placed.toPath())
             );
         } else {
             Logger.info(
-                this, "The list of resolved binaries is absent: %s",
-                Save.rel(this.resolvedList.toPath())
+                this, "The list of placed binaries is absent: %s",
+                Save.rel(this.placed.toPath())
             );
         }
     }

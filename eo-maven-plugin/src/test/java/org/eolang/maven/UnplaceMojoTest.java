@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2021 Yegor Bugayenko
@@ -21,15 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-assert new File(basedir, 'target/eo-foreign.csv').exists()
-assert new File(basedir, 'target/eo-placed.csv').exists()
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.eolang.tojos.MonoTojos;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-assert new File(basedir, 'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java').exists()
-assert new File(basedir, 'target/eo/01-parse/org/eolang/examples/app.xmir').exists()
-assert new File(basedir, 'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml').exists()
-assert new File(basedir, 'target/eo/03-optimize/org/eolang/examples/app.xmir').exists()
-assert new File(basedir, 'target/eo/04-pull/org/eolang/array.eo').exists()
-assert new File(basedir, 'target/eo/05-pre/org/eolang/examples/app/00-pre-classes.xml').exists()
-assert new File(basedir, 'target/eo/06-transpile/org/eolang/examples/app.xmir').exists()
-assert new File(basedir, 'target/classes/EOorg/EOeolang/EOexamples/EOapp.class').exists()
+/**
+ * Test case for {@link UnplaceMojo}.
+ *
+ * @since 0.1
+ */
+public final class UnplaceMojoTest {
+
+    @Test
+    public void testCleaning(@TempDir final Path temp) throws Exception {
+        final Path foo = temp.resolve("a/b/c/foo.class");
+        new Save("abc", foo).save();
+        final Path list = temp.resolve("placed.csv");
+        new MonoTojos(list).add(foo.toString());
+        new Moja<>(UnplaceMojo.class)
+            .with("placed", list.toFile())
+            .execute();
+        MatcherAssert.assertThat(
+            Files.exists(foo),
+            Matchers.is(false)
+        );
+    }
+}
