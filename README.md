@@ -106,9 +106,9 @@ create a file `pom.xml` with this content (it's just a sample):
         <executions>
           <execution>
             <goals>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>compile</goal>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
             </goals>
           </execution>
         </executions>
