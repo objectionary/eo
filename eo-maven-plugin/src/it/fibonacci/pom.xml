@@ -49,7 +49,7 @@ SOFTWARE.
               <goal>transpile</goal>
               <goal>copy-sources</goal>
               <goal>unplace</goal>
-              <goal>prepack</goal>
+              <goal>unspile</goal>
             </goals>
           </execution>
         </executions>

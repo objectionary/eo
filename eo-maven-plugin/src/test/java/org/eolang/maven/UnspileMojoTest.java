@@ -31,11 +31,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PrepackMojo}.
+ * Test case for {@link UnspileMojo}.
  *
  * @since 0.1
  */
-public final class PrepackMojoTest {
+public final class UnspileMojoTest {
 
     @Test
     public void testCleaning(@TempDir final Path temp) throws Exception {
@@ -45,7 +45,7 @@ public final class PrepackMojoTest {
         new Save("abc", foo).save();
         new Save("xxx", generated.resolve("a/b/c/foo.java")).save();
         new Save("cde", classes.resolve("foo.txt")).save();
-        new Moja<>(PrepackMojo.class)
+        new Moja<>(UnspileMojo.class)
             .with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())
             .execute();

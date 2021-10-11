@@ -44,12 +44,12 @@ import org.cactoos.set.SetOf;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
-    name = "prepack",
+    name = "unspile",
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class PrepackMojo extends SafeMojo {
+public final class UnspileMojo extends SafeMojo {
 
     /**
      * Directory with Java classes.
@@ -82,7 +82,7 @@ public final class PrepackMojo extends SafeMojo {
         new Walk(this.classesDir.toPath()).stream()
             .filter(
                 file -> this.includes.stream().anyMatch(
-                    glob -> PrepackMojo.matcher(glob).matches(file)
+                    glob -> UnspileMojo.matcher(glob).matches(file)
                 )
             )
             .forEach(this::delete);
