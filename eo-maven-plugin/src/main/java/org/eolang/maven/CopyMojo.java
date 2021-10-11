@@ -43,7 +43,7 @@ import org.cactoos.text.TextOf;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
-    name = "copy-sources",
+    name = "copy",
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
