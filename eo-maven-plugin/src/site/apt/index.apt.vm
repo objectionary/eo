@@ -1,0 +1,41 @@
+ ------
+ EOLANG Maven Plugin
+ ------
+ Yegor Bugayenko
+ ------
+ 2021-10-11
+ ------
+
+EOLANG Maven Plugin
+
+  Put your sources into <<<src/main/eo>>> and then add this to your <<<pom.xml>>>:
+
++--
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eolang</groupId>
+        <artifactId>eo-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
+              <goal>copy</goal>
+              <goal>unplace</goal>
+              <goal>unspile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    [...]
+  </build>
+  [...]
+</project>
++--
+
+  More information you can find at {{{https://www.eolang.org}www.eolang.org}}.
