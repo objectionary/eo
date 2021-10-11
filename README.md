@@ -134,13 +134,6 @@ create a file `pom.xml` with this content (it's just a sample):
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version><!-- check Maven Central --></version>
-    </dependency>
-  </dependencies>
 </project>
 ```
 
