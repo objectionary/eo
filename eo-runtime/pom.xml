@@ -47,6 +47,7 @@ SOFTWARE.
               <goal>assemble</goal>
               <goal>transpile</goal>
               <goal>copy-sources</goal>
+              <goal>unresolve</goal>
               <goal>prepack</goal>
             </goals>
           </execution>

@@ -31,23 +31,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PrepackMojo}.
+ * Test case for {@link UnresolveMojo}.
  *
  * @since 0.1
  */
-public final class PrepackMojoTest {
+public final class UnresolveMojoTest {
 
     @Test
     public void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path generated = temp.resolve("generated");
-        final Path classes = temp.resolve("classes");
-        final Path foo = classes.resolve("a/b/c/foo.class");
+        final Path foo = temp.resolve("a/b/c/foo.class");
         new Save("abc", foo).save();
-        new Save("xxx", generated.resolve("a/b/c/foo.java")).save();
-        new Save("cde", classes.resolve("foo.txt")).save();
-        new Moja<>(PrepackMojo.class)
-            .with("generatedDir", generated.toFile())
-            .with("classesDir", classes.toFile())
+        final Path list = temp.resolve("resolved.lst");
+        new Save(foo.toString(), list).save();
+        new Moja<>(UnresolveMojo.class)
+            .with("resolvedList", list.toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(foo),
