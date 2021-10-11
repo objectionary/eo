@@ -57,6 +57,7 @@ These things we **don't** tolerate:
   * scalar types and data primitives
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
   * operators
+  * traits and mixins ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
 
