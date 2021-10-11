@@ -72,7 +72,7 @@ public final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/foo/main.eo.xml", OptimizeMojo.DIR)
+                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
                 )
             ),
             Matchers.is(true)

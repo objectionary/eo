@@ -77,8 +77,8 @@ public final class AssembleMojoTest {
             Files.exists(
                 target.resolve(
                     String.format(
-                        "%s/org/eolang/io/stdout.eo.xml",
-                        ParseMojo.DIR
+                        "%s/org/eolang/io/stdout.%s",
+                        ParseMojo.DIR, Transpiler.EXT
                     )
                 )
             ),

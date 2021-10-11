@@ -87,7 +87,7 @@ public final class DiscoverMojo extends SafeMojo {
     /**
      * Pull all deps found in the provided XML file.
      *
-     * @param file The .eo.xml file
+     * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */

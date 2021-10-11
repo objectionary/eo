@@ -27,16 +27,21 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * An abstract compiler.
+ * An abstract transpiler.
  *
  * @since 0.1
  */
 interface Transpiler {
 
     /**
-     * Transform a single .eo.xml (XMIR) file to .java.
+     * Extension for compiled sources in XMIR format (XML).
+     */
+    String EXT = "xmir";
+
+    /**
+     * Transform a single .xmir file to .java.
      *
-     * @param file The path to the .eo.xml file
+     * @param file The path to the .xmir file
      * @param generated The path to the directory, where .java files to be saved
      * @return How many .java files generated
      * @throws IOException If any issues with I/O

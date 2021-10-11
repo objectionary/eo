@@ -63,7 +63,7 @@ public final class ParseMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/foo/x/main.eo.xml", ParseMojo.DIR)
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, Transpiler.EXT)
                 )
             ),
             Matchers.is(true)

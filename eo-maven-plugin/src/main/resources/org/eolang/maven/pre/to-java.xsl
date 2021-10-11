@@ -488,11 +488,11 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * your changes will be discarded on the next build.</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:text> * The sources were compiled to XML on</xsl:text>
+    <xsl:text> * The EO sources were compiled to XMIR on</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * </xsl:text>
     <xsl:value-of select="@time"/>
-    <xsl:text> by the EO compiler v.</xsl:text>
+    <xsl:text> by the compiler v.</xsl:text>
     <xsl:value-of select="@version"/>
     <xsl:text>.</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

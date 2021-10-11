@@ -90,7 +90,7 @@ public final class ParseMojo extends SafeMojo {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get("id");
         final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR), "eo.xml"
+            this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT
         );
         if (Files.exists(target)) {
             Logger.info(

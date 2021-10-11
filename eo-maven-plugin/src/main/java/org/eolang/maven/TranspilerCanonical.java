@@ -43,11 +43,6 @@ import org.eolang.parser.Xsline;
 final class TranspilerCanonical implements Transpiler {
 
     /**
-     * Extension.
-     */
-    private static final String EXT = "eo.xml";
-
-    /**
      * Temp dir.
      */
     private final Path temp;
@@ -72,7 +67,7 @@ final class TranspilerCanonical implements Transpiler {
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path target = place.make(this.temp, TranspilerCanonical.EXT);
+        final Path target = place.make(this.temp, Transpiler.EXT);
         int total = 0;
         if (Files.exists(target)) {
             Logger.info(

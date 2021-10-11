@@ -41,8 +41,8 @@ public final class PlaceTest {
     @Test
     public void makesPath() {
         MatcherAssert.assertThat(
-            new Place("hello.foo.bar").make(Paths.get("/tmp/test"), "eo.xml").toString(),
-            Matchers.equalTo("/tmp/test/hello/foo/bar.eo.xml")
+            new Place("hello.foo.bar").make(Paths.get("/tmp/test"), Transpiler.EXT).toString(),
+            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", Transpiler.EXT))
         );
     }
 

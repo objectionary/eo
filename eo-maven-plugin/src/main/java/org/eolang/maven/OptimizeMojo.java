@@ -98,7 +98,7 @@ public final class OptimizeMojo extends SafeMojo {
             this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
         );
         final Path target = place.make(
-            this.targetDir.toPath().resolve(OptimizeMojo.DIR), "eo.xml"
+            this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
         );
         if (Files.exists(target)) {
             Logger.info(
