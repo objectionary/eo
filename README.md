@@ -63,6 +63,7 @@ These things we **don't** tolerate:
 There are products that use EO or 𝜑-calculus 
 (if you want yours to be in the list, submit a pull request):
 
+  * [objectionary](https://github.com/yegor256/objectionary) is a repository of EO objects
   * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
   * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
   * [try-phi](https://github.com/fizruk/try-phi) is an online interpreter of 𝜑-calculus expressions
