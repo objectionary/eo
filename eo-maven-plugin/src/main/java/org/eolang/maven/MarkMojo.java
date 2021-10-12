@@ -45,7 +45,7 @@ import org.eolang.tojos.Tojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class ExtendMojo extends SafeMojo {
+public final class MarkMojo extends SafeMojo {
 
     @Override
     @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })

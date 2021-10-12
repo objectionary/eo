@@ -31,12 +31,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link ExtendMojo}.
+ * Test case for {@link MarkMojo}.
  *
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class ExtendMojoTest {
+public final class MarkMojoTest {
 
     @Test
     public void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
@@ -46,7 +46,7 @@ public final class ExtendMojoTest {
             bins.resolve(String.format("foo:hello:0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
         ).save();
         final Path foreign = temp.resolve("placed.csv");
-        new Moja<>(ExtendMojo.class)
+        new Moja<>(MarkMojo.class)
             .with("targetDir", temp.toFile())
             .with("foreign", foreign.toFile())
             .execute();

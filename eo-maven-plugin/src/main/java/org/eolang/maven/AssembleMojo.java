@@ -152,7 +152,7 @@ public final class AssembleMojo extends SafeMojo {
                 .with("targetDir", this.targetDir)
                 .with("skipZeroVersions", this.skipZeroVersions)
                 .with("discoverSelf", this.discoverSelf),
-            new Moja<>(ExtendMojo.class)
+            new Moja<>(MarkMojo.class)
                 .with("targetDir", this.targetDir)
                 .with("foreign", this.foreign),
             new Moja<>(PlaceMojo.class)
