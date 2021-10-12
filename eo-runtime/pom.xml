@@ -53,13 +53,14 @@ SOFTWARE.
           </execution>
           <execution>
             <id>test-compile</id>
-            <phase>compile</phase>
+            <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
-              <goal>optimize</goal>
+              <goal>assemble</goal>
               <goal>transpile</goal>
             </goals>
             <configuration>
+              <scope>test</scope>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>

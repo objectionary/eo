@@ -26,6 +26,7 @@ package EOorg.EOeolang;
 
 import java.util.Arrays;
 import org.eolang.phi.AtBound;
+import org.eolang.phi.AtFree;
 import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
@@ -41,13 +42,17 @@ public class EObytes$EOpart extends PhDefault {
 
     public EObytes$EOpart(final Phi parent) {
         super(parent);
+        this.add("start", new AtFree());
+        this.add("len", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final long start = new Dataized(self.attr("start").get()).take(Long.class);
             final long length = new Dataized(self.attr("len").get()).take(Long.class);
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
-            final byte[] target = Arrays.copyOfRange(array, (int) start, (int) length);
+            final byte[] target = Arrays.copyOfRange(
+                array, (int) start, (int) (start + length)
+            );
             return new Data.ToPhi(target);
         })));
     }

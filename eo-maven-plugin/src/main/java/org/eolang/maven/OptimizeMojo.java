@@ -66,6 +66,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
+        int done = 0;
         for (final Tojo tojo : sources) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
             if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
@@ -75,12 +76,13 @@ public final class OptimizeMojo extends SafeMojo {
                 );
                 continue;
             }
+            ++done;
             tojo.set(
                 AssembleMojo.ATTR_XMIR2,
                 this.optimize(src).toAbsolutePath().toString()
             );
         }
-        Logger.info(this, "%d XMIR programs optimized", sources.size());
+        Logger.info(this, "%d XMIR programs optimized out of %d", done, sources.size());
     }
 
     /**

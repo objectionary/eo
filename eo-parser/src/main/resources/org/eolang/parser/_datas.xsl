@@ -24,6 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:variable name="data-objects" as="element()*">
+    <a>org.eolang.bytes</a>
     <a>org.eolang.string</a>
     <a>org.eolang.array</a>
     <a>org.eolang.int</a>

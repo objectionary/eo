@@ -102,7 +102,10 @@ public final class RegisterMojo extends SafeMojo {
                 .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());
             Logger.debug(this, "EO source %s registered", name);
         }
-        Logger.info(this, "%d EO sources registered", sources.size());
+        Logger.info(
+            this, "%d EO sources registered at %s",
+            sources.size(), Save.rel(this.sourcesDir.toPath())
+        );
     }
 
     /**

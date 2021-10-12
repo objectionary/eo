@@ -45,6 +45,7 @@ import org.cactoos.Input;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
+@SuppressWarnings("PMD.UnusedPrivateField")
 public final class AssembleMojo extends SafeMojo {
 
     /**
@@ -132,38 +133,17 @@ public final class AssembleMojo extends SafeMojo {
         String before = this.status();
         int cycle = 0;
         final Moja<?>[] mojas = {
-            new Moja<>(ParseMojo.class)
-                .with("targetDir", this.targetDir)
-                .with("foreign", this.foreign),
-            new Moja<>(OptimizeMojo.class)
-                .with("foreign", this.foreign)
-                .with("targetDir", this.targetDir),
-            new Moja<>(DiscoverMojo.class)
-                .with("foreign", this.foreign),
-            new Moja<>(PullMojo.class)
-                .with("targetDir", this.targetDir)
-                .with("objectionary", this.objectionary)
-                .with("foreign", this.foreign),
-            new Moja<>(ResolveMojo.class)
-                .with("foreign", this.foreign)
-                .with("project", this.project)
-                .with("session", this.session)
-                .with("manager", this.manager)
-                .with("targetDir", this.targetDir)
-                .with("skipZeroVersions", this.skipZeroVersions)
-                .with("discoverSelf", this.discoverSelf),
-            new Moja<>(MarkMojo.class)
-                .with("targetDir", this.targetDir)
-                .with("foreign", this.foreign),
-            new Moja<>(PlaceMojo.class)
-                .with("targetDir", this.targetDir)
-                .with("outputDir", this.outputDir)
-                .with("foreign", this.foreign)
-                .with("placed", this.placed),
+            new Moja<>(ParseMojo.class),
+            new Moja<>(OptimizeMojo.class),
+            new Moja<>(DiscoverMojo.class),
+            new Moja<>(PullMojo.class),
+            new Moja<>(ResolveMojo.class),
+            new Moja<>(MarkMojo.class),
+            new Moja<>(PlaceMojo.class),
         };
         while (true) {
             for (final Moja<?> moja : mojas) {
-                moja.execute();
+                moja.copy(this).execute();
             }
             final String after = this.status();
             ++cycle;

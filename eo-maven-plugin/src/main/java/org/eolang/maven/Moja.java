@@ -25,11 +25,16 @@ package org.eolang.maven;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.cactoos.list.Mapped;
 
 /**
  * Mutable mojo builder.
@@ -72,6 +77,34 @@ final class Moja<T extends AbstractMojo> {
     }
 
     /**
+     * Copy attributes from the given Mojo.
+     *
+     * @param mojo Another mojo
+     * @return Itself
+     */
+    public Moja<T> copy(final Object mojo) {
+        final Collection<String> mine = new Mapped<>(
+            Field::getName,
+            Moja.fields(this.type)
+        );
+        for (final Field field : Moja.fields(mojo.getClass())) {
+            if (!mine.contains(field.getName())) {
+                continue;
+            }
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            try {
+                field.setAccessible(true);
+                this.with(field.getName(), field.get(mojo));
+            } catch (final IllegalAccessException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Execute it.
      */
     public void execute() {
@@ -88,6 +121,21 @@ final class Moja<T extends AbstractMojo> {
             | NoSuchMethodException | InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    /**
+     * List all fields of a class.
+     * @param cls The class
+     * @return List of fields
+     */
+    private static Collection<Field> fields(final Class<?> cls) {
+        final Collection<Field> fields = new ArrayList<>(0);
+        Class<?> clazz = cls;
+        while (!clazz.equals(Object.class)) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
     }
 
     /**
