@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.cactoos.list.ListEnvelope;
 
@@ -68,7 +69,7 @@ final class DepDirs extends ListEnvelope<String> {
                     .map(file -> file.toAbsolutePath().toString())
                     .filter(name -> !name.equals(home))
                     .map(name -> name.substring(home.length() + 1))
-                    .filter(name -> name.split(File.separator).length == 3)
+                    .filter(name -> name.split(Pattern.quote(File.separator)).length == 3)
                     .collect(Collectors.toList())
             );
         }

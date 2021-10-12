@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.eolang.tojos.Tojo;
@@ -60,7 +61,7 @@ public final class MarkMojo extends SafeMojo {
                 if (!Files.exists(sub)) {
                     continue;
                 }
-                final String ver = dep.split(File.separator)[2];
+                final String ver = dep.split(Pattern.quote(File.separator))[2];
                 found += this.scan(sub, ver);
             }
             Logger.info(
