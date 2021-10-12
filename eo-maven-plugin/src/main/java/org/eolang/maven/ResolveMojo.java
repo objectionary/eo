@@ -85,7 +85,9 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             final String coords = ResolveMojo.coords(dep);
-            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR).resolve(coords);
+            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR).resolve(
+                coords.replaceAll("[^0-9a-zA-Z.-]", "_")
+            );
             if (Files.exists(dest)) {
                 Logger.info(
                     this, "Dependency %s already resolved to %s",

@@ -59,7 +59,7 @@ public final class MarkMojo extends SafeMojo {
                 if (!Files.exists(sub)) {
                     continue;
                 }
-                final String ver = dir.toString().replaceAll("^.+:([0-9.]+)$", "$1");
+                final String ver = dir.toString().replaceAll("^.+[_:]([0-9.]+)$", "$1");
                 found += this.scan(sub, ver);
             }
             Logger.info(
