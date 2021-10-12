@@ -26,6 +26,7 @@ package org.eolang.phi;
 
 import EOorg.EOeolang.EOarray;
 import EOorg.EOeolang.EObool;
+import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOchar;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
@@ -75,6 +76,8 @@ public interface Data<T> {
                     final Phi phi;
                     if (obj instanceof Boolean) {
                         phi = new EObool();
+                    } else if (obj instanceof byte[]) {
+                        phi = new EObytes();
                     } else if (obj instanceof Long) {
                         phi = new EOint();
                     } else if (obj instanceof String) {
