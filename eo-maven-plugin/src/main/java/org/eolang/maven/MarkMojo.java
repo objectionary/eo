@@ -24,11 +24,11 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.eolang.tojos.Tojo;
@@ -52,14 +52,15 @@ public final class MarkMojo extends SafeMojo {
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
-            final Collection<Path> deps = Files.list(home).collect(Collectors.toList());
+            final Collection<String> deps = new DepDirs(home);
             int found = 0;
-            for (final Path dir : deps) {
+            for (final String dep : deps) {
+                final Path dir = home.resolve(dep);
                 final Path sub = dir.resolve(CopyMojo.DIR);
                 if (!Files.exists(sub)) {
                     continue;
                 }
-                final String ver = dir.toString().replaceAll("^.+[_:]([0-9.]+)$", "$1");
+                final String ver = dep.split(File.separator)[2];
                 found += this.scan(sub, ver);
             }
             Logger.info(

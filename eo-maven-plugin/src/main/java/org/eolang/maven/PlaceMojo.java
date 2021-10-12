@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -77,12 +76,13 @@ public final class PlaceMojo extends SafeMojo {
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
-            final Collection<Path> deps = Files.list(home).collect(Collectors.toList());
+            final Collection<String> deps = new DepDirs(home);
             final Tojos tojos = new MonoTojos(this.placed);
             int copied = 0;
-            for (final Path dep : deps) {
-                for (final Path file : new Walk(dep)) {
-                    final String path = file.toString().substring(dep.toString().length() + 1);
+            for (final String dep : deps) {
+                final Path dir = home.resolve(dep);
+                for (final Path file : new Walk(dir)) {
+                    final String path = file.toString().substring(dir.toString().length() + 1);
                     if (path.startsWith(CopyMojo.DIR)) {
                         continue;
                     }

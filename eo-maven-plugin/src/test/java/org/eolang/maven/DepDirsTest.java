@@ -23,38 +23,34 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link MarkMojo}.
+ * Test case for {@link DepDirs}.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class MarkMojoTest {
+public final class DepDirsTest {
 
     @Test
-    public void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
-        final Path bins = temp.resolve(ResolveMojo.DIR);
-        new Save(
-            "hi",
-            bins.resolve(String.format("foo/hello/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
-        ).save();
-        final Path foreign = temp.resolve("placed.csv");
-        new Moja<>(MarkMojo.class)
-            .with("targetDir", temp.toFile())
-            .with("foreign", foreign.toFile())
-            .execute();
+    public void findsDirs(@TempDir final Path temp) throws IOException {
+        new Save("", temp.resolve("a/b/c/f/test.txt")).save();
+        new Save("", temp.resolve("a/b/f.txt")).save();
+        new Save("", temp.resolve("test/f.txt")).save();
+        new Save("", temp.resolve("a/g")).save();
         MatcherAssert.assertThat(
-            new MonoTojos(foreign).select(t -> true)
-                .iterator().next()
-                .get(AssembleMojo.ATTR_VERSION),
-            Matchers.equalTo("0.1.8")
+            new DepDirs(temp),
+            Matchers.contains(String.format("a%sb%1$sc", File.separator))
+        );
+        MatcherAssert.assertThat(
+            new DepDirs(temp),
+            Matchers.iterableWithSize(1)
         );
     }
 
