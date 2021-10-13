@@ -1,7 +1,12 @@
 +package org.eolang
 +junit
 
-[] > charToString
+[] > char-to-string
   eq. > @
     "A"
-    'A'.toString
+    'A'.as-string
+
+[] > char-to-char-compares
+  eq. > @
+    'Ф'
+    'Ф'

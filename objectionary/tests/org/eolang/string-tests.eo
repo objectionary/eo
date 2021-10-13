@@ -9,8 +9,28 @@
     "Hello, dude"
     "Hello, dude  ".trim
 
-[] > turnsStringIntoInt
+[] > turns-string-into-int
   eq. > @
     42
-    "42".toInt
+    "42".as-int
+
+[] > turns-string-into-float
+  eq. > @
+    3.1415926
+    "3.1415926".as-float
+
+[] > turns-string-into-bytes
+  eq. > @
+    D0-B4-D1-80-D1-83-D0-B3
+    "друг".as-bytes
+
+[] > picks-a-single-char
+  eq. > @
+    'e'
+    "Hello, world!".char-at 1
+
+[] > reads-the-length
+  eq. > @
+    12
+    "Hello, друг!".length
 

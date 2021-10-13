@@ -1,9 +1,12 @@
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.12.0
++rt jvm org.eolang:eo-runtime:0.13.0
 
 [] > bool
+  # Equal to another bool?
+  [b] > eq /bool
+
   # If true, return "t", otherwise "f"
-  [t f] > if /t
+  [t f] > if /?
 
   # NOT
   [] > not /bool

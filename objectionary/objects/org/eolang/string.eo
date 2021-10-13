@@ -1,13 +1,24 @@
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.12.0
++rt jvm org.eolang:eo-runtime:0.13.0
 
 [] > string
+  # Is true if both strings are equal
+  [x] > eq /bool
+
+  # Get the length of it
+  [] > length /int
+
   # Trim it from both sides
   [] > trim /string
 
   # Make an integer out of this string
-  [] > toInt /int
+  [] > as-int /int
 
-  # Is true if both strings are equal
-  [x] > eq /bool
+  # Make a float out of this string
+  [] > as-float /float
 
+  # Take a char from the given position
+  [p] > char-at /char
+
+  # Turn it into bytes.
+  [] > as-bytes /bytes

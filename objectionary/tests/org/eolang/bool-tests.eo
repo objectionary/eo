@@ -3,7 +3,12 @@
 +alias sprintf org.eolang.txt.sprintf
 +junit
 
-[] > forksOnCondition
+[] > compares-two-bools
+  eq. > @
+    TRUE
+    TRUE
+
+[] > forks-on-condition
   eq. > @
     42
     if.
@@ -11,7 +16,7 @@
       123
       42
 
-[] > iteratesOverSimpleCounter
+[] > iterates-over-simple-counter
   memory > x
   and. > @
     x.write 5
@@ -22,7 +27,7 @@
         [i]
           ^.x.write (^.x.add i) > @
 
-[] > printsNiceFormulas
+[] > prints-nice-formulas
   memory > x
   seq > @
     x.write 2
@@ -36,7 +41,7 @@
 
 # tests that bool.and stops calculations if its i'th
 # object is false (including the base object)
-[] > andShortCircuiting
+[] > and-short-circuiting
   memory > mFirst
   memory > mThird
   and. > @
@@ -56,7 +61,7 @@
 
 # tests that bool.or stops calculations if its i'th
 # object is true (including the base object)
-[] > orShortCircuiting
+[] > or-short-circuiting
   memory > mFirst
   memory > mThird
   and. > @

@@ -3,27 +3,27 @@
 +alias sprintf org.eolang.txt.sprintf
 +junit
 
-[] > writesIntoMemory
+[] > writes-into-memory
   memory > x
   and. > @
     x.write 10
     x.eq 10
 
-[] > doubleWrites
+[] > double-writes
   memory > m
   and. > @
     m.write "Hello, world!"
     m.write 42
     m.eq 42
 
-[] > rewritesAndIncrementsItself
+[] > rewrites-and-increments-itself
   memory > m
   and. > @
     m.write 1
     m.write (m.add 5)
     m.eq 6
 
-[] > memoryInOuterScope
+[] > memory-in-outer-scope
   [] > outer
     memory > x
   outer > a

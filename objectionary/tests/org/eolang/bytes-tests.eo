@@ -1,0 +1,25 @@
++package org.eolang
++junit
+
+[] > takes-part-of-bytes
+  eq. > @
+    part.
+      20-1F-EE-B5-90
+      1
+      3
+    1F-EE-B5
+
+[] > size-of-part-is-correct
+  eq. > @
+    size.
+      part.
+        20-1F-EE-B5-90-EE-BB
+        2
+        3
+    3
+
+[] > counts-size-of-bytes
+  eq. > @
+    size.
+      F1-20-5F-EC-B5-90-32
+    7
