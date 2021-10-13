@@ -33,6 +33,7 @@ eo: |
 
   # This is very good object
   [x] > first
+    x > @
     second > hello
       $.add 5 > i
       third:foo > x...!
