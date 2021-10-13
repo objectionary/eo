@@ -19,6 +19,11 @@
     3.1415926
     "3.1415926".as-float
 
+[] > turns-string-into-bytes
+  eq. > @
+    D0-B4-D1-80-D1-83-D0-B3
+    "друг".as-bytes
+
 [] > picks-a-single-char
   eq. > @
     'e'

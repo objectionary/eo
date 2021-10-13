@@ -2,6 +2,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > string
+  # Is true if both strings are equal
+  [x] > eq /bool
+
   # Get the length of it
   [] > length /int
 
@@ -17,6 +20,5 @@
   # Take a char from the given position
   [p] > char-at /char
 
-  # Is true if both strings are equal
-  [x] > eq /bool
-
+  # Turn it into bytes.
+  [] > as-bytes /bytes

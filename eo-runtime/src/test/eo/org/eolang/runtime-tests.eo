@@ -13,5 +13,5 @@
 [] > throws-when-applies-to-closed-object
   [x] > a
     x > @
-  a false > closed
-  closed true > @
+  a FALSE > closed
+  closed TRUE > @

@@ -71,9 +71,10 @@ Java-notation is used for numbers, strings, and character literals.
   \> \alt \T{application} \V{␣} \T{application} \\
 \T{head} \df \T{name} \alt \T{data} \alt \V{@} \alt \V{\$} \\
   \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \\
-\T{data} \df \T{bytes} \alt \T{string} \alt \T{integer} \\
+\T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
   \> \alt \T{char} \alt \T{float} \alt \T{regex} \\
 \T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \\
+\T{bool} \df \V{TRUE} \alt \T{FALSE} \\
 \T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
 \T{string} \df \RE{"[\^{}"]*"} \\
 \T{integer} \df \RE{[+-]?\textbackslash{}d+|0x[a-f\textbackslash{}d]+} \\
@@ -316,7 +317,7 @@ Data & Example & Size \\
 \ff{char} & \begin{CJK}{UTF8}{gbsn}\ff{'家'}\end{CJK} or \ff{'\textbackslash{}u5BB6'} & 2 \\
 \ff{int} & \ff{-42} & 4 \\
 \ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 4 \\
-\ff{bool} & \ff{true} or \ff{false} & 1 \\
+\ff{bool} & \ff{TRUE} or \ff{FALSE} & 1 \\
 \ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
 \hline
 \end{tabular}
@@ -335,13 +336,13 @@ which looks similar to object copying:
 * "Lucy" "Jeff" 3.14 |$\label{ln:array-1}$|
 * > a |$\label{ln:array-2a}$|
   (* 'a')
-  true |$\label{ln:array-2b}$|
+  TRUE |$\label{ln:array-2b}$|
 * > b |$\label{ln:array-3}$|
 \end{ffcode}
 
 The code at \lref{array-1} makes an array of three elements: two strings
 and one float. The code at \lrefs{array-2a}{array-2b} makes an array named \ff{a} with another
-array as its first element and \ff{true} as the second item.
+array as its first element and \ff{TRUE} as the second item.
 The code at \lref{array-3} is an empty array with the name \ff{b}.
 
 \subsection{Varargs}
@@ -468,7 +469,7 @@ circle (point -3 9) 40 > c  |$\label{ln:circle-c}$|
 c.is-inside (point 0 0) > i
 \end{ffcode}
 
-Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{true}
+Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{TRUE}
 because \ff{leq} decorates \ff{bool}.
 
 It is also possible to make decoratee free, similar to other free
