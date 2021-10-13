@@ -2,11 +2,20 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > string
+  # Get the length of it
+  [] > length /int
+
   # Trim it from both sides
   [] > trim /string
 
   # Make an integer out of this string
-  [] > toInt /int
+  [] > as-int /int
+
+  # Make a float out of this string
+  [] > as-float /float
+
+  # Take a char from the given position
+  [p] > char-at /char
 
   # Is true if both strings are equal
   [x] > eq /bool

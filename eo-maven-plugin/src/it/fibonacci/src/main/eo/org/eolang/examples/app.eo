@@ -30,12 +30,12 @@
     stdout
       sprintf
         "%dth Fibonacci number is %d\n"
-        (args.get 0).toInt > n!
+        (args.get 0).as-int > n!
         fibonacci n > f
     if.
       not.
         eq.
-          (args.get 1).toInt > e
+          (args.get 1).as-int > e
           f
       []
         sprintf > msg

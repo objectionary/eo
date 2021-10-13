@@ -5,7 +5,7 @@
   sprintf > @
     "Actual value = %.10f; computed value(n=%d) = %.10f"
     pi
-    (args.get 0).toInt > n
+    (args.get 0).as-int > n
     compute.
       pi
       n

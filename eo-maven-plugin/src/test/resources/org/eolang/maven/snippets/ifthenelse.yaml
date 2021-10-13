@@ -16,5 +16,5 @@ eo: |
     stdout > @
       sprintf
         "%d is %s than zero\n"
-        (args.get 0).toInt > num
+        (args.get 0).as-int > num
         f num

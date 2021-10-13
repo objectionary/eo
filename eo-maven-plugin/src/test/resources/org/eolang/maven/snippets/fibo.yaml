@@ -18,5 +18,5 @@ eo: |
     stdout > @
       sprintf
         "The %dth fibo is %d"
-        (args.get 0).toInt > num
+        (args.get 0).as-int > num
         f num

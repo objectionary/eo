@@ -1,95 +1,95 @@
 +package org.eolang
 +junit
 
-[] > lessTrueTest
+[] > less-true
   less. > @
     10
     50
 
-[] > lessEqualTest
+[] > less-equal
   not. > @
     less.
       10
       10
 
-[] > lessFalseTest
+[] > less-false
   not. > @
     less.
       10
       -5
 
-[] > greaterTrueTest
+[] > greater-true
   greater. > @
     -200
     -1000
 
-[] > greaterFalseTest
+[] > greater-false
   not. > @
     greater.
       0
       100
 
-[] > greaterEqualTest
+[] > greater-equal
   not. > @
     greater.
       0
       0
 
-[] > leqTrueTest
+[] > leq-true
   leq. > @
     -200
     -100
 
-[] > leqEqualTest
+[] > leq-equal
   leq. > @
     50
     50
 
-[] > leqFalseTest
+[] > leq-false
   not. > @
     leq.
       0
       -10
 
-[] > geqTrueTest
+[] > geq-true
   geq. > @
     -1000
     -1100
 
-[] > geqEqualTest
+[] > geq-equal
   geq. > @
     113
     113
 
-[] > geqFalseTest
+[] > geq-false
   not. > @
     geq.
       0
       10
 
-[] > eqTrueTest
+[] > eq-true
   eq. > @
     123
     123
 
-[] > eqFalseTest
+[] > eq-false
   not. > @
     eq.
       123
       42
 
-[] > neqTrueTest
+[] > neq-true
   neq. > @
     123
     125
 
-[] > neqFalseTest
+[] > neq-false
   not. > @
     neq.
       -133
       -133
 
-[] > calculatesFibonacciNumberWithRecursion
+[] > calculates-fibonacci-number-with-recursion
   eq. > @
     13
     fibo 7
@@ -101,7 +101,7 @@
         fibo (n.sub 1)
         fibo (n.sub 2)
 
-[] > calculatesFibonacciNumberWithTail
+[] > calculates-fibonacci-number-with-tail
   eq. > @
     13
     fibonacci 7
@@ -122,14 +122,14 @@
         rec (n.sub 1) (minus1.add minus2) minus1
 
 # Checks that division by zero returns an error object
-[] > zeroDivision
+[] > zero-division
   eq. > @
     (2.div 0).msg
     "Division by zero is undefined"
 
 # Checks mathematical equality
 # A = ((A div B) * B) + (A mod B)
-[] > divModCompatibility
+[] > div-mod-compatibility
   -13 > dividend
   5 > divisor
   dividend.mod divisor > remainder
@@ -143,19 +143,19 @@
         quotient
 
 # Checks that division by one returns the dividend
-[] > divisionByOne
+[] > divisioe-by-one
   -235 > dividend
   eq. > @
     dividend.div 1
     dividend
 
 # Checks that div works properly with dividends greater than zero
-[] > divForDividendGreaterThanZero
+[] > div-for-dividend-greater-than-zero
   256.div 16 > quotient
   quotient.eq 16 > @
 
-# Checks that int.toFloat works properly
-[] > toFloatWorks
+# Checks that int.as-float works properly
+[] > as-float-works
   eq. > @
     -17.0
-    17.neg.toFloat
+    17.neg.as-float

@@ -2,6 +2,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > bool
+  # Equal to another bool?
+  [b] > eq /bool
+
   # If true, return "t", otherwise "f"
   [t f] > if /t
 

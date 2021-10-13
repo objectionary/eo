@@ -2,7 +2,7 @@
 +alias sprintf org.eolang.txt.sprintf
 +junit
 
-[] > printsSimpleString
+[] > prints-simple-string
   eq. > @
     "Hello, Jeffrey!"
     sprintf "Hello, %s!"

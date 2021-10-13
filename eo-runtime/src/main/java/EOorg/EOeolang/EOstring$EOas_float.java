@@ -21,31 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
 
-import EOorg.EOeolang.EOstring$EOtoInt;
+package EOorg.EOeolang;
+
+import org.eolang.phi.AtBound;
+import org.eolang.phi.AtLambda;
 import org.eolang.phi.Data;
 import org.eolang.phi.Dataized;
+import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * AS-FLOAT.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOstringEOtoIntTest {
+public class EOstring$EOas_float extends PhDefault {
 
-    @Test
-    public void toIntString() throws Exception {
-        final Phi str = new Data.ToPhi("42");
-        final Phi phi = new EOstring$EOtoInt(str);
-        MatcherAssert.assertThat(
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(42L)
-        );
+    public EOstring$EOas_float(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+            Double.parseDouble(
+                new Dataized(
+                    self.attr("ρ").get()
+                ).take(String.class)
+            )
+        ))));
     }
 
 }

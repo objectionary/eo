@@ -22,6 +22,6 @@
 [args...] > appFactorialTail
   sprintf > @
     "%d! = %d\n"
-    (args.get 0).toInt > n
+    (args.get 0).as-int > n
     factorialTail n
 

@@ -32,16 +32,20 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * toFloat.
+ * AS-INT.
  *
  * @since 1.0
  */
-public class EOint$EOtoFloat extends PhDefault {
+public class EOstring$EOas_int extends PhDefault {
 
-    public EOint$EOtoFloat(final Phi parent) {
+    public EOstring$EOas_int(final Phi parent) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Long.class).doubleValue()
+            Long.parseLong(
+                new Dataized(
+                    self.attr("ρ").get()
+                ).take(String.class)
+            )
         ))));
     }
 

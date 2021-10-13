@@ -2,164 +2,164 @@
 +alias sprintf org.eolang.txt.sprintf
 +junit
 
-[] > lessTrueTest
+[] > less-true
   less. > @
     -10.5
     50.3
 
-[] > lessEqualTest
+[] > less-equal
   not. > @
     less.
       -10.7
       -10.7
 
-[] > lessFalseTest
+[] > less-false
   not. > @
     less.
       10.13
       -5.3
 
-[] > greaterTrueTest
+[] > greater-true
   greater. > @
     -200.1
     -1000.0
 
-[] > greaterFalseTest
+[] > greater-false
   not. > @
     greater.
       0.5
       100.1
 
-[] > greaterEqualTest
+[] > greater-equal
   not. > @
     greater.
       0.7
       0.7
 
-[] > leqTrueTest
+[] > leq-true
   leq. > @
     -200.5
     -100.6
 
-[] > leqEqualTest
+[] > leq-equal
   leq. > @
     50.1
     50.1
 
-[] > leqFalseTest
+[] > leq-false
   not. > @
     leq.
       0.9
       -10.11
 
-[] > geqTrueTest
+[] > geq-true
   geq. > @
     -1000.1
     -1100.1
 
-[] > geqEqualTest
+[] > geq-equal
   geq. > @
     113.333
     113.333
 
-[] > geqFalseTest
+[] > geq-false
   not. > @
     geq.
       0.7
       10.9
 
-[] > eqTrueTest
+[] > eq-true
   eq. > @
     123.5
     123.5
 
-[] > eqFalseTest
+[] > eq-false
   not. > @
     eq.
       123.5
       42.4
 
-[] > neqTrueTest
+[] > neq-true
   neq. > @
     123.5
     125.2
 
-[] > neqFalseTest
+[] > neq-false
   not. > @
     neq.
       -133.9
       -133.9
 
-[] > mulByZero
+[] > mul-by-zero
   eq. > @
     0.0
     mul.
       574.9
       0.0
 
-[] > mulByOne
+[] > mul-by-one
   eq. > @
     574.9
     mul.
       574.9
       1.0
 
-[] > mulTwoPositives
+[] > mul-two-positives
   eq. > @
     179235.3825
     mul.
       574.5
       311.985
 
-[] > mulTwoNegatives
+[] > mul-two-negatives
   eq. > @
     179235.3825
     mul.
       -574.5
       -311.985
 
-[] > mulDiffSign
+[] > mul-diff-sign
   eq. > @
     -0.1792353825
     mul.
       -0.5745
       0.311985
 
-[] > addTest
+[] > add-test
   eq. > @
     886.485
     add.
       574.5
       311.985
 
-[] > negTest
+[] > neg-test
   eq. > @
     -886.485
     886.485.neg
 
-[] > signumNegativeTest
+[] > signum-negative
   eq. > @
     -1.0
     (-345.17.signum)
 
-[] > signumPositiveTest
+[] > signum-positive
   eq. > @
     1.0
     (145.18.signum)
 
-[] > signumZeroTest
+[] > signum-zero
   eq. > @
     0.0
     (0.0.signum)
 
-[] > subTest
+[] > sub-test
   eq. > @
     262.515
     sub.
       574.5
       311.985
 
-[] > zeroToNegPowTest
+[] > zero-to-neg-pow
   eq. > @
     "Infinity"
     sprintf
@@ -168,14 +168,14 @@
         0.0
         -1.0
 
-[] > divTest
+[] > div-test
   eq. > @
     31.0
     div.
       15.5
       0.5
 
-[] > zeroDivTest
+[] > zero-div
   eq. > @
     "-Infinity"
     sprintf
@@ -184,17 +184,17 @@
         -345.10
         0.0
 
-[] > absPositiveTest
+[] > abs-positive
   eq. > @
     13.5
     (13.5.abs)
 
-[] > absNegativeTest
+[] > abs-negative
   eq. > @
     17.9
     (-17.9.abs)
 
-[] > absZeroTest
+[] > abs-zero
   eq. > @
     0.0
     (0.0.abs)

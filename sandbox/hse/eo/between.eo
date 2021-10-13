@@ -18,8 +18,8 @@
     right
     if.
       between
-        (args.get 0).toInt > x
-        (args.get 1).toInt > left
-        (args.get 2).toInt > right
+        (args.get 0).as-int > x
+        (args.get 1).as-int > left
+        (args.get 2).as-int > right
       "yes"
       "no"

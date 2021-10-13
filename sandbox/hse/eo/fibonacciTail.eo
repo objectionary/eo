@@ -4,7 +4,7 @@
 [args...] > appFibonacciTail
   sprintf > @
     "%dth Fibonacci number is %d\n"
-    (args.get 0).toInt > n
+    (args.get 0).as-int > n
     fibonacciTail n
 
 [n] > fibonacciTail

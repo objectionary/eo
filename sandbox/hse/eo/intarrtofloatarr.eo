@@ -7,7 +7,7 @@
     arr
     []
       [current] > map
-        current.toFloat > @
+        current.as-float > @
 
 [args...] > appIntArrToFloat
   floatarrtostdout > @

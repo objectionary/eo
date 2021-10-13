@@ -32,20 +32,18 @@ import org.eolang.phi.PhDefault;
 import org.eolang.phi.Phi;
 
 /**
- * TOINT.
+ * LENGTH.
  *
  * @since 1.0
  */
-public class EOstring$EOtoInt extends PhDefault {
+public class EOstring$EOlength extends PhDefault {
 
-    public EOstring$EOtoInt(final Phi parent) {
+    public EOstring$EOlength(final Phi parent) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            Long.parseLong(
-                new Dataized(
-                    self.attr("ρ").get()
-                ).take(String.class)
-            )
+            (long) new Dataized(
+                self.attr("ρ").get()
+            ).take(String.class).length()
         ))));
     }
 

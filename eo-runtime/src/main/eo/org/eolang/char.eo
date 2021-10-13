@@ -3,6 +3,9 @@
 +alias sprintf org.eolang.txt.sprintf
 
 [data] > char
+  # Compares with another char
+  [c] > eq /bool
+
   # Converts char to string
-  [] > toString
+  [] > as-string
     sprintf "%c" ^ > @
