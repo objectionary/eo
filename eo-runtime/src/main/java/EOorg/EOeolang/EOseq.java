@@ -24,14 +24,14 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtLambda;
-import org.eolang.phi.AtVararg;
-import org.eolang.phi.Data;
-import org.eolang.phi.Dataized;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhEta;
-import org.eolang.phi.Phi;
+import org.eolang.AtBound;
+import org.eolang.AtLambda;
+import org.eolang.AtVararg;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.PhEta;
+import org.eolang.Phi;
 
 /**
  * SEQ.

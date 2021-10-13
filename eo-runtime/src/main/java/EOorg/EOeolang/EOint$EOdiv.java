@@ -24,7 +24,14 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.phi.*;
+import org.eolang.AtBound;
+import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.PhWith;
+import org.eolang.Phi;
 
 /**
  * DIV.

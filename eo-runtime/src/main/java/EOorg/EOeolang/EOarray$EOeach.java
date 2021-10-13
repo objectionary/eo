@@ -24,15 +24,15 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.phi.AtBound;
-import org.eolang.phi.AtFree;
-import org.eolang.phi.AtLambda;
-import org.eolang.phi.Data;
-import org.eolang.phi.Dataized;
-import org.eolang.phi.PhCopy;
-import org.eolang.phi.PhDefault;
-import org.eolang.phi.PhWith;
-import org.eolang.phi.Phi;
+import org.eolang.AtBound;
+import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhCopy;
+import org.eolang.PhDefault;
+import org.eolang.PhWith;
+import org.eolang.Phi;
 
 /**
  * EACH.
