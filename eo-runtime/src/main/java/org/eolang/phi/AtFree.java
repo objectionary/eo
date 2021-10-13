@@ -66,7 +66,7 @@ public final class AtFree implements Attr {
     public Phi get() {
         final Phi phi = this.origin.get();
         if (phi.equals(new PhEta())) {
-            throw new Attr.Exception(
+            throw new Attr.StillAbstractException(
                 "The attribute is not initialized, can't read"
             );
         }
@@ -76,7 +76,7 @@ public final class AtFree implements Attr {
     @Override
     public void put(final Phi phi) {
         if (this.set) {
-            throw new Attr.Exception(
+            throw new Attr.ReadOnlyException(
                 "This free attribute is already set, can't reset"
             );
         }

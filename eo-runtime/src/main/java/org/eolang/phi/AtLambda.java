@@ -65,7 +65,7 @@ public final class AtLambda implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new Attr.Exception(
+        throw new Attr.ReadOnlyException(
             "You can't overwrite static code"
         );
     }

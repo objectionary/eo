@@ -69,4 +69,42 @@ public interface Attr {
         }
     }
 
+    /**
+     * The exception raised when trying to get() an attribute,
+     * which is still abstract.
+     *
+     * @since 0.13
+     */
+    final class StillAbstractException extends RuntimeException {
+        private static final long serialVersionUID = 597748420437017615L;
+        public StillAbstractException(final String cause) {
+            super(cause);
+        }
+        public StillAbstractException(final Throwable cause) {
+            super(cause);
+        }
+        public StillAbstractException(final String cause, final Throwable root) {
+            super(cause, root);
+        }
+    }
+
+    /**
+     * The exception raised when trying to put() an attribute,
+     * which is read-only.
+     *
+     * @since 0.13
+     */
+    final class ReadOnlyException extends RuntimeException {
+        private static final long serialVersionUID = 697748420437017615L;
+        public ReadOnlyException(final String cause) {
+            super(cause);
+        }
+        public ReadOnlyException(final Throwable cause) {
+            super(cause);
+        }
+        public ReadOnlyException(final String cause, final Throwable root) {
+            super(cause, root);
+        }
+    }
+
 }

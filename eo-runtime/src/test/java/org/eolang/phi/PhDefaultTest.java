@@ -59,7 +59,7 @@ public final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Foo(new PhEta());
         phi.attr(0).put(num);
         Assertions.assertThrows(
-            Attr.Exception.class,
+            Attr.ReadOnlyException.class,
             () -> phi.attr(0).put(num)
         );
     }

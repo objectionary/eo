@@ -57,7 +57,7 @@ public final class AtOnce implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new Attr.Exception(
+        throw new Attr.ReadOnlyException(
             String.format(
                 "You can't overwrite %s",
                 this.origin
