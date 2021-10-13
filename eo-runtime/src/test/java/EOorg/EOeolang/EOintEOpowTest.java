@@ -110,7 +110,7 @@ public final class EOintEOpowTest {
             ).take(String.class),
             Matchers.equalTo("0 cannot be raised to a negative power")
         );
-        Assertions.assertThrows(Attr.Exception.class, () -> {
+        Assertions.assertThrows(Attr.StillAbstractException.class, () -> {
             new Dataized(result).take(Long.class);
         });
     }
