@@ -76,7 +76,7 @@ abstraction
   :
   (COMMENT EOL)*
   attributes
-  (suffix (SPACE SLASH NAME)?)?
+  (suffix (SPACE SLASH (NAME | QUESTION))?)?
   ;
 
 attributes
@@ -235,6 +235,7 @@ ARROW: '>';
 SELF: '$';
 PLUS: '+';
 MINUS: '-';
+QUESTION: '?';
 SPACE: ' ';
 DOT: '.';
 LSQ: '[';
