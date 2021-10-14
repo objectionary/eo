@@ -29,10 +29,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojos;
 
@@ -48,6 +50,7 @@ import org.eolang.tojos.Tojos;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
+@SuppressWarnings("PMD.ImmutableField")
 public final class PlaceMojo extends SafeMojo {
 
     /**
@@ -72,34 +75,66 @@ public final class PlaceMojo extends SafeMojo {
     )
     private File placed;
 
+    /**
+     * List of inclusion GLOB filters for finding class files.
+     * @since 0.15
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private Set<String> includeBinaries = new SetOf<>("EO**");
+
+    /**
+     * List of exclusion GLOB filters for finding class files.
+     * @since 0.15
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private Set<String> excludeBinaries = new SetOf<>();
+
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
-            final Tojos tojos = new MonoTojos(this.placed);
             int copied = 0;
             for (final String dep : deps) {
-                final Path dir = home.resolve(dep);
-                for (final Path file : new Walk(dir)) {
-                    final String path = file.toString().substring(dir.toString().length() + 1);
-                    if (path.startsWith(CopyMojo.DIR)) {
-                        continue;
-                    }
-                    final Path target = this.outputDir.toPath().resolve(path);
-                    if (Files.exists(target)) {
-                        continue;
-                    }
-                    new Save(new InputOf(file), target).save();
-                    tojos.add(target.toString());
-                    ++copied;
-                }
+                copied += this.place(home, dep);
             }
             Logger.info(
                 this, "Placed %d binary files found in %d dependencies",
                 copied, deps.size()
             );
         }
+    }
+
+    /**
+     * Place one dep.
+     * @param home Home to read from
+     * @param dep The name of dep
+     * @return How many binaries placed
+     * @throws IOException If fails
+     */
+    private int place(final Path home, final String dep) throws IOException {
+        final Path dir = home.resolve(dep);
+        final Collection<Path> binaries = new Walk(dir)
+            .includes(this.includeBinaries)
+            .excludes(this.excludeBinaries);
+        int copied = 0;
+        final Tojos tojos = new MonoTojos(this.placed);
+        for (final Path file : binaries) {
+            final String path = file.toString().substring(dir.toString().length() + 1);
+            if (path.startsWith(CopyMojo.DIR)) {
+                continue;
+            }
+            final Path target = this.outputDir.toPath().resolve(path);
+            if (Files.exists(target)) {
+                continue;
+            }
+            new Save(new InputOf(file), target).save();
+            tojos.add(target.toString());
+            ++copied;
+        }
+        return copied;
     }
 
 }

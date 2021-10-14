@@ -23,35 +23,28 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PlaceMojo}.
+ * Test case for {@link Walk}.
  *
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class PlaceMojoTest {
+public final class WalkTest {
 
     @Test
-    public void placesBinaries(@TempDir final Path temp) throws Exception {
-        final Path bins = temp.resolve(ResolveMojo.DIR);
-        final Path classes = temp.resolve("classes");
-        new Save("hello", bins.resolve("foo/hello/0.1/EObar/x.bin")).save();
-        new Moja<>(PlaceMojo.class)
-            .with("targetDir", temp.toFile())
-            .with("outputDir", classes.toFile())
-            .with("placed", temp.resolve("placed.csv").toFile())
-            .execute();
-        final Path out = classes.resolve("EObar/x.bin");
+    public void findsFiles(@TempDir final Path temp) throws Exception {
+        new Save("", temp.resolve("foo/hello/0.1/EObar/x.bin")).save();
+        new Save("", temp.resolve("EOxxx/bar")).save();
         MatcherAssert.assertThat(
-            Files.exists(out),
-            Matchers.is(true)
+            new Walk(temp).includes(new ListOf<>("EO**/*")),
+            Matchers.iterableWithSize(1)
         );
     }
 

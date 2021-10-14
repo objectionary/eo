@@ -43,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
 public final class AssembleMojoTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) throws Exception {
+    public void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             String.join(

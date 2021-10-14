@@ -26,13 +26,10 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -64,31 +61,23 @@ public final class RegisterMojo extends SafeMojo {
 
     /**
      * List of inclusion GLOB filters for finding EO files.
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> includes = new SetOf<>("**/*.eo");
+    private Set<String> includeSources = new SetOf<>("**.eo");
 
     /**
      * List of exclusion GLOB filters for finding EO files.
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> excludes = new HashSet<>(0);
+    private Set<String> excludeSources = new HashSet<>(0);
 
     @Override
     public void exec() throws IOException {
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
-            .stream()
-            .filter(
-                file -> this.includes.stream().anyMatch(
-                    glob -> RegisterMojo.matcher(glob).matches(file)
-                )
-            )
-            .filter(
-                file -> this.excludes.stream().noneMatch(
-                    glob -> RegisterMojo.matcher(glob).matches(file)
-                )
-            )
-            .collect(Collectors.toList());
+            .includes(this.includeSources)
+            .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
             final String name = unplace.make(file);
@@ -106,16 +95,6 @@ public final class RegisterMojo extends SafeMojo {
             this, "%d EO sources registered at %s",
             sources.size(), Save.rel(this.sourcesDir.toPath())
         );
-    }
-
-    /**
-     * Create glob matcher from text.
-     * @param text The pattern
-     * @return Matcher
-     */
-    private static PathMatcher matcher(final String text) {
-        return FileSystems.getDefault()
-            .getPathMatcher(String.format("glob:%s", text));
     }
 
 }

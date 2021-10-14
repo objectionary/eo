@@ -24,8 +24,11 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,13 +42,65 @@ import org.cactoos.list.ListEnvelope;
 final class Walk extends ListEnvelope<Path> {
 
     /**
+     * The home.
+     */
+    private final Path home;
+
+    /**
      * Ctor.
      *
      * @param dir The directory
      * @throws IOException If fails
      */
     Walk(final Path dir) throws IOException {
-        super(Walk.list(dir));
+        this(dir, Walk.list(dir));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param dir The directory
+     * @param list The list
+     */
+    private Walk(final Path dir, final List<Path> list) {
+        super(list);
+        this.home = dir;
+    }
+
+    /**
+     * Includes this globs.
+     * @param globs List of them
+     * @return New Walk
+     */
+    Walk includes(final Collection<String> globs) {
+        return new Walk(
+            this.home,
+            this.stream()
+                .filter(
+                    file -> globs.stream().anyMatch(
+                        glob -> this.matches(glob, file)
+                    )
+                )
+                .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Includes this globs.
+     * @param globs List of them
+     * @return New Walk
+     */
+    Walk excludes(final Collection<String> globs) {
+        return new Walk(
+            this.home,
+            this.stream()
+                .filter(
+                    file -> globs.stream().noneMatch(
+                        glob -> this.matches(glob, file)
+                    )
+                )
+                .collect(Collectors.toList())
+        );
     }
 
     /**
@@ -64,6 +119,23 @@ final class Walk extends ListEnvelope<Path> {
             );
         }
         return files;
+    }
+
+    /**
+     * Create glob matcher from text.
+     * @param text The pattern, e.g. "**&#47;*.java"
+     * @param file The file to match
+     * @return Matcher
+     */
+    private boolean matches(final String text, final Path file) {
+        final Path rel = Paths.get(
+            file.toAbsolutePath().toString().substring(
+                this.home.toAbsolutePath().toString().length() + 1
+            )
+        );
+        return FileSystems.getDefault().getPathMatcher(
+            String.format("glob:%s", text)
+        ).matches(rel);
     }
 
 }
