@@ -68,6 +68,7 @@ public class EOmemory extends PhDefault {
             )
         );
         this.add("write", new AtBound(new AtLambda(this, EOmemory.Write::new)));
+        this.add("is-empty", new AtBound(new AtLambda(this, EOmemory.IsEmpty::new)));
     }
 
     @Override
@@ -84,6 +85,15 @@ public class EOmemory extends PhDefault {
                 EOmemory.this.phi.set(new Data.ToPhi(obj));
                 return new Data.ToPhi(true);
             })));
+        }
+    }
+
+    private final class IsEmpty extends PhDefault {
+        IsEmpty(final Phi parent) {
+            super(parent);
+            this.add("φ", new AtBound(new AtLambda(
+                this, self -> new Data.ToPhi(EOmemory.this.phi.get() == null)
+            )));
         }
     }
 
