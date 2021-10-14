@@ -34,3 +34,7 @@
         "%d"
         a.x
 
+[] > checks-for-emptiness
+  memory > x
+  x.is-empty > @
+

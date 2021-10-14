@@ -1,4 +1,11 @@
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.14.0
++rt jvm org.eolang:eo-runtime:0.15.0
 
 [] > memory /?
+
+  # Write into it. The object will be dataized before
+  # writing.
+  [x] > write /bool
+
+  # The memory hasn't been written yet?
+  [] > is-empty /bool
