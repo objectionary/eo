@@ -245,9 +245,10 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
     <xsl:value-of select="$indent"/>
-    <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(new EOarray(self), "&#x394;", new Data.Value&lt;Phi[]&gt;(</xsl:text>
+    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>, "&#x394;", new Data.Value&lt;Phi[]&gt;(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_a));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -365,7 +366,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and name()!='array' and position() &gt; $skip][not(@level)]">
       <xsl:variable name="n">
         <xsl:value-of select="$name"/>
         <xsl:text>_</xsl:text>
@@ -379,7 +380,7 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and name()!='array' and position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
@@ -403,7 +404,7 @@ SOFTWARE.
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
-    <xsl:apply-templates select="value">
+    <xsl:apply-templates select="value|array">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
