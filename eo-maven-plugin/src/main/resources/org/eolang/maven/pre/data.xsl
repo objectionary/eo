@@ -28,6 +28,12 @@ SOFTWARE.
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:apply-templates select="@* except @data"/>
+      <xsl:if test="@data='array'">
+        <xsl:element name="array">
+          <xsl:apply-templates select="node()"/>
+        </xsl:element>
+      </xsl:if>
+      <xsl:if test="@data!='array'">
       <xsl:element name="value">
         <xsl:attribute name="java-type">
           <xsl:choose>
@@ -132,6 +138,7 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </xsl:element>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
