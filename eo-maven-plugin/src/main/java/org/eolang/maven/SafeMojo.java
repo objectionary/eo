@@ -91,6 +91,7 @@ abstract class SafeMojo extends AbstractMojo {
 
     @Override
     public final void execute() throws MojoFailureException {
+        System.setProperty("file.encoding", "UTF-8");
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
             this.exec();
