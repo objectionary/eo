@@ -53,10 +53,7 @@ public final class AtNamed implements Attr {
         try {
             return new AtNamed(this.name, this.phi, this.origin.copy(self));
         } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(
-                String.format("Error in %s at %s", self, this.name),
-                ex
-            );
+            throw new Attr.Exception(this.label(), ex);
         }
     }
 
@@ -65,15 +62,9 @@ public final class AtNamed implements Attr {
         try {
             return this.origin.get();
         } catch (final Attr.StillAbstractException ex) {
-            throw new Attr.StillAbstractException(
-                String.format("Error at %s in %s", this.name, this.phi),
-                ex
-            );
+            throw new Attr.StillAbstractException(this.label(), ex);
         } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(
-                String.format("Error at %s in %s", this.name, this.phi),
-                ex
-            );
+            throw new Attr.Exception(this.label(), ex);
         }
     }
 
@@ -82,16 +73,18 @@ public final class AtNamed implements Attr {
         try {
             this.origin.put(src);
         } catch (final Attr.ReadOnlyException ex) {
-            throw new Attr.ReadOnlyException(
-                String.format("Error at %s in %s", this.name, this.phi),
-                ex
-            );
+            throw new Attr.ReadOnlyException(this.label(), ex);
         } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(
-                String.format("Error at %s in %s", this.name, this.phi),
-                ex
-            );
+            throw new Attr.Exception(this.label(), ex);
         }
+    }
+
+    /**
+     * The label of the exception.
+     * @return Label
+     */
+    private String label() {
+        return String.format("Error at \"%s\" attribute", this.name);
     }
 
 }
