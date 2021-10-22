@@ -7,7 +7,7 @@ install: |
   pdd --file=/dev/null
 merge:
   script: |
-    LC_ALL=C mvn clean install -Pqulice --errors -Dstyle.color=never
+    mvn clean install -Pqulice --errors -Dstyle.color=never
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
