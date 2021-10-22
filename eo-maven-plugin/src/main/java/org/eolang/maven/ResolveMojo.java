@@ -137,7 +137,7 @@ public final class ResolveMojo extends SafeMojo {
         for (final Tojo tojo : list) {
             if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
                 && !this.discoverSelf) {
-                Logger.info(
+                Logger.debug(
                     this, "Program %s/%s skipped due to its zero version",
                     tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION)
                 );

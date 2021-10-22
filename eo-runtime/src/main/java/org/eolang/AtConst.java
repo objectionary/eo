@@ -49,24 +49,24 @@ public final class AtConst implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtConst(this.origin.copy(self));
+        throw new Attr.ReadOnlyException(
+            "An attribute of a const object can't be copied"
+        );
     }
 
     @Override
     public Phi get() {
         if (this.ref.get() == null) {
-            Phi phi = this.origin.get();
-            if (!(phi instanceof Data)) {
-                phi = new PhConst(phi);
-            }
-            this.ref.set(phi);
+            this.ref.set(this.origin.get());
         }
         return this.ref.get();
     }
 
     @Override
     public void put(final Phi src) {
-        this.origin.put(src);
+        throw new Attr.ReadOnlyException(
+            "An attribute of a const object can't be reset"
+        );
     }
 
 }

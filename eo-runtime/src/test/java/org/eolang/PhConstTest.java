@@ -26,6 +26,7 @@ package org.eolang;
 import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -63,6 +64,20 @@ public final class PhConstTest {
         );
     }
 
+    @Test
+    @Disabled
+    public void makesRhoConstToo() {
+        final Dummy dummy = new Dummy();
+        final Phi mtd = new PhMethod(new PhConst(dummy), "kid");
+        for (int idx = 0; idx < 10; ++idx) {
+            new Dataized(mtd).take(Long.class);
+        }
+        MatcherAssert.assertThat(
+            dummy.count,
+            Matchers.equalTo(1)
+        );
+    }
+
     private static class Dummy extends PhDefault {
         public int count;
         Dummy() {
@@ -70,6 +85,19 @@ public final class PhConstTest {
             this.add("φ", new AtBound(new AtLambda(this, self -> {
                 ++this.count;
                 return new Data.ToPhi(1L);
+            })));
+            this.add("kid", new AtBound(
+                new AtLambda(this, self -> new PhConstTest.Kid(this))
+            ));
+        }
+    }
+
+    private static class Kid extends PhDefault {
+        Kid(final Phi parent) {
+            super(parent);
+            this.add("φ", new AtBound(new AtLambda(this, self -> {
+                new Dataized(self.attr("ρ").get()).take(Long.class);
+                return new Data.ToPhi(0L);
             })));
         }
     }
