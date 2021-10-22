@@ -24,67 +24,49 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
- * Named attribute.
+ * Const attribute.
  *
- * @since 0.1
+ * @since 0.16
  */
-public final class AtNamed implements Attr {
+public final class AtConst implements Attr {
 
     private final Attr origin;
 
-    private final Phi phi;
+    private final AtomicReference<Phi> ref;
 
-    private final String name;
-
-    public AtNamed(final String nme, final Phi src, final Attr attr) {
-        this.name = nme;
-        this.phi = src;
+    public AtConst(final Attr attr) {
         this.origin = attr;
+        this.ref = new AtomicReference<>();
     }
 
     @Override
     public String toString() {
-        return String.format("%sN", this.origin.toString());
+        return String.format("%s!", this.origin.toString());
     }
 
     @Override
     public Attr copy(final Phi self) {
-        try {
-            return new AtNamed(this.name, this.phi, this.origin.copy(self));
-        } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(this.label(), ex);
-        }
+        return new AtConst(this.origin.copy(self));
     }
 
     @Override
     public Phi get() {
-        try {
-            return this.origin.get();
-        } catch (final Attr.StillAbstractException ex) {
-            throw new Attr.StillAbstractException(this.label(), ex);
-        } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(this.label(), ex);
+        if (this.ref.get() == null) {
+            Phi phi = this.origin.get();
+            if (!(phi instanceof Data)) {
+                phi = new PhConst(phi);
+            }
+            this.ref.set(phi);
         }
+        return this.ref.get();
     }
 
     @Override
     public void put(final Phi src) {
-        try {
-            this.origin.put(src);
-        } catch (final Attr.ReadOnlyException ex) {
-            throw new Attr.ReadOnlyException(this.label(), ex);
-        } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(this.label(), ex);
-        }
-    }
-
-    /**
-     * The label of the exception.
-     * @return Label
-     */
-    private String label() {
-        return String.format("Error at \"%s\" attribute", this.name);
+        this.origin.put(src);
     }
 
 }

@@ -31,12 +31,7 @@ jobs:
       - name: Show versions
         run: java -version; mvn -version;
       - name: Build it with Maven
-        run: mvn -B verify -Pqulice
-  xcop-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: g4s8/xcop-action@master
+        run: mvn -B clean install -Pqulice
   pdd-lint:
     runs-on: ubuntu-latest
     steps:
