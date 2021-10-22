@@ -50,4 +50,27 @@ public final class PhConstTest {
         );
     }
 
+    @Test
+    public void caclulatesPhiOnlyOnce() {
+        final Dummy dummy = new Dummy();
+        final Phi phi = new PhConst(dummy);
+        for (int idx = 0; idx < 10; ++idx) {
+            new Dataized(phi).take(Long.class);
+        }
+        MatcherAssert.assertThat(
+            dummy.count,
+            Matchers.equalTo(1)
+        );
+    }
+
+    private static class Dummy extends PhDefault {
+        public int count;
+        Dummy() {
+            super();
+            this.add("φ", new AtBound(new AtLambda(this, self -> {
+                ++this.count;
+                return new Data.ToPhi(1L);
+            })));
+        }
+    }
 }
