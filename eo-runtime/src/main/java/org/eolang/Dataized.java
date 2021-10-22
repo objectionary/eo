@@ -48,18 +48,28 @@ public final class Dataized {
      * @return The data
      */
     public Object take() {
+        Phi src = this.phi;
         try {
-            Phi src = this.phi;
             if (!(src instanceof Data)) {
                 src = src.attr("Δ").get();
             }
-            return Data.class.cast(src).take();
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Attribute failure at:\n%s", this.phi),
                 ex
             );
         }
+        if (!(src instanceof Data)) {
+            throw new Attr.Exception(
+                String.format(
+                    "The attribute Δ has %s instead of %s at:\n%s",
+                    src.getClass().getCanonicalName(),
+                    Data.class.getCanonicalName(),
+                    this.phi
+                )
+            );
+        }
+        return Data.class.cast(src).take();
     }
 
     /**
