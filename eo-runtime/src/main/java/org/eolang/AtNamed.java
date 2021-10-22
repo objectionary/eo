@@ -64,8 +64,6 @@ public final class AtNamed implements Attr {
     public Phi get() {
         try {
             return this.origin.get();
-        } catch (final Attr.StillAbstractException ex) {
-            throw new Attr.StillAbstractException(ex);
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error at %s in %s", this.name, this.phi),
@@ -78,8 +76,11 @@ public final class AtNamed implements Attr {
     public void put(final Phi src) {
         try {
             this.origin.put(src);
-        } catch (final Attr.ReadOnlyException ex) {
-            throw new Attr.ReadOnlyException(ex);
+        } catch (final Attr.StillAbstractException ex) {
+            throw new Attr.StillAbstractException(
+                String.format("Error at %s in %s", this.name, this.phi),
+                ex
+            );
         } catch (final Attr.Exception ex) {
             throw new Attr.Exception(
                 String.format("Error at %s in %s", this.name, this.phi),
