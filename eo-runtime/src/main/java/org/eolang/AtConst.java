@@ -55,7 +55,11 @@ public final class AtConst implements Attr {
     @Override
     public Phi get() {
         if (this.ref.get() == null) {
-            this.ref.set(new PhConst(this.origin.get()));
+            Phi phi = this.origin.get();
+            if (!(phi instanceof Data)) {
+                phi = new PhConst(phi);
+            }
+            this.ref.set(phi);
         }
         return this.ref.get();
     }
