@@ -3,6 +3,7 @@ assets:
   pubring.gpg: cqfn/secrets#pubring.gpg
   secring.gpg: cqfn/secrets#secring.gpg
 install: |
+  javac -version
   pdd --file=/dev/null
 merge:
   script: |
