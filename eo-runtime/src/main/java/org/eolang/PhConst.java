@@ -73,7 +73,7 @@ public final class PhConst implements Phi {
     @Override
     public Attr attr(final int pos) {
         this.numbered.computeIfAbsent(
-            pos, x -> new AtConst(this.object.attr(pos))
+            pos, x -> new AtConst(this.object.attr(pos).copy(this))
         );
         return this.numbered.get(pos);
     }
@@ -81,7 +81,7 @@ public final class PhConst implements Phi {
     @Override
     public Attr attr(final String name) {
         this.named.computeIfAbsent(
-            name, x -> new AtConst(this.object.attr(name))
+            name, x -> new AtConst(this.object.attr(name).copy(this))
         );
         return this.named.get(name);
     }

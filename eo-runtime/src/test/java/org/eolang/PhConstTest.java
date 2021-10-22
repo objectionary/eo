@@ -26,7 +26,6 @@ package org.eolang;
 import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -65,7 +64,6 @@ public final class PhConstTest {
     }
 
     @Test
-    @Disabled
     public void makesRhoConstToo() {
         final Dummy dummy = new Dummy();
         final Phi mtd = new PhMethod(new PhConst(dummy), "kid");
@@ -87,7 +85,7 @@ public final class PhConstTest {
                 return new Data.ToPhi(1L);
             })));
             this.add("kid", new AtBound(
-                new AtLambda(this, self -> new PhConstTest.Kid(this))
+                new AtLambda(this, PhConstTest.Kid::new)
             ));
         }
     }
