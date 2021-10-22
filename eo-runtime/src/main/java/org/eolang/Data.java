@@ -115,6 +115,15 @@ public interface Data<T> {
             final String txt;
             if (this.val instanceof String) {
                 txt = String.format("\"%s\"", this.val.toString());
+            } else if (this.val instanceof byte[]) {
+                final StringBuilder out = new StringBuilder(0);
+                for (final byte data : (byte[]) this.val) {
+                    if (out.length() > 0) {
+                        out.append(", ");
+                    }
+                    out.append(String.format("0x%02x", data));
+                }
+                txt = out.toString();
             } else if (this.val.getClass().isArray()) {
                 txt = Arrays.toString((Object[]) this.val);
             } else {
