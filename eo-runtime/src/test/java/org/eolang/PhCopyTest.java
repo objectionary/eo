@@ -21,62 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * A const object.
+ * Test case for {@link PhCopy}.
  *
  * @since 0.16
  */
-public final class PhConst implements Phi {
+public final class PhCopyTest {
 
-    /**
-     * The object fetched.
-     */
-    private final Phi object;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<String, Attr> named;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<Integer, Attr> numbered;
-
-    /**
-     * Ctor.
-     *
-     * @param phi The object
-     */
-    public PhConst(final Phi phi) {
-        this.object = phi;
-        this.named = new ConcurrentHashMap<>(0);
-        this.numbered = new ConcurrentHashMap<>(0);
+    @Test
+    public void makesObjectCopy() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhCopy(new Data.ToPhi(1L))
+            ).take(Long.class),
+            Matchers.equalTo(1L)
+        );
     }
 
-    @Override
-    public String toString() {
-        return this.object.toString();
-    }
-
-    @Override
-    public Phi copy() {
-        return this;
-    }
-
-    @Override
-    public Attr attr(final int pos) {
-        return this.numbered.putIfAbsent(pos, this.object.attr(pos));
-    }
-
-    @Override
-    public Attr attr(final String name) {
-        return this.named.putIfAbsent(name, this.object.attr(name));
-    }
 }
