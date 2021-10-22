@@ -37,8 +37,8 @@ public final class DataTest {
     @Test
     public void printsPhi() {
         MatcherAssert.assertThat(
-            new Data.ToPhi(new byte[] {(byte) 0x01, (byte) 0x02}).toString(),
-            Matchers.containsString("0x01")
+            new Data.ToPhi(new byte[] {(byte) 0x01, (byte) 0xf2}).toString(),
+            Matchers.containsString("01-F2")
         );
     }
 

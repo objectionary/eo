@@ -119,9 +119,9 @@ public interface Data<T> {
                 final StringBuilder out = new StringBuilder(0);
                 for (final byte data : (byte[]) this.val) {
                     if (out.length() > 0) {
-                        out.append(", ");
+                        out.append('-');
                     }
-                    out.append(String.format("0x%02x", data));
+                    out.append(String.format("%02X", data));
                 }
                 txt = out.toString();
             } else if (this.val.getClass().isArray()) {
