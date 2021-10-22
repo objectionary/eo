@@ -46,6 +46,11 @@ public final class PhConst implements Phi {
     }
 
     @Override
+    public String toString() {
+        return this.object.toString();
+    }
+
+    @Override
     public Phi copy() {
         return this;
     }
