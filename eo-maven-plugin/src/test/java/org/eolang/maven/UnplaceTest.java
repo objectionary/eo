@@ -35,10 +35,10 @@ import org.junit.jupiter.api.condition.OS;
  *
  * @since 0.11
  */
+@DisabledOnOs(OS.WINDOWS)
 public final class UnplaceTest {
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     public void makesName() {
         MatcherAssert.assertThat(
             new Unplace(Paths.get("/tmp/foo/bar")).make(
