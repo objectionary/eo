@@ -21,64 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import EOorg.EOeolang.EOtxt.EOsprintf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * A const object.
+ * Test case for {@link PhConst}.
  *
  * @since 0.16
  */
-public final class PhConst implements Phi {
+public final class PhConstTest {
 
-    /**
-     * The object fetched.
-     */
-    private final Phi object;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<String, Attr> named;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<Integer, Attr> numbered;
-
-    /**
-     * Ctor.
-     *
-     * @param phi The object
-     */
-    public PhConst(final Phi phi) {
-        this.object = phi;
-        this.named = new ConcurrentHashMap<>(0);
-        this.numbered = new ConcurrentHashMap<>(0);
+    @Test
+    public void makesObjectConstant() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhConst(
+                    new PhWith(
+                        new EOsprintf(new PhEta()),
+                        0, new Data.ToPhi("Hello, world!")
+                    )
+                )
+            ).take(String.class),
+            Matchers.startsWith("Hello")
+        );
     }
 
-    @Override
-    public String toString() {
-        return this.object.toString();
-    }
-
-    @Override
-    public Phi copy() {
-        return this;
-    }
-
-    @Override
-    public Attr attr(final int pos) {
-        this.numbered.putIfAbsent(pos, this.object.attr(pos));
-        return this.numbered.get(pos);
-    }
-
-    @Override
-    public Attr attr(final String name) {
-        this.named.putIfAbsent(name, this.object.attr(name));
-        return this.named.get(name);
-    }
 }
