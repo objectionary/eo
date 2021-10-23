@@ -53,15 +53,5 @@ public final class PlaceTest {
             Matchers.equalTo("/tmp/hey.xml")
         );
     }
-
-    @Test
-    public void makesUglyPath() {
-        MatcherAssert.assertThat(
-            new Place(
-                "EOeolang.EOarray$EOmap$EO1$EOα1"
-            ).make(Paths.get("/tmp/z"), "eo").toString(),
-            Matchers.startsWith("/tmp/z/EOeolang/EOarray")
-        );
-    }
-
+    
 }
