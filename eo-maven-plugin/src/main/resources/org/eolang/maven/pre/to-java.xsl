@@ -56,7 +56,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(replace($n, '-', '_'), '@', '&#x3C6;'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO', replace(replace(replace(replace($n, '-', '_'), '@', '&#x3C6;'), '&#x3B1;', '_'), '\$', '\$EO'))"/>
   </xsl:function>
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
