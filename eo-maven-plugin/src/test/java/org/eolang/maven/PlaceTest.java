@@ -53,5 +53,4 @@ public final class PlaceTest {
             Matchers.equalTo("/tmp/hey.xml")
         );
     }
-    
 }
