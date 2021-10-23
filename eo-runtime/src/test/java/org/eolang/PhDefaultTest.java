@@ -66,10 +66,10 @@ public final class PhDefaultTest {
 
     @Test
     public void takesRhoFromAttribute() {
-        final Phi phi = new PhDefaultTest.Foo(new PhEta());
+        final Phi phi = new PhDefaultTest.Kid(new Data.ToPhi(0L));
         MatcherAssert.assertThat(
-            phi.attr("φ").get().attr("ρ").get(),
-            Matchers.equalTo(phi)
+            new Dataized(phi.attr("φ").get().attr("ρ").get()).take(Long.class),
+            Matchers.equalTo(1L)
         );
     }
 
@@ -80,6 +80,15 @@ public final class PhDefaultTest {
              this.add("φ", new AtBound(new AtLambda(
                  this, self -> new Data.ToPhi("Hello, world!")
              )));
+        }
+    }
+
+    public static class Kid extends PhDefault {
+        public Kid(final Phi parent) {
+            super(parent);
+            this.add("φ", new AtBound(new AtLambda(
+                this, self -> new EOsprintf(new Data.ToPhi(1L))
+            )));
         }
     }
 
