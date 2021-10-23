@@ -62,7 +62,7 @@ public final class PhConst implements Phi {
 
     @Override
     public String toString() {
-        return this.object.toString();
+        return String.format("!%s", this.object.toString());
     }
 
     @Override

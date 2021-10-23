@@ -21,22 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
 /**
- * Envelope.
+ * Test case for {@link AtLambda}.
  *
- * @since 0.1
+ * @since 0.16
  */
-public interface Env {
+public final class AtLambdaTest {
 
-    /**
-     * Get the phi.
-     * @param self Self
-     * @return The Phi
-     * @throws Exception If anything goes wrong
-     */
-    Phi get(Phi self) throws Exception;
+    @Test
+    public void passesSelfCorrectly() {
+        final Dummy dummy = new Dummy();
+        final Phi phi = new PhConst(dummy);
+        phi.attr("φ").get();
+        MatcherAssert.assertThat(
+            dummy.self,
+            Matchers.equalTo(phi)
+        );
+    }
 
+    private static class Dummy extends PhDefault {
+        public Phi self;
+        Dummy() {
+            super();
+            this.add("φ", new AtBound(new AtLambda(this, slf -> {
+                this.self = slf;
+                return new Data.ToPhi(1L);
+            })));
+        }
+    }
 }

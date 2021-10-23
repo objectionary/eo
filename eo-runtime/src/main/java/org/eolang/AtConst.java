@@ -38,8 +38,12 @@ public final class AtConst implements Attr {
     private final AtomicReference<Phi> ref;
 
     public AtConst(final Attr attr) {
+        this(attr, null);
+    }
+
+    public AtConst(final Attr attr, final Phi phi) {
         this.origin = attr;
-        this.ref = new AtomicReference<>();
+        this.ref = new AtomicReference<>(phi);
     }
 
     @Override
@@ -49,9 +53,7 @@ public final class AtConst implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        throw new Attr.ReadOnlyException(
-            "An attribute of a const object can't be copied"
-        );
+        return new AtConst(this.origin.copy(self), this.ref.get());
     }
 
     @Override
