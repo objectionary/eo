@@ -50,7 +50,7 @@ public class EOint$EOdiv extends PhDefault {
                 final Phi msg = new Data.ToPhi("Division by zero is undefined");
                 return new PhWith(new EOerror(), "msg", msg);
             }
-            return new Data.ToPhi(Math.floorDiv(ρ, x));
+            return new Data.ToPhi(ρ / x);
         })));
     }
 
