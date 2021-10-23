@@ -28,110 +28,117 @@ SOFTWARE.
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:apply-templates select="@* except @data"/>
-      <xsl:element name="value">
-        <xsl:attribute name="java-type">
+      <xsl:if test="@data='array'">
+        <xsl:element name="array">
+          <xsl:apply-templates select="node()"/>
+        </xsl:element>
+      </xsl:if>
+      <xsl:if test="@data!='array'">
+        <xsl:element name="value">
+          <xsl:attribute name="java-type">
+            <xsl:choose>
+              <xsl:when test="@data='bytes'">
+                <xsl:text>byte[]</xsl:text>
+              </xsl:when>
+              <xsl:when test="@data='string'">
+                <xsl:text>String</xsl:text>
+              </xsl:when>
+              <xsl:when test="@data='regex'">
+                <xsl:text>java.util.regex.Pattern</xsl:text>
+              </xsl:when>
+              <xsl:when test="@data='char'">
+                <xsl:text>Character</xsl:text>
+              </xsl:when>
+              <xsl:when test="@data='float'">
+                <xsl:text>Double</xsl:text>
+              </xsl:when>
+              <xsl:when test="@data='int'">
+                <xsl:text>Long</xsl:text>
+              </xsl:when>
+              <xsl:when test="@data='bool'">
+                <xsl:text>Boolean</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:message terminate="yes">
+                  <xsl:text>Unknown data type "</xsl:text>
+                  <xsl:value-of select="@data"/>
+                  <xsl:text>"</xsl:text>
+                </xsl:message>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:attribute>
           <xsl:choose>
             <xsl:when test="@data='bytes'">
-              <xsl:text>byte[]</xsl:text>
+              <xsl:text>new byte[] {</xsl:text>
+              <xsl:for-each select="tokenize(text(), ' ')">
+                <xsl:if test="position() &gt; 1">
+                  <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:text>(byte) 0x</xsl:text>
+                <xsl:value-of select="."/>
+              </xsl:for-each>
+              <xsl:text>}</xsl:text>
             </xsl:when>
             <xsl:when test="@data='string'">
-              <xsl:text>String</xsl:text>
+              <xsl:text>"</xsl:text>
+              <xsl:value-of select="text()"/>
+              <xsl:text>"</xsl:text>
             </xsl:when>
             <xsl:when test="@data='regex'">
-              <xsl:text>java.util.regex.Pattern</xsl:text>
+              <xsl:text>java.util.regex.Pattern.compile("</xsl:text>
+              <xsl:value-of select="text()"/>
+              <xsl:text>"</xsl:text>
+              <xsl:for-each select="string-to-codepoints(@flags)">
+                <xsl:if test="position() = 1">
+                  <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:if test="position() &gt; 1">
+                  <xsl:text> | </xsl:text>
+                </xsl:if>
+                <xsl:variable name="flag" select="codepoints-to-string(.)"/>
+                <xsl:text>java.util.regex.Pattern.</xsl:text>
+                <xsl:choose>
+                  <xsl:when test="$flag='i'">
+                    <xsl:text>CASE_INSENSITIVE</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$flag='m'">
+                    <xsl:text>MULTILINE</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$flag='a'">
+                    <xsl:text>DOTALL</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:message terminate="yes">
+                      <xsl:text>Unknown flag "</xsl:text>
+                      <xsl:value-of select="$flag"/>
+                      <xsl:text>" in regex "</xsl:text>
+                      <xsl:value-of select="$o/text()"/>
+                      <xsl:text>"</xsl:text>
+                    </xsl:message>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:for-each>
+              <xsl:text>)</xsl:text>
             </xsl:when>
             <xsl:when test="@data='char'">
-              <xsl:text>Character</xsl:text>
-            </xsl:when>
-            <xsl:when test="@data='float'">
-              <xsl:text>Double</xsl:text>
+              <xsl:text>'</xsl:text>
+              <xsl:value-of select="text()"/>
+              <xsl:text>'</xsl:text>
             </xsl:when>
             <xsl:when test="@data='int'">
-              <xsl:text>Long</xsl:text>
+              <xsl:value-of select="text()"/>
+              <xsl:text>L</xsl:text>
             </xsl:when>
-            <xsl:when test="@data='bool'">
-              <xsl:text>Boolean</xsl:text>
+            <xsl:when test="@data='float'">
+              <xsl:value-of select="text()"/>
+              <xsl:text>d</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:message terminate="yes">
-                <xsl:text>Unknown data type "</xsl:text>
-                <xsl:value-of select="@data"/>
-                <xsl:text>"</xsl:text>
-              </xsl:message>
+              <xsl:value-of select="text()"/>
             </xsl:otherwise>
           </xsl:choose>
-        </xsl:attribute>
-        <xsl:choose>
-          <xsl:when test="@data='bytes'">
-            <xsl:text>new byte[] {</xsl:text>
-            <xsl:for-each select="tokenize(text(), ' ')">
-              <xsl:if test="position() &gt; 1">
-                <xsl:text>, </xsl:text>
-              </xsl:if>
-              <xsl:text>(byte) 0x</xsl:text>
-              <xsl:value-of select="."/>
-            </xsl:for-each>
-            <xsl:text>}</xsl:text>
-          </xsl:when>
-          <xsl:when test="@data='string'">
-            <xsl:text>"</xsl:text>
-            <xsl:value-of select="text()"/>
-            <xsl:text>"</xsl:text>
-          </xsl:when>
-          <xsl:when test="@data='regex'">
-            <xsl:text>java.util.regex.Pattern.compile("</xsl:text>
-            <xsl:value-of select="text()"/>
-            <xsl:text>"</xsl:text>
-            <xsl:for-each select="string-to-codepoints(@flags)">
-              <xsl:if test="position() = 1">
-                <xsl:text>, </xsl:text>
-              </xsl:if>
-              <xsl:if test="position() &gt; 1">
-                <xsl:text> | </xsl:text>
-              </xsl:if>
-              <xsl:variable name="flag" select="codepoints-to-string(.)"/>
-              <xsl:text>java.util.regex.Pattern.</xsl:text>
-              <xsl:choose>
-                <xsl:when test="$flag='i'">
-                  <xsl:text>CASE_INSENSITIVE</xsl:text>
-                </xsl:when>
-                <xsl:when test="$flag='m'">
-                  <xsl:text>MULTILINE</xsl:text>
-                </xsl:when>
-                <xsl:when test="$flag='a'">
-                  <xsl:text>DOTALL</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:message terminate="yes">
-                    <xsl:text>Unknown flag "</xsl:text>
-                    <xsl:value-of select="$flag"/>
-                    <xsl:text>" in regex "</xsl:text>
-                    <xsl:value-of select="$o/text()"/>
-                    <xsl:text>"</xsl:text>
-                  </xsl:message>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:for-each>
-            <xsl:text>)</xsl:text>
-          </xsl:when>
-          <xsl:when test="@data='char'">
-            <xsl:text>'</xsl:text>
-            <xsl:value-of select="text()"/>
-            <xsl:text>'</xsl:text>
-          </xsl:when>
-          <xsl:when test="@data='int'">
-            <xsl:value-of select="text()"/>
-            <xsl:text>L</xsl:text>
-          </xsl:when>
-          <xsl:when test="@data='float'">
-            <xsl:value-of select="text()"/>
-            <xsl:text>d</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="text()"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:element>
+        </xsl:element>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
