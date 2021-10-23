@@ -148,6 +148,7 @@ SOFTWARE.
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:choose>
       <xsl:when test="//meta[head='junit'] and not(@parent)">
@@ -305,15 +306,6 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:if test="*">
-      <xsl:value-of select="$indent"/>
-      <xsl:value-of select="$name"/>
-      <xsl:text> = </xsl:text>
-      <xsl:text>new PhCopy(</xsl:text>
-      <xsl:value-of select="$name"/>
-      <xsl:text>);</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -348,14 +340,6 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:if test="count(*) &gt; 1">
-      <xsl:value-of select="$indent"/>
-      <xsl:value-of select="$name"/>
-      <xsl:text> = new PhCopy(</xsl:text>
-      <xsl:value-of select="$name"/>
-      <xsl:text>);</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -367,6 +351,15 @@ SOFTWARE.
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:for-each select="./*[name()!='value' and name()!='array' and position() &gt; $skip][not(@level)]">
+      <xsl:if test="position() = 1">
+        <xsl:value-of select="$indent"/>
+        <xsl:value-of select="$name"/>
+        <xsl:text> = </xsl:text>
+        <xsl:text>new PhCopy(</xsl:text>
+        <xsl:value-of select="$name"/>
+        <xsl:text>);</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
+      </xsl:if>
       <xsl:variable name="n">
         <xsl:value-of select="$name"/>
         <xsl:text>_</xsl:text>
@@ -454,7 +447,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
-    <xsl:value-of select="eo:tabs(2 + $indent)"/>
+    <xsl:value-of select="eo:tabs($indent)"/>
     <xsl:text>Assertions.assertTrue(</xsl:text>
     <xsl:value-of select="eo:eol(3 + $indent)"/>
     <xsl:text>new Dataized(new </xsl:text>
@@ -486,6 +479,8 @@ SOFTWARE.
     <xsl:text>. Don't edit it,</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * your changes will be discarded on the next build.</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text> *</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> * The EO sources were compiled to XMIR on</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

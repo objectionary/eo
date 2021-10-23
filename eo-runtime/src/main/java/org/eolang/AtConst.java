@@ -66,9 +66,7 @@ public final class AtConst implements Attr {
 
     @Override
     public void put(final Phi src) {
-        throw new Attr.ReadOnlyException(
-            "An attribute of a const object can't be reset"
-        );
+        this.origin.put(src);
     }
 
 }

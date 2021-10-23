@@ -29,6 +29,7 @@ package org.eolang;
  * @since 0.16
  */
 final class AtOwned implements Attr {
+
     /**
      * The original attribute.
      */
@@ -50,8 +51,13 @@ final class AtOwned implements Attr {
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Attr copy(final Phi self) {
-        return new AtOwned(this.origin.copy(self), this.parent);
+        return new AtOwned(this.origin.copy(self), self);
     }
 
     @Override

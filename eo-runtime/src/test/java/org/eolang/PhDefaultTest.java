@@ -64,12 +64,21 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void takesRhoFromAttribute() {
+        final Phi phi = new PhDefaultTest.Foo(new PhEta());
+        MatcherAssert.assertThat(
+            phi.attr("φ").get().attr("ρ").get(),
+            Matchers.equalTo(phi)
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi parent) {
              super(parent);
              this.add("x", new AtFree());
              this.add("φ", new AtBound(new AtLambda(
-                 self -> new Data.ToPhi("Hello, world!")
+                 this, self -> new Data.ToPhi("Hello, world!")
              )));
         }
     }

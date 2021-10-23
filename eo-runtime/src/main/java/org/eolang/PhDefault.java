@@ -132,27 +132,27 @@ public class PhDefault implements Phi, Cloneable {
         if (attr == null) {
             final Attr phi = this.attrs.get("φ");
             if (phi == null) {
-                attr = new AtNamed(
+                attr = new AtAbsent(
+                    name,
                     String.format(
-                        "%s#%s",
-                        this.getClass().getCanonicalName(),
-                        name
-                    ),
-                    this,
-                    new AtAbsent(
-                        name,
-                        String.format(
-                            " among other %d attrs (%s)",
-                            this.attrs.size(),
-                            String.join(", ", this.attrs.keySet())
-                        )
+                        " among other %d attrs (%s)",
+                        this.attrs.size(),
+                        String.join(", ", this.attrs.keySet())
                     )
                 );
             } else {
                 attr = new AtOwned(new AtDecorated(phi, name, this), this);
             }
         }
-        return attr;
+        return new AtNamed(
+            String.format(
+                "%s#%s",
+                this.getClass().getCanonicalName(),
+                name
+            ),
+            this,
+            attr
+        );
     }
 
     /**

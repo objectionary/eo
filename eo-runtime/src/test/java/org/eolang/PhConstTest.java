@@ -55,7 +55,7 @@ public final class PhConstTest {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
         for (int idx = 0; idx < 10; ++idx) {
-            new Dataized(phi).take(Long.class);
+            assert new Dataized(phi).take(Long.class) == 1L;
         }
         MatcherAssert.assertThat(
             dummy.count,
@@ -68,7 +68,7 @@ public final class PhConstTest {
         final Dummy dummy = new Dummy();
         final Phi mtd = new PhMethod(new PhConst(dummy), "kid");
         for (int idx = 0; idx < 10; ++idx) {
-            new Dataized(mtd).take(Long.class);
+            assert new Dataized(mtd).take(Long.class) == 1L;
         }
         MatcherAssert.assertThat(
             dummy.count,
@@ -93,10 +93,9 @@ public final class PhConstTest {
     private static class Kid extends PhDefault {
         Kid(final Phi parent) {
             super(parent);
-            this.add("φ", new AtBound(new AtLambda(this, self -> {
-                new Dataized(self.attr("ρ").get()).take(Long.class);
-                return new Data.ToPhi(0L);
-            })));
+            this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+                new Dataized(self.attr("ρ").get()).take(Long.class)
+            ))));
         }
     }
 }

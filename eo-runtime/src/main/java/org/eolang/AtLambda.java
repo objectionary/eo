@@ -35,10 +35,6 @@ public final class AtLambda implements Attr {
 
     private final Data<Phi> object;
 
-    public AtLambda(final Env env) {
-        this(new PhEta(), env);
-    }
-
     public AtLambda(final Phi self, final Env env) {
         this(env, AtLambda.toData(env, self));
     }
