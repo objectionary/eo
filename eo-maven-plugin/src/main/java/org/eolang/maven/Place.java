@@ -58,11 +58,7 @@ final class Place {
         if (!ext.isEmpty()) {
             out.append('.').append(ext);
         }
-        String path = out.toString();
-        if (!"UTF-8".equals(System.getProperty("file.encoding"))) {
-            path = path.replaceAll("[^a-zA-Z0-9./\\\\]", "_");
-        }
-        return dir.resolve(path);
+        return dir.resolve(out.toString());
     }
 
 }
