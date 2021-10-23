@@ -155,7 +155,7 @@ public class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                attr = new AtChild(phi, name, this);
+                attr = new AtDecorated(phi, name, this);
             }
         }
         return attr;

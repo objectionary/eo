@@ -30,21 +30,15 @@ package org.eolang;
  * @since 0.16
  */
 final class AtDecorated implements Attr {
+    /**
+     * The \phi attribute.
+     */
+    private final Attr base;
 
     /**
-     * The \phi attribute this child came from.
+     * The name.
      */
-    private final Attr phi;
-
-    /**
-     * The self.
-     */
-    private final Phi self;
-
-    /**
-     * The name of the attribute to take from \phi.
-     */
-    private final String attr;
+    private final String name;
 
     /**
      * The parent to put into \rho attribute of the original object.
@@ -53,35 +47,31 @@ final class AtDecorated implements Attr {
 
     /**
      * Ctor.
-     *
-     * @param aphi The \phi attribute this child came from
-     * @param name The attr
-     * @param slf Self
+     * @param attr The origin
      * @param prnt The value of \rho to use
      */
-    AtDecorated(final Attr aphi, final String name, final Phi slf, final Phi prnt) {
-        this.phi = aphi;
-        this.attr = name;
-        this.self = slf;
+    AtDecorated(final Attr phi, final String attr, final Phi prnt) {
+        this.base = phi;
+        this.name = attr;
         this.parent = prnt;
     }
 
     @Override
-    public Attr copy(final Phi slf) {
-        return new AtDecorated(this.phi.copy(slf), this.attr, slf, this.parent);
+    public Attr copy(final Phi self) {
+        return new AtDecorated(this.base.copy(self), this.name, this.parent);
     }
 
     @Override
     public Phi get() {
-        final Phi inner = this.phi.get().attr(this.attr).copy(this.self).get();
-        if (!(inner instanceof Data)) {
-            inner.attr("ρ").put(this.parent);
+        final Phi phi = this.base.get().attr(this.name).get();
+        if (!(phi instanceof Data)) {
+            phi.attr("ρ").put(this.parent);
         }
-        return inner;
+        return phi;
     }
 
     @Override
-    public void put(final Phi obj) {
-        this.phi.get().attr(this.attr).copy(this.self).put(obj);
+    public void put(final Phi phi) {
+        this.base.get().attr(this.name).put(phi);
     }
 }
