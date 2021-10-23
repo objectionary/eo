@@ -154,6 +154,10 @@
   256.div 16 > quotient
   quotient.eq 16 > @
 
+# Checks div with remainder
+[] > div-with-remainder
+  (13.div -5).eq -2 > @
+
 # Checks that int.as-float works properly
 [] > as-float-works
   eq. > @
