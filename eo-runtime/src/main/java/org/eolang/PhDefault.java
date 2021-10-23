@@ -47,11 +47,6 @@ public class PhDefault implements Phi, Cloneable {
     private final List<String> order;
 
     /**
-     * The parent.
-     */
-    private final Phi parent;
-
-    /**
      * Ctor.
      */
     public PhDefault() {
@@ -66,7 +61,6 @@ public class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.parent = prnt;
         this.add("ρ", new AtSimple(prnt));
     }
 
@@ -155,7 +149,7 @@ public class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                attr = new AtDecorated(phi, name, this);
+                attr = new AtOwned(new AtDecorated(phi, name, this), this);
             }
         }
         return attr;

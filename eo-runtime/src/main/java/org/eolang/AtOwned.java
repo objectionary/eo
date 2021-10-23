@@ -24,51 +24,47 @@
 package org.eolang;
 
 /**
- * When a child object is taken from the \phi object, this class
- * replaces the \rho attribute of it on the fly.
+ * Attribute with \rho set on fly.
  *
  * @since 0.16
  */
-final class AtDecorated implements Attr {
+final class AtOwned implements Attr {
     /**
-     * The \phi attribute.
+     * The original attribute.
      */
-    private final Attr base;
+    private final Attr origin;
 
     /**
-     * The name.
+     * The parent to put into \rho attribute of the original object.
      */
-    private final String name;
-
-    /**
-     * The self.
-     */
-    private final Phi self;
+    private final Phi parent;
 
     /**
      * Ctor.
-     * @param phi The \phi owner of this one
      * @param attr The origin
-     * @param slf The self
+     * @param prnt The value of \rho to use
      */
-    AtDecorated(final Attr phi, final String attr, final Phi slf) {
-        this.base = phi;
-        this.name = attr;
-        this.self = slf;
+    AtOwned(final Attr attr, final Phi prnt) {
+        this.origin = attr;
+        this.parent = prnt;
     }
 
     @Override
-    public Attr copy(final Phi slf) {
-        return new AtDecorated(this.base.copy(slf), this.name, slf);
+    public Attr copy(final Phi self) {
+        return new AtOwned(this.origin.copy(self), this.parent);
     }
 
     @Override
     public Phi get() {
-        return this.base.get().attr(this.name).get();
+        final Phi phi = this.origin.get();
+        if (!(phi instanceof Data)) {
+            phi.attr("ρ").put(this.parent);
+        }
+        return phi;
     }
 
     @Override
     public void put(final Phi phi) {
-        this.base.get().attr(this.name).put(phi);
+        this.origin.put(phi);
     }
 }
