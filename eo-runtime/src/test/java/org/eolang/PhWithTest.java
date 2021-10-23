@@ -21,35 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
+package org.eolang;
 
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhMethod;
-import org.eolang.PhWith;
-import org.eolang.Phi;
+import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link PhWith}.
  *
- * @since 0.1
+ * @since 0.16
  */
-public final class EOintEOsubTest {
+public final class PhWithTest {
 
     @Test
-    public void subtractsNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi sub = new PhWith(
-            new PhMethod(left, "sub"),
-            0, right
-        );
+    public void takesMethod() {
         MatcherAssert.assertThat(
-            new Dataized(sub).take(Long.class),
-            Matchers.equalTo(29L)
+            new Dataized(
+                new PhWith(
+                    new EOsprintf(new PhEta()),
+                    0, new Data.ToPhi("Hello, world!")
+                )
+            ).take(String.class),
+            Matchers.startsWith("Hello, ")
         );
     }
+
 }

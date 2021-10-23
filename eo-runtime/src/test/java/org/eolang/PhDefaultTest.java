@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public final class PhDefaultTest {
 
     @Test
-    public void makesCopy() throws Exception {
+    public void makesCopy() {
         final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(new PhEta());
         final Phi phi = new PhDefaultTest.Foo(parent);
@@ -54,7 +54,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void setsFreeAttributeOnlyOnce() throws Exception {
+    public void setsFreeAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo(new PhEta());
         phi.attr(0).put(num);

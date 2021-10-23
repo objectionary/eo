@@ -45,6 +45,17 @@ public final class AtLambdaTest {
         );
     }
 
+    @Test
+    public void passesSelfCorrectlyThroughChild() {
+        final Dummy dummy = new Dummy();
+        final Phi phi = new PhConst(dummy);
+        phi.attr("Δ").get();
+        MatcherAssert.assertThat(
+            dummy.self,
+            Matchers.equalTo(phi)
+        );
+    }
+
     private static class Dummy extends PhDefault {
         public Phi self;
         Dummy() {

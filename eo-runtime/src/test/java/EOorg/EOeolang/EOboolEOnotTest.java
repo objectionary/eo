@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOboolEOnotTest {
 
     @Test
-    public void inversesValue() throws Exception {
+    public void inversesValue() {
         final Phi left = new Data.ToPhi(true);
         final Phi not = left.attr("not").get();
         not.attr(0).put(left);

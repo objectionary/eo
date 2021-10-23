@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOboolEOandTest {
 
     @Test
-    public void logicallyJoinsTwoValues() throws Exception {
+    public void logicallyJoinsTwoValues() {
         final Phi left = new Data.ToPhi(true);
         final Phi right = new Data.ToPhi(false);
         final Phi and = left.attr("and").get();

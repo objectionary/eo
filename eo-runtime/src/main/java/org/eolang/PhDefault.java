@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
 import java.util.ArrayList;
@@ -48,6 +47,11 @@ public class PhDefault implements Phi, Cloneable {
     private final List<String> order;
 
     /**
+     * The parent.
+     */
+    private final Phi parent;
+
+    /**
      * Ctor.
      */
     public PhDefault() {
@@ -62,6 +66,7 @@ public class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi prnt) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
+        this.parent = prnt;
         this.add("ρ", new AtSimple(prnt));
     }
 
@@ -112,7 +117,10 @@ public class PhDefault implements Phi, Cloneable {
     public final Attr attr(final int pos) {
         if (this.order.isEmpty()) {
             throw new Attr.Exception(
-                "There are no attributes here"
+                String.format(
+                    "There are no attributes here, can't get the %d-th one",
+                    pos
+                )
             );
         }
         final int idx;
@@ -128,8 +136,8 @@ public class PhDefault implements Phi, Cloneable {
     public final Attr attr(final String name) {
         Attr attr = this.attrs.get(name);
         if (attr == null) {
-            final Attr sub = this.attrs.get("φ");
-            if (sub == null) {
+            final Attr phi = this.attrs.get("φ");
+            if (phi == null) {
                 attr = new AtNamed(
                     String.format(
                         "%s#%s",
@@ -147,10 +155,11 @@ public class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                attr = sub.get().attr(name);
+                attr = phi.get().attr(name);
                 if (!(attr instanceof AtAbsent)) {
                     attr = new PhDefault.AtChild(attr, this);
                 }
+//                attr = new AtDecorated(phi, name, this, this.parent);
             }
         }
         return attr;

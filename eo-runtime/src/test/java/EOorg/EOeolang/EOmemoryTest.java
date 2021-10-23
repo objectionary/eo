@@ -23,7 +23,6 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOmemory;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;

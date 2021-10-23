@@ -23,7 +23,6 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOrandom;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -38,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public final class EOrandomTest {
 
     @Test
-    public void readsTwice() throws Exception {
+    public void readsTwice() {
         final Phi rnd = new EOrandom();
         final Double first = new Dataized(rnd).take(Double.class);
         MatcherAssert.assertThat(
