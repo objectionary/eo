@@ -10,3 +10,6 @@
 
   # Take a part of the line
   [start len] > part /bytes
+
+  # Turn this chain of bytes into a string in UTF-8
+  [] > as-string /string
