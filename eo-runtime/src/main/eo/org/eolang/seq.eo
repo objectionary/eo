@@ -1,5 +1,6 @@
 +package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-# Dataizes all provided steps and returns TRUE.
-[steps...] > seq /bool
+# Dataizes all provided steps and returns the
+# last one.
+[steps...] > seq /?
