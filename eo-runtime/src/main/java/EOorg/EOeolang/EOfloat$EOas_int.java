@@ -41,7 +41,7 @@ public class EOfloat$EOas_int extends PhDefault {
     public EOfloat$EOas_int(final Phi parent) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-                new Dataized(self.attr("ρ").get()).take(Double.class).intValue()
+                new Dataized(self.attr("ρ").get()).take(Double.class).longValue()
         ))));
     }
 
