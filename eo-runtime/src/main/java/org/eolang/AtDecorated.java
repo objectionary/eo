@@ -58,6 +58,11 @@ final class AtDecorated implements Attr {
     }
 
     @Override
+    public String toString() {
+        return String.format("%sD", this.name);
+    }
+
+    @Override
     public Attr copy(final Phi slf) {
         return new AtDecorated(this.base.copy(slf), this.name, slf);
     }
@@ -69,6 +74,11 @@ final class AtDecorated implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        this.base.get().attr(this.name).put(phi);
+        throw new Attr.ReadOnlyException(
+            String.format(
+                "It's not allowed to set attribute '%s' of a decoratee",
+                this.name
+            )
+        );
     }
 }
