@@ -163,3 +163,12 @@
   eq. > @
     -17.0
     17.neg.as-float
+
+[] > abs-positive
+  3.abs.eq 3 > @
+
+[] > abs-negative
+  -3.abs.eq 3 > @
+
+[] > abs-zero
+  0.abs.eq 0 > @
