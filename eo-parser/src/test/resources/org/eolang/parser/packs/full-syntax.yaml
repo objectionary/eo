@@ -24,7 +24,7 @@ eo: |
   +foo
   +bar Some text
 
-  500.43 > one
+  500.43.@ > one
 
   # This is just a simple string
   "Hello, друг!" > hello!
@@ -35,14 +35,14 @@ eo: |
   [x] > first
     x > @
     second > hello
-      $.add 5 > i
+      $.add.@ 5 > i
       third:foo > x...!
         f 12 false
           (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey TRUE > a!
             # This object is also very good
             []
               ^.@.hey > you...
-            kid
+            kid.^.^
             '家'
       f:u
         z
