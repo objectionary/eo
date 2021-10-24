@@ -38,6 +38,7 @@
           stdout
             sprintf "%dx%d = %d\n" (^.x) (^.x) (^.x.pow 2)
           ^.x.write (^.x.add 1)
+    TRUE
 
 # tests that bool.and stops calculations if its i'th
 # object is false (including the base object)

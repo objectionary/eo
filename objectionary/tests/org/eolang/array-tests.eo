@@ -65,3 +65,20 @@
   eq. > @
     (sprintf "%d %d %d" 1 4 9)
     (sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2))
+
+
+[] > array-as-a-bound-attribute-size-0
+  * > anArray
+  0.eq (anArray.length) > @
+
+[] > array-as-a-bound-attribute-size-1
+  * > anArray
+    100
+  ((anArray.get 0).eq 100) > @
+
+[] > array-as-a-bound-attribute-size-2
+  * > anArray
+    1
+    2
+  ((anArray.get 0).eq 1).and ((anArray.get 1).eq 2) > @
+
