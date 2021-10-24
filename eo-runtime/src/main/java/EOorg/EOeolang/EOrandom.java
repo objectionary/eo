@@ -29,7 +29,6 @@ import org.eolang.AtBound;
 import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.Phi;
 
 /**
@@ -38,10 +37,6 @@ import org.eolang.Phi;
  * @since 0.1
  */
 public class EOrandom extends PhDefault {
-
-    public EOrandom() {
-        this(new PhEta());
-    }
 
     public EOrandom(final Phi parent) {
         super(parent);

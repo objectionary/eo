@@ -30,7 +30,6 @@ import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.Phi;
 
 /**
@@ -39,10 +38,6 @@ import org.eolang.Phi;
  * @since 1.0
  */
 public class EOseq extends PhDefault {
-
-    public EOseq() {
-        this(new PhEta());
-    }
 
     public EOseq(final Phi parent) {
         super(parent);
