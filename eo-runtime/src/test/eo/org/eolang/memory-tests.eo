@@ -38,3 +38,12 @@
   memory > x
   x.is-empty > @
 
+[] > writes-into-two-memory-objects
+  memory > a
+  memory > b
+  and. > @
+    seq
+      a.write 10
+      b.write 20
+    a.eq 10
+
