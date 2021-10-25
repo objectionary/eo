@@ -52,10 +52,13 @@ public final class PhConstTest {
 
     @Test
     public void caclulatesPhiOnlyOnce() {
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = new Dummy("any");
         final Phi phi = new PhConst(dummy);
         for (int idx = 0; idx < 10; ++idx) {
-            assert new Dataized(phi).take(Long.class) == 1L;
+            MatcherAssert.assertThat(
+                new Dataized(phi).take(Long.class),
+                Matchers.is(1L)
+            );
         }
         MatcherAssert.assertThat(
             dummy.count,
@@ -65,10 +68,14 @@ public final class PhConstTest {
 
     @Test
     public void makesRhoConstToo() {
-        final Dummy dummy = new Dummy();
-        final Phi mtd = new PhMethod(new PhConst(dummy), "kid");
+        final String name = "kid";
+        final Dummy dummy = new Dummy(name);
+        final Phi mtd = new PhMethod(new PhConst(dummy), name);
         for (int idx = 0; idx < 10; ++idx) {
-            assert new Dataized(mtd).take(Long.class) == 1L;
+            MatcherAssert.assertThat(
+                new Dataized(mtd).take(Long.class),
+                Matchers.is(1L)
+            );
         }
         MatcherAssert.assertThat(
             dummy.count,
@@ -78,13 +85,13 @@ public final class PhConstTest {
 
     private static class Dummy extends PhDefault {
         public int count;
-        Dummy() {
+        Dummy(final String name) {
             super();
             this.add("φ", new AtBound(new AtLambda(this, self -> {
                 ++this.count;
                 return new Data.ToPhi(1L);
             })));
-            this.add("kid", new AtBound(
+            this.add(name, new AtBound(
                 new AtLambda(this, PhConstTest.Kid::new)
             ));
         }
