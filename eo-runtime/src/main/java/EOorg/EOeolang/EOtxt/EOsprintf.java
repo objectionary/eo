@@ -44,14 +44,16 @@ public class EOsprintf extends PhDefault {
 
     public EOsprintf(final Phi parent) {
         super(parent);
-        this.add("format", new AtFree());
-        this.add("args", new AtVararg());
+        final String fmt = "format";
+        final String agv = "args";
+        this.add(fmt, new AtFree());
+        this.add(agv, new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final String format = new Dataized(
-                self.attr("format").get()
+                self.attr(fmt).get()
             ).take(String.class);
             final Phi[] args = new Dataized(
-                self.attr("args").get()
+                self.attr(agv).get()
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {
