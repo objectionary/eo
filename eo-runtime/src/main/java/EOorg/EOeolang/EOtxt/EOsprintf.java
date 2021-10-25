@@ -41,19 +41,26 @@ import org.eolang.Phi;
  * @since 0.2
  */
 public class EOsprintf extends PhDefault {
+    /**
+     * Format attr name.
+     */
+    private static final String FMT = "format";
+
+    /**
+     * Arguments attr name.
+     */
+    private static final String AGV = "args";
 
     public EOsprintf(final Phi parent) {
         super(parent);
-        final String fmt = "format";
-        final String agv = "args";
-        this.add(fmt, new AtFree());
-        this.add(agv, new AtVararg());
+        this.add(EOsprintf.FMT, new AtFree());
+        this.add(EOsprintf.AGV, new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final String format = new Dataized(
-                self.attr(fmt).get()
+                self.attr(EOsprintf.FMT).get()
             ).take(String.class);
             final Phi[] args = new Dataized(
-                self.attr(agv).get()
+                self.attr(EOsprintf.AGV).get()
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {

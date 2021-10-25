@@ -41,18 +41,21 @@ import org.eolang.Phi;
 public class EOstdout extends PhDefault {
 
     /**
+     * Text attr name.
+     */
+    private static final String TEXT = "text";
+    /**
      * Default out.
      */
     private static final PrintStream OUT = System.out;
 
     public EOstdout(final Phi parent) {
         super(parent);
-        final String attr = "text";
-        this.add(attr, new AtFree());
+        this.add(EOstdout.TEXT, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             EOstdout.OUT.print(
                 new Dataized(
-                    self.attr(attr).get()
+                    self.attr(EOstdout.TEXT).get()
                 ).take(String.class)
             );
             return new Data.ToPhi(true);
