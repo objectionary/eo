@@ -42,7 +42,7 @@ import org.eolang.Phi;
  */
 public class EOmemory extends PhDefault {
 
-    private final AtomicReference<Phi> phi = new AtomicReference<>();
+    private final AtomicReference<Phi> phi;
 
     public EOmemory() {
         this(new PhEta());
@@ -50,6 +50,7 @@ public class EOmemory extends PhDefault {
 
     public EOmemory(final Phi parent) {
         super(parent);
+        this.phi = new AtomicReference<>();
         this.add(
             "φ",
             new AtBound(
