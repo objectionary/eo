@@ -43,9 +43,10 @@ public class EOfloat$EOadd extends PhDefault {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Double.class)
-            +
-            new Dataized(self.attr("x").get()).take(Double.class)
+            Double.sum(
+                new Dataized(self.attr("ρ").get()).take(Double.class),
+                new Dataized(self.attr("x").get()).take(Double.class)
+            )
         ))));
     }
 
