@@ -41,11 +41,12 @@ public class EOstdout extends PhDefault {
 
     public EOstdout(final Phi parent) {
         super(parent);
-        this.add("text", new AtFree());
+        final String attr = "text";
+        this.add(attr, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             System.out.print(
                 new Dataized(
-                    self.attr("text").get()
+                    self.attr(attr).get()
                 ).take(String.class)
             );
             return new Data.ToPhi(true);
