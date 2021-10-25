@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EOstringEOas_intTest {
 
     @Test
-    public void as_intString() throws Exception {
+    public void shouldBeReadAsInt() throws Exception {
         final Phi str = new Data.ToPhi("42");
         final Phi phi = new EOstring$EOas_int(str);
         MatcherAssert.assertThat(
