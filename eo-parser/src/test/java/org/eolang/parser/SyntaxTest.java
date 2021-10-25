@@ -65,6 +65,20 @@ public final class SyntaxTest {
     }
 
     @Test
+    public void failsWithDoubleNewLine() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Syntax syntax = new Syntax(
+            "test",
+            new InputOf("1 > x\n\n2 > y"),
+            new OutputTo(baos)
+        );
+        Assertions.assertThrows(
+            ParsingException.class,
+            syntax::parse
+        );
+    }
+
+    @Test
     public void failsOnBrokenSyntax() {
         Assertions.assertThrows(
             ParsingException.class,
