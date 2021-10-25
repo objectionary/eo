@@ -41,25 +41,18 @@ final class AtDecorated implements Attr {
     private final String name;
 
     /**
-     * The self.
-     */
-    private final Phi self;
-
-    /**
      * Ctor.
      * @param phi The \phi owner of this one
      * @param attr The origin
-     * @param slf The self
      */
-    AtDecorated(final Attr phi, final String attr, final Phi slf) {
+    AtDecorated(final Attr phi, final String attr) {
         this.base = phi;
         this.name = attr;
-        this.self = slf;
     }
 
     @Override
     public Attr copy(final Phi slf) {
-        return new AtDecorated(this.base.copy(slf), this.name, slf);
+        return new AtDecorated(this.base.copy(slf), this.name);
     }
 
     @Override
