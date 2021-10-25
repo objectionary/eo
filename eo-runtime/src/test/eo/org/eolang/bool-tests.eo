@@ -8,6 +8,14 @@
     TRUE
     TRUE
 
+[] > joins-many-ANDs
+  and. > @
+    TRUE
+    5.less 10
+    4.greater -6
+    TRUE
+    0.eq 0
+
 [] > forks-on-condition
   eq. > @
     42
