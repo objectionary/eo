@@ -104,7 +104,7 @@ public final class PullMojo extends SafeMojo {
                 new IoCheckedFunc<>(this.objectionary).apply(name),
                 src
             ).save();
-            Logger.info(
+            Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
                 name, Save.rel(src)
             );

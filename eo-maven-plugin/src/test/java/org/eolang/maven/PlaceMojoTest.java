@@ -42,15 +42,19 @@ public final class PlaceMojoTest {
     public void placesBinaries(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         final Path classes = temp.resolve("classes");
-        new Save("hello", bins.resolve("foo/hello/0.1/EObar/x.bin")).save();
+        new Save("x1", bins.resolve("foo/hello/0.1/EObar/x.bin")).save();
+        new Save("x2", bins.resolve("foo/hello/0.1/org/eolang/f/x.a.class")).save();
         new Moja<>(PlaceMojo.class)
             .with("targetDir", temp.toFile())
             .with("outputDir", classes.toFile())
             .with("placed", temp.resolve("placed.csv").toFile())
             .execute();
-        final Path out = classes.resolve("EObar/x.bin");
         MatcherAssert.assertThat(
-            Files.exists(out),
+            Files.exists(classes.resolve("EObar/x.bin")),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(classes.resolve("org/eolang/f/x.a.class")),
             Matchers.is(true)
         );
     }

@@ -45,7 +45,7 @@ public final class Objectionary implements Func<String, Input> {
                 name.replace(".", "/")
             )
         );
-        Logger.info(
+        Logger.debug(
             this, "The object '%s' will be pulled from %s...",
             name, url
         );
