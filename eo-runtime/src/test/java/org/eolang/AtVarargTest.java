@@ -23,11 +23,6 @@
  */
 package org.eolang;
 
-import org.eolang.AtVararg;
-import org.eolang.Attr;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

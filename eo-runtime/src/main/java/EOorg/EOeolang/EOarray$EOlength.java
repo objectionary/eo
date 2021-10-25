@@ -26,10 +26,10 @@ package EOorg.EOeolang;
 
 import org.eolang.AtBound;
 import org.eolang.AtLambda;
+import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Data;
 
 /**
  * LENGTH.

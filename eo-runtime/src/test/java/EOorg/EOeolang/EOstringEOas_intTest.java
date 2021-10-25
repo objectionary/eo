@@ -23,7 +23,6 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOstring$EOas_int;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
