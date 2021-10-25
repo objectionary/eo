@@ -43,7 +43,7 @@ public class EObool$EOif extends PhDefault {
         this.add("t", new AtFree());
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            final Boolean term = new Dataized(
+            final boolean term = new Dataized(
                 self.attr("ρ").get()
             ).take(Boolean.class);
             final Phi out;
