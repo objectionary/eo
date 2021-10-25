@@ -55,11 +55,11 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void comparesForEquality() throws Exception {
+    public void comparesForEquality() {
         final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), new PhEta()),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
@@ -76,17 +76,17 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void writesAndRewrites() throws Exception {
+    public void writesAndRewrites() {
         final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), new PhEta()),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), new PhEta()),
                 0, new Data.ToPhi(5L)
             )
         ).take(Boolean.class);
@@ -97,31 +97,30 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void makeCorrectCopy() throws Exception {
+    public void makeCorrectCopy() {
         final Phi mem = new EOmemory(new PhEta());
         final Phi text = new Data.ToPhi(1L);
         final Phi write = mem.attr("write").get();
         write.attr(0).put(text);
         new Dataized(write).take(Boolean.class);
         MatcherAssert.assertThat(
-            new Dataized(new PhCopy(mem)).take(Long.class),
+            new Dataized(new PhCopy(mem, new PhEta())).take(Long.class),
             Matchers.equalTo(1L)
         );
     }
 
     @Test
-    public void comparesOnFly() throws Exception {
+    public void comparesOnFly() {
         final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), mem),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         final Phi less = new PhWith(
-            new PhMethod(mem, "less"),
-            0,
-            new Data.ToPhi(10L)
+            new PhCopy(new PhMethod(mem, "less"), mem),
+            0, new Data.ToPhi(10L)
         );
         MatcherAssert.assertThat(
             new Dataized(less).take(Boolean.class),
@@ -129,7 +128,7 @@ public final class EOmemoryTest {
         );
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), mem),
                 0, new Data.ToPhi(42L)
             )
         ).take(Boolean.class);
@@ -140,18 +139,18 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void rewritesItself() throws Exception {
+    public void rewritesItself() {
         final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), new PhEta()),
                 0,
                 new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, "write")),
+                new PhCopy(new PhMethod(mem, "write"), new PhEta()),
                 0,
                 new PhWith(
                     new PhMethod(mem, "add"),

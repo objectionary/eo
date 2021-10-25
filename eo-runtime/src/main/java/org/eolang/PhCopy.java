@@ -35,9 +35,10 @@ public final class PhCopy extends PhOnce {
      * Ctor.
      *
      * @param phi The object
+     * @param rho New \rho
      */
-    public PhCopy(final Phi phi) {
-        super(phi::copy);
+    public PhCopy(final Phi phi, final Phi rho) {
+        super(() -> phi.copy(rho));
     }
 
 }

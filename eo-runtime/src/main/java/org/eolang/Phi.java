@@ -32,11 +32,12 @@ package org.eolang;
 public interface Phi {
 
     /**
-     * Make a copy.
+     * Make a copy, attaching it to a new parent.
      *
+     * @param rho New \rho to attach to
      * @return A copy
      */
-    Phi copy();
+    Phi copy(Phi rho);
 
     /**
      * Get attribute by position.

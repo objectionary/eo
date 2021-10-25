@@ -38,7 +38,7 @@ public final class PhCopyTest {
     public void makesObjectCopy() {
         MatcherAssert.assertThat(
             new Dataized(
-                new PhCopy(new Data.ToPhi(1L))
+                new PhCopy(new Data.ToPhi(1L), new PhEta())
             ).take(Long.class),
             Matchers.equalTo(1L)
         );

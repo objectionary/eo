@@ -26,6 +26,7 @@ package EOorg.EOeolang;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
+import org.eolang.PhEta;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -41,17 +42,12 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOeqTest {
 
     @Test
-    public void comparesWithAnotherNumber() throws Exception {
+    public void comparesWithAnotherNumber() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
-        final Phi eql = new PhCopy(
-            new PhCopy(
-                new PhWith(
-                    new PhMethod(new PhCopy(left), "eq"),
-                    0,
-                    new PhCopy(right)
-                )
-            )
+        final Phi eql = new PhWith(
+            new PhMethod(new PhCopy(left, new PhEta()), "eq"),
+            0, new PhCopy(right, new PhEta())
         );
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),

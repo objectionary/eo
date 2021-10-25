@@ -91,7 +91,7 @@ public final class PhConstTest {
         final Boom boom = new Boom();
         Phi cnst = new PhConst(boom);
         for (int idx = 0; idx < 10; ++idx) {
-            final Phi phi = cnst.attr("φ").get().copy();
+            final Phi phi = cnst.attr("φ").get().copy(new PhEta());
             phi.attr("x").put(new Data.ToPhi(1L));
             new Dataized(phi).take();
         }

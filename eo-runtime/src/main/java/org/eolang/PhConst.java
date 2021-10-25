@@ -76,8 +76,8 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public Phi copy() {
-        return new PhConst(this.object.copy(), this.named, this.numbered);
+    public Phi copy(final Phi rho) {
+        return new PhConst(this.object.copy(rho), this.named, this.numbered);
     }
 
     @Override

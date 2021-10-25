@@ -42,7 +42,7 @@ public final class PhDefaultTest {
         final Phi parent = new EOsprintf(new PhEta());
         final Phi phi = new PhDefaultTest.Foo(parent);
         phi.attr(0).put(num);
-        final Phi copy = phi.copy();
+        final Phi copy = phi.copy(new PhEta());
         MatcherAssert.assertThat(
             new Dataized(copy).take(String.class),
             Matchers.equalTo("Hello, world!")
@@ -73,10 +73,24 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void changesRhoOnCopy() {
+        final Phi foo = new Foo(new PhEta());
+        final Phi kid = foo.attr("kid").get();
+        final Phi copy = kid.copy(new PhEta());
+        MatcherAssert.assertThat(
+            copy.attr("ρ").get(),
+            Matchers.not(Matchers.equalTo(foo))
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi parent) {
              super(parent);
              this.add("x", new AtFree());
+             this.add("kid", new AtBound(new AtLambda(
+                 this, PhDefaultTest.Kid::new
+             )));
              this.add("φ", new AtBound(new AtLambda(
                  this, self -> new Data.ToPhi("Hello, world!")
              )));
@@ -86,6 +100,7 @@ public final class PhDefaultTest {
     public static class Kid extends PhDefault {
         public Kid(final Phi parent) {
             super(parent);
+            this.add("z", new AtFree());
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> new EOsprintf(new Data.ToPhi(1L))
             )));

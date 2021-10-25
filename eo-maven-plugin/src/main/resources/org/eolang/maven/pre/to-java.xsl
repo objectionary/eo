@@ -308,6 +308,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="rho" select="'self'"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
   </xsl:template>
@@ -342,6 +343,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="rho" select="concat($name, '_base')"/>
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="skip" select="1"/>
     </xsl:apply-templates>
@@ -350,6 +352,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
+    <xsl:param name="rho"/>
     <xsl:for-each select="./*[name()!='value' and name()!='array' and position() &gt; $skip][not(@level)]">
       <xsl:if test="position() = 1">
         <xsl:value-of select="$indent"/>
@@ -357,6 +360,8 @@ SOFTWARE.
         <xsl:text> = </xsl:text>
         <xsl:text>new PhCopy(</xsl:text>
         <xsl:value-of select="$name"/>
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="$rho"/>
         <xsl:text>);</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
       </xsl:if>

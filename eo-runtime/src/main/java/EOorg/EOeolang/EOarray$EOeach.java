@@ -51,7 +51,7 @@ public class EOarray$EOeach extends PhDefault {
             for (final Phi item : array) {
                 new Dataized(
                     new PhWith(
-                        new PhCopy(self.attr("f").get()),
+                        new PhCopy(self.attr("f").get(), self),
                         0,
                         item
                     )

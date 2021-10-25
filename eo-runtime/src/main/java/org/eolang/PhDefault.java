@@ -93,7 +93,7 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Phi copy() {
+    public final Phi copy(final Phi rho) {
         try {
             final PhDefault copy = PhDefault.class.cast(this.clone());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
@@ -101,6 +101,7 @@ public class PhDefault implements Phi, Cloneable {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
+            copy.attr("ρ").put(rho);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
@@ -141,7 +142,7 @@ public class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                attr = new AtOwned(new AtDecorated(phi, name, this), this);
+                attr = new AtDecorated(phi, name, this);
             }
         }
         return new AtNamed(

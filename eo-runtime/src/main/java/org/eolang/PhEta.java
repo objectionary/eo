@@ -37,7 +37,7 @@ public final class PhEta implements Phi {
     }
 
     @Override
-    public PhEta copy() {
+    public PhEta copy(final Phi rho) {
         return new PhEta();
     }
 

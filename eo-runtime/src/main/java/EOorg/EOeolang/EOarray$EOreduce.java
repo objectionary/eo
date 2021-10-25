@@ -48,7 +48,7 @@ public class EOarray$EOreduce extends PhDefault {
             ).take(Phi[].class);
             Phi out = self.attr("a").get();
             for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy();
+                final Phi after = self.attr("f").get().copy(self);
                 after.attr(0).put(out);
                 after.attr(1).put(arg);
                 out = after;

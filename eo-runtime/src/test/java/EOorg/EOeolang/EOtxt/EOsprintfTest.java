@@ -59,11 +59,11 @@ public final class EOsprintfTest {
     }
 
     @Test
-    public void printsStringWithVarargs() throws Exception {
+    public void printsStringWithVarargs() {
         final Phi format = new Data.ToPhi("Hello, %s %s!");
         final Phi num = new Data.ToPhi(5L);
         Phi phi = new EOsprintf(new PhEta());
-        phi = phi.copy();
+        phi = phi.copy(new PhEta());
         phi = new PhWith(phi, 0, format);
         phi = new PhWith(phi, 1, num);
         phi = new PhWith(phi, 2, num);

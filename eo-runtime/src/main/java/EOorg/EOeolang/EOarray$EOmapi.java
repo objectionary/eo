@@ -48,7 +48,7 @@ public class EOarray$EOmapi extends PhDefault {
             ).take(Phi[].class);
             final Phi[] dest = new Phi[array.length];
             for (int idx = 0; idx < array.length; ++idx) {
-                final Phi after = self.attr("f").get().copy();
+                final Phi after = self.attr("f").get().copy(self);
                 after.attr(0).put(array[idx]);
                 after.attr(1).put(new Data.ToPhi((long)idx));
                 dest[idx] = after;
