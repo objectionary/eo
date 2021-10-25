@@ -90,7 +90,7 @@ public final class ResolveMojo extends SafeMojo {
                 .resolve(dep.getArtifactId())
                 .resolve(dep.getVersion());
             if (Files.exists(dest)) {
-                Logger.info(
+                Logger.debug(
                     this, "Dependency %s already resolved to %s",
                     coords, Save.rel(dest)
                 );
@@ -129,7 +129,7 @@ public final class ResolveMojo extends SafeMojo {
                 && t.exists(AssembleMojo.ATTR_VERSION)
                 && !t.exists(AssembleMojo.ATTR_JAR)
         );
-        Logger.info(
+        Logger.debug(
             this, "%d suitable tojo(s) found out of %d",
             list.size(), this.tojos().select(t -> true).size()
         );
@@ -147,7 +147,7 @@ public final class ResolveMojo extends SafeMojo {
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
             );
             if (!dep.isPresent()) {
-                Logger.info(
+                Logger.debug(
                     this, "No dependencies for %s/%s",
                     tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION)
                 );
@@ -156,7 +156,7 @@ public final class ResolveMojo extends SafeMojo {
             final Dependency one = dep.get();
             final String coords = ResolveMojo.coords(one);
             if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
-                Logger.info(
+                Logger.debug(
                     this, "Zero-version dependency for %s/%s skipped: %s",
                     tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION),
                     coords

@@ -26,6 +26,7 @@ package org.eolang;
 import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -67,6 +68,15 @@ public final class PhConstTest {
     }
 
     @Test
+    public void doesntAllowAttributesOfDecorateeToBeSet() {
+        final Phi phi = new Boom();
+        Assertions.assertThrows(
+            Attr.ReadOnlyException.class,
+            () -> phi.attr("x").put(new Data.ToPhi(1L))
+        );
+    }
+
+    @Test
     public void makesRhoConstToo() {
         final String name = "kid";
         final Dummy dummy = new Dummy(name);
@@ -81,6 +91,18 @@ public final class PhConstTest {
             dummy.count,
             Matchers.equalTo(1)
         );
+    }
+
+    @Test
+    public void keepsDecorateeConst() {
+        final Boom boom = new Boom();
+        Phi cnst = new PhConst(boom);
+        for (int idx = 0; idx < 10; ++idx) {
+            final Phi phi = cnst.attr("φ").get().copy();
+            phi.attr("x").put(new Data.ToPhi(1L));
+            new Dataized(phi).take();
+        }
+        MatcherAssert.assertThat(boom.count, Matchers.equalTo(1));
     }
 
     private static class Dummy extends PhDefault {
@@ -100,9 +122,28 @@ public final class PhConstTest {
     private static class Kid extends PhDefault {
         Kid(final Phi parent) {
             super(parent);
+            this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
                 new Dataized(self.attr("ρ").get()).take(Long.class)
             ))));
+        }
+    }
+
+    private static class Boom extends PhDefault {
+        public int count;
+        Boom() {
+            this.add("φ", new AtBound(new AtLambda(this, self -> {
+                ++this.count;
+                return new Sub(self);
+            })));
+        }
+    }
+
+    private static class Sub extends PhDefault {
+        Sub(final Phi parent) {
+            super(parent);
+            this.add("x", new AtFree());
+            this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(1L))));
         }
     }
 }

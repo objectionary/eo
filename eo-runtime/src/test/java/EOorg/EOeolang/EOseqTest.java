@@ -21,42 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package EOorg.EOeolang;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import EOorg.EOeolang.EOtxt.EOsprintf;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhEta;
+import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PlaceMojo}.
+ * Test case for {@link EOseq}.
  *
- * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.16
  */
-public final class PlaceMojoTest {
+public final class EOseqTest {
 
     @Test
-    public void placesBinaries(@TempDir final Path temp) throws Exception {
-        final Path bins = temp.resolve(ResolveMojo.DIR);
-        final Path classes = temp.resolve("classes");
-        new Save("x1", bins.resolve("foo/hello/0.1/EObar/x.bin")).save();
-        new Save("x2", bins.resolve("foo/hello/0.1/org/eolang/f/x.a.class")).save();
-        new Moja<>(PlaceMojo.class)
-            .with("targetDir", temp.toFile())
-            .with("outputDir", classes.toFile())
-            .with("placed", temp.resolve("placed.csv").toFile())
-            .execute();
+    public void calculatesAndReturns() {
         MatcherAssert.assertThat(
-            Files.exists(classes.resolve("EObar/x.bin")),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(classes.resolve("org/eolang/f/x.a.class")),
-            Matchers.is(true)
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new EOseq(new PhEta()),
+                        0, new Data.ToPhi(0L)
+                    ),
+                    0, new Data.ToPhi(1L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(1L)
         );
     }
 
+    @Test
+    public void calculatesAndReturnsObject() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new EOseq(new PhEta()),
+                        0, new Data.ToPhi(0L)
+                    ),
+                    0,
+                    new PhWith(
+                        new EOsprintf(new PhEta()),
+                        0, new Data.ToPhi("Hello!")
+                    )
+                )
+            ).take(String.class),
+            Matchers.startsWith("Hello")
+        );
+    }
 }

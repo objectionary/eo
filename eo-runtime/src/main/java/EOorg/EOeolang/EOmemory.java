@@ -32,7 +32,6 @@ import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.Phi;
 
 /**
@@ -43,10 +42,6 @@ import org.eolang.Phi;
 public class EOmemory extends PhDefault {
 
     private final AtomicReference<Phi> phi;
-
-    public EOmemory() {
-        this(new PhEta());
-    }
 
     public EOmemory(final Phi parent) {
         super(parent);

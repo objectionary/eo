@@ -68,6 +68,7 @@ public final class ParseMojo extends SafeMojo {
         final Collection<Tojo> tojos = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_EO)
         );
+        int total = 0;
         for (final Tojo tojo : tojos) {
             if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
                 Logger.debug(
@@ -76,24 +77,29 @@ public final class ParseMojo extends SafeMojo {
                 );
                 continue;
             }
-            this.parse(tojo);
+            if (this.parse(tojo)) {
+                ++total;
+            }
         }
+        Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
     }
 
     /**
      * Parse EO file to XML.
      *
      * @param tojo The tojo
+     * @return TRUE if parsed
      * @throws IOException If fails
      */
-    private void parse(final Tojo tojo) throws IOException {
+    private boolean parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get("id");
         final Path target = new Place(name).make(
             this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT
         );
+        boolean done = false;
         if (Files.exists(target)) {
-            Logger.info(
+            Logger.debug(
                 this, "Already parsed %s to %s (file exists)",
                 Save.rel(source), Save.rel(target)
             );
@@ -105,12 +111,14 @@ public final class ParseMojo extends SafeMojo {
                 new OutputTo(baos)
             ).parse();
             new Save(baos.toByteArray(), target).save();
-            Logger.info(
+            Logger.debug(
                 this, "Parsed %s to %s",
                 Save.rel(source), Save.rel(target)
             );
+            done = true;
         }
         tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
+        return done;
     }
 
 }

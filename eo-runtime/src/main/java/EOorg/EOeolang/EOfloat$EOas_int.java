@@ -21,35 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.net.URL;
-import org.cactoos.Func;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+package EOorg.EOeolang;
+
+import org.eolang.AtBound;
+import org.eolang.AtLambda;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 
 /**
- * The abstraction of the Objectionary server.
+ * as-int.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class Objectionary implements Func<String, Input> {
+public class EOfloat$EOas_int extends PhDefault {
 
-    @Override
-    public Input apply(final String name) throws Exception {
-        final URL url = new URL(
-            String.format(
-                // @checkstyle LineLength (1 line)
-                "https://raw.githubusercontent.com/yegor256/objectionary/master/objects/%s.eo",
-                name.replace(".", "/")
-            )
-        );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
+    public EOfloat$EOas_int(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
+                new Dataized(self.attr("ρ").get()).take(Double.class).longValue()
+        ))));
     }
 
 }

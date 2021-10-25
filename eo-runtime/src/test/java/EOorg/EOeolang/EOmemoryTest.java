@@ -26,6 +26,7 @@ package EOorg.EOeolang;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
+import org.eolang.PhEta;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -47,7 +48,7 @@ public final class EOmemoryTest {
 
     @Test
     public void readsAndWrites() throws Exception {
-        final Phi mem = new EOmemory();
+        final Phi mem = new EOmemory(new PhEta());
         final Phi text = new Data.ToPhi("Hello, world!");
         final Phi write = mem.attr(EOmemoryTest.WRITE).get();
         write.attr(0).put(text);
@@ -60,7 +61,7 @@ public final class EOmemoryTest {
 
     @Test
     public void comparesForEquality() throws Exception {
-        final Phi mem = new EOmemory();
+        final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -81,7 +82,7 @@ public final class EOmemoryTest {
 
     @Test
     public void writesAndRewrites() throws Exception {
-        final Phi mem = new EOmemory();
+        final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -102,7 +103,7 @@ public final class EOmemoryTest {
 
     @Test
     public void makeCorrectCopy() throws Exception {
-        final Phi mem = new EOmemory();
+        final Phi mem = new EOmemory(new PhEta());
         final Phi text = new Data.ToPhi(1L);
         final Phi write = mem.attr(EOmemoryTest.WRITE).get();
         write.attr(0).put(text);
@@ -115,7 +116,7 @@ public final class EOmemoryTest {
 
     @Test
     public void comparesOnFly() throws Exception {
-        final Phi mem = new EOmemory();
+        final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -145,7 +146,7 @@ public final class EOmemoryTest {
 
     @Test
     public void rewritesItself() throws Exception {
-        final Phi mem = new EOmemory();
+        final Phi mem = new EOmemory(new PhEta());
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),

@@ -103,7 +103,7 @@ public final class OptimizeMojo extends SafeMojo {
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
         );
         if (Files.exists(target)) {
-            Logger.info(
+            Logger.debug(
                 this, "Already optimized %s to %s, all steps are in %s",
                 Save.rel(file), Save.rel(target), Save.rel(dir)
             );
@@ -126,7 +126,7 @@ public final class OptimizeMojo extends SafeMojo {
                 )
             ).pass();
             new Save(baos.toByteArray(), target).save();
-            Logger.info(
+            Logger.debug(
                 this, "Optimized %s (program:%s) to %s, all steps are in %s",
                 Save.rel(file), name, Save.rel(target), Save.rel(dir)
             );

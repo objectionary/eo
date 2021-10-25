@@ -55,9 +55,19 @@ public final class PhConst implements Phi {
      * @param phi The object
      */
     public PhConst(final Phi phi) {
+        this(phi, new ConcurrentHashMap<>(0), new ConcurrentHashMap<>(0));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     */
+    public PhConst(final Phi phi, final Map<String, Attr> names,
+        final Map<Integer, Attr> nums) {
         this.object = phi;
-        this.named = new ConcurrentHashMap<>(0);
-        this.numbered = new ConcurrentHashMap<>(0);
+        this.named = names;
+        this.numbered = nums;
     }
 
     @Override
@@ -67,7 +77,7 @@ public final class PhConst implements Phi {
 
     @Override
     public Phi copy() {
-        return this;
+        return new PhConst(this.object.copy(), this.named, this.numbered);
     }
 
     @Override

@@ -70,12 +70,13 @@ public final class PullMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.tojos().select(
-            row -> !row.exists("eo") && !row.exists("xmir")
+            row -> !row.exists(AssembleMojo.ATTR_EO)
+                && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
                 tojo.set(
-                    "eo",
+                    AssembleMojo.ATTR_EO,
                     this.pull(tojo.get("id")).toAbsolutePath().toString()
                 );
             }
@@ -104,7 +105,7 @@ public final class PullMojo extends SafeMojo {
                 new IoCheckedFunc<>(this.objectionary).apply(name),
                 src
             ).save();
-            Logger.info(
+            Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
                 name, Save.rel(src)
             );

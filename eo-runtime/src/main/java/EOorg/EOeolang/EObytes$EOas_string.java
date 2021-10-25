@@ -21,35 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.net.URL;
-import org.cactoos.Func;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+package EOorg.EOeolang;
+
+import java.nio.charset.StandardCharsets;
+import org.eolang.AtBound;
+import org.eolang.AtLambda;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 
 /**
- * The abstraction of the Objectionary server.
+ * BYTES.AS-STRING.
  *
- * @since 0.1
+ * @since 0.16
  */
-public final class Objectionary implements Func<String, Input> {
+public class EObytes$EOas_string extends PhDefault {
 
-    @Override
-    public Input apply(final String name) throws Exception {
-        final URL url = new URL(
-            String.format(
-                // @checkstyle LineLength (1 line)
-                "https://raw.githubusercontent.com/yegor256/objectionary/master/objects/%s.eo",
-                name.replace(".", "/")
-            )
-        );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
+    public EObytes$EOas_string(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtBound(new AtLambda(this, self -> {
+            final byte[] array = new Dataized(
+                self.attr("ρ").get()
+            ).take(byte[].class);
+            return new Data.ToPhi(new String(array, StandardCharsets.UTF_8));
+        })));
     }
 
 }

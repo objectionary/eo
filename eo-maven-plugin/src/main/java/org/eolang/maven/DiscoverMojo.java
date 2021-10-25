@@ -116,12 +116,12 @@ public final class DiscoverMojo extends SafeMojo {
             names.add("org.eolang.array");
         }
         if (names.isEmpty()) {
-            Logger.info(
+            Logger.debug(
                 this, "Didn't find any foreign objects in %s",
                 Save.rel(file)
             );
         } else {
-            Logger.info(
+            Logger.debug(
                 this, "Found %d foreign objects in %s: %s",
                 names.size(), Save.rel(file), names
             );

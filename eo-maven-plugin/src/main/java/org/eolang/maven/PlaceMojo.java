@@ -81,7 +81,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> includeBinaries = new SetOf<>("EO**");
+    private Set<String> includeBinaries = new SetOf<>("EO**", "org/eolang/**.class");
 
     /**
      * List of exclusion GLOB filters for finding class files.
@@ -103,6 +103,11 @@ public final class PlaceMojo extends SafeMojo {
             Logger.info(
                 this, "Placed %d binary files found in %d dependencies",
                 copied, deps.size()
+            );
+        } else {
+            Logger.info(
+                this, "The directory is absent, nothing to place: %s",
+                Save.rel(home)
             );
         }
     }
@@ -133,6 +138,17 @@ public final class PlaceMojo extends SafeMojo {
             new Save(new InputOf(file), target).save();
             tojos.add(target.toString());
             ++copied;
+        }
+        if (copied > 0) {
+            Logger.info(
+                this, "Placed %d binary file(s) out of %d, found in %s",
+                copied, new Walk(dir).size(), dep
+            );
+        } else {
+            Logger.info(
+                this, "No binary file(s) out of %d were placed from %s",
+                new Walk(dir).size(), dep
+            );
         }
         return copied;
     }

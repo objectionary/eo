@@ -45,3 +45,6 @@
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs /float
+
+  # Converts this to int
+  [] > as-int /int
