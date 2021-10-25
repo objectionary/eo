@@ -45,7 +45,7 @@ public final class SyntaxTest {
     public void compilesSimpleCode() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
-            "test",
+            "test-1",
             new ResourceOf("org/eolang/parser/fibonacci.eo"),
             new OutputTo(baos)
         );
@@ -55,7 +55,7 @@ public final class SyntaxTest {
                 new String(baos.toByteArray(), StandardCharsets.UTF_8)
             ),
             XhtmlMatchers.hasXPath(
-                "/program[@name='test']",
+                "/program[@name='test-1']",
                 "/program[@ms and @time and @version]",
                 "/program/listing",
                 "/program/metas/meta[head='meta2']",
@@ -68,7 +68,7 @@ public final class SyntaxTest {
     public void failsWithDoubleNewLine() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
-            "test",
+            "test-2",
             new InputOf("1 > x\n\n2 > y"),
             new OutputTo(baos)
         );
