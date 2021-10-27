@@ -27,8 +27,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MonoTojos}.
@@ -37,9 +38,10 @@ import org.junit.jupiter.api.io.TempDir;
  */
 public final class MonoTojosTest {
 
-    @Test
-    public void simpleScenario(@TempDir final Path temp) throws IOException {
-        final Tojos tojos = new MonoTojos(temp.resolve("a.csv"));
+    @ParameterizedTest
+    @ValueSource(strings = {"a.csv", "a.json"})
+    public void simpleScenario(final String file, @TempDir final Path temp) throws IOException {
+        final Tojos tojos = new MonoTojos(temp.resolve(file));
         tojos.add("foo").set("k", "v").set("a", "b");
         tojos.select(t -> t.exists("k")).iterator().next();
         MatcherAssert.assertThat(
@@ -48,9 +50,10 @@ public final class MonoTojosTest {
         );
     }
 
-    @Test
-    public void addTojo(@TempDir final Path temp) throws IOException {
-        final Tojos tojos = new MonoTojos(temp.resolve("x.csv"));
+    @ParameterizedTest
+    @ValueSource(strings = {"x.csv", "x.json"})
+    public void addTojo(final String file, @TempDir final Path temp) throws IOException {
+        final Tojos tojos = new MonoTojos(temp.resolve(file));
         tojos.add("foo-1");
         MatcherAssert.assertThat(
             new SmartTojos(tojos).size(),
@@ -58,9 +61,10 @@ public final class MonoTojosTest {
         );
     }
 
-    @Test
-    public void uniqueIds(@TempDir final Path temp) throws IOException {
-        final Tojos tojos = new MonoTojos(temp.resolve("x1.csv"));
+    @ParameterizedTest
+    @ValueSource(strings = {"y.csv", "y.json"})
+    public void uniqueIds(final String file, @TempDir final Path temp) throws IOException {
+        final Tojos tojos = new MonoTojos(temp.resolve(file));
         final String name = "foo11";
         tojos.add(name);
         tojos.add(name);
