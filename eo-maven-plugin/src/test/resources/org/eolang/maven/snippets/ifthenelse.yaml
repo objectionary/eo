@@ -4,8 +4,8 @@ out:
   - ".*17 is greater than zero.*"
 args: ["main", "17"]
 eo: |
-  +alias stdout org.eolang.io.stdout
-  +alias sprintf org.eolang.txt.sprintf
+  +alias org.eolang.io.stdout
+  +alias org.eolang.txt.sprintf
 
   [args...] > main
     [n] > f

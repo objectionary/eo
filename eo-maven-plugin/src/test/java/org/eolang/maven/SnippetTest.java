@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.apache.maven.project.MavenProject;
+import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
@@ -59,15 +59,22 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@DisabledOnOs(OS.WINDOWS)
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
+    /**
+     * Temp dir.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @TempDir
+    public Path temp;
+
     @Disabled
-    @DisabledOnOs(OS.WINDOWS)
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
-    public void testFullRun(@TempDir final Path temp, final String yml) throws Exception {
+    public void testFullRun(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             SnippetTest.class.getResourceAsStream(
@@ -76,7 +83,7 @@ public final class SnippetTest {
         );
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         final int result = SnippetTest.run(
-            temp,
+            this.temp,
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
             new InputOf(map.get("in").toString()),
@@ -106,7 +113,7 @@ public final class SnippetTest {
 
     /**
      * Compile EO to Java and run.
-     * @param temp Temp dir
+     * @param tmp Temp dir
      * @param code EO sources
      * @param args Command line arguments
      * @param stdin The input
@@ -116,26 +123,38 @@ public final class SnippetTest {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings("unchecked")
-    private static int run(final Path temp, final Input code, final List<String> args,
+    private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
-        final Path src = temp.resolve("src");
+        final Path src = tmp.resolve("src");
         new Save(code, src.resolve("code.eo")).save();
-        final Path target = temp.resolve("target");
-        final Path generated = temp.resolve("generated");
-        final MavenProject project = new MavenProjectStub();
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
+        final Path target = tmp.resolve("target");
+        final Path foreign = target.resolve("eo-foreign.csv");
+        new Moja<>(RegisterMojo.class)
+            .with("foreign", target.resolve("eo-foreign.csv").toFile())
             .with("sourcesDir", src.toFile())
             .execute();
-        new Moja<>(OptimizeMojo.class)
+        new Moja<>(AssembleMojo.class)
+            .with("outputDir", target.resolve("out").toFile())
             .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("placed", target.resolve("list").toFile())
+            .with("skipZeroVersions", true)
+            .with(
+                "objectionary",
+                (Func<String, Input>) input -> new InputOf(
+                    "[] > sprintf\n"
+                )
+            )
             .execute();
+        final Path generated = target.resolve("generated");
         new Moja<>(TranspileMojo.class)
-            .with("project", project)
+            .with("compiler", "canonical")
+            .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
+            .with("foreign", foreign.toFile())
             .execute();
-        final Path classes = temp.resolve("classes");
+        final Path classes = target.resolve("classes");
         classes.toFile().mkdir();
         final String cpath = String.format(
             ".:%s",
@@ -152,35 +171,24 @@ public final class SnippetTest {
         new Walk(generated).forEach(
             file -> SnippetTest.javac(file, classes, cpath)
         );
-        final Process proc = new ProcessBuilder()
-            .command(
+        SnippetTest.exec("ls -al", classes);
+        SnippetTest.exec(
+            String.join(
+                " ",
                 new Joined<>(
                     new ListOf<>(
                         "java",
                         "-cp",
                         cpath,
-                        "org.eolang.phi.Main"
+                        "org.eolang.Main"
                     ),
                     args
                 )
-            )
-            .directory(classes.toFile())
-            .redirectErrorStream(true)
-            .start();
-        new LengthOf(
-            new TeeInput(
-                stdin,
-                new OutputTo(proc.getOutputStream())
-            )
-        ).value();
-        try (VerboseProcess vproc = new VerboseProcess(proc)) {
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(vproc.stdout()),
-                    stdout
-                )
-            ).value();
-        }
+            ),
+            classes,
+            stdin,
+            stdout
+        );
         return 0;
     }
 
@@ -191,21 +199,70 @@ public final class SnippetTest {
      * @param dir Destination directory
      * @param cpath Classpath
      */
-    private static String javac(final Path file, final Path dir,
+    private static void javac(final Path file, final Path dir,
         final String cpath) {
-        final ProcessBuilder proc = new ProcessBuilder()
-            .command(
+        SnippetTest.exec(
+            String.join(
+                " ",
                 "javac",
                 file.getFileName().toString(),
                 "-d",
                 dir.toString(),
                 "-cp",
                 cpath
-            )
-            .directory(file.getParent().toFile())
-            .redirectErrorStream(true);
-        try (VerboseProcess vproc = new VerboseProcess(proc)) {
-            return vproc.stdout();
+            ),
+            file.getParent()
+        );
+    }
+
+    /**
+     * Run some command and print out the output.
+     *
+     * @param cmd The command
+     * @param dir The home dir
+     */
+    private static void exec(final String cmd, final Path dir) {
+        SnippetTest.exec(
+            cmd, dir, new InputOf(""),
+            new OutputTo(new ByteArrayOutputStream())
+        );
+    }
+
+    /**
+     * Run some command and print out the output.
+     *
+     * @param cmd The command
+     * @param dir The home dir
+     * @param stdin Stdin
+     * @param stdout Stdout
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private static void exec(final String cmd, final Path dir,
+        final Input stdin, final Output stdout) {
+        try {
+            final Process proc = new ProcessBuilder()
+                .command(cmd.split(" "))
+                .directory(dir.toFile())
+                .redirectErrorStream(true)
+                .start();
+            new LengthOf(
+                new TeeInput(
+                    stdin,
+                    new OutputTo(proc.getOutputStream())
+                )
+            ).value();
+            try (VerboseProcess vproc = new VerboseProcess(proc)) {
+                new LengthOf(
+                    new TeeInput(
+                        new InputOf(vproc.stdout()),
+                        stdout
+                    )
+                ).value();
+            }
+        // @checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception ex) {
+            throw new IllegalStateException(ex);
         }
     }
 

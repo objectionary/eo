@@ -2,11 +2,11 @@ exit: 0
 in: ""
 out:
   - ".*Hello, дорогой Jeff.*"
-args: ["hello.main", "Jeff"]
+args: ["class.main", "Jeff"]
 eo: |
   +package class
-  +alias stdout org.eolang.io.stdout
-  +alias sprintf org.eolang.txt.sprintf
+  +alias org.eolang.io.stdout
+  +alias org.eolang.txt.sprintf
 
   [args...] > main
     stdout > @
