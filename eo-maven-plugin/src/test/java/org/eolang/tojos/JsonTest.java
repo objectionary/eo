@@ -25,52 +25,49 @@ package org.eolang.tojos;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test case for {@link MonoTojos}.
+ * Test case for {@link Json}.
  *
- * @since 0.12
+ * @since 0.17
  */
-public final class MonoTojosTest {
+public final class JsonTest {
 
-    @ParameterizedTest
-    @ValueSource(strings = {"a.csv", "a.json"})
-    public void simpleScenario(final String file, @TempDir final Path temp) throws IOException {
-        final Tojos tojos = new MonoTojos(temp.resolve(file));
-        tojos.add("foo").set("k", "v").set("a", "b");
-        tojos.select(t -> t.exists("k")).iterator().next();
+    @Test
+    public void simpleScenario(@TempDir final Path temp) throws IOException {
+        final Mono json = new Json(temp.resolve("foo/bar/a.json"));
+        final Collection<Map<String, String>> rows = json.read();
         MatcherAssert.assertThat(
-            tojos.select(t -> t.exists("k")).iterator().next().get("a"),
-            Matchers.equalTo("b")
+            json.read().size(),
+            Matchers.equalTo(0)
+        );
+        final Map<String, String> row = new HashMap<>(0);
+        final String key = "id";
+        final String value = "привет,\t\r\n друг!";
+        row.put(key, value);
+        rows.add(row);
+        json.write(rows);
+        MatcherAssert.assertThat(
+            json.read().iterator().next().get(key),
+            Matchers.equalTo(value)
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"x.csv", "x.json"})
-    public void addTojo(final String file, @TempDir final Path temp) throws IOException {
-        final Tojos tojos = new MonoTojos(temp.resolve(file));
-        tojos.add("foo-1");
+    @Test
+    public void writesEmptyCollection(@TempDir final Path temp) throws IOException {
+        final Mono json = new Json(temp.resolve("foo/bar/b.json"));
+        json.write(Collections.emptyList());
         MatcherAssert.assertThat(
-            new SmartTojos(tojos).size(),
-            Matchers.equalTo(1)
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"y.csv", "y.json"})
-    public void uniqueIds(final String file, @TempDir final Path temp) throws IOException {
-        final Tojos tojos = new MonoTojos(temp.resolve(file));
-        final String name = "foo11";
-        tojos.add(name);
-        tojos.add(name);
-        MatcherAssert.assertThat(
-            new SmartTojos(tojos).size(),
-            Matchers.equalTo(1)
+            json.read(),
+            Matchers.empty()
         );
     }
 
