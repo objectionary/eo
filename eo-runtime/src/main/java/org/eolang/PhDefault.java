@@ -37,6 +37,16 @@ import java.util.Map;
 public class PhDefault implements Phi, Cloneable {
 
     /**
+     * Named attr format.
+     */
+    private static final String FORMAT = "%s#%s";
+
+    /**
+     * Line bread and tab.
+     */
+    private static final String REPLACEMENT = "\n  ";
+
+    /**
      * Attributes.
      */
     private Map<String, Attr> attrs;
@@ -80,7 +90,7 @@ public class PhDefault implements Phi, Cloneable {
                     "%s%s=%s",
                     ent.getKey(),
                     idx >=0 ? String.format("(%d)", idx) : "",
-                    ent.getValue().toString().replace("\n", "\n  ")
+                    ent.getValue().toString().replace("\n", PhDefault.REPLACEMENT)
                 )
             );
         }
@@ -88,7 +98,7 @@ public class PhDefault implements Phi, Cloneable {
             "%s#%d:{\n  %s\n}",
             this.getClass().getCanonicalName(),
             this.hashCode(),
-            String.join("\n  ", list)
+            String.join(PhDefault.REPLACEMENT, list)
         );
     }
 
@@ -147,7 +157,7 @@ public class PhDefault implements Phi, Cloneable {
         }
         return new AtNamed(
             String.format(
-                "%s#%s",
+                PhDefault.FORMAT,
                 this.getClass().getCanonicalName(),
                 name
             ),
@@ -174,7 +184,7 @@ public class PhDefault implements Phi, Cloneable {
             name,
             new AtNamed(
                 String.format(
-                    "%s#%s",
+                    PhDefault.FORMAT,
                     this.getClass().getCanonicalName(),
                     name
                 ),

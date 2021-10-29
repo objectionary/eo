@@ -45,8 +45,8 @@ public class EOint$EOpow extends PhDefault {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            long ρ = new Dataized(self.attr("ρ").get()).take(Long.class);
-            long x = new Dataized(self.attr("x").get()).take(Long.class);
+            final long ρ = new Dataized(self.attr("ρ").get()).take(Long.class);
+            final long x = new Dataized(self.attr("x").get()).take(Long.class);
             if (ρ == 0L && x < 0L) {
                 final Phi msg = new Data.ToPhi("0 cannot be raised to a negative power");
                 return new PhWith(new EOerror(new PhEta()), "msg", msg);

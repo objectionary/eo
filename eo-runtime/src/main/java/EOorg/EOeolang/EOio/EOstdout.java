@@ -24,6 +24,7 @@
 
 package EOorg.EOeolang.EOio;
 
+import java.io.PrintStream;
 import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
@@ -39,13 +40,22 @@ import org.eolang.Phi;
  */
 public class EOstdout extends PhDefault {
 
+    /**
+     * Text attr name.
+     */
+    private static final String TEXT = "text";
+    /**
+     * Default out.
+     */
+    private static final PrintStream OUT = System.out;
+
     public EOstdout(final Phi parent) {
         super(parent);
-        this.add("text", new AtFree());
+        this.add(EOstdout.TEXT, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
-            System.out.print(
+            EOstdout.OUT.print(
                 new Dataized(
-                    self.attr("text").get()
+                    self.attr(EOstdout.TEXT).get()
                 ).take(String.class)
             );
             return new Data.ToPhi(true);

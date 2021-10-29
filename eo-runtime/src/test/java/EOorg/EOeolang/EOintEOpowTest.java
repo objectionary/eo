@@ -31,8 +31,8 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOint}.
@@ -41,12 +41,17 @@ import org.junit.jupiter.api.Assertions;
  */
 public final class EOintEOpowTest {
 
+    /**
+     * Attribute name for 'pow'.
+     */
+    private static final String POW = "pow";
+
     @Test
     public void powersNumber() throws Exception {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(new Data.ToPhi(2L), "pow"),
+                    new PhMethod(new Data.ToPhi(2L), EOintEOpowTest.POW),
                     0,
                     new Data.ToPhi(4L)
                 )
@@ -60,7 +65,7 @@ public final class EOintEOpowTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(new Data.ToPhi(0L), "pow"),
+                    new PhMethod(new Data.ToPhi(0L), EOintEOpowTest.POW),
                     0,
                     new Data.ToPhi(0L)
                 )
@@ -74,7 +79,7 @@ public final class EOintEOpowTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(new Data.ToPhi(0L), "pow"),
+                    new PhMethod(new Data.ToPhi(0L), EOintEOpowTest.POW),
                     0,
                     new Data.ToPhi(1L)
                 )
@@ -88,7 +93,7 @@ public final class EOintEOpowTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(new Data.ToPhi(0L), "pow"),
+                    new PhMethod(new Data.ToPhi(0L), EOintEOpowTest.POW),
                     0,
                     new Data.ToPhi(2L)
                 )
@@ -100,7 +105,7 @@ public final class EOintEOpowTest {
     @Test
     public void zeroToNegativePowerFails() throws Exception {
         final Phi result = new PhWith(
-            new PhMethod(new Data.ToPhi(0L), "pow"),
+            new PhMethod(new Data.ToPhi(0L), EOintEOpowTest.POW),
             0,
             new Data.ToPhi(-1L)
         );

@@ -47,9 +47,7 @@ public class EOarray$EOappend extends PhDefault {
                 self.attr("ρ").get()
             ).take(Phi[].class);
             final Phi[] dest = new Phi[array.length + 1];
-            for (int idx = 0; idx < array.length; ++idx) {
-                dest[idx] = array[idx];
-            }
+            System.arraycopy(array, 0, dest, 0, array.length);
             dest[array.length] = self.attr("x").get();
             return new Data.ToPhi(dest);
         })));

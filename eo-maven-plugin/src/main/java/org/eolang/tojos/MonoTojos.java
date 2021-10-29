@@ -61,15 +61,20 @@ public final class MonoTojos implements Tojos {
      * Ctor.
      *
      * @param path The path to the file
+     * @checkstyle AvoidInlineConditionalsCheck (5 lines)
      */
     public MonoTojos(final Path path) {
-        this(new Csv(path));
+        this(
+            path.endsWith(".json")
+                ? new Json(path)
+                : new Csv(path)
+        );
     }
 
     /**
      * Ctor.
      *
-     * @param mno The CSV
+     * @param mno The Mono (CSV or JSON)
      */
     public MonoTojos(final Mono mno) {
         this.mono = mno;

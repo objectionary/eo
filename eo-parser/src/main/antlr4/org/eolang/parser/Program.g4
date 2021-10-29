@@ -247,10 +247,11 @@ PARENT: '^';
 HASH: '#';
 EOL
   :
-  [\r\n]+
+  ('\n' | '\r\n')
+  ('\n' | '\r\n')?
   SPACE*
   {
-    int tabs = getText().replaceAll("[\r\n]+", "").length() / 2;
+    int tabs = getText().replaceAll("[\r]?[\n]", "").length() / 2;
     if (tabs < this.currentTabs) {
       for (int i = 0; i < this.currentTabs - tabs; ++i) {
         this.emitToken(ProgramParser.UNTAB, getLine() + 1);

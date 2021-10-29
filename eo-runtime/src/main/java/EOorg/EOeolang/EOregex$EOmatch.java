@@ -41,22 +41,27 @@ import org.eolang.Phi;
  */
 public class EOregex$EOmatch extends PhDefault {
 
+    /**
+     * Text attribute.
+     */
+    public static final String TXT = "txt";
+
     public EOregex$EOmatch(final Phi parent, final EOregex up) {
         super(parent);
-        this.add("txt", new AtFree());
+        this.add(EOregex$EOmatch.TXT, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Pattern pattern = new Dataized(
                 self.attr("ρ").get()
             ).take(Pattern.class);
             final String txt = new Dataized(
-                self.attr("txt").get()
+                self.attr(EOregex$EOmatch.TXT).get()
             ).take(String.class);
             final Matcher matcher = pattern.matcher(txt);
             if (matcher.matches()) {
                 final Phi[] dest = new Phi[matcher.groupCount()];
                 return new Data.ToPhi(dest);
             } else {
-                return new Data.ToPhi(new Phi[] {});
+                return new Data.ToPhi(new Phi[]{});
             }
         })));
     }

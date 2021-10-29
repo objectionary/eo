@@ -40,14 +40,23 @@ import org.junit.jupiter.api.Test;
  */
 public final class EOregexEOmatchTest {
 
+    /**
+     * Method name.
+     */
+    public static final String MATCH = "match";
+    /**
+     * Attribute name.
+     */
+    private static final String TXT = "txt";
+
     @Test
     public void matchesString() throws Exception {
         final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(regex, "match"),
-                    "txt",
+                    new PhMethod(regex, EOregexEOmatchTest.MATCH),
+                    EOregexEOmatchTest.TXT,
                     new Data.ToPhi("hello")
                 )
             ).take(Phi[].class).length,
@@ -61,8 +70,8 @@ public final class EOregexEOmatchTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(regex, "match"),
-                    "txt",
+                    new PhMethod(regex, EOregexEOmatchTest.MATCH),
+                    EOregexEOmatchTest.TXT,
                     new Data.ToPhi("Hello, World!")
                 )
             ).take(Phi[].class).length,

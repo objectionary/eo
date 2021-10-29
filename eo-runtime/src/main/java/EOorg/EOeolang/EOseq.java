@@ -30,6 +30,7 @@ import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhEta;
 import org.eolang.Phi;
 
 /**
@@ -39,12 +40,21 @@ import org.eolang.Phi;
  */
 public class EOseq extends PhDefault {
 
+    /**
+     * Attribute name.
+     */
+    private static final String NAME = "steps";
+
+    public EOseq() {
+        this(new PhEta());
+    }
+
     public EOseq(final Phi parent) {
         super(parent);
-        this.add("steps", new AtVararg());
+        this.add(EOseq.NAME, new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] args = new Dataized(
-                self.attr("steps").get()
+                self.attr(EOseq.NAME).get()
             ).take(Phi[].class);
             Object result = false;
             for (final Phi arg : args) {
