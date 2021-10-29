@@ -12,7 +12,7 @@ release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
-    LC_ALL=C mvn clean install -Dinvoker.skip
+    mvn clean install -Dinvoker.skip
     mvn clean deploy -Pcqfn -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
 
     mkdir /tmp/objectionary
