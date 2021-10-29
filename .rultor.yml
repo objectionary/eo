@@ -6,8 +6,8 @@ install: |
   javac -version
   pdd --file=/dev/null
 env:
-  MAVEN_OPTS: -Xmx1g
-  JAVA_OPTS: -Xmx1g
+  MAVEN_OPTS: -Xmx2g
+  JAVA_OPTS: -Xmx2g
 merge:
   script: |
     LC_ALL=C mvn clean install -Pqulice --errors -Dstyle.color=never
