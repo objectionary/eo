@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOarray$EOmapi extends PhDefault {
 
-    public EOarray$EOmapi(final Phi parent) {
+    public EOarray$EOmapi(final Phi parent, final EOarray up) {
         super(parent);
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

@@ -1,6 +1,11 @@
 +package org.eolang
 +junit
 
+[] > converts-to-string
+  eq. > @
+    "42"
+    42.as-string
+
 [] > less-true
   less. > @
     10

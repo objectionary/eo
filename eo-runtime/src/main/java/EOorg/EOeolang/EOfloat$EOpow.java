@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOfloat$EOpow extends PhDefault {
 
-    public EOfloat$EOpow(final Phi parent) {
+    public EOfloat$EOpow(final Phi parent, final EOfloat up) {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

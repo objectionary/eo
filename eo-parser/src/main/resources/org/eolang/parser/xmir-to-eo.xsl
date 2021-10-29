@@ -30,7 +30,6 @@ SOFTWARE.
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:output method="text"/>
-  <xsl:strip-space elements="*"/>
   <xsl:template match="program">
     <xsl:apply-templates select="license"/>
     <xsl:apply-templates select="metas[meta]"/>

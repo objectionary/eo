@@ -23,9 +23,9 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOstring$EOtrim;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhEta;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,9 +39,9 @@ import org.junit.jupiter.api.Test;
 public final class EOstringEOtrimTest {
 
     @Test
-    public void trimsString() throws Exception {
+    public void trimsString() {
         final Phi str = new Data.ToPhi("Hello, world!  ");
-        final Phi phi = new EOstring$EOtrim(str);
+        final Phi phi = new EOstring$EOtrim(str, new EOstring(new PhEta()));
         MatcherAssert.assertThat(
             new Dataized(phi).take(String.class),
             Matchers.equalTo("Hello, world!")

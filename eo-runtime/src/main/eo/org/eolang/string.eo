@@ -22,3 +22,7 @@
 
   # Turn it into bytes.
   [] > as-bytes /bytes
+
+  # Joins an array of strings, using current string
+  # as a delimiter
+  [items] > joined /string

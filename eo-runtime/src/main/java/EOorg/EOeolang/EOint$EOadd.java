@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOint$EOadd extends PhDefault {
 
-    public EOint$EOadd(final Phi parent) {
+    public EOint$EOadd(final Phi parent, final EOint up) {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(

@@ -39,15 +39,14 @@ import org.eolang.Phi;
  */
 public class EObool$EOwhile extends PhDefault {
 
-    public EObool$EOwhile(final Phi parent) {
+    public EObool$EOwhile(final Phi parent, final EObool up) {
         super(parent);
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             long count = 0L;
             while (true) {
-                final Boolean term = new Dataized(
-                    self.attr("ρ").get()
-                ).take(Boolean.class);
+                final Phi rho = self.attr("ρ").get();
+                final Boolean term = new Dataized(rho).take(Boolean.class);
                 if (!term) {
                     break;
                 }

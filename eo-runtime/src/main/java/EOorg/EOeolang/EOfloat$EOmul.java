@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOfloat$EOmul extends PhDefault {
 
-    public EOfloat$EOmul(final Phi parent) {
+    public EOfloat$EOmul(final Phi parent, final EOfloat up) {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(

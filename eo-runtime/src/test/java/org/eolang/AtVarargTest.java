@@ -23,11 +23,6 @@
  */
 package org.eolang;
 
-import org.eolang.AtVararg;
-import org.eolang.Attr;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -40,7 +35,7 @@ import org.junit.jupiter.api.Test;
 public final class AtVarargTest {
 
     @Test
-    public void appendsElements() throws Exception {
+    public void appendsElements() {
         final Attr attr = new AtVararg();
         final Phi phi = new PhDefault();
         attr.put(phi);

@@ -41,13 +41,13 @@ public class PhOnce implements Phi {
      *
      * @param data The object
      */
-    public PhOnce(final Data<Phi> data) {
-        this.object = new Data.Once<>(data);
+    public PhOnce(final Data<Phi> data, final String blank) {
+        this.object = new Data.Once<>(data, blank);
     }
 
     @Override
     public final String toString() {
-        return this.object.take().toString();
+        return this.object.toString();
     }
 
     @Override

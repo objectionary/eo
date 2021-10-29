@@ -45,5 +45,8 @@
   # Converts this to float
   [] > as-float /float
 
+  # Converts this to string
+  [] > as-string /string
+
   # Absolute value of $ (i.e., with no sign)
   [] > abs /int

@@ -38,7 +38,6 @@ SOFTWARE.
       2
       pi
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:template match="objects/o[not(eo:abstract(.))]">
     <xsl:element name="o">

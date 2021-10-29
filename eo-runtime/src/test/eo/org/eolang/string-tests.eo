@@ -4,6 +4,17 @@
 [] > matches-against-regular-expression
   (/([a-z])+/.matches "dude") > @
 
+[] > calculates-length-of-spaces-only
+  eq. > @
+    " ".length
+    1
+
+[] > joins-array
+  eq. > @
+    "..".joined
+      * "foo" "друг" "bar"
+    "foo..друг..bar"
+
 [] > trims-string
   eq. > @
     "Hello, dude"

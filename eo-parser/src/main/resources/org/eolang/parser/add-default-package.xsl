@@ -27,7 +27,6 @@ SOFTWARE.
   Here we go through all objects that DON'T have @ref attributes
   and add default package to them.
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and @base!='@' and @base!='^' and @base!='$']">
     <xsl:copy>
       <xsl:attribute name="base">

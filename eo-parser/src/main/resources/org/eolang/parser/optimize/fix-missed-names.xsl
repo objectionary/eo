@@ -28,7 +28,6 @@ SOFTWARE.
   are missed/broken due to abstracts floating up. We find
   them and fix them.
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:template match="o[@base and not(@ref)]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>

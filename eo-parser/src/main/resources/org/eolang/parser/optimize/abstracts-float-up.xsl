@@ -40,7 +40,6 @@ SOFTWARE.
   [a] > foo
     foo$test > test
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
@@ -135,7 +134,7 @@ SOFTWARE.
           <xsl:value-of select="count($ancestors) - 1"/>
         </xsl:attribute>
         <xsl:attribute name="parent">
-          <xsl:value-of select="$ancestors[1]/@name"/>
+          <xsl:value-of select="eo:name-of($ancestors[last() - 1])"/>
         </xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="node()|@* except @name"/>
@@ -162,7 +161,7 @@ SOFTWARE.
   <xsl:template match="//objects">
     <xsl:copy>
       <xsl:apply-templates select=".//o[eo:abstract(.)]" mode="top"/>
-      <xsl:apply-templates select="node()[not(eo:abstract(.))]|@*"/>
+      <xsl:apply-templates select="o[not(eo:abstract(.))]|@*"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

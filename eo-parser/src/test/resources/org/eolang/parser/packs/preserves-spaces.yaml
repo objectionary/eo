@@ -1,0 +1,11 @@
+xsls:
+  - org/eolang/parser/errors/not-empty-atoms.xsl
+tests:
+  - //o[@name='x' and text()='    ']
+  - //o[@name='y' and text()=' foo']
+  - //o[@name='z' and text()='foo ']
+eo: |
+  [] > foo
+    "    " > x
+    " foo" > y
+    "foo " > z

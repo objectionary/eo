@@ -69,7 +69,7 @@ final class AtDecorated implements Attr {
 
     @Override
     public Phi get() {
-        return this.base.get().attr(this.name).get();
+        return this.base.get().attr(this.name).get().copy(this.self);
     }
 
     @Override

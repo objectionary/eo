@@ -41,7 +41,6 @@ SOFTWARE.
     hello
       x
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:template match="objects">
     <xsl:copy>

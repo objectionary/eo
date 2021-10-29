@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOstring$EOas_bytes extends PhDefault {
 
-    public EOstring$EOas_bytes(final Phi parent) {
+    public EOstring$EOas_bytes(final Phi parent, final EOstring up) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             new Dataized(

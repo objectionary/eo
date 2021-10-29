@@ -33,7 +33,6 @@ SOFTWARE.
 
   +alias foo org.example.foo
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:template match="/program/metas/meta[head='alias' and not(contains(tail, ' '))]">
     <xsl:copy>
       <xsl:attribute name="expanded"/>

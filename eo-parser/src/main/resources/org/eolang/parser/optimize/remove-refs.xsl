@@ -26,7 +26,6 @@ SOFTWARE.
   <!--
   Here we remove @ref attribute from all objects.
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@* except @ref"/>

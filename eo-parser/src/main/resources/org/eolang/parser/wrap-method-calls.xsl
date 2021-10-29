@@ -38,7 +38,6 @@ SOFTWARE.
     </o>
   </o>
   -->
-  <xsl:strip-space elements="*"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:template match="o[@method]" mode="#all">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>

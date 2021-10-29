@@ -40,7 +40,7 @@ import org.eolang.Phi;
  */
 public class EObytes$EOpart extends PhDefault {
 
-    public EObytes$EOpart(final Phi parent) {
+    public EObytes$EOpart(final Phi parent, final EObytes up) {
         super(parent);
         this.add("start", new AtFree());
         this.add("len", new AtFree());

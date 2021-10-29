@@ -38,7 +38,7 @@ import org.eolang.Phi;
  */
 public class EOarray$EOempty extends PhDefault {
 
-    public EOarray$EOempty(final Phi parent) {
+    public EOarray$EOempty(final Phi parent, final EOarray up) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Dataized(

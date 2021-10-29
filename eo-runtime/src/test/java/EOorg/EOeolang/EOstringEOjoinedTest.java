@@ -21,56 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package EOorg.EOeolang;
+
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhEta;
+import org.eolang.PhWith;
+import org.eolang.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Attribute with \rho set on fly.
+ * Test case for {@link EOstring}.
  *
- * @since 0.16
+ * @since 0.1
  */
-final class AtOwned implements Attr {
+public final class EOstringEOjoinedTest {
 
-    /**
-     * The original attribute.
-     */
-    private final Attr origin;
-
-    /**
-     * The parent to put into \rho attribute of the original object.
-     */
-    private final Phi parent;
-
-    /**
-     * Ctor.
-     * @param attr The origin
-     * @param prnt The value of \rho to use
-     */
-    AtOwned(final Attr attr, final Phi prnt) {
-        this.origin = attr;
-        this.parent = prnt;
+    @Test
+    public void joinString() {
+        final Phi delim = new Data.ToPhi("..");
+        final Phi phi = new PhWith(
+            new EOstring$EOjoined(
+                delim, new EOstring(new PhEta())
+            ),
+            "items",
+            new Data.ToPhi(
+                new Phi[] {
+                    new Data.ToPhi("first"),
+                    new Data.ToPhi("second")
+                }
+            )
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("first..second")
+        );
     }
 
-    @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtOwned(this.origin.copy(self), self);
-    }
-
-    @Override
-    public Phi get() {
-        final Phi phi = this.origin.get();
-        if (!(phi instanceof Data)) {
-            phi.attr("ρ").put(this.parent);
-        }
-        return phi;
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        this.origin.put(phi);
-    }
 }

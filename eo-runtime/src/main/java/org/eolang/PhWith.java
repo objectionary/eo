@@ -43,7 +43,8 @@ public final class PhWith extends PhOnce {
             () -> {
                 phi.attr(name).put(attr);
                 return phi;
-            }
+            },
+            String.format("%s[%s]=%s", phi, name, attr)
         );
     }
 
@@ -59,7 +60,8 @@ public final class PhWith extends PhOnce {
             () -> {
                 phi.attr(pos).put(attr);
                 return phi;
-            }
+            },
+            String.format("%s[%d]=%s", phi, pos, attr)
         );
     }
 

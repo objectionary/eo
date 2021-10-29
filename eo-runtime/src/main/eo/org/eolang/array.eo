@@ -33,6 +33,7 @@
   # object with one free attribute, for the element
   # of the array.
   [f] > map
+    $ > this
     ^.mapi > @
       [x i]
-        ^.f x > @
+        (this.f x) > @

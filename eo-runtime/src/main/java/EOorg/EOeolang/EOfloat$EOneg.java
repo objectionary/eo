@@ -38,7 +38,7 @@ import org.eolang.Phi;
  */
 public class EOfloat$EOneg extends PhDefault {
 
-    public EOfloat$EOneg(final Phi parent) {
+    public EOfloat$EOneg(final Phi parent, final EOfloat up) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             new Dataized(self.attr("ρ").get()).take(Double.class) * -1.0

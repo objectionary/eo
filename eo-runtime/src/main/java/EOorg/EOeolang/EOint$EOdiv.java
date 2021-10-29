@@ -30,6 +30,7 @@ import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 
@@ -40,7 +41,7 @@ import org.eolang.Phi;
  */
 public class EOint$EOdiv extends PhDefault {
 
-    public EOint$EOdiv(final Phi parent) {
+    public EOint$EOdiv(final Phi parent, final EOint up) {
         super(parent);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
@@ -48,7 +49,7 @@ public class EOint$EOdiv extends PhDefault {
             long x = new Dataized(self.attr("x").get()).take(Long.class);
             if (x == 0L) {
                 final Phi msg = new Data.ToPhi("Division by zero is undefined");
-                return new PhWith(new EOerror(), "msg", msg);
+                return new PhWith(new EOerror(new PhEta()), "msg", msg);
             }
             return new Data.ToPhi(ρ / x);
         })));

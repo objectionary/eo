@@ -76,7 +76,7 @@ public final class Main {
             Class.forName(path).getConstructor().newInstance()
         );
         for (int idx = 1; idx < args.length; ++idx) {
-            final Phi phi = new EOstring();
+            final Phi phi = new EOstring(new PhEta());
             final String arg = args[idx];
             phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr("args").put(phi);

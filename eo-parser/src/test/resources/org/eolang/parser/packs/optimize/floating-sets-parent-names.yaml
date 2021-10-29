@@ -1,0 +1,13 @@
+xsls:
+  - org/eolang/parser/add-refs.xsl
+  - org/eolang/parser/optimize/abstracts-float-up.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //o[@name='a$m$2$α0' and @parent='a$m']
+eo: |
+  [] > a
+    [f] > m
+      $ > this
+      z > @
+        [i]
+          42 > @

@@ -22,14 +22,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pre-junit" version="2.0">
-  <xsl:strip-space elements="*"/>
-  <xsl:template match="class[not(@parent)]/@name">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="pre-junit" version="2.0">
+  <xsl:function name="eo:name" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="parts" select="tokenize($n, '\$')"/>
+    <xsl:variable name="p">
+      <xsl:for-each select="$parts">
+        <xsl:if test="position()&gt;1">
+          <xsl:text>$</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="."/>
+        <xsl:if test="position()=1">
+          <xsl:text>Test</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:value-of select="$p"/>
+  </xsl:function>
+  <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:choose>
         <xsl:when test="//meta[head='junit']">
-          <xsl:value-of select="."/>
-          <xsl:text>Test</xsl:text>
+          <xsl:value-of select="eo:name(.)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="."/>
@@ -37,7 +51,27 @@ SOFTWARE.
       </xsl:choose>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="class">
+  <xsl:template match="o/@base | class/@parent">
+    <xsl:variable name="a" select="."/>
+    <xsl:attribute name="{name()}">
+      <xsl:choose>
+        <xsl:when test="//meta[head='junit']">
+          <xsl:choose>
+            <xsl:when test="//class[@name=$a]">
+              <xsl:value-of select="eo:name($a)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:template>
+  <xsl:template match="class" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:if test="//meta[head='junit']">
@@ -46,7 +80,7 @@ SOFTWARE.
       </xsl:if>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="objects/class[@parent]">
+  <xsl:template match="objects/class[@parent]" mode="#default">
     <xsl:choose>
       <xsl:when test="//meta[head='junit']">
         <!-- kill them -->

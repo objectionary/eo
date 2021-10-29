@@ -84,6 +84,15 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void getsRhoFromPhi() {
+        final Phi first = new First(new PhEta());
+        MatcherAssert.assertThat(
+            new Dataized(first).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi parent) {
              super(parent);
@@ -103,6 +112,25 @@ public final class PhDefaultTest {
             this.add("z", new AtFree());
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> new EOsprintf(new Data.ToPhi(1L))
+            )));
+        }
+    }
+
+    public static class First extends PhDefault {
+        public First(final Phi parent) {
+            super(parent);
+            this.add("a", new AtFree(new Data.ToPhi(1L)));
+            this.add("φ", new AtBound(new AtLambda(
+                this, PhDefaultTest.Second::new
+            )));
+        }
+    }
+
+    public static class Second extends PhDefault {
+        public Second(final Phi parent) {
+            super(parent);
+            this.add("φ", new AtBound(new AtLambda(
+                this, self -> self.attr("ρ").get().attr("a").get()
             )));
         }
     }

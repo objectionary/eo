@@ -52,13 +52,26 @@ public interface Data<T> {
     final class Once<T> implements Data<T> {
         private final Data<T> src;
         private final AtomicReference<T> ref;
-        public Once(final Data<T> data) {
+        private final String blank;
+        public Once(final Data<T> data, final String txt) {
             this.src = data;
             this.ref = new AtomicReference<>();
+            this.blank = txt;
         }
         @Override
         public String toString() {
-            return this.take().toString();
+            final T data = this.ref.get();
+            String txt;
+            if (this.blank.isEmpty()) {
+                txt = this.src.take().toString();
+            } else {
+                if (data == null) {
+                    txt = this.blank;
+                } else {
+                    txt = data.toString();
+                }
+            }
+            return txt;
         }
         @Override
         public T take() {
@@ -75,21 +88,21 @@ public interface Data<T> {
                 () -> {
                     final Phi phi;
                     if (obj instanceof Boolean) {
-                        phi = new EObool();
+                        phi = new EObool(new PhEta());
                     } else if (obj instanceof byte[]) {
-                        phi = new EObytes();
+                        phi = new EObytes(new PhEta());
                     } else if (obj instanceof Long) {
-                        phi = new EOint();
+                        phi = new EOint(new PhEta());
                     } else if (obj instanceof String) {
-                        phi = new EOstring();
+                        phi = new EOstring(new PhEta());
                     } else if (obj instanceof Character) {
-                        phi = new EOchar();
+                        phi = new EOchar(new PhEta());
                     } else if (obj instanceof Double) {
-                        phi = new EOfloat();
+                        phi = new EOfloat(new PhEta());
                     } else if (obj instanceof Pattern) {
-                        phi = new EOregex();
+                        phi = new EOregex(new PhEta());
                     } else if (obj instanceof Phi[]) {
-                        phi = new EOarray();
+                        phi = new EOarray(new PhEta());
                     } else {
                         throw new IllegalArgumentException(
                             String.format(
@@ -99,7 +112,8 @@ public interface Data<T> {
                         );
                     }
                     return new PhWith(phi, "Δ", new Data.Value<>(obj));
-                }
+                },
+                ""
             );
         }
     }
