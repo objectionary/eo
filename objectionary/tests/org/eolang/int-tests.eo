@@ -1,6 +1,11 @@
 +package org.eolang
 +junit
 
+[] > converts-to-string
+  eq. > @
+    "42"
+    42.as-string
+
 [] > less-true
   less. > @
     10
@@ -103,8 +108,8 @@
 
 [] > calculates-fibonacci-number-with-tail
   eq. > @
-    13
-    fibonacci 7
+    3
+    fibonacci 4
   [n] > fibonacci
     if. > @
       n.less 3

@@ -21,6 +21,24 @@
   .each > @
     [i] (stdout i > @)
 
+[] > simple-mapping-int-to-string
+  eq. > @
+    length.
+      map.
+        * 1 2 3
+        [i]
+          i.as-string > @
+    3
+
+[] > using-map-as-object
+  eq. > @
+    " ".joined
+      map.
+        * 1 2
+        [i]
+          i.as-string > @
+    "1 2"
+
 # check that an empty array's .length equals to zero
 [] > empty-array-length
   [elements...] > arr
@@ -65,7 +83,6 @@
   eq. > @
     (sprintf "%d %d %d" 1 4 9)
     (sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2))
-
 
 [] > array-as-a-bound-attribute-size-0
   * > anArray

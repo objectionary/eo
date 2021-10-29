@@ -2,6 +2,11 @@
 +alias sprintf org.eolang.txt.sprintf
 +junit
 
+[] > converts-to-string
+  eq. > @
+    "3.1415926"
+    3.1415926.as-string
+
 [] > less-true
   less. > @
     -10.5

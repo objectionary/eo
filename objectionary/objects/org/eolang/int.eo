@@ -1,5 +1,5 @@
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.16.1
++rt jvm org.eolang:eo-runtime:0.16.2
 
 [] > int
   # Tests that $ = x
@@ -44,6 +44,9 @@
 
   # Converts this to float
   [] > as-float /float
+
+  # Converts this to string
+  [] > as-string /string
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs /int

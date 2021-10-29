@@ -8,6 +8,14 @@
     TRUE
     TRUE
 
+[] > joins-many-ANDs
+  and. > @
+    TRUE
+    5.less 10
+    4.greater -6
+    TRUE
+    0.eq 0
+
 [] > forks-on-condition
   eq. > @
     42
@@ -25,7 +33,8 @@
       while.
         x.less 10
         [i]
-          ^.x.write (^.x.add i) > @
+          ^.^.^ > x
+          x.write (x.add i) > @
 
 [] > prints-nice-formulas
   memory > x
@@ -34,10 +43,11 @@
     while.
       x.less 6
       [i]
+        ^.^.^ > x
         seq > @
           stdout
-            sprintf "%dx%d = %d\n" (^.x) (^.x) (^.x.pow 2)
-          ^.x.write (^.x.add 1)
+            sprintf "%dx%d = %d\n" x x (x.pow 2)
+          x.write (x.add 1)
     TRUE
 
 # tests that bool.and stops calculations if its i'th

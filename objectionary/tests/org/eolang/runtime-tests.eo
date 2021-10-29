@@ -1,6 +1,13 @@
 +package org.eolang
 +junit
 
+[] > understands-this-correctly
+  [x] > a
+    $.x > @
+  eq. > @
+    a 42
+    42
+
 [] > takes-parent-object
   [x] > a
     [] > take
@@ -9,6 +16,16 @@
   eq. > @
     a 42
     42
+
+[] > takes-parent-through-attribute
+  42 > x
+  $ > this
+  [] > @
+    [] > @
+      [] > @
+        eq. > @
+          42
+          this.x
 
 [] > throws-when-applies-to-closed-object
   [x] > a
