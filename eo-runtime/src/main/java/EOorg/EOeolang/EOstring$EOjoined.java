@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOstring$EOjoined extends PhDefault {
 
-    public EOstring$EOjoined(final Phi parent, final EOstring up) {
+    public EOstring$EOjoined(final Phi parent) {
         super(parent);
         this.add("items", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

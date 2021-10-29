@@ -47,7 +47,7 @@ public final class EOmemoryTest {
     private static final String WRITE = "write";
 
     @Test
-    public void readsAndWrites() throws Exception {
+    public void readsAndWrites() {
         final Phi mem = new EOmemory(new PhEta());
         final Phi text = new Data.ToPhi("Hello, world!");
         final Phi write = mem.attr(EOmemoryTest.WRITE).get();

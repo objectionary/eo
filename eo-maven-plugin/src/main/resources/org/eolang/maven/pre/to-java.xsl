@@ -158,6 +158,7 @@ SOFTWARE.
         <xsl:text>public </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
         <xsl:text>(final Phi parent) {</xsl:text>
+        <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(parent);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
@@ -278,7 +279,7 @@ SOFTWARE.
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(self</xsl:text>
-        <xsl:if test="$b/@ancestors">
+        <xsl:if test="$b/@ancestors and not($b/@atom)">
           <xsl:text>, </xsl:text>
           <xsl:choose>
             <xsl:when test="$b/@ancestors = $this/@ancestors + 1 or not($this/@ancestors)">

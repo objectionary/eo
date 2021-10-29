@@ -46,7 +46,7 @@ public class EOregex$EOmatch extends PhDefault {
      */
     public static final String TXT = "txt";
 
-    public EOregex$EOmatch(final Phi parent, final EOregex up) {
+    public EOregex$EOmatch(final Phi parent) {
         super(parent);
         this.add(EOregex$EOmatch.TXT, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

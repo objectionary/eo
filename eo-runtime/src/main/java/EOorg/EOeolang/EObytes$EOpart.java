@@ -49,7 +49,7 @@ public class EObytes$EOpart extends PhDefault {
      */
     private static final String LEN = "len";
 
-    public EObytes$EOpart(final Phi parent, final EObytes up) {
+    public EObytes$EOpart(final Phi parent) {
         super(parent);
         this.add(EObytes$EOpart.START, new AtFree());
         this.add(EObytes$EOpart.LEN, new AtFree());

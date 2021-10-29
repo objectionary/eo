@@ -38,7 +38,7 @@ import org.eolang.Phi;
  */
 public class EObool$EOif extends PhDefault {
 
-    public EObool$EOif(final Phi parent, final EObool up) {
+    public EObool$EOif(final Phi parent) {
         super(parent);
         this.add("t", new AtFree());
         this.add("f", new AtFree());

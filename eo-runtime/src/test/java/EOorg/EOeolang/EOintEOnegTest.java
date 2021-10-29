@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 public final class EOintEOnegTest {
 
     @Test
-    public void negatesNumber() throws Exception {
+    public void negatesNumber() {
         final Phi left = new Data.ToPhi(42L);
         final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(

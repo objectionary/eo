@@ -53,8 +53,7 @@ public final class EOarrayEOmapiTest {
                             new Data.ToPhi(5L),
                             new Data.ToPhi(1L)
                         }
-                    ),
-                    null
+                    )
                 ),
                 0, new EOarrayEOmapiTest.Kid(new PhEta())
             )

@@ -38,7 +38,7 @@ import org.eolang.Phi;
  */
 public class EOarray$EOreduce extends PhDefault {
 
-    public EOarray$EOreduce(final Phi parent, final EOarray up) {
+    public EOarray$EOreduce(final Phi parent) {
         super(parent);
         this.add("a", new AtFree());
         this.add("f", new AtFree());

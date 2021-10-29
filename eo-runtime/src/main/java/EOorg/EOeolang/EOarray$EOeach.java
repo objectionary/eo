@@ -41,7 +41,7 @@ import org.eolang.Phi;
  */
 public class EOarray$EOeach extends PhDefault {
 
-    public EOarray$EOeach(final Phi parent, final EOarray up) {
+    public EOarray$EOeach(final Phi parent) {
         super(parent);
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

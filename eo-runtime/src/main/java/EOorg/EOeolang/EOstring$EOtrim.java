@@ -38,7 +38,7 @@ import org.eolang.Phi;
  */
 public class EOstring$EOtrim extends PhDefault {
 
-    public EOstring$EOtrim(final Phi parent, final EOstring up) {
+    public EOstring$EOtrim(final Phi parent) {
         super(parent);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             new Dataized(

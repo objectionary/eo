@@ -25,7 +25,6 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -43,9 +42,7 @@ public final class EOstringEOjoinedTest {
     public void joinString() {
         final Phi delim = new Data.ToPhi("..");
         final Phi phi = new PhWith(
-            new EOstring$EOjoined(
-                delim, new EOstring(new PhEta())
-            ),
+            new EOstring$EOjoined(delim),
             "items",
             new Data.ToPhi(
                 new Phi[] {

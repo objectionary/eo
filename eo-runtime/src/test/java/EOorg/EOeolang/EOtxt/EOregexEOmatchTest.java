@@ -50,7 +50,7 @@ public final class EOregexEOmatchTest {
     private static final String TXT = "txt";
 
     @Test
-    public void matchesString() throws Exception {
+    public void matchesString() {
         final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
         MatcherAssert.assertThat(
             new Dataized(
@@ -65,7 +65,7 @@ public final class EOregexEOmatchTest {
     }
 
     @Test
-    public void doesntMatchString() throws Exception {
+    public void doesntMatchString() {
         final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
         MatcherAssert.assertThat(
             new Dataized(

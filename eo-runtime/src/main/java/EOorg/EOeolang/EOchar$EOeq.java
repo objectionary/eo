@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EOchar$EOeq extends PhDefault {
 
-    public EOchar$EOeq(final Phi parent, final EOchar up) {
+    public EOchar$EOeq(final Phi parent) {
         super(parent);
         this.add("c", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

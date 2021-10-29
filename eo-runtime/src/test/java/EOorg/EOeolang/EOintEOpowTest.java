@@ -47,7 +47,7 @@ public final class EOintEOpowTest {
     private static final String POW = "pow";
 
     @Test
-    public void powersNumber() throws Exception {
+    public void powersNumber() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -61,7 +61,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToZeroPower() throws Exception {
+    public void zeroToZeroPower() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -75,7 +75,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToOnePower() throws Exception {
+    public void zeroToOnePower() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -89,7 +89,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToTwoPower() throws Exception {
+    public void zeroToTwoPower() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -103,7 +103,7 @@ public final class EOintEOpowTest {
     }
 
     @Test
-    public void zeroToNegativePowerFails() throws Exception {
+    public void zeroToNegativePowerFails() {
         final Phi result = new PhWith(
             new PhMethod(new Data.ToPhi(0L), EOintEOpowTest.POW),
             0,

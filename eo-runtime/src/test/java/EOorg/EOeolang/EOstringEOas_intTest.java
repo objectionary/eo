@@ -25,7 +25,6 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhEta;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -41,7 +40,7 @@ public final class EOstringEOas_intTest {
     @Test
     public void as_intString() {
         final Phi str = new Data.ToPhi("42");
-        final Phi phi = new EOstring$EOas_int(str, new EOstring(new PhEta()));
+        final Phi phi = new EOstring$EOas_int(str);
         MatcherAssert.assertThat(
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(42L)

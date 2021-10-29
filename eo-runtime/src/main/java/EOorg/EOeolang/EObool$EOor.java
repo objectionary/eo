@@ -39,7 +39,7 @@ import org.eolang.Phi;
  */
 public class EObool$EOor extends PhDefault {
 
-    public EObool$EOor(final Phi parent, final EObool up) {
+    public EObool$EOor(final Phi parent) {
         super(parent);
         this.add("x", new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
