@@ -53,8 +53,6 @@ public class EOstring$EOjoined extends PhDefault {
             for (int idx = 0; idx < texts.length; ++idx) {
                 texts[idx] = new Dataized(items[idx]).take(String.class);
             }
-            System.out.println("[" + delim + "]");
-            System.out.println(String.join(delim, texts));
             return new Data.ToPhi(String.join(delim, texts));
         })));
     }

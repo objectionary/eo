@@ -93,9 +93,8 @@ public final class XMIRTest {
      * Take the clean version of XML, without the noise.
      * @param xmir The original
      * @return Clean one
-     * @throws IOException If fails
      */
-    private static XML clean(final XML xmir) throws IOException {
+    private static XML clean(final XML xmir) {
         return new XSLDocument(
             XMIRTest.class.getResourceAsStream("strip-xmir.xsl")
         ).with(new ClasspathSources()).transform(xmir);

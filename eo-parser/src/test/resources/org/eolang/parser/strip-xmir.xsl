@@ -28,6 +28,7 @@ SOFTWARE.
   use this one to compare two XMIR documents for semantic
   equivalence.
   -->
+  <xsl:strip-space elements="*"/>
   <xsl:template match="/program/@*">
     <!-- Program attributes are not important -->
   </xsl:template>
