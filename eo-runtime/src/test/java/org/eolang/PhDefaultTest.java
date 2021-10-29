@@ -94,6 +94,16 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void printsEndlessRecursionObject() {
+        final Phi phi = new PhDefaultTest.EndlessRecursion(new PhEta());
+        PhDefaultTest.EndlessRecursion.count = 10;
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi parent) {
              this(parent, new Object());
@@ -135,6 +145,22 @@ public final class PhDefaultTest {
             super(parent);
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> self.attr("ρ").get().attr("a").get()
+            )));
+        }
+    }
+
+    public static class EndlessRecursion extends PhDefault {
+        public static int count;
+        public EndlessRecursion(final Phi parent) {
+            super(parent);
+            this.add("φ", new AtBound(new AtLambda(
+                this, self -> {
+                    --PhDefaultTest.EndlessRecursion.count;
+                    if (PhDefaultTest.EndlessRecursion.count <= 0) {
+                        return new Data.ToPhi(0L);
+                    }
+                    return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
+                }
             )));
         }
     }

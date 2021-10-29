@@ -108,8 +108,8 @@
 
 [] > calculates-fibonacci-number-with-tail
   eq. > @
-    13
-    fibonacci 7
+    3
+    fibonacci 4
   [n] > fibonacci
     if. > @
       n.less 3
