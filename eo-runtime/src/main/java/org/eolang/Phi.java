@@ -55,4 +55,42 @@ public interface Phi {
      */
     Attr attr(String name);
 
+    /**
+     * Compact toString.
+     *
+     * @since 0.17
+     */
+    final class Compact {
+        /**
+         * Max length.
+         */
+        private static final int MAX = 100;
+
+        /**
+         * Original.
+         */
+        private final Phi phi;
+
+        /**
+         * Ctor.
+         * @param obj The object
+         */
+        Compact(final Phi obj) {
+            this.phi = obj;
+        }
+
+        @Override
+        public String toString() {
+            String txt = this.phi.toString().replace('\n', ' ');
+            if (txt.length() > Phi.Compact.MAX) {
+                txt = String.format(
+                    "%s...%s",
+                    txt.substring(0, Phi.Compact.MAX - 3),
+                    txt.substring(Phi.Compact.MAX + 3)
+                );
+            }
+            return txt;
+        }
+    }
+
 }

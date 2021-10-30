@@ -38,7 +38,10 @@ public final class PhMethod extends PhOnce {
      * @param mtd The name of method
      */
     public PhMethod(final Phi phi, final String mtd) {
-        super(() -> phi.attr(mtd).get(), String.format("%s.%s", phi, mtd));
+        super(
+            () -> phi.attr(mtd).get(),
+            String.format("%s.%s", new Phi.Compact(phi), mtd)
+        );
     }
 
 }

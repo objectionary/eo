@@ -44,7 +44,12 @@ public final class PhWith extends PhOnce {
                 phi.attr(name).put(attr);
                 return phi;
             },
-            String.format("%s[%s]=%s", phi, name, attr)
+            String.format(
+                "%s[%s]=%s",
+                new Phi.Compact(phi),
+                name,
+                new Phi.Compact(attr)
+            )
         );
     }
 
@@ -61,7 +66,12 @@ public final class PhWith extends PhOnce {
                 phi.attr(pos).put(attr);
                 return phi;
             },
-            String.format("%s[%d]=%s", phi, pos, attr)
+            String.format(
+                "%s[%d]=%s",
+                new Phi.Compact(phi),
+                pos,
+                new Phi.Compact(attr)
+            )
         );
     }
 
