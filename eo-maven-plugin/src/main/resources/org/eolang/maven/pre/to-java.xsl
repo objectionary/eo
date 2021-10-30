@@ -142,16 +142,16 @@ SOFTWARE.
       <xsl:when test="@ancestors">
         <xsl:text>public </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text>(final Phi parent) {</xsl:text>
+        <xsl:text>(final Phi sigma) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>super(parent);</xsl:text>
+        <xsl:text>super(sigma);</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>public </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text>(final Phi parent) {</xsl:text>
+        <xsl:text>(final Phi sigma) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>super(parent);</xsl:text>
+        <xsl:text>super(sigma);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
