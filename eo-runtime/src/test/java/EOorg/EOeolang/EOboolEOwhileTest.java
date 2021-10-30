@@ -29,7 +29,6 @@ import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -50,7 +49,7 @@ public final class EOboolEOwhileTest {
 
     @Test
     public void loopsOverAbstractObjects() {
-        final Phi toggle = new PhMethod(new Parent(new PhEta()), "toggle");
+        final Phi toggle = new PhMethod(new Parent(Phi.Φ), "toggle");
         new Dataized(
             new PhWith(
                 new PhMethod(toggle, "write"),
@@ -60,7 +59,7 @@ public final class EOboolEOwhileTest {
         new Dataized(
             new PhWith(
                 new PhMethod(toggle, "while"),
-                0, new EOboolEOwhileTest.Kid(new PhEta())
+                0, new EOboolEOwhileTest.Kid(Phi.Φ)
             )
         ).take();
     }

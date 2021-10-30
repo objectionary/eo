@@ -68,7 +68,7 @@ public final class AtFree implements Attr {
     @Override
     public Phi get() {
         final Phi phi = this.origin.get();
-        if (phi.equals(new PhEta())) {
+        if (phi.equals(Phi.Φ)) {
             throw new Attr.StillAbstractException(
                 "The attribute is not initialized, can't read"
             );

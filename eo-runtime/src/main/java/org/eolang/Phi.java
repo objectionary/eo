@@ -27,9 +27,38 @@ package org.eolang;
 /**
  * A simple object.
  *
+ * We call it Phi because of the name of the φ-calculus. Actually, a better
+ * name would be "Object", but it's already occupied by Java. That's why
+ * we call it Phi.
+ *
  * @since 0.1
  */
 public interface Phi {
+
+    /**
+     * The global scope object, which owns all other objects.
+     */
+    Phi Φ = new Phi() {
+        @Override
+        public String toString() {
+            return "Φ";
+        }
+
+        @Override
+        public Phi copy(final Phi rho) {
+            return Phi.Φ;
+        }
+
+        @Override
+        public Attr attr(final int pos) {
+            return this.attr(String.format("#%d", pos));
+        }
+
+        @Override
+        public Attr attr(final String name) {
+            return new AtAbsent(name, " in Φ");
+        }
+    };
 
     /**
      * Make a copy, attaching it to a new parent.

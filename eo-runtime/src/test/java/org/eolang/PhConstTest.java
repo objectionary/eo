@@ -42,7 +42,7 @@ public final class PhConstTest {
             new Dataized(
                 new PhConst(
                     new PhWith(
-                        new EOsprintf(new PhEta()),
+                        new EOsprintf(Phi.Φ),
                         0, new Data.ToPhi("Hello, world!")
                     )
                 )
@@ -98,7 +98,7 @@ public final class PhConstTest {
         final Boom boom = new Boom();
         Phi cnst = new PhConst(boom);
         for (int idx = 0; idx < 10; ++idx) {
-            final Phi phi = cnst.attr("φ").get().copy(new PhEta());
+            final Phi phi = cnst.attr("φ").get().copy(Phi.Φ);
             phi.attr("x").put(new Data.ToPhi(1L));
             new Dataized(phi).take();
         }

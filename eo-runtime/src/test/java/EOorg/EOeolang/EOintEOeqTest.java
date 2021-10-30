@@ -26,7 +26,6 @@ package EOorg.EOeolang;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
-import org.eolang.PhEta;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -46,8 +45,8 @@ public final class EOintEOeqTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
         final Phi eql = new PhWith(
-            new PhMethod(new PhCopy(left, new PhEta()), "eq"),
-            0, new PhCopy(right, new PhEta())
+            new PhMethod(new PhCopy(left, Phi.Φ), "eq"),
+            0, new PhCopy(right, Phi.Φ)
         );
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),

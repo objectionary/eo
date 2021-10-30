@@ -26,7 +26,6 @@ package EOorg.EOeolang.EOio;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -44,7 +43,7 @@ public final class EOstdoutTest {
     public void printsString() {
         final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
-            new PhCopy(new EOstdout(new PhEta()), new PhEta()),
+            new PhCopy(new EOstdout(Phi.Φ), Phi.Φ),
             "text",
             format
         );

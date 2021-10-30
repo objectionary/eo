@@ -26,8 +26,8 @@ package EOorg.EOeolang;
 import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ public final class EOseqTest {
             new Dataized(
                 new PhWith(
                     new PhWith(
-                        new EOseq(new PhEta()),
+                        new EOseq(Phi.Φ),
                         0, new Data.ToPhi(0L)
                     ),
                     0, new Data.ToPhi(1L)
@@ -61,12 +61,12 @@ public final class EOseqTest {
             new Dataized(
                 new PhWith(
                     new PhWith(
-                        new EOseq(new PhEta()),
+                        new EOseq(Phi.Φ),
                         0, new Data.ToPhi(0L)
                     ),
                     0,
                     new PhWith(
-                        new EOsprintf(new PhEta()),
+                        new EOsprintf(Phi.Φ),
                         0, new Data.ToPhi("Hello!")
                     )
                 )

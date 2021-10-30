@@ -29,7 +29,6 @@ import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 
@@ -47,7 +46,7 @@ public class EOint$EOdiv extends PhDefault {
             final long x = new Dataized(self.attr("x").get()).take(Long.class);
             if (x == 0L) {
                 final Phi msg = new Data.ToPhi("Division by zero is undefined");
-                return new PhWith(new EOerror(new PhEta()), "msg", msg);
+                return new PhWith(new EOerror(Phi.Φ), "msg", msg);
             }
             return new Data.ToPhi(
                 new Dataized(self.attr("ρ").get()).take(Long.class) / x

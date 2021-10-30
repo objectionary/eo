@@ -34,7 +34,7 @@ public final class AtSimple implements Attr {
     private Phi phi;
 
     public AtSimple() {
-        this(new PhEta());
+        this(Phi.Φ);
     }
 
     public AtSimple(final Phi src) {

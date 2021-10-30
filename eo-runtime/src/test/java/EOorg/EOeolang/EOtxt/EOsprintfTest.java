@@ -25,7 +25,6 @@ package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -45,7 +44,7 @@ public final class EOsprintfTest {
         final Phi num = new Data.ToPhi(1L);
         final Phi phi = new PhWith(
             new PhWith(
-                new EOsprintf(new PhEta()),
+                new EOsprintf(Phi.Φ),
                 "format",
                 format
             ),
@@ -62,8 +61,8 @@ public final class EOsprintfTest {
     public void printsStringWithVarargs() {
         final Phi format = new Data.ToPhi("Hello, %s %s!");
         final Phi num = new Data.ToPhi(5L);
-        Phi phi = new EOsprintf(new PhEta());
-        phi = phi.copy(new PhEta());
+        Phi phi = new EOsprintf(Phi.Φ);
+        phi = phi.copy(Phi.Φ);
         phi = new PhWith(phi, 0, format);
         phi = new PhWith(phi, 1, num);
         phi = new PhWith(phi, 2, num);

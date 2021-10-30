@@ -29,7 +29,6 @@ import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 
@@ -48,7 +47,7 @@ public class EOint$EOpow extends PhDefault {
             final long x = new Dataized(self.attr("x").get()).take(Long.class);
             if (ρ == 0L && x < 0L) {
                 final Phi msg = new Data.ToPhi("0 cannot be raised to a negative power");
-                return new PhWith(new EOerror(new PhEta()), "msg", msg);
+                return new PhWith(new EOerror(Phi.Φ), "msg", msg);
             }
             return new Data.ToPhi((long) Math.pow(ρ, x));
         }));

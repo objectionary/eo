@@ -60,7 +60,7 @@ public class PhDefault implements Phi, Cloneable {
      * Ctor.
      */
     public PhDefault() {
-        this(new PhEta());
+        this(Phi.Φ);
     }
 
     /**

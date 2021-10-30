@@ -39,11 +39,11 @@ public final class PhDefaultTest {
     @Test
     public void makesCopy() {
         final Phi num = new Data.ToPhi(42L);
-        final Phi parent = new EOsprintf(new PhEta());
+        final Phi parent = new EOsprintf(Phi.Φ);
         final String data = "Hello, world!";
         final Phi phi = new PhDefaultTest.Foo(parent, data);
         phi.attr(0).put(num);
-        final Phi copy = phi.copy(new PhEta());
+        final Phi copy = phi.copy(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(copy).take(String.class),
             Matchers.equalTo(data)
@@ -57,7 +57,7 @@ public final class PhDefaultTest {
     @Test
     public void setsFreeAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
-        final Phi phi = new PhDefaultTest.Foo(new PhEta());
+        final Phi phi = new PhDefaultTest.Foo(Phi.Φ);
         phi.attr(0).put(num);
         Assertions.assertThrows(
             Attr.ReadOnlyException.class,
@@ -76,9 +76,9 @@ public final class PhDefaultTest {
 
     @Test
     public void changesRhoOnCopy() {
-        final Phi foo = new Foo(new PhEta());
+        final Phi foo = new Foo(Phi.Φ);
         final Phi kid = foo.attr("kid").get();
-        final Phi copy = kid.copy(new PhEta());
+        final Phi copy = kid.copy(Phi.Φ);
         MatcherAssert.assertThat(
             copy.attr("ρ").get(),
             Matchers.not(Matchers.equalTo(foo))
@@ -87,7 +87,7 @@ public final class PhDefaultTest {
 
     @Test
     public void getsRhoFromPhi() {
-        final Phi first = new First(new PhEta());
+        final Phi first = new First(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(first).take(Long.class),
             Matchers.equalTo(1L)
@@ -96,7 +96,7 @@ public final class PhDefaultTest {
 
     @Test
     public void printsEndlessRecursionObject() {
-        final Phi phi = new PhDefaultTest.EndlessRecursion(new PhEta());
+        final Phi phi = new PhDefaultTest.EndlessRecursion(Phi.Φ);
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
             new Dataized(phi).take(Long.class),

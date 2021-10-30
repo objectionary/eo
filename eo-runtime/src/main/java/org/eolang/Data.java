@@ -85,21 +85,21 @@ public interface Data<T> {
                 () -> {
                     final Phi phi;
                     if (obj instanceof Boolean) {
-                        phi = new EObool(new PhEta());
+                        phi = new EObool(Phi.Φ);
                     } else if (obj instanceof byte[]) {
-                        phi = new EObytes(new PhEta());
+                        phi = new EObytes(Phi.Φ);
                     } else if (obj instanceof Long) {
-                        phi = new EOint(new PhEta());
+                        phi = new EOint(Phi.Φ);
                     } else if (obj instanceof String) {
-                        phi = new EOstring(new PhEta());
+                        phi = new EOstring(Phi.Φ);
                     } else if (obj instanceof Character) {
-                        phi = new EOchar(new PhEta());
+                        phi = new EOchar(Phi.Φ);
                     } else if (obj instanceof Double) {
-                        phi = new EOfloat(new PhEta());
+                        phi = new EOfloat(Phi.Φ);
                     } else if (obj instanceof Pattern) {
-                        phi = new EOregex(new PhEta());
+                        phi = new EOregex(Phi.Φ);
                     } else if (obj instanceof Phi[]) {
-                        phi = new EOarray(new PhEta());
+                        phi = new EOarray(Phi.Φ);
                     } else {
                         throw new IllegalArgumentException(
                             String.format(
@@ -118,7 +118,7 @@ public interface Data<T> {
     final class Value<T> extends PhDefault implements Data<T> {
         private final T val;
         public Value(final T value) {
-            super(new PhEta());
+            super(Phi.Φ);
             this.val = value;
         }
         @Override

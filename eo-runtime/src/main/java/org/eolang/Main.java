@@ -74,10 +74,10 @@ public final class Main {
             .collect(Collectors.joining("."));
         final Phi app = Phi.class.cast(
             Class.forName(path).getConstructor(Phi.class)
-                .newInstance(new PhEta())
+                .newInstance(Phi.Φ)
         );
         for (int idx = 1; idx < args.length; ++idx) {
-            final Phi phi = new EOstring(new PhEta());
+            final Phi phi = new EOstring(Phi.Φ);
             final String arg = args[idx];
             phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr("args").put(phi);

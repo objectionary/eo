@@ -26,7 +26,6 @@ package EOorg.EOeolang;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
-import org.eolang.PhEta;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -48,7 +47,7 @@ public final class EOmemoryTest {
 
     @Test
     public void readsAndWrites() {
-        final Phi mem = new EOmemory(new PhEta());
+        final Phi mem = new EOmemory(Phi.Φ);
         final Phi text = new Data.ToPhi("Hello, world!");
         final Phi write = mem.attr(EOmemoryTest.WRITE).get();
         write.attr(0).put(text);
@@ -61,10 +60,10 @@ public final class EOmemoryTest {
 
     @Test
     public void comparesForEquality() {
-        final Phi mem = new EOmemory(new PhEta());
+        final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), new PhEta()),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
@@ -82,16 +81,16 @@ public final class EOmemoryTest {
 
     @Test
     public void writesAndRewrites() {
-        final Phi mem = new EOmemory(new PhEta());
+        final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), new PhEta()),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), new PhEta()),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
                 0, new Data.ToPhi(5L)
             )
         ).take(Boolean.class);
@@ -103,20 +102,20 @@ public final class EOmemoryTest {
 
     @Test
     public void makeCorrectCopy() {
-        final Phi mem = new EOmemory(new PhEta());
+        final Phi mem = new EOmemory(Phi.Φ);
         final Phi text = new Data.ToPhi(1L);
         final Phi write = mem.attr(EOmemoryTest.WRITE).get();
         write.attr(0).put(text);
         new Dataized(write).take(Boolean.class);
         MatcherAssert.assertThat(
-            new Dataized(new PhCopy(mem, new PhEta())).take(Long.class),
+            new Dataized(new PhCopy(mem, Phi.Φ)).take(Long.class),
             Matchers.equalTo(1L)
         );
     }
 
     @Test
     public void comparesOnFly() {
-        final Phi mem = new EOmemory(new PhEta());
+        final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
@@ -145,17 +144,17 @@ public final class EOmemoryTest {
 
     @Test
     public void rewritesItself() {
-        final Phi mem = new EOmemory(new PhEta());
+        final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), new PhEta()),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
                 0,
                 new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), new PhEta()),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
                 0,
                 new PhWith(
                     new PhMethod(mem, "add"),

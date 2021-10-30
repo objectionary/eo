@@ -37,7 +37,7 @@ public final class PhMethodTest {
     @Test
     public void safeToString() {
         MatcherAssert.assertThat(
-            new PhMethod(new PhEta(), "hello").toString(),
+            new PhMethod(Phi.Φ, "hello").toString(),
             Matchers.endsWith(".hello")
         );
     }

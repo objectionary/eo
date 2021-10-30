@@ -29,7 +29,6 @@ import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhEta;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -55,7 +54,7 @@ public final class EOarrayEOmapTest {
                         }
                     )
                 ),
-                0, new EOarrayEOmapTest.Kid(new PhEta())
+                0, new EOarrayEOmapTest.Kid(Phi.Φ)
             )
         ).take(Phi[].class);
         MatcherAssert.assertThat(

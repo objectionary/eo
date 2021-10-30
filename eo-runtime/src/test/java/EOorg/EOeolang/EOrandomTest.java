@@ -24,7 +24,6 @@
 package EOorg.EOeolang;
 
 import org.eolang.Dataized;
-import org.eolang.PhEta;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,7 +38,7 @@ public final class EOrandomTest {
 
     @Test
     public void readsTwice() {
-        final Phi rnd = new EOrandom(new PhEta());
+        final Phi rnd = new EOrandom(Phi.Φ);
         final Double first = new Dataized(rnd).take(Double.class);
         MatcherAssert.assertThat(
             new Dataized(rnd).take(Double.class),

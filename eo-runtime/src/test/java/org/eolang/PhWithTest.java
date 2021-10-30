@@ -40,7 +40,7 @@ public final class PhWithTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new EOsprintf(new PhEta()),
+                    new EOsprintf(Phi.Φ),
                     0, new Data.ToPhi("Hello, world!")
                 )
             ).take(String.class),
