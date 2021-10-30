@@ -194,7 +194,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtBound(new AtOnce(</xsl:text>
-    <xsl:text>new AtLambda(this, self -&gt; {</xsl:text>
+    <xsl:text>new AtLambda(this, rho -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
       <xsl:with-param name="name" select="'ret'"/>
@@ -266,24 +266,24 @@ SOFTWARE.
     <xsl:text> = </xsl:text>
     <xsl:choose>
       <xsl:when test="@base='$'">
-        <xsl:text>self</xsl:text>
+        <xsl:text>rho</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
-        <xsl:text>new PhMethod(self, "&#x3C1;")</xsl:text>
+        <xsl:text>new PhMethod(rho, "&#x3C1;")</xsl:text>
       </xsl:when>
       <xsl:when test="@base='&amp;'">
-        <xsl:text>new PhMethod(self, "&#x3C3;")</xsl:text>
+        <xsl:text>new PhMethod(rho, "&#x3C3;")</xsl:text>
       </xsl:when>
       <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
-        <xsl:text>(self)</xsl:text>
+        <xsl:text>(rho)</xsl:text>
       </xsl:when>
       <xsl:when test="$b/@level">
         <xsl:for-each select="0 to $b/@level">
           <xsl:text>new PhMethod(</xsl:text>
         </xsl:for-each>
-        <xsl:text>self</xsl:text>
+        <xsl:text>rho</xsl:text>
         <xsl:for-each select="1 to $b/@level">
           <xsl:text>, "&#x3C3;")</xsl:text>
         </xsl:for-each>
@@ -292,21 +292,21 @@ SOFTWARE.
         <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:when test="$b">
-        <xsl:text>new PhMethod(self, "</xsl:text>
+        <xsl:text>new PhMethod(rho, "</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
         <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name(@base)"/>
-        <xsl:text>(self)</xsl:text>
+        <xsl:text>(rho)</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="rho" select="'self'"/>
+      <xsl:with-param name="rho" select="'rho'"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
   </xsl:template>
