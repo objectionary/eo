@@ -1,5 +1,5 @@
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.16.4
++rt jvm org.eolang:eo-runtime:0.16.5
 
 [] > array
 
@@ -33,7 +33,6 @@
   # object with one free attribute, for the element
   # of the array.
   [f] > map
-    $ > this
     ^.mapi > @
       [x i]
-        (this.f x) > @
+        &.f x > @

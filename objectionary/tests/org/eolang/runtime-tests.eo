@@ -52,3 +52,14 @@
     x > @
   a FALSE > closed
   closed TRUE > @
+
+[] > makes-deep-object-recursively
+  eq. > @
+    0
+    x 100
+  [i] > x
+    if. > @
+      i.less 0
+      0
+      x
+        i.sub 1
