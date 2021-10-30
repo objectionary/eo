@@ -271,6 +271,9 @@ SOFTWARE.
       <xsl:when test="@base='^'">
         <xsl:text>new PhMethod(self, "&#x3C1;")</xsl:text>
       </xsl:when>
+      <xsl:when test="@base='&amp;'">
+        <xsl:text>new PhMethod(self, "&#x3C3;")</xsl:text>
+      </xsl:when>
       <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>

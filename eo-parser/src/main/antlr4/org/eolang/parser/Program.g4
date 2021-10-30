@@ -122,7 +122,7 @@ method
   (
     NAME
     |
-    PARENT
+    RHO
     |
     AT
   )
@@ -183,9 +183,11 @@ head
   :
   AT
   |
-  PARENT
+  RHO
   |
-  SELF
+  XI
+  |
+  SIGMA
   |
   STAR
   |
@@ -232,7 +234,8 @@ CONST: '!';
 SLASH: '/';
 COLON: ':';
 ARROW: '>';
-SELF: '$';
+SIGMA: '&';
+XI: '$';
 PLUS: '+';
 MINUS: '-';
 QUESTION: '?';
@@ -243,7 +246,7 @@ RSQ: ']';
 LB: '(';
 RB: ')';
 AT: '@';
-PARENT: '^';
+RHO: '^';
 HASH: '#';
 EOL
   :

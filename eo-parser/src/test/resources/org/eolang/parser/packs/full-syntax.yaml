@@ -11,6 +11,7 @@ tests:
   - //o[@base='string' and text()='Hello, друг!']
   - //o[@name='hello' and @const]
   - //o[@as='i']
+  - //o[@base='&']
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@vararg and @name='a']]
@@ -41,6 +42,7 @@ eo: |
           (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey TRUE > a!
             # This object is also very good
             []
+              &.@ > t
               ^.@.hey > you...
             kid.^.^
             '家'

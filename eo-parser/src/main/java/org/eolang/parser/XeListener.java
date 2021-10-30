@@ -286,14 +286,17 @@ public final class XeListener implements ProgramListener {
         if (ctx.AT() != null) {
             this.dirs.attr("base", "@");
         }
-        if (ctx.SELF() != null) {
+        if (ctx.XI() != null) {
             this.dirs.attr("base", "$");
         }
         if (ctx.STAR() != null) {
             this.dirs.attr("base", "array").attr("data", "array");
         }
-        if (ctx.PARENT() != null) {
+        if (ctx.RHO() != null) {
             this.dirs.attr("base", "^");
+        }
+        if (ctx.SIGMA() != null) {
+            this.dirs.attr("base", "&");
         }
     }
 
