@@ -73,7 +73,8 @@ public final class Main {
             .map(p -> String.format("EO%s", p))
             .collect(Collectors.joining("."));
         final Phi app = Phi.class.cast(
-            Class.forName(path).getConstructor().newInstance()
+            Class.forName(path).getConstructor(Phi.class)
+                .newInstance(new PhEta())
         );
         for (int idx = 1; idx < args.length; ++idx) {
             final Phi phi = new EOstring(new PhEta());
