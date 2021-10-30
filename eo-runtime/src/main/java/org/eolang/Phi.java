@@ -93,7 +93,7 @@ public interface Phi {
         /**
          * Max length.
          */
-        private static final int MAX = 100;
+        private static final int MAX = 64;
 
         /**
          * Original.
@@ -110,7 +110,9 @@ public interface Phi {
 
         @Override
         public String toString() {
-            String txt = this.phi.toString().replace('\n', ' ');
+            String txt = this.phi.toString()
+                .replace('\n', ' ')
+                .replaceAll(", +", ", ");
             if (txt.length() > Phi.Compact.MAX) {
                 txt = String.format(
                     "%s...%s",

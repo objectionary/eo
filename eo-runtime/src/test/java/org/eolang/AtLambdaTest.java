@@ -25,7 +25,6 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -47,11 +46,10 @@ public final class AtLambdaTest {
     }
 
     @Test
-    @Disabled
     public void passesSelfCorrectlyThroughChild() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
-        phi.attr("Δ").get();
+        phi.attr("φ").get();
         MatcherAssert.assertThat(
             dummy.self,
             Matchers.equalTo(phi)
@@ -62,10 +60,10 @@ public final class AtLambdaTest {
         public Phi self;
         Dummy() {
             super();
-            this.add("φ", new AtOnce(new AtLambda(this, rho -> {
+            this.add("φ", new AtLambda(this, rho -> {
                 this.self = rho;
                 return new Data.ToPhi(1L);
-            })));
+            }));
         }
     }
 }

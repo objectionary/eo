@@ -28,16 +28,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A const object.
+ * A const origin.
  *
  * @since 0.16
  */
 public final class PhConst implements Phi {
 
     /**
-     * The object fetched.
+     * The origin being turned into a const.
      */
-    private final Phi object;
+    private final Phi origin;
 
     /**
      * Cached attributes.
@@ -52,7 +52,7 @@ public final class PhConst implements Phi {
     /**
      * Ctor.
      *
-     * @param phi The object
+     * @param phi The origin
      */
     public PhConst(final Phi phi) {
         this(phi, new ConcurrentHashMap<>(0), new ConcurrentHashMap<>(0));
@@ -61,29 +61,31 @@ public final class PhConst implements Phi {
     /**
      * Ctor.
      *
-     * @param phi The object
+     * @param phi The origin
+     * @param names Attrs-by-names pre-cached
+     * @param nums Attrs-by-positions pre-cached
      */
     public PhConst(final Phi phi, final Map<String, Attr> names,
         final Map<Integer, Attr> nums) {
-        this.object = phi;
+        this.origin = phi;
         this.named = names;
         this.numbered = nums;
     }
 
     @Override
     public String toString() {
-        return String.format("!%s", new Phi.Compact(this.object));
+        return String.format("!%s", new Phi.Compact(this.origin));
     }
 
     @Override
     public Phi copy(final Phi rho) {
-        return new PhConst(this.object.copy(rho), this.named, this.numbered);
+        return new PhConst(this.origin.copy(rho), this.named, this.numbered);
     }
 
     @Override
     public Attr attr(final int pos) {
         this.numbered.computeIfAbsent(
-            pos, x -> new AtConst(this.object.attr(pos).copy(this))
+            pos, x -> new AtConst(this.origin.attr(pos).copy(this))
         );
         return this.numbered.get(pos);
     }
@@ -91,7 +93,7 @@ public final class PhConst implements Phi {
     @Override
     public Attr attr(final String name) {
         this.named.computeIfAbsent(
-            name, x -> new AtConst(this.object.attr(name).copy(this))
+            name, x -> new AtConst(this.origin.attr(name).copy(this))
         );
         return this.named.get(name);
     }
