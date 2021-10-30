@@ -96,8 +96,8 @@
 
 [] > calculates-fibonacci-number-with-recursion
   eq. > @
-    13
-    fibo 7
+    3
+    fibo 4
   [n] > fibo
     if. > @
       n.less 3
