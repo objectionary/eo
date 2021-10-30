@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Data;
@@ -42,7 +41,7 @@ public class EOstring$EOjoined extends PhDefault {
     public EOstring$EOjoined(final Phi sigma) {
         super(sigma);
         this.add("items", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             final String delim = new Dataized(
                 self.attr("ρ").get()
             ).take(String.class);
@@ -54,7 +53,7 @@ public class EOstring$EOjoined extends PhDefault {
                 texts[idx] = new Dataized(items[idx]).take(String.class);
             }
             return new Data.ToPhi(String.join(delim, texts));
-        })));
+        }));
     }
 
 }

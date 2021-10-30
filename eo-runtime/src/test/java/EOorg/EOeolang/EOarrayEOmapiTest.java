@@ -23,9 +23,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
+import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -73,7 +73,7 @@ public final class EOarrayEOmapiTest {
             super(sigma);
             this.add("x", new AtFree());
             this.add("i", new AtFree());
-            this.add("φ", new AtBound(new AtLambda(
+            this.add("φ", new AtOnce(new AtLambda(
                 this, self -> new Data.ToPhi(
                     Long.toString(
                         new Dataized(

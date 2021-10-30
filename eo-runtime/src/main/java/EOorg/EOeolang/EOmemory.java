@@ -25,7 +25,6 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
@@ -46,21 +45,15 @@ public class EOmemory extends PhDefault {
     public EOmemory(final Phi sigma) {
         super(sigma);
         this.phi = new AtomicReference<>();
-        this.add(
-            "φ",
-            new AtLambda(
-                this,
-                rho -> {
-                    final Phi object = this.phi.get();
-                    if (object == null) {
-                        throw new Attr.Exception(
-                            "The memory is not yet written"
-                        );
-                    }
-                    return object.copy(rho);
-                }
-            )
-        );
+        this.add("φ", new AtLambda(this, rho -> {
+            final Phi object = this.phi.get();
+            if (object == null) {
+                throw new Attr.Exception(
+                    "The memory is not yet written"
+                );
+            }
+            return object.copy(rho);
+        }));
         this.add("write", new AtLambda(this, EOmemory.Write::new));
         this.add("is-empty", new AtLambda(this, EOmemory.IsEmpty::new));
     }
@@ -80,9 +73,9 @@ public class EOmemory extends PhDefault {
     private final class IsEmpty extends PhDefault {
         IsEmpty(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtBound(new AtLambda(
+            this.add("φ", new AtLambda(
                 this, rho -> new Data.ToPhi(EOmemory.this.phi.get() == null)
-            )));
+            ));
         }
     }
 

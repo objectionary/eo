@@ -111,10 +111,10 @@ public final class PhDefaultTest {
          public Foo(final Phi sigma, final Object data) {
              super(sigma);
              this.add("x", new AtFree());
-             this.add("kid", new AtBound(new AtLambda(
+             this.add("kid", new AtOnce(new AtLambda(
                  this, PhDefaultTest.Kid::new
              )));
-             this.add("φ", new AtBound(new AtLambda(
+             this.add("φ", new AtOnce(new AtLambda(
                  this, self -> new Data.ToPhi(data)
              )));
         }
@@ -124,7 +124,7 @@ public final class PhDefaultTest {
         public Kid(final Phi sigma) {
             super(sigma);
             this.add("z", new AtFree());
-            this.add("φ", new AtBound(new AtLambda(
+            this.add("φ", new AtOnce(new AtLambda(
                 this, self -> new EOsprintf(new Data.ToPhi(1L))
             )));
         }
@@ -134,7 +134,7 @@ public final class PhDefaultTest {
         public First(final Phi sigma) {
             super(sigma);
             this.add("a", new AtFree(new Data.ToPhi(1L)));
-            this.add("φ", new AtBound(new AtLambda(
+            this.add("φ", new AtOnce(new AtLambda(
                 this, PhDefaultTest.Second::new
             )));
         }
@@ -143,7 +143,7 @@ public final class PhDefaultTest {
     public static class Second extends PhDefault {
         public Second(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtBound(new AtLambda(
+            this.add("φ", new AtOnce(new AtLambda(
                 this, self -> self.attr("ρ").get().attr("a").get()
             )));
         }
@@ -153,16 +153,14 @@ public final class PhDefaultTest {
         public static int count;
         public EndlessRecursion(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtBound(new AtLambda(
+            this.add("φ", new AtOnce(new AtLambda(
                 this, self -> {
                     --PhDefaultTest.EndlessRecursion.count;
                     if (PhDefaultTest.EndlessRecursion.count <= 0) {
                         return new Data.ToPhi(0L);
                     }
-                System.out.println("ret");
                     Phi ret = new PhDefaultTest.EndlessRecursion(self);
-                    return ret;
-//                    return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
+                    return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
                 }
             )));
         }

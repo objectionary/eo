@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtLambda;
 import org.eolang.AtVararg;
 import org.eolang.Data;
@@ -42,7 +41,7 @@ public class EObool$EOand extends PhDefault {
     public EObool$EOand(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             Boolean term = new Dataized(
                 self.attr("ρ").get()
             ).take(Boolean.class);
@@ -56,7 +55,7 @@ public class EObool$EOand extends PhDefault {
                 term &= new Dataized(arg).take(Boolean.class);
             }
             return new Data.ToPhi(term);
-        })));
+        }));
     }
 
 }

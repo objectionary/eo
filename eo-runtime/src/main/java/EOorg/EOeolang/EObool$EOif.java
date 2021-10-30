@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Dataized;
@@ -42,7 +41,7 @@ public class EObool$EOif extends PhDefault {
         super(sigma);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             final boolean term = new Dataized(
                 self.attr("ρ").get()
             ).take(Boolean.class);
@@ -53,7 +52,7 @@ public class EObool$EOif extends PhDefault {
                 out = self.attr("f").get();
             }
             return out;
-        })));
+        }));
     }
 
 }

@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -40,12 +39,12 @@ public class EObytes$EOsize extends PhDefault {
 
     public EObytes$EOsize(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
             return new Data.ToPhi((long) array.length);
-        })));
+        }));
     }
 
 }

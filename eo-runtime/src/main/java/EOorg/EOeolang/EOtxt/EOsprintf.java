@@ -26,9 +26,9 @@ package EOorg.EOeolang.EOtxt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
+import org.eolang.AtOnce;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -55,12 +55,12 @@ public class EOsprintf extends PhDefault {
         super(sigma);
         this.add(EOsprintf.FMT, new AtFree());
         this.add(EOsprintf.AGV, new AtVararg());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtOnce(new AtLambda(this, rho -> {
             final String format = new Dataized(
-                self.attr(EOsprintf.FMT).get()
+                rho.attr(EOsprintf.FMT).get()
             ).take(String.class);
             final Phi[] args = new Dataized(
-                self.attr(EOsprintf.AGV).get()
+                rho.attr(EOsprintf.AGV).get()
             ).take(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {

@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Data;
@@ -42,10 +41,10 @@ public class EOint$EOmod extends PhDefault {
     public EOint$EOmod(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-                new Dataized(self.attr("ρ").get()).take(Long.class) %
-                new Dataized(self.attr("x").get()).take(Long.class)
-        ))));
+        this.add("φ", new AtLambda(this, self -> new Data.ToPhi(
+            new Dataized(self.attr("ρ").get()).take(Long.class) %
+            new Dataized(self.attr("x").get()).take(Long.class)
+        )));
     }
 
 }

@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Data;
@@ -44,7 +43,7 @@ public class EOint$EOdiv extends PhDefault {
     public EOint$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             final long x = new Dataized(self.attr("x").get()).take(Long.class);
             if (x == 0L) {
                 final Phi msg = new Data.ToPhi("Division by zero is undefined");
@@ -53,7 +52,7 @@ public class EOint$EOdiv extends PhDefault {
             return new Data.ToPhi(
                 new Dataized(self.attr("ρ").get()).take(Long.class) / x
             );
-        })));
+        }));
     }
 
 }

@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Data;
@@ -42,7 +41,7 @@ public class EObool$EOwhile extends PhDefault {
     public EObool$EOwhile(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, rho -> {
+        this.add("φ", new AtLambda(this, rho -> {
             long count = 0L;
             while (true) {
                 final Boolean term = new Dataized(
@@ -57,7 +56,7 @@ public class EObool$EOwhile extends PhDefault {
                 ++count;
             }
             return new Data.ToPhi(count);
-        })));
+        }));
     }
 
 }

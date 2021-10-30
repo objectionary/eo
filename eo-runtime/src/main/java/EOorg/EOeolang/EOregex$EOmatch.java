@@ -26,7 +26,6 @@ package EOorg.EOeolang;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Data;
@@ -49,7 +48,7 @@ public class EOregex$EOmatch extends PhDefault {
     public EOregex$EOmatch(final Phi sigma) {
         super(sigma);
         this.add(EOregex$EOmatch.TXT, new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             final Pattern pattern = new Dataized(
                 self.attr("ρ").get()
             ).take(Pattern.class);
@@ -63,7 +62,7 @@ public class EOregex$EOmatch extends PhDefault {
             } else {
                 return new Data.ToPhi(new Phi[]{});
             }
-        })));
+        }));
     }
 
 }

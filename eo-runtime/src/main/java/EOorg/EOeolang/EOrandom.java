@@ -25,7 +25,7 @@
 package EOorg.EOeolang;
 
 import java.security.SecureRandom;
-import org.eolang.AtBound;
+import java.util.Random;
 import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.PhDefault;
@@ -38,11 +38,13 @@ import org.eolang.Phi;
  */
 public class EOrandom extends PhDefault {
 
+    private static final Random RND = new SecureRandom();
+
     public EOrandom(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
-            new SecureRandom().nextDouble()
-        ))));
+        this.add("φ", new AtLambda(this, self -> new Data.ToPhi(
+            EOrandom.RND.nextDouble()
+        )));
     }
 
 }

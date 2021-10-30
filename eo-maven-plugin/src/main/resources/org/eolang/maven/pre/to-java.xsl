@@ -177,11 +177,6 @@ SOFTWARE.
     <xsl:apply-templates select="*"/>
     <xsl:text>);</xsl:text>
   </xsl:template>
-  <xsl:template match="once">
-    <xsl:text>new AtOnce(</xsl:text>
-    <xsl:apply-templates select="*"/>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
   <xsl:template match="free">
     <xsl:text>new AtFree(</xsl:text>
     <xsl:apply-templates select="*"/>

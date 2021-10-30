@@ -62,10 +62,10 @@ public final class AtLambdaTest {
         public Phi self;
         Dummy() {
             super();
-            this.add("φ", new AtLambda(this, rho -> {
+            this.add("φ", new AtOnce(new AtLambda(this, rho -> {
                 this.self = rho;
                 return new Data.ToPhi(1L);
-            }));
+            })));
         }
     }
 }

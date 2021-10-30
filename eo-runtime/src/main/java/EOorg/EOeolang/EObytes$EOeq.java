@@ -25,7 +25,6 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Data;
@@ -43,7 +42,7 @@ public class EObytes$EOeq extends PhDefault {
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtLambda(this, self -> {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
@@ -51,7 +50,7 @@ public class EObytes$EOeq extends PhDefault {
                 self.attr("b").get()
             ).take(byte[].class);
             return new Data.ToPhi(Arrays.equals(another, array));
-        })));
+        }));
     }
 
 }

@@ -25,9 +25,9 @@
 package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
-import org.eolang.AtBound;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
+import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -52,10 +52,10 @@ public class EOstdout extends PhDefault {
     public EOstdout(final Phi sigma) {
         super(sigma);
         this.add(EOstdout.TEXT, new AtFree());
-        this.add("φ", new AtBound(new AtLambda(this, self -> {
+        this.add("φ", new AtOnce(new AtLambda(this, rho -> {
             EOstdout.OUT.print(
                 new Dataized(
-                    self.attr(EOstdout.TEXT).get()
+                    rho.attr(EOstdout.TEXT).get()
                 ).take(String.class)
             );
             return new Data.ToPhi(true);
