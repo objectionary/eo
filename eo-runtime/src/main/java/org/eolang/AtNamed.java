@@ -45,7 +45,7 @@ public final class AtNamed implements Attr {
 
     @Override
     public String toString() {
-        return String.format("%sN", this.origin.toString());
+        return String.format("%sN", this.origin);
     }
 
     @Override

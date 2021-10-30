@@ -38,7 +38,10 @@ public final class PhCopy extends PhOnce {
      * @param rho New \rho
      */
     public PhCopy(final Phi phi, final Phi rho) {
-        super(() -> phi.copy(rho), String.format("%s'", new Phi.Compact(phi)));
+        super(
+            () -> phi.copy(rho),
+            () -> String.format("%s'", new Phi.Compact(phi))
+        );
     }
 
 }

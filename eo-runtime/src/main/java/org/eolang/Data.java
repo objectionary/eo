@@ -34,6 +34,7 @@ import EOorg.EOeolang.EOregex;
 import EOorg.EOeolang.EOstring;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -52,8 +53,8 @@ public interface Data<T> {
     final class Once<T> implements Data<T> {
         private final Data<T> src;
         private final AtomicReference<T> ref;
-        private final String blank;
-        public Once(final Data<T> data, final String txt) {
+        private final Supplier<String> blank;
+        public Once(final Data<T> data, final Supplier<String> txt) {
             this.src = data;
             this.ref = new AtomicReference<>();
             this.blank = txt;
@@ -61,15 +62,11 @@ public interface Data<T> {
         @Override
         public String toString() {
             final T data = this.ref.get();
-            String txt;
-            if (this.blank.isEmpty()) {
+            String txt = this.blank.get();
+            if (txt.isEmpty()) {
                 txt = this.src.take().toString();
-            } else {
-                if (data == null) {
-                    txt = this.blank;
-                } else {
-                    txt = data.toString();
-                }
+            } else if (data != null) {
+                txt = data.toString();
             }
             return txt;
         }
@@ -113,7 +110,7 @@ public interface Data<T> {
                     }
                     return new PhWith(phi, "Δ", new Data.Value<>(obj));
                 },
-                ""
+                () -> ""
             );
         }
     }

@@ -43,7 +43,7 @@ public final class AtBound implements Attr {
 
     @Override
     public String toString() {
-        return String.format("%sB", this.origin.toString());
+        return String.format("%sB", this.origin);
     }
 
     @Override

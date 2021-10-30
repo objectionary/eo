@@ -37,7 +37,7 @@ public final class AtOnce implements Attr {
 
     public AtOnce(final Attr attr) {
         this.origin = attr;
-        this.data = new Data.Once<>(attr::get, "?");
+        this.data = new Data.Once<>(attr::get, () -> "?");
     }
 
     @Override

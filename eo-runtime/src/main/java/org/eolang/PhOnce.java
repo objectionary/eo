@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.util.function.Supplier;
+
 /**
  * An object wrapping another one.
  *
@@ -41,7 +43,7 @@ public class PhOnce implements Phi {
      *
      * @param data The object
      */
-    public PhOnce(final Data<Phi> data, final String blank) {
+    public PhOnce(final Data<Phi> data, final Supplier<String> blank) {
         this.object = new Data.Once<>(data, blank);
     }
 
