@@ -55,12 +55,11 @@
 
 [] > makes-deep-object-recursively
   eq. > @
-    45
-    x 10
+    0
+    x 5
   [i] > x
     if. > @
       i.less 0
       0
       x
-        i.add
-          i.sub 1
+        i.sub 1

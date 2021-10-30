@@ -109,10 +109,13 @@ public class PhDefault implements Phi, Cloneable {
             final PhDefault copy = PhDefault.class.cast(this.clone());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                if ("ρ".equals(ent.getKey())) {
+                    continue;
+                }
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
+            map.put("ρ", new AtSimple(rho));
             copy.attrs = map;
-            copy.attr("ρ").put(rho);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);

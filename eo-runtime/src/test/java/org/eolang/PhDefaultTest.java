@@ -97,7 +97,7 @@ public final class PhDefaultTest {
     @Test
     public void printsEndlessRecursionObject() {
         final Phi phi = new PhDefaultTest.EndlessRecursion(new PhEta());
-        PhDefaultTest.EndlessRecursion.count = 10;
+        PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
@@ -159,7 +159,10 @@ public final class PhDefaultTest {
                     if (PhDefaultTest.EndlessRecursion.count <= 0) {
                         return new Data.ToPhi(0L);
                     }
-                    return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
+                System.out.println("ret");
+                    Phi ret = new PhDefaultTest.EndlessRecursion(self);
+                    return ret;
+//                    return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
                 }
             )));
         }
