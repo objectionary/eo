@@ -39,7 +39,7 @@ SOFTWARE.
   </o>
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:template match="o[@method]" mode="#all">
+  <xsl:template match="o[@method]" mode="#all" priority="0">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>
     <xsl:copy>
       <xsl:apply-templates select="@* except @method"/>
@@ -47,7 +47,7 @@ SOFTWARE.
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[following-sibling::o[1][@method]]">
+  <xsl:template match="o[following-sibling::o[1][@method]]" priority="1">
     <!-- We delete the original one -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
