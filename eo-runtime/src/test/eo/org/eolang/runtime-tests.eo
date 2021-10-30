@@ -28,6 +28,15 @@
     f
     f
 
+[] > kids-are-accessible-in-const-object
+  [] > a
+    [] > hello
+      42 > @
+  a > b!
+  eq. > @
+    42
+    b.hello
+
 [] > takes-parent-through-attribute
   42 > x
   $ > this

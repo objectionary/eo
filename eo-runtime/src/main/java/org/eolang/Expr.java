@@ -25,18 +25,19 @@
 package org.eolang;
 
 /**
- * Envelope.
+ * Lambda expression.
  *
  * @since 0.1
  */
-public interface Env {
+public interface Expr {
 
     /**
-     * Get the phi.
-     * @param self Self
-     * @return The Phi
+     * Get the object.
+     *
+     * @param rho The \rho of this expression (the parent of it)
+     * @return The Phi calculated
      * @throws Exception If anything goes wrong
      */
-    Phi get(Phi self) throws Exception;
+    Phi get(Phi rho) throws Exception;
 
 }

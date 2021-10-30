@@ -141,18 +141,10 @@ SOFTWARE.
       </xsl:when>
       <xsl:when test="@ancestors">
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@parent)"/>
-        <xsl:text> up;</xsl:text>
-        <xsl:value-of select="eo:eol(1)"/>
-        <xsl:text>public </xsl:text>
         <xsl:value-of select="eo:class-name(@name)"/>
-        <xsl:text>(final Phi parent, final </xsl:text>
-        <xsl:value-of select="eo:class-name(@parent)"/>
-        <xsl:text> up) {</xsl:text>
+        <xsl:text>(final Phi parent) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(parent);</xsl:text>
-        <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>this.up = up;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>public </xsl:text>
@@ -280,28 +272,17 @@ SOFTWARE.
         <xsl:text>new PhMethod(self, "&#x3C1;")</xsl:text>
       </xsl:when>
       <xsl:when test="$b and name($b)='class'">
-        <xsl:variable name="this" select="ancestor::class[1]"/>
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
-        <xsl:text>(self</xsl:text>
-        <xsl:if test="$b/@ancestors and not($b/@atom)">
-          <xsl:text>, </xsl:text>
-          <xsl:choose>
-            <xsl:when test="$b/@ancestors = $this/@ancestors + 1 or not($this/@ancestors)">
-              <xsl:value-of select="eo:class-name($this/@name)"/>
-              <xsl:text>.class.cast(self)</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>null</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:if>
-        <xsl:text>)</xsl:text>
+        <xsl:text>(self)</xsl:text>
       </xsl:when>
       <xsl:when test="$b/@level">
-        <xsl:text>new PhMethod(this</xsl:text>
+        <xsl:for-each select="0 to $b/@level">
+          <xsl:text>new PhMethod(</xsl:text>
+        </xsl:for-each>
+        <xsl:text>self</xsl:text>
         <xsl:for-each select="1 to $b/@level">
-          <xsl:text>.up</xsl:text>
+          <xsl:text>, "&#x3C3;")</xsl:text>
         </xsl:for-each>
         <xsl:text>, "</xsl:text>
         <xsl:value-of select="$b/@name"/>

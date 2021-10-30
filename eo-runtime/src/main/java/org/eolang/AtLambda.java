@@ -31,16 +31,16 @@ package org.eolang;
  */
 public final class AtLambda implements Attr {
 
-    private final Env code;
+    private final Expr expr;
 
     private final Data<Phi> object;
 
-    public AtLambda(final Phi self, final Env env) {
-        this(env, AtLambda.toData(env, self));
+    public AtLambda(final Phi rho, final Expr exp) {
+        this(exp, AtLambda.toData(exp, rho));
     }
 
-    private AtLambda(final Env env, final Data<Phi> data) {
-        this.code = env;
+    private AtLambda(final Expr exp, final Data<Phi> data) {
+        this.expr = exp;
         this.object = data;
     }
 
@@ -51,7 +51,10 @@ public final class AtLambda implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtLambda(this.code, AtLambda.toData(this.code, self));
+        return new AtLambda(
+            this.expr,
+            AtLambda.toData(this.expr, self)
+        );
     }
 
     @Override
@@ -62,20 +65,20 @@ public final class AtLambda implements Attr {
     @Override
     public void put(final Phi phi) {
         throw new Attr.ReadOnlyException(
-            "You can't overwrite static λ-code"
+            "You can't overwrite static λ-expression"
         );
     }
 
     /**
      * Turn ENV into DATA.
-     * @param env The env
-     * @param self Self
+     * @param exp The \lambda expression
+     * @param rho The \rho of this attribute/object
      * @return Data
      */
-    private static Data<Phi> toData(final Env env, final Phi self) {
+    private static Data<Phi> toData(final Expr exp, final Phi rho) {
         return () -> {
             try {
-                return env.get(self);
+                return exp.get(rho);
             } catch (final java.lang.Exception ex) {
                 throw new IllegalArgumentException(ex);
             }

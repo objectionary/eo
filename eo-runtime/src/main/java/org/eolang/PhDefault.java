@@ -72,6 +72,7 @@ public class PhDefault implements Phi, Cloneable {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(prnt));
+        this.add("σ", new AtSimple(prnt));
     }
 
     @Override

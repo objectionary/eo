@@ -14,7 +14,7 @@ xsls:
   - org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'new PhMethod(this.up.up, "this")')]
+  - //java[contains(text(), 'PhMethod(new PhMethod(self, "σ"), "σ")')]
 eo: |
   [x] > foo
     $ > this
