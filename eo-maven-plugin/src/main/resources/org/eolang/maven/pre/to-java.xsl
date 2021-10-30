@@ -193,7 +193,7 @@ SOFTWARE.
     <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="bound">
-    <xsl:text>new AtBound(new AtOnce(</xsl:text>
+    <xsl:text>new AtOnce(</xsl:text>
     <xsl:text>new AtLambda(this, rho -&gt; {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="*">
@@ -211,7 +211,7 @@ SOFTWARE.
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
-    <xsl:text>))</xsl:text>
+    <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="array">
     <xsl:param name="indent"/>
