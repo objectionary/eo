@@ -210,6 +210,11 @@ SOFTWARE.
         <xsl:value-of select="eo:tabs(3)"/>
       </xsl:with-param>
     </xsl:apply-templates>
+    <xsl:if test="o[@const]">
+      <xsl:value-of select="eo:tabs(3)"/>
+      <xsl:text>ret = new PhConst(ret);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>

@@ -17,6 +17,17 @@
     a 42
     42
 
+[] > makes-object-a-constant
+  [] > foo
+    as-int. > @
+      mul.
+        random
+        100.0
+  foo.@ > f!
+  eq. > @
+    f
+    f
+
 [] > takes-parent-through-attribute
   42 > x
   $ > this
