@@ -79,10 +79,10 @@ public final class EOboolEOwhileTest {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(
-                this, self -> {
+                this, rho -> {
                     new Dataized(
                         new PhWith(
-                            self.attr("ρ").get()
+                            rho.attr("ρ").get()
                                 .attr("ρ").get()
                                 .attr("write").get(),
                             0, new Data.ToPhi(false)

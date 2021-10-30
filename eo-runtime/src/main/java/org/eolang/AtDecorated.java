@@ -25,7 +25,18 @@ package org.eolang;
 
 /**
  * When a child object is taken from the \phi object, this class
- * replaces the \rho attribute of it on the fly.
+ * replaces the \rho attribute of it on the fly. This is necessary
+ * for this scenario, for example:
+ *
+ * [] > parent
+ *   memory TRUE > toggle
+ *   toggle.while > @
+ *     [x] > kid
+ *       ^.^.write FALSE
+ *
+ * Here, the "while" object has TRUE as its \rho, which would make
+ * this loop endless: the "while" will always read from the TRUE constant.
+ * Thus, we set \rho to the object while to "toggle".
  *
  * @since 0.16
  */
@@ -64,7 +75,7 @@ final class AtDecorated implements Attr {
 
     @Override
     public Attr copy(final Phi slf) {
-        return new AtDecorated(this.base.copy(slf), this.name, slf);
+        return this;
     }
 
     @Override

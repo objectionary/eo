@@ -48,39 +48,32 @@ public class EOmemory extends PhDefault {
         this.phi = new AtomicReference<>();
         this.add(
             "φ",
-            new AtBound(
-                new AtLambda(
-                    this,
-                    self -> {
-                        final Phi object = this.phi.get();
-                        if (object == null) {
-                            throw new Attr.Exception(
-                                "The memory is not yet written"
-                            );
-                        }
-                        return object;
+            new AtLambda(
+                this,
+                rho -> {
+                    final Phi object = this.phi.get();
+                    if (object == null) {
+                        throw new Attr.Exception(
+                            "The memory is not yet written"
+                        );
                     }
-                )
+                    return object.copy(rho);
+                }
             )
         );
-        this.add("write", new AtBound(new AtLambda(this, EOmemory.Write::new)));
-        this.add("is-empty", new AtBound(new AtLambda(this, EOmemory.IsEmpty::new)));
-    }
-
-    @Override
-    public final String toString() {
-        return String.format("<%s>", this.phi.get());
+        this.add("write", new AtLambda(this, EOmemory.Write::new));
+        this.add("is-empty", new AtLambda(this, EOmemory.IsEmpty::new));
     }
 
     private final class Write extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtBound(new AtLambda(this, self -> {
-                final Object obj = new Dataized(self.attr("x").get()).take();
+            this.add("φ", new AtLambda(this, rho -> {
+                final Object obj = new Dataized(rho.attr("x").get()).take();
                 EOmemory.this.phi.set(new Data.ToPhi(obj));
                 return new Data.ToPhi(true);
-            })));
+            }));
         }
     }
 
@@ -88,7 +81,7 @@ public class EOmemory extends PhDefault {
         IsEmpty(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtBound(new AtLambda(
-                this, self -> new Data.ToPhi(EOmemory.this.phi.get() == null)
+                this, rho -> new Data.ToPhi(EOmemory.this.phi.get() == null)
             )));
         }
     }
