@@ -69,8 +69,8 @@ public final class EOarrayEOmapiTest {
     }
 
     public static class Kid extends PhDefault {
-        public Kid(final Phi parent) {
-            super(parent);
+        public Kid(final Phi sigma) {
+            super(sigma);
             this.add("x", new AtFree());
             this.add("i", new AtFree());
             this.add("φ", new AtBound(new AtLambda(

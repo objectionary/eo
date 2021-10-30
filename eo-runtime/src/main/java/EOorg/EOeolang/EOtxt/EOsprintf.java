@@ -51,8 +51,8 @@ public class EOsprintf extends PhDefault {
      */
     private static final String AGV = "args";
 
-    public EOsprintf(final Phi parent) {
-        super(parent);
+    public EOsprintf(final Phi sigma) {
+        super(sigma);
         this.add(EOsprintf.FMT, new AtFree());
         this.add(EOsprintf.AGV, new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

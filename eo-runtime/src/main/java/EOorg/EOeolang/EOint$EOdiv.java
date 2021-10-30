@@ -41,8 +41,8 @@ import org.eolang.Phi;
  */
 public class EOint$EOdiv extends PhDefault {
 
-    public EOint$EOdiv(final Phi parent) {
-        super(parent);
+    public EOint$EOdiv(final Phi sigma) {
+        super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final long x = new Dataized(self.attr("x").get()).take(Long.class);

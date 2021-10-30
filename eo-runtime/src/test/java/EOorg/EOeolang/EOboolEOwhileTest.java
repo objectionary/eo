@@ -66,8 +66,8 @@ public final class EOboolEOwhileTest {
     }
 
     public static class Parent extends PhDefault {
-        public Parent(final Phi parent) {
-            super(parent);
+        public Parent(final Phi sigma) {
+            super(sigma);
             this.add("toggle", new AtBound(new AtLambda(
                 this, self -> new EOmemory(self)
             )));
@@ -75,8 +75,8 @@ public final class EOboolEOwhileTest {
     }
 
     public static class Kid extends PhDefault {
-        public Kid(final Phi parent) {
-            super(parent);
+        public Kid(final Phi sigma) {
+            super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> {

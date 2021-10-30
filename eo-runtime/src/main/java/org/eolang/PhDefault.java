@@ -66,13 +66,13 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Ctor.
      *
-     * @param prnt Parent
+     * @param sigma Sigma
      */
-    public PhDefault(final Phi prnt) {
+    public PhDefault(final Phi sigma) {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("ρ", new AtSimple(prnt));
-        this.add("σ", new AtSimple(prnt));
+        this.add("ρ", new AtSimple(sigma));
+        this.add("σ", new AtSimple(sigma));
     }
 
     @Override

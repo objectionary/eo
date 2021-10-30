@@ -39,8 +39,8 @@ import org.eolang.Phi;
  */
 public class EObool$EOor extends PhDefault {
 
-    public EObool$EOor(final Phi parent) {
-        super(parent);
+    public EObool$EOor(final Phi sigma) {
+        super(sigma);
         this.add("x", new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             Boolean term = new Dataized(

@@ -43,8 +43,8 @@ public class EOmemory extends PhDefault {
 
     private final AtomicReference<Phi> phi;
 
-    public EOmemory(final Phi parent) {
-        super(parent);
+    public EOmemory(final Phi sigma) {
+        super(sigma);
         this.phi = new AtomicReference<>();
         this.add(
             "φ",
@@ -73,8 +73,8 @@ public class EOmemory extends PhDefault {
     }
 
     private final class Write extends PhDefault {
-        Write(final Phi parent) {
-            super(parent);
+        Write(final Phi sigma) {
+            super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> {
                 final Object obj = new Dataized(self.attr("x").get()).take();
@@ -85,8 +85,8 @@ public class EOmemory extends PhDefault {
     }
 
     private final class IsEmpty extends PhDefault {
-        IsEmpty(final Phi parent) {
-            super(parent);
+        IsEmpty(final Phi sigma) {
+            super(sigma);
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> new Data.ToPhi(EOmemory.this.phi.get() == null)
             )));

@@ -39,8 +39,8 @@ import org.eolang.Phi;
  */
 public class EOchar$EOeq extends PhDefault {
 
-    public EOchar$EOeq(final Phi parent) {
-        super(parent);
+    public EOchar$EOeq(final Phi sigma) {
+        super(sigma);
         this.add("c", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final char mine = new Dataized(

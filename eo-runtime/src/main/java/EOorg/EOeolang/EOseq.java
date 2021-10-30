@@ -44,8 +44,8 @@ public class EOseq extends PhDefault {
      */
     private static final String NAME = "steps";
 
-    public EOseq(final Phi parent) {
-        super(parent);
+    public EOseq(final Phi sigma) {
+        super(sigma);
         this.add(EOseq.NAME, new AtVararg());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] args = new Dataized(

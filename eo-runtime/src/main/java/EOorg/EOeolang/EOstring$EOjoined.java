@@ -39,8 +39,8 @@ import org.eolang.Phi;
  */
 public class EOstring$EOjoined extends PhDefault {
 
-    public EOstring$EOjoined(final Phi parent) {
-        super(parent);
+    public EOstring$EOjoined(final Phi sigma) {
+        super(sigma);
         this.add("items", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final String delim = new Dataized(

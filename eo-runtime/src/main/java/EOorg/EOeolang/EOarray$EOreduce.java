@@ -38,8 +38,8 @@ import org.eolang.Phi;
  */
 public class EOarray$EOreduce extends PhDefault {
 
-    public EOarray$EOreduce(final Phi parent) {
-        super(parent);
+    public EOarray$EOreduce(final Phi sigma) {
+        super(sigma);
         this.add("a", new AtFree());
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

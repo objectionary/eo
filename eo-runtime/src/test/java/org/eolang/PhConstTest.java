@@ -120,8 +120,8 @@ public final class PhConstTest {
     }
 
     private static class Kid extends PhDefault {
-        Kid(final Phi parent) {
-            super(parent);
+        Kid(final Phi sigma) {
+            super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
                 new Dataized(self.attr("ρ").get()).take(Long.class)
@@ -140,8 +140,8 @@ public final class PhConstTest {
     }
 
     private static class Sub extends PhDefault {
-        Sub(final Phi parent) {
-            super(parent);
+        Sub(final Phi sigma) {
+            super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(1L))));
         }

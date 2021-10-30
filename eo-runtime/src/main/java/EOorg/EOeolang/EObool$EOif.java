@@ -38,8 +38,8 @@ import org.eolang.Phi;
  */
 public class EObool$EOif extends PhDefault {
 
-    public EObool$EOif(final Phi parent) {
-        super(parent);
+    public EObool$EOif(final Phi sigma) {
+        super(sigma);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

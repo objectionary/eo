@@ -39,8 +39,8 @@ import org.eolang.Phi;
  */
 public class EObool$EOwhile extends PhDefault {
 
-    public EObool$EOwhile(final Phi parent) {
-        super(parent);
+    public EObool$EOwhile(final Phi sigma) {
+        super(sigma);
         this.add("f", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             long count = 0L;

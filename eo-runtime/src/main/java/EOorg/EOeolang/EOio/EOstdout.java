@@ -49,8 +49,8 @@ public class EOstdout extends PhDefault {
      */
     private static final PrintStream OUT = System.out;
 
-    public EOstdout(final Phi parent) {
-        super(parent);
+    public EOstdout(final Phi sigma) {
+        super(sigma);
         this.add(EOstdout.TEXT, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             EOstdout.OUT.print(

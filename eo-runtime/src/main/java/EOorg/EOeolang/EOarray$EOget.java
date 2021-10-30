@@ -38,8 +38,8 @@ import org.eolang.Phi;
  */
 public class EOarray$EOget extends PhDefault {
 
-    public EOarray$EOget(final Phi parent) {
-        super(parent);
+    public EOarray$EOget(final Phi sigma) {
+        super(sigma);
         this.add("i", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Phi[] array = new Dataized(

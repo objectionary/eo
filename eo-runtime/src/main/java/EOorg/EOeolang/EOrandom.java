@@ -38,8 +38,8 @@ import org.eolang.Phi;
  */
 public class EOrandom extends PhDefault {
 
-    public EOrandom(final Phi parent) {
-        super(parent);
+    public EOrandom(final Phi sigma) {
+        super(sigma);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             new SecureRandom().nextDouble()
         ))));

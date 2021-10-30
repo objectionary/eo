@@ -39,8 +39,8 @@ import org.eolang.Phi;
  */
 public class EOfloat$EOadd extends PhDefault {
 
-    public EOfloat$EOadd(final Phi parent) {
-        super(parent);
+    public EOfloat$EOadd(final Phi sigma) {
+        super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             Double.sum(

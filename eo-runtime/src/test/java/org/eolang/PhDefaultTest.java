@@ -105,11 +105,11 @@ public final class PhDefaultTest {
     }
 
     public static class Foo extends PhDefault {
-         public Foo(final Phi parent) {
-             this(parent, new Object());
+         public Foo(final Phi sigma) {
+             this(sigma, new Object());
          }
-         public Foo(final Phi parent, final Object data) {
-             super(parent);
+         public Foo(final Phi sigma, final Object data) {
+             super(sigma);
              this.add("x", new AtFree());
              this.add("kid", new AtBound(new AtLambda(
                  this, PhDefaultTest.Kid::new
@@ -121,8 +121,8 @@ public final class PhDefaultTest {
     }
 
     public static class Kid extends PhDefault {
-        public Kid(final Phi parent) {
-            super(parent);
+        public Kid(final Phi sigma) {
+            super(sigma);
             this.add("z", new AtFree());
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> new EOsprintf(new Data.ToPhi(1L))
@@ -131,8 +131,8 @@ public final class PhDefaultTest {
     }
 
     public static class First extends PhDefault {
-        public First(final Phi parent) {
-            super(parent);
+        public First(final Phi sigma) {
+            super(sigma);
             this.add("a", new AtFree(new Data.ToPhi(1L)));
             this.add("φ", new AtBound(new AtLambda(
                 this, PhDefaultTest.Second::new
@@ -141,8 +141,8 @@ public final class PhDefaultTest {
     }
 
     public static class Second extends PhDefault {
-        public Second(final Phi parent) {
-            super(parent);
+        public Second(final Phi sigma) {
+            super(sigma);
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> self.attr("ρ").get().attr("a").get()
             )));
@@ -151,8 +151,8 @@ public final class PhDefaultTest {
 
     public static class EndlessRecursion extends PhDefault {
         public static int count;
-        public EndlessRecursion(final Phi parent) {
-            super(parent);
+        public EndlessRecursion(final Phi sigma) {
+            super(sigma);
             this.add("φ", new AtBound(new AtLambda(
                 this, self -> {
                     --PhDefaultTest.EndlessRecursion.count;

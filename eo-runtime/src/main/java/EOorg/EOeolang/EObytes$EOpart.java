@@ -49,8 +49,8 @@ public class EObytes$EOpart extends PhDefault {
      */
     private static final String LEN = "len";
 
-    public EObytes$EOpart(final Phi parent) {
-        super(parent);
+    public EObytes$EOpart(final Phi sigma) {
+        super(sigma);
         this.add(EObytes$EOpart.START, new AtFree());
         this.add(EObytes$EOpart.LEN, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {

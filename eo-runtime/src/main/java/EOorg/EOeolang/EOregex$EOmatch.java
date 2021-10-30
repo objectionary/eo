@@ -46,8 +46,8 @@ public class EOregex$EOmatch extends PhDefault {
      */
     public static final String TXT = "txt";
 
-    public EOregex$EOmatch(final Phi parent) {
-        super(parent);
+    public EOregex$EOmatch(final Phi sigma) {
+        super(sigma);
         this.add(EOregex$EOmatch.TXT, new AtFree());
         this.add("φ", new AtBound(new AtLambda(this, self -> {
             final Pattern pattern = new Dataized(

@@ -38,8 +38,8 @@ import org.eolang.Phi;
  */
 public class EOint$EOas_string extends PhDefault {
 
-    public EOint$EOas_string(final Phi parent) {
-        super(parent);
+    public EOint$EOas_string(final Phi sigma) {
+        super(sigma);
         this.add("φ", new AtBound(new AtLambda(this, self -> new Data.ToPhi(
             Long.toString(
                 new Dataized(self.attr("ρ").get()).take(Long.class)
