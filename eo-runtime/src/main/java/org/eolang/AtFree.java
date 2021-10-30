@@ -27,6 +27,9 @@ package org.eolang;
 /**
  * Free attribute.
  *
+ * The attribute is not yet set, but can be set. It's writable, but
+ * only once.
+ *
  * @since 0.1
  */
 public final class AtFree implements Attr {

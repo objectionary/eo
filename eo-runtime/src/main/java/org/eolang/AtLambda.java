@@ -25,7 +25,7 @@
 package org.eolang;
 
 /**
- * Static attribute.
+ * Static attribute with a λ-expression inside.
  *
  * @since 0.1
  */
