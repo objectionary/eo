@@ -149,17 +149,14 @@ and may further be simplified since the order of parameters is obvious:
 \end{split}
 \end{equation}
 
-\subsection{Inner and Parent Objects}
+\subsection{Parent and Home Objects}
 
 \begin{eodefinition}\label{def:parent}
-If an object $x$ is bound to an attribute of
-an object $y$, then $x.\rho$ denotes $y$;
-the object $x$ is \textbf{inner} object, while $y$ is its \textbf{parent};
-an object, which is not bound to any attributes, is called \textbf{anonymous}.
+If $x$ is an object, then $x.\rho$ is its \textbf{parent} object.
 \end{eodefinition}
 
 For example, the object at \lrefs{book3}{book3-end}
-has three inner objects bound to attributes \ff{title}, \ff{price}, and \ff{set-price}:
+has three objects bound to attributes \ff{title}, \ff{price}, and \ff{set-price}:
 \begin{equation}\label{eq:book3}
 \begin{split}
 & \ff{book3}(\ff{isbn}) \mapsto \llbracket \br
@@ -173,12 +170,25 @@ has three inner objects bound to attributes \ff{title}, \ff{price}, and \ff{set-
 \end{equation}
 where $\rho.\ff{price}$ refers to the attribute \ff{price}
 of the parent object \ff{book3}. It is not always required to mention
-$\rho$ explicitly, however it it may be present for the sake of
+$\rho$ explicitly, however it may be present for the sake of
 disambiguation.
 
-Since the same object may be bound to more then one attribute,
-the parent $\rho$ may depend on where the object
-is bound.
+\begin{eodefinition}\label{def:parent}
+If $x$ is an object, then $x.\sigma$ is its \textbf{home} object, which
+is the first $x.\rho$ seen at $x$.
+\end{eodefinition}
+
+What $\rho$ refers to depends on the situation and implementation
+details of atoms making copies of objects, for example,
+the object refered through $\varphi$ changes its $\rho$ but
+$\sigma$ remains the same:
+\begin{equation}
+\begin{split}
+x \mapsto \llbracket \varphi \mapsto y, y \mapsto \llbracket z \mapsto t \rrbracket; \br
+x.y.z.\rho = y; \quad x.a.z.\rho = x; \br
+x.y.z.\sigma = y; \quad x.a.z.\sigma = y.
+\end{split}
+\end{equation}
 
 \subsection{Decoration}
 

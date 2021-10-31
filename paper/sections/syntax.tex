@@ -69,7 +69,7 @@ Java-notation is used for numbers, strings, and character literals.
   \> \alt \T{application} \V{:} \T{name} \\
   \> \alt \T{application} \T{suffix} \\
   \> \alt \T{application} \V{␣} \T{application} \\
-\T{head} \df \T{name} \alt \T{data} \alt \V{@} \alt \V{\$} \\
+\T{head} \df \T{name} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
   \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \\
 \T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
   \> \alt \T{char} \alt \T{float} \alt \T{regex} \\
@@ -390,7 +390,7 @@ for example:
 # A point on a 2D canvas
 [x y] > point
   [to] > distance
-    length. > len
+    length. > len |$\label{ln:vector-length}$|
       vector
         to.x.sub (^.x)
         to.y.sub (^.y)
@@ -400,10 +400,11 @@ The object \ff{point} has two free attributes \ff{x} and \ff{y}
 and the attribute \ff{distance}, which is bound to an abstract
 object with one free attribute \ff{to} and one bound attribute \ff{len}.
 The \emph{inner} abstract object \ff{distance} may only be copied
-with a reference to its \emph{parent} object \ff{point}:
+with a reference to its \emph{parent} object \ff{point}, via
+a special attribute denoted by the \ff{\^{}} symbol:
 
 \begin{ffcode}
-.distance |$\label{ln:point-copy}$|
+distance. |$\label{ln:point-copy}$|
   point
     5:x
     -3:y
@@ -417,8 +418,6 @@ is the argument for the free attribute \ff{to} of the object \ff{distance}.
 Suffixes \ff{:x}, \ff{:y}, and \ff{:to} are optional and may be used
 to denote the exact name of the free attribute to be bound to the
 provided argument.
-
-Inner object may refer to the parent object by using the \ff{\^{}} symbol.
 
 \subsection{Decorators}
 
@@ -482,28 +481,26 @@ An abstract object may be used as an argument of another object while
 making a copy of it, for example:
 
 \begin{ffcode}
-files
-  "/tmp"
+(dir "/tmp").walk
   *
     [f]
-      f.isDir > @
+      f.is-dir > @
 \end{ffcode}
 
-Here the object \ff{files} is copied with two arguments, the string
-\ff{"/tmp"} and the array with a single element, which is an
-abstract object with a single free attribute \ff{f}. The \ff{files}
+Here the object \ff{walk} is copied with a single argument:
+the one-item array, which is an
+abstract object with a single free attribute \ff{f}. The \ff{walk}
 will use this abstract object, which doesn't have a name, in order
 to filter out files while traversing the tree of directories. It will
 make a copy of the abstract object and then treat it as a boolean
-value in order to make a decision about the file.
+value in order to make a decision about each file.
 
 The syntax may be simplified and the abstract object may be inlined
 (the array is also inlined):
 
 \begin{ffcode}
-files
-  "/tmp"
-  * ([f] (f.isDir > @))
+(dir "/tmp").walk
+  * ([f] (f.is-dir > @))
 \end{ffcode}
 
 An anonymous abstract object may have multiple attributes:
@@ -514,6 +511,43 @@ An anonymous abstract object may have multiple attributes:
 
 This object has two attributes \ff{succ} and \ff{prev}, and doesn't
 have a name.
+
+The parent of each copy of the abstract object will be set by
+the object \ff{walk}. Most probably it will point to the \ff{walk} object itself,
+but this solely depends on the implementation of \ff{walk}.
+
+\subsection{Home Object}
+
+An instance of an abstact object may need to have access to the
+object where the abstract was defined, for example this is
+how object \ff{array.map} is implemented in Objectionary:
+
+\begin{ffcode}
+[] > array
+  [f] > mapi /array |$\label{ln:array-map}$|
+  [f] > map
+    ^.mapi > @
+      [x i] |$\label{ln:map-inner}$|
+        &.f x > @
+\end{ffcode}
+
+The object \ff{mapi} at \lref{array-map} is an atom:
+it iterates through array items and makes
+a copy of the provided two-arguments abstract object \ff{f} applying the next
+item to it and the index in the array (that's why the name with the ``i'' suffix).
+
+The object \ff{map} does exactly the same, but doesn't provide the
+index of each element to the inner abstract object.
+The anonymous inner abstract object at \lref{map-inner}
+has to get access to the attribute \ff{f} of \ff{map}.
+However, using \ff{\^{}.f} won't work, because the parent of it is a copy of \ff{mapi}, and the
+parent of \ff{mapi} is the object \ff{array}. There is no way to get access
+to \ff{map.f} using parent attributes.
+
+The \emph{home} attribute \ff{\&} helps here. In each object it is bound to the parent
+object the object got first time. The parent of the inner object at \lref{map-inner}
+was set to \ff{map} when the object was defined. Then, \ff{mapi} changes it on each
+iteration, setting to itself, but home forever remains the same.
 
 \subsection{Constants}
 
