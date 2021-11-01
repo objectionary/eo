@@ -5,7 +5,7 @@
 
 # this code should not fail the many-free-attributes check
 # because every abstract object clearly has <= 4 free attrs 
-[] > many-free-attributes
+[] > not-many-free-attributes
   [] > empty1
     TRUE > @
   [] > empty2
@@ -17,4 +17,10 @@
   [] > empty5
     TRUE > @
   TRUE > @
+
+# this one should still fail
+#[] > many-free-attributes
+#  [a b c d e f] > too-many
+#    TRUE > @
+#  TRUE > @
 
