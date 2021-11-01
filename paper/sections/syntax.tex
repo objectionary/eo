@@ -516,39 +516,6 @@ The parent of each copy of the abstract object will be set by
 the object \ff{walk}. Most probably it will point to the \ff{walk} object itself,
 but this solely depends on the implementation of \ff{walk}.
 
-\subsection{Home Object}
-
-An instance of an abstact object may need to have access to the
-object where the abstract was defined, for example this is
-how object \ff{array.map} is implemented in Objectionary:
-
-\begin{ffcode}
-[] > array
-  [f] > mapi /array |$\label{ln:array-map}$|
-  [f] > map
-    ^.mapi > @
-      [x i] |$\label{ln:map-inner}$|
-        &.f x > @
-\end{ffcode}
-
-The object \ff{mapi} at \lref{array-map} is an atom:
-it iterates through array items and makes
-a copy of the provided two-arguments abstract object \ff{f} applying the next
-item to it and the index in the array (that's why the name with the ``i'' suffix).
-
-The object \ff{map} does exactly the same, but doesn't provide the
-index of each element to the inner abstract object.
-The anonymous inner abstract object at \lref{map-inner}
-has to get access to the attribute \ff{f} of \ff{map}.
-However, using \ff{\^{}.f} won't work, because the parent of it is a copy of \ff{mapi}, and the
-parent of \ff{mapi} is the object \ff{array}. There is no way to get access
-to \ff{map.f} using parent attributes.
-
-The \emph{home} attribute \ff{\&} helps here. In each object it is bound to the parent
-object the object got first time. The parent of the inner object at \lref{map-inner}
-was set to \ff{map} when the object was defined. Then, \ff{mapi} changes it on each
-iteration, setting to itself, but home forever remains the same.
-
 \subsection{Constants}
 
 \eo{} is a declarative language with lazy evaluations. This means
@@ -630,9 +597,38 @@ object, which \ff{stdout} decorates.
 Atoms in \eo{} are similar to ``native'' methods in Java and ``\nospell{extern}'' methods
 in C\#.
 
+\subsection{Home Object}
 
+An instance of an abstact object may need to have access to the
+object where the abstract was defined, for example this is
+how object \ff{array.map} is implemented in Objectionary:
 
+\begin{ffcode}
+[] > array |$\label{ln:array-parent}$|
+  [f] > mapi /array |$\label{ln:array-map}$|
+  [f] > map
+    ^.mapi > @
+      [x i] |$\label{ln:map-inner}$|
+        &.f x > @
+\end{ffcode}
 
+The object \ff{mapi} at \lref{array-map} is an atom:
+it iterates through array items and makes
+a copy of the provided two-arguments abstract object \ff{f} applying the next
+item to it and the index in the array (that's why the name with the ``i'' suffix).
 
+The object \ff{map} does exactly the same, but doesn't provide the
+index of each element to the inner abstract object.
+The anonymous inner abstract object at \lref{map-inner}
+has to get access to the attribute \ff{f} of \ff{map}.
+However, \ff{\^{}.f} won't work, because the parent of it is a copy of \ff{mapi}, and the
+parent of \ff{mapi} is the object \ff{array}.
+Thus, there is no way to get access
+to \ff{map.f} using parent attributes.
 
-
+The \emph{home} attribute \ff{\&} helps here.
+Once an abstract object at \lref{map-inner} is created, its
+home attribute is set to the abstract object \ff{array} at \lref{array-parent}.
+Its parent attribute \ff{\^{}} is also set to the object \ff{array},
+but is later changed by the atom \ff{mapi} when a copy of it is being made.
+However, the home attribute remains the same.
