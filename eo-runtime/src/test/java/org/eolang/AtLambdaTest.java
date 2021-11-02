@@ -23,8 +23,10 @@
  */
 package org.eolang;
 
+import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -56,6 +58,21 @@ public final class AtLambdaTest {
         );
     }
 
+    @Test
+    @Disabled
+    public void goesThroughManyTypes() {
+        final Phi rnd = new Rnd();
+        final Phi phi = rnd.attr("φ").get();
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Double.class),
+            Matchers.not(
+                Matchers.equalTo(
+                    new Dataized(phi).take(Double.class)
+                )
+            )
+        );
+    }
+
     private static class Dummy extends PhDefault {
         public Phi self;
         Dummy() {
@@ -64,6 +81,15 @@ public final class AtLambdaTest {
                 this.self = rho;
                 return new Data.ToPhi(1L);
             }));
+        }
+    }
+
+    private static class Rnd extends PhDefault {
+        Rnd() {
+            super();
+            this.add("φ", new AtLambda(this,
+                rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+            ));
         }
     }
 }

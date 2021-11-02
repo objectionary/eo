@@ -315,8 +315,8 @@ Data & Example & Size \\
 \ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
 \ff{string} & \ff{"Hello, \foreignlanguage{russian}{друг}!"} & 16 \\
 \ff{char} & \begin{CJK}{UTF8}{gbsn}\ff{'家'}\end{CJK} or \ff{'\textbackslash{}u5BB6'} & 2 \\
-\ff{int} & \ff{-42} & 4 \\
-\ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 4 \\
+\ff{int} & \ff{-42} & 8 \\
+\ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 8 \\
 \ff{bool} & \ff{TRUE} or \ff{FALSE} & 1 \\
 \ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
 \hline
@@ -513,8 +513,7 @@ This object has two attributes \ff{succ} and \ff{prev}, and doesn't
 have a name.
 
 The parent of each copy of the abstract object will be set by
-the object \ff{walk}. Most probably it will point to the \ff{walk} object itself,
-but this solely depends on the implementation of \ff{walk}.
+the object \ff{walk} and will point to the \ff{walk} object itself.
 
 \subsection{Constants}
 
