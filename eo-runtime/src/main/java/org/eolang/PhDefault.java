@@ -90,7 +90,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 String.format(
                     "%s%s=%s",
                     ent.getKey(),
-                    idx >=0 ? String.format("(%d)", idx) : "",
+                    idx >= 0 ? String.format("(%d)", idx) : "",
                     ent.getValue().toString().replace("\n", PhDefault.REPLACEMENT)
                 )
             );
