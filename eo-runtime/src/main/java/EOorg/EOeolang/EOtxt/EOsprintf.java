@@ -26,9 +26,8 @@ package EOorg.EOeolang.EOtxt;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
-import org.eolang.AtOnce;
+import org.eolang.AtFree;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -55,7 +54,7 @@ public class EOsprintf extends PhDefault {
         super(sigma);
         this.add(EOsprintf.FMT, new AtFree());
         this.add(EOsprintf.AGV, new AtVararg());
-        this.add("φ", new AtOnce(new AtComposite(this, rho -> {
+        this.add("φ", new AtComposite(this, rho -> {
             final String format = new Dataized(
                 rho.attr(EOsprintf.FMT).get()
             ).take(String.class);
@@ -67,7 +66,7 @@ public class EOsprintf extends PhDefault {
                 items.add(new Dataized(arg).take());
             }
             return new Data.ToPhi(String.format(format, items.toArray()));
-        })));
+        }));
     }
 
 }
