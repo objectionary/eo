@@ -43,13 +43,13 @@ public class EOint$EOpow extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, self -> {
-            final long ρ = new Dataized(self.attr("ρ").get()).take(Long.class);
+            final long rho = new Dataized(self.attr("ρ").get()).take(Long.class);
             final long x = new Dataized(self.attr("x").get()).take(Long.class);
-            if (ρ == 0L && x < 0L) {
+            if (rho == 0L && x < 0L) {
                 final Phi msg = new Data.ToPhi("0 cannot be raised to a negative power");
                 return new PhWith(new EOerror(Phi.Φ), "msg", msg);
             }
-            return new Data.ToPhi((long) Math.pow(ρ, x));
+            return new Data.ToPhi((long) Math.pow(rho, x));
         }));
     }
 
