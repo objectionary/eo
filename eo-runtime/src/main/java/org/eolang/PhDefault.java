@@ -125,7 +125,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public final Attr attr(final int pos) {
         if (this.order.isEmpty()) {
-            throw new Attr.Exception(
+            throw new Attr.IllegalAttrException(
                 String.format(
                     "There are no attributes here, can't get the %d-th one",
                     pos

@@ -59,15 +59,15 @@ public interface Attr {
      *
      * @since 0.1
      */
-    final class Exception extends RuntimeException {
+    final class IllegalAttrException extends RuntimeException {
 
         private static final long serialVersionUID = 597749420437007615L;
 
-        public Exception(final String cause) {
+        public IllegalAttrException(final String cause) {
             super(cause);
         }
 
-        public Exception(final String cause, final Throwable root) {
+        public IllegalAttrException(final String cause, final Throwable root) {
             super(cause, root);
         }
     }

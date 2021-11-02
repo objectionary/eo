@@ -52,8 +52,8 @@ public final class AtNamed implements Attr {
     public Attr copy(final Phi self) {
         try {
             return new AtNamed(this.name, this.phi, this.origin.copy(self));
-        } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(this.label(), ex);
+        } catch (final IllegalAttrException ex) {
+            throw new IllegalAttrException(this.label(), ex);
         }
     }
 
@@ -63,8 +63,8 @@ public final class AtNamed implements Attr {
             return this.origin.get();
         } catch (final Attr.StillAbstractException ex) {
             throw new Attr.StillAbstractException(this.label(), ex);
-        } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(this.label(), ex);
+        } catch (final IllegalAttrException ex) {
+            throw new IllegalAttrException(this.label(), ex);
         }
     }
 
@@ -74,8 +74,8 @@ public final class AtNamed implements Attr {
             this.origin.put(src);
         } catch (final Attr.ReadOnlyException ex) {
             throw new Attr.ReadOnlyException(this.label(), ex);
-        } catch (final Attr.Exception ex) {
-            throw new Attr.Exception(this.label(), ex);
+        } catch (final IllegalAttrException ex) {
+            throw new IllegalAttrException(this.label(), ex);
         }
     }
 
