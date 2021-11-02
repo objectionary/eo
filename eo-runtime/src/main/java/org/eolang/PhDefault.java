@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @since 0.1
  */
-public class PhDefault implements Phi, Cloneable {
+public abstract class PhDefault implements Phi, Cloneable {
 
     /**
      * Named attr format.
