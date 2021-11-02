@@ -111,7 +111,7 @@ public final class TranspileMojoTest {
             Matchers.is(true)
         );
         final String out = new TextOf(new InputOf(java)).asString();
-        Logger.info(this, "Java output:\n%s", out);
+        Logger.debug(this, "Java output:\n%s", out);
         return out;
     }
 

@@ -46,7 +46,7 @@ public final class AtComposite implements Attr {
 
     @Override
     public String toString() {
-        return "λ";
+        return "X";
     }
 
     @Override
