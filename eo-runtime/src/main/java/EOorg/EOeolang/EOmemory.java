@@ -48,7 +48,7 @@ public class EOmemory extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             final Phi object = this.phi.get();
             if (object == null) {
-                throw new Attr.Exception(
+                throw new Attr.IllegalAttrException(
                     "The memory is not yet written"
                 );
             }
