@@ -24,8 +24,8 @@
 
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -41,7 +41,7 @@ public class EOarray$EOmapi extends PhDefault {
     public EOarray$EOmapi(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtLambda(this, self -> {
+        this.add("φ", new AtComposite(this, self -> {
             final Phi[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(Phi[].class);

@@ -24,8 +24,8 @@
 
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -41,7 +41,7 @@ public class EObool$EOwhile extends PhDefault {
     public EObool$EOwhile(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtLambda(this, rho -> {
+        this.add("φ", new AtComposite(this, rho -> {
             long count = 0L;
             while (true) {
                 final Boolean term = new Dataized(

@@ -25,7 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -41,7 +41,7 @@ public class EOstring$EOchar_at extends PhDefault {
     public EOstring$EOchar_at(final Phi sigma) {
         super(sigma);
         this.add("p", new AtFree());
-        this.add("φ", new AtLambda(this, self -> {
+        this.add("φ", new AtComposite(this, self -> {
             final long pos = new Dataized(
                 self.attr("p").get()
             ).take(Long.class);

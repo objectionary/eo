@@ -25,7 +25,7 @@
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -40,7 +40,7 @@ public class EObytes$EOas_string extends PhDefault {
 
     public EObytes$EOas_string(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtLambda(this, self -> {
+        this.add("φ", new AtComposite(this, self -> {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);

@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import java.security.SecureRandom;
 import java.util.Random;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -42,7 +42,7 @@ public class EOrandom extends PhDefault {
 
     public EOrandom(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtLambda(this, self -> new Data.ToPhi(
+        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
             EOrandom.RND.nextDouble()
         )));
     }

@@ -23,8 +23,8 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -67,7 +67,7 @@ public final class EOboolEOwhileTest {
     public static class Parent extends PhDefault {
         public Parent(final Phi sigma) {
             super(sigma);
-            this.add("toggle", new AtOnce(new AtLambda(
+            this.add("toggle", new AtOnce(new AtComposite(
                 this, self -> new EOmemory(self)
             )));
         }
@@ -77,7 +77,7 @@ public final class EOboolEOwhileTest {
         public Kid(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtOnce(new AtLambda(
+            this.add("φ", new AtOnce(new AtComposite(
                 this, rho -> {
                     new Dataized(
                         new PhWith(

@@ -25,7 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -41,7 +41,7 @@ public class EOint$EOadd extends PhDefault {
     public EOint$EOadd(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtLambda(this, self -> new Data.ToPhi(
+        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
             Long.sum(
                 new Dataized(self.attr("ρ").get()).take(Long.class),
                 new Dataized(self.attr("x").get()).take(Long.class)

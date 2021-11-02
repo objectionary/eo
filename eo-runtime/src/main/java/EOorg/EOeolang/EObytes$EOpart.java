@@ -25,8 +25,8 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
+import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -52,7 +52,7 @@ public class EObytes$EOpart extends PhDefault {
         super(sigma);
         this.add(EObytes$EOpart.START, new AtFree());
         this.add(EObytes$EOpart.LEN, new AtFree());
-        this.add("φ", new AtLambda(this, self -> {
+        this.add("φ", new AtComposite(this, self -> {
             final long start = new Dataized(self.attr(EObytes$EOpart.START).get()).take(Long.class);
             final long length = new Dataized(self.attr(EObytes$EOpart.LEN).get()).take(Long.class);
             final byte[] array = new Dataized(

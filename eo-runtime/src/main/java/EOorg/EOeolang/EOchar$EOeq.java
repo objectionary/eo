@@ -25,7 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -41,7 +41,7 @@ public class EOchar$EOeq extends PhDefault {
     public EOchar$EOeq(final Phi sigma) {
         super(sigma);
         this.add("c", new AtFree());
-        this.add("φ", new AtLambda(this, self -> {
+        this.add("φ", new AtComposite(this, self -> {
             final char mine = new Dataized(
                 self.attr("ρ").get()
             ).take(Character.class);

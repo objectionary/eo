@@ -29,17 +29,17 @@ package org.eolang;
  *
  * @since 0.1
  */
-public final class AtLambda implements Attr {
+public final class AtComposite implements Attr {
 
     private final Expr expr;
 
     private final Data<Phi> object;
 
-    public AtLambda(final Phi rho, final Expr exp) {
-        this(exp, AtLambda.toData(exp, rho));
+    public AtComposite(final Phi rho, final Expr exp) {
+        this(exp, AtComposite.toData(exp, rho));
     }
 
-    private AtLambda(final Expr exp, final Data<Phi> data) {
+    private AtComposite(final Expr exp, final Data<Phi> data) {
         this.expr = exp;
         this.object = data;
     }
@@ -51,9 +51,9 @@ public final class AtLambda implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtLambda(
+        return new AtComposite(
             this.expr,
-            AtLambda.toData(this.expr, self)
+            AtComposite.toData(this.expr, self)
         );
     }
 

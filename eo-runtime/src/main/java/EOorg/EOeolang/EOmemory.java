@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -45,7 +45,7 @@ public class EOmemory extends PhDefault {
     public EOmemory(final Phi sigma) {
         super(sigma);
         this.phi = new AtomicReference<>();
-        this.add("φ", new AtLambda(this, rho -> {
+        this.add("φ", new AtComposite(this, rho -> {
             final Phi object = this.phi.get();
             if (object == null) {
                 throw new Attr.Exception(
@@ -54,15 +54,15 @@ public class EOmemory extends PhDefault {
             }
             return object.copy(rho);
         }));
-        this.add("write", new AtLambda(this, EOmemory.Write::new));
-        this.add("is-empty", new AtLambda(this, EOmemory.IsEmpty::new));
+        this.add("write", new AtComposite(this, EOmemory.Write::new));
+        this.add("is-empty", new AtComposite(this, EOmemory.IsEmpty::new));
     }
 
     private final class Write extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtLambda(this, rho -> {
+            this.add("φ", new AtComposite(this, rho -> {
                 final Object obj = new Dataized(rho.attr("x").get()).take();
                 EOmemory.this.phi.set(new Data.ToPhi(obj));
                 return new Data.ToPhi(true);
@@ -73,7 +73,7 @@ public class EOmemory extends PhDefault {
     private final class IsEmpty extends PhDefault {
         IsEmpty(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtLambda(
+            this.add("φ", new AtComposite(
                 this, rho -> new Data.ToPhi(EOmemory.this.phi.get() == null)
             ));
         }

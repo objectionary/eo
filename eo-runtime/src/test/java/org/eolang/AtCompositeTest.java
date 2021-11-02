@@ -30,11 +30,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtLambda}.
+ * Test case for {@link AtComposite}.
  *
  * @since 0.16
  */
-public final class AtLambdaTest {
+public final class AtCompositeTest {
 
     @Test
     public void passesSelfCorrectly() {
@@ -77,7 +77,7 @@ public final class AtLambdaTest {
         public Phi self;
         Dummy() {
             super();
-            this.add("φ", new AtLambda(this, rho -> {
+            this.add("φ", new AtComposite(this, rho -> {
                 this.self = rho;
                 return new Data.ToPhi(1L);
             }));
@@ -87,7 +87,7 @@ public final class AtLambdaTest {
     private static class Rnd extends PhDefault {
         Rnd() {
             super();
-            this.add("φ", new AtLambda(this,
+            this.add("φ", new AtComposite(this,
                 rho -> new Data.ToPhi(new SecureRandom().nextDouble())
             ));
         }

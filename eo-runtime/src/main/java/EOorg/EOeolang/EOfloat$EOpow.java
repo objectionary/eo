@@ -25,7 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -41,7 +41,7 @@ public class EOfloat$EOpow extends PhDefault {
     public EOfloat$EOpow(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtLambda(this, self -> {
+        this.add("φ", new AtComposite(this, self -> {
             final double ρ = new Dataized(self.attr("ρ").get()).take(Double.class);
             final double x = new Dataized(self.attr("x").get()).take(Double.class);
             return new Data.ToPhi(Math.pow(ρ, x));

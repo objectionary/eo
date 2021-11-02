@@ -23,8 +23,8 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -71,7 +71,7 @@ public final class EOarrayEOmapTest {
         public Kid(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtOnce(new AtLambda(
+            this.add("φ", new AtOnce(new AtComposite(
                 this, self -> new Data.ToPhi(
                     Long.toString(
                         new Dataized(
