@@ -25,7 +25,8 @@
 package org.eolang;
 
 /**
- * Static attribute with a λ-expression inside.
+ * Static attribute with an expression inside, which
+ * constructs an object.
  *
  * @since 0.1
  */
@@ -65,7 +66,7 @@ public final class AtComposite implements Attr {
     @Override
     public void put(final Phi phi) {
         throw new Attr.ReadOnlyException(
-            "You can't overwrite static λ-expression"
+            "You can't overwrite static expression"
         );
     }
 
