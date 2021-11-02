@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 /**
  * A data container.
  *
+ * @param <T> Data type.
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (200 lines)
  */
