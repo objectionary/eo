@@ -39,6 +39,7 @@ public interface Phi {
      * The global scope object, which owns all other objects.
      *
      * @checkstyle ConstantNameCheck (5 lines)
+     * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
         @Override
