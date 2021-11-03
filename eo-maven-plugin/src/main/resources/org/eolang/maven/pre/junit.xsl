@@ -51,7 +51,28 @@ SOFTWARE.
       </xsl:choose>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="o/@base | class/@parent">
+  <xsl:template match="o/@base">
+    <xsl:variable name="a" select="."/>
+    <xsl:variable name="ourRef" select="parent::o/@ref"/>
+    <xsl:attribute name="{name()}">
+      <xsl:choose>
+        <xsl:when test="//meta[head='junit']">
+          <xsl:choose>
+            <xsl:when test="//class[@name=$a and @line=$ourRef]">
+              <xsl:value-of select="eo:name($a)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:template>
+  <xsl:template match="class/@parent">
     <xsl:variable name="a" select="."/>
     <xsl:attribute name="{name()}">
       <xsl:choose>
