@@ -1,0 +1,20 @@
++package org.eolang
++alias org.eolang.txt.sprintf
++alias org.eolang.io.stdout
++junit
+
+# this code should not fail the many-free-attributes check
+# because every abstract object clearly has <= 4 free attrs 
+[] > not-many-free-attributes
+  [] > empty1
+    TRUE > @
+  [] > empty2
+    TRUE > @
+  [] > empty3
+    TRUE > @
+  [] > empty4
+    TRUE > @
+  [] > empty5
+    TRUE > @
+  TRUE > @
+

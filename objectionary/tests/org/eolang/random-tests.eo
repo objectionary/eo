@@ -1,0 +1,29 @@
++package org.eolang
++junit
+
+[] > two-random-numbers-without-const
+  random > r
+  not. > @
+    eq.
+      r
+      r
+
+[] > two-random-numbers-with-const
+  random > r!
+  eq. > @
+    r
+    r
+
+[] > two-random-numbers-with-phi
+  random.@ > r
+  not. > @
+    eq.
+      r
+      r
+
+[] > two-random-numbers-with-increment
+  random.add 3.1416 > r!
+  eq. > @
+    r
+    r
+
