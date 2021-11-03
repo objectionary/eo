@@ -32,14 +32,13 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.tojos.Tojo;
-import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
  * Find all required runtime dependencies, download
@@ -80,8 +79,17 @@ public final class ResolveMojo extends SafeMojo {
     @Parameter(required = true, defaultValue = "false")
     private boolean discoverSelf;
 
+    /**
+     * The central.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private BiConsumer<Dependency, Path> central;
+
     @Override
     public void exec() throws IOException {
+        if (this.central == null) {
+            this.central = new Central(this.project, this.session, this.manager);
+        }
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             final String coords = ResolveMojo.coords(dep);
@@ -96,11 +104,7 @@ public final class ResolveMojo extends SafeMojo {
                 );
                 continue;
             }
-            try {
-                this.unpack(dep, dest);
-            } catch (final MojoExecutionException ex) {
-                throw new IllegalStateException(ex);
-            }
+            this.central.accept(dep, dest);
             final int files = new Walk(dest).size();
             if (files == 0) {
                 Logger.warn(
@@ -176,43 +180,6 @@ public final class ResolveMojo extends SafeMojo {
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
-    }
-
-    /**
-     * Copy dependency and return its file name.
-     * @param dep The dependency
-     * @param dest The dir where to unpack
-     * @throws MojoExecutionException If fails
-     */
-    private void unpack(final Dependency dep, final Path dest) throws MojoExecutionException {
-        MojoExecutor.executeMojo(
-            MojoExecutor.plugin(
-                MojoExecutor.groupId("org.apache.maven.plugins"),
-                MojoExecutor.artifactId("maven-dependency-plugin")
-            ),
-            MojoExecutor.goal("unpack"),
-            MojoExecutor.configuration(
-                MojoExecutor.element(
-                    "artifactItems",
-                    MojoExecutor.element(
-                        "artifactItem",
-                        MojoExecutor.element("groupId", dep.getGroupId()),
-                        MojoExecutor.element("artifactId", dep.getArtifactId()),
-                        MojoExecutor.element("version", dep.getVersion()),
-                        MojoExecutor.element("outputDirectory", dest.toString())
-                    )
-                )
-            ),
-            MojoExecutor.executionEnvironment(
-                this.project,
-                this.session,
-                this.manager
-            )
-        );
-        Logger.info(
-            this, "%s unpacked to %s",
-            ResolveMojo.coords(dep), Save.rel(dest)
-        );
     }
 
     /**

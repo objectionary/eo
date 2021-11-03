@@ -103,13 +103,13 @@ final class TranspilerCanonical implements Transpiler {
                             generated, "java"
                         )
                     ).save();
+                    ++total;
                 }
                 Logger.info(
-                    this, "Transpiled %s to %s, created %d .java files",
+                    this, "Transpiled %s to %s, created %d .java file(s)",
                     Save.rel(file), Save.rel(generated), nodes.size()
                 );
             }
-            total = nodes.size();
         }
         return total;
     }

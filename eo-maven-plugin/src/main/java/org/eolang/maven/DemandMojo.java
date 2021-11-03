@@ -23,46 +23,42 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Path;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.jcabi.log.Logger;
+import java.io.IOException;
+import java.util.List;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Test case for {@link ResolveMojo}.
+ * Add object names to the "foreign" registry as demanded.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ResolveMojoTest {
+@Mojo(
+    name = "demand-foreign",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
+)
+public final class DemandMojo extends SafeMojo {
 
-    @Test
-    public void testSimpleResolve(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Save(
-            "+rt jvm org.eolang:eo-runtime:0.7.0\n\n[] > foo /int\n",
-            src.resolve("foo.eo")
-        ).save();
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        new Moja<>(ParseMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .execute();
-        new Moja<>(ResolveMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("central", Central.EMPTY)
-            .execute();
-        MatcherAssert.assertThat(
-            true,
-            Matchers.is(true)
+    /**
+     * List of object names to add.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.17.0
+     */
+    @Parameter(required = true)
+    private List<String> objects;
+
+    @Override
+    public void exec() throws IOException {
+        for (final String obj : this.objects) {
+            this.tojos().add(obj);
+        }
+        Logger.info(
+            this, "Added %d objects to foreign catalog",
+            this.objects.size()
         );
     }
 

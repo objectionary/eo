@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Func;
 import org.cactoos.Input;
@@ -45,7 +47,6 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
@@ -70,7 +71,6 @@ public final class SnippetTest {
     @TempDir
     public Path temp;
 
-    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -133,18 +133,33 @@ public final class SnippetTest {
             .with("foreign", target.resolve("eo-foreign.csv").toFile())
             .with("sourcesDir", src.toFile())
             .execute();
+        new Moja<>(DemandMojo.class)
+            .with("foreign", foreign.toFile())
+            .with("objects", new ListOf<>("org.eolang.bool"))
+            .execute();
+        final Path home = Paths.get(
+            System.getProperty(
+                "runtime.path",
+                Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
+            )
+        );
         new Moja<>(AssembleMojo.class)
             .with("outputDir", target.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("placed", target.resolve("list").toFile())
-            .with("skipZeroVersions", true)
             .with(
                 "objectionary",
-                (Func<String, Input>) input -> new InputOf(
-                    "[] > sprintf\n"
+                (Func<String, Input>) name -> new InputOf(
+                    home.resolve(
+                        String.format(
+                            "src/main/eo/%s.eo",
+                            name.replace(".", "/")
+                        )
+                    )
                 )
             )
+            .with("central", Central.EMPTY)
             .execute();
         final Path generated = target.resolve("generated");
         new Moja<>(TranspileMojo.class)
@@ -157,7 +172,8 @@ public final class SnippetTest {
         final Path classes = target.resolve("classes");
         classes.toFile().mkdir();
         final String cpath = String.format(
-            ".:%s",
+            ".%s%s",
+            File.pathSeparatorChar,
             System.getProperty(
                 "runtime.jar",
                 Paths.get(System.getProperty("user.home")).resolve(
@@ -168,10 +184,18 @@ public final class SnippetTest {
                 ).toString()
             )
         );
-        new Walk(generated).forEach(
-            file -> SnippetTest.javac(file, classes, cpath)
+        SnippetTest.exec(
+            String.format(
+                "javac %s -d %s -cp %s",
+                new Walk(generated).stream()
+                    .map(Path::toAbsolutePath)
+                    .map(Path::toString)
+                    .collect(Collectors.joining(" ")),
+                classes,
+                cpath
+            ),
+            generated
         );
-        SnippetTest.exec("ls -al", classes);
         SnippetTest.exec(
             String.join(
                 " ",
@@ -190,29 +214,6 @@ public final class SnippetTest {
             stdout
         );
         return 0;
-    }
-
-    /**
-     * Compile .java to .class and return the output.
-     *
-     * @param file The java file
-     * @param dir Destination directory
-     * @param cpath Classpath
-     */
-    private static void javac(final Path file, final Path dir,
-        final String cpath) {
-        SnippetTest.exec(
-            String.join(
-                " ",
-                "javac",
-                file.getFileName().toString(),
-                "-d",
-                dir.toString(),
-                "-cp",
-                cpath
-            ),
-            file.getParent()
-        );
     }
 
     /**
@@ -240,6 +241,7 @@ public final class SnippetTest {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void exec(final String cmd, final Path dir,
         final Input stdin, final Output stdout) {
+        Logger.debug(SnippetTest.class, "+%s", cmd);
         try {
             final Process proc = new ProcessBuilder()
                 .command(cmd.split(" "))

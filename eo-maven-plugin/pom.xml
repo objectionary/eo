@@ -142,7 +142,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <version>${eo.stable}</version>
+      <version>0.16.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -162,6 +162,7 @@ SOFTWARE.
         <configuration>
           <systemPropertyVariables>
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
+            <runtime.path>${project.basedir}/../eo-runtime</runtime.path>
           </systemPropertyVariables>
         </configuration>
       </plugin>

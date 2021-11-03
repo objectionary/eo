@@ -26,8 +26,11 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.BiConsumer;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -100,6 +103,12 @@ public final class AssembleMojo extends SafeMojo {
     private Func<String, Input> objectionary = new Objectionary();
 
     /**
+     * The central.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private BiConsumer<Dependency, Path> central;
+
+    /**
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
      * @checkstyle MemberNameCheck (7 lines)
@@ -130,6 +139,9 @@ public final class AssembleMojo extends SafeMojo {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void exec() throws IOException {
+        if (this.central == null) {
+            this.central = new Central(this.project, this.session, this.manager);
+        }
         String before = this.status();
         int cycle = 0;
         final Moja<?>[] mojas = {
