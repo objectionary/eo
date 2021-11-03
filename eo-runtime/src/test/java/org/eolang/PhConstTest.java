@@ -109,13 +109,11 @@ public final class PhConstTest {
         public int count;
         Dummy(final String name) {
             super();
-            this.add("φ", new AtOnce(new AtComposite(this, self -> {
+            this.add("φ", new AtComposite(this, self -> {
                 ++this.count;
                 return new Data.ToPhi(1L);
-            })));
-            this.add(name, new AtOnce(
-                new AtComposite(this, PhConstTest.Kid::new)
-            ));
+            }));
+            this.add(name, new AtComposite(this, PhConstTest.Kid::new));
         }
     }
 
@@ -123,19 +121,19 @@ public final class PhConstTest {
         Kid(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtOnce(new AtComposite(this, self -> new Data.ToPhi(
+            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
                 new Dataized(self.attr("ρ").get()).take(Long.class)
-            ))));
+            )));
         }
     }
 
     private static class Boom extends PhDefault {
         public int count;
         Boom() {
-            this.add("φ", new AtOnce(new AtComposite(this, self -> {
+            this.add("φ", new AtComposite(this, self -> {
                 ++this.count;
                 return new Sub(self);
-            })));
+            }));
         }
     }
 
@@ -143,7 +141,7 @@ public final class PhConstTest {
         Sub(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtOnce(new AtComposite(this, self -> new Data.ToPhi(1L))));
+            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
     }
 }
