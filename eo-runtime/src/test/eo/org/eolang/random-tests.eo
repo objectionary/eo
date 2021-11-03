@@ -21,9 +21,16 @@
       r
       r
 
-[] > two-random-numbers-with-increment
+[] > two-random-numbers-with-increment-with-const
   random.add 3.1416 > r!
   eq. > @
     r
     r
+
+[] > two-random-numbers-with-increment
+  random.add 3.1416 > r
+  not. > @
+    eq.
+      r
+      r
 
