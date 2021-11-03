@@ -27,10 +27,10 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -41,10 +41,12 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -77,9 +79,11 @@ public final class SnippetTest {
     public void testFullRun(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
-            SnippetTest.class.getResourceAsStream(
-                String.format("snippets/%s", yml)
-            )
+            new TextOf(
+                new ResourceOf(
+                    String.format("org/eolang/maven/snippets/%s", yml)
+                )
+            ).asString()
         );
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         final int result = SnippetTest.run(
@@ -102,13 +106,10 @@ public final class SnippetTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlSnippets() {
-        return new ListOf<>(
-            "ifthenelse.yaml",
-            "fibo.yaml",
-            "parenting.yaml",
-            "simple.yaml"
-        );
+    private static String[] yamlSnippets() throws IOException {
+        return new TextOf(
+            new ResourceOf("org/eolang/maven/snippets/")
+        ).asString().split("\n");
     }
 
     /**

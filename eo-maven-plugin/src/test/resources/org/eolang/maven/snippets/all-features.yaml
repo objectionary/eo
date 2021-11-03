@@ -1,0 +1,20 @@
+exit: 0
+in: ""
+out:
+  - ".*works!.*"
+args: ["foo.main"]
+eo: |
+  +package foo
+  +alias org.eolang.io.stdout
+
+  [args...] > main
+    seq > a
+      []
+    [x] > foo
+      if.
+        x.eq 0
+        []
+        []
+    seq > @
+      stdout
+        "works!"
