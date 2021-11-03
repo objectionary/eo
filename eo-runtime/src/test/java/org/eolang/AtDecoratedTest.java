@@ -26,51 +26,46 @@ package org.eolang;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link AtDecorated}.
  *
  * @since 0.16
  */
-@Execution(ExecutionMode.SAME_THREAD)
 public final class AtDecoratedTest {
 
     @Test
     public void readsOnlyOnce() {
-        Dummy.count = 0;
-        final Phi phi = new Dummy(Phi.Φ);
-        final Phi neg = phi.attr("neg").get();
+        final Dummy dummy = new Dummy(Phi.Φ);
+        final Phi neg = dummy.attr("neg").get();
         neg.attr("Δ").get();
         neg.attr("Δ").get();
         MatcherAssert.assertThat(
-            Dummy.count,
+            dummy.count,
             Matchers.equalTo(3)
         );
     }
 
     @Test
     public void readsManyTimes() {
-        Dummy.count = 0;
-        final Phi phi = new Dummy(Phi.Φ);
+        final Dummy dummy = new Dummy(Phi.Φ);
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
-            phi.attr("neg").get().attr("Δ").get();
+            dummy.attr("neg").get().attr("Δ").get();
         }
         MatcherAssert.assertThat(
-            Dummy.count,
+            dummy.count,
             Matchers.equalTo(total * 2)
         );
     }
 
     public static class Dummy extends PhDefault {
-        public static int count;
+        public int count;
         public Dummy(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(
                 this, self -> {
-                ++Dummy.count;
+                ++this.count;
                 return new Data.ToPhi(1L);
             }));
         }

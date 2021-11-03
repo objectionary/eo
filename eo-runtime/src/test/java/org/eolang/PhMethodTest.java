@@ -26,15 +26,12 @@ package org.eolang;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link PhMethod}.
  *
  * @since 0.16
  */
-@Execution(ExecutionMode.SAME_THREAD)
 public final class PhMethodTest {
 
     @Test
@@ -47,69 +44,69 @@ public final class PhMethodTest {
 
     @Test
     public void calculatesPhiManyTimes() {
-        Dummy.count = 0;
-        final Phi phi = new PhMethod(new Dummy(Phi.Φ), "φ");
+        final Dummy dummy = new Dummy(Phi.Φ);
+        final Phi phi = new PhMethod(dummy, "φ");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            Dummy.count,
+            dummy.count,
             Matchers.equalTo(total)
         );
     }
 
     @Test
     public void calculatesToLocalManyTimes() {
-        Dummy.count = 0;
-        final Phi phi = new PhMethod(new Dummy(Phi.Φ), "foo");
+        final Dummy dummy = new Dummy(Phi.Φ);
+        final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            Dummy.count,
+            dummy.count,
             Matchers.equalTo(total)
         );
     }
 
     @Test
     public void calculatesThroughPhiOnlyOnce() {
-        Dummy.count = 0;
-        final Phi phi = new PhMethod(new Dummy(Phi.Φ), "neg");
+        final Dummy dummy = new Dummy(Phi.Φ);
+        final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
         MatcherAssert.assertThat(
-            Dummy.count,
+            dummy.count,
             Matchers.equalTo(2)
         );
     }
 
     @Test
     public void calculatesThroughPhiManyTimes() {
-        Dummy.count = 0;
-        final Phi phi = new PhMethod(new Dummy(Phi.Φ), "neg");
+        final Dummy dummy = new Dummy(Phi.Φ);
+        final Phi phi = new PhMethod(dummy, "neg");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            Dummy.count,
+            dummy.count,
             Matchers.equalTo(total * 2)
         );
     }
 
     public static class Dummy extends PhDefault {
-        public static int count;
+        public int count;
         public Dummy(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(
                 this, self -> {
-                ++Dummy.count;
+                ++this.count;
                 return new Data.ToPhi(1L);
             }));
             this.add("foo", new AtComposite(
                 this, self -> {
-                ++Dummy.count;
+                ++this.count;
                 return new Data.ToPhi(1L);
             }));
         }
