@@ -21,52 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import java.util.function.Supplier;
 
 /**
- * Test case for {@link PhWith}.
+ * An object wrapping another one.
  *
- * @since 0.16
+ * @since 0.1
  */
-public final class PhWithTest {
+public class PhMany implements Phi {
 
-    @Test
-    public void takesMethod() {
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new EOsprintf(Phi.Φ),
-                    0, new Data.ToPhi("Hello, world!")
-                )
-            ).take(String.class),
-            Matchers.startsWith("Hello, ")
-        );
+    /**
+     * The object fetched.
+     */
+    private final Data<Phi> object;
+
+    /**
+     * The toString provider.
+     */
+    private final Supplier<String> tos;
+
+    /**
+     * Ctor.
+     *
+     * @param data The object
+     */
+    public PhMany(final Data<Phi> data, final Supplier<String> blank) {
+        this.object = data;
+        this.tos = blank;
     }
 
-    @Test
-    public void passesToSubObject() {
-        final Phi dummy = new Dummy(Phi.Φ);
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhCopy(new PhMethod(dummy, "add"), dummy),
-                    0, new Data.ToPhi(1L)
-                )
-            ).take(Long.class),
-            Matchers.equalTo(2L)
-        );
+    @Override
+    public final String toString() {
+        return this.tos.get();
     }
 
-    public static class Dummy extends PhDefault {
-        public Dummy(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
-        }
+    @Override
+    public final Phi copy(final Phi rho) {
+        return this.object.take().copy(rho);
     }
 
+    @Override
+    public final Attr attr(final int pos) {
+        return this.object.take().attr(pos);
+    }
+
+    @Override
+    public final Attr attr(final String name) {
+        return this.object.take().attr(name);
+    }
 }

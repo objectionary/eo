@@ -26,7 +26,6 @@ package org.eolang;
 import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -59,10 +58,9 @@ public final class AtCompositeTest {
     }
 
     @Test
-    @Disabled
     public void goesThroughManyTypes() {
         final Phi rnd = new Rnd();
-        final Phi phi = rnd.attr("φ").get();
+        final Phi phi = new PhMethod(rnd, "φ");
         MatcherAssert.assertThat(
             new Dataized(phi).take(Double.class),
             Matchers.not(

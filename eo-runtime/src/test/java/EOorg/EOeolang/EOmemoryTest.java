@@ -70,7 +70,7 @@ public final class EOmemoryTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(mem, "eq"),
+                    new PhCopy(new PhMethod(mem, "eq"), mem),
                     0,
                     new Data.ToPhi(1L)
                 )
@@ -147,19 +147,18 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
                 0,
                 new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
                 0,
                 new PhWith(
-                    new PhMethod(mem, "add"),
-                    0,
-                    new Data.ToPhi(42L)
+                    new PhCopy(new PhMethod(mem, "add"), mem),
+                    0, new Data.ToPhi(42L)
                 )
             )
         ).take(Boolean.class);

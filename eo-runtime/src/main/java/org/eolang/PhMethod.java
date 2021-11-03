@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public final class PhMethod extends PhOnce {
+public final class PhMethod extends PhMany {
 
     /**
      * Ctor.

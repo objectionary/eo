@@ -23,49 +23,56 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test case for {@link PhWith}.
+ * Test case for {@link AtDecorated}.
  *
  * @since 0.16
  */
-public final class PhWithTest {
+@Execution(ExecutionMode.SAME_THREAD)
+public final class AtDecoratedTest {
 
     @Test
-    public void takesMethod() {
+    public void readsOnlyOnce() {
+        Dummy.count = 0;
+        final Phi phi = new Dummy(Phi.Φ);
+        final Phi neg = phi.attr("neg").get();
+        neg.attr("Δ").get();
+        neg.attr("Δ").get();
         MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new EOsprintf(Phi.Φ),
-                    0, new Data.ToPhi("Hello, world!")
-                )
-            ).take(String.class),
-            Matchers.startsWith("Hello, ")
+            Dummy.count,
+            Matchers.equalTo(3)
         );
     }
 
     @Test
-    public void passesToSubObject() {
-        final Phi dummy = new Dummy(Phi.Φ);
+    public void readsManyTimes() {
+        Dummy.count = 0;
+        final Phi phi = new Dummy(Phi.Φ);
+        final int total = 10;
+        for (int idx = 0; idx < total; ++idx) {
+            phi.attr("neg").get().attr("Δ").get();
+        }
         MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhCopy(new PhMethod(dummy, "add"), dummy),
-                    0, new Data.ToPhi(1L)
-                )
-            ).take(Long.class),
-            Matchers.equalTo(2L)
+            Dummy.count,
+            Matchers.equalTo(total * 2)
         );
     }
 
     public static class Dummy extends PhDefault {
+        public static int count;
         public Dummy(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
+            this.add("φ", new AtComposite(
+                this, self -> {
+                ++Dummy.count;
+                return new Data.ToPhi(1L);
+            }));
         }
     }
 

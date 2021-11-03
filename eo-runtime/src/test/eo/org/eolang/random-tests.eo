@@ -14,12 +14,12 @@
     r
     r
 
-# [] > two-random-numbers-with-phi
-#   random.@ > r
-#   not. > @
-#     eq.
-#       r
-#       r
+[] > two-random-numbers-with-phi
+  random.@ > r
+  not. > @
+    eq.
+      r
+      r
 
 [] > two-random-numbers-with-increment
   random.add 3.1416 > r!
