@@ -59,12 +59,15 @@ public interface Attr {
      *
      * @since 0.1
      */
-    final class Exception extends RuntimeException {
+    final class IllegalAttrException extends RuntimeException {
+
         private static final long serialVersionUID = 597749420437007615L;
-        public Exception(final String cause) {
+
+        public IllegalAttrException(final String cause) {
             super(cause);
         }
-        public Exception(final String cause, final Throwable root) {
+
+        public IllegalAttrException(final String cause, final Throwable root) {
             super(cause, root);
         }
     }
@@ -76,13 +79,13 @@ public interface Attr {
      * @since 0.13
      */
     final class StillAbstractException extends RuntimeException {
+
         private static final long serialVersionUID = 597748420437017615L;
+
         public StillAbstractException(final String cause) {
             super(cause);
         }
-        public StillAbstractException(final Throwable cause) {
-            super(cause);
-        }
+
         public StillAbstractException(final String cause, final Throwable root) {
             super(cause, root);
         }
@@ -95,13 +98,13 @@ public interface Attr {
      * @since 0.13
      */
     final class ReadOnlyException extends RuntimeException {
+
         private static final long serialVersionUID = 697748420437017615L;
+
         public ReadOnlyException(final String cause) {
             super(cause);
         }
-        public ReadOnlyException(final Throwable cause) {
-            super(cause);
-        }
+
         public ReadOnlyException(final String cause, final Throwable root) {
             super(cause, root);
         }

@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -97,10 +98,11 @@ public final class Main {
         try (BufferedReader input =
             new BufferedReader(
                 new InputStreamReader(
-                    Main.class.getResourceAsStream("version.txt"),
-                    StandardCharsets.UTF_8)
+                    Objects.requireNonNull(Main.class.getResourceAsStream("version.txt")),
+                    StandardCharsets.UTF_8
                 )
-            ) {
+            )
+        ) {
             this.stdout.printf(
                 "EOLANG Runtime v.%s",
                 input.lines().findFirst().get()

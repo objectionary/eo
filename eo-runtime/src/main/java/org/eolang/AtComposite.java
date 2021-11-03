@@ -75,12 +75,13 @@ public final class AtComposite implements Attr {
      * @param exp The \lambda expression
      * @param rho The \rho of this attribute/object
      * @return Data
+     * @checkstyle IllegalCatchCheck (20 lines)
      */
     private static Data<Phi> toData(final Expr exp, final Phi rho) {
         return () -> {
             try {
                 return exp.get(rho);
-            } catch (final java.lang.Exception ex) {
+            } catch (final Exception ex) {
                 throw new IllegalArgumentException(ex);
             }
         };

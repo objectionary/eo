@@ -42,6 +42,7 @@ public class PhOnce implements Phi {
      * Ctor.
      *
      * @param data The object
+     * @param blank The string value
      */
     public PhOnce(final Data<Phi> data, final Supplier<String> blank) {
         this.object = new Data.Once<>(data, blank);

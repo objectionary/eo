@@ -37,6 +37,9 @@ public interface Phi {
 
     /**
      * The global scope object, which owns all other objects.
+     *
+     * @checkstyle ConstantNameCheck (5 lines)
+     * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
         @Override
@@ -96,6 +99,11 @@ public interface Phi {
         private static final int MAX = 64;
 
         /**
+         * Triple.
+         */
+        private static final int LEN = 3;
+
+        /**
          * Original.
          */
         private final Phi phi;
@@ -116,8 +124,8 @@ public interface Phi {
             if (txt.length() > Phi.Compact.MAX) {
                 txt = String.format(
                     "%s...%s",
-                    txt.substring(0, Phi.Compact.MAX - 3),
-                    txt.substring(Phi.Compact.MAX + 3)
+                    txt.substring(0, Phi.Compact.MAX - Phi.Compact.LEN),
+                    txt.substring(Phi.Compact.MAX + Phi.Compact.LEN)
                 );
             }
             return txt;

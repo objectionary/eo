@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @since 0.1
  */
-public class PhDefault implements Phi, Cloneable {
+public abstract class PhDefault implements Phi, Cloneable {
 
     /**
      * Named attr format.
@@ -90,7 +90,7 @@ public class PhDefault implements Phi, Cloneable {
                 String.format(
                     "%s%s=%s",
                     ent.getKey(),
-                    idx >=0 ? String.format("(%d)", idx) : "",
+                    idx >= 0 ? String.format("(%d)", idx) : "",
                     ent.getValue().toString().replace("\n", PhDefault.REPLACEMENT)
                 )
             );
@@ -125,7 +125,7 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public final Attr attr(final int pos) {
         if (this.order.isEmpty()) {
-            throw new Attr.Exception(
+            throw new Attr.IllegalAttrException(
                 String.format(
                     "There are no attributes here, can't get the %d-th one",
                     pos

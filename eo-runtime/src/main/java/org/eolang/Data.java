@@ -40,7 +40,9 @@ import java.util.regex.Pattern;
 /**
  * A data container.
  *
+ * @param <T> Data type.
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (200 lines)
  */
 public interface Data<T> {
 
@@ -51,14 +53,19 @@ public interface Data<T> {
     T take();
 
     final class Once<T> implements Data<T> {
+
         private final Data<T> src;
+
         private final AtomicReference<T> ref;
+
         private final Supplier<String> blank;
+
         public Once(final Data<T> data, final Supplier<String> txt) {
             this.src = data;
             this.ref = new AtomicReference<>();
             this.blank = txt;
         }
+
         @Override
         public String toString() {
             final T data = this.ref.get();
@@ -70,6 +77,7 @@ public interface Data<T> {
             }
             return txt;
         }
+
         @Override
         public T take() {
             if (this.ref.get() == null) {
@@ -80,6 +88,7 @@ public interface Data<T> {
     }
 
     final class ToPhi extends PhOnce {
+
         public ToPhi(final Object obj) {
             super(
                 () -> {
@@ -113,14 +122,18 @@ public interface Data<T> {
                 () -> ""
             );
         }
+
     }
 
     final class Value<T> extends PhDefault implements Data<T> {
+
         private final T val;
+
         public Value(final T value) {
             super(Phi.Φ);
             this.val = value;
         }
+
         @Override
         public String toString() {
             final String txt;
@@ -142,6 +155,7 @@ public interface Data<T> {
             }
             return txt;
         }
+
         @Override
         public T take() {
             return this.val;

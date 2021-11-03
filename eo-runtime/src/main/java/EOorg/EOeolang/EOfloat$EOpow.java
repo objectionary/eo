@@ -42,9 +42,9 @@ public class EOfloat$EOpow extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, self -> {
-            final double ρ = new Dataized(self.attr("ρ").get()).take(Double.class);
+            final double rho = new Dataized(self.attr("ρ").get()).take(Double.class);
             final double x = new Dataized(self.attr("x").get()).take(Double.class);
-            return new Data.ToPhi(Math.pow(ρ, x));
+            return new Data.ToPhi(Math.pow(rho, x));
         }));
     }
 

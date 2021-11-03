@@ -37,7 +37,8 @@ public final class AtVarargTest {
     @Test
     public void appendsElements() {
         final Attr attr = new AtVararg();
-        final Phi phi = new PhDefault();
+        final Phi phi = new PhDefault() {
+        };
         attr.put(phi);
         attr.put(phi);
         MatcherAssert.assertThat(
