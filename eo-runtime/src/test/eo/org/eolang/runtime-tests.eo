@@ -63,3 +63,13 @@
       0
       x
         i.sub 1
+
+[] > iterates-over-sigma
+  memory > x
+  seq > @
+    x.write TRUE
+    eq.
+      1
+      x.while
+        [i]
+          &.x.write FALSE > @
