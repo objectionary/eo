@@ -250,6 +250,18 @@ SOFTWARE.
     <xsl:text>/</xsl:text>
     <xsl:text>* default */</xsl:text>
   </xsl:template>
+  <xsl:template match="o[not(@base) and not(@name)]">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>Phi </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text> = </xsl:text>
+    <xsl:text>new PhDefault() { </xsl:text>
+    <xsl:text>/</xsl:text>
+    <xsl:text>* anonymous abstract object without attributes */ };</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>

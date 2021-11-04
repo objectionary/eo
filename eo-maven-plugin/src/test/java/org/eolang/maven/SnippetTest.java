@@ -87,7 +87,8 @@ public final class SnippetTest {
         );
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         final int result = SnippetTest.run(
-            this.temp,
+//            this.temp,
+            Paths.get("/tmp/xxx"),
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
             new InputOf(map.get("in").toString()),
