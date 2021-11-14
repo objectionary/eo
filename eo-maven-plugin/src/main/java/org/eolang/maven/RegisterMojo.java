@@ -36,7 +36,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
 
 /**
- * Register all sources.
+ * Find and register all {@code .eo} sources in the "foreign" catalog.
  *
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -50,7 +50,19 @@ import org.cactoos.set.SetOf;
 public final class RegisterMojo extends SafeMojo {
 
     /**
-     * Directory in which .eo files are located.
+     * Directory in which {@code .eo} files are located.
+     *
+     * If you need to register {@code .eo} files located in many directories, you can
+     * use the {@code &lt;includeSources&gt;} feature, for example:
+     *
+     * <pre> &lt;configuration&gt;
+     *   &lt;sourcesDir&gt;/&lt;/sourcesDir&gt;
+     *   &lt;includeSources&gt;
+     *     &lt;glob&gt;tmp/&#42;&#42;/&#42;.eo&lt;/glob&gt;
+     *     &lt;glob&gt;src/main/&#42;&#42;/&#42;.eo&lt;/glob&gt;
+     *   &lt;/includeSources&gt;
+     * &lt;/configuration&gt;</pre>
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -60,14 +72,20 @@ public final class RegisterMojo extends SafeMojo {
     private File sourcesDir;
 
     /**
-     * List of inclusion GLOB filters for finding EO files.
+     * List of inclusion GLOB filters for finding EO files
+     * in the {@code &lt;includeSources&gt;} directory, which can be
+     * pretty global (or even a root one).
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
     private Set<String> includeSources = new SetOf<>("**.eo");
 
     /**
-     * List of exclusion GLOB filters for finding EO files.
+     * List of exclusion GLOB filters for finding EO files
+     * in the {@code &lt;includeSources&gt;} directory, which can be
+     * pretty global (or even a root one).
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
