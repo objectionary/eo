@@ -24,7 +24,12 @@
 package org.eolang;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,19 +41,46 @@ import org.junit.jupiter.api.Test;
  */
 public final class MainTest {
 
+    private static final Formatter FMT = new Formatter() {
+        @Override
+        public String format(final LogRecord rec) {
+            return rec.getMessage();
+        }
+    };
+
     @Test
     public void printsVersion() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Main(new PrintStream(baos)).exec("--version");
         MatcherAssert.assertThat(
-            baos.toString(),
-            Matchers.containsString("EOLANG Runtime v.")
+            MainTest.exec("--version"),
+            Matchers.containsString("1.0-SNAPSHOT")
         );
     }
 
     @Test
-    public void emptyRunWorks() throws Exception {
-        Main.main();
+    public void printsHelp() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--help"),
+            Matchers.containsString("Usage: ")
+        );
+    }
+
+    @Test
+    public void turnsOnDebugOutput() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, world!"),
+            Matchers.containsString("EOLANG Runtime 1.0-SNAPSHOT")
+        );
+    }
+
+    private static String exec(final String... args) throws Exception {
+        final Logger log = Logger.getLogger("org.eolang");
+        log.setUseParentHandlers(false);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Handler handler = new StreamHandler(baos, MainTest.FMT);
+        log.addHandler(handler);
+        Main.main(args);
+        handler.flush();
+        return new String(baos.toByteArray(), StandardCharsets.UTF_8);
     }
 
 }

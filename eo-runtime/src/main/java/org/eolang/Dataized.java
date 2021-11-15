@@ -80,10 +80,11 @@ public final class Dataized {
         }
         final Object data = Data.class.cast(src).take();
         Dataized.LOGGER.log(
-            Level.FINE, String.format(
-                "\uD835\uDD3B(%s)\n -> %s",
-                this.phi.φTerm(),
-                new Data.Value<>(data).φTerm()
+            Level.FINE,
+            String.format(
+                "%s ⟸ \uD835\uDD3B(%s)",
+                new Data.Value<>(data).φTerm(),
+                this.phi.φTerm()
             )
         );
         return data;
