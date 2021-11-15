@@ -63,3 +63,28 @@
       0
       x
         i.sub 1
+
+[] > iterates-over-sigma
+  memory > x
+  seq > @
+    x.write TRUE
+    eq.
+      1
+      x.while
+        [i]
+          &.x.write FALSE > @
+
+[] > calculates-only-once-disabled
+  memory > x
+  [] > a
+    seq > @
+      x.write (x.add 1)
+      42
+  seq > @
+    x.write 0
+    eq.
+      a.neg
+      -42
+    eq.
+      x
+      4
