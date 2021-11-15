@@ -46,6 +46,11 @@ public final class AtOnce implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
     public Attr copy(final Phi self) {
         return new AtOnce(this.origin.copy(self));
     }

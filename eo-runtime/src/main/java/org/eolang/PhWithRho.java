@@ -24,82 +24,48 @@
 
 package org.eolang;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * A const origin.
+ * A phi with pre-cached \rho.
  *
- * @since 0.16
+ * @since 0.1
  */
-public final class PhConst implements Phi {
+public final class PhWithRho implements Phi {
 
-    /**
-     * The origin being turned into a const.
-     */
     private final Phi origin;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<String, Attr> named;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<Integer, Attr> numbered;
+    private final Phi rho;
 
     /**
      * Ctor.
      *
-     * @param phi The origin
+     * @param phi The object
      */
-    public PhConst(final Phi phi) {
-        this(phi, new ConcurrentHashMap<>(0), new ConcurrentHashMap<>(0));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param phi The origin
-     * @param names Attrs-by-names pre-cached
-     * @param nums Attrs-by-positions pre-cached
-     */
-    public PhConst(final Phi phi, final Map<String, Attr> names,
-        final Map<Integer, Attr> nums) {
+    public PhWithRho(final Phi phi, final Phi cache) {
         this.origin = phi;
-        this.named = names;
-        this.numbered = nums;
+        this.rho = cache;
     }
 
     @Override
     public String toString() {
-        return String.format("!%s", new Phi.Compact(this.origin));
+        return this.origin.toString();
     }
 
     @Override
     public String φTerm() {
-        return String.format("%s!", this.origin.φTerm());
+        return "--";
     }
 
     @Override
     public Phi copy(final Phi rho) {
-        return new PhConst(this.origin.copy(rho), this.named, this.numbered);
+        return this.origin.copy(rho);
     }
 
     @Override
     public Attr attr(final int pos) {
-        this.numbered.computeIfAbsent(
-            pos, x -> new AtConst(this.origin.attr(pos).copy(this))
-        );
-        return this.numbered.get(pos);
+        return this.origin.attr(pos);
     }
 
     @Override
     public Attr attr(final String name) {
-        this.named.computeIfAbsent(
-            name, x -> new AtConst(this.origin.attr(name).copy(this))
-        );
-        return this.named.get(name);
+        return this.origin.attr(name);
     }
 }

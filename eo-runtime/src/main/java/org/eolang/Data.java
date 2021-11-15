@@ -52,6 +52,12 @@ public interface Data<T> {
      */
     T take();
 
+    /**
+     * Data being returned only once, from encapsulated object.
+     *
+     * @param <T> The type of data
+     * @since 0.1
+     */
     final class Once<T> implements Data<T> {
 
         private final Data<T> src;
@@ -87,44 +93,60 @@ public interface Data<T> {
         }
     }
 
+    /**
+     * Makes a {@code Phi} out of a Java object, like String or integer.
+     *
+     * This is more convenient than making EOstring and then
+     * injecting "Δ" into it.
+     *
+     * @since 0.1
+     */
     final class ToPhi extends PhOnce {
 
         public ToPhi(final Object obj) {
             super(
-                () -> {
-                    final Phi phi;
-                    if (obj instanceof Boolean) {
-                        phi = new EObool(Phi.Φ);
-                    } else if (obj instanceof byte[]) {
-                        phi = new EObytes(Phi.Φ);
-                    } else if (obj instanceof Long) {
-                        phi = new EOint(Phi.Φ);
-                    } else if (obj instanceof String) {
-                        phi = new EOstring(Phi.Φ);
-                    } else if (obj instanceof Character) {
-                        phi = new EOchar(Phi.Φ);
-                    } else if (obj instanceof Double) {
-                        phi = new EOfloat(Phi.Φ);
-                    } else if (obj instanceof Pattern) {
-                        phi = new EOregex(Phi.Φ);
-                    } else if (obj instanceof Phi[]) {
-                        phi = new EOarray(Phi.Φ);
-                    } else {
-                        throw new IllegalArgumentException(
-                            String.format(
-                                "Unknown type of data: %s",
-                                obj.getClass().getCanonicalName()
-                            )
-                        );
-                    }
-                    return new PhWith(phi, "Δ", new Data.Value<>(obj));
-                },
-                () -> ""
+                () -> Data.ToPhi.toPhi(obj),
+                () -> "",
+                () -> Data.ToPhi.toPhi(obj).φTerm()
             );
         }
 
+        private static Phi toPhi(final Object obj) {
+            final Phi phi;
+            if (obj instanceof Boolean) {
+                phi = new EObool(Phi.Φ);
+            } else if (obj instanceof byte[]) {
+                phi = new EObytes(Phi.Φ);
+            } else if (obj instanceof Long) {
+                phi = new EOint(Phi.Φ);
+            } else if (obj instanceof String) {
+                phi = new EOstring(Phi.Φ);
+            } else if (obj instanceof Character) {
+                phi = new EOchar(Phi.Φ);
+            } else if (obj instanceof Double) {
+                phi = new EOfloat(Phi.Φ);
+            } else if (obj instanceof Pattern) {
+                phi = new EOregex(Phi.Φ);
+            } else if (obj instanceof Phi[]) {
+                phi = new EOarray(Phi.Φ);
+            } else {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Unknown type of data: %s",
+                        obj.getClass().getCanonicalName()
+                    )
+                );
+            }
+            return new PhWith(phi, "Δ", new Data.Value<>(obj));
+        }
     }
 
+    /**
+     * A single value as {@code Phi}.
+     *
+     * @param <T> The type of data
+     * @since 0.1
+     */
     final class Value<T> extends PhDefault implements Data<T> {
 
         private final T val;
@@ -132,6 +154,32 @@ public interface Data<T> {
         public Value(final T value) {
             super(Phi.Φ);
             this.val = value;
+        }
+
+        @Override
+        public String φTerm() {
+            final String txt;
+            if (this.val instanceof Term) {
+                txt = Term.class.cast(this.val).φTerm();
+            } else if (this.val instanceof Phi[]) {
+                final StringBuilder out = new StringBuilder(0);
+                final Phi[] items = Phi[].class.cast(this.val);
+                for (int idx = 0; idx < items.length; ++idx) {
+                    if (out.length() > 0) {
+                        out.append(", ");
+                    }
+                    out.append('i').append(idx).append('↦');
+                    if (items[idx] == null) {
+                        out.append('Ø');
+                    } else {
+                        out.append(items[idx].φTerm());
+                    }
+                }
+                txt = String.format("⟦%s⟧", out.toString());
+            } else {
+                txt = this.toString();
+            }
+            return txt;
         }
 
         @Override

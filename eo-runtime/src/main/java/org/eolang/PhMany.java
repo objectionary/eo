@@ -44,18 +44,30 @@ public class PhMany implements Phi {
     private final Supplier<String> tos;
 
     /**
+     * The expression provider.
+     */
+    private final Supplier<String> exp;
+
+    /**
      * Ctor.
      *
      * @param data The object
      */
-    public PhMany(final Data<Phi> data, final Supplier<String> blank) {
+    public PhMany(final Data<Phi> data, final Supplier<String> blank,
+        final Supplier<String> expr) {
         this.object = data;
         this.tos = blank;
+        this.exp = expr;
     }
 
     @Override
     public final String toString() {
         return this.tos.get();
+    }
+
+    @Override
+    public final String φTerm() {
+        return this.exp.get();
     }
 
     @Override

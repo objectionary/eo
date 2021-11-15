@@ -24,12 +24,21 @@
 
 package org.eolang;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A dataized object.
  *
  * @since 0.1
  */
 public final class Dataized {
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(Dataized.class.getName());
+
     /**
      * The object to datarize.
      */
@@ -69,7 +78,15 @@ public final class Dataized {
                 )
             );
         }
-        return Data.class.cast(src).take();
+        final Object data = Data.class.cast(src).take();
+        Dataized.LOGGER.log(
+            Level.FINE, String.format(
+                "\uD835\uDD3B(%s)\n -> %s",
+                this.phi.φTerm(),
+                new Data.Value<>(data).φTerm()
+            )
+        );
+        return data;
     }
 
     /**

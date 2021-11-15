@@ -33,7 +33,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi {
+public interface Phi extends Term {
 
     /**
      * The global scope object, which owns all other objects.
@@ -42,6 +42,11 @@ public interface Phi {
      * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
+        @Override
+        public String φTerm() {
+            return "Φ";
+        }
+
         @Override
         public String toString() {
             return "Φ";

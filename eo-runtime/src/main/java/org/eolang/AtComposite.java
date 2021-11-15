@@ -51,6 +51,11 @@ public final class AtComposite implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return "λ";
+    }
+
+    @Override
     public Attr copy(final Phi self) {
         return new AtComposite(
             this.expr,

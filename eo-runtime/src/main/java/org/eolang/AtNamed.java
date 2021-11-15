@@ -49,6 +49,11 @@ public final class AtNamed implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
     public Attr copy(final Phi self) {
         try {
             return new AtNamed(this.name, this.phi, this.origin.copy(self));

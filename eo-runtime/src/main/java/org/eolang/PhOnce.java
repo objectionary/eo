@@ -39,18 +39,31 @@ public class PhOnce implements Phi {
     private final Data<Phi> object;
 
     /**
+     * The expression provider.
+     */
+    private final Supplier<String> exp;
+
+    /**
      * Ctor.
      *
      * @param data The object
      * @param blank The string value
+     * @param expr The expression
      */
-    public PhOnce(final Data<Phi> data, final Supplier<String> blank) {
+    public PhOnce(final Data<Phi> data, final Supplier<String> blank,
+        final Supplier<String> expr) {
         this.object = new Data.Once<>(data, blank);
+        this.exp = expr;
     }
 
     @Override
     public final String toString() {
         return this.object.toString();
+    }
+
+    @Override
+    public final String φTerm() {
+        return this.exp.get();
     }
 
     @Override

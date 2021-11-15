@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Attr {
+public interface Attr extends Term {
 
     /**
      * Make a copy of it.

@@ -74,6 +74,11 @@ final class AtDecorated implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return String.format("%s.%s", this.base.φTerm(), this.name);
+    }
+
+    @Override
     public Attr copy(final Phi slf) {
         return this;
     }

@@ -24,54 +24,18 @@
 
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
- * Const attribute.
+ * A φ-calculus term.
  *
- * @since 0.16
+ * @since 0.17
  */
-public final class AtConst implements Attr {
+public interface Term {
 
-    private final Attr origin;
-
-    private final AtomicReference<Phi> ref;
-
-    public AtConst(final Attr attr) {
-        this(attr, null);
-    }
-
-    public AtConst(final Attr attr, final Phi phi) {
-        this.origin = attr;
-        this.ref = new AtomicReference<>(phi);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s!", this.origin.toString());
-    }
-
-    @Override
-    public String φTerm() {
-        return String.format("%s!", this.origin.φTerm());
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtConst(this.origin.copy(self), this.ref.get());
-    }
-
-    @Override
-    public Phi get() {
-        if (this.ref.get() == null) {
-            this.ref.set(this.origin.get());
-        }
-        return this.ref.get();
-    }
-
-    @Override
-    public void put(final Phi src) {
-        this.origin.put(src);
-    }
+    /**
+     * To φ-calculus term as text.
+     *
+     * @return The expression in φ-calculus
+     */
+    String φTerm();
 
 }

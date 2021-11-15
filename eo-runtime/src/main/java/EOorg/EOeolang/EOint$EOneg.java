@@ -39,8 +39,8 @@ public class EOint$EOneg extends PhDefault {
 
     public EOint$EOneg(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Long.class) * -1L
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            new Dataized(rho.attr("ρ").get()).take(Long.class) * -1L
         )));
     }
 

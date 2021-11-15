@@ -49,6 +49,12 @@ public final class PhWith extends PhOnce {
                 new Phi.Compact(phi),
                 name,
                 new Phi.Compact(attr)
+            ),
+            () -> String.format(
+                "%s(%s ↦ %s)",
+                phi.φTerm(),
+                name,
+                attr.φTerm()
             )
         );
     }
@@ -71,6 +77,12 @@ public final class PhWith extends PhOnce {
                 new Phi.Compact(phi),
                 pos,
                 new Phi.Compact(attr)
+            ),
+            () -> String.format(
+                "%s(#%d ↦ %s)",
+                phi.φTerm(),
+                pos,
+                attr.φTerm()
             )
         );
     }

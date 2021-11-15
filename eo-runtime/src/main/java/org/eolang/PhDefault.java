@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * A simple object.
@@ -45,6 +46,11 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Line bread and tab.
      */
     private static final String REPLACEMENT = "\n  ";
+
+    /**
+     * Attribute name matcher.
+     */
+    private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
 
     /**
      * Attributes.
@@ -73,6 +79,35 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
         this.add("σ", new AtSimple(sigma));
+    }
+
+    @Override
+    public String φTerm() {
+        final Collection<String> list = new ArrayList<>(this.attrs.size());
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            if (!PhDefault.SORTABLE.matcher(ent.getKey()).matches()) {
+                continue;
+            }
+            final String attr = String.format(
+                "%s↦%s",
+                ent.getKey(),
+                ent.getValue().φTerm()
+            );
+            if (attr.endsWith("λ")) {
+                continue;
+            }
+            list.add(attr);
+        }
+        String txt;
+        if (list.isEmpty()) {
+            txt = this.getClass().getSimpleName();
+        } else {
+            txt = String.format(
+                "%s⟦%s⟧", this.getClass().getSimpleName(),
+                String.join(", ", list)
+            );
+        }
+        return txt;
     }
 
     @Override
@@ -181,7 +216,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     protected final void add(final String name, final Attr attr) {
-        if (name.matches("^[a-z].*$")) {
+        if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.add(name);
         }
         this.attrs.put(

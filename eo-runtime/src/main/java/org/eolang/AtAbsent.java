@@ -50,6 +50,11 @@ public final class AtAbsent implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return "Ø";
+    }
+
+    @Override
     public Attr copy(final Phi self) {
         throw new Attr.StillAbstractException(
             String.format(

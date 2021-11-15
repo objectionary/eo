@@ -40,7 +40,8 @@ public final class PhMethod extends PhMany {
     public PhMethod(final Phi phi, final String mtd) {
         super(
             () -> phi.attr(mtd).get(),
-            () -> String.format("%s.%s", new Phi.Compact(phi), mtd)
+            () -> String.format("%s.%s", new Phi.Compact(phi), mtd),
+            () -> String.format("%s.%s", phi.φTerm(), mtd)
         );
     }
 

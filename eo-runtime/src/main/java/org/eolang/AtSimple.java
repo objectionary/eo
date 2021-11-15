@@ -47,6 +47,11 @@ public final class AtSimple implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return this.phi.φTerm();
+    }
+
+    @Override
     public Attr copy(final Phi self) {
         return new AtSimple(this.phi);
     }

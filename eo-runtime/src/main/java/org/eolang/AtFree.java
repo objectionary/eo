@@ -61,6 +61,11 @@ public final class AtFree implements Attr {
     }
 
     @Override
+    public String φTerm() {
+        return "Ø";
+    }
+
+    @Override
     public Attr copy(final Phi self) {
         return new AtFree(this.origin.copy(self), this.set);
     }

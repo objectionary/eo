@@ -33,6 +33,14 @@ SOFTWARE.
   <packaging>jar</packaging>
   <name>eo-runtime</name>
   <description>eolang runtime library</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>2.0.0-alpha5</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
