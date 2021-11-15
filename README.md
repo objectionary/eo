@@ -236,7 +236,7 @@ This is how you iterate:
 
 [args...] > app
   memory > x
-  seq > @
+  and. > @
     x.write 2
     while.
       x.less 6
@@ -245,7 +245,6 @@ This is how you iterate:
           stdout
             sprintf "%dx%d = %d\n" x x (x.pow 2)
           x.write (x.add 1)
-
 ```
 
 This code will print this:
