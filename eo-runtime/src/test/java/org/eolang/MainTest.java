@@ -44,7 +44,7 @@ public final class MainTest {
     private static final Formatter FMT = new Formatter() {
         @Override
         public String format(final LogRecord rec) {
-            return rec.getMessage();
+            return String.format("%s%n", rec.getMessage());
         }
     };
 
@@ -52,7 +52,10 @@ public final class MainTest {
     public void printsVersion() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--version"),
-            Matchers.containsString("1.0-SNAPSHOT")
+            Matchers.allOf(
+                Matchers.containsString("."),
+                Matchers.not(Matchers.containsString(" "))
+            )
         );
     }
 
@@ -68,7 +71,7 @@ public final class MainTest {
     public void turnsOnDebugOutput() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, world!"),
-            Matchers.containsString("EOLANG Runtime 1.0-SNAPSHOT")
+            Matchers.containsString("EOLANG Runtime ")
         );
     }
 

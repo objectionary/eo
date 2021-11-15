@@ -113,7 +113,7 @@ public final class Main {
             Main.LOGGER.info(
                 String.join(
                     "\n",
-                    "Usage: java eo-runtime.jar [option...] class [argument...]",
+                    "Usage: java -cp eo-runtime.jar org.eolang.Main [option...] class [argument...]",
                     "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",
                     "  options:",
