@@ -119,6 +119,21 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="body">
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>@XmirObject(name = "</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:text>", oname = "</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@original-name">
+        <xsl:value-of select="@original-name"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>", source = "</xsl:text>
+    <xsl:value-of select="/program/@source"/>
+    <xsl:text>")</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:text> extends PhDefault {</xsl:text>

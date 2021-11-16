@@ -98,12 +98,14 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
             list.add(attr);
         }
-        String txt;
-        if (list.isEmpty()) {
-            txt = this.getClass().getSimpleName();
-        } else {
+        String txt = this.getClass().getSimpleName();
+        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
+        if (xmir != null) {
+            txt = xmir.oname();
+        }
+        if (!list.isEmpty()) {
             txt = String.format(
-                "%s⟦%s⟧", this.getClass().getSimpleName(),
+                "%s⟦%s⟧", txt,
                 String.join(", ", list)
             );
         }

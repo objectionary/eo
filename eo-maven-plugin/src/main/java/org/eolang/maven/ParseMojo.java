@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,6 +38,8 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.eolang.parser.Syntax;
 import org.eolang.tojos.Tojo;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Parse EO to XML.
@@ -110,7 +113,16 @@ public final class ParseMojo extends SafeMojo {
                 new InputOf(source),
                 new OutputTo(baos)
             ).parse();
-            new Save(baos.toByteArray(), target).save();
+            new Save(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().xpath("/program").attr(
+                            "source", source.toAbsolutePath()
+                        )
+                    ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                ).toString(),
+                target
+            ).save();
             Logger.debug(
                 this, "Parsed %s to %s",
                 Save.rel(source), Save.rel(target)

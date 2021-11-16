@@ -52,6 +52,10 @@ SOFTWARE.
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.jcabi.incubator</groupId>
+      <artifactId>xembly</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <scope>runtime</scope>

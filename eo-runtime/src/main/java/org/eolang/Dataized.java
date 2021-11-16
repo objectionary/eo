@@ -82,9 +82,9 @@ public final class Dataized {
         Dataized.LOGGER.log(
             Level.FINE,
             String.format(
-                "%s ⟸ \uD835\uDD3B(%s)",
-                new Data.Value<>(data).φTerm(),
-                this.phi.φTerm()
+                "\uD835\uDD3B(%s) ➜ %s",
+                this.phi.φTerm(),
+                new Data.Value<>(data).φTerm()
             )
         );
         return data;
