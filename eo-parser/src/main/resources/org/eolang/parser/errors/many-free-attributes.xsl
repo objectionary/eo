@@ -38,7 +38,7 @@ SOFTWARE.
           <xsl:text>"</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>" </xsl:text>
-          <xsl:text>has too many free attributes</xsl:text>
+          <xsl:text>has more than four free attributes, it's too many</xsl:text>
         </xsl:element>
       </xsl:for-each>
     </xsl:copy>
