@@ -96,7 +96,7 @@
         [i]
           &.x.write FALSE > @
 
-[] > calculates-only-once
+[] > calculates-only-once-disabled
   memory > x
   [] > a
     seq > @
@@ -105,4 +105,4 @@
   seq > @
     x.write 0
     a.neg.neg.neg.neg.eq 42
-    x.eq 10
+    x.eq 6
