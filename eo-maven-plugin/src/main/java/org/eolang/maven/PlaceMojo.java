@@ -133,6 +133,18 @@ public final class PlaceMojo extends SafeMojo {
             }
             final Path target = this.outputDir.toPath().resolve(path);
             if (Files.exists(target)) {
+                if (target.toFile().length() == file.toFile().length()) {
+                    Logger.debug(
+                        this, "File %s is already placed to %s",
+                        Save.rel(file), Save.rel(target)
+                    );
+                } else {
+                    Logger.warn(
+                        this, "File %s (%d bytes) is already placed to %s (%d bytes!)",
+                        Save.rel(file), file.toFile().length(),
+                        Save.rel(target), target.toFile().length()
+                    );
+                }
                 continue;
             }
             new Save(new InputOf(file), target).save();
