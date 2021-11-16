@@ -24,19 +24,21 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * POW.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.pow")
 public class EOint$EOpow extends PhDefault {
 
     public EOint$EOpow(final Phi sigma) {

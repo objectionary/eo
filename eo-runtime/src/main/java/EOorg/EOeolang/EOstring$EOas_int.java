@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * AS-INT.
  *
  * @since 1.0
  */
+@XmirObject(oname = "string.as-int")
 public class EOstring$EOas_int extends PhDefault {
 
     public EOstring$EOas_int(final Phi sigma) {

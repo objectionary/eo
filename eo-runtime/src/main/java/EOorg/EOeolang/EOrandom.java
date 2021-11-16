@@ -30,12 +30,14 @@ import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * RANDOM.
  *
  * @since 0.1
  */
+@XmirObject(oname = "random")
 public class EOrandom extends PhDefault {
 
     private static final Random RND = new SecureRandom();

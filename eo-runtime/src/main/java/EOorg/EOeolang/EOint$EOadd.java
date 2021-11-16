@@ -24,18 +24,20 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * ADD.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.add")
 public class EOint$EOadd extends PhDefault {
 
     public EOint$EOadd(final Phi sigma) {

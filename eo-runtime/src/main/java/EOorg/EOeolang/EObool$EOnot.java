@@ -24,18 +24,20 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * AND.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bool.not")
 public class EObool$EOnot extends PhDefault {
 
     public EObool$EOnot(final Phi sigma) {

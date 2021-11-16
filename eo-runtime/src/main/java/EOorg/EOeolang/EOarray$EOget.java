@@ -24,17 +24,19 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * GET.
  *
  * @since 1.0
  */
+@XmirObject(oname = "array.get")
 public class EOarray$EOget extends PhDefault {
 
     public EOarray$EOget(final Phi sigma) {

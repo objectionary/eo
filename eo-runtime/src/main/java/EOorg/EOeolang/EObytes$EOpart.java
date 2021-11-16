@@ -31,12 +31,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * BYTES.PART.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bytes.part")
 public class EObytes$EOpart extends PhDefault {
 
     /**

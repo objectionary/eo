@@ -24,17 +24,19 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * IF.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bool.if")
 public class EObool$EOif extends PhDefault {
 
     public EObool$EOif(final Phi sigma) {

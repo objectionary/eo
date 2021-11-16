@@ -30,12 +30,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * BYTES.AS-STRING.
  *
  * @since 0.16
  */
+@XmirObject(oname = "bytes.as-string")
 public class EObytes$EOas_string extends PhDefault {
 
     public EObytes$EOas_string(final Phi sigma) {

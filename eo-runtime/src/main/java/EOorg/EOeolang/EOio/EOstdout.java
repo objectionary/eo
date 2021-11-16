@@ -31,12 +31,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * Stdout.
  *
  * @since 0.1
  */
+@XmirObject(oname = "stdout")
 public class EOstdout extends PhDefault {
 
     /**

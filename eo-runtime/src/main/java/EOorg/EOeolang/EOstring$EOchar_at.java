@@ -24,18 +24,20 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * CHAR-AT.
  *
  * @since 1.0
  */
+@XmirObject(oname = "string.char-at")
 public class EOstring$EOchar_at extends PhDefault {
 
     public EOstring$EOchar_at(final Phi sigma) {

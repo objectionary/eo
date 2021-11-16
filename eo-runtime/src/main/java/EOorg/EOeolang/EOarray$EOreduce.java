@@ -24,17 +24,19 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * REDUCE.
  *
  * @since 1.0
  */
+@XmirObject(oname = "array.reduce")
 public class EOarray$EOreduce extends PhDefault {
 
     public EOarray$EOreduce(final Phi sigma) {

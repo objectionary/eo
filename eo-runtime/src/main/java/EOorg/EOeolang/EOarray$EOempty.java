@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * EMPTY.
  *
  * @since 1.0
  */
+@XmirObject(oname = "array.empty")
 public class EOarray$EOempty extends PhDefault {
 
     public EOarray$EOempty(final Phi sigma) {

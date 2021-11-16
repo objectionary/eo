@@ -32,12 +32,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * REGEX.
  *
  * @since 0.2
  */
+@XmirObject(oname = "regex.match")
 public class EOregex$EOmatch extends PhDefault {
 
     /**

@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * SIGNUM.
  *
  * @since 1.0
  */
+@XmirObject(oname = "float.signum")
 public class EOfloat$EOsignum extends PhDefault {
 
     public EOfloat$EOsignum(final Phi sigma) {

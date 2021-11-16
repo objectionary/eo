@@ -31,12 +31,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * BYTES.EQ.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bytes.eq")
 public class EObytes$EOeq extends PhDefault {
 
     public EObytes$EOeq(final Phi sigma) {

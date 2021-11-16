@@ -30,12 +30,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * WHILE.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bool.while")
 public class EObool$EOwhile extends PhDefault {
 
     public EObool$EOwhile(final Phi sigma) {

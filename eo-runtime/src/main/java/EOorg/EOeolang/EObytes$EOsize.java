@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * BYTES.SIZE.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bytes.size")
 public class EObytes$EOsize extends PhDefault {
 
     public EObytes$EOsize(final Phi sigma) {

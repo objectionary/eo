@@ -24,18 +24,20 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * LESS THAN OR EQUAL TO.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.leq")
 public class EOint$EOleq extends PhDefault {
 
     public EOint$EOleq(final Phi sigma) {

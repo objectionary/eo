@@ -24,18 +24,20 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * MUL.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.mul")
 public class EOint$EOmul extends PhDefault {
 
     public EOint$EOmul(final Phi sigma) {

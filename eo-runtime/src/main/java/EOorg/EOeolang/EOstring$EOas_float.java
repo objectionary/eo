@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * AS-FLOAT.
  *
  * @since 1.0
  */
+@XmirObject(oname = "string.as-float")
 public class EOstring$EOas_float extends PhDefault {
 
     public EOstring$EOas_float(final Phi sigma) {

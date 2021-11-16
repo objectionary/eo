@@ -30,12 +30,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * JOIN.
  *
  * @since 1.0
  */
+@XmirObject(oname = "string.joined")
 public class EOstring$EOjoined extends PhDefault {
 
     public EOstring$EOjoined(final Phi sigma) {

@@ -30,12 +30,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * AND.
  *
  * @since 1.0
  */
+@XmirObject(oname = "bool.and")
 public class EObool$EOand extends PhDefault {
 
     public EObool$EOand(final Phi sigma) {

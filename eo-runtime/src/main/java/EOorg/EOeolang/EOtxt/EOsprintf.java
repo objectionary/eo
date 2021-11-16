@@ -33,12 +33,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * Sprintf.
  *
  * @since 0.2
  */
+@XmirObject(oname = "sprintf")
 public class EOsprintf extends PhDefault {
     /**
      * Format attr name.

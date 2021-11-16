@@ -31,12 +31,14 @@ import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * DIV.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.div")
 public class EOint$EOdiv extends PhDefault {
 
     public EOint$EOdiv(final Phi sigma) {

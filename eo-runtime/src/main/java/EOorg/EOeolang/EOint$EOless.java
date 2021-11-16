@@ -24,18 +24,20 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * LESS.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.less")
 public class EOint$EOless extends PhDefault {
 
     public EOint$EOless(final Phi sigma) {

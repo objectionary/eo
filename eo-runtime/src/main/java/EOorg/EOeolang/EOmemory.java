@@ -25,19 +25,21 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtFree;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * MEMORY.
  *
  * @since 1.0
  */
+@XmirObject(oname = "memory")
 public class EOmemory extends PhDefault {
 
     private final AtomicReference<Phi> phi;

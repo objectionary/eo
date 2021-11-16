@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * NEG.
  *
  * @since 1.0
  */
+@XmirObject(oname = "int.neg")
 public class EOint$EOneg extends PhDefault {
 
     public EOint$EOneg(final Phi sigma) {

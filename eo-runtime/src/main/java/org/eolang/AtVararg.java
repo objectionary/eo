@@ -26,7 +26,6 @@ package org.eolang;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Vararg attribute.
@@ -44,12 +43,9 @@ public final class AtVararg implements Attr {
 
     @Override
     public String φTerm() {
-        return String.format(
-            "(* %s)",
-            this.array.stream().map(Phi::φTerm).collect(
-                Collectors.joining(", ")
-            )
-        );
+        return new Data.Value<>(
+            this.array.toArray(new Phi[this.array.size()])
+        ).φTerm();
     }
 
     @Override

@@ -32,12 +32,14 @@ import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * EACH.
  *
  * @since 1.0
  */
+@XmirObject(oname = "array.each")
 public class EOarray$EOeach extends PhDefault {
 
     public EOarray$EOeach(final Phi sigma) {

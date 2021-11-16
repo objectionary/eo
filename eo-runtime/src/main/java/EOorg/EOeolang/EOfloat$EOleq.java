@@ -30,12 +30,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * LESS THAN OR EQUAL TO.
  *
  * @since 1.0
  */
+@XmirObject(oname = "float.leq")
 public class EOfloat$EOleq extends PhDefault {
 
     public EOfloat$EOleq(final Phi sigma) {

@@ -39,13 +39,6 @@ import java.lang.annotation.Target;
 public @interface XmirObject {
 
     /**
-     * The name of the object in EO.
-     *
-     * @return The name as it is in EO
-     */
-    String name();
-
-    /**
      * The original name of the object in EO, before optimization.
      *
      * @return The name as it was in EO
@@ -53,10 +46,17 @@ public @interface XmirObject {
     String oname();
 
     /**
+     * The name of the object in EO.
+     *
+     * @return The name as it is in EO
+     */
+    String name() default "";
+
+    /**
      * The name of the source file where this Java code was generated from.
      *
      * @return The absolute path
      */
-    String source();
+    String source() default "";
 
 }

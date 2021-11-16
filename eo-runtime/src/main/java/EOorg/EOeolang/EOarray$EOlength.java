@@ -29,12 +29,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * LENGTH.
  *
  * @since 1.0
  */
+@XmirObject(oname = "array.length")
 public class EOarray$EOlength extends PhDefault {
 
     public EOarray$EOlength(final Phi sigma) {

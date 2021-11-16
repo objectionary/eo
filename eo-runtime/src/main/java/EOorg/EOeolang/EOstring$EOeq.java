@@ -30,12 +30,14 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * EQ.
  *
  * @since 1.0
  */
+@XmirObject(oname = "string.eq")
 public class EOstring$EOeq extends PhDefault {
 
     public EOstring$EOeq(final Phi sigma) {
