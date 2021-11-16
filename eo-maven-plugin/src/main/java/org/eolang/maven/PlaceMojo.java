@@ -81,7 +81,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> includeBinaries = new SetOf<>("EO**", "org/eolang/**.class");
+    private Set<String> includeBinaries = new SetOf<>("EO**", "org/eolang/**");
 
     /**
      * List of exclusion GLOB filters for finding class files.

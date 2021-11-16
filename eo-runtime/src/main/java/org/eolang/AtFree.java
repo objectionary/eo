@@ -62,7 +62,13 @@ public final class AtFree implements Attr {
 
     @Override
     public String φTerm() {
-        return "Ø";
+        final String term;
+        if (this.set) {
+            term = this.origin.φTerm();
+        } else {
+            term = "Ø";
+        }
+        return term;
     }
 
     @Override

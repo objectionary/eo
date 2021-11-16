@@ -1,2 +1,2 @@
-java -cp "target/classes;target/eo-runtime.jar" org.eolang.Main sandbox.app %*
+java -cp target/classes org.eolang.Main sandbox.app %*
 pause

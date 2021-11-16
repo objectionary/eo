@@ -44,6 +44,10 @@ import java.util.stream.Collectors;
 /**
  * Bridge between Java CLI and EO.
  *
+ * This class has a single public static method {@code main()}, which
+ * is supposed to be called by java runtime from command line. The best
+ * example of this class usage is in the "sandbox/canonical" directory.
+ *
  * @since 0.1
  */
 public final class Main {
@@ -88,7 +92,6 @@ public final class Main {
      * @throws IOException If fails
      */
     private static boolean parse(final String opt) throws IOException {
-        boolean exit = false;
         if ("--verbose".equals(opt)) {
             final Logger log = Logger.getLogger("org.eolang");
             log.setLevel(Level.FINE);
@@ -106,14 +109,17 @@ public final class Main {
             }
             log.addHandler(handler);
             log.setUseParentHandlers(false);
-        } else if ("--version".equals(opt)) {
+        }
+        boolean exit = false;
+        if ("--version".equals(opt)) {
             Main.LOGGER.info(Main.version());
             exit = true;
-        } else if ("--help".equals(opt)) {
+        }
+        if ("--help".equals(opt)) {
             Main.LOGGER.info(
                 String.join(
                     "\n",
-                    "Usage: java -cp eo-runtime.jar org.eolang.Main [option...] class [argument...]",
+                    "Usage: java -cp target/classes org.eolang.Main [option...] class [argument...]",
                     "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",
                     "  options:",

@@ -44,6 +44,7 @@ public final class PlaceMojoTest {
         final Path classes = temp.resolve("classes");
         new Save("x1", bins.resolve("foo/hello/0.1/EObar/x.bin")).save();
         new Save("x2", bins.resolve("foo/hello/0.1/org/eolang/f/x.a.class")).save();
+        new Save("x3", bins.resolve("foo/hello/0.1/org/eolang/t.txt")).save();
         new Moja<>(PlaceMojo.class)
             .with("targetDir", temp.toFile())
             .with("outputDir", classes.toFile())
@@ -55,6 +56,10 @@ public final class PlaceMojoTest {
         );
         MatcherAssert.assertThat(
             Files.exists(classes.resolve("org/eolang/f/x.a.class")),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(classes.resolve("org/eolang/t.txt")),
             Matchers.is(true)
         );
     }
