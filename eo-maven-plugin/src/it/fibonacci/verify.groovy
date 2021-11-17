@@ -38,6 +38,8 @@
 log = new File(basedir, 'build.log').text
 
 [
+  '--- eo-maven-plugin:',
+  'org.eolang unpacked to eo-runtime',
   '14th Fibonacci number is 377',
   'BUILD SUCCESS'
 ].each { assert log.contains(it) }
