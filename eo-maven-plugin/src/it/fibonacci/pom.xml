@@ -68,6 +68,7 @@ SOFTWARE.
         <configuration>
           <mainClass>org.eolang.Main</mainClass>
           <arguments>
+            <argument>--verbose</argument>
             <argument>org.eolang.examples.app</argument>
             <argument>14</argument>
             <argument>377</argument>
