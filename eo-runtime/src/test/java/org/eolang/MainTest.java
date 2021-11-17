@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Formatter;
@@ -30,6 +31,10 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -72,6 +77,32 @@ public final class MainTest {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, world!"),
             Matchers.containsString("EOLANG Runtime ")
+        );
+    }
+
+    @Test
+    public void jvmFullRun() throws Exception {
+        final Process proc = new ProcessBuilder().command(
+            "java", "-cp", System.getProperty("java.class.path"),
+            Main.class.getCanonicalName(), "--verbose",
+            "org.eolang.io.stdout", "Hello, dude!"
+        ).redirectErrorStream(true).start();
+        final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(vproc.stdout()),
+                    new OutputTo(stdout)
+                )
+            ).value();
+        }
+        MatcherAssert.assertThat(
+            new String(stdout.toByteArray(), StandardCharsets.UTF_8),
+            Matchers.allOf(
+                Matchers.containsString("EOLANG"),
+                Matchers.containsString("Hello, "),
+                Matchers.containsString("\uD835\uDD3B(string)")
+            )
         );
     }
 
