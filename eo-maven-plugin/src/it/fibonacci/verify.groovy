@@ -35,4 +35,11 @@
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class'
 ].each { assert new File(basedir, it).exists() }
 
+log = new File(basedir, 'build.log').text
+
+[
+  '14th Fibonacci number is 377',
+  'BUILD SUCCESS'
+].each { assert log.contains(it) }
+
 true
