@@ -39,12 +39,6 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
  */
 public final class AtDecoratedTest {
 
-    @BeforeAll
-    public static void logSetup() {
-        SLF4JBridgeHandler.install();
-        Logger.getLogger("").setLevel(Level.FINE);
-    }
-
     @Test
     @Disabled
     public void readsOnlyOnce() {
