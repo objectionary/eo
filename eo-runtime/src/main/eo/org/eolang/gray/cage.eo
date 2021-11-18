@@ -20,52 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-+junit
++package org.eolang.gray
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > writes-into-memory
-  memory > x
-  and. > @
-    x.write 10
-    x.eq 10
+# This object is doing exactly the same as "memory", but allow
+# you to store objects, not only data. In other words, it doesn't
+# do dataization when objects are being stored.
+[] > cage /?
 
-[] > double-writes
-  memory > m
-  and. > @
-    m.write "Hello, world!"
-    m.write 42
-    m.eq 42
+  # Write into it.
+  [x] > write /bool
 
-[] > rewrites-and-increments-itself
-  memory > m
-  and. > @
-    m.write 1
-    m.write (m.add 5)
-    m.eq 6
-
-[] > memory-in-outer-scope
-  [] > outer
-    memory > x
-  outer > a
-  seq > @
-    a.x.write 1
-    stdout
-      sprintf
-        "%d"
-        a.x
-
-[] > checks-for-emptiness
-  memory > x
-  x.is-empty > @
-
-[] > writes-into-two-memory-objects
-  memory > a
-  memory > b
-  and. > @
-    seq
-      a.write 10
-      b.write 20
-    a.eq 10
-
+  # The cage is empty?
+  [] > is-empty /bool

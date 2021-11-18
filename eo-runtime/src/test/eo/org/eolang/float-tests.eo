@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.txt.sprintf
 +junit
 
 [] > converts-to-string
