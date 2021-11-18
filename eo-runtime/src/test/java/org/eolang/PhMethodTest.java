@@ -77,7 +77,7 @@ public final class PhMethodTest {
         new Dataized(phi).take();
         MatcherAssert.assertThat(
             dummy.count,
-            Matchers.equalTo(2)
+            Matchers.equalTo(1)
         );
     }
 
@@ -91,7 +91,7 @@ public final class PhMethodTest {
         }
         MatcherAssert.assertThat(
             dummy.count,
-            Matchers.equalTo(total + 1)
+            Matchers.equalTo(10)
         );
     }
 

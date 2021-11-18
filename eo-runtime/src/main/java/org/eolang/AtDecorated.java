@@ -23,8 +23,6 @@
  */
 package org.eolang;
 
-import java.util.function.Supplier;
-
 /**
  * When a child object is taken from the \phi object, this class
  * replaces the \rho attribute of it on the fly. This is necessary
@@ -47,7 +45,7 @@ final class AtDecorated implements Attr {
     /**
      * The \phi attribute.
      */
-    private final Attr phi;
+    private final Phi phi;
 
     /**
      * The name.
@@ -57,7 +55,7 @@ final class AtDecorated implements Attr {
     /**
      * The owner of the \phi attribute.
      */
-    private final Supplier<Phi> rho;
+    private final Phi rho;
 
     /**
      * Ctor.
@@ -65,7 +63,7 @@ final class AtDecorated implements Attr {
      * @param attr The origin
      * @param arho The owner of the \phi attribute
      */
-    AtDecorated(final Attr aphi, final String attr, final Supplier<Phi> arho) {
+    AtDecorated(final Phi aphi, final String attr, final Phi arho) {
         this.phi = aphi;
         this.name = attr;
         this.rho = arho;
@@ -88,8 +86,7 @@ final class AtDecorated implements Attr {
 
     @Override
     public Phi get() {
-        final Phi base = this.phi.get();
-        return base.attr(this.name).copy(base).get().copy(this.rho.get());
+        return this.phi.attr(this.name).copy(this.phi).get().copy(this.rho);
     }
 
     @Override

@@ -77,8 +77,8 @@ public final class PhFetchedKid implements Phi {
     @Override
     public Attr attr(final String name) {
         return new AtComposite(
-            this.origin, x -> {
-                Phi phi = this.origin.attr(name).copy(x).get();
+            this.origin, rho -> {
+                Phi phi = this.origin.attr(name).copy(rho).get();
                 if ("ρ".equals(name)) {
                     phi = new PhFetchedParent(phi, this.attrs, this.origin);
                 }

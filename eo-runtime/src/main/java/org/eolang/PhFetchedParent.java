@@ -26,6 +26,7 @@ package org.eolang;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A object with pre-calculuated \phi, which is used when a missing
@@ -51,9 +52,14 @@ public final class PhFetchedParent implements Phi {
     private final Collection<String> attrs;
 
     /**
+     * TRUE if "found" is no longer trutable.
+     */
+    private final AtomicBoolean expired = new AtomicBoolean(false);
+
+    /**
      * Ctor.
      *
-     * @param phi The original object
+     * @param base The original object
      * @param names List of attrs
      * @param phi Pref-fetched \phi
      */
@@ -85,10 +91,13 @@ public final class PhFetchedParent implements Phi {
     @Override
     public Attr attr(final String name) {
         final Attr attr;
-        if (this.attrs.contains(name)) {
+        if (this.attrs.contains(name) || this.expired.get()) {
             attr = this.origin.attr(name);
         } else {
             attr = this.found.attr(name);
+            if ("Δ".equals(name)) {
+                this.expired.set(true);
+            }
         }
         return attr;
     }

@@ -26,11 +26,9 @@ package org.eolang;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -45,13 +43,6 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 public final class MainTest {
-
-    private static final Formatter FMT = new Formatter() {
-        @Override
-        public String format(final LogRecord rec) {
-            return String.format("%s%n", rec.getMessage());
-        }
-    };
 
     @Test
     public void printsVersion() throws Exception {
@@ -73,19 +64,26 @@ public final class MainTest {
     }
 
     @Test
-    public void turnsOnDebugOutput() throws Exception {
+    public void jvmFullRun() throws Exception {
         MatcherAssert.assertThat(
-            MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, world!"),
-            Matchers.containsString("EOLANG Runtime ")
+            MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
+            Matchers.allOf(
+                Matchers.containsString("EOLANG"),
+                Matchers.containsString("Hello, "),
+                Matchers.containsString("\uD835\uDD3B(string)")
+            )
         );
     }
 
-    @Test
-    public void jvmFullRun() throws Exception {
+    public static String exec(final String... cmds) throws Exception {
+        final Collection<String> args = new LinkedList<>();
+        args.add("java");
+        args.add("-cp");
+        args.add(System.getProperty("java.class.path"));
+        args.add(Main.class.getCanonicalName());
+        args.addAll(Arrays.asList(cmds));
         final Process proc = new ProcessBuilder().command(
-            "java", "-cp", System.getProperty("java.class.path"),
-            Main.class.getCanonicalName(), "--verbose",
-            "org.eolang.io.stdout", "Hello, dude!"
+            args.toArray(new String[args.size()])
         ).redirectErrorStream(true).start();
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         try (VerboseProcess vproc = new VerboseProcess(proc)) {
@@ -96,25 +94,7 @@ public final class MainTest {
                 )
             ).value();
         }
-        MatcherAssert.assertThat(
-            new String(stdout.toByteArray(), StandardCharsets.UTF_8),
-            Matchers.allOf(
-                Matchers.containsString("EOLANG"),
-                Matchers.containsString("Hello, "),
-                Matchers.containsString("\uD835\uDD3B(string)")
-            )
-        );
-    }
-
-    private static String exec(final String... args) throws Exception {
-        final Logger log = Logger.getLogger("org.eolang");
-        log.setUseParentHandlers(false);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Handler handler = new StreamHandler(baos, MainTest.FMT);
-        log.addHandler(handler);
-        Main.main(args);
-        handler.flush();
-        return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+        return new String(stdout.toByteArray(), StandardCharsets.UTF_8);
     }
 
 }

@@ -54,10 +54,22 @@ public final class AtDecoratedTest {
     @Test
     public void readsNegOnlyOnce() {
         final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
-        new Dataized(num.attr("neg").get()).take();
+        num.attr("neg").get().attr("Δ").get();
         MatcherAssert.assertThat(
             num.count,
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void readsNegManyTimes() {
+        final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
+        final Phi neg = num.attr("neg").get();
+        neg.attr("Δ").get();
+        neg.attr("Δ").get();
+        MatcherAssert.assertThat(
+            num.count,
+            Matchers.equalTo(2)
         );
     }
 
@@ -92,7 +104,6 @@ public final class AtDecoratedTest {
             this.add("φ", new AtComposite(
                 this, rho -> {
                 ++this.count;
-                System.out.println("hit");
                 return new Data.ToPhi(1L);
             }));
         }
