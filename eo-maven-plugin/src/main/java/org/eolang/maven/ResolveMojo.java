@@ -132,14 +132,14 @@ public final class ResolveMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private Collection<Dependency> deps() throws IOException {
-        final Collection<Tojo> list = this.tojos().select(
+        final Collection<Tojo> list = this.scopedTojos().select(
             t -> t.exists(AssembleMojo.ATTR_XMIR)
                 && t.exists(AssembleMojo.ATTR_VERSION)
                 && !t.exists(AssembleMojo.ATTR_JAR)
         );
         Logger.debug(
             this, "%d suitable tojo(s) found out of %d",
-            list.size(), this.tojos().select(t -> true).size()
+            list.size(), this.scopedTojos().select(t -> true).size()
         );
         final Collection<Dependency> deps = new HashSet<>(0);
         for (final Tojo tojo : list) {

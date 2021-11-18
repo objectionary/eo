@@ -63,7 +63,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos().select(
+        final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
         int done = 0;

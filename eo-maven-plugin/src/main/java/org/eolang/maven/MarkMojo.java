@@ -85,7 +85,7 @@ public final class MarkMojo extends SafeMojo {
         int done = 0;
         for (final Path src : sources) {
             if (src.toString().endsWith(".eo")) {
-                final Tojo tojo = this.tojos().add(unplace.make(src));
+                final Tojo tojo = this.scopedTojos().add(unplace.make(src));
                 if (!tojo.exists(AssembleMojo.ATTR_VERSION)) {
                     tojo.set(AssembleMojo.ATTR_VERSION, version);
                 }

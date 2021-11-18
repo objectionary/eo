@@ -54,7 +54,7 @@ public final class DiscoverMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = this.tojos().select(
+        final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && !row.exists(AssembleMojo.ATTR_DISCOVERED)
         );
@@ -63,7 +63,7 @@ public final class DiscoverMojo extends SafeMojo {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.discover(src);
             for (final String name : names) {
-                final Tojo ftojo = this.tojos().add(name);
+                final Tojo ftojo = this.scopedTojos().add(name);
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
                     ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 }

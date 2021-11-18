@@ -99,11 +99,11 @@ public final class RegisterMojo extends SafeMojo {
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
             final String name = unplace.make(file);
-            if (!this.tojos().select(t -> t.get("id").equals(name)).isEmpty()) {
+            if (!this.scopedTojos().select(t -> t.get("id").equals(name)).isEmpty()) {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }
-            this.tojos()
+            this.scopedTojos()
                 .add(name)
                 .set(AssembleMojo.ATTR_VERSION, ParseMojo.ZERO)
                 .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());
