@@ -58,15 +58,13 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void goesThroughManyTypes() {
+    public void goesThroughJustOnce() {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, "φ");
         MatcherAssert.assertThat(
             new Dataized(phi).take(Double.class),
-            Matchers.not(
-                Matchers.equalTo(
-                    new Dataized(phi).take(Double.class)
-                )
+            Matchers.equalTo(
+                new Dataized(phi).take(Double.class)
             )
         );
     }

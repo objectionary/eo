@@ -43,7 +43,7 @@ public final class PhMethodTest {
     }
 
     @Test
-    public void calculatesPhiManyTimes() {
+    public void calculatesPhiJustOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "φ");
         final int total = 10;
@@ -52,12 +52,12 @@ public final class PhMethodTest {
         }
         MatcherAssert.assertThat(
             dummy.count,
-            Matchers.equalTo(total)
+            Matchers.equalTo(1)
         );
     }
 
     @Test
-    public void calculatesToLocalManyTimes() {
+    public void calculatesToLocalJustOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
@@ -66,7 +66,7 @@ public final class PhMethodTest {
         }
         MatcherAssert.assertThat(
             dummy.count,
-            Matchers.equalTo(total)
+            Matchers.equalTo(1)
         );
     }
 
@@ -91,7 +91,7 @@ public final class PhMethodTest {
         }
         MatcherAssert.assertThat(
             dummy.count,
-            Matchers.equalTo(total * 2)
+            Matchers.equalTo(total + 1)
         );
     }
 

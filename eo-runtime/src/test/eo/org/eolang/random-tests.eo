@@ -38,10 +38,9 @@
 
 [] > two-random-numbers-with-phi
   random.@ > r
-  not. > @
-    eq.
-      r
-      r
+  eq. > @
+    r
+    r
 
 [] > two-random-numbers-with-increment-with-const
   random.add 3.1416 > r!
