@@ -23,7 +23,6 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -115,7 +114,7 @@ public final class EOintEOpowTest {
             ).take(String.class),
             Matchers.equalTo("0 cannot be raised to a negative power")
         );
-        Assertions.assertThrows(Attr.StillAbstractException.class, () -> {
+        Assertions.assertThrows(Exception.class, () -> {
             new Dataized(result).take(Long.class);
         });
     }

@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -46,40 +45,50 @@ public final class AtDecoratedTest {
     }
 
     @Test
-    @Disabled
     public void readsOnlyOnce() {
-        final Dummy dummy = new Dummy(Phi.Φ);
-        final Phi neg = dummy.attr("neg").get();
-        neg.attr("Δ").get();
+        final AtDecoratedTest.Parent parent = new AtDecoratedTest.Parent(Phi.Φ);
+        parent.attr("first").get();
         MatcherAssert.assertThat(
-            dummy.count,
+            parent.count,
             Matchers.equalTo(1)
         );
     }
 
     @Test
-    @Disabled
     public void readsManyTimes() {
-        final Dummy dummy = new Dummy(Phi.Φ);
+        final AtDecoratedTest.Parent parent = new AtDecoratedTest.Parent(Phi.Φ);
+        final Attr first = parent.attr("first");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
-            dummy.attr("neg").get().attr("Δ").get();
+            first.get();
         }
         MatcherAssert.assertThat(
-            dummy.count,
-            Matchers.equalTo(total)
+            parent.count,
+            Matchers.equalTo(10)
         );
     }
 
-    public static class Dummy extends PhDefault {
+    public static class Parent extends PhDefault {
         public int count;
-        public Dummy(final Phi sigma) {
+        public Parent(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(
                 this, rho -> {
                 ++this.count;
-                return new Data.ToPhi(1L);
+                return new Kid(rho);
             }));
+        }
+    }
+
+    public static class Kid extends PhDefault {
+        public Kid(final Phi sigma) {
+            super(sigma);
+            this.add("first", new AtComposite(this, rho -> {
+                System.out.println(rho.getClass().getCanonicalName());
+                return rho.attr("ρ").get().attr("second").get();
+            }));
+            this.add("second", new AtComposite(this, rho ->
+                new Data.ToPhi(1L)));
         }
     }
 
