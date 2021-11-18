@@ -23,7 +23,8 @@
  */
 
 /**
- * EO dirty objects (don't use them!).
+ * EO dirty objects (don't use them, most probably they will be
+ * deleted in the next versions of the runtime library).
  *
  * @since 0.17
  */
