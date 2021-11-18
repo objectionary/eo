@@ -36,9 +36,9 @@ import org.eolang.XmirObject;
 /**
  * CAGE.
  *
- * @since 1.0
+ * @since 0.17
  */
-@XmirObject(oname = "memory")
+@XmirObject(oname = "cage")
 public class EOcage extends PhDefault {
 
     private final AtomicReference<Phi> phi;
