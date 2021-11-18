@@ -32,7 +32,7 @@ SOFTWARE.
   <artifactId>eo-runtime</artifactId>
   <packaging>jar</packaging>
   <name>eo-runtime</name>
-  <description>eolang runtime library</description>
+  <description>EO runtime library</description>
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -51,6 +51,16 @@ SOFTWARE.
       <artifactId>jul-to-slf4j</artifactId>
       <version>2.0.0-alpha5</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-log</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>

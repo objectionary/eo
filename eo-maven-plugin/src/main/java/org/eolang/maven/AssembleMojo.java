@@ -192,7 +192,7 @@ public final class AssembleMojo extends SafeMojo {
                 String.format(
                     "%s:%d",
                     attr,
-                    this.tojos().select(tojo -> tojo.exists(attr)).size()
+                    this.scopedTojos().select(tojo -> tojo.exists(attr)).size()
                 )
             );
         }

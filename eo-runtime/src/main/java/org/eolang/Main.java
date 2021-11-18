@@ -58,12 +58,18 @@ public final class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     /**
-     * The method caled by JVM when the program starts.
+     * EO app-wide logger.
+     */
+    private static final Logger EOLOG = Logger.getLogger("org.eolang");
+
+    /**
+     * The method called by JVM when the program starts.
      *
      * @param args Command line args
      * @throws Exception If fails
      */
     public static void main(final String... args) throws Exception {
+        Main.setup();
         final List<String> opts = new ArrayList<>(args.length);
         opts.addAll(Arrays.asList(args));
         while (!opts.isEmpty()) {
@@ -86,6 +92,23 @@ public final class Main {
     }
 
     /**
+     * Setup logs.
+     */
+    private static void setup() {
+        final Handler handler = new ConsoleHandler();
+        handler.setFormatter(
+            new Formatter() {
+                @Override
+                public String format(final LogRecord rec) {
+                    return String.format("%s%n", rec.getMessage());
+                }
+            }
+        );
+        Main.EOLOG.addHandler(handler);
+        Main.EOLOG.setUseParentHandlers(false);
+    }
+
+    /**
      * Process one option.
      * @param opt The option
      * @return TRUE if it's time to exit
@@ -93,22 +116,10 @@ public final class Main {
      */
     private static boolean parse(final String opt) throws IOException {
         if ("--verbose".equals(opt)) {
-            final Logger log = Logger.getLogger("org.eolang");
-            log.setLevel(Level.FINE);
-            final Handler handler = new ConsoleHandler();
-            handler.setFormatter(
-                new Formatter() {
-                    @Override
-                    public String format(final LogRecord rec) {
-                        return String.format("%s%n", rec.getMessage());
-                    }
-                }
-            );
-            for (final Handler hnd : log.getHandlers()) {
+            Main.EOLOG.setLevel(Level.FINE);
+            for (final Handler hnd : Main.EOLOG.getHandlers()) {
                 hnd.setLevel(Level.FINE);
             }
-            log.addHandler(handler);
-            log.setUseParentHandlers(false);
         }
         boolean exit = false;
         if ("--version".equals(opt)) {

@@ -21,8 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 +junit
 
 [] > writes-into-memory

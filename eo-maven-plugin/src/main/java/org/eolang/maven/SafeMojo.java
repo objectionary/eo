@@ -110,7 +110,15 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      */
     protected final Tojos tojos() {
-        final Tojos tojos = new MonoTojos(this.foreign);
+        return new MonoTojos(this.foreign);
+    }
+
+    /**
+     * Tojos to use, in my scope only.
+     * @return Tojos to use
+     */
+    protected final Tojos scopedTojos() {
+        final Tojos tojos = this.tojos();
         return new Tojos() {
             @Override
             public Tojo add(final String name) throws IOException {

@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2021 Yegor Bugayenko
@@ -22,31 +22,10 @@
  * SOFTWARE.
  */
 
-[
-  'target/eo-foreign.csv',
-  'target/eo-placed.csv',
-  'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
-  'target/eo/01-parse/org/eolang/examples/app.xmir',
-  'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
-  'target/eo/03-optimize/org/eolang/examples/app.xmir',
-  'target/eo/04-pull/org/eolang/array.eo',
-  'target/eo/05-pre/org/eolang/examples/app/00-pre-classes.xml',
-  'target/eo/06-transpile/org/eolang/examples/app.xmir',
-  'target/classes/EOorg/EOeolang/EOexamples/EOapp.class'
-].each { assert new File(basedir, it).exists() }
-
-String log = new File(basedir, 'build.log').text
-
-[
-  '--- eo-maven-plugin:',
-  'org.eolang unpacked to eo-runtime',
-  '14th Fibonacci number is 377',
-  'BUILD SUCCESS',
-  '𝔻(fibonacci'
-].each { assert log.contains(it) }
-
-// There is a bug related to duplicate execution. When it's fixed,
-// replace the tailing number "2" with "1"
-assert log.split('\n14th Fibonacci number is 377\n', -1).length-1 == 2
-
-true
+/**
+ * EO dirty objects (don't use them, most probably they will be
+ * deleted in the next versions of the runtime library).
+ *
+ * @since 0.17
+ */
+package EOorg.EOeolang.EOgray;

@@ -41,10 +41,11 @@ package org.eolang;
  * @since 0.16
  */
 final class AtDecorated implements Attr {
+
     /**
      * The \phi attribute.
      */
-    private final Attr base;
+    private final Phi phi;
 
     /**
      * The name.
@@ -52,20 +53,20 @@ final class AtDecorated implements Attr {
     private final String name;
 
     /**
-     * The self.
+     * The owner of the \phi attribute.
      */
-    private final Phi self;
+    private final Phi rho;
 
     /**
      * Ctor.
-     * @param phi The \phi owner of this one
+     * @param aphi The \phi
      * @param attr The origin
-     * @param slf The self
+     * @param arho The owner of the \phi attribute
      */
-    AtDecorated(final Attr phi, final String attr, final Phi slf) {
-        this.base = phi;
+    AtDecorated(final Phi aphi, final String attr, final Phi arho) {
+        this.phi = aphi;
         this.name = attr;
-        this.self = slf;
+        this.rho = arho;
     }
 
     @Override
@@ -75,21 +76,21 @@ final class AtDecorated implements Attr {
 
     @Override
     public String φTerm() {
-        return String.format("%s.%s", this.base.φTerm(), this.name);
+        return String.format("%s.%s", this.phi.φTerm(), this.name);
     }
 
     @Override
-    public Attr copy(final Phi slf) {
+    public Attr copy(final Phi obj) {
         return this;
     }
 
     @Override
     public Phi get() {
-        return this.base.get().attr(this.name).get().copy(this.self);
+        return this.phi.attr(this.name).copy(this.phi).get().copy(this.rho);
     }
 
     @Override
-    public void put(final Phi phi) {
+    public void put(final Phi obj) {
         throw new Attr.ReadOnlyException(
             String.format(
                 "It's not allowed to set attribute '%s' of a decoratee",

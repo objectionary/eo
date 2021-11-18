@@ -68,7 +68,7 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = this.tojos().select(
+        final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_EO)
         );
         int total = 0;

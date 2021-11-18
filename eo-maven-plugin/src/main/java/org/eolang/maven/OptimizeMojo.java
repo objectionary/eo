@@ -63,7 +63,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos().select(
+        final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
         int done = 0;
@@ -82,7 +82,11 @@ public final class OptimizeMojo extends SafeMojo {
                 this.optimize(src).toAbsolutePath().toString()
             );
         }
-        Logger.info(this, "%d XMIR programs optimized out of %d", done, sources.size());
+        if (done > 0) {
+            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
+        } else {
+            Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
+        }
     }
 
     /**
