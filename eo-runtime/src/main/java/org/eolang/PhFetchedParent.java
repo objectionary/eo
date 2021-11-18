@@ -33,7 +33,7 @@ import java.util.Collections;
  *
  * @since 0.17
  */
-public final class PhFetchedPhi implements Phi {
+public final class PhFetchedParent implements Phi {
 
     /**
      * Original object.
@@ -53,14 +53,23 @@ public final class PhFetchedPhi implements Phi {
     /**
      * Ctor.
      *
-     * @param phi The object
+     * @param phi The original object
      * @param names List of attrs
+     * @param phi Pref-fetched \phi
      */
-    public PhFetchedPhi(final Phi base, final Collection<String> names,
+    public PhFetchedParent(final Phi base, final Collection<String> names,
         final Phi phi) {
         this.origin = base;
         this.found = phi;
         this.attrs = Collections.unmodifiableCollection(names);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "FP%s:%s",
+            this.attrs, this.origin.toString()
+        );
     }
 
     @Override
@@ -79,7 +88,7 @@ public final class PhFetchedPhi implements Phi {
         if (this.attrs.contains(name)) {
             attr = this.origin.attr(name);
         } else {
-            attr = new AtSimple(this.found);
+            attr = this.found.attr(name);
         }
         return attr;
     }

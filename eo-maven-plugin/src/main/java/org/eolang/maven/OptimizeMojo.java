@@ -82,7 +82,11 @@ public final class OptimizeMojo extends SafeMojo {
                 this.optimize(src).toAbsolutePath().toString()
             );
         }
-        Logger.info(this, "%d XMIR programs optimized out of %d", done, sources.size());
+        if (done > 0) {
+            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
+        } else {
+            Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
+        }
     }
 
     /**

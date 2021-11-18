@@ -57,6 +57,14 @@ public final class PhFetchedKid implements Phi {
     }
 
     @Override
+    public String toString() {
+        return String.format(
+            "FK%s:%s",
+            this.attrs, this.origin.toString()
+        );
+    }
+
+    @Override
     public Phi copy(final Phi rho) {
         return this.origin.copy(rho);
     }
@@ -72,7 +80,7 @@ public final class PhFetchedKid implements Phi {
             this.origin, x -> {
                 Phi phi = this.origin.attr(name).copy(x).get();
                 if ("ρ".equals(name)) {
-                    phi = new PhFetchedPhi(phi, this.attrs, this.origin);
+                    phi = new PhFetchedParent(phi, this.attrs, this.origin);
                 }
                 return phi;
             }

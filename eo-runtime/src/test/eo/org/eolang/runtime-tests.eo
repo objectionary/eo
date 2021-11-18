@@ -96,13 +96,15 @@
         [i]
           &.x.write FALSE > @
 
-[] > calculates-only-once-disabled
+[] > calculates-only-once
   memory > x
   [] > a
-    seq > @
-      x.write (x.add 1)
-      42
+    [] > @
+      [] > @
+        seq > @
+          x.write (x.add 1)
+          42
   seq > @
     x.write 0
     a.neg.neg.neg.neg.eq 42
-    x.eq 6
+    x.eq 1

@@ -195,7 +195,8 @@ public abstract class PhDefault implements Phi, Cloneable {
             } else {
                 attr = new AtDecorated(
                     new AtComposite(null, x -> new PhFetchedKid(phi.get(), this.attrs.keySet())),
-                    name, this
+                    name,
+                    () -> new PhFetchedParent(this, this.attrs.keySet(), phi.get())
                 );
             }
         }

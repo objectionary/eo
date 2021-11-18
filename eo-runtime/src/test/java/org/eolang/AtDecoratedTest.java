@@ -45,6 +45,23 @@ public final class AtDecoratedTest {
     }
 
     @Test
+    public void fetchesNegOnlyOnce() {
+        final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
+        num.attr("neg").get();
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(1));
+    }
+
+    @Test
+    public void readsNegOnlyOnce() {
+        final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
+        new Dataized(num.attr("neg").get()).take();
+        MatcherAssert.assertThat(
+            num.count,
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
     public void readsOnlyOnce() {
         final AtDecoratedTest.Parent parent = new AtDecoratedTest.Parent(Phi.Φ);
         parent.attr("first").get();
@@ -68,6 +85,19 @@ public final class AtDecoratedTest {
         );
     }
 
+    public static class Num extends PhDefault {
+        public int count;
+        public Num(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, rho -> {
+                ++this.count;
+                System.out.println("hit");
+                return new Data.ToPhi(1L);
+            }));
+        }
+    }
+
     public static class Parent extends PhDefault {
         public int count;
         public Parent(final Phi sigma) {
@@ -83,10 +113,8 @@ public final class AtDecoratedTest {
     public static class Kid extends PhDefault {
         public Kid(final Phi sigma) {
             super(sigma);
-            this.add("first", new AtComposite(this, rho -> {
-                System.out.println(rho.getClass().getCanonicalName());
-                return rho.attr("ρ").get().attr("second").get();
-            }));
+            this.add("first", new AtComposite(this, rho ->
+                rho.attr("ρ").get().attr("second").get()));
             this.add("second", new AtComposite(this, rho ->
                 new Data.ToPhi(1L)));
         }

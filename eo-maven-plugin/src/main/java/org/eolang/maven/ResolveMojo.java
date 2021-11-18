@@ -118,7 +118,11 @@ public final class ResolveMojo extends SafeMojo {
                 );
             }
         }
-        Logger.info(this, "%d new dependencies unpacked", deps.size());
+        if (deps.isEmpty()) {
+            Logger.debug(this, "No new dependencies unpacked");
+        } else {
+            Logger.info(this, "New %d dependenc(ies) unpacked", deps.size());
+        }
     }
 
     /**
