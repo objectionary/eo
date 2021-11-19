@@ -1,5 +1,3 @@
-package org.eolang;
-
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.bridge.SLF4JBridgeHandler;
