@@ -90,11 +90,10 @@ public final class Dataized {
         Dataized.LOGGER.log(
             Level.FINE,
             String.format(
-                "%s\uD835\uDD3B( %s ) ➜ %s (%s)",
+                "%s\uD835\uDD3B( %s ) ➜ %s",
                 String.join("", Collections.nCopies(before, "·")),
                 this.phi.φTerm(),
-                new Data.Value<>(data).φTerm(),
-                this.phi.getClass().getCanonicalName()
+                new Data.Value<>(data).φTerm()
             )
         );
         Dataized.LEVEL.set(before);
