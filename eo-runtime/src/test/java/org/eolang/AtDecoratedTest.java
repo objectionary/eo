@@ -55,10 +55,16 @@ public final class AtDecoratedTest {
     public void readsNegOnlyOnce() {
         final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
         num.attr("neg").get().attr("Δ").get();
-        MatcherAssert.assertThat(
-            num.count,
-            Matchers.equalTo(1)
-        );
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(1));
+    }
+
+    @Test
+    public void readsTwiceAfterCopy() {
+        final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
+        final Phi neg = num.attr("neg").get();
+        final Phi copy = neg.copy(num);
+        copy.attr("Δ").get();
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(2));
     }
 
     @Test
@@ -67,20 +73,14 @@ public final class AtDecoratedTest {
         final Phi neg = num.attr("neg").get();
         neg.attr("Δ").get();
         neg.attr("Δ").get();
-        MatcherAssert.assertThat(
-            num.count,
-            Matchers.equalTo(2)
-        );
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(2));
     }
 
     @Test
     public void readsOnlyOnce() {
         final AtDecoratedTest.Parent parent = new AtDecoratedTest.Parent(Phi.Φ);
         parent.attr("first").get();
-        MatcherAssert.assertThat(
-            parent.count,
-            Matchers.equalTo(1)
-        );
+        MatcherAssert.assertThat(parent.count, Matchers.equalTo(1));
     }
 
     @Test

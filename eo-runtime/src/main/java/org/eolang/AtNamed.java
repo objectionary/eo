@@ -37,8 +37,12 @@ public final class AtNamed implements Attr {
 
     private final String name;
 
-    public AtNamed(final String nme, final Phi src, final Attr attr) {
+    private final String oname;
+
+    public AtNamed(final String nme, final String onme,
+        final Phi src, final Attr attr) {
         this.name = nme;
+        this.oname = onme;
         this.phi = src;
         this.origin = attr;
     }
@@ -56,7 +60,7 @@ public final class AtNamed implements Attr {
     @Override
     public Attr copy(final Phi self) {
         try {
-            return new AtNamed(this.name, this.phi, this.origin.copy(self));
+            return new AtNamed(this.name, this.oname, this.phi, this.origin.copy(self));
         } catch (final IllegalAttrException ex) {
             throw new IllegalAttrException(this.label(), ex);
         }
@@ -64,13 +68,18 @@ public final class AtNamed implements Attr {
 
     @Override
     public Phi get() {
+        Phi obj;
         try {
-            return this.origin.get();
+            obj = this.origin.get();
         } catch (final Attr.StillAbstractException ex) {
             throw new Attr.StillAbstractException(this.label(), ex);
         } catch (final IllegalAttrException ex) {
             throw new IllegalAttrException(this.label(), ex);
         }
+        if (!(obj instanceof Data)) {
+            obj = new PhNamed(obj, this.oname);
+        }
+        return obj;
     }
 
     @Override

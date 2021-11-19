@@ -59,6 +59,7 @@ public class EOcage extends PhDefault {
         this.add("is-empty", new AtComposite(this, EOcage.IsEmpty::new));
     }
 
+    @XmirObject(oname = "cage.write")
     private final class Write extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
@@ -71,6 +72,7 @@ public class EOcage extends PhDefault {
         }
     }
 
+    @XmirObject(oname = "cage.is-empty")
     private final class IsEmpty extends PhDefault {
         IsEmpty(final Phi sigma) {
             super(sigma);

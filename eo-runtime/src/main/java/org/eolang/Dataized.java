@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +39,11 @@ public final class Dataized {
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(Dataized.class.getName());
+
+    /**
+     * Dataization level.
+     */
+    private static final ThreadLocal<Integer> LEVEL = ThreadLocal.withInitial(() -> 0);
 
     /**
      * The object to datarize.
@@ -57,6 +63,8 @@ public final class Dataized {
      * @return The data
      */
     public Object take() {
+        final int before = Dataized.LEVEL.get();
+        Dataized.LEVEL.set(before + 1);
         Phi src = this.phi;
         try {
             if (!(src instanceof Data)) {
@@ -82,11 +90,14 @@ public final class Dataized {
         Dataized.LOGGER.log(
             Level.FINE,
             String.format(
-                "\uD835\uDD3B(%s) ➜ %s",
+                "%s\uD835\uDD3B( %s ) ➜ %s (%s)",
+                String.join("", Collections.nCopies(before, "·")),
                 this.phi.φTerm(),
-                new Data.Value<>(data).φTerm()
+                new Data.Value<>(data).φTerm(),
+                this.phi.getClass().getCanonicalName()
             )
         );
+        Dataized.LEVEL.set(before);
         return data;
     }
 
