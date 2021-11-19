@@ -61,6 +61,12 @@ public final class PhNamed implements Phi {
     public String φTerm() {
         return String.format("%s ≡ %s", this.name, this.origin.φTerm());
     }
+
+    @Override
+    public Phi copy() {
+        return new PhNamed(this.origin.copy(), this.name);
+    }
+
     @Override
     public Phi copy(final Phi rho) {
         return new PhNamed(this.origin.copy(rho), this.name);

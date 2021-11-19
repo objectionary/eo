@@ -24,6 +24,7 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOtxt.EOsprintf;
+import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -68,6 +69,27 @@ public final class PhConstTest {
     }
 
     @Test
+    public void onceEvenIfCopied() {
+        final Dummy dummy = new Dummy("child");
+        final Phi child = new PhMethod(new PhConst(dummy), "child");
+        new Dataized(child).take(Long.class);
+        final Phi copy = new PhWith(new PhCopy(child), 0, new Data.ToPhi(1L));
+        new Dataized(copy).take(Long.class);
+        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
+    }
+
+    @Test
+    public void randomToConst() {
+        final Phi rnd = new PhConst(new PhConstTest.Rnd());
+        final Phi eql = rnd.attr("eq").get();
+        eql.attr(0).put(rnd);
+        MatcherAssert.assertThat(
+            new Dataized(eql).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     public void doesntAllowAttributesOfDecorateeToBeSet() {
         final Phi phi = new Boom();
         Assertions.assertThrows(
@@ -103,6 +125,14 @@ public final class PhConstTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(boom.count, Matchers.equalTo(1));
+    }
+
+    private static class Rnd extends PhDefault {
+        Rnd() {
+            super();
+            this.add("φ", new AtComposite(this, self ->
+                new Data.ToPhi(new SecureRandom().nextDouble())));
+        }
     }
 
     private static class Dummy extends PhDefault {

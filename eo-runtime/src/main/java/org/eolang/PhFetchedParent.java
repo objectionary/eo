@@ -93,6 +93,16 @@ public final class PhFetchedParent implements Phi {
     }
 
     @Override
+    public Phi copy() {
+        return new PhFetchedParent(
+            this.origin.copy(),
+            this.attrs,
+            this.found,
+            this.expired.get()
+        );
+    }
+
+    @Override
     public Phi copy(final Phi rho) {
         return new PhFetchedParent(
             this.origin.copy(rho),

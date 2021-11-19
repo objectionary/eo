@@ -59,6 +59,25 @@ public final class AtDecoratedTest {
     }
 
     @Test
+    public void readsNegOnlyOnceWithPhMethod() {
+        final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhCopy(new PhMethod(num, "neg")),
+                        "eq"
+                    ),
+                    0,
+                    new Data.ToPhi(1L)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
+        );
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(1));
+    }
+
+    @Test
     public void readsTwiceAfterCopy() {
         final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
         final Phi neg = num.attr("neg").get();

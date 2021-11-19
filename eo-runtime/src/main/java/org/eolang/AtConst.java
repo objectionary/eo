@@ -35,15 +35,18 @@ public final class AtConst implements Attr {
 
     private final Attr origin;
 
-    private final AtomicReference<Phi> ref;
+    private final Phi rho;
 
-    public AtConst(final Attr attr) {
-        this(attr, null);
-    }
+    private final AtomicReference<Phi> cache;
 
     public AtConst(final Attr attr, final Phi phi) {
+        this(attr, phi, null);
+    }
+
+    private AtConst(final Attr attr, final Phi phi, final Phi cached) {
         this.origin = attr;
-        this.ref = new AtomicReference<>(phi);
+        this.rho = phi;
+        this.cache = new AtomicReference<>(cached);
     }
 
     @Override
@@ -58,15 +61,15 @@ public final class AtConst implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtConst(this.origin.copy(self), this.ref.get());
+        return new AtConst(this.origin.copy(self), this.rho, this.cache.get());
     }
 
     @Override
     public Phi get() {
-        if (this.ref.get() == null) {
-            this.ref.set(this.origin.get());
+        if (this.cache.get() == null) {
+            this.cache.set(this.origin.copy(this.rho).get().copy(this.rho));
         }
-        return this.ref.get();
+        return this.cache.get();
     }
 
     @Override

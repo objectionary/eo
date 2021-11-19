@@ -139,22 +139,13 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
+    public final Phi copy() {
+        return this.copy(this.attrs.get("ρ"));
+    }
+
+    @Override
     public final Phi copy(final Phi rho) {
-        try {
-            final PhDefault copy = PhDefault.class.cast(this.clone());
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                if ("ρ".equals(ent.getKey())) {
-                    continue;
-                }
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            map.put("ρ", new AtSimple(rho));
-            copy.attrs = map;
-            return copy;
-        } catch (final CloneNotSupportedException ex) {
-            throw new IllegalStateException(ex);
-        }
+        return this.copy(new AtSimple(rho));
     }
 
     @Override
@@ -257,6 +248,29 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
         }
         return txt;
+    }
+
+    /**
+     * Make a copy with a new \rho.
+     * @param rho The rho
+     * @return Copy
+     */
+    private Phi copy(final Attr rho) {
+        try {
+            final PhDefault copy = PhDefault.class.cast(this.clone());
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                if ("ρ".equals(ent.getKey())) {
+                    continue;
+                }
+                map.put(ent.getKey(), ent.getValue().copy(copy));
+            }
+            map.put("ρ", rho);
+            copy.attrs = map;
+            return copy;
+        } catch (final CloneNotSupportedException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
 }

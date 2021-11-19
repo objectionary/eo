@@ -46,9 +46,7 @@
         random
         100.0
   foo.@ > f!
-  eq. > @
-    f
-    f
+  f.eq f > @
 
 [] > kids-are-accessible-in-const-object
   [] > a
@@ -108,4 +106,4 @@
   seq > @
     x.write 0
     a.neg.eq -42
-    x.eq 3
+    x.eq 2

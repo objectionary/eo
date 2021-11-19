@@ -53,6 +53,11 @@ public interface Phi extends Term {
         }
 
         @Override
+        public Phi copy() {
+            return Phi.Φ;
+        }
+
+        @Override
         public Phi copy(final Phi rho) {
             return Phi.Φ;
         }
@@ -67,6 +72,13 @@ public interface Phi extends Term {
             return new AtAbsent(name, " in Φ");
         }
     };
+
+    /**
+     * Make a copy, leaving it at the same parent.
+     *
+     * @return A copy
+     */
+    Phi copy();
 
     /**
      * Make a copy, attaching it to a new parent.
