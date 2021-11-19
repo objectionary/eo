@@ -76,7 +76,7 @@
 [] > makes-deep-object-recursively
   eq. > @
     0
-    x 100
+    x 10
   [i] > x
     if. > @
       i.less 0
@@ -105,5 +105,5 @@
             42
   seq > @
     x.write 0
-    a.neg.eq -42
+    a.neg.neg.neg.eq -42
     x.eq 2
