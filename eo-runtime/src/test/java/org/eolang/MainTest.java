@@ -70,7 +70,8 @@ public final class MainTest {
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("Hello, "),
-                Matchers.containsString("\uD835\uDD3B(string)")
+                Matchers.containsString("\uD835\uDD3B( "),
+                Matchers.containsString("string")
             )
         );
     }

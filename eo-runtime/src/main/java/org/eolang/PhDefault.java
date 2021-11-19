@@ -38,11 +38,6 @@ import java.util.regex.Pattern;
 public abstract class PhDefault implements Phi, Cloneable {
 
     /**
-     * Named attr format.
-     */
-    private static final String FORMAT = "%s#%s";
-
-    /**
      * Line bread and tab.
      */
     private static final String REPLACEMENT = "\n  ";
@@ -89,7 +84,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 continue;
             }
             final String attr = String.format(
-                "%s↦%s",
+                "%s ↦ %s",
                 ent.getKey(),
                 ent.getValue().φTerm()
             );
@@ -102,6 +97,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
         if (xmir != null) {
             txt = xmir.oname();
+            if ("@".equals(txt)) {
+                txt = "φ";
+            }
         }
         if (!list.isEmpty()) {
             txt = String.format(
@@ -193,7 +191,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                attr = new AtComposite(null, x -> {
+                attr = new AtComposite(null, r -> {
                     final Phi fphi = phi.get();
                     return new AtDecorated(
                         new PhFetchedKid(fphi, this.attrs.keySet()),
@@ -204,15 +202,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 });
             }
         }
-        return new AtNamed(
-            String.format(
-                PhDefault.FORMAT,
-                this.getClass().getCanonicalName(),
-                name
-            ),
-            this,
-            attr
-        );
+        return this.named(attr, name);
     }
 
     /**
@@ -229,18 +219,44 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.add(name);
         }
-        this.attrs.put(
-            name,
-            new AtNamed(
-                String.format(
-                    PhDefault.FORMAT,
-                    this.getClass().getCanonicalName(),
-                    name
-                ),
-                this,
-                attr
-            )
+        this.attrs.put(name, attr);
+    }
+
+    /**
+     * Make named attribute.
+     * @param attr The original attr
+     * @param name The name of it
+     * @return Named one
+     */
+    private Attr named(final Attr attr, final String name) {
+        return new AtNamed(
+            String.format(
+                "%s#%s",
+                this.getClass().getCanonicalName(), name
+            ),
+            String.format(
+                "%s.%s",
+                this.oname(), name
+            ),
+            this,
+            attr
         );
+    }
+
+    /**
+     * Get its object name, as in source code.
+     * @return The name
+     */
+    private String oname() {
+        String txt = this.getClass().getSimpleName();
+        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
+        if (xmir != null) {
+            txt = xmir.oname();
+            if ("@".equals(txt)) {
+                txt = "φ";
+            }
+        }
+        return txt;
     }
 
 }

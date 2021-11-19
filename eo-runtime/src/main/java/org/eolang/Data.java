@@ -168,7 +168,7 @@ public interface Data<T> {
                     if (out.length() > 0) {
                         out.append(", ");
                     }
-                    out.append('i').append(idx).append('↦');
+                    out.append('ι').append(idx).append(" ↦ ");
                     if (items[idx] == null) {
                         out.append('Ø');
                     } else {

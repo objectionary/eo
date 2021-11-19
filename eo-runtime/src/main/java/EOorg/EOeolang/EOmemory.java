@@ -60,6 +60,7 @@ public class EOmemory extends PhDefault {
         this.add("is-empty", new AtComposite(this, EOmemory.IsEmpty::new));
     }
 
+    @XmirObject(oname = "memory.write")
     private final class Write extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
@@ -72,6 +73,7 @@ public class EOmemory extends PhDefault {
         }
     }
 
+    @XmirObject(oname = "memory.is-empty")
     private final class IsEmpty extends PhDefault {
         IsEmpty(final Phi sigma) {
             super(sigma);

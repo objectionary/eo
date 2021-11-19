@@ -24,15 +24,12 @@
 
 package org.eolang;
 
-import java.util.Collection;
-import java.util.Collections;
-
 /**
- * A kid object found in \phi.
+ * A named object.
  *
  * @since 0.17
  */
-public final class PhFetchedKid implements Phi {
+public final class PhNamed implements Phi {
 
     /**
      * The original.
@@ -40,33 +37,33 @@ public final class PhFetchedKid implements Phi {
     private final Phi origin;
 
     /**
-     * List of present attributes in the parent, where this one
-     * was found.
+     * The name.
      */
-    private final Collection<String> attrs;
+    private final String name;
 
     /**
      * Ctor.
      *
      * @param phi The object
-     * @param names List of attrs
+     * @param txt The name
      */
-    public PhFetchedKid(final Phi phi, final Collection<String> names) {
+    public PhNamed(final Phi phi, final String txt) {
         this.origin = phi;
-        this.attrs = Collections.unmodifiableCollection(names);
+        this.name = txt;
     }
 
     @Override
     public String toString() {
-        return String.format(
-            "FK%s:%s",
-            this.attrs, this.origin.toString()
-        );
+        return String.format("%s:%s", this.name, this.origin.toString());
     }
 
     @Override
+    public String φTerm() {
+        return String.format("%s ≡ %s", this.name, this.origin.φTerm());
+    }
+    @Override
     public Phi copy(final Phi rho) {
-        return new PhFetchedKid(this.origin.copy(rho), this.attrs);
+        return new PhNamed(this.origin.copy(rho), this.name);
     }
 
     @Override
@@ -75,20 +72,8 @@ public final class PhFetchedKid implements Phi {
     }
 
     @Override
-    public Attr attr(final String name) {
-        return new AtComposite(
-            this.origin, rho -> {
-                Phi phi = this.origin.attr(name).copy(rho).get();
-                if ("ρ".equals(name)) {
-                    phi = new PhFetchedParent(phi, this.attrs, this.origin);
-                }
-                return phi;
-            }
-        );
+    public Attr attr(final String attr) {
+        return this.origin.attr(attr);
     }
 
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
-    }
 }

@@ -107,5 +107,5 @@
             42
   seq > @
     x.write 0
-    a.neg.neg.neg.neg.eq 42
+    a.neg.eq -42
     x.eq 3

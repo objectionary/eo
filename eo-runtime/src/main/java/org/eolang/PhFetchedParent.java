@@ -54,7 +54,7 @@ public final class PhFetchedParent implements Phi {
     /**
      * TRUE if "found" is no longer trutable.
      */
-    private final AtomicBoolean expired = new AtomicBoolean(false);
+    private final AtomicBoolean expired;
 
     /**
      * Ctor.
@@ -65,9 +65,23 @@ public final class PhFetchedParent implements Phi {
      */
     public PhFetchedParent(final Phi base, final Collection<String> names,
         final Phi phi) {
+        this(base, names, phi, false);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param base The original object
+     * @param names List of attrs
+     * @param phi Pref-fetched \phi
+     * @param exp Expired or not
+     */
+    private PhFetchedParent(final Phi base, final Collection<String> names,
+        final Phi phi, final boolean exp) {
         this.origin = base;
         this.found = phi;
         this.attrs = Collections.unmodifiableCollection(names);
+        this.expired = new AtomicBoolean(exp);
     }
 
     @Override
@@ -80,7 +94,12 @@ public final class PhFetchedParent implements Phi {
 
     @Override
     public Phi copy(final Phi rho) {
-        return this.origin.copy(rho);
+        return new PhFetchedParent(
+            this.origin.copy(rho),
+            this.attrs,
+            this.found,
+            this.expired.get()
+        );
     }
 
     @Override
