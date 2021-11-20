@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import org.eolang.PhCopy;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -31,12 +32,18 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 
 /**
  *
+ * Jul To Slf4j Extension
+ *
+ * @since 0.16.11
  */
 public class JulToSlf4jExtension implements BeforeAllCallback {
     private static boolean started = false;
 
     /**
-     * Override the beforeAll() method
+     * Callback that is invoked once <em>before</em> all tests in the current
+     * container.
+     *
+     * @param context the current extension context; never {@code null}
      */
     @Override
     public void beforeAll(ExtensionContext context) {
