@@ -39,7 +39,7 @@ final class AtNamed implements Attr {
 
     private final String oname;
 
-    public AtNamed(final String nme, final String onme,
+    AtNamed(final String nme, final String onme,
         final Phi src, final Attr attr) {
         this.name = nme;
         this.oname = onme;

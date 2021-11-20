@@ -54,7 +54,7 @@ final class PhNamed implements Phi {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", this.name, this.origin.toString());
+        return String.format("%s≡%s", this.name, this.origin.toString());
     }
 
     @Override

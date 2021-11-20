@@ -50,7 +50,7 @@ class PhOnce implements Phi {
      * @param blank The string value
      * @param expr The expression
      */
-    public PhOnce(final Data<Phi> data, final Supplier<String> blank,
+    PhOnce(final Data<Phi> data, final Supplier<String> blank,
         final Supplier<String> expr) {
         this.object = new Data.Once<>(data, blank);
         this.exp = expr;
