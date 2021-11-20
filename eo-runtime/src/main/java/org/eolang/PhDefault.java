@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -173,7 +172,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         } else {
             idx = pos;
         }
-        return this.attr(this.order.get(idx));;
+        return this.attr(this.order.get(idx));
     }
 
     @Override
