@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public final class AtNamed implements Attr {
+final class AtNamed implements Attr {
 
     private final Attr origin;
 

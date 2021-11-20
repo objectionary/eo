@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -116,6 +117,14 @@ public final class AtDecoratedTest {
         );
     }
 
+    @Disabled
+    @Test
+    public void readsOnceThroughThreeLayers() {
+        final AtDecoratedTest.First first = new AtDecoratedTest.First(Phi.Φ);
+        first.attr("neg").get().attr("Δ").get();
+        MatcherAssert.assertThat(AtDecoratedTest.Third.count, Matchers.equalTo(1));
+    }
+
     public static class Num extends PhDefault {
         public int count;
         public Num(final Phi sigma) {
@@ -135,7 +144,7 @@ public final class AtDecoratedTest {
             this.add("φ", new AtComposite(
                 this, rho -> {
                 ++this.count;
-                return new Kid(rho);
+                return new AtDecoratedTest.Kid(rho);
             }));
         }
     }
@@ -147,6 +156,34 @@ public final class AtDecoratedTest {
                 rho.attr("ρ").get().attr("second").get()));
             this.add("second", new AtComposite(this, rho ->
                 new Data.ToPhi(1L)));
+        }
+    }
+
+    public static class First extends PhDefault {
+        public First(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, rho -> new Second(rho)));
+        }
+    }
+
+    public static class Second extends PhDefault {
+        public Second(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, rho -> new Third(rho)));
+        }
+    }
+
+    public static class Third extends PhDefault {
+        public static int count;
+        public Third(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, rho -> {
+                ++AtDecoratedTest.Third.count;
+                return new Data.ToPhi(1L);
+            }));
         }
     }
 

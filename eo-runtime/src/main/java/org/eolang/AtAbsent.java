@@ -33,7 +33,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public final class AtAbsent implements Attr {
+final class AtAbsent implements Attr {
 
     private final String name;
 

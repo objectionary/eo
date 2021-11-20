@@ -32,7 +32,7 @@ import java.util.Collections;
  *
  * @since 0.17
  */
-public final class PhFetchedKid implements Phi {
+final class PhFetchedKids implements Phi {
 
     /**
      * The original.
@@ -51,7 +51,7 @@ public final class PhFetchedKid implements Phi {
      * @param phi The object
      * @param names List of attrs
      */
-    public PhFetchedKid(final Phi phi, final Collection<String> names) {
+    PhFetchedKids(final Phi phi, final Collection<String> names) {
         this.origin = phi;
         this.attrs = Collections.unmodifiableCollection(names);
     }
@@ -66,12 +66,12 @@ public final class PhFetchedKid implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhFetchedKid(this.origin.copy(), this.attrs);
+        return new PhFetchedKids(this.origin.copy(), this.attrs);
     }
 
     @Override
     public Phi copy(final Phi rho) {
-        return new PhFetchedKid(this.origin.copy(rho), this.attrs);
+        return new PhFetchedKids(this.origin.copy(rho), this.attrs);
     }
 
     @Override

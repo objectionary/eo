@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -150,6 +151,14 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final int pos) {
+        if (pos < 0) {
+            throw new Attr.IllegalAttrException(
+                String.format(
+                    "Attribute position can't be negative (%d)",
+                    pos
+                )
+            );
+        }
         if (this.order.isEmpty()) {
             throw new Attr.IllegalAttrException(
                 String.format(
@@ -164,7 +173,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         } else {
             idx = pos;
         }
-        return this.attr(this.order.get(idx));
+        return this.attr(this.order.get(idx));;
     }
 
     @Override
@@ -182,15 +191,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                attr = new AtComposite(null, r -> {
-                    final Phi fphi = phi.get();
-                    return new AtDecorated(
-                        new PhFetchedKid(fphi, this.attrs.keySet()),
-                        name,
-                        new PhFetchedParent(this, this.attrs.keySet(), fphi)
-                    ).get();
-
-                });
+                attr = new AtDecorated(phi, name, this.attrs.keySet(), this);
             }
         }
         return this.named(attr, name);

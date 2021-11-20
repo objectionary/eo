@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  *
  * @since 0.1
  */
-public class PhOnce implements Phi {
+class PhOnce implements Phi {
 
     /**
      * The object fetched.

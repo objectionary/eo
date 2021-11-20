@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.17
  */
-public final class PhNamed implements Phi {
+final class PhNamed implements Phi {
 
     /**
      * The original.
@@ -47,7 +47,7 @@ public final class PhNamed implements Phi {
      * @param phi The object
      * @param txt The name
      */
-    public PhNamed(final Phi phi, final String txt) {
+    PhNamed(final Phi phi, final String txt) {
         this.origin = phi;
         this.name = txt;
     }

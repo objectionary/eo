@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.16
  */
-public final class AtConst implements Attr {
+final class AtConst implements Attr {
 
     private final Attr origin;
 

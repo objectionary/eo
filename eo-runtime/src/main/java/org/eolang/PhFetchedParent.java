@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @since 0.17
  */
-public final class PhFetchedParent implements Phi {
+final class PhFetchedParent implements Phi {
 
     /**
      * Original object.
@@ -63,7 +63,7 @@ public final class PhFetchedParent implements Phi {
      * @param names List of attrs
      * @param phi Pref-fetched \phi
      */
-    public PhFetchedParent(final Phi base, final Collection<String> names,
+    PhFetchedParent(final Phi base, final Collection<String> names,
         final Phi phi) {
         this(base, names, phi, false);
     }
@@ -87,8 +87,10 @@ public final class PhFetchedParent implements Phi {
     @Override
     public String toString() {
         return String.format(
-            "FP%s:%s",
-            this.attrs, this.origin.toString()
+            "FP%s/%s:%s",
+            this.attrs,
+            this.found.getClass().getCanonicalName(),
+            this.origin.toString()
         );
     }
 
