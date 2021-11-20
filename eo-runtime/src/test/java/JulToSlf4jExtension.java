@@ -4,7 +4,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 
 public class JulToSlf4jExtension implements BeforeAllCallback {
     private static boolean started = false;
@@ -16,7 +16,7 @@ public class JulToSlf4jExtension implements BeforeAllCallback {
     public void beforeAll(ExtensionContext context) {
         if (!started) {
             started = true;
-            context.getRoot().getStore(GLOBAL).put("JulToSlf4jExtension",this);
+            context.getRoot().getStore(Namespace.GLOBAL).put("JulToSlf4jExtension",this);
             SLF4JBridgeHandler.install();
             Logger.getLogger("").setLevel(Level.ALL);
         }
