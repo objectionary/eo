@@ -65,6 +65,11 @@ public final class PhFetchedKid implements Phi {
     }
 
     @Override
+    public Phi copy() {
+        return new PhFetchedKid(this.origin.copy(), this.attrs);
+    }
+
+    @Override
     public Phi copy(final Phi rho) {
         return new PhFetchedKid(this.origin.copy(rho), this.attrs);
     }

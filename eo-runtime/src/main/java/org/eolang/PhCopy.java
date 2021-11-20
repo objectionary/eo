@@ -35,6 +35,19 @@ public final class PhCopy extends PhOnce {
      * Ctor.
      *
      * @param phi The object
+     */
+    public PhCopy(final Phi phi) {
+        super(
+            phi::copy,
+            () -> String.format("%s'", new Phi.Compact(phi)),
+            () -> String.format("%s", phi.φTerm())
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
      * @param rho New \rho
      */
     public PhCopy(final Phi phi, final Phi rho) {
