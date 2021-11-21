@@ -110,7 +110,6 @@ public final class PhConstTest {
     public void randomToConst() {
         final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         final Phi eql = rnd.attr("eq").get();
-        System.out.println("+++" + eql);
         eql.attr(0).put(rnd);
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),
@@ -159,10 +158,8 @@ public final class PhConstTest {
     private static class Rnd extends PhDefault {
         Rnd(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, rho -> {
-                System.out.println(rho);
-                return
-                new Data.ToPhi(new SecureRandom().nextDouble());}));
+            this.add("φ", new AtComposite(this, rho ->
+                new Data.ToPhi(new SecureRandom().nextDouble())));
         }
     }
 
