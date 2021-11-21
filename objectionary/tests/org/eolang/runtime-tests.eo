@@ -46,9 +46,7 @@
         random
         100.0
   foo.@ > f!
-  eq. > @
-    f
-    f
+  f.eq f > @
 
 [] > kids-are-accessible-in-const-object
   [] > a
@@ -78,7 +76,7 @@
 [] > makes-deep-object-recursively
   eq. > @
     0
-    x 100
+    x 10
   [i] > x
     if. > @
       i.less 0
@@ -96,7 +94,7 @@
         [i]
           &.x.write FALSE > @
 
-[] > calculates-only-once-disabled
+[] > calculates-only-once-BROKEN
   memory > x
   [] > a
     seq > @
@@ -105,4 +103,4 @@
   seq > @
     x.write 0
     a.neg.neg.neg.neg.eq 42
-    x.eq 6
+    x.eq 1

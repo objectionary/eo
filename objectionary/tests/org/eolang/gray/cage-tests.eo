@@ -20,7 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.16.12
++package org.eolang.gray
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
++alias org.eolang.gray.cage
++junit
 
-[msg] > error
+[] > writes-into-cage
+  [z] > a
+  cage > x
+  and. > @
+    x.write
+      a 7
+    x.z.eq 7
+

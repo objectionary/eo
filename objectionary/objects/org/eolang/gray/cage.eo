@@ -20,7 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.gray
 +rt jvm org.eolang:eo-runtime:0.16.12
 
-[msg] > error
+# This object is doing exactly the same as "memory", but allow
+# you to store objects, not only data. In other words, it doesn't
+# do dataization when objects are being stored.
+[] > cage /?
+
+  # Write into it.
+  [x] > write /bool
+
+  # The cage is empty?
+  [] > is-empty /bool
