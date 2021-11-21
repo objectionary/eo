@@ -200,7 +200,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 this.cached.computeIfAbsent("φ", x -> phi.get());
                 final Phi base = this.cached.get("φ");
                 final Phi ret = base.attr(name).copy(base).get();
-                if (name.equals("Δ")) {
+                if ("Δ".equals(name)) {
                     this.cached.remove("φ");
                 }
                 return new AtSimple(ret.copy(this));
