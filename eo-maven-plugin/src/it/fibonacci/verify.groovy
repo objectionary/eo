@@ -40,13 +40,11 @@ String log = new File(basedir, 'build.log').text
 [
   '--- eo-maven-plugin:',
   'org.eolang unpacked to eo-runtime',
-  '14th Fibonacci number is 377',
+  '4th Fibonacci number is 3',
   'BUILD SUCCESS',
-  '𝔻(fibonacci'
+  '𝔻( '
 ].each { assert log.contains(it) }
 
-// There is a bug related to duplicate execution. When it's fixed,
-// replace the tailing number "2" with "1"
-assert log.split('\n14th Fibonacci number is 377\n', -1).length-1 == 2
+assert log.split('\n4th Fibonacci number is 3\n', -1).length-1 == 1
 
 true
