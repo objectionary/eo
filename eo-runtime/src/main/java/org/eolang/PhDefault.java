@@ -196,9 +196,8 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                final Phi base = this.cached.get(name, phi::get);
                 return new AtSimple(
-                    base.attr(name).copy(base).get().copy(this)
+                    this.cached.get(name, phi::get).attr(name).get().copy(this)
                 );
             }
         }
