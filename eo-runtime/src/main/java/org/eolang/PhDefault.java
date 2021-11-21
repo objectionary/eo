@@ -28,8 +28,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 
 /**
@@ -62,7 +60,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Cached \phi.
      */
-    private final ConcurrentMap<String, Phi> cached = new ConcurrentHashMap<>(1);
+    private final CachedPhi cached = new CachedPhi();
 
     /**
      * Ctor.
@@ -126,6 +124,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 this.order
             )
         );
+        list.add(String.format("_cached=%s", this.cached));
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             final int idx = this.order.indexOf(ent.getKey());
             list.add(
@@ -197,13 +196,10 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                this.cached.computeIfAbsent("φ", x -> phi.get());
-                final Phi base = this.cached.get("φ");
-                final Phi ret = base.attr(name).copy(base).get();
-                if ("Δ".equals(name)) {
-                    this.cached.remove("φ");
-                }
-                return new AtSimple(ret.copy(this));
+                final Phi base = this.cached.get(name, phi::get);
+                return new AtSimple(
+                    base.attr(name).copy(base).get().copy(this)
+                );
             }
         }
         return this.named(attr, name);
