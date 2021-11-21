@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 
 /**
@@ -56,6 +58,11 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Order of their names.
      */
     private final List<String> order;
+
+    /**
+     * Cached \phi.
+     */
+    private final ConcurrentMap<String, Phi> cached = new ConcurrentHashMap<>(1);
 
     /**
      * Ctor.
@@ -184,13 +191,19 @@ public abstract class PhDefault implements Phi, Cloneable {
                 attr = new AtAbsent(
                     name,
                     String.format(
-                        " among other %d attrs (%s)",
+                        " among other %d attrs (%s) and φ is absent",
                         this.attrs.size(),
                         String.join(", ", this.attrs.keySet())
                     )
                 );
             } else {
-                attr = new AtDecorated(phi, name, this.attrs.keySet(), this);
+                this.cached.computeIfAbsent("φ", x -> phi.get());
+                final Phi base = this.cached.get("φ");
+                final Phi ret = base.attr(name).copy(base).get();
+                if (name.equals("Δ")) {
+                    this.cached.remove("φ");
+                }
+                return new AtSimple(ret.copy(this));
             }
         }
         return this.named(attr, name);

@@ -50,10 +50,7 @@ public final class PhMethodTest {
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
-        MatcherAssert.assertThat(
-            dummy.count,
-            Matchers.equalTo(1)
-        );
+        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
 
     @Test
@@ -64,21 +61,15 @@ public final class PhMethodTest {
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
-        MatcherAssert.assertThat(
-            dummy.count,
-            Matchers.equalTo(1)
-        );
+        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
 
     @Test
-    public void calculatesThroughPhiOnlyOnce() {
+    public void calculatesThroughPhiOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
-        MatcherAssert.assertThat(
-            dummy.count,
-            Matchers.equalTo(1)
-        );
+        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
 
     @Test
@@ -89,10 +80,7 @@ public final class PhMethodTest {
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
-        MatcherAssert.assertThat(
-            dummy.count,
-            Matchers.equalTo(10)
-        );
+        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(total));
     }
 
     public static class Dummy extends PhDefault {

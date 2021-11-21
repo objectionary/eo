@@ -79,9 +79,38 @@ public final class PhConstTest {
     }
 
     @Test
+    public void simpleRandomToConst() {
+        final Phi rnd = new PhConstTest.Rnd(Phi.Φ);
+        MatcherAssert.assertThat(
+            new Dataized(rnd).take(Double.class),
+            Matchers.not(
+                Matchers.equalTo(new Dataized(rnd).take(Double.class))
+            )
+        );
+        final Phi cnst = new PhConst(rnd);
+        MatcherAssert.assertThat(
+            new Dataized(cnst).take(Double.class),
+            Matchers.equalTo(new Dataized(cnst).take(Double.class))
+        );
+    }
+
+    @Test
+    public void negRandomToConst() {
+        final Phi cnst = new PhConst(new PhConstTest.Rnd(Phi.Φ));
+        final double first = new Dataized(
+            cnst.attr("neg").get()
+        ).take(Double.class);
+        final double second = new Dataized(
+            cnst.attr("neg").get()
+        ).take(Double.class);
+        MatcherAssert.assertThat(first, Matchers.equalTo(second));
+    }
+
+    @Test
     public void randomToConst() {
-        final Phi rnd = new PhConst(new PhConstTest.Rnd());
+        final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         final Phi eql = rnd.attr("eq").get();
+        System.out.println("+++" + eql);
         eql.attr(0).put(rnd);
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),
@@ -93,7 +122,7 @@ public final class PhConstTest {
     public void doesntAllowAttributesOfDecorateeToBeSet() {
         final Phi phi = new Boom();
         Assertions.assertThrows(
-            Attr.ReadOnlyException.class,
+            Attr.StillAbstractException.class,
             () -> phi.attr("x").put(new Data.ToPhi(1L))
         );
     }
@@ -128,10 +157,12 @@ public final class PhConstTest {
     }
 
     private static class Rnd extends PhDefault {
-        Rnd() {
-            super();
-            this.add("φ", new AtComposite(this, self ->
-                new Data.ToPhi(new SecureRandom().nextDouble())));
+        Rnd(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(this, rho -> {
+                System.out.println(rho);
+                return
+                new Data.ToPhi(new SecureRandom().nextDouble());}));
         }
     }
 

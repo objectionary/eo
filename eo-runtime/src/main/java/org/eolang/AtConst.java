@@ -39,7 +39,7 @@ final class AtConst implements Attr {
 
     private final AtomicReference<Phi> cache;
 
-    public AtConst(final Attr attr, final Phi phi) {
+    AtConst(final Attr attr, final Phi phi) {
         this(attr, phi, null);
     }
 

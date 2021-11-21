@@ -23,9 +23,6 @@
  */
 package org.eolang;
 
-import java.util.Collection;
-import java.util.Collections;
-
 /**
  * When a child object is taken from the \phi object, this class
  * replaces the \rho attribute of it on the fly. This is necessary
@@ -56,12 +53,6 @@ final class AtDecorated implements Attr {
     private final String name;
 
     /**
-     * List of present attributes in the parent, where this one
-     * was found.
-     */
-    private final Collection<String> attrs;
-
-    /**
      * The owner of the \phi attribute.
      */
     private final Phi rho;
@@ -70,14 +61,11 @@ final class AtDecorated implements Attr {
      * Ctor.
      * @param aphi The \phi object
      * @param attr The name of the attribute to fetch from \phi
-     * @param names Names of existing attributes
      * @param self The owner of \phi
      */
-    AtDecorated(final Attr aphi, final String attr,
-        final Collection<String> names, final Phi self) {
+    AtDecorated(final Attr aphi, final String attr, final Phi self) {
         this.phi = aphi;
         this.name = attr;
-        this.attrs = Collections.unmodifiableCollection(names);
         this.rho = self;
     }
 
@@ -99,10 +87,8 @@ final class AtDecorated implements Attr {
     @Override
     public Phi get() {
         final Phi base = this.phi.get();
-        final Phi kids = new PhFetchedKids(base, this.attrs);
-        final Phi ret = kids.attr(this.name).copy(kids).get();
-        final Phi parent = new PhFetchedParent(this.rho, this.attrs, base);
-        return ret.copy(parent);
+        final Phi ret = base.attr(this.name).copy(base).get();
+        return ret.copy(this.rho);
     }
 
     @Override

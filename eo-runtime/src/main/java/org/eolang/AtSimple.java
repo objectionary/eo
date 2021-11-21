@@ -27,6 +27,8 @@ package org.eolang;
 /**
  * Default attribute.
  *
+ * The class is NOT thread-safe.
+ *
  * @since 0.1
  */
 public final class AtSimple implements Attr {

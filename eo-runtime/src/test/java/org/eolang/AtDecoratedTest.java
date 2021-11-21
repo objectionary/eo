@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -79,12 +78,21 @@ public final class AtDecoratedTest {
     }
 
     @Test
-    public void readsTwiceAfterCopy() {
+    public void readsOnceAfterCopy() {
         final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
         final Phi neg = num.attr("neg").get();
         final Phi copy = neg.copy(num);
         copy.attr("Δ").get();
-        MatcherAssert.assertThat(num.count, Matchers.equalTo(2));
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(1));
+    }
+
+    @Test
+    public void readsOnceThroughEq() {
+        final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
+        final Phi eql = num.attr("eq").get();
+        eql.attr(0).put(new Data.ToPhi(1L));
+        eql.attr("Δ").get();
+        MatcherAssert.assertThat(num.count, Matchers.equalTo(1));
     }
 
     @Test
@@ -97,7 +105,7 @@ public final class AtDecoratedTest {
     }
 
     @Test
-    public void readsOnlyOnce() {
+    public void readsTwice() {
         final AtDecoratedTest.Parent parent = new AtDecoratedTest.Parent(Phi.Φ);
         parent.attr("first").get();
         MatcherAssert.assertThat(parent.count, Matchers.equalTo(1));
@@ -111,18 +119,7 @@ public final class AtDecoratedTest {
         for (int idx = 0; idx < total; ++idx) {
             first.get();
         }
-        MatcherAssert.assertThat(
-            parent.count,
-            Matchers.equalTo(10)
-        );
-    }
-
-    @Disabled
-    @Test
-    public void readsOnceThroughThreeLayers() {
-        final AtDecoratedTest.First first = new AtDecoratedTest.First(Phi.Φ);
-        first.attr("neg").get().attr("Δ").get();
-        MatcherAssert.assertThat(AtDecoratedTest.Third.count, Matchers.equalTo(1));
+        MatcherAssert.assertThat(parent.count, Matchers.equalTo(1));
     }
 
     public static class Num extends PhDefault {
@@ -158,33 +155,4 @@ public final class AtDecoratedTest {
                 new Data.ToPhi(1L)));
         }
     }
-
-    public static class First extends PhDefault {
-        public First(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(
-                this, rho -> new Second(rho)));
-        }
-    }
-
-    public static class Second extends PhDefault {
-        public Second(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(
-                this, rho -> new Third(rho)));
-        }
-    }
-
-    public static class Third extends PhDefault {
-        public static int count;
-        public Third(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(
-                this, rho -> {
-                ++AtDecoratedTest.Third.count;
-                return new Data.ToPhi(1L);
-            }));
-        }
-    }
-
 }
