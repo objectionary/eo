@@ -21,37 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.eolang.PhCopy;
+package org.eolang;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
-
 /**
- *
- * Jul To Slf4j Extension
+ * Jul To Slf4j Extension.
  *
  * @since 0.16.11
  */
-public class JulToSlf4jExtension implements BeforeAllCallback {
-    private static boolean started = false;
+public final class JulToSlf4jExtension implements BeforeAllCallback {
 
     /**
-     * Callback that is invoked once <em>before</em> all tests in the current
-     * container.
-     *
-     * @param context the current extension context; never {@code null}
+     * Initialized already?
      */
+    private static boolean started = false;
+
     @Override
-    public void beforeAll(ExtensionContext context) {
-        if (!started) {
-            started = true;
-            context.getRoot().getStore(Namespace.GLOBAL).put("JulToSlf4jExtension", this);
-            SLF4JBridgeHandler.install();
-            Logger.getLogger("").setLevel(Level.ALL);
+    public void beforeAll(final ExtensionContext context) {
+        if (JulToSlf4jExtension.started) {
+            return;
         }
+        JulToSlf4jExtension.started = true;
+        context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).put(
+            "org.eolang.JulToSlf4jExtension", this
+        );
+        SLF4JBridgeHandler.install();
+        Logger.getLogger("").setLevel(Level.ALL);
     }
 }
