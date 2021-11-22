@@ -78,7 +78,7 @@ public final class ParseMojoTest {
     public void testCrashOnInvalidSyntax(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Save("something is wrong here", src).save();
+        new Save("something < is wrong here", src).save();
         final Path foreign = temp.resolve("foreign-1.csv");
         new MonoTojos(foreign)
             .add("bar.src")

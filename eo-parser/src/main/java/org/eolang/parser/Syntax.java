@@ -26,6 +26,7 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.io.IOException;
+import java.util.List;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -35,11 +36,16 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Output;
+import org.cactoos.Text;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.TeeInput;
-import org.cactoos.io.UncheckedInput;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.Joined;
+import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
 /**
@@ -84,7 +90,7 @@ public final class Syntax {
      * @throws IOException If fails
      */
     public void parse() throws IOException {
-        final String[] lines = new TextOf(this.input).asString().split("\n");
+        final List<Text> lines = this.lines();
         final ANTLRErrorListener errors = new BaseErrorListener() {
             // @checkstyle ParameterNumberCheck (10 lines)
             @Override
@@ -97,7 +103,7 @@ public final class Syntax {
                         "[%d:%d] %s: \"%s\"",
                         line, position, msg,
                         // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        lines.length < line ? "EOF" : lines[line - 1]
+                        lines.size() < line ? "EOF" : lines.get(line - 1)
                     ),
                     error
                 );
@@ -105,7 +111,7 @@ public final class Syntax {
         };
         final ProgramLexer lexer = new ProgramLexer(
             CharStreams.fromStream(
-                new UncheckedInput(this.input).stream()
+                new InputStreamOf(this.normalize())
             )
         );
         lexer.removeErrorListeners();
@@ -128,7 +134,28 @@ public final class Syntax {
                 )
             )
         ).value();
-        Logger.debug(this, "Input of %d EO lines compiled", lines.length);
+        Logger.debug(this, "Input of %d EO lines compiled", lines.size());
+    }
+
+    /**
+     * Normalize input to UNIX format.
+     * Ensure EOL at EOF.
+     *
+     * @return UNIX formatted text.
+     */
+    private Text normalize() {
+        return new FormattedText(
+            "%s\n",
+            new Joined(new TextOf("\n"), this.lines())
+        );
+    }
+
+    /**
+     * Split input into lines.
+     * @return Lines without line breaks.
+     */
+    private List<Text> lines() {
+        return new ListOf<>(new Split(new TextOf(this.input), "\r?\n"));
     }
 
 }

@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -70,11 +69,14 @@ public final class OptimizeMojo extends SafeMojo {
         for (final Tojo tojo : sources) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
             if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
-                Logger.debug(
-                    this, "Already optimized %s to %s",
-                    Save.rel(src), Save.rel(Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2)))
-                );
-                continue;
+                final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+                if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                    Logger.debug(
+                        this, "Already optimized %s to %s",
+                        Save.rel(src), Save.rel(tgt)
+                    );
+                    continue;
+                }
             }
             ++done;
             tojo.set(
@@ -106,35 +108,28 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
         );
-        if (Files.exists(target)) {
-            Logger.debug(
-                this, "Already optimized %s to %s, all steps are in %s",
-                Save.rel(file), Save.rel(target), Save.rel(dir)
-            );
-        } else {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Xsline(
-                new XMLDocument(file),
-                new OutputTo(baos),
-                new TargetSpy(dir)
-            ).with(
-                new ListOf<>(
-                    "org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                    "org/eolang/parser/optimize/remove-refs.xsl",
-                    "org/eolang/parser/optimize/abstracts-float-up.xsl",
-                    "org/eolang/parser/optimize/remove-levels.xsl",
-                    "org/eolang/parser/add-refs.xsl",
-                    "org/eolang/parser/optimize/fix-missed-names.xsl",
-                    "org/eolang/parser/add-refs.xsl",
-                    "org/eolang/parser/errors/broken-refs.xsl"
-                )
-            ).pass();
-            new Save(baos.toByteArray(), target).save();
-            Logger.debug(
-                this, "Optimized %s (program:%s) to %s, all steps are in %s",
-                Save.rel(file), name, Save.rel(target), Save.rel(dir)
-            );
-        }
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new Xsline(
+            new XMLDocument(file),
+            new OutputTo(baos),
+            new TargetSpy(dir)
+        ).with(
+            new ListOf<>(
+                "org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                "org/eolang/parser/optimize/remove-refs.xsl",
+                "org/eolang/parser/optimize/abstracts-float-up.xsl",
+                "org/eolang/parser/optimize/remove-levels.xsl",
+                "org/eolang/parser/add-refs.xsl",
+                "org/eolang/parser/optimize/fix-missed-names.xsl",
+                "org/eolang/parser/add-refs.xsl",
+                "org/eolang/parser/errors/broken-refs.xsl"
+            )
+        ).pass();
+        new Save(baos.toByteArray(), target).save();
+        Logger.debug(
+            this, "Optimized %s (program:%s) to %s, all steps are in %s",
+            Save.rel(file), name, Save.rel(target), Save.rel(dir)
+        );
         return target;
     }
 
