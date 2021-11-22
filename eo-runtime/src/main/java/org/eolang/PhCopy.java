@@ -39,7 +39,7 @@ public final class PhCopy extends PhOnce {
     public PhCopy(final Phi phi) {
         super(
             phi::copy,
-            () -> String.format("%s'", new Phi.Compact(phi)),
+            () -> String.format("%s'", phi),
             () -> String.format("%s", phi.φTerm())
         );
     }
@@ -53,7 +53,7 @@ public final class PhCopy extends PhOnce {
     public PhCopy(final Phi phi, final Phi rho) {
         super(
             () -> phi.copy(rho),
-            () -> String.format("%s'", new Phi.Compact(phi)),
+            () -> String.format("%s'", phi),
             () -> String.format("%s", phi.φTerm())
         );
     }

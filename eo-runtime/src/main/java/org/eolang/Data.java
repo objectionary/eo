@@ -186,7 +186,12 @@ public interface Data<T> {
         public String toString() {
             final String txt;
             if (this.val instanceof String) {
-                txt = String.format("\"%s\"", this.val.toString());
+                txt = String.format(
+                    "\"%s\"",
+                    this.val.toString()
+                        .replace("\n", "\\n")
+                        .replace("\r", "\\r")
+                );
             } else if (this.val instanceof byte[]) {
                 final StringBuilder out = new StringBuilder(0);
                 for (final byte data : (byte[]) this.val) {
@@ -194,6 +199,9 @@ public interface Data<T> {
                         out.append('-');
                     }
                     out.append(String.format("%02X", data));
+                }
+                if (out.length() == 0) {
+                    out.append('-');
                 }
                 txt = out.toString();
             } else if (this.val.getClass().isArray()) {

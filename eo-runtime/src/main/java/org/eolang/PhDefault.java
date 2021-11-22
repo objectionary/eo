@@ -38,14 +38,19 @@ import java.util.regex.Pattern;
 public abstract class PhDefault implements Phi, Cloneable {
 
     /**
-     * Line bread and tab.
-     */
-    private static final String REPLACEMENT = "\n  ";
-
-    /**
      * Attribute name matcher.
      */
     private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
+
+    /**
+     * Indenter.
+     */
+    private static final Pattern INDENT = Pattern.compile("\n");
+
+    /**
+     * Shift right.
+     */
+    private static final String SHIFT = "\n  ";
 
     /**
      * Attributes.
@@ -118,21 +123,25 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public String toString() {
         final Collection<String> list = new ArrayList<>(this.attrs.size());
+        list.add(String.format("_order=%s", this.order));
         list.add(
             String.format(
-                "_order=%s",
-                this.order
+                "_cached=%s",
+                PhDefault.INDENT.matcher(
+                    this.cached.toString()
+                ).replaceAll(PhDefault.SHIFT)
             )
         );
-        list.add(String.format("_cached=%s", this.cached));
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             final int idx = this.order.indexOf(ent.getKey());
             list.add(
                 String.format(
                     "%s%s=%s",
                     ent.getKey(),
-                    idx >= 0 ? String.format("(%d)", idx) : "",
-                    ent.getValue().toString().replace("\n", PhDefault.REPLACEMENT)
+                    idx >= 0 ? String.format("(#%d)", idx) : "",
+                    PhDefault.INDENT.matcher(
+                        ent.getValue().toString()
+                    ).replaceAll(PhDefault.SHIFT)
                 )
             );
         }
@@ -140,7 +149,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             "%s#%d:{\n  %s\n}",
             this.getClass().getCanonicalName(),
             this.hashCode(),
-            String.join(PhDefault.REPLACEMENT, list)
+            String.join(PhDefault.SHIFT, list)
         );
     }
 

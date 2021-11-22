@@ -45,10 +45,10 @@ public final class PhWith extends PhOnce {
                 return phi;
             },
             () -> String.format(
-                "%s[%s]=%s",
-                new Phi.Compact(phi),
+                "%s[%s=%s]",
+                phi,
                 name,
-                new Phi.Compact(attr)
+                attr
             ),
             () -> String.format(
                 "%s(%s ↦ %s)",
@@ -73,10 +73,10 @@ public final class PhWith extends PhOnce {
                 return phi;
             },
             () -> String.format(
-                "%s[%d]=%s",
-                new Phi.Compact(phi),
+                "%s[#%d=%s]",
+                phi,
                 pos,
-                new Phi.Compact(attr)
+                attr
             ),
             () -> String.format(
                 "%s(#%d ↦ %s)",

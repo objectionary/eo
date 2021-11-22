@@ -62,6 +62,18 @@ public final class PhWithTest {
         );
     }
 
+    @Test
+    public void printsToString() {
+        final Phi dummy = new Dummy(Phi.Φ);
+        MatcherAssert.assertThat(
+            new PhWith(
+                new PhCopy(new PhMethod(dummy, "add"), dummy),
+                0, new Data.ToPhi(1L)
+            ).copy(Phi.Φ).toString(),
+            Matchers.containsString("ρ=Φ")
+        );
+    }
+
     public static class Dummy extends PhDefault {
         public Dummy(final Phi sigma) {
             super(sigma);

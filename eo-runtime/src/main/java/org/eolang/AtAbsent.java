@@ -39,7 +39,7 @@ final class AtAbsent implements Attr {
 
     private final String suffix;
 
-    public AtAbsent(final String attr, final String sfx) {
+    AtAbsent(final String attr, final String sfx) {
         this.name = attr;
         this.suffix = sfx;
     }

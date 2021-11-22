@@ -35,10 +35,26 @@ import org.junit.jupiter.api.Test;
 public final class DataTest {
 
     @Test
-    public void printsPhi() {
+    public void printsByteArray() {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[] {(byte) 0x01, (byte) 0xf2}).toString(),
             Matchers.containsString("01-F2")
+        );
+    }
+
+    @Test
+    public void printsEmptyByteArray() {
+        MatcherAssert.assertThat(
+            new Data.ToPhi(new byte[0]).toString(),
+            Matchers.containsString("=-")
+        );
+    }
+
+    @Test
+    public void printsString() {
+        MatcherAssert.assertThat(
+            new Data.ToPhi("Hello,\nдруг!").toString(),
+            Matchers.containsString("Hello,\\nдруг!")
         );
     }
 
