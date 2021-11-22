@@ -25,9 +25,11 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,6 +41,78 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class OptimizeMojoTest {
+
+    @Test
+    public void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Save(
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src
+        ).save();
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new MonoTojos(foreign)
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
+        final Path tgt = target.resolve(
+            String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+        );
+        final long mtime = tgt.toFile().lastModified();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
+        MatcherAssert.assertThat(
+            tgt.toFile().lastModified(),
+            Matchers.is(mtime)
+        );
+    }
+
+    @Test
+    public void optimizesIfExpired(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Save(
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src
+        ).save();
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new MonoTojos(foreign)
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
+        final Path tgt = target.resolve(
+            String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+        );
+        final long start = System.currentTimeMillis();
+        Assertions.assertTrue(tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(2)));
+        Assertions.assertTrue(src.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(1)));
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
+        MatcherAssert.assertThat(
+            tgt.toFile().lastModified(),
+            Matchers.greaterThan(start)
+        );
+    }
 
     @Test
     public void testSimpleOptimize(@TempDir final Path temp) throws Exception {
