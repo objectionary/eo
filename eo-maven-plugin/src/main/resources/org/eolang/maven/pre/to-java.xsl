@@ -131,7 +131,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>", source = "</xsl:text>
-    <xsl:value-of select="/program/@source"/>
+    <xsl:value-of select="replace(/program/@source, '\\', '\\')"/>
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
