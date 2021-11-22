@@ -25,6 +25,7 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
@@ -33,6 +34,8 @@ import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Xsline}.
@@ -64,13 +67,36 @@ public final class SyntaxTest {
         );
     }
 
-    @Test
-    public void failsWithDoubleNewLine() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "1 > x\n2 > y",
+        "1 > x\r\n2 > y",
+        "1 > x\r\n\r\n2 > y",
+        "1 > x\n2 > y\n",
+        "1 > x\n\n2 > y",
+        "[]",
+        "[] > x",
+        "[] > x\n x ^ > @",
+        "a b c > x\n  x ^ > @",
+        "[] > x\n  x ^ > @"
+    })
+    public void shouldBeParsable(final String code) throws Exception {
         final Syntax syntax = new Syntax(
             "test-2",
-            new InputOf("1 > x\n\n2 > y"),
-            new OutputTo(baos)
+            new InputOf(code),
+            new DeadOutput()
+        );
+        Assertions.assertDoesNotThrow(
+            syntax::parse
+        );
+    }
+
+    @Test
+    public void failsWithDoubleNewLine() throws Exception {
+        final Syntax syntax = new Syntax(
+            "test-3",
+            new InputOf("1 > x\n\n\n2 > y"),
+            new DeadOutput()
         );
         Assertions.assertThrows(
             ParsingException.class,
@@ -78,18 +104,28 @@ public final class SyntaxTest {
         );
     }
 
-    @Test
-    public void failsOnBrokenSyntax() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "...",
+        ">",
+        "",
+        "\n\n\n\n",
+        "<",
+        "a>b",
+        "@ > []",
+        "^ > ^",
+        "this < code is definitely > wrong"
+
+    })
+    public void failsOnBrokenSyntax(final String code) throws IOException {
+        final Syntax syntax = new Syntax(
+            "test-it",
+            new InputOf(code),
+            new DeadOutput()
+        );
         Assertions.assertThrows(
             ParsingException.class,
-            () -> {
-                final Syntax syntax = new Syntax(
-                    "test-it",
-                    new InputOf("this code is definitely wrong"),
-                    new DeadOutput()
-                );
-                syntax.parse();
-            }
+            syntax::parse
         );
     }
 
