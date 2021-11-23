@@ -228,3 +228,10 @@
 
 [] > as-int-works
   3.57.as-int.eq 3 > @
+
+[] > to-bytes-and-backwards
+  eq. > @
+    3.1415926
+    as-float.
+      as-bytes.
+        3.1415926

@@ -70,5 +70,8 @@
   # Converts this to string
   [] > as-string /string
 
+  # Converts this to bytes
+  [] > as-bytes /bytes
+
   # Absolute value of $ (i.e., with no sign)
   [] > abs /int

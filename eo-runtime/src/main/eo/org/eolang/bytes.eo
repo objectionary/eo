@@ -35,3 +35,13 @@
 
   # Turn this chain of bytes into a string in UTF-8
   [] > as-string /string
+
+  # Turn this chain of eight bytes into an integer.
+  # If there are less or more than eight bytes, there will
+  # be an error returned.
+  [] > as-int /int
+
+  # Turn this chain of eight bytes into a float.
+  # If there are less or more than eight bytes, there will
+  # be an error returned.
+  [] > as-float /int
