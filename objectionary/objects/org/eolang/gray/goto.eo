@@ -20,14 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.gray
 +rt jvm org.eolang:eo-runtime:0.17.0
-+alias sprintf org.eolang.txt.sprintf
 
-[data] > char
-  # Compares with another char
-  [c] > eq /bool
-
-  # Converts char to string
-  [] > as-string
-    sprintf "%c" ^ > @
+# Non-conditional forward and backward jumps. Returns TRUE
+# if the jump happened, FALSE if not.
+#
+# Forward jump may look like this:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       g.forward
+#       stdout "Will never be printed"
+# ```
+#
+# Backward jump may be done this way:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       stdout "Will be printed forever"
+#       g.backward
+# ```
+#
+[f] > goto /bool
