@@ -73,6 +73,19 @@ public interface Attr extends Term {
     }
 
     /**
+     * Control flow exception (see {@link EOorg.EOeolang.EOgray.EOgoto}
+     * for a good example of its usage).
+     *
+     * @since 0.17
+     */
+    class FlowException extends RuntimeException {
+        private static final long serialVersionUID = 597749420437007615L;
+        public FlowException() {
+            super();
+        }
+    }
+
+    /**
      * The exception raised when trying to get() an attribute,
      * which is still abstract.
      *

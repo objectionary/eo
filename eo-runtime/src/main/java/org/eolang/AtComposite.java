@@ -86,6 +86,8 @@ public final class AtComposite implements Attr {
         return () -> {
             try {
                 return exp.get(rho);
+            } catch (final RuntimeException ex) {
+                throw ex;
             } catch (final Exception ex) {
                 throw new IllegalArgumentException(ex);
             }
