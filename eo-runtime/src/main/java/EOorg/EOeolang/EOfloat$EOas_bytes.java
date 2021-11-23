@@ -37,7 +37,7 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "float.as-int")
+@XmirObject(oname = "float.as-bytes")
 public class EOfloat$EOas_bytes extends PhDefault {
 
     public EOfloat$EOas_bytes(final Phi sigma) {

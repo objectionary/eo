@@ -28,6 +28,9 @@
   # Compares with another char
   [c] > eq /bool
 
+  # Converts char to bytes (of one byte)
+  [] > as-bytes /bytes
+
   # Converts char to string
   [] > as-string
     sprintf "%c" ^ > @

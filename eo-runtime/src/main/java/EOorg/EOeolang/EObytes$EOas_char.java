@@ -33,20 +33,21 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * INT.AS-BYTES.
+ * BYTES.AS-CHAR.
  *
- * @since 1.0
+ * @since 0.18
  */
-@XmirObject(oname = "int.as-bytes")
-public class EOint$EOas_bytes extends PhDefault {
+@XmirObject(oname = "bytes.as-char")
+public class EObytes$EOas_char extends PhDefault {
 
-    public EOint$EOas_bytes(final Phi sigma) {
+    public EObytes$EOas_char(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            ByteBuffer.allocate(8).putLong(
-                new Dataized(self.attr("ρ").get()).take(Long.class)
-            ).array()
-        )));
+        this.add("φ", new AtComposite(this, self -> {
+            final byte[] array = new Dataized(
+                self.attr("ρ").get()
+            ).take(byte[].class);
+            return new Data.ToPhi(ByteBuffer.wrap(array).getChar());
+        }));
     }
 
 }

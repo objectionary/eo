@@ -44,4 +44,10 @@
   # Turn this chain of eight bytes into a float.
   # If there are less or more than eight bytes, there will
   # be an error returned.
-  [] > as-float /int
+  [] > as-float /float
+
+  # Turn this chain of one byte into a char.
+  # If there are less or more than one byte, there will
+  # be an error returned.
+  [] > as-char /char
+

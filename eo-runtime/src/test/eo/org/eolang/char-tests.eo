@@ -32,3 +32,10 @@
   eq. > @
     'Ф'
     'Ф'
+
+[] > to-bytes-and-backwards
+  eq. > @
+    'Ф'
+    as-char.
+      as-bytes.
+        'Ф'
