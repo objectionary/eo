@@ -25,4 +25,25 @@
 
 # Non-conditional forward and backward jumps. Returns TRUE
 # if the jump happened, FALSE if not.
+#
+# Forward jump may look like this:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       g.forward
+#       stdout "Will never be printed"
+# ```
+#
+# Backward jump may be done this way:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       stdout "Will be printed forever"
+#       g.backward
+# ```
+#
 [f] > goto /bool
