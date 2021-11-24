@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.17.0
++rt jvm org.eolang:eo-runtime:0.17.1
 
 [] > float
   # Tests that $ = x
@@ -67,6 +67,9 @@
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs /float
+
+  # Converts this to bytes
+  [] > as-bytes /bytes
 
   # Converts this to int
   [] > as-int /int

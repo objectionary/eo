@@ -199,3 +199,10 @@
 
 [] > abs-zero
   0.abs.eq 0 > @
+
+[] > to-bytes-and-backwards
+  eq. > @
+    42
+    as-int.
+      as-bytes.
+        42

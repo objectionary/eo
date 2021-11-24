@@ -21,12 +21,15 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.17.0
++rt jvm org.eolang:eo-runtime:0.17.1
 +alias sprintf org.eolang.txt.sprintf
 
 [data] > char
   # Compares with another char
   [c] > eq /bool
+
+  # Converts char to bytes (of one byte)
+  [] > as-bytes /bytes
 
   # Converts char to string
   [] > as-string

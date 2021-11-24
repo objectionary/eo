@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.17.0
++rt jvm org.eolang:eo-runtime:0.17.1
 
 [] > bytes
   # Equals to another bytes
@@ -35,3 +35,19 @@
 
   # Turn this chain of bytes into a string in UTF-8
   [] > as-string /string
+
+  # Turn this chain of eight bytes into an integer.
+  # If there are less or more than eight bytes, there will
+  # be an error returned.
+  [] > as-int /int
+
+  # Turn this chain of eight bytes into a float.
+  # If there are less or more than eight bytes, there will
+  # be an error returned.
+  [] > as-float /float
+
+  # Turn this chain of one byte into a char.
+  # If there are less or more than one byte, there will
+  # be an error returned.
+  [] > as-char /char
+

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.17.0
++rt jvm org.eolang:eo-runtime:0.17.1
 
 [] > int
   # Tests that $ = x
@@ -69,6 +69,9 @@
 
   # Converts this to string
   [] > as-string /string
+
+  # Converts this to bytes
+  [] > as-bytes /bytes
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs /int
