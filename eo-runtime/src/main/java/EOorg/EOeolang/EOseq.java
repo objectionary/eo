@@ -52,11 +52,16 @@ public class EOseq extends PhDefault {
             final Phi[] args = new Dataized(
                 self.attr(EOseq.NAME).get()
             ).take(Phi[].class);
-            Object result = false;
-            for (final Phi arg : args) {
-                result = new Dataized(arg).take();
+            for (int idx = 0; idx < args.length - 1; ++idx) {
+                new Dataized(args[idx]).take();
             }
-            return new Data.ToPhi(result);
+            final Phi ret;
+            if (args.length > 0) {
+                ret = args[args.length - 1];
+            } else {
+                ret = new Data.ToPhi(false);
+            }
+            return ret;
         }));
     }
 
