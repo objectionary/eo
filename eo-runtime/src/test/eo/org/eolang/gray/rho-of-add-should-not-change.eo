@@ -1,0 +1,15 @@
++package org.eolang
++alias cage org.eolang.gray.cage
++junit
+
+[] > rho-of-add-should-not-change
+  memory > f1
+  cage > f2
+  memory > f0
+  seq > @
+    f0.write 0
+    f1.write 1
+    f2.write ((f0).add (f1))
+    f1.write f2
+    TRUE
+
