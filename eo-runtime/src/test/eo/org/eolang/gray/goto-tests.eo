@@ -49,7 +49,7 @@
           seq > @
             if.
               x.eq 0
-              g.forward
+              g.forward TRUE
               TRUE
             r.write (42.div x)
       r
@@ -60,3 +60,17 @@
     eq.
       div 0
       0
+
+[] > returns-from-method-body
+  [a b] > max
+    goto > @
+      [g]
+        seq > @
+          if.
+            a.greater b
+            g.forward a
+            TRUE
+          b
+  eq. > @
+    max 7 42
+    42

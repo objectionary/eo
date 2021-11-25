@@ -51,19 +51,19 @@ public class EOgoto extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             final Phi body = rho.attr("f").get().copy(rho);
             body.attr(0).put(new EOgoto.Token(rho));
-            boolean jumped = false;
+            Phi ret;
             while (true) {
                 try {
-                    new Dataized(body).take();
+                    ret = new Data.ToPhi(new Dataized(body).take());
                     break;
                 } catch (final EOgoto.BackwardException ex) {
-                    jumped = true;
+                    ret = new Data.ToPhi(true);
                 } catch (final EOgoto.ForwardException ex) {
-                    jumped = true;
+                    ret = ex.ret;
                     break;
                 }
             }
-            return new Data.ToPhi(jumped);
+            return ret;
         }));
     }
 
@@ -75,11 +75,36 @@ public class EOgoto extends PhDefault {
     private final class Token extends PhDefault {
         Token(final Phi sigma) {
             super(sigma);
-            this.add("backward", new AtComposite(this, rho -> {
+            this.add("backward", new AtComposite(this, EOgoto.Backward::new));
+            this.add("forward", new AtComposite(this, EOgoto.Forward::new));
+        }
+    }
+
+    /**
+     * Backward.
+     * @since 0.17
+     */
+    @XmirObject(oname = "goto.token.backward")
+    private final class Backward extends PhDefault {
+        Backward(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(this, rho -> {
                 throw new EOgoto.BackwardException();
             }));
-            this.add("forward", new AtComposite(this, rho -> {
-                throw new EOgoto.ForwardException();
+        }
+    }
+
+    /**
+     * Forward.
+     * @since 0.17
+     */
+    @XmirObject(oname = "goto.token.forward")
+    private final class Forward extends PhDefault {
+        Forward(final Phi sigma) {
+            super(sigma);
+            this.add("ret", new AtFree());
+            this.add("φ", new AtComposite(this, rho -> {
+                throw new EOgoto.ForwardException(rho.attr("ret").get());
             }));
         }
     }
@@ -98,6 +123,10 @@ public class EOgoto extends PhDefault {
      */
     private static class ForwardException extends Attr.FlowException {
         private static final long serialVersionUID = 1501718836588849754L;
+        final Phi ret;
+        ForwardException(final Phi phi) {
+            this.ret = phi;
+        }
     }
 
 }

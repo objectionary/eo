@@ -24,7 +24,8 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 # Non-conditional forward and backward jumps. Returns TRUE
-# if the jump happened, FALSE if not.
+# if the backward jump happened, an object provided to
+# g.forward otherwise.
 #
 # Forward jump may look like this:
 #
@@ -32,7 +33,7 @@
 # goto
 #   [g]
 #     seq
-#       g.forward
+#       g.forward TRUE
 #       stdout "Will never be printed"
 # ```
 #
@@ -46,4 +47,4 @@
 #       g.backward
 # ```
 #
-[f] > goto /bool
+[f] > goto /?
