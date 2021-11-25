@@ -53,7 +53,7 @@ public class EOcage extends PhDefault {
                     "The cage is still empty"
                 );
             }
-            return object.copy(rho);
+            return object.copy(object.attr("ρ").get());
         }));
         this.add("write", new AtComposite(this, EOcage.Write::new));
         this.add("is-empty", new AtComposite(this, EOcage.IsEmpty::new));

@@ -54,7 +54,7 @@ public class EOmemory extends PhDefault {
                     "The memory is not yet written"
                 );
             }
-            return object.copy(rho);
+            return object.copy(object.attr("ρ").get());
         }));
         this.add("write", new AtComposite(this, EOmemory.Write::new));
         this.add("is-empty", new AtComposite(this, EOmemory.IsEmpty::new));

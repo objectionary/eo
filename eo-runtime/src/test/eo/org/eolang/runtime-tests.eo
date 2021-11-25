@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
++alias cage org.eolang.gray.cage
 +junit
 
 [] > understands-this-correctly
@@ -104,3 +105,15 @@
     x.write 0
     a.neg.neg.neg.neg.eq 42
     x.eq 1
+
+[] > rho-of-add-should-not-change
+  memory > f1
+  cage > f2
+  memory > f0
+  seq > @
+    f0.write 0
+    f1.write 1
+    f2.write ((f0).add (f1))
+    f1.write f2
+    TRUE
+
