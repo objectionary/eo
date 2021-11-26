@@ -32,10 +32,16 @@
     (^.eq x).not > @
 
   # Tests that $ < x
-  [x] > less /bool
+  [x] > less
+    and. > @
+      (^.eq x).not
+      (^.greater x).not
 
   # Tests that $ ≤ x
-  [x] > leq /bool
+  [x] > leq
+    or. > @
+      ^.eq x
+      ^.less x
 
   # Tests that $ > x
   [x] > greater /bool
