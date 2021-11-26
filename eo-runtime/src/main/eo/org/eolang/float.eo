@@ -63,7 +63,14 @@
     ^.mul -1.0 > @
 
   # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum /float
+  [] > signum
+    if. > @
+      ^.less 0.0
+      -1.0
+       if.
+         ^.eq 0.0
+         0.0
+         1.0
 
   # Difference between $ and x
   [x] > sub
