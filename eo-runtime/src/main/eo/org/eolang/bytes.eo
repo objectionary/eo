@@ -51,3 +51,20 @@
   # be an error returned.
   [] > as-char /char
 
+  # Calculate bitwise and
+  [b] > and /bytes
+
+  # Calculate bitwise or
+  [b] > or /bytes
+
+  # Calculate bitwise xor
+  [b] > xor /bytes
+
+  # Calculate bitwise not
+  [] > not /bytes
+
+  # Calculate bitwise left shift
+  [x] > left /bytes
+
+  # Calculate bitwise right shift
+  [x] > right /bytes

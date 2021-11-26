@@ -26,22 +26,29 @@ package EOorg.EOeolang;
 
 import org.eolang.*;
 
+import java.nio.ByteBuffer;
+
 /**
- * LEFT.
+ * BYTES.RIGHT.
  *
  * @since 1.0
  */
-@XmirObject(oname = "int.left")
-public class EOint$EOleft extends PhDefault {
+@XmirObject(oname = "bytes.right")
+public class EObytes$EOright extends PhDefault {
 
-    public EOint$EOleft(final Phi sigma) {
+    public EObytes$EOright(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Long.class)
-            <<
-            new Dataized(self.attr("x").get()).take(Long.class)
-        )));
+        this.add("φ", new AtComposite(this, self -> {
+            final byte[] array = new Dataized(
+                    self.attr("ρ").get()
+            ).take(byte[].class);
+            return new Data.ToPhi(ByteBuffer.allocate(8).putLong(
+                    ByteBuffer.wrap(array).getLong()
+                    >>
+                    new Dataized(self.attr("x").get()).take(Long.class)
+            ).array());
+        }));
     }
 
 }

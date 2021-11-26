@@ -26,22 +26,26 @@ package EOorg.EOeolang;
 
 import org.eolang.*;
 
+import java.nio.ByteBuffer;
+
 /**
- * AND.
+ * BYTES.NOT.
  *
  * @since 1.0
  */
-@XmirObject(oname = "int.and")
-public class EOint$EOand extends PhDefault {
+@XmirObject(oname = "bytes.not")
+public class EObytes$EOnot extends PhDefault {
 
-    public EOint$EOand(final Phi sigma) {
+    public EObytes$EOnot(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Long.class)
-            &
-            new Dataized(self.attr("x").get()).take(Long.class)
-        )));
+        this.add("φ", new AtComposite(this, self -> {
+            final byte[] array = new Dataized(
+                    self.attr("ρ").get()
+            ).take(byte[].class);
+            return new Data.ToPhi(ByteBuffer.allocate(8).putLong(
+                    ~ByteBuffer.wrap(array).getLong()
+            ).array());
+        }));
     }
 
 }
