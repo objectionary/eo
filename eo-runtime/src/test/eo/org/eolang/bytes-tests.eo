@@ -104,7 +104,7 @@
   (-7.as-bytes.and (7.as-bytes)).eq (1.as-bytes) > @
 
 [] > or-with-zero
-  (11.as-bytes.or (0.as-bytes)).eq (-11.as-bytes) > @
+  (-11.as-bytes.or (0.as-bytes)).eq (-11.as-bytes) > @
 
 [] > or-with-two-neg
   (-27.as-bytes.or (-13.as-bytes)).eq (-9.as-bytes) > @
