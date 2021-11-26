@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -69,7 +68,10 @@ final class TranspilerCanonical implements Transpiler {
         final Place place = new Place(name);
         final Path target = place.make(this.temp, Transpiler.EXT);
         int total = 0;
-        if (Files.exists(target)) {
+        if (
+            target.toFile().exists()
+                && target.toFile().lastModified() >= file.toFile().lastModified()
+        ) {
             Logger.info(
                 this, "XMIR %s (%s) already transpiled to %s",
                 Save.rel(file), name, Save.rel(target)
