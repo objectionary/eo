@@ -49,7 +49,8 @@
   [x] > add /float
 
   # Negation of $
-  [] > neg /float
+  [] > neg
+    ^.mul -1.0 > @
 
   # Sign of $ (-1.0, 0.0, or 1.0)
   [] > signum /float
