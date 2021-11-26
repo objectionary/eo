@@ -36,10 +36,10 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.empty")
-public class EOarray$EOempty extends PhDefault {
+@XmirObject(oname = "array.is-empty")
+public class EOarray$EOis_empty extends PhDefault {
 
-    public EOarray$EOempty(final Phi sigma) {
+    public EOarray$EOis_empty(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, self -> {
             final Phi[] array = new Dataized(
