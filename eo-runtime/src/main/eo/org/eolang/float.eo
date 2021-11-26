@@ -28,7 +28,8 @@
   [x] > eq /bool
 
   # Tests that $ ≠ x
-  [x] > neq /bool
+  [x] > neq
+    (^.eq x).not > @
 
   # Tests that $ < x
   [x] > less /bool
