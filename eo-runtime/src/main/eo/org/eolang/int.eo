@@ -75,3 +75,21 @@
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs /int
+
+  # Calculate bitwise and
+  [x] > and /int
+
+  # Calculate bitwise or
+  [x] > or /int
+
+  # Calculate bitwise xor
+  [x] > xor /int
+
+  # Calculate bitwise not
+  [] > not /int
+
+  # Calculate bitwise left shift
+  [x] > left /int
+
+  # Calculate bitwise right shift
+  [x] > right /int

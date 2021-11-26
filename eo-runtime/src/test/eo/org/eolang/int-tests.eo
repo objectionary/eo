@@ -170,7 +170,7 @@
         quotient
 
 # Checks that division by one returns the dividend
-[] > divisioe-by-one
+[] > division-by-one
   -235 > dividend
   eq. > @
     dividend.div 1
@@ -206,3 +206,87 @@
     as-int.
       as-bytes.
         42
+
+[] > left-zero
+  (0.left 1).eq 0 > @
+
+[] > left-with-zero
+  (2.left 0).eq 2 > @
+
+[] > left-with-odd-neg
+  (-17.left 1).eq -34 > @
+
+[] > left-with-minus-one
+  (-1.left 3).eq -8 > @
+
+[] > left-with-even-neg
+  (-18.left 2).eq -72 > @
+
+[] > left-with-even-plus
+  (4.left 3).eq 32 > @
+
+[] > left-with-odd-plus
+  (5.left 3).eq 40 > @
+
+[] > right-with-zero
+  (0.right 2).eq 0 > @
+
+[] > right-with-odd-neg
+  (-37.right 3).eq -5 > @
+
+[] > right-with-minus-one
+  (-1.right 4).eq -1 > @
+
+[] > right-with-even-neg
+  (-38.right 1).eq -19 > @
+
+[] > right-with-even-plus
+  (36.right 2).eq 9 > @
+
+[] > right-with-odd-plus
+  (37.right 3).eq 4 > @
+
+[] > and-with-zero
+  (0.and 32).eq 0 > @
+
+[] > and-with-two-neg
+  (-6.and -4).eq -8 > @
+
+[] > and-with-two-plus
+  (5.and 10).eq 0 > @
+
+[] > and-with-one-neg-one-plus
+  (-7.and 7).eq 1 > @
+
+[] > or-with-zero
+  (-11.or 0).eq -11 > @
+
+[] > or-with-two-neg
+  (-27.or -13).eq -9 > @
+
+[] > or-with-two-plus
+  (5.or 14).eq 15 > @
+
+[] > or-with-one-neg-one-plus
+  (-7.or 23).eq -1 > @
+
+[] > xor-with-zero
+  (0.xor 29).eq 29 > @
+
+[] > xor-with-two-neg
+  (-1.xor -123).eq 122 > @
+
+[] > xor-with-two-plus
+  (53.xor 24).eq 45 > @
+
+[] > xor-with-one-neg-one-plus
+  (-36.xor 43).eq -9 > @
+
+[] > not-with-zero
+  0.not.eq -1 > @
+
+[] > not-with-neg
+  -1.not.eq 0 > @
+
+[] > not-with-plus
+  53.not.eq -54 > @
