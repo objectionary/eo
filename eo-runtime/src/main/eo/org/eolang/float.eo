@@ -84,10 +84,11 @@
     ^.mul (x.pow -1.0) > @
 
   # Absolute value of $ (i.e., with no sign)
-  [] > abs /float
-
-  # Converts this to bytes
-  [] > as-bytes /bytes
+  [] > abs
+    if. > @
+      ^.geq 0.0
+        $
+        $.neg
 
   # Converts this to int
   [] > as-int /int
