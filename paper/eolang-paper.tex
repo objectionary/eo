@@ -23,10 +23,16 @@
 \documentclass[sigplan,nonacm=true]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \usepackage{eo}
+\usepackage{iexec}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{$\varphi$}{phi}-calculus}
-\author{Yegor Bugayenko}{}{}
+\subtitle{\anon{}{%
+  git:\iexec{git log -n 1 --pretty='format:\%h'}
+  \iexec{git log -n 1 --pretty='format:\%ci'}%
+}}
+\author{Yegor Bugayenko}
+\orcid{0000-0001-6370-0678}
 \email{yegor256@gmail.com}
 \affiliation{
   \institution{}
