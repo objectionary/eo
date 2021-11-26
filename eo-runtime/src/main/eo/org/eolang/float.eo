@@ -41,7 +41,10 @@
   [x] > greater /bool
 
   # Tests that $ ≥ x
-  [x] > geq /bool
+  [x] > geq
+    or. > @
+      ^.eq x
+      ^.greater x
 
   # Multiplication of $ and x
   [x] > mul /float
