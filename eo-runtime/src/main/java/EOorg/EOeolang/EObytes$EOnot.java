@@ -25,8 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.*;
-
-import java.nio.ByteBuffer;
+import java.math.BigInteger;
 
 /**
  * BYTES.NOT.
@@ -42,9 +41,9 @@ public class EObytes$EOnot extends PhDefault {
             final byte[] array = new Dataized(
                     self.attr("ρ").get()
             ).take(byte[].class);
-            return new Data.ToPhi(ByteBuffer.allocate(8).putLong(
-                    ~ByteBuffer.wrap(array).getLong()
-            ).array());
+            return new Data.ToPhi(
+                    new BigInteger(array).not().toByteArray()
+            );
         }));
     }
 

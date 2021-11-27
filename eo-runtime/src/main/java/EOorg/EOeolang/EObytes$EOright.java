@@ -25,8 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.*;
-
-import java.nio.ByteBuffer;
+import java.math.BigInteger;
 
 /**
  * BYTES.RIGHT.
@@ -43,11 +42,11 @@ public class EObytes$EOright extends PhDefault {
             final byte[] array = new Dataized(
                     self.attr("ρ").get()
             ).take(byte[].class);
-            return new Data.ToPhi(ByteBuffer.allocate(8).putLong(
-                    ByteBuffer.wrap(array).getLong()
-                    >>
-                    new Dataized(self.attr("x").get()).take(Long.class)
-            ).array());
+            return new Data.ToPhi(
+                    new BigInteger(array).shiftRight(
+                            new Dataized(self.attr("x").get()
+                    ).take(Long.class).intValue()).toByteArray()
+            );
         }));
     }
 

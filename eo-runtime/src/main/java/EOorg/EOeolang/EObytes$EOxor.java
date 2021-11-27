@@ -25,8 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.*;
-
-import java.nio.ByteBuffer;
+import java.math.BigInteger;
 
 /**
  * BYTES.XOR.
@@ -46,11 +45,9 @@ public class EObytes$EOxor extends PhDefault {
             final byte[] another = new Dataized(
                     self.attr("b").get()
             ).take(byte[].class);
-            return new Data.ToPhi(ByteBuffer.allocate(8).putLong(
-                    ByteBuffer.wrap(array).getLong()
-                    ^
-                    ByteBuffer.wrap(another).getLong()
-            ).array());
+            return new Data.ToPhi(
+                    new BigInteger(array).xor(new BigInteger(another)).toByteArray()
+            );
         }));
     }
 
