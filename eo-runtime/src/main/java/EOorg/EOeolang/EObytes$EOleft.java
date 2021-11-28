@@ -40,12 +40,12 @@ public class EObytes$EOleft extends PhDefault {
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, self -> {
             final byte[] array = new Dataized(
-                    self.attr("ρ").get()
+                self.attr("ρ").get()
             ).take(byte[].class);
             return new Data.ToPhi(
-                    new BigInteger(array).shiftLeft(
-                            new Dataized(self.attr("x").get()
-                    ).take(Long.class).intValue()).toByteArray()
+                new BigInteger(array).shiftLeft(
+                    new Dataized(self.attr("x").get()
+                ).take(Long.class).intValue()).toByteArray()
             );
         }));
     }

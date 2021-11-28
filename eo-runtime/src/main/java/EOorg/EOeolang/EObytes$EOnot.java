@@ -39,10 +39,10 @@ public class EObytes$EOnot extends PhDefault {
         super(sigma);
         this.add("φ", new AtComposite(this, self -> {
             final byte[] array = new Dataized(
-                    self.attr("ρ").get()
+                self.attr("ρ").get()
             ).take(byte[].class);
             return new Data.ToPhi(
-                    new BigInteger(array).not().toByteArray()
+                new BigInteger(array).not().toByteArray()
             );
         }));
     }
