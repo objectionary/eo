@@ -37,7 +37,7 @@ examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
 see whether they can work.
 
-EO is based on [𝜑-calculus](https://www.eolang.org/eolang-paper.pdf) 
+EO is based on [𝜑-calculus](https://arxiv.org/abs/2111.13384) 
 (if you want to discuss it, 
 join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
 
@@ -68,6 +68,19 @@ There are products that use EO or 𝜑-calculus
   * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
   * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
   * [try-phi](https://github.com/fizruk/try-phi) is an online interpreter of 𝜑-calculus expressions
+
+If you want to cite us, use this BibTeX citation:
+
+```
+@misc{bugayenko2021eolang,
+  title={EOLANG and phi-calculus}, 
+  author={Yegor Bugayenko},
+  year={2021},
+  eprint={2111.13384},
+  archivePrefix={arXiv},
+  primaryClass={cs.PL}
+}
+```
 
 ## Quick Start
 
