@@ -46,7 +46,10 @@ public class EObytes$EOas_int extends PhDefault {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
-            return new Data.ToPhi(ByteBuffer.wrap(array).getLong());
+            int maxLength = Math.min(8, array.length);
+            final byte[] result = new byte[8];
+            System.arraycopy(array, array.length - maxLength, result, 8 - maxLength, maxLength);
+            return new Data.ToPhi(ByteBuffer.wrap(result).getLong());
         }));
     }
 

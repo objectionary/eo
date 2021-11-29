@@ -140,3 +140,12 @@
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
   (a.and b).eq 02-23-C0-05-5E-70-10 > @
+
+[] > as-int-less-than-eight-bytes
+  7D.as-int.eq 125
+
+[] > as-int-for-eight-bytes
+  3C-E3-FA-29-06-EF-63-5F.as-int.eq 4387625516105950047
+
+[] > as-int-more-than-eight-bytes
+  3C-E3-FA-29-06-EF-63-5F-63.as-int.eq -2019256373159436445
