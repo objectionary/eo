@@ -41,9 +41,10 @@ public class EObytes$EOnot extends PhDefault {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).not().toByteArray()
-            );
+            final byte[] result = new BigInteger(array).not().toByteArray();
+            final byte[] output = new byte[array.length];
+            System.arraycopy(result, 0, output, output.length - result.length, result.length);
+            return new Data.ToPhi(output);
         }));
     }
 

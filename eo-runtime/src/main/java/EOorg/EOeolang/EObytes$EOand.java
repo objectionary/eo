@@ -45,9 +45,13 @@ public class EObytes$EOand extends PhDefault {
             final byte[] another = new Dataized(
                 self.attr("b").get()
             ).take(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).and(new BigInteger(another)).toByteArray()
-            );
+            final byte[] result = new BigInteger(array).and(
+                new BigInteger(another)
+            ).toByteArray();
+            int newLength = Math.max(array.length, another.length);
+            final byte[] output = new byte[newLength];
+            System.arraycopy(result, 0, output, newLength - result.length, result.length);
+            return new Data.ToPhi(output);
         }));
     }
 

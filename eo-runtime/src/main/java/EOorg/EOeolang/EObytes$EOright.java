@@ -42,11 +42,13 @@ public class EObytes$EOright extends PhDefault {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).shiftRight(
-                    new Dataized(self.attr("x").get()
-                ).take(Long.class).intValue()).toByteArray()
-            );
+            byte[] result = new BigInteger(array).shiftRight(
+                new Dataized(self.attr("x").get())
+                .take(Long.class).intValue()
+            ).toByteArray();
+            final byte[] output = new byte[array.length];
+            System.arraycopy(result, 0, output, array.length - result.length, result.length);
+            return new Data.ToPhi(output);
         }));
     }
 

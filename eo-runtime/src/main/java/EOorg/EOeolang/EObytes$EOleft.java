@@ -42,11 +42,14 @@ public class EObytes$EOleft extends PhDefault {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).shiftLeft(
-                    new Dataized(self.attr("x").get()
-                ).take(Long.class).intValue()).toByteArray()
-            );
+            byte[] result = new BigInteger(array).shiftLeft(
+                new Dataized(self.attr("x").get())
+                .take(Long.class).intValue()
+            ).toByteArray();
+            int newLength = Math.max(array.length, result.length);
+            final byte[] output = new byte[newLength];
+            System.arraycopy(result, 0, output, newLength  - result.length, result.length);
+            return new Data.ToPhi(output);
         }));
     }
 
