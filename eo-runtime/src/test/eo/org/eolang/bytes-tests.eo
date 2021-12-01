@@ -141,7 +141,7 @@
   12-33-C1-B5-5E-71-55 > b
   (a.and b).eq 02-23-C0-05-5E-70-10 > @
 
-[] > chain-of-transform-to-int 
+[] > chain-of-transform-to-int
   5.as-bytes.not.as-int.eq -6 > @
 
 [] > chain-of-transform-to-bytes
