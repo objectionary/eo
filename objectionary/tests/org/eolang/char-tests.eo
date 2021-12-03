@@ -23,6 +23,17 @@
 +package org.eolang
 +junit
 
+[] > compares-two-chars
+  eq. > @
+    'x'
+    'x'
+
+[] > compares-two-different-types
+  not. > @
+    eq.
+      'x'
+      42
+
 [] > char-to-string
   eq. > @
     "A"

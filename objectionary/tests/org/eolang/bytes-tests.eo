@@ -51,3 +51,92 @@
     as-string.
       E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
     "你好, друг!"
+
+[] > left-zero
+  (0.as-bytes.left 1).eq (-1.as-bytes.not) > @
+
+[] > left-with-zero
+  (2.as-bytes.left 0).eq (-3.as-bytes.not) > @
+
+[] > left-with-odd-neg
+  (-17.as-bytes.left 1).eq (33.as-bytes.not) > @
+
+[] > left-with-minus-one
+  (-1.as-bytes.left 3).eq (7.as-bytes.not) > @
+
+[] > left-with-even-neg
+  (-18.as-bytes.left 2).eq (71.as-bytes.not) > @
+
+[] > left-with-even-plus
+  (4.as-bytes.left 3).eq (-33.as-bytes.not) > @
+
+[] > left-with-odd-plus
+  (5.as-bytes.left 3).eq (-41.as-bytes.not) > @
+
+[] > right-with-zero
+  (0.as-bytes.right 2).eq (-1.as-bytes.not) > @
+
+[] > right-with-odd-neg
+  (-37.as-bytes.right 3).eq (4.as-bytes.not) > @
+
+[] > right-with-minus-one
+  (-1.as-bytes.right 4).eq (0.as-bytes.not) > @
+
+[] > right-with-even-neg
+  (-38.as-bytes.right 1).eq (18.as-bytes.not) > @
+
+[] > right-with-even-plus
+  (36.as-bytes.right 2).eq (-10.as-bytes.not) > @
+
+[] > right-with-odd-plus
+  (37.as-bytes.right 3).eq (-5.as-bytes.not) > @
+
+[] > and-with-zero
+  (0.as-bytes.and (32.as-bytes)).eq (-1.as-bytes.not) > @
+
+[] > and-with-two-neg
+  (-6.as-bytes.and (-4.as-bytes)).eq (7.as-bytes.not) > @
+
+[] > and-with-two-plus
+  (5.as-bytes.and (10.as-bytes)).eq (-1.as-bytes.not) > @
+
+[] > and-with-one-neg-one-plus
+  (-7.as-bytes.and (7.as-bytes)).eq (-2.as-bytes.not) > @
+
+[] > or-with-zero
+  (-11.as-bytes.or (0.as-bytes)).eq (10.as-bytes.not) > @
+
+[] > or-with-two-neg
+  (-27.as-bytes.or (-13.as-bytes)).eq (8.as-bytes.not) > @
+
+[] > or-with-two-plus
+  (5.as-bytes.or (14.as-bytes)).eq (-16.as-bytes.not) > @
+
+[] > or-with-one-neg-one-plus
+  (-7.as-bytes.or (23.as-bytes)).eq (0.as-bytes.not) > @
+
+[] > xor-with-zero
+  (0.as-bytes.xor (29.as-bytes)).eq (-30.as-bytes.not) > @
+
+[] > xor-with-two-neg
+  (-1.as-bytes.xor (-123.as-bytes)).eq (-123.as-bytes.not) > @
+
+[] > xor-with-two-plus
+  (53.as-bytes.xor (24.as-bytes)).eq (-46.as-bytes.not) > @
+
+[] > xor-with-one-neg-one-plus
+  (-36.as-bytes.xor (43.as-bytes)).eq (8.as-bytes.not) > @
+
+[] > not-with-zero
+  0.as-bytes.not.eq (0.as-bytes.not) > @
+
+[] > not-with-neg
+  -1.as-bytes.not.eq (-1.as-bytes.not) > @
+
+[] > not-with-plus
+  53.as-bytes.not.eq (53.as-bytes.not) > @
+
+[] > conjuction-of-bytes
+  02-EF-D4-05-5E-78-3A > a
+  12-33-C1-B5-5E-71-55 > b
+  (a.and b).eq 02-23-C0-05-5E-70-10 > @

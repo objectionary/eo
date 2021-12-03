@@ -30,6 +30,12 @@
     TRUE
     TRUE
 
+[] > compares-two-different-types
+  not. > @
+    eq.
+      TRUE
+      42
+
 [] > joins-many-ANDs
   and. > @
     TRUE

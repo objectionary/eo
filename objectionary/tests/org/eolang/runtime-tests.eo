@@ -117,3 +117,19 @@
     f1.write f2
     TRUE
 
+[] > positive-object-vertices
+  and. > @
+    42.<.eq (42.<)
+    "Hello".<.eq ("Hello".<)
+    42.add.<.greater 0
+    45-1F-E7.<.eq (45-1F-E7.<)
+
+[] > negative-object-vertices
+  [x] > a
+  not. > @
+    or.
+      (2.add 3).<.eq (5.<)
+      42.<.eq (42.0.<)
+      45-1F-E8.<.eq (45-1F-E8-83.<)
+      (a 5).<.eq ((a 5).<)
+      (* 1 2 3).<.eq ((* 1 2 3).<)
