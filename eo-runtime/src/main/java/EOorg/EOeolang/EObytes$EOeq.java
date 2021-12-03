@@ -48,10 +48,14 @@ public class EObytes$EOeq extends PhDefault {
             final byte[] array = new Dataized(
                 self.attr("ρ").get()
             ).take(byte[].class);
-            final byte[] another = new Dataized(
+            final Object another = new Dataized(
                 self.attr("b").get()
-            ).take(byte[].class);
-            return new Data.ToPhi(Arrays.equals(another, array));
+            ).take();
+            boolean equals = false;
+            if (another instanceof byte[]) {
+                equals = Arrays.equals(byte[].class.cast(another), array);
+            }
+            return new Data.ToPhi(equals);
         }));
     }
 

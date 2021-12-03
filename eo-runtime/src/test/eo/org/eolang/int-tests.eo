@@ -105,6 +105,12 @@
       123
       42
 
+[] > compares-two-different-types
+  not. > @
+    eq.
+      42
+      "Hello!"
+
 [] > neq-true
   neq. > @
     123

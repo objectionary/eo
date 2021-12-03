@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 /**
@@ -49,9 +48,9 @@ public abstract class PhDefault implements Phi, Cloneable {
     private static final Pattern INDENT = Pattern.compile("\n");
 
     /**
-     * Object recent ID used.
+     * Vertices.
      */
-    private static final AtomicInteger IDS = new AtomicInteger();
+    protected static final Vertices VTX = new Vertices();
 
     /**
      * Shift right.
@@ -61,7 +60,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Identity of it (the ID of the vertex).
      */
-    private int vertex;
+    protected int vertex;
 
     /**
      * Attributes.
@@ -91,7 +90,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @param sigma Sigma
      */
     public PhDefault(final Phi sigma) {
-        this.vertex = PhDefault.IDS.addAndGet(1);
+        this.vertex = PhDefault.VTX.next();
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
@@ -302,7 +301,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     private Phi copy(final Attr rho) {
         try {
             final PhDefault copy = PhDefault.class.cast(this.clone());
-            copy.vertex = PhDefault.IDS.addAndGet(1);
+            copy.vertex = PhDefault.VTX.next();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 if ("ρ".equals(ent.getKey())) {

@@ -203,47 +203,7 @@ public interface Data<T> {
         public Value(final T value) {
             super(Phi.Φ);
             this.val = value;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            final boolean eql;
-            if (obj instanceof Data.Value) {
-                final Object rval = Data.Value.class.cast(obj).val;
-                if (this.val instanceof Long && rval instanceof Long) {
-                    eql = Long.class.cast(this.val).equals(Long.class.cast(rval));
-                } else if (this.val instanceof String && rval instanceof String) {
-                    eql = String.class.cast(this.val).equals(String.class.cast(rval));
-                } else if (this.val instanceof Double && rval instanceof Double) {
-                    eql = Double.class.cast(this.val).equals(Double.class.cast(rval));
-                } else if (this.val instanceof Character && rval instanceof Character) {
-                    eql = Character.class.cast(this.val).equals(Character.class.cast(rval));
-                } else if (this.val instanceof Pattern && rval instanceof Pattern) {
-                    eql = Pattern.class.cast(this.val).pattern().equals(
-                        Pattern.class.cast(rval).pattern()
-                    );
-                } else if (this.val instanceof byte[] && rval instanceof byte[]) {
-                    eql = Arrays.equals(
-                        byte[].class.cast(this.val),
-                        byte[].class.cast(rval)
-                    );
-                } else if (this.val instanceof Phi[] && rval instanceof Phi[]) {
-                    eql = Arrays.equals(
-                        Phi[].class.cast(this.val),
-                        Phi[].class.cast(rval)
-                    );
-                } else {
-                    eql = false;
-                }
-            } else {
-                eql = obj.equals(this);
-            }
-            return eql;
-        }
-
-        @Override
-        public int hashCode() {
-            return -1;
+            this.vertex = PhDefault.VTX.best(value);
         }
 
         @Override

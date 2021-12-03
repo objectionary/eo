@@ -43,11 +43,19 @@ public class EOstring$EOeq extends PhDefault {
     public EOstring$EOeq(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(String.class).equals(
-                new Dataized(self.attr("x").get()).take(String.class)
-            )
-        )));
+        this.add("φ", new AtComposite(this, self -> {
+            final String mine = new Dataized(
+                self.attr("ρ").get()
+            ).take(String.class);
+            final Object another = new Dataized(
+                self.attr("x").get()
+            ).take();
+            boolean equals = false;
+            if (another instanceof String) {
+                equals = mine.equals(String.class.cast(another));
+            }
+            return new Data.ToPhi(equals);
+        }));
     }
 
 }

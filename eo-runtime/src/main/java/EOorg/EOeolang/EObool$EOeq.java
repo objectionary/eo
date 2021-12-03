@@ -47,10 +47,14 @@ public class EObool$EOeq extends PhDefault {
             final boolean mine = new Dataized(
                 self.attr("ρ").get()
             ).take(Boolean.class);
-            final boolean another = new Dataized(
+            final Object another = new Dataized(
                 self.attr("b").get()
-            ).take(Boolean.class);
-            return new Data.ToPhi(mine == another);
+            ).take();
+            boolean equals = false;
+            if (another instanceof Boolean) {
+                equals = mine == Boolean.class.cast(another);
+            }
+            return new Data.ToPhi(equals);
         }));
     }
 

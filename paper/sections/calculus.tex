@@ -10,7 +10,7 @@ An \textbf{object} is a set of ordered pairs $(a_i, v_i)$ such that
 $a_i$ is an identifier, all $a_i$ are different, and $v_i$ is an object.
 \end{eodefinition}
 
-An identifier is either $\varphi$, $\rho$, or, by convention, a text without
+An identifier is either $\varphi$, $\rho$, $\nu$, or, by convention, a text without
 spaces starting with a small-case English letter in typewriter font.
 
 The object at \lref{book} may be represented as
@@ -348,5 +348,21 @@ the object application:
 \end{split}
 \end{equation}
 
+\subsection{Identity}
+
+\begin{eodefinition}\label{def:attribute}
+If $x$ is an object then $x.\nu$ is a positive integer data object
+with a unique identify of $x$ in the entire runtime scope.
+\end{eodefinition}
+
+For example, without any other objects in scope it's safe
+to assume the following:
+\begin{equation}
+\begin{split}
+& \ff{x}(\ff{y}) \mapsto \llbracket \rrbracket \br
+& \ff{z} \mapsto \ff{x} ( \ff{y} \mapsto \ff{42} ) \br
+& \Phi.\nu = 0, \ff{x}.\nu = 1, \ff{42}.\nu = 2, \ff{z}.\nu = 3.
+\end{split}
+\end{equation}
 
 

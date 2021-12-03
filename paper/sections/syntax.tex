@@ -62,7 +62,7 @@ Java-notation is used for numbers, strings, and character literals.
 \T{attributes} \df \V{[} \T{attribute} \few{\V{␣} \T{attribute}} \V{]} \\
 \T{attribute} \df \V{@} \alt \T{name} \opt{\V{...}} \\
 \T{suffix} \df \V{␣} \V{>} \V{␣} \grp{\V{@} \alt \T{name}} \opt{\V{!}} \\
-\T{ref} \df \V{.} \grp{ \T{name} \alt \V{\^{}} } \\
+\T{ref} \df \V{.} \grp{ \T{name} \alt \V{\^{}} \alt \V{@} \alt \V{<} } \\
 \T{application} \df \T{head} \opt{\T{htail}} \\
 \T{htail} \df \T{application} \T{ref} \\
   \> \alt \V{(} \T{application} \V{)} \\
@@ -541,6 +541,26 @@ Here, \ff{x} is an attribute of the object \ff{hello}, even though
 it is not defined as explicitly as \ff{say}. Anywhere a new
 name shows up after the \ff{>} symbol, it is a declaration of a new
 attribute in the nearest object abstraction.
+
+\subsection{Object Identity}
+
+Each object has a special attribute \ff{<}, which is an integer
+refering to a unique identifier of an object in the entire
+runtime scope of a program. All the following expressions are true:
+
+\begin{ffcode}
+TRUE.<.eq TRUE.<
+42.<.eq 42.<
+point.<.eq point.<
+\end{ffcode}
+
+All the following expressions are false:
+
+\begin{ffcode}
+42.<.eq 7.<
+(2.add 2).<.eq 4.<
+(point 3 5).<.eq (point 3 5).<
+\end{ffcode}
 
 \subsection{Metas and License}
 

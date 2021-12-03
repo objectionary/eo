@@ -67,3 +67,9 @@
     12
     "Hello, друг!".length
 
+[] > compares-two-different-types
+  not. > @
+    eq.
+      "Hello"
+      42
+

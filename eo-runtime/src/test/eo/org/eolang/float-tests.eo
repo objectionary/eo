@@ -106,6 +106,12 @@
       123.5
       42.4
 
+[] > compares-two-different-types
+  not. > @
+    eq.
+      3.14
+      "Hello"
+
 [] > neq-true
   neq. > @
     123.5
