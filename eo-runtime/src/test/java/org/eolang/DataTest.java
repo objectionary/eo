@@ -68,6 +68,14 @@ public final class DataTest {
     }
 
     @Test
+    public void getsVertex() {
+        MatcherAssert.assertThat(
+            new Dataized(new Data.ToPhi(1L).attr("ν").get()).take(Long.class),
+            Matchers.equalTo(-1L)
+        );
+    }
+
+    @Test
     public void comparesTwoDatas() {
         MatcherAssert.assertThat(
             new Data.ToPhi(1L),
