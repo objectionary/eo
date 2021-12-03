@@ -549,17 +549,18 @@ refering to a unique identifier of an object in the entire
 runtime scope of a program. All the following expressions are true:
 
 \begin{ffcode}
-TRUE.<.eq TRUE.<
-42.<.eq 42.<
-point.<.eq point.<
+TRUE.<.eq (TRUE.<)
+42.<.eq (42.<)
+point.<.eq (point.<)
 \end{ffcode}
 
 All the following expressions are false:
 
 \begin{ffcode}
-42.<.eq 7.<
-(2.add 2).<.eq 4.<
-(point 3 5).<.eq (point 3 5).<
+42.<.eq (7.<)
+(2.add 2).<.eq (4.<)
+(point 3 5).<.eq ((point 3 5).<)
+(* 1 2).<.eq ((* 1 2).<)
 \end{ffcode}
 
 \subsection{Metas and License}
