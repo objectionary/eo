@@ -57,7 +57,7 @@ final class Vertices {
     public int next() {
         return this.seen.computeIfAbsent(
             String.format("next:%d", this.count.addAndGet(1)),
-            key -> this.seen.size()
+            key -> this.seen.size() + 1
         );
     }
 
@@ -95,7 +95,7 @@ final class Vertices {
         digest.update(String.format("%s %s", obj.getClass().getName(), label).getBytes());
         final String hash = new String(digest.digest());
         return this.seen.computeIfAbsent(
-            hash, key -> this.seen.size()
+            hash, key -> this.seen.size() + 1
         );
     }
 
