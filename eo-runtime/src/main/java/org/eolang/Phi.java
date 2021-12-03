@@ -43,6 +43,16 @@ public interface Phi extends Term {
      */
     Phi Φ = new Phi() {
         @Override
+        public boolean equals(final Object obj) {
+            return obj == this;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
         public String φTerm() {
             return "Φ";
         }

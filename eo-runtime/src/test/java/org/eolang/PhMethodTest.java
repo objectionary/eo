@@ -35,6 +35,15 @@ import org.junit.jupiter.api.Test;
 public final class PhMethodTest {
 
     @Test
+    public void comparesTwoObjects() {
+        final Phi num = new Data.ToPhi(1L);
+        MatcherAssert.assertThat(
+            num.attr("add").get(),
+            Matchers.equalTo(num.attr("add").get())
+        );
+    }
+
+    @Test
     public void safeToString() {
         MatcherAssert.assertThat(
             new PhMethod(Phi.Φ, "hello").toString(),

@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import java.util.regex.Pattern;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,14 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 public final class DataTest {
+
+    @Test
+    public void makesString() {
+        MatcherAssert.assertThat(
+            Data.Value.class.cast(new Data.ToPhi("Hello,\nдруг!").attr("Δ").get()).take(),
+            Matchers.hasToString("Hello,\nдруг!")
+        );
+    }
 
     @Test
     public void printsByteArray() {
@@ -55,6 +64,106 @@ public final class DataTest {
         MatcherAssert.assertThat(
             new Data.ToPhi("Hello,\nдруг!").toString(),
             Matchers.containsString("Hello,\\nдруг!")
+        );
+    }
+
+    @Test
+    public void comparesTwoDatas() {
+        MatcherAssert.assertThat(
+            new Data.ToPhi(1L),
+            Matchers.equalTo(new Data.ToPhi(1L))
+        );
+        MatcherAssert.assertThat(
+            new Data.ToPhi(1L),
+            Matchers.not(Matchers.equalTo(new Data.ToPhi(2L)))
+        );
+        MatcherAssert.assertThat(
+            new Data.ToPhi("Welcome"),
+            Matchers.equalTo(new Data.ToPhi("Welcome"))
+        );
+        MatcherAssert.assertThat(
+            new Data.ToPhi(2.18d),
+            Matchers.equalTo(new Data.ToPhi(2.18d))
+        );
+        MatcherAssert.assertThat(
+            new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}),
+            Matchers.equalTo(new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}))
+        );
+    }
+
+    @Test
+    public void comparesTwoSimpleValues() {
+        MatcherAssert.assertThat(
+            new Data.Value<>(1L),
+            Matchers.equalTo(new Data.Value<>(1L))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>(1L),
+            Matchers.not(Matchers.equalTo(new Data.Value<>(5L)))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>("Hello!"),
+            Matchers.equalTo(new Data.Value<>("Hello!"))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>("Hello 1"),
+            Matchers.not(Matchers.equalTo(new Data.Value<>("Hello 2")))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>(3.14d),
+            Matchers.equalTo(new Data.Value<>(3.14d))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>(3.14d),
+            Matchers.not(Matchers.equalTo(new Data.Value<>(1.0d)))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>('x'),
+            Matchers.equalTo(new Data.Value<>('x'))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>('f'),
+            Matchers.not(Matchers.equalTo(new Data.Value<>('a')))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>(Pattern.compile("abc")),
+            Matchers.equalTo(new Data.Value<>(Pattern.compile("abc")))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>(Pattern.compile("cc")),
+            Matchers.not(Matchers.equalTo(new Data.Value<>(Pattern.compile("zz"))))
+        );
+    }
+
+    @Test
+    public void comparesTwoByteArrays() {
+        MatcherAssert.assertThat(
+            new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
+            Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}))
+        );
+        MatcherAssert.assertThat(
+            new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
+            Matchers.not(Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0xf0})))
+        );
+    }
+
+    @Test
+    public void comparesTwoPhiArrays() {
+        MatcherAssert.assertThat(
+            new Data.Value<>(
+                new Phi[] {
+                    new Data.ToPhi("foo"),
+                    new Data.ToPhi(1L)
+                }
+            ),
+            Matchers.equalTo(
+                new Data.Value<>(
+                    new Phi[] {
+                        new Data.ToPhi("foo"),
+                        new Data.ToPhi(1L)
+                    }
+                )
+            )
         );
     }
 

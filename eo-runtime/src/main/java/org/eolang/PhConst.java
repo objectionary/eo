@@ -73,6 +73,16 @@ public final class PhConst implements Phi {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
+    }
+
+    @Override
     public String toString() {
         return String.format("!%s%s", this.named.keySet(), this.origin);
     }

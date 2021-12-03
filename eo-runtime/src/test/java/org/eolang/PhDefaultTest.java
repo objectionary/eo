@@ -37,6 +37,22 @@ import org.junit.jupiter.api.Test;
 public final class PhDefaultTest {
 
     @Test
+    public void comparesTwoObjects() {
+        final Phi phi = new PhDefaultTest.First(Phi.Φ);
+        MatcherAssert.assertThat(
+            phi, Matchers.equalTo(phi)
+        );
+    }
+
+    @Test
+    public void comparesTwoCopies() {
+        final Phi phi = new PhDefaultTest.First(Phi.Φ);
+        MatcherAssert.assertThat(
+            phi.copy(), Matchers.not(Matchers.equalTo(phi.copy()))
+        );
+    }
+
+    @Test
     public void makesCopy() {
         final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(Phi.Φ);
@@ -87,7 +103,7 @@ public final class PhDefaultTest {
 
     @Test
     public void getsRhoFromPhi() {
-        final Phi first = new First(Phi.Φ);
+        final Phi first = new PhDefaultTest.First(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(first).take(Long.class),
             Matchers.equalTo(1L)

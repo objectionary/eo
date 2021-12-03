@@ -139,6 +139,7 @@ SOFTWARE.
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:apply-templates select="." mode="equals-and-hashCode"/>
     <xsl:if test="//meta[head='junit'] and not(@parent)">
       <xsl:apply-templates select="." mode="tests"/>
     </xsl:if>
@@ -183,6 +184,28 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="class" mode="equals-and-hashCode">
+    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
+    <xsl:if test="$data-objects[text()=$type]">
+      <xsl:value-of select="eo:tabs(1)"/>
+      <xsl:text>@Override</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>public int hashCode() {</xsl:text>
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>return this.attr("&#x394;").get().hashCode();</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>}</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>@Override</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>public boolean equals(final Object obj) {</xsl:text>
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>return this.attr("&#x394;").get().equals(obj);</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>}</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="attr">
     <xsl:value-of select="eo:eol(2)"/>

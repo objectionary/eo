@@ -57,6 +57,16 @@ class PhOnce implements Phi {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return this.object.take().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.object.hashCode();
+    }
+
+    @Override
     public final String toString() {
         return this.object.toString();
     }

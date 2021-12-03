@@ -21,75 +21,73 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhMethod;
+import org.eolang.PhWith;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhWith}.
+ * Test case for {@link EOidentical}.
  *
- * @since 0.16
+ * @since 0.18
  */
-public final class PhWithTest {
+public final class EOidenticalTest {
 
     @Test
-    public void comparesTwoObjects() {
-        final Phi dummy = new PhWith(
-            new PhMethod(new PhWithTest.Dummy(Phi.Φ), "add"),
-            0, new Data.ToPhi(1L)
-        );
-        MatcherAssert.assertThat(
-            dummy, Matchers.equalTo(dummy)
-        );
-    }
-
-    @Test
-    public void takesMethod() {
+    public void twoDataObjects() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new EOsprintf(Phi.Φ),
-                    0, new Data.ToPhi("Hello, world!")
+                    new PhWith(
+                        new EOidentical(Phi.Φ),
+                        0, new Data.ToPhi(1L)
+                    ),
+                    1, new Data.ToPhi(1L)
                 )
-            ).take(String.class),
-            Matchers.startsWith("Hello, ")
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
         );
     }
 
     @Test
-    public void passesToSubObject() {
-        final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
+    public void twoDifferentDataObjects() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(dummy, "add"), dummy),
-                    0, new Data.ToPhi(1L)
+                    new PhWith(
+                        new EOidentical(Phi.Φ),
+                        0, new Data.ToPhi(7L)
+                    ),
+                    1, new Data.ToPhi(42L)
                 )
-            ).take(Long.class),
-            Matchers.equalTo(2L)
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
         );
     }
 
     @Test
-    public void printsToString() {
-        final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
+    public void twoCompositeDataObjects() {
+        final Phi left = new PhWith(
+            new PhMethod(new Data.ToPhi(1L), "add"),
+            0, new Data.ToPhi(2L)
+        );
         MatcherAssert.assertThat(
-            new PhWith(
-                new PhCopy(new PhMethod(dummy, "add"), dummy),
-                0, new Data.ToPhi(1L)
-            ).copy(Phi.Φ).toString(),
-            Matchers.containsString("ρ=Φ")
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new EOidentical(Phi.Φ),
+                        0, left
+                    ),
+                    1, new Data.ToPhi(3L)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
         );
     }
-
-    public static class Dummy extends PhDefault {
-        public Dummy(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
-        }
-    }
-
 }

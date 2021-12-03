@@ -73,6 +73,11 @@ public interface Data<T> {
         }
 
         @Override
+        public int hashCode() {
+            return this.take().hashCode();
+        }
+
+        @Override
         public String toString() {
             final T data = this.ref.get();
             String txt = this.blank.get();
@@ -97,18 +102,62 @@ public interface Data<T> {
      * Makes a {@code Phi} out of a Java object, like String or integer.
      *
      * This is more convenient than making EOstring and then
-     * injecting "Δ" into it.
+     * injecting "Δ" into it. This class is used in Java tests mostly
+     * for the sake of brevity. In auto-generated Java code we use EOint/EOstring
+     * and then inject "Δ" with Data.Value into it.
      *
      * @since 0.1
      */
-    final class ToPhi extends PhOnce {
+    final class ToPhi implements Phi {
+
+        private final Phi value;
+
+        private final Phi object;
 
         public ToPhi(final Object obj) {
-            super(
-                () -> Data.ToPhi.toPhi(obj),
-                () -> "",
-                () -> Data.ToPhi.toPhi(obj).φTerm()
-            );
+            this.value = new Data.Value<>(obj);
+            this.object = Data.ToPhi.toPhi(obj);
+            this.object.attr("Δ").put(this.value);
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            return this.value.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return this.value.hashCode();
+        }
+
+        @Override
+        public Phi copy() {
+            return this;
+        }
+
+        @Override
+        public Phi copy(final Phi rho) {
+            return this;
+        }
+
+        @Override
+        public Attr attr(final int pos) {
+            return this.object.attr(pos);
+        }
+
+        @Override
+        public Attr attr(final String name) {
+            return this.object.attr(name);
+        }
+
+        @Override
+        public String φTerm() {
+            return this.object.φTerm();
+        }
+
+        @Override
+        public String toString() {
+            return this.object.toString();
         }
 
         private static Phi toPhi(final Object obj) {
@@ -137,7 +186,7 @@ public interface Data<T> {
                     )
                 );
             }
-            return new PhWith(phi, "Δ", new Data.Value<>(obj));
+            return phi;
         }
     }
 
@@ -154,6 +203,47 @@ public interface Data<T> {
         public Value(final T value) {
             super(Phi.Φ);
             this.val = value;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            final boolean eql;
+            if (obj instanceof Data.Value) {
+                final Object rval = Data.Value.class.cast(obj).val;
+                if (this.val instanceof Long && rval instanceof Long) {
+                    eql = Long.class.cast(this.val).equals(Long.class.cast(rval));
+                } else if (this.val instanceof String && rval instanceof String) {
+                    eql = String.class.cast(this.val).equals(String.class.cast(rval));
+                } else if (this.val instanceof Double && rval instanceof Double) {
+                    eql = Double.class.cast(this.val).equals(Double.class.cast(rval));
+                } else if (this.val instanceof Character && rval instanceof Character) {
+                    eql = Character.class.cast(this.val).equals(Character.class.cast(rval));
+                } else if (this.val instanceof Pattern && rval instanceof Pattern) {
+                    eql = Pattern.class.cast(this.val).pattern().equals(
+                        Pattern.class.cast(rval).pattern()
+                    );
+                } else if (this.val instanceof byte[] && rval instanceof byte[]) {
+                    eql = Arrays.equals(
+                        byte[].class.cast(this.val),
+                        byte[].class.cast(rval)
+                    );
+                } else if (this.val instanceof Phi[] && rval instanceof Phi[]) {
+                    eql = Arrays.equals(
+                        Phi[].class.cast(this.val),
+                        Phi[].class.cast(rval)
+                    );
+                } else {
+                    eql = false;
+                }
+            } else {
+                eql = obj.equals(this);
+            }
+            return eql;
+        }
+
+        @Override
+        public int hashCode() {
+            return Integer.MAX_VALUE;
         }
 
         @Override
