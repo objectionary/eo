@@ -356,7 +356,8 @@ with a unique identify of $x$ in the entire runtime scope.
 \end{eodefinition}
 
 For example, without any other objects in scope it's safe
-to assume the following:
+to assume the following, however there is no guarantee that
+the actual numbers will be the same in all implementations:
 \begin{equation}
 \begin{split}
 & \ff{x}(\ff{y}) \mapsto \llbracket \rrbracket \br
@@ -364,5 +365,4 @@ to assume the following:
 & \Phi.\nu = 0, \ff{x}.\nu = 1, \ff{42}.\nu = 2, \ff{z}.\nu = 3.
 \end{split}
 \end{equation}
-
 
