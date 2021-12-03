@@ -243,7 +243,7 @@ public interface Data<T> {
 
         @Override
         public int hashCode() {
-            return Integer.MAX_VALUE;
+            return -1;
         }
 
         @Override

@@ -12,6 +12,7 @@ tests:
   - //o[@name='hello' and @const]
   - //o[@as='i']
   - //o[@base='&']
+  - //o[@base='.<']
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@vararg and @name='a']]
@@ -36,13 +37,13 @@ eo: |
   [x] > first
     x > @
     second > hello
-      $.add.@ 5 > i
+      $.add.@ 5.< > i
       third:foo > x...!
         f 12 false
-          (((t 22) r:t 8.54 "yes" 'e').print 88 0x1f):hey TRUE > a!
+          (((t 22) r:t 8.54 "yes".< 'e').print 88 0x1f):hey TRUE.< FALSE > a!
             # This object is also very good
             []
-              &.@ > t
+              &.@.< > t
               ^.@.hey > you...
             kid.^.^
             '家'
@@ -60,7 +61,7 @@ eo: |
   # Comments are allowed only in front of top-level objects
   []
     one.two.three.four.five
-      t
+      t.<
     .two "hello!"
     .three > a1
     .four > a2

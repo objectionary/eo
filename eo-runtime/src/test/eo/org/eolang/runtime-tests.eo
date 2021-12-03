@@ -117,3 +117,9 @@
     f1.write f2
     TRUE
 
+[] > gets-object-vertices
+  and. > @
+    "Hello".<.eq -1
+    42.<.eq -1
+    42.add.<.greater 0
+

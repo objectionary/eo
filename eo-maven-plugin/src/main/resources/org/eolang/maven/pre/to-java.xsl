@@ -377,6 +377,9 @@ SOFTWARE.
       <xsl:when test="$method='^'">
         <xsl:text>&#x3C1;</xsl:text>
       </xsl:when>
+      <xsl:when test="$method='&lt;'">
+        <xsl:text>&#x3BD;</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:attr-name($method)"/>
       </xsl:otherwise>

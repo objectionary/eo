@@ -214,7 +214,12 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final String name) {
-        Attr attr = this.attrs.get(name);
+        Attr attr;
+        if ("ν".equals(name)) {
+            attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
+        } else {
+            attr = this.attrs.get(name);
+        }
         if (attr == null) {
             final Attr phi = this.attrs.get("φ");
             if (phi == null) {

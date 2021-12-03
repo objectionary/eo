@@ -125,6 +125,8 @@ method
     RHO
     |
     AT
+    |
+    VERTEX
   )
   ;
 
@@ -234,6 +236,7 @@ CONST: '!';
 SLASH: '/';
 COLON: ':';
 ARROW: '>';
+VERTEX: '<';
 SIGMA: '&';
 XI: '$';
 PLUS: '+';

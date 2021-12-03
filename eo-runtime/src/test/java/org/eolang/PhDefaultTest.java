@@ -53,6 +53,15 @@ public final class PhDefaultTest {
     }
 
     @Test
+    public void makesObjectIdentity() {
+        final Phi phi = new PhDefaultTest.First(Phi.Φ);
+        MatcherAssert.assertThat(
+            new Dataized(phi.attr("ν").get()).take(Long.class),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
     public void makesCopy() {
         final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(Phi.Φ);
