@@ -34,9 +34,38 @@ SOFTWARE.
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
-          <xsl:text>Atoms </xsl:text>
+          <xsl:text>The atom '</xsl:text>
           <xsl:value-of select="@name"/>
-          <xsl:text> may not have any attributes</xsl:text>
+          <xsl:text>' may not have any attributes: </xsl:text>
+          <xsl:for-each select="o[@base]">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>, </xsl:text>
+            </xsl:if>
+            <xsl:text>'</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>'</xsl:text>
+          </xsl:for-each>
+        </xsl:element>
+      </xsl:for-each>
+      <xsl:for-each select="//o[@atom and o[@atom]]">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>not-empty-atoms</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:text>Atom '</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>' may not have any attributes, even though they are atoms: </xsl:text>
+          <xsl:for-each select="o[@atom]">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>, </xsl:text>
+            </xsl:if>
+            <xsl:text>'</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>'</xsl:text>
+          </xsl:for-each>
         </xsl:element>
       </xsl:for-each>
     </xsl:copy>

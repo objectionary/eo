@@ -20,8 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
++package org.eolang.gray
++alias org.eolang.gray.heap
++junit
 
-# Storage of data in memory.
-[] > memory /?
+[] > allocates-and-uses
+  "Hello, друг!" > txt
+  txt.as-bytes > bytes
+  heap 1024 > h
+  h.pointer 0 1 > p
+  p.block > data
+    bytes.size
+    [b] (b.as-string > @)
+  and. > @
+    data.write bytes
+    data.eq txt
