@@ -50,11 +50,20 @@ public class EObool$EOor extends PhDefault {
             final Phi[] args = new Dataized(
                 self.attr("x").get()
             ).take(Phi[].class);
-            for (final Phi arg : args) {
+            for (int idx = 0; idx < args.length; ++idx) {
                 if (term) {
                     break;
                 }
-                term |= new Dataized(arg).take(Boolean.class);
+                final Object val = new Dataized(args[idx]).take();
+                if (!(val instanceof Boolean)) {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "The %dth argument of 'or' is of type %s, not Boolean",
+                            idx, val.getClass().getCanonicalName()
+                        )
+                    );
+                }
+                term |= Boolean.class.cast(val);
             }
             return new Data.ToPhi(term);
         }));
