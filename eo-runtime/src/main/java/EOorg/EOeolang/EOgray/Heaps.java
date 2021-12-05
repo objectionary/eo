@@ -68,6 +68,11 @@ final class Heaps {
 
     /**
      * Allocate a piece.
+     *
+     * The implementation is very primitive. It just allocates blocks
+     * of memory one after another. It doesn't listen to free()
+     * requests and never frees any blocks. They just go one by one.
+     *
      * @param heap The heap
      * @param size How many bytes?
      * @return The pointer to it
