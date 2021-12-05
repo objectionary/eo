@@ -57,8 +57,14 @@ public class EOgoto extends PhDefault {
                     ret = new Data.ToPhi(new Dataized(body).take());
                     break;
                 } catch (final EOgoto.BackwardException ex) {
+                    if (!ex.sigma.attr("σ").get().equals(rho)) {
+                        throw ex;
+                    }
                     ret = new Data.ToPhi(true);
                 } catch (final EOgoto.ForwardException ex) {
+                    if (!ex.sigma.attr("σ").get().equals(rho)) {
+                        throw ex;
+                    }
                     ret = ex.ret;
                     break;
                 }
@@ -89,7 +95,9 @@ public class EOgoto extends PhDefault {
         Backward(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(this, rho -> {
-                throw new EOgoto.BackwardException();
+                throw new EOgoto.BackwardException(
+                    rho.attr("σ").get()
+                );
             }));
         }
     }
@@ -104,7 +112,10 @@ public class EOgoto extends PhDefault {
             super(sigma);
             this.add("ret", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                throw new EOgoto.ForwardException(rho.attr("ret").get());
+                throw new EOgoto.ForwardException(
+                    rho.attr("σ").get(),
+                    rho.attr("ret").get()
+                );
             }));
         }
     }
@@ -115,6 +126,11 @@ public class EOgoto extends PhDefault {
      */
     private static class BackwardException extends Attr.FlowException {
         private static final long serialVersionUID = 1735493012609760997L;
+        public final Phi sigma;
+        BackwardException(final Phi sgm) {
+            super();
+            this.sigma = sgm;
+        }
     }
 
     /**
@@ -123,8 +139,11 @@ public class EOgoto extends PhDefault {
      */
     private static class ForwardException extends Attr.FlowException {
         private static final long serialVersionUID = 1501718836588849754L;
-        final Phi ret;
-        ForwardException(final Phi phi) {
+        public final Phi sigma;
+        public final Phi ret;
+        ForwardException(final Phi sgm, final Phi phi) {
+            super();
+            this.sigma = sgm;
             this.ret = phi;
         }
     }

@@ -74,3 +74,14 @@
   eq. > @
     max 7 42
     42
+
+[] > nested-goto
+  eq. > @
+    42
+    goto
+      [g1]
+        seq > @
+          goto
+            [g2]
+              g1.forward 42 > @
+          7
