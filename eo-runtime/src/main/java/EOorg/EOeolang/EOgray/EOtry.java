@@ -30,6 +30,7 @@ import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -57,9 +58,15 @@ public class EOtry extends PhDefault {
             try {
                 ret = new Data.ToPhi(new Dataized(main).take());
             } catch (final EOtry.ThrowException ex) {
+                if (!ex.sigma.equals(rho)) {
+                    throw ex;
+                }
                 ret = new Data.ToPhi(
                     new Dataized(
-                        rho.attr("catch").get().copy(rho)
+                        new PhWith(
+                            rho.attr("catch").get().copy(rho),
+                            0, ex.exception
+                        )
                     ).take()
                 );
             } finally {
@@ -81,7 +88,10 @@ public class EOtry extends PhDefault {
             super(sigma);
             this.add("ex", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                throw new EOtry.ThrowException();
+                throw new EOtry.ThrowException(
+                    rho.attr("σ").get(),
+                    rho.attr("ex").get()
+                );
             }));
         }
     }
@@ -92,6 +102,13 @@ public class EOtry extends PhDefault {
      */
     private static class ThrowException extends Attr.FlowException {
         private static final long serialVersionUID = 1735493012609760997L;
+        public final Phi sigma;
+        public final Phi exception;
+        ThrowException(final Phi sgm, final Phi exp) {
+            super();
+            this.sigma = sgm;
+            this.exception = exp;
+        }
     }
 
 }

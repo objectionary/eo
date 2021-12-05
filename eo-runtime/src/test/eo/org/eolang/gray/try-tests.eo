@@ -45,3 +45,20 @@
           main 0 throw > @
         [ex] (FALSE > @)
         TRUE
+
+[] > two-nested-try-blocks
+  [throw] > failure
+    throw "Hello!" > @
+  eq. > @
+    1
+    try
+      [t1]
+        try > @
+          [t2]
+            failure t1 > @
+          [ex]
+            2 > @
+          TRUE
+      [ex]
+        1 > @
+      TRUE
