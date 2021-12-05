@@ -27,4 +27,4 @@
  *
  * @since 0.19
  */
-package EOorg.EOeolang.gray;
+package EOorg.EOeolang.EOgray;

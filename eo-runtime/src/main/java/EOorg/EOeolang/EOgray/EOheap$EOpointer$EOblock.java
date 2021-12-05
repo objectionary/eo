@@ -25,7 +25,6 @@
 package EOorg.EOeolang.EOgray;
 
 import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -43,9 +42,6 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "heap.pointer.block")
 public class EOheap$EOpointer$EOblock extends PhDefault {
 
-    private static final ConcurrentHashMap<Phi, byte[]> HEAPS =
-        new ConcurrentHashMap<>(0);
-
     public EOheap$EOpointer$EOblock(final Phi sigma) {
         super(sigma);
         this.add("len", new AtFree());
@@ -60,11 +56,11 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                 rho.attr("len").get()
             ).take(Long.class).intValue();
             final byte[] chunk = Arrays.copyOfRange(
-                EOheap$EOpointer$EOblock.data(pointer),
+                Heaps.INSTANCE.data(pointer),
                 address, address + len
             );
             final Phi inverse = rho.attr("inverse").get();
-            return new PhWith(inverse, 0, new Data.ToPhi(chunk));
+            return new PhWith(inverse.copy(rho), 0, new Data.ToPhi(chunk));
         }));
     }
 
@@ -82,28 +78,11 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                 final byte[] src = new Dataized(
                     rho.attr("x").get()
                 ).take(byte[].class);
-                final byte[] data = EOheap$EOpointer$EOblock.data(pointer);
+                final byte[] data = Heaps.INSTANCE.data(pointer);
                 System.arraycopy(src, 0, data, address, src.length);
                 return new Data.ToPhi(true);
             }));
         }
     }
-    private static byte[] data(final Phi pointer) {
-        final Phi heap = pointer.attr("ρ").get();
-        return EOheap$EOpointer$EOblock.HEAPS.computeIfAbsent(
-            heap,
-            key -> {
-                final long size = new Dataized(heap.attr("size").get()).take(Long.class);
-                if (size > (long) Integer.MAX_VALUE) {
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "The size of heap %d is too big",
-                            size
-                        )
-                    );
-                }
-                return new byte[(int) size];
-            }
-        );
-    }
+
 }

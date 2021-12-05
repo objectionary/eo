@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang.gray;
+package EOorg.EOeolang.EOgray;
 
-import EOorg.EOeolang.EOgray.EOheap;
 import java.nio.charset.StandardCharsets;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
@@ -38,7 +37,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOorg.EOeolang.EOgray.EOheap$EOpointer$EOblock}.
+ * Test case for {@link EOheap$EOpointer$EOblock}.
  *
  * @since 0.19
  */

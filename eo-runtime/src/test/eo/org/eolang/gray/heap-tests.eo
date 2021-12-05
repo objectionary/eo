@@ -35,3 +35,12 @@
   and. > @
     data.write bytes
     data.eq txt
+
+[] > malloc-and-free
+  heap 1024 > h
+  h.malloc 64 > p1
+  h.malloc 32 > p2
+  and. > @
+    p1.less p2
+    h.free p1
+    h.free p2
