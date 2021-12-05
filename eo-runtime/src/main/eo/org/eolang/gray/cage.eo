@@ -23,7 +23,7 @@
 +package org.eolang.gray
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-# This object is doing exactly the same as "memory", but allow
+# This object is doing exactly the same as "memory", but allows
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
 [] > cage /?
