@@ -87,8 +87,8 @@
   [] > abs
     if. > @
       ^.geq 0.0
-        $
-        $.neg
+      ^
+      ^.neg
 
   # Converts this to int
   [] > as-int /int
