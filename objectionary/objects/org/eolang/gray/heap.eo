@@ -21,67 +21,25 @@
 # SOFTWARE.
 
 +package org.eolang.gray
-+alias org.eolang.io.stdout
-+alias org.eolang.gray.goto
-+junit
++rt jvm org.eolang:eo-runtime:0.19.0
 
-[] > goto-jumps-backwards
-  memory > i
-  seq > @
-    i.write 1
-    goto
-      [g]
-        seq > @
-          i.write (i.add 1)
-          if.
-            i.less 10
-            g.backward
-            TRUE
-    stdout "Finished!"
+# Emulation of random-access memory (RAM).
+[size] > heap
 
-[] > goto-jumps-forward
-  [x] > div
-    memory > r
-    seq > @
-      r.write 0
-      goto
-        [g]
-          seq > @
-            if.
-              x.eq 0
-              g.forward TRUE
-              TRUE
-            r.write (42.div x)
-      r
-  and. > @
-    eq.
-      div 7
-      6
-    eq.
-      div 0
-      0
+  # Allocates a block in memory of "s" bytes,
+  # and returns a pointer to it.
+  # The "length" attribute of the pointer won't be bound.
+  [s] > malloc /pointer
 
-[] > returns-from-method-body
-  [a b] > max
-    goto > @
-      [g]
-        seq > @
-          if.
-            a.greater b
-            g.forward a
-            TRUE
-          b
-  eq. > @
-    max 7 42
-    42
+  # Freed a block in memory, which is referred by the
+  # given pointer, which was earlier obtained with malloc().
+  # Returns TRUE if works. If the pointer provided wasn't
+  # previously allocated, the result will be [].
+  [p] > free /bool
 
-[] > nested-goto
-  eq. > @
-    42
-    goto
-      [g1]
-        seq > @
-          goto
-            [g2]
-              g1.forward 42 > @
-          7
+  # Pointer inside the heap
+  [address length] > pointer
+    address > @
+
+    # One block in the heap.
+    [len inverse] > block /?

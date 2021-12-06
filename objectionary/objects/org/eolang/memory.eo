@@ -21,13 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.18.0
++rt jvm org.eolang:eo-runtime:0.19.0
 
+# Storage of data in memory.
 [] > memory /?
-
-  # Write into it. The object will be dataized before
-  # writing.
-  [x] > write /bool
-
-  # The memory hasn't been written yet?
-  [] > is-empty /bool

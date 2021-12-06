@@ -21,67 +21,26 @@
 # SOFTWARE.
 
 +package org.eolang.gray
-+alias org.eolang.io.stdout
-+alias org.eolang.gray.goto
++alias org.eolang.gray.heap
 +junit
 
-[] > goto-jumps-backwards
-  memory > i
-  seq > @
-    i.write 1
-    goto
-      [g]
-        seq > @
-          i.write (i.add 1)
-          if.
-            i.less 10
-            g.backward
-            TRUE
-    stdout "Finished!"
-
-[] > goto-jumps-forward
-  [x] > div
-    memory > r
-    seq > @
-      r.write 0
-      goto
-        [g]
-          seq > @
-            if.
-              x.eq 0
-              g.forward TRUE
-              TRUE
-            r.write (42.div x)
-      r
+[] > allocates-and-uses
+  "Hello, друг!" > txt
+  txt.as-bytes > bytes
+  heap 1024 > h
+  h.pointer 0 1 > p
+  p.block > data
+    bytes.size
+    [b] (b.as-string > @)
   and. > @
-    eq.
-      div 7
-      6
-    eq.
-      div 0
-      0
+    data.write bytes
+    data.eq txt
 
-[] > returns-from-method-body
-  [a b] > max
-    goto > @
-      [g]
-        seq > @
-          if.
-            a.greater b
-            g.forward a
-            TRUE
-          b
-  eq. > @
-    max 7 42
-    42
-
-[] > nested-goto
-  eq. > @
-    42
-    goto
-      [g1]
-        seq > @
-          goto
-            [g2]
-              g1.forward 42 > @
-          7
+[] > malloc-and-free
+  heap 1024 > h
+  h.malloc 64 > p1
+  h.malloc 32 > p2
+  and. > @
+    p1.less p2
+    h.free p1
+    h.free p2
