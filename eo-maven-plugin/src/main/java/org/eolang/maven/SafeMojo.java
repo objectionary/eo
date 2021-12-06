@@ -148,8 +148,11 @@ abstract class SafeMojo extends AbstractMojo {
         return new Tojos() {
             @Override
             public Tojo add(final String name) throws IOException {
-                return tojos.add(name)
-                    .set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
+                final Tojo tojo = tojos.add(name);
+                if (!tojo.exists(AssembleMojo.ATTR_SCOPE)) {
+                    tojo.set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
+                }
+                return tojo;
             }
 
             @Override
