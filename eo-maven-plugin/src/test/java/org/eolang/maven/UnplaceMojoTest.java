@@ -42,7 +42,7 @@ public final class UnplaceMojoTest {
     public void testCleaning(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
         new Save("abc", foo).save();
-        final Path list = temp.resolve("placed.csv");
+        final Path list = temp.resolve("placed.json");
         new MonoTojos(list).add(foo.toString());
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())

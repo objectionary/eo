@@ -46,7 +46,7 @@ public final class ResolveMojoTest {
             src.resolve("foo.eo")
         ).save();
         final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())

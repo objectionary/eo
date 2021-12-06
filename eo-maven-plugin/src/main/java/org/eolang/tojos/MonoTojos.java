@@ -64,11 +64,7 @@ public final class MonoTojos implements Tojos {
      * @checkstyle AvoidInlineConditionalsCheck (5 lines)
      */
     public MonoTojos(final Path path) {
-        this(
-            path.endsWith(".json")
-                ? new Json(path)
-                : new Csv(path)
-        );
+        this(new Json(path));
     }
 
     /**

@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @since 0.12
  */
-final class Csv implements Mono {
+public final class Csv implements Mono {
 
     /**
      * The file where to keep them.
@@ -55,7 +55,7 @@ final class Csv implements Mono {
      *
      * @param path The path to the file
      */
-    Csv(final Path path) {
+    public Csv(final Path path) {
         this.file = path;
     }
 

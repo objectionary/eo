@@ -32,6 +32,7 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.tojos.Json;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 
@@ -57,14 +58,15 @@ public final class UnplaceMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.csv"
+        defaultValue = "${project.build.directory}/eo-placed.json"
     )
     private File placed;
 
     @Override
     public void exec() throws IOException {
         if (this.placed.exists()) {
-            final Collection<Tojo> tojos = new MonoTojos(this.placed).select(t -> true);
+            final Collection<Tojo> tojos = new MonoTojos(new Json(this.placed.toPath()))
+                .select(t -> true);
             for (final Tojo tojo : tojos) {
                 Files.delete(Paths.get(tojo.get("id")));
             }

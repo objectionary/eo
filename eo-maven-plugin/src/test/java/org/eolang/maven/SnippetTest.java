@@ -137,9 +137,9 @@ public final class SnippetTest {
         final Path src = tmp.resolve("src");
         new Save(code, src.resolve("code.eo")).save();
         final Path target = tmp.resolve("target");
-        final Path foreign = target.resolve("eo-foreign.csv");
+        final Path foreign = target.resolve("eo-foreign.json");
         new Moja<>(RegisterMojo.class)
-            .with("foreign", target.resolve("eo-foreign.csv").toFile())
+            .with("foreign", target.resolve("eo-foreign.json").toFile())
             .with("sourcesDir", src.toFile())
             .execute();
         new Moja<>(DemandMojo.class)

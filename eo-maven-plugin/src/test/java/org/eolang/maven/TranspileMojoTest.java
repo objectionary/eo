@@ -56,7 +56,7 @@ public final class TranspileMojoTest {
         new Save(source, src).save();
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -167,7 +167,7 @@ public final class TranspileMojoTest {
         new Save(code, src).save();
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")

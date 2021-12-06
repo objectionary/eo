@@ -45,7 +45,7 @@ import javax.json.JsonWriter;
  *
  * @since 0.17
  */
-final class Json implements Mono {
+public final class Json implements Mono {
 
     /**
      * The file path.
@@ -57,7 +57,7 @@ final class Json implements Mono {
      *
      * @param path The path to the file
      */
-    Json(final Path path) {
+    public Json(final Path path) {
         this.file = path;
     }
 

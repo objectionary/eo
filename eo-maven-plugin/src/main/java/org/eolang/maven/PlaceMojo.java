@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
+import org.eolang.tojos.Json;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojos;
 
@@ -71,7 +72,7 @@ public final class PlaceMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.csv"
+        defaultValue = "${project.build.directory}/eo-placed.json"
     )
     private File placed;
 
@@ -125,7 +126,7 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
-        final Tojos tojos = new MonoTojos(this.placed);
+        final Tojos tojos = new MonoTojos(new Json(this.placed.toPath()));
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {

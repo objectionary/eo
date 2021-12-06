@@ -50,7 +50,7 @@ public final class OptimizeMojoTest {
             src
         ).save();
         final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(foreign)
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -85,7 +85,7 @@ public final class OptimizeMojoTest {
             src
         ).save();
         final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(foreign)
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -122,7 +122,7 @@ public final class OptimizeMojoTest {
             src
         ).save();
         final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(foreign)
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")

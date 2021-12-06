@@ -56,13 +56,13 @@ public final class AssembleMojoTest {
         ).save();
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.csv").toFile())
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("sourcesDir", src.toFile())
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.csv").toFile())
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("skipZeroVersions", true)
             .with(

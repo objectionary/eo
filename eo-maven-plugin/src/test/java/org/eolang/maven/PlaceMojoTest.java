@@ -48,7 +48,7 @@ public final class PlaceMojoTest {
         new Moja<>(PlaceMojo.class)
             .with("targetDir", temp.toFile())
             .with("outputDir", classes.toFile())
-            .with("placed", temp.resolve("placed.csv").toFile())
+            .with("placed", temp.resolve("placed.json").toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(classes.resolve("EObar/x.bin")),

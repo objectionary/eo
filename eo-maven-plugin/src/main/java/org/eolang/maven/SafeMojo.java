@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Locale;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -34,6 +35,8 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
+import org.eolang.tojos.Json;
+import org.eolang.tojos.Mono;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.Tojo;
 import org.eolang.tojos.Tojos;
@@ -71,8 +74,17 @@ abstract class SafeMojo extends AbstractMojo {
      * File with foreign "tojos".
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.csv")
+    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.json")
     protected File foreign;
+
+    /**
+     * Format of "foreign" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    @Parameter(required = true, defaultValue = "json")
+    protected String foreignFormat = "json";
 
     /**
      * Target directory.
@@ -110,7 +122,21 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      */
     protected final Tojos tojos() {
-        return new MonoTojos(this.foreign);
+        final String fmt = this.foreignFormat.trim().toLowerCase(Locale.ENGLISH);
+        final Mono mono;
+        if ("json".equals(fmt)) {
+            mono = new Json(this.foreign.toPath());
+        } else if ("csv".equals(fmt)) {
+            mono = new Json(this.foreign.toPath());
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unrecognized format of foreign file: '%s'",
+                    fmt
+                )
+            );
+        }
+        return new MonoTojos(mono);
     }
 
     /**

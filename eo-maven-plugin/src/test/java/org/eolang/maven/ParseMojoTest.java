@@ -51,7 +51,7 @@ public final class ParseMojoTest {
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
             src
         ).save();
-        final Path foreign = temp.resolve("eo-foreign.csv");
+        final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -79,7 +79,7 @@ public final class ParseMojoTest {
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
-        final Path foreign = temp.resolve("foreign-1.csv");
+        final Path foreign = temp.resolve("foreign-1.json");
         new MonoTojos(foreign)
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
