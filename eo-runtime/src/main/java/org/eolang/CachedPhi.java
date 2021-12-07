@@ -66,10 +66,13 @@ final class CachedPhi {
      */
     public Phi get(final String name, final Supplier<Phi> supplier) {
         synchronized (this.cached) {
-            if (!this.cached.containsKey(0) || this.running.get()) {
-                this.cached.put(0, supplier.get());
+            if (this.running.get()) {
+                this.cached.remove(0);
             }
             this.running.set(true);
+            if (!this.cached.containsKey(0)) {
+                this.cached.put(0, supplier.get());
+            }
             final Phi ret = this.cached.get(0);
             if ("Δ".equals(name)) {
                 this.cached.remove(0);
