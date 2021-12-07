@@ -149,6 +149,19 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void resetsCacheOnCopy() {
+        final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
+        phi.attr("add").get();
+        final Phi copy = phi.copy();
+        copy.attr("add").get();
+        phi.attr("add").get();
+        MatcherAssert.assertThat(
+            PhDefaultTest.Dummy.count,
+            Matchers.equalTo(2)
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi sigma) {
              this(sigma, new Object());
@@ -162,6 +175,20 @@ public final class PhDefaultTest {
              this.add("φ", new AtComposite(
                  this, self -> new Data.ToPhi(data)
              ));
+        }
+    }
+
+    public static class Dummy extends PhDefault {
+        public static int count;
+        public Dummy(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, self -> {
+                    ++PhDefaultTest.Dummy.count;
+                    return new Data.ToPhi(1L);
+
+                }
+            ));
         }
     }
 

@@ -56,7 +56,7 @@ final class CachedPhi {
         } else {
             txt = phi.toString();
         }
-        return txt;
+        return String.format("%d->%s", this.hashCode(), txt);
     }
 
     /**

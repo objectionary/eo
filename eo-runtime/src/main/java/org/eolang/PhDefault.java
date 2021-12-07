@@ -75,7 +75,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Cached \phi.
      */
-    private final CachedPhi cached = new CachedPhi();
+    private CachedPhi cached = new CachedPhi();
 
     /**
      * Ctor.
@@ -302,6 +302,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = PhDefault.class.cast(this.clone());
             copy.vertex = PhDefault.VTX.next();
+            copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 if ("ρ".equals(ent.getKey())) {

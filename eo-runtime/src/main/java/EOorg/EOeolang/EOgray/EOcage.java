@@ -65,7 +65,7 @@ public class EOcage extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                final Phi obj = rho.attr("x").get();
+                final Phi obj = rho.attr("x").get().copy();
                 EOcage.this.phi.set(obj);
                 return new Data.ToPhi(true);
             }));
