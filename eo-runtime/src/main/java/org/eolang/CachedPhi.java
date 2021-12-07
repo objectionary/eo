@@ -25,10 +25,13 @@ package org.eolang;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 /**
  * Cached \phi.
+ *
+ * The class is thread-safe.
  *
  * @since 0.17
  */
@@ -38,6 +41,11 @@ final class CachedPhi {
      * Cached \phi.
      */
     private final ConcurrentMap<Integer, Phi> cached = new ConcurrentHashMap<>(1);
+
+    /**
+     * Calculation is running now?
+     */
+    private final AtomicBoolean running = new AtomicBoolean();
 
     @Override
     public String toString() {
@@ -57,12 +65,18 @@ final class CachedPhi {
      * @param supplier of Phi
      */
     public Phi get(final String name, final Supplier<Phi> supplier) {
-        this.cached.computeIfAbsent(0, x -> supplier.get());
-        final Phi ret = this.cached.get(0);
-        if ("Δ".equals(name)) {
-            this.cached.remove(0);
+        synchronized (this.cached) {
+            if (!this.cached.containsKey(0) || this.running.get()) {
+                this.cached.put(0, supplier.get());
+            }
+            this.running.set(true);
+            final Phi ret = this.cached.get(0);
+            if ("Δ".equals(name)) {
+                this.cached.remove(0);
+            }
+            this.running.set(false);
+            return ret;
         }
-        return ret;
     }
 
 }
