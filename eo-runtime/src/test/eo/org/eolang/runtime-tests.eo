@@ -143,8 +143,6 @@
       n.greater 0
       seq
         n.write (n.sub 1)
-        stdout
-          sprintf "n=%d %B" n (n.greater 0)
         ^.func
         TRUE
       TRUE
