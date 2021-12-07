@@ -74,11 +74,15 @@ public final class ParseMojo extends SafeMojo {
         int total = 0;
         for (final Tojo tojo : tojos) {
             if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
-                Logger.debug(
-                    this, "Already parsed %s to %s",
-                    tojo.get("id"), Save.rel(Paths.get(tojo.get(AssembleMojo.ATTR_XMIR)))
-                );
-                continue;
+                final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+                final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+                if (xmir.toFile().lastModified() < src.toFile().lastModified()) {
+                    Logger.debug(
+                        this, "Already parsed %s to %s",
+                        tojo.get("id"), Save.rel(xmir)
+                    );
+                    continue;
+                }
             }
             if (this.parse(tojo)) {
                 ++total;

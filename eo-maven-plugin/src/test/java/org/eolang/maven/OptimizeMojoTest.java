@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -102,8 +101,9 @@ public final class OptimizeMojoTest {
             String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
         );
         final long start = System.currentTimeMillis();
-        Assertions.assertTrue(tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(2)));
-        Assertions.assertTrue(src.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(1)));
+        // @checkstyle MagicNumber (1 line)
+        tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L));
+        src.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(1L));
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
