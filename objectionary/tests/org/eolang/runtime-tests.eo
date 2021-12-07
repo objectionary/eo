@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+alias cage org.eolang.gray.cage
++alias org.eolang.gray.cage
 +junit
 
 [] > understands-this-correctly
@@ -133,3 +133,17 @@
       45-1F-E8.<.eq (45-1F-E8-83.<)
       (a 5).<.eq ((a 5).<)
       (* 1 2 3).<.eq ((* 1 2 3).<)
+
+[] > recursion-without-arguments
+  memory > n
+  [] > func
+    if. > @
+      n.greater 0
+      seq
+        n.write (n.sub 1)
+        ^.func
+        TRUE
+      TRUE
+  seq > @
+    n.write 4
+    func
