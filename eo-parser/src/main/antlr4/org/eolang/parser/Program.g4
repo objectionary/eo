@@ -276,8 +276,12 @@ EOL
   }
   ;
 
-fragment BYTE: [0-9A-F][0-9A-F] MINUS;
-BYTES: BYTE (BYTE* [0-9A-F][0-9A-F])?;
+fragment BYTE: [0-9A-F][0-9A-F];
+fragment EMPTY_BYTES : MINUS MINUS;
+BYTES:
+    |  EMPTY_BYTES
+    |  BYTE MINUS
+    |  BYTE (MINUS BYTE)+;
 
 BOOL: 'TRUE' | 'FALSE';
 CHAR: '\'' ~'\'' '\'';
