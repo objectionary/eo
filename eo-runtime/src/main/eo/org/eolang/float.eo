@@ -90,6 +90,9 @@
       ^
       ^.neg
 
+  # Converts this to bytes
+  [] > as-bytes /bytes
+
   # Converts this to int
   [] > as-int /int
 
