@@ -373,6 +373,7 @@ public final class XeListener implements ProgramListener {
             data = text.substring(1, text.length() - 1);
         } else if (ctx.TEXT_BLOCK() != null) {
             type = "string";
+            // @checkstyle MagicNumberCheck (1 line)
             data = text.substring(3, text.length() - 3).trim();
         } else {
             throw new ParsingException("Unknown data type");
