@@ -1,0 +1,8 @@
+xsls: []
+tests:
+  - //o[@base='string' and @name='txt' and normalize-space(text())='Hi, there Adiós']
+eo: |
+  """
+  Hi, there
+  Adiós
+  """ > txt

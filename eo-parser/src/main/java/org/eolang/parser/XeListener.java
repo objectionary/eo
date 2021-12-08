@@ -371,6 +371,9 @@ public final class XeListener implements ProgramListener {
         } else if (ctx.STRING() != null) {
             type = "string";
             data = text.substring(1, text.length() - 1);
+        } else if (ctx.TEXT_BLOCK() != null) {
+            type = "string";
+            data = text.substring(3, text.length() - 3).trim();
         } else {
             throw new ParsingException("Unknown data type");
         }
