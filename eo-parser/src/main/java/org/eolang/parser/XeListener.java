@@ -379,14 +379,36 @@ public final class XeListener implements ProgramListener {
             data = text.substring(1, text.length() - 1);
         } else if (ctx.TEXT_BLOCK() != null) {
             type = "string";
-            // @checkstyle MagicNumberCheck (1 line)
-            data = text.substring(3, text.length() - 3).trim();
+            final int indent = ctx.getStart().getCharPositionInLine();
+            data = XeListener.trimMargin(text, indent)
+            ;
         } else {
             throw new ParsingException("Unknown data type");
         }
         this.dirs.attr("data", type);
         this.dirs.attr("base", type);
         this.dirs.set(data);
+    }
+
+    /**
+     * Trim margin from text block.
+     * @param text Text block.
+     * @param indent Indentation level.
+     * @return Trimmed text.
+     */
+    private static String trimMargin(final String text, final int indent) {
+        final String rexp = "\n\\s{%d}";
+        String res = text
+            // @checkstyle MagicNumberCheck (1 line)
+            .substring(3, text.length() - 3);
+        res = res.replaceAll(String.format(rexp, indent), "\n");
+        if(!res.isEmpty() && res.charAt(0) == '\n') {
+            res = res.substring(1);
+        }
+        if(!res.isEmpty() && res.charAt(res.length() - 1) == '\n') {
+            res = res.substring(0, res.length() - 1);
+        }
+        return res;
     }
 
     @Override
