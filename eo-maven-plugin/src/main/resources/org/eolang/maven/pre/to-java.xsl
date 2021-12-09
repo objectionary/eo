@@ -118,6 +118,7 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="class" mode="body">
+    <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>@XmirObject(name = "</xsl:text>
     <xsl:value-of select="@name"/>
@@ -146,6 +147,13 @@ SOFTWARE.
     <xsl:apply-templates select="class" mode="body"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="xmir">
+    <xsl:for-each select="tokenize(text(), '&#10;')">
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>// </xsl:text>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
@@ -353,6 +361,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
+    <xsl:apply-templates select=".[@copy]" mode="copy">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
@@ -391,6 +403,21 @@ SOFTWARE.
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="skip" select="1"/>
     </xsl:apply-templates>
+    <xsl:apply-templates select=".[@copy]" mode="copy">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  <xsl:template match="o[@copy]" mode="copy">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:value-of select="$indent"/>
+    <xsl:value-of select="eo:tabs(1)"/>
+    <xsl:value-of select="$name"/>
+    <xsl:text> = new PhCopy(</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>);</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>

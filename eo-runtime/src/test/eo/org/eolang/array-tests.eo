@@ -121,3 +121,15 @@
     2
   ((anArray.get 0).eq 1).and ((anArray.get 1).eq 2) > @
 
+# check that array.is-empty works properly
+[] > should-not-be-empty
+  * > xs
+     1
+     2
+  xs.is-empty.not > @
+
+# check that array.is-empty works properly
+[] > should-be-empty
+  * > xs
+  xs.is-empty > @
+

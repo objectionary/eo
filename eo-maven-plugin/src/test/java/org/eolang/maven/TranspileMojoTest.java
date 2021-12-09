@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
@@ -102,27 +101,6 @@ public final class TranspileMojoTest {
         MatcherAssert.assertThat(
             java.toFile().lastModified(),
             Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
-    public void skipsCompilationIfCompiled(@TempDir final Path temp)
-        throws Exception {
-        final String file = "EOorg/EOeolang/EOexamples/EOmessTest.java";
-        final Input source = new ResourceOf("org/eolang/maven/mess.eo");
-        final File result = this.compileToFile(
-            temp,
-            source,
-            file
-        ).toFile();
-        final long first = result.lastModified();
-        MatcherAssert.assertThat(
-            this.compileToFile(
-                temp,
-                source,
-                file
-            ).toFile().lastModified(),
-            Matchers.equalTo(first)
         );
     }
 

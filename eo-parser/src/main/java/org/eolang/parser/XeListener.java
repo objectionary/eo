@@ -266,6 +266,9 @@ public final class XeListener implements ProgramListener {
             .attr("method", "")
             .attr("line", ctx.getStart().getLine())
             .attr("base", ctx.getText()).up();
+        if (ctx.COPY() != null) {
+            this.dirs.attr("copy", "");
+        }
     }
 
     @Override
@@ -297,6 +300,9 @@ public final class XeListener implements ProgramListener {
         }
         if (ctx.SIGMA() != null) {
             this.dirs.attr("base", "&");
+        }
+        if (ctx.COPY() != null) {
+            this.dirs.attr("copy", "");
         }
     }
 

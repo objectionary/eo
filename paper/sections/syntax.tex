@@ -69,7 +69,7 @@ Java-notation is used for numbers, strings, and character literals.
   \> \alt \T{application} \V{:} \T{name} \\
   \> \alt \T{application} \T{suffix} \\
   \> \alt \T{application} \V{␣} \T{application} \\
-\T{head} \df \T{name} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
+\T{head} \df \T{name} \opt{\V{'}} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
   \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \\
 \T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
   \> \alt \T{char} \alt \T{float} \alt \T{regex} \\
@@ -541,6 +541,27 @@ Here, \ff{x} is an attribute of the object \ff{hello}, even though
 it is not defined as explicitly as \ff{say}. Anywhere a new
 name shows up after the \ff{>} symbol, it is a declaration of a new
 attribute in the nearest object abstraction.
+
+\subsection{Explicit Copies}
+
+There may be a need to make a copy of an object without giving any
+parameters to it. This may be done with an apostrophe suffix:
+
+\begin{ffcode}
+point' > p
+p 3 5 > p1
+\end{ffcode}
+
+Here, two objects will be created, \ff{p} and \ff{p1}, where
+the former is an abstract one, a copy of \ff{copy}, while the
+later is a closed one with two parameters specified. The
+apostrophe suffix may be used anywhere after the name of an object,
+for example:
+
+\begin{ffcode}
+circle
+  point' 3 a'
+\end{ffcode}
 
 \subsection{Object Identity}
 

@@ -129,6 +129,39 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void recursiveCachingOfPhi() {
+        final Phi phi = new PhDefaultTest.RecursivePhi(Phi.Φ);
+        PhDefaultTest.RecursivePhi.count = 3;
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    public void recursiveCachingOfPhiViaNew() {
+        final Phi phi = new PhDefaultTest.RecursivePhiViaNew(Phi.Φ);
+        PhDefaultTest.RecursivePhiViaNew.count = 3;
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    public void resetsCacheOnCopy() {
+        final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
+        phi.attr("add").get();
+        final Phi copy = phi.copy();
+        copy.attr("add").get();
+        phi.attr("add").get();
+        MatcherAssert.assertThat(
+            PhDefaultTest.Dummy.count,
+            Matchers.equalTo(2)
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi sigma) {
              this(sigma, new Object());
@@ -142,6 +175,19 @@ public final class PhDefaultTest {
              this.add("φ", new AtComposite(
                  this, self -> new Data.ToPhi(data)
              ));
+        }
+    }
+
+    public static class Dummy extends PhDefault {
+        public static int count;
+        public Dummy(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, self -> {
+                    ++PhDefaultTest.Dummy.count;
+                    return new Data.ToPhi(1L);
+                }
+            ));
         }
     }
 
@@ -178,15 +224,45 @@ public final class PhDefaultTest {
         public static int count;
         public EndlessRecursion(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(
-                this, self -> {
-                    --PhDefaultTest.EndlessRecursion.count;
-                    if (PhDefaultTest.EndlessRecursion.count <= 0) {
-                        return new Data.ToPhi(0L);
-                    }
-                    return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
+            this.add("φ", new AtComposite(this, self -> {
+                --PhDefaultTest.EndlessRecursion.count;
+                if (PhDefaultTest.EndlessRecursion.count <= 0) {
+                    return new Data.ToPhi(0L);
                 }
-            ));
+                return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
+            }));
+        }
+    }
+
+    public static class RecursivePhi extends PhDefault {
+        public static int count;
+        public RecursivePhi(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(this, rho -> {
+                --PhDefaultTest.RecursivePhi.count;
+                if (PhDefaultTest.RecursivePhi.count <= 0) {
+                    return new Data.ToPhi(0L);
+                }
+                return new Data.ToPhi(new Dataized(rho).take(Long.class));
+            }));
+        }
+    }
+
+    public static class RecursivePhiViaNew extends PhDefault {
+        public static int count;
+        public RecursivePhiViaNew(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(this, rho -> {
+                --PhDefaultTest.RecursivePhiViaNew.count;
+                if (PhDefaultTest.RecursivePhi.count <= 0) {
+                    return new Data.ToPhi(0L);
+                }
+                return new Data.ToPhi(
+                    new Dataized(
+                        new RecursivePhiViaNew(Phi.Φ)
+                    ).take(Long.class)
+                );
+            }));
         }
     }
 

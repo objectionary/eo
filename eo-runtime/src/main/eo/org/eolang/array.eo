@@ -26,7 +26,7 @@
 [] > array
 
   # Is it empty?
-  [] > empty /bool
+  [] > is-empty /bool
 
   # Obtain the length of the array.
   [] > length /int

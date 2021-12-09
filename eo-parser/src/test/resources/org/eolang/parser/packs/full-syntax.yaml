@@ -40,15 +40,15 @@ eo: |
       $.add.@ 5.< > i
       third:foo > x...!
         f 12 false
-          (((t 22) r:t 8.54 "yes".< 'e').print 88 0x1f):hey TRUE.< FALSE > a!
+          (((t' 22) r:t 8.54 "yes".< 'e').print 88 0x1f):hey TRUE.< FALSE > a!
             # This object is also very good
             []
               &.@.< > t
               ^.@.hey > you...
             kid.^.^
             '家'
-      f:u
-        z
+      f':u
+        z'
           z 5
             z
     oops
@@ -64,7 +64,7 @@ eo: |
       t.<
     .two "hello!"
     .three > a1
-    .four > a2
+    .four (a b c') > a2
     .five > a3
 
   test

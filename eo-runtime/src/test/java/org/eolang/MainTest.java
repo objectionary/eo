@@ -95,7 +95,8 @@ public final class MainTest {
                 )
             ).value();
         }
-        return new String(stdout.toByteArray(), StandardCharsets.UTF_8);
+        return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
+            .replaceFirst("Picked up .*\n", "");
     }
 
 }
