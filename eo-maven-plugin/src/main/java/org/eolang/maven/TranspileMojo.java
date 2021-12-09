@@ -120,25 +120,23 @@ public final class TranspileMojo extends SafeMojo {
             this, "Transpiled %d XMIRs, created %d Java files in %s",
             total, sources.size(), Save.rel(this.generatedDir.toPath())
         );
-        if (total > 0) {
-            if (this.addSourcesRoot) {
-                this.project.addCompileSourceRoot(
-                    this.generatedDir.getAbsolutePath()
-                );
-                Logger.info(
-                    this, "The directory added to transpile-source-root: %s",
-                    Save.rel(this.generatedDir.toPath())
-                );
-            }
-            if (this.addTestSourcesRoot) {
-                this.project.addTestCompileSourceRoot(
-                    this.generatedDir.getAbsolutePath()
-                );
-                Logger.info(
-                    this, "The directory added to test-transpile-source-root: %s",
-                    Save.rel(this.generatedDir.toPath())
-                );
-            }
+        if (this.addSourcesRoot) {
+            this.project.addCompileSourceRoot(
+                this.generatedDir.getAbsolutePath()
+            );
+            Logger.info(
+                this, "The directory added to transpile-source-root: %s",
+                Save.rel(this.generatedDir.toPath())
+            );
+        }
+        if (this.addTestSourcesRoot) {
+            this.project.addTestCompileSourceRoot(
+                this.generatedDir.getAbsolutePath()
+            );
+            Logger.info(
+                this, "The directory added to test-transpile-source-root: %s",
+                Save.rel(this.generatedDir.toPath())
+            );
         }
     }
 
