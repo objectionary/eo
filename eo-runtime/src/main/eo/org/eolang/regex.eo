@@ -30,5 +30,5 @@
 
   # Matches
   [txt] > matches
-    (^.match txt).empty.not > @
+    (^.match txt).is-empty.not > @
 

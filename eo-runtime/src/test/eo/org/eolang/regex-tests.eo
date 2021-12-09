@@ -26,7 +26,7 @@
 [] > matches-string-against-pattern
   /([a-z]+)/i
   .match "hello"
-  .empty
+  .is-empty
   .not > @
 
 [] > doesnt-match-string-against-pattern
