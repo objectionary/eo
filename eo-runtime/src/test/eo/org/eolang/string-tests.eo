@@ -73,3 +73,27 @@
       "Hello"
       42
 
+[] > text-block-one-line
+  eq. > @
+    "Abc"
+    """
+    Abc
+    """
+
+[] > text-block-tree-lines
+  eq. > @
+    65-0A-65-0A-65
+    """
+    e
+    e
+    e
+    """.as-bytes
+
+[] > text-block-with-margin
+  eq. > @
+    20-7A-0A-20-20-79-0A-20-78
+    """
+     z
+      y
+     x
+    """.as-bytes
