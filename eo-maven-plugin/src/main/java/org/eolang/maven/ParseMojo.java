@@ -76,7 +76,7 @@ public final class ParseMojo extends SafeMojo {
             if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
                 final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
                 final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-                if (xmir.toFile().lastModified() < src.toFile().lastModified()) {
+                if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
                     Logger.debug(
                         this, "Already parsed %s to %s",
                         tojo.get("id"), Save.rel(xmir)

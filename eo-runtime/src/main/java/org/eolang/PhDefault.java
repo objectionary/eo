@@ -25,6 +25,7 @@ package org.eolang;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,35 +144,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String toString() {
-        final Collection<String> list = new ArrayList<>(this.attrs.size());
-        list.add(String.format("_order=%s", this.order));
-        list.add(
-            String.format(
-                "_cached=%s",
-                PhDefault.INDENT.matcher(
-                    this.cached.toString()
-                ).replaceAll(PhDefault.SHIFT)
-            )
-        );
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            final int idx = this.order.indexOf(ent.getKey());
-            list.add(
-                String.format(
-                    "%s%s=%s",
-                    ent.getKey(),
-                    idx >= 0 ? String.format("(#%d)", idx) : "",
-                    PhDefault.INDENT.matcher(
-                        ent.getValue().toString()
-                    ).replaceAll(PhDefault.SHIFT)
-                )
-            );
-        }
-        return String.format(
-            "%s#%d:{\n  %s\n}",
-            this.getClass().getCanonicalName(),
-            this.hashCode(),
-            String.join(PhDefault.SHIFT, list)
-        );
+        return this.toStringWith();
     }
 
     @Override
@@ -298,7 +271,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @param rho The rho
      * @return Copy
      */
-    private Phi copy(final Attr rho) {
+    protected Phi copy(final Attr rho) {
         try {
             final PhDefault copy = PhDefault.class.cast(this.clone());
             copy.vertex = PhDefault.VTX.next();
@@ -316,6 +289,51 @@ public abstract class PhDefault implements Phi, Cloneable {
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    /**
+     * Make a string with this additional list of lines.
+     * @param lines Lines to show in addition
+     * @return The string
+     */
+    protected String toStringWith(final String... lines) {
+        final Collection<String> list = new ArrayList<>(this.attrs.size());
+        for (final String line : lines) {
+            list.add(PhDefault.shift(line));
+        }
+        list.add(String.format("▸order=%s", PhDefault.shift(this.order)));
+        list.add(String.format("▸cached=%s", PhDefault.shift(this.cached)));
+        final List<String> sorted = new ArrayList<>(this.attrs.size());
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            final int idx = this.order.indexOf(ent.getKey());
+            sorted.add(
+                String.format(
+                    "%s%s=%s",
+                    ent.getKey(),
+                    idx >= 0 ? String.format("(#%d)", idx) : "",
+                    PhDefault.shift(ent.getValue())
+                )
+            );
+        }
+        Collections.sort(sorted);
+        list.addAll(sorted);
+        return String.format(
+            "%sν%d:{\n  %s\n}",
+            this.getClass().getCanonicalName(),
+            this.hashCode(),
+            String.join(PhDefault.SHIFT, list)
+        );
+    }
+
+    /**
+     * Shift this text right, by two spaces.
+     * @param text The text to shift
+     * @return Shifted one
+     */
+    private static String shift(final Object text) {
+        return PhDefault.INDENT.matcher(
+            text.toString()
+        ).replaceAll(PhDefault.SHIFT);
     }
 
 }

@@ -42,7 +42,7 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "memory")
 public class EOmemory extends PhDefault {
 
-    private final AtomicReference<Phi> phi;
+    private AtomicReference<Phi> phi;
 
     public EOmemory(final Phi sigma) {
         super(sigma);
@@ -54,10 +54,25 @@ public class EOmemory extends PhDefault {
                     "The memory is not yet written"
                 );
             }
-            return object.copy(object.attr("ρ").get());
+            return object;
         }));
         this.add("write", new AtComposite(this, EOmemory.Write::new));
         this.add("is-empty", new AtComposite(this, EOmemory.IsEmpty::new));
+    }
+
+    @Override
+    protected final Phi copy(final Attr rho) {
+        final EOmemory copy = EOmemory.class.cast(super.copy(rho));
+        copy.phi = new AtomicReference<>();
+        copy.phi.set(this.phi.get());
+        return copy;
+    }
+
+    @Override
+    public String toString() {
+        return this.toStringWith(
+            String.format("▸memoized=%s", this.phi.get())
+        );
     }
 
     @XmirObject(oname = "memory.write")
@@ -66,7 +81,9 @@ public class EOmemory extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                final Object obj = new Dataized(rho.attr("x").get()).take();
+                final Object obj = new Dataized(
+                    rho.attr("x").get()
+                ).take();
                 EOmemory.this.phi.set(new Data.ToPhi(obj));
                 return new Data.ToPhi(true);
             }));

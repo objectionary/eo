@@ -186,7 +186,6 @@ public final class PhDefaultTest {
                 this, self -> {
                     ++PhDefaultTest.Dummy.count;
                     return new Data.ToPhi(1L);
-
                 }
             ));
         }

@@ -121,6 +121,7 @@ method
   DOT
   (
     NAME
+    COPY?
     |
     RHO
     |
@@ -194,8 +195,10 @@ head
   STAR
   |
   NAME
+  COPY?
   |
-  NAME DOT
+  NAME
+  DOT
   |
   data
   ;
@@ -235,6 +238,7 @@ DOTS: '...';
 CONST: '!';
 SLASH: '/';
 COLON: ':';
+COPY: '\'';
 ARROW: '>';
 VERTEX: '<';
 SIGMA: '&';

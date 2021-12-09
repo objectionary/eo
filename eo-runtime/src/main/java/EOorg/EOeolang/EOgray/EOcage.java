@@ -24,10 +24,8 @@
 
 package EOorg.EOeolang.EOgray;
 
-import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -41,20 +39,9 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "cage")
 public class EOcage extends PhDefault {
 
-    private final AtomicReference<Phi> phi;
-
     public EOcage(final Phi sigma) {
         super(sigma);
-        this.phi = new AtomicReference<>();
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi object = this.phi.get();
-            if (object == null) {
-                throw new Attr.IllegalAttrException(
-                    "The cage is still empty"
-                );
-            }
-            return object.copy(object.attr("ρ").get());
-        }));
+        this.add("φ", new AtCage());
         this.add("write", new AtComposite(this, EOcage.Write::new));
         this.add("is-empty", new AtComposite(this, EOcage.IsEmpty::new));
     }
@@ -65,8 +52,8 @@ public class EOcage extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                final Phi obj = rho.attr("x").get().copy();
-                EOcage.this.phi.set(obj);
+                final Phi obj = rho.attr("x").get();
+                rho.attr("ρ").get().attr("φ").put(obj);
                 return new Data.ToPhi(true);
             }));
         }
@@ -77,7 +64,9 @@ public class EOcage extends PhDefault {
         IsEmpty(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(
-                this, rho -> new Data.ToPhi(EOcage.this.phi.get() == null)
+                this, rho -> new Data.ToPhi(
+                    AtCage.class.cast(rho.attr("ρ").get().attr("φ")).isEmpty()
+                )
             ));
         }
     }
