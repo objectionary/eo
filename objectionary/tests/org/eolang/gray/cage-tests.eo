@@ -34,3 +34,34 @@
       a 7
     x.z.eq 7
 
+[] > avoid-infinite-loop
+  cage > x
+  x' > copy
+  seq > @
+    x.write 42
+    copy.<
+    x.write (7.add copy)
+    x.eq 49
+
+[] > avoid-infinite-loop-second-case
+  [first second] > pair
+  [head tail] > add
+    pair head tail > @
+  cage > list
+  list' > copy
+  seq > @
+    list.write (pair 1 0)
+    copy.<
+    list.write (add 2 copy)
+    list.second.second.eq 0
+
+[] > cage-nested-objects
+  cage > c
+  c' > copy
+  [x] > dummy
+    x > @
+  seq > @
+    c.write (dummy 42)
+    copy.<
+    c.write (dummy copy)
+    c.x.x.eq 42

@@ -21,26 +21,36 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.19.1
++rt jvm org.eolang:eo-runtime:0.20.0
 
 [] > float
   # Tests that $ = x
   [x] > eq /bool
 
   # Tests that $ ≠ x
-  [x] > neq /bool
+  [x] > neq
+    (^.eq x).not > @
 
   # Tests that $ < x
-  [x] > less /bool
+  [x] > less
+    and. > @
+      (^.eq x).not
+      (^.greater x).not
 
   # Tests that $ ≤ x
-  [x] > leq /bool
+  [x] > leq
+    or. > @
+      ^.eq x
+      ^.less x
 
   # Tests that $ > x
   [x] > greater /bool
 
   # Tests that $ ≥ x
-  [x] > geq /bool
+  [x] > geq
+    or. > @
+      ^.eq x
+      ^.greater x
 
   # Multiplication of $ and x
   [x] > mul /float
@@ -49,10 +59,18 @@
   [x] > add /float
 
   # Negation of $
-  [] > neg /float
+  [] > neg
+    ^.mul -1.0 > @
 
   # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum /float
+  [] > signum
+    if. > @
+      ^.less 0.0
+      -1.0
+       if.
+         ^.eq 0.0
+         0.0
+         1.0
 
   # Difference between $ and x
   [x] > sub
@@ -66,7 +84,11 @@
     ^.mul (x.pow -1.0) > @
 
   # Absolute value of $ (i.e., with no sign)
-  [] > abs /float
+  [] > abs
+    if. > @
+      ^.geq 0.0
+      ^
+      ^.neg
 
   # Converts this to bytes
   [] > as-bytes /bytes
