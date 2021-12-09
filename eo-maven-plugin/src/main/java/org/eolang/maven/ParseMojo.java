@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -78,15 +77,14 @@ public final class ParseMojo extends SafeMojo {
                 final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
                 if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
                     Logger.debug(
-                        this, "Already parsed %s to %s",
+                        this, "Already parsed %s to %s (it's newer than the source)",
                         tojo.get("id"), Save.rel(xmir)
                     );
                     continue;
                 }
             }
-            if (this.parse(tojo)) {
-                ++total;
-            }
+            this.parse(tojo);
+            ++total;
         }
         Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
     }
@@ -95,46 +93,35 @@ public final class ParseMojo extends SafeMojo {
      * Parse EO file to XML.
      *
      * @param tojo The tojo
-     * @return TRUE if parsed
      * @throws IOException If fails
      */
-    private boolean parse(final Tojo tojo) throws IOException {
+    private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get("id");
         final Path target = new Place(name).make(
             this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT
         );
-        boolean done = false;
-        if (Files.exists(target)) {
-            Logger.debug(
-                this, "Already parsed %s to %s (file exists)",
-                Save.rel(source), Save.rel(target)
-            );
-        } else {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new Syntax(
-                name,
-                new InputOf(source),
-                new OutputTo(baos)
-            ).parse();
-            new Save(
-                new XMLDocument(
-                    new Xembler(
-                        new Directives().xpath("/program").attr(
-                            "source", source.toAbsolutePath()
-                        )
-                    ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
-                ).toString(),
-                target
-            ).save();
-            Logger.debug(
-                this, "Parsed %s to %s",
-                Save.rel(source), Save.rel(target)
-            );
-            done = true;
-        }
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new Syntax(
+            name,
+            new InputOf(source),
+            new OutputTo(baos)
+        ).parse();
+        new Save(
+            new XMLDocument(
+                new Xembler(
+                    new Directives().xpath("/program").attr(
+                        "source", source.toAbsolutePath()
+                    )
+                ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+            ).toString(),
+            target
+        ).save();
+        Logger.debug(
+            this, "Parsed %s to %s",
+            Save.rel(source), Save.rel(target)
+        );
         tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
-        return done;
     }
 
 }
