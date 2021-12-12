@@ -170,7 +170,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (this.order.isEmpty()) {
             throw new Attr.IllegalAttrException(
                 String.format(
-                    "There are no attributes here, can't get the %d-th one",
+                    "There are no attributes here, can't strong the %d-th one",
                     pos
                 )
             );

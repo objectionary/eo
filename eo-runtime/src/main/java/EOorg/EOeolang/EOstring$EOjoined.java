@@ -28,6 +28,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,13 +44,9 @@ public class EOstring$EOjoined extends PhDefault {
     public EOstring$EOjoined(final Phi sigma) {
         super(sigma);
         this.add("items", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final String delim = new Dataized(
-                self.attr("ρ").get()
-            ).take(String.class);
-            final Phi[] items = new Dataized(
-                self.attr("items").get()
-            ).take(Phi[].class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final String delim = new Param(rho).strong(String.class);
+            final Phi[] items = new Param(rho, "items").strong(Phi[].class);
             final String[] texts = new String[items.length];
             for (int idx = 0; idx < texts.length; ++idx) {
                 texts[idx] = new Dataized(items[idx]).take(String.class);

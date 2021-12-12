@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,25 +41,14 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.part")
 public class EObytes$EOpart extends PhDefault {
 
-    /**
-     * Start attr.
-     */
-    private static final String START = "start";
-    /**
-     * Length attr.
-     */
-    private static final String LEN = "len";
-
     public EObytes$EOpart(final Phi sigma) {
         super(sigma);
-        this.add(EObytes$EOpart.START, new AtFree());
-        this.add(EObytes$EOpart.LEN, new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final long start = new Dataized(self.attr(EObytes$EOpart.START).get()).take(Long.class);
-            final long length = new Dataized(self.attr(EObytes$EOpart.LEN).get()).take(Long.class);
-            final byte[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(byte[].class);
+        this.add("start", new AtFree());
+        this.add("len", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> {
+            final long start = new Param(rho, "start").strong(Long.class);
+            final long length = new Param(rho, "len").strong(Long.class);
+            final byte[] array = new Param(rho).strong(byte[].class);
             final byte[] target = Arrays.copyOfRange(
                 array, (int) start, (int) (start + length)
             );

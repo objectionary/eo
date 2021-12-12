@@ -24,8 +24,14 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.*;
 import java.math.BigInteger;
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * BYTES.RIGHT.
@@ -38,14 +44,12 @@ public class EObytes$EOright extends PhDefault {
     public EObytes$EOright(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final byte[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(byte[].class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final byte[] array = new Param(rho).strong(byte[].class);
             return new Data.ToPhi(
                 new BigInteger(array).shiftRight(
-                    new Dataized(self.attr("x").get()
-                ).take(Long.class).intValue()).toByteArray()
+                    new Param(rho, "x").strong(Long.class).intValue()
+                ).toByteArray()
             );
         }));
     }

@@ -27,7 +27,7 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,14 +43,10 @@ public class EOstring$EOchar_at extends PhDefault {
     public EOstring$EOchar_at(final Phi sigma) {
         super(sigma);
         this.add("p", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final long pos = new Dataized(
-                self.attr("p").get()
-            ).take(Long.class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final int pos = new Param(rho, "p").strong(Long.class).intValue();
             return new Data.ToPhi(
-                new Dataized(
-                    self.attr("ρ").get()
-                ).take(String.class).charAt((int) pos)
+                new Param(rho).strong(String.class).charAt(pos)
             );
         }));
     }

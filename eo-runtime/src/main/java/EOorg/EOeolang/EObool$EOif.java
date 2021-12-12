@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,15 +43,13 @@ public class EObool$EOif extends PhDefault {
         super(sigma);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final boolean term = new Dataized(
-                self.attr("ρ").get()
-            ).take(Boolean.class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final boolean term = new Param(rho).strong(Boolean.class);
             final Phi out;
             if (term) {
-                out = self.attr("t").get();
+                out = rho.attr("t").get();
             } else {
-                out = self.attr("f").get();
+                out = rho.attr("f").get();
             }
             return out;
         }));

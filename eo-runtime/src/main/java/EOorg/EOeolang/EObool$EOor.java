@@ -28,6 +28,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,13 +44,9 @@ public class EObool$EOor extends PhDefault {
     public EObool$EOor(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(this, self -> {
-            Boolean term = new Dataized(
-                self.attr("ρ").get()
-            ).take(Boolean.class);
-            final Phi[] args = new Dataized(
-                self.attr("x").get()
-            ).take(Phi[].class);
+        this.add("φ", new AtComposite(this, rho -> {
+            Boolean term = new Param(rho).strong(Boolean.class);
+            final Phi[] args = new Param(rho, "x").strong(Phi[].class);
             for (int idx = 0; idx < args.length; ++idx) {
                 if (term) {
                     break;

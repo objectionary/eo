@@ -27,7 +27,7 @@ package EOorg.EOeolang;
 import java.nio.ByteBuffer;
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -42,9 +42,9 @@ public class EOint$EOas_bytes extends PhDefault {
 
     public EOint$EOas_bytes(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
             ByteBuffer.allocate(8).putLong(
-                new Dataized(self.attr("ρ").get()).take(Long.class)
+                new Param(rho).strong(Long.class)
             ).array()
         )));
     }

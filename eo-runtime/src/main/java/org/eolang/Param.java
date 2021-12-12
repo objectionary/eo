@@ -22,32 +22,47 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * IDENTICAL.
+ * Param of an object (convenient retrieval mechanism).
  *
- * @since 1.0
+ * @since 0.20
  */
-@XmirObject(oname = "identical")
-public class EOidentical extends PhDefault {
+public final class Param {
 
-    public EOidentical(final Phi sigma) {
-        super(sigma);
-        this.add("a", new AtFree());
-        this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi left = rho.attr("a").get();
-            final Phi right = rho.attr("b").get();
-            return new Data.ToPhi(left.equals(right));
-        }));
+    private final Phi rho;
+
+    private final String attr;
+
+    public Param(final Phi obj) {
+        this(obj, "ρ");
+    }
+
+    public Param(final Phi obj, final String name) {
+        this.rho = obj;
+        this.attr = name;
+    }
+
+    public <T> T strong(final Class<T> type) {
+        final Object ret = this.weak();
+        if (!type.isInstance(ret)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The argument '%s' is of type %s, not '%s'",
+                    this.attr,
+                    ret.getClass().getCanonicalName(),
+                    type.getCanonicalName()
+                )
+            );
+        }
+        return type.cast(ret);
+    }
+
+    public Object weak() {
+        return new Dataized(
+            this.rho.attr(this.attr).get()
+        ).take();
     }
 
 }

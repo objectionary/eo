@@ -27,7 +27,7 @@ package EOorg.EOeolang.EOgray;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
@@ -48,9 +48,7 @@ public class EOheap$EOmalloc extends PhDefault {
         this.add("s", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi heap = rho.attr("ρ").get();
-            final int size = new Dataized(
-                rho.attr("s").get()
-            ).take(Long.class).intValue();
+            final int size = new Param(rho, "s").strong(Long.class).intValue();
             final int ptr = Heaps.INSTANCE.malloc(heap, size);
             return new PhWith(
                 new PhCopy(new PhMethod(heap, "pointer")),

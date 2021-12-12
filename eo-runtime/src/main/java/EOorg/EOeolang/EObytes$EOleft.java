@@ -38,14 +38,12 @@ public class EObytes$EOleft extends PhDefault {
     public EObytes$EOleft(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final byte[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(byte[].class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final byte[] array = new Param(rho).strong(byte[].class);
             return new Data.ToPhi(
                 new BigInteger(array).shiftLeft(
-                    new Dataized(self.attr("x").get()
-                ).take(Long.class).intValue()).toByteArray()
+                    new Param(rho, "x").strong(Long.class).intValue()
+                ).toByteArray()
             );
         }));
     }

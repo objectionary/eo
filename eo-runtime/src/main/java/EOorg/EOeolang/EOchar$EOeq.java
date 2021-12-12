@@ -27,7 +27,7 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,19 +43,11 @@ public class EOchar$EOeq extends PhDefault {
     public EOchar$EOeq(final Phi sigma) {
         super(sigma);
         this.add("c", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final char mine = new Dataized(
-                self.attr("ρ").get()
-            ).take(Character.class);
-            final Object another = new Dataized(
-                self.attr("c").get()
-            ).take();
-            boolean equals = false;
-            if (another instanceof Character) {
-                equals = mine == Character.class.cast(another);
-            }
-            return new Data.ToPhi(equals);
-        }));
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            new Param(rho).strong(Character.class).equals(
+                new Param(rho, "c").weak()
+            )
+        )));
     }
 
 }

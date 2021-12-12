@@ -31,6 +31,7 @@ import org.eolang.AtFree;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -42,27 +43,14 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "sprintf")
 public class EOsprintf extends PhDefault {
-    /**
-     * Format attr name.
-     */
-    private static final String FMT = "format";
-
-    /**
-     * Arguments attr name.
-     */
-    private static final String AGV = "args";
 
     public EOsprintf(final Phi sigma) {
         super(sigma);
-        this.add(EOsprintf.FMT, new AtFree());
-        this.add(EOsprintf.AGV, new AtVararg());
+        this.add("format", new AtFree());
+        this.add("args", new AtVararg());
         this.add("φ", new AtComposite(this, rho -> {
-            final String format = new Dataized(
-                rho.attr(EOsprintf.FMT).get()
-            ).take(String.class);
-            final Phi[] args = new Dataized(
-                rho.attr(EOsprintf.AGV).get()
-            ).take(Phi[].class);
+            final String format = new Param(rho, "format").strong(String.class);
+            final Phi[] args = new Param(rho, "args").strong(Phi[].class);
             final Collection<Object> items = new LinkedList<>();
             for (final Phi arg : args) {
                 items.add(new Dataized(arg).take());
