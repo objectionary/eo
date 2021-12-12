@@ -29,6 +29,7 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -43,12 +44,17 @@ public class EOfloat$EOpow extends PhDefault {
     public EOfloat$EOpow(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Math.pow(
-                new Param(rho).strong(Double.class),
-                new Param(rho, "x").strong(Double.class)
-            )
-        )));
+        this.add("φ", new AtComposite(this, rho -> {
+            final double self = new Param(rho).strong(Double.class);
+            final double pow = new Param(rho, "x").strong(Double.class);
+            if (self == 0.0d && pow < 0.0d) {
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi("0 cannot be raised to a negative power")
+                );
+            }
+            return new Data.ToPhi(Math.pow(self, pow));
+        }));
     }
 
 }

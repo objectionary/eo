@@ -31,19 +31,40 @@ package org.eolang;
  */
 public final class Param {
 
+    /**
+     * The object.
+     */
     private final Phi rho;
 
+    /**
+     * Attr name.
+     */
     private final String attr;
 
+    /**
+     * Ctor.
+     * @param obj The object to fetch \rho from
+     */
     public Param(final Phi obj) {
         this(obj, "ρ");
     }
 
+    /**
+     * Ctor.
+     * @param obj The object to fetch the attribute from
+     * @param name Name of the attr
+     */
     public Param(final Phi obj, final String name) {
         this.rho = obj;
         this.attr = name;
     }
 
+    /**
+     * Fetch and check type.
+     * @param type The type
+     * @param <T> The type
+     * @return The object
+     */
     public <T> T strong(final Class<T> type) {
         final Object ret = this.weak();
         if (!type.isInstance(ret)) {
@@ -59,6 +80,10 @@ public final class Param {
         return type.cast(ret);
     }
 
+    /**
+     * Fetch and DON'T check type.
+     * @return The object
+     */
     public Object weak() {
         return new Dataized(
             this.rho.attr(this.attr).get()

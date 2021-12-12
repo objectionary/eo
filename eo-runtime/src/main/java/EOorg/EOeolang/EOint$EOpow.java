@@ -45,15 +45,15 @@ public class EOint$EOpow extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final long self = new Param(rho).strong(Long.class);
-            final long pow = new Param(rho, "x").strong(Long.class);
-            if (self == 0L && pow < 0L) {
+            final double self = new Param(rho).strong(Long.class).doubleValue();
+            final double pow = new Param(rho, "x").strong(Long.class).doubleValue();
+            if (self == 0.0d && pow < 0.0d) {
                 return new PhWith(
                     new EOerror(Phi.Φ), "msg",
                     new Data.ToPhi("0 cannot be raised to a negative power")
                 );
             }
-            return new Data.ToPhi((long) Math.pow((double) self, (double) pow));
+            return new Data.ToPhi((long) Math.pow(self, pow));
         }));
     }
 
