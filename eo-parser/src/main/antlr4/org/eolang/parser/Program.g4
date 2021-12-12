@@ -302,7 +302,7 @@ NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
 
 TEXT_BLOCK_MARK: '"""';
 TEXT_BLOCK:
-        TEXT_BLOCK_MARK
-        .*?
-        TEXT_BLOCK_MARK
+    TEXT_BLOCK_MARK
+    .*?
+    TEXT_BLOCK_MARK
     ;
