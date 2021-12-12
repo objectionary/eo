@@ -377,7 +377,7 @@ public final class XeListener implements ProgramListener {
         } else if (ctx.STRING() != null) {
             type = "string";
             data = text.substring(1, text.length() - 1);
-        } else if (ctx.TEXT_BLOCK() != null) {
+        } else if (ctx.TEXT() != null) {
             type = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = XeListener.trimMargin(text, indent);

@@ -215,7 +215,7 @@ data
   |
   BOOL
   |
-  TEXT_BLOCK
+  TEXT
   |
   STRING
   |
@@ -300,9 +300,9 @@ HEX: '0x' [0-9a-f]+;
 
 NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
 
-TEXT_BLOCK_MARK: '"""';
-TEXT_BLOCK:
-    TEXT_BLOCK_MARK
-    .*?
-    TEXT_BLOCK_MARK
+fragment TEXT_MARK: '"""';
+TEXT:
+    TEXT_MARK ('\n' | '\r\n')
+    (~[\\] | ESCAPE_SEQUENCE)*?
+    TEXT_MARK
     ;
