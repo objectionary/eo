@@ -27,7 +27,7 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,10 +43,10 @@ public class EOint$EOmul extends PhDefault {
     public EOint$EOmul(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Long.class)
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            new Param(rho).strong(Long.class)
             *
-            new Dataized(self.attr("x").get()).take(Long.class)
+            new Param(rho, "x").strong(Long.class)
         )));
     }
 

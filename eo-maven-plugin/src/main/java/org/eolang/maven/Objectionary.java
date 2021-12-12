@@ -36,13 +36,33 @@ import org.cactoos.io.InputOf;
  */
 public final class Objectionary implements Func<String, Input> {
 
+    /**
+     * The hash code to fetch.
+     */
+    private final String hash;
+
+    /**
+     * Ctor.
+     */
+    public Objectionary() {
+        this("master");
+    }
+
+    /**
+     * Ctor.
+     * @param hsh The GitHub hash
+     */
+    public Objectionary(final String hsh) {
+        this.hash = hsh;
+    }
+
     @Override
     public Input apply(final String name) throws Exception {
         final URL url = new URL(
             String.format(
                 // @checkstyle LineLength (1 line)
-                "https://raw.githubusercontent.com/yegor256/objectionary/master/objects/%s.eo",
-                name.replace(".", "/")
+                "https://raw.githubusercontent.com/yegor256/objectionary/%s/objects/%s.eo",
+                this.hash, name.replace(".", "/")
             )
         );
         Logger.debug(

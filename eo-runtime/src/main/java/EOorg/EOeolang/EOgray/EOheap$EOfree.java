@@ -27,7 +27,7 @@ package EOorg.EOeolang.EOgray;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -45,9 +45,7 @@ public class EOheap$EOfree extends PhDefault {
         this.add("p", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi heap = rho.attr("ρ").get();
-            final int ptr = new Dataized(
-                rho.attr("p").get()
-            ).take(Long.class).intValue();
+            final int ptr = new Param(rho, "p").strong(Long.class).intValue();
             Heaps.INSTANCE.free(heap, ptr);
             return new Data.ToPhi(true);
         }));

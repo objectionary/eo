@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,13 +43,11 @@ public class EOarray$EOreduce extends PhDefault {
         super(sigma);
         this.add("a", new AtFree());
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final Phi[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(Phi[].class);
-            Phi out = self.attr("a").get();
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi[] array = new Param(rho).strong(Phi[].class);
+            Phi out = rho.attr("a").get();
             for (final Phi arg : array) {
-                final Phi after = self.attr("f").get().copy(self);
+                final Phi after = rho.attr("f").get().copy(rho);
                 after.attr(0).put(out);
                 after.attr(1).put(arg);
                 out = after;

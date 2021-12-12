@@ -27,7 +27,7 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -44,14 +44,16 @@ public class EOint$EOdiv extends PhDefault {
     public EOint$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final long x = new Dataized(self.attr("x").get()).take(Long.class);
-            if (x == 0L) {
-                final Phi msg = new Data.ToPhi("Division by zero is undefined");
-                return new PhWith(new EOerror(Phi.Φ), "msg", msg);
+        this.add("φ", new AtComposite(this, rho -> {
+            final long div = new Param(rho, "x").strong(Long.class);
+            if (div == 0L) {
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi("Division by zero is undefined")
+                );
             }
             return new Data.ToPhi(
-                new Dataized(self.attr("ρ").get()).take(Long.class) / x
+                new Param(rho).strong(Long.class) / div
             );
         }));
     }

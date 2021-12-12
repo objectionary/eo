@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,8 +41,8 @@ public class EOfloat$EOas_int extends PhDefault {
 
     public EOfloat$EOas_int(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            new Dataized(self.attr("ρ").get()).take(Double.class).longValue()
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            new Param(rho).strong(Double.class).longValue()
         )));
     }
 

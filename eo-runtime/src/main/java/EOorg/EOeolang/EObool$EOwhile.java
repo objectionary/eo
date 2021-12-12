@@ -28,6 +28,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -46,9 +47,7 @@ public class EObool$EOwhile extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             long count = 0L;
             while (true) {
-                final Boolean term = new Dataized(
-                    rho.attr("ρ").get()
-                ).take(Boolean.class);
+                final Boolean term = new Param(rho).strong(Boolean.class);
                 if (!term) {
                     break;
                 }

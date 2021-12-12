@@ -32,12 +32,14 @@ import java.util.Collection;
 import java.util.List;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.Joined;
 import org.eolang.parser.Xsline;
 
 /**
  * Native compiler.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class TranspilerCanonical implements Transpiler {
 
@@ -100,7 +102,10 @@ final class TranspilerCanonical implements Transpiler {
             } else {
                 for (final XML java : nodes) {
                     new Save(
-                        java.xpath("java/text()").get(0),
+                        new Joined(
+                            "",
+                            java.xpath("java/text()")
+                        ),
                         new Place(java.xpath("@java-name").get(0)).make(
                             generated, "java"
                         )

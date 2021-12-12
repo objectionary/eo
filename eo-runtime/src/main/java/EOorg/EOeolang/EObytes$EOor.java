@@ -38,13 +38,9 @@ public class EObytes$EOor extends PhDefault {
     public EObytes$EOor(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final byte[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(byte[].class);
-            final byte[] another = new Dataized(
-                self.attr("b").get()
-            ).take(byte[].class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final byte[] array = new Param(rho).strong(byte[].class);
+            final byte[] another = new Param(rho, "b").strong(byte[].class);
             return new Data.ToPhi(
                 new BigInteger(array).or(new BigInteger(another)).toByteArray()
             );

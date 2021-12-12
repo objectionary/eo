@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -44,19 +44,12 @@ public class EObytes$EOeq extends PhDefault {
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final byte[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(byte[].class);
-            final Object another = new Dataized(
-                self.attr("b").get()
-            ).take();
-            boolean equals = false;
-            if (another instanceof byte[]) {
-                equals = Arrays.equals(byte[].class.cast(another), array);
-            }
-            return new Data.ToPhi(equals);
-        }));
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            Arrays.equals(
+                new Param(rho).strong(byte[].class),
+                new Param(rho, "b").strong(byte[].class)
+            )
+        )));
     }
 
 }

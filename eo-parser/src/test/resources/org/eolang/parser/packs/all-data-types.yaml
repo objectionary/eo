@@ -1,7 +1,7 @@
 xsls: [ ]
 tests:
   - /program/errors[count(*)=0]
-  - //objects[count(o[@base='bytes'])=2]
+  - //objects[count(o[@base='bytes'])=6]
   - //o[@base='bytes' and @name='bytesX' and @data]
   - //o[@base='bool' and @name='boolX' and @data]
   - //o[@base='int' and @name='intX' and @data]
@@ -43,3 +43,11 @@ eo: |
   Hello, друг! 谢谢!
   Adiós!
   """ > textX
+
+  FF- > bytesX
+
+  00-00-00-00-00-00-00-00-00-00 > bytesX
+
+  AA- > bytesX
+
+  -- > bytesX

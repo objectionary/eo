@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -42,22 +42,16 @@ import org.eolang.XmirObject;
 public class EOstdout extends PhDefault {
 
     /**
-     * Text attr name.
-     */
-    private static final String TEXT = "text";
-    /**
      * Default out.
      */
     private static final PrintStream OUT = System.out;
 
     public EOstdout(final Phi sigma) {
         super(sigma);
-        this.add(EOstdout.TEXT, new AtFree());
+        this.add("text", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             EOstdout.OUT.print(
-                new Dataized(
-                    rho.attr(EOstdout.TEXT).get()
-                ).take(String.class)
+                new Param(rho, "text").strong(String.class)
             );
             return new Data.ToPhi(true);
         }));

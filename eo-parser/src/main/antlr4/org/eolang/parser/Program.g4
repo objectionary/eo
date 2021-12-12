@@ -278,12 +278,22 @@ EOL
   }
   ;
 
-fragment BYTE: [0-9A-F][0-9A-F] MINUS;
-BYTES: BYTE (BYTE* [0-9A-F][0-9A-F])?;
+fragment BYTE: [0-9A-F][0-9A-F];
+fragment EMPTY_BYTES : MINUS MINUS;
+BYTES:
+    |  EMPTY_BYTES
+    |  BYTE MINUS
+    |  BYTE (MINUS BYTE)+;
 
 BOOL: 'TRUE' | 'FALSE';
-CHAR: '\'' ~'\'' '\'';
-STRING: '"' ('\\"' | ~'"')* '"';
+CHAR:  '\'' (~['\\\r\n] | ESCAPE_SEQUENCE) '\'';
+STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
+
+fragment ESCAPE_SEQUENCE
+    : '\\' [btnfr"'\\]
+    | '\\' ([0-3]? [0-7])? [0-7]
+    | '\\' 'u'+ BYTE BYTE
+    ;
 INT: (PLUS | MINUS)? [0-9]+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
 HEX: '0x' [0-9a-f]+;

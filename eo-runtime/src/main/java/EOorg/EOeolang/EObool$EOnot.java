@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,10 +41,8 @@ public class EObool$EOnot extends PhDefault {
 
     public EObool$EOnot(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> {
-            final Boolean term = new Dataized(
-                self.attr("ρ").get()
-            ).take(Boolean.class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final Boolean term = new Param(rho).strong(Boolean.class);
             return new Data.ToPhi(!term);
         }));
     }

@@ -27,7 +27,7 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -44,14 +44,16 @@ public class EOint$EOpow extends PhDefault {
     public EOint$EOpow(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final long rho = new Dataized(self.attr("ρ").get()).take(Long.class);
-            final long x = new Dataized(self.attr("x").get()).take(Long.class);
-            if (rho == 0L && x < 0L) {
-                final Phi msg = new Data.ToPhi("0 cannot be raised to a negative power");
-                return new PhWith(new EOerror(Phi.Φ), "msg", msg);
+        this.add("φ", new AtComposite(this, rho -> {
+            final double self = new Param(rho).strong(Long.class).doubleValue();
+            final double pow = new Param(rho, "x").strong(Long.class).doubleValue();
+            if (self == 0.0d && pow < 0.0d) {
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi("0 cannot be raised to a negative power")
+                );
             }
-            return new Data.ToPhi((long) Math.pow(rho, x));
+            return new Data.ToPhi((long) Math.pow(self, pow));
         }));
     }
 

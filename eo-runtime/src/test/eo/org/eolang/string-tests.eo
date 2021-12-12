@@ -97,3 +97,9 @@
       y
      x
     """.as-bytes
+
+[] > supports-escape-sequences
+  eq. > @
+    "Hello, друг!\n"
+    "Hello, \u0434\u0440\u0443\u0433!\n"
+

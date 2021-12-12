@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -49,12 +49,8 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         this.add("write", new AtComposite(this, EOheap$EOpointer$EOblock.Write::new));
         this.add("φ", new AtComposite(this, rho -> {
             final Phi pointer = rho.attr("ρ").get();
-            final int address = new Dataized(
-                pointer.attr("address").get()
-            ).take(Long.class).intValue();
-            final int len = new Dataized(
-                rho.attr("len").get()
-            ).take(Long.class).intValue();
+            final int address = new Param(pointer, "address").strong(Long.class).intValue();
+            final int len = new Param(rho, "len").strong(Long.class).intValue();
             final byte[] chunk = Arrays.copyOfRange(
                 Heaps.INSTANCE.data(pointer),
                 address, address + len
@@ -72,14 +68,10 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
             this.add("φ", new AtComposite(this, rho -> {
                 final Phi block = rho.attr("ρ").get();
                 final Phi pointer = block.attr("ρ").get();
-                final int address = new Dataized(
-                    pointer.attr("address").get()
-                ).take(Long.class).intValue();
-                final byte[] src = new Dataized(
-                    rho.attr("x").get()
-                ).take(byte[].class);
+                final int address = new Param(pointer, "address").strong(Long.class).intValue();
+                final byte[] source = new Param(rho, "x").strong(byte[].class);
                 final byte[] data = Heaps.INSTANCE.data(pointer);
-                System.arraycopy(src, 0, data, address, src.length);
+                System.arraycopy(source, 0, data, address, source.length);
                 return new Data.ToPhi(true);
             }));
         }

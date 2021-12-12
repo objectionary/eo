@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,10 +41,8 @@ public class EOarray$EOlength extends PhDefault {
 
     public EOarray$EOlength(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> {
-            final Phi[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(Phi[].class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi[] array = new Param(rho).strong(Phi[].class);
             return new Data.ToPhi((long) array.length);
         }));
     }

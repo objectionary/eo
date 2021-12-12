@@ -21,33 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import java.io.IOException;
+import java.nio.file.Path;
+import org.cactoos.text.Randomized;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * NOT EQUALS.
+ * Test for {@link Save}.
  *
- * @since 1.0
+ * @since 0.22
  */
-@XmirObject(oname = "int.neq")
-public class EOint$EOneq extends PhDefault {
+final class SaveTest {
 
-    public EOint$EOneq(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            !(new Dataized(self.attr("ρ").get()).take(Long.class).equals(
-                new Dataized(self.attr("x").get()).take(Long.class)
-            ))
-        )));
+    // @checkstyle MagicNumber (1 line)
+    @ValueSource(ints = {0, 100, 1_000, 10_000})
+    @ParameterizedTest
+    void saves(final int size, @TempDir final Path temp) throws IOException {
+        final Path resolve = temp.resolve("1.txt");
+        final String content = new Randomized(size).asString();
+        new Save(content, resolve).save();
+        MatcherAssert.assertThat(
+            new TextOf(resolve).asString(),
+            Matchers.is(content)
+        );
     }
 
 }

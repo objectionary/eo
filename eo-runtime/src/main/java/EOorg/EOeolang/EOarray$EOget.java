@@ -26,7 +26,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -36,23 +36,19 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.get")
+@XmirObject(oname = "array.strong")
 public class EOarray$EOget extends PhDefault {
 
     public EOarray$EOget(final Phi sigma) {
         super(sigma);
         this.add("i", new AtFree());
-        this.add("φ", new AtComposite(this, self -> {
-            final Phi[] array = new Dataized(
-                self.attr("ρ").get()
-            ).take(Phi[].class);
-            final int idx = (int) (long) new Dataized(
-                self.attr("i").get()
-            ).take(Long.class);
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi[] array = new Param(rho).strong(Phi[].class);
+            final int idx = new Param(rho, "i").strong(Long.class).intValue();
             if (array.length <= idx) {
                 throw new IllegalArgumentException(
                     String.format(
-                        "Can't get() the %dth element of the array, there are just %d of them",
+                        "Can't strong() the %dth element of the array, there are just %d of them",
                         idx, array.length
                     )
                 );
