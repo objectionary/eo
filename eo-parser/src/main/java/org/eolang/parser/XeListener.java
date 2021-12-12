@@ -357,7 +357,7 @@ public final class XeListener implements ProgramListener {
             data = Boolean.toString(Boolean.parseBoolean(text));
         } else if (ctx.CHAR() != null) {
             type = "char";
-            data = text.substring(1, 2);
+            data = text.substring(1, text.length() - 1);
         } else if (ctx.FLOAT() != null) {
             type = "float";
             data = Double.toString(Double.parseDouble(text));

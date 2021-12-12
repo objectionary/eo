@@ -284,11 +284,18 @@ BYTES:
     |  BYTE (MINUS BYTE)+;
 
 BOOL: 'TRUE' | 'FALSE';
-CHAR: '\'' ~'\'' '\'';
-STRING: '"' ('\\"' | ~'"')* '"';
+CHAR:  '\'' (~['\\\r\n] | ESCAPE_SEQUENCE) '\'';
+STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
+
+fragment ESCAPE_SEQUENCE
+    : '\\' [btnfr"'\\]
+    | '\\' ([0-3]? [0-7])? [0-7]
+    | '\\' 'u'+ BYTE BYTE
+    ;
 INT: (PLUS | MINUS)? [0-9]+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
 HEX: '0x' [0-9a-f]+;
 
 NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
+
 
