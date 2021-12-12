@@ -65,6 +65,7 @@ SOFTWARE.
         <version>${project.version}</version>
         <configuration>
           <foreign>${project.basedir}/target/eo-foreign.json</foreign>
+          <hash>master</hash>
         </configuration>
         <executions>
           <execution>
