@@ -109,6 +109,22 @@ public final class AssembleMojo extends SafeMojo {
     private BiConsumer<Dependency, Path> central;
 
     /**
+     * Pull again even if the .eo file is already present?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.10.0
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean overWrite;
+
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     * @since 0.21.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(required = true, defaultValue = "master")
+    private String hash = "master";
+
+    /**
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
      * @checkstyle MemberNameCheck (7 lines)

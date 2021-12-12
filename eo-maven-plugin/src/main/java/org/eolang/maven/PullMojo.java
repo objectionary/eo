@@ -46,12 +46,21 @@ import org.eolang.tojos.Tojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PullMojo extends SafeMojo {
 
     /**
      * The directory where to process to.
      */
     public static final String DIR = "04-pull";
+
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     * @since 0.21.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(required = true, defaultValue = "master")
+    private String hash = "master";
 
     /**
      * Pull again even if the .eo file is already present?
@@ -73,6 +82,9 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
+        if (!"master".equals(this.hash)) {
+            this.objectionary = new Objectionary(this.hash);
+        }
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
                 tojo.set(
