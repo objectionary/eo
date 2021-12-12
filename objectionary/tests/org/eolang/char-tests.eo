@@ -50,3 +50,13 @@
     as-char.
       as-bytes.
         'Ф'
+
+[] > supports-escape-sequences-line-break
+  eq. > @
+    '\n'
+    '\012'
+
+[] > supports-escape-sequences-unicode
+  eq. > @
+    '\u0424'
+    'Ф'

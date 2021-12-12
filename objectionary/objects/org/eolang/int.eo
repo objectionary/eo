@@ -21,29 +21,40 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.20.0
++rt jvm org.eolang:eo-runtime:0.20.1
 
 [] > int
   # Tests that $ = x
   [x] > eq /bool
 
   # Tests that $ ≠ x
-  [x] > neq /bool
+  [x] > neq
+    (^.eq x).not > @
 
   # Tests that $ < x
-  [x] > less /bool
+  [x] > less
+    and. > @
+      (^.eq x).not
+      (^.greater x).not
 
   # Tests that $ ≤ x
-  [x] > leq /bool
+  [x] > leq
+    or. > @
+      ^.eq x
+      ^.less x
 
   # Tests that $ > x
   [x] > greater /bool
 
   # Tests that $ ≥ x
-  [x] > geq /bool
+  [x] > geq
+    or. > @
+      ^.eq x
+      ^.greater x
 
   # Change the sign of the number
-  [] > neg /int
+  [] > neg
+    ^.mul -1 > @
 
   # Add to the current one
   [x] > add /int
@@ -74,4 +85,8 @@
   [] > as-bytes /bytes
 
   # Absolute value of $ (i.e., with no sign)
-  [] > abs /int
+  [] > abs
+    if. > @
+      ^.geq 0
+      ^
+      ^.neg
