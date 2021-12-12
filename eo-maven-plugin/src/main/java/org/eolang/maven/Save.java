@@ -30,11 +30,13 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.Input;
+import org.cactoos.Text;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.TextOf;
 
 /**
  * Save a file operation.
@@ -69,6 +71,16 @@ public final class Save {
      * @param file The path
      */
     public Save(final String txt, final Path file) {
+        this(new TextOf(txt), file);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param txt The content
+     * @param file The path
+     */
+    public Save(final Text txt, final Path file) {
         this(new InputOf(txt), file);
     }
 

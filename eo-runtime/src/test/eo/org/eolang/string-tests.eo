@@ -73,3 +73,7 @@
       "Hello"
       42
 
+[] > supports-escape-sequences
+  eq. > @
+    "Hello, друг!"
+    "Hello, \u0434\u0440\u0443\u0433!"
