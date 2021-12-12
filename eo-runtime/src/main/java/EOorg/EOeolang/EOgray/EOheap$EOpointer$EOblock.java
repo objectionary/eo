@@ -75,11 +75,20 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                 final int address = new Dataized(
                     pointer.attr("address").get()
                 ).take(Long.class).intValue();
-                final byte[] src = new Dataized(
+                final Object src = new Dataized(
                     rho.attr("x").get()
-                ).take(byte[].class);
+                ).take();
+                if (!(src instanceof byte[])) {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "The argument of 'write' is of type %s, not 'bytes'",
+                            src.getClass().getCanonicalName()
+                        )
+                    );
+                }
+                final byte[] source = byte[].class.cast(src);
                 final byte[] data = Heaps.INSTANCE.data(pointer);
-                System.arraycopy(src, 0, data, address, src.length);
+                System.arraycopy(source, 0, data, address, source.length);
                 return new Data.ToPhi(true);
             }));
         }
