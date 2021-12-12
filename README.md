@@ -37,8 +37,8 @@ examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
 see whether they can work.
 
-EO is based on [𝜑-calculus](https://arxiv.org/abs/2111.13384) 
-(if you want to discuss it, 
+EO is based on [𝜑-calculus](https://arxiv.org/abs/2111.13384)
+(if you want to discuss it,
 join this Telegram chat: [@polystat_org](https://t.me/polystat_org)).
 
 Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
@@ -61,7 +61,7 @@ These things we **don't** tolerate:
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
 
-There are products that use EO or 𝜑-calculus 
+There are products that use EO or 𝜑-calculus
 (if you want yours to be in the list, submit a pull request):
 
   * [objectionary](https://github.com/yegor256/objectionary) is a repository of EO objects
@@ -73,7 +73,7 @@ If you want to cite us, use this BibTeX citation:
 
 ```
 @misc{bugayenko2021eolang,
-  title={EOLANG and phi-calculus}, 
+  title={EOLANG and phi-calculus},
   author={Yegor Bugayenko},
   year={2021},
   eprint={2111.13384},
@@ -101,7 +101,7 @@ whether it's leap or not:
     sprintf
       "%d is %sa leap year!"
       (args.get 0).nextInt > year!
-      if (leap year:y) "" "not "
+      if. (leap year:y) "" "not "
 ```
 
 In order to compile this program, put it into `src/main/eo/main.eo` and then
