@@ -1,18 +1,10 @@
 xsls: []
 tests:
-  - //o[@base='string' and not(text())]
-  - //o[@base='string' and text()='simple']
   - //o[@base='string' and normalize-space(text())='Hi, there Adiós']
   - //o[@base='string' and normalize-space(text())='first second']
   - //o[@base='string' and text()='   third']
   - //o[@base='string' and text()='forth']
 eo: |
-  # Empty
-  """""" > txt
-
-  # Single line
-  """simple""" > txt
-
   # Two lines
   """
   Hi, there
