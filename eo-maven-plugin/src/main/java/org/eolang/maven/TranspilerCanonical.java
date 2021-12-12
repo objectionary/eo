@@ -39,6 +39,7 @@ import org.eolang.parser.Xsline;
  * Native compiler.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class TranspilerCanonical implements Transpiler {
 
