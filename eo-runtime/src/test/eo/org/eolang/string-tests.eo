@@ -103,3 +103,18 @@
     "Hello, друг!\n"
     "Hello, \u0434\u0440\u0443\u0433!\n"
 
+[] > supports-escape-sequences-in-text
+  eq. > @
+    """
+    Hello, \u0434\u0440\u0443\u0433!\n
+    """
+    "Hello, друг!\n"
+
+[] > preserves-indentation-in-text
+  eq. > @
+    """
+    a
+     b
+      c
+    """
+    "a\n b\n  c"
