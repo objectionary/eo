@@ -365,6 +365,14 @@ SOFTWARE.
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
+    <xsl:if test="@unvar">
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhUnvar(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>

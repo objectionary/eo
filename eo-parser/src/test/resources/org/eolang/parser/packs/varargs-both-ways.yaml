@@ -1,0 +1,10 @@
+xsls: []
+tests:
+  - /program/errors[count(*)=0]
+  - //o[@name='b' and @vararg]
+  - //o[@base='b' and @unvar]
+eo: |
+  [a b...] > foo
+    hello > @
+      42
+      ...b

@@ -22,32 +22,26 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * EQ.
+ * Unvaring object.
  *
- * @since 1.0
+ * @since 0.21
  */
-@XmirObject(oname = "string.eq")
-public class EOstring$EOeq extends PhDefault {
+public final class PhUnvar extends PhOnce {
 
-    public EOstring$EOeq(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(String.class).equals(
-                new Param(rho, "x").weak()
-            )
-        )));
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     */
+    public PhUnvar(final Phi phi) {
+        super(
+            () -> phi,
+            phi::toString,
+            phi::φTerm
+        );
     }
 
 }
