@@ -1,0 +1,16 @@
+xsls:
+  - org/eolang/parser/expand-aliases.xsl
+  - org/eolang/parser/resolve-aliases.xsl
+  - org/eolang/parser/errors/unused-aliases.xsl
+tests:
+  - /program/errors[count(error)=2]
+  - /program/errors/error[@line='1']
+  - /program/errors/error[@line='3']
+  - //o[@name='foo']
+eo: |
+  +alias org.eolang.io.stdout
+  +alias in org.eolang.io.stdin
+  +alias err org.eolang.io.stderr
+
+  [x] > foo
+    x.div in.nextInt > @
