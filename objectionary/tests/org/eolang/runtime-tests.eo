@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
++alias org.eolang.txt.sprintf
 +alias org.eolang.gray.cage
 +junit
 
@@ -147,3 +148,11 @@
   seq > @
     n.write 4
     func
+
+[] > creates-vararg-from-array
+  * "Jeff" 42 > a
+  eq. > @
+    "Hello, Jeff, are you 42?"
+    sprintf
+      "Hello, %s, are you %d?"
+      ...a

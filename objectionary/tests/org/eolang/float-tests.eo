@@ -192,30 +192,12 @@
       574.5
       311.985
 
-[] > zero-to-neg-pow
-  eq. > @
-    "Infinity"
-    sprintf
-      "%f"
-      pow.
-        0.0
-        -1.0
-
 [] > div-test
   eq. > @
     31.0
     div.
       15.5
       0.5
-
-[] > zero-div
-  eq. > @
-    "-Infinity"
-    sprintf
-      "%f"
-      div.
-        -345.10
-        0.0
 
 [] > abs-positive
   eq. > @

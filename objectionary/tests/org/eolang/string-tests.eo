@@ -73,6 +73,12 @@
       "Hello"
       42
 
+[] > compares-two-different-strings
+  not. > @
+    eq.
+      "Hello"
+      "Good bye"
+
 [] > supports-escape-sequences
   eq. > @
     "Hello, друг!\n"
