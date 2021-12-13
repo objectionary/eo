@@ -149,10 +149,17 @@
     n.write 4
     func
 
-[] > creates-vararg-from-array
+[] > creates-vararg-from-variable-array
   * "Jeff" 42 > a
   eq. > @
     "Hello, Jeff, are you 42?"
     sprintf
       "Hello, %s, are you %d?"
       ...a
+
+[] > creates-vararg-from-array
+  eq. > @
+    "Hello, Jeff, are you 42?"
+    sprintf
+      "Hello, %s, are you %d?"
+      ...* "Jeff" 42
