@@ -184,23 +184,26 @@ htail
 
 head
   :
-  AT
-  |
-  RHO
-  |
-  XI
-  |
-  SIGMA
-  |
-  STAR
-  |
-  NAME
-  COPY?
-  |
-  NAME
-  DOT
-  |
-  data
+  DOTS?
+  (
+    AT
+    |
+    RHO
+    |
+    XI
+    |
+    SIGMA
+    |
+    STAR
+    |
+    NAME
+    COPY?
+    |
+    NAME
+    DOT
+    |
+    data
+  )
   ;
 
 has

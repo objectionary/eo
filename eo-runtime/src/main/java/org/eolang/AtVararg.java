@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +35,25 @@ import java.util.List;
  */
 public final class AtVararg implements Attr {
 
-    private final List<Phi> array = new LinkedList<>();
+    /**
+     * Array of items provided.
+     */
+    private final List<Phi> array;
+
+    /**
+     * Ctor.
+     */
+    public AtVararg() {
+        this(new LinkedList<>());
+    }
+
+    /**
+     * Ctor.
+     * @param list List of them
+     */
+    private AtVararg(final List<Phi> list) {
+        this.array = list;
+    }
 
     @Override
     public String toString() {
@@ -50,17 +69,26 @@ public final class AtVararg implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtVararg();
+        return new AtVararg(this.array);
     }
 
     @Override
     public Phi get() {
-        return new Data.ToPhi(this.array.toArray(new Phi[] {}));
+        return new Data.ToPhi(this.array.toArray(new Phi[this.array.size()]));
     }
 
     @Override
     public void put(final Phi phi) {
-        this.array.add(phi);
+        if (phi instanceof PhUnvar) {
+            this.array.clear();
+            this.array.addAll(
+                Arrays.asList(
+                    new Dataized(phi).take(Phi[].class)
+                )
+            );
+        } else {
+            this.array.add(phi);
+        }
     }
 
 }
