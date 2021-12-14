@@ -389,7 +389,11 @@ public final class XeListener implements ProgramListener {
         }
         this.dirs.attr("data", type);
         this.dirs.attr("base", type);
-        this.dirs.set(data);
+        this.dirs.set(
+            data
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+        );
     }
 
     @Override

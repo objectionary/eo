@@ -1,7 +1,7 @@
 xsls: []
 tests:
-  - //o[@base='string' and normalize-space(text())='Hi, there Adiós']
-  - //o[@base='string' and normalize-space(text())='first second']
+  - //o[@base='string' and text()='Hi, there\nAdiós']
+  - //o[@base='string' and text()='first\n second']
   - //o[@base='string' and text()='   third']
   - //o[@base='string' and text()='forth']
 eo: |
