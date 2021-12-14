@@ -79,16 +79,9 @@ SOFTWARE.
               <xsl:text>}</xsl:text>
             </xsl:when>
             <xsl:when test="@data='string'">
-              <xsl:text>new StringBuilder()</xsl:text>
-              <xsl:for-each select="tokenize(text(), '\n')">
-                <xsl:if test="position() &gt; 1">
-                  <xsl:text>.append('\n')</xsl:text>
-                </xsl:if>
-                <xsl:text>.append("</xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:text>")</xsl:text>
-              </xsl:for-each>
-              <xsl:text>.toString()</xsl:text>
+              <xsl:text>"</xsl:text>
+              <xsl:value-of select="text()"/>
+              <xsl:text>"</xsl:text>
             </xsl:when>
             <xsl:when test="@data='regex'">
               <xsl:text>java.util.regex.Pattern.compile("</xsl:text>
