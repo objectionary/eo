@@ -21,33 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.eolang.Dataized;
+import org.eolang.PhMethod;
+import org.eolang.PhWith;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * EQ.
+ * Test case for {@link EOstring}.
  *
- * @since 1.0
+ * @since 0.17
  */
-@XmirObject(oname = "string.eq")
-public class EOstring$EOeq extends PhDefault {
+public final class EOstringEOeqTest {
 
-    public EOstring$EOeq(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(String.class).equals(
-                new Param(rho, "x").weak()
-            )
-        )));
+    @Test
+    public void comparesTwoEqualStrings() {
+        final String txt = "Hello, друг!";
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(txt), "eq"),
+                    0, new Data.ToPhi(txt)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    public void comparesTwoDifferentStrings() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi("Hello, друг!"), "eq"),
+                    0, new Data.ToPhi("Hello, world!")
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
+        );
     }
 
 }

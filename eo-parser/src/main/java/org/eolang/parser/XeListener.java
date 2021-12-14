@@ -308,6 +308,9 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitHead(final ProgramParser.HeadContext ctx) {
+        if (ctx.DOTS() != null) {
+            this.dirs.attr("unvar", "");
+        }
         this.dirs.up();
     }
 
