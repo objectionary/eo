@@ -22,6 +22,8 @@
 
 +package org.eolang.gray
 +alias org.eolang.gray.heap
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 +junit
 
 [] > allocates-and-uses
@@ -44,3 +46,10 @@
     p1.less p2
     h.free p1
     h.free p2
+
+[] > write-and-read
+  heap 1024 > h
+  h.pointer 0 8 > p
+  [] > mem
+    p.block 8 > @
+  mem.write 01-02-03 > @

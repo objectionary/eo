@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.eolang.parser.ParsingException;
 import org.eolang.tojos.MonoTojos;
 import org.eolang.tojos.SmartTojos;
 import org.hamcrest.MatcherAssert;
@@ -85,7 +84,7 @@ public final class ParseMojoTest {
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
         Assertions.assertThrows(
-            ParsingException.class,
+            IllegalArgumentException.class,
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())

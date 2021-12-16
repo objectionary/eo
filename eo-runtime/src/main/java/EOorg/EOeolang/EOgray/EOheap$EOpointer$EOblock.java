@@ -48,7 +48,7 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         this.add("inverse", new AtFree());
         this.add("write", new AtComposite(this, EOheap$EOpointer$EOblock.Write::new));
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi pointer = rho.attr("ρ").get();
+            final Phi pointer = rho.attr("σ").get();
             final int address = new Param(pointer, "address").strong(Long.class).intValue();
             final int len = new Param(rho, "len").strong(Long.class).intValue();
             final byte[] chunk = Arrays.copyOfRange(
@@ -66,8 +66,8 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                final Phi block = rho.attr("ρ").get();
-                final Phi pointer = block.attr("ρ").get();
+                final Phi block = rho.attr("σ").get();
+                final Phi pointer = block.attr("σ").get();
                 final int address = new Param(pointer, "address").strong(Long.class).intValue();
                 final byte[] source = new Param(rho, "x").strong(byte[].class);
                 final byte[] data = Heaps.INSTANCE.data(pointer);

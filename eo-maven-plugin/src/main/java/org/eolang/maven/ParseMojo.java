@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.eolang.tojos.Tojo;
 import org.xembly.Directives;
@@ -98,15 +99,22 @@ public final class ParseMojo extends SafeMojo {
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get("id");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            new Syntax(
+                name,
+                new InputOf(source),
+                new OutputTo(baos)
+            ).parse();
+        } catch (final ParsingException ex) {
+            throw new IllegalArgumentException(
+                String.format("Failed to parse %s", source),
+                ex
+            );
+        }
         final Path target = new Place(name).make(
             this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT
         );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Syntax(
-            name,
-            new InputOf(source),
-            new OutputTo(baos)
-        ).parse();
         new Save(
             new XMLDocument(
                 new Xembler(
