@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Read only once.
  *
@@ -33,21 +35,35 @@ public final class AtOnce implements Attr {
 
     private final Attr origin;
 
-    private final Data<Phi> data;
+    private final AtomicReference<Phi> cached;
 
     public AtOnce(final Attr attr) {
         this.origin = attr;
-        this.data = new Data.Once<>(attr::get, () -> "?");
+        this.cached = new AtomicReference<>();
     }
 
     @Override
     public String toString() {
-        return String.format("%sO", this.origin.toString());
+        final String txt;
+        final Phi phi = this.cached.get();
+        if (phi == null) {
+            txt = String.format("%sO", this.origin.toString());
+        } else {
+            txt = phi.toString();
+        }
+        return txt;
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        final String txt;
+        final Phi phi = this.cached.get();
+        if (phi == null) {
+            txt = "λ";
+        } else {
+            txt = phi.φTerm();
+        }
+        return txt;
     }
 
     @Override
@@ -57,14 +73,19 @@ public final class AtOnce implements Attr {
 
     @Override
     public Phi get() {
-        return this.data.take();
+        synchronized (this.cached) {
+            if (this.cached.get() == null) {
+                this.cached.set(this.origin.get());
+            }
+        }
+        return this.cached.get();
     }
 
     @Override
     public void put(final Phi phi) {
         throw new Attr.ReadOnlyException(
             String.format(
-                "You can't overwrite %s",
+                "You can't overwrite '%s'",
                 this.origin
             )
         );

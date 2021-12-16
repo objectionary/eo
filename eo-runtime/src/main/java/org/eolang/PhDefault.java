@@ -27,8 +27,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -79,6 +81,16 @@ public abstract class PhDefault implements Phi, Cloneable {
     private CachedPhi cached = new CachedPhi();
 
     /**
+     * Terms being processed now.
+     */
+    private final ThreadLocal<Set<Integer>> terms = new ThreadLocal<>();
+
+    /**
+     * Terms being processed now.
+     */
+    private final ThreadLocal<Set<Integer>> strings = new ThreadLocal<>();
+
+    /**
      * Ctor.
      */
     public PhDefault() {
@@ -110,21 +122,23 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
+        if (this.terms.get() == null) {
+            this.terms.set(new HashSet<>());
+        }
+        if (this.terms.get().contains(this.vertex)) {
+            return "✗";
+        }
+        this.terms.get().add(this.vertex);
         final Collection<String> list = new ArrayList<>(this.attrs.size());
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            if (!PhDefault.SORTABLE.matcher(ent.getKey()).matches()) {
-                continue;
-            }
             final String attr = String.format(
                 "%s ↦ %s",
                 ent.getKey(),
                 ent.getValue().φTerm()
             );
-            if (attr.endsWith("λ")) {
-                continue;
-            }
             list.add(attr);
         }
+        this.terms.get().remove(this.vertex);
         String txt = this.getClass().getSimpleName();
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
         if (xmir != null) {
@@ -297,6 +311,13 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @return The string
      */
     protected String toStringWith(final String... lines) {
+        if (this.strings.get() == null) {
+            this.strings.set(new HashSet<>());
+        }
+        if (this.strings.get().contains(this.vertex)) {
+            return "✗";
+        }
+        this.strings.get().add(this.vertex);
         final Collection<String> list = new ArrayList<>(this.attrs.size());
         for (final String line : lines) {
             list.add(PhDefault.shift(line));
@@ -315,6 +336,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 )
             );
         }
+        this.strings.get().remove(this.vertex);
         Collections.sort(sorted);
         list.addAll(sorted);
         return String.format(

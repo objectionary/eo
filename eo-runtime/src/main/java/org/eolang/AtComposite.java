@@ -32,17 +32,24 @@ package org.eolang;
  */
 public final class AtComposite implements Attr {
 
+    /**
+     * The \rho to send to the expression.
+     */
+    private final Phi rho;
+
+    /**
+     * The expression itself.
+     */
     private final Expr expr;
 
-    private final Data<Phi> object;
-
-    public AtComposite(final Phi rho, final Expr exp) {
-        this(exp, AtComposite.toData(exp, rho));
-    }
-
-    private AtComposite(final Expr exp, final Data<Phi> data) {
+    /**
+     * Ctor.
+     * @param obj The \rho
+     * @param exp The expression
+     */
+    public AtComposite(final Phi obj, final Expr exp) {
+        this.rho = obj;
         this.expr = exp;
-        this.object = data;
     }
 
     @Override
@@ -57,15 +64,18 @@ public final class AtComposite implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(
-            this.expr,
-            AtComposite.toData(this.expr, self)
-        );
+        return new AtComposite(self, this.expr);
     }
 
     @Override
     public Phi get() {
-        return this.object.take();
+        try {
+            return this.expr.get(this.rho);
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Exception ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
@@ -73,25 +83,6 @@ public final class AtComposite implements Attr {
         throw new Attr.ReadOnlyException(
             "You can't overwrite static expression"
         );
-    }
-
-    /**
-     * Turn ENV into DATA.
-     * @param exp The \lambda expression
-     * @param rho The \rho of this attribute/object
-     * @return Data
-     * @checkstyle IllegalCatchCheck (20 lines)
-     */
-    private static Data<Phi> toData(final Expr exp, final Phi rho) {
-        return () -> {
-            try {
-                return exp.get(rho);
-            } catch (final RuntimeException ex) {
-                throw ex;
-            } catch (final Exception ex) {
-                throw new IllegalArgumentException(ex);
-            }
-        };
     }
 
 }

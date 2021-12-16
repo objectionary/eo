@@ -87,15 +87,17 @@ public final class Dataized {
             );
         }
         final Object data = Data.class.cast(src).take();
-        Dataized.LOGGER.log(
-            Level.FINE,
-            String.format(
-                "%s\uD835\uDD3B( %s ) ➜ %s",
-                String.join("", Collections.nCopies(before, "·")),
-                this.phi.φTerm(),
-                new Data.Value<>(data).φTerm()
-            )
-        );
+        if (Dataized.LOGGER.isLoggable(Level.FINE)) {
+            Dataized.LOGGER.log(
+                Level.FINE,
+                String.format(
+                    "%s\uD835\uDD3B( %s ) ➜ %s",
+                    String.join("", Collections.nCopies(before, "·")),
+                    this.phi.φTerm(),
+                    new Data.Value<>(data).φTerm()
+                )
+            );
+        }
         Dataized.LEVEL.set(before);
         return data;
     }
