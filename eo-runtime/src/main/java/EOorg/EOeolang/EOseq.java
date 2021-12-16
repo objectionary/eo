@@ -40,17 +40,12 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "seq")
 public class EOseq extends PhDefault {
 
-    /**
-     * Attribute name.
-     */
-    private static final String NAME = "steps";
-
     public EOseq(final Phi sigma) {
         super(sigma);
-        this.add(EOseq.NAME, new AtVararg());
+        this.add("steps", new AtVararg());
         this.add("φ", new AtComposite(this, self -> {
             final Phi[] args = new Dataized(
-                self.attr(EOseq.NAME).get()
+                self.attr("steps").get()
             ).take(Phi[].class);
             for (int idx = 0; idx < args.length - 1; ++idx) {
                 new Dataized(args[idx]).take();

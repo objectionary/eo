@@ -68,7 +68,7 @@ final class AtAbsent implements Attr {
     public Phi get() {
         throw new Attr.StillAbstractException(
             String.format(
-                "Can't strong(), attribute \"%s\" is absent%s",
+                "Can't get(), attribute \"%s\" is absent%s",
                 this.name, this.suffix
             )
         );
