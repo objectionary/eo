@@ -1,0 +1,7 @@
+line: 5
+eo: |
+  [args] > app
+    stdout
+      sprintf
+        "Hello, %c!"
+        'hello'

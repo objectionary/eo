@@ -36,20 +36,27 @@ public final class ParsingException extends RuntimeException {
     private static final long serialVersionUID = -3043426132301042201L;
 
     /**
-     * Ctor.
-     * @param msg Message
+     * The place.
      */
-    public ParsingException(final String msg) {
-        super(msg);
-    }
+    private final int place;
 
     /**
      * Ctor.
      * @param msg Message
      * @param cause Cause of failure
+     * @param line The place
      */
-    public ParsingException(final String msg, final Exception cause) {
+    public ParsingException(final String msg, final Exception cause, final int line) {
         super(msg, cause);
+        this.place = line;
+    }
+
+    /**
+     * Get the place.
+     * @return Line
+     */
+    public int line() {
+        return this.place;
     }
 
 }

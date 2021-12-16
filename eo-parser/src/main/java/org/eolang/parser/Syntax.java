@@ -105,7 +105,8 @@ public final class Syntax {
                         // @checkstyle AvoidInlineConditionalsCheck (1 line)
                         lines.size() < line ? "EOF" : lines.get(line - 1)
                     ),
-                    error
+                    error,
+                    line
                 );
             }
         };

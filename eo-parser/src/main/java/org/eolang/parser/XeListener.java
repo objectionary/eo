@@ -385,7 +385,14 @@ public final class XeListener implements ProgramListener {
             final int indent = ctx.getStart().getCharPositionInLine();
             data = XeListener.trimMargin(text, indent);
         } else {
-            throw new ParsingException("Unknown data type");
+            throw new ParsingException(
+                String.format(
+                    "Unknown data type at line #%d",
+                    ctx.getStart().getLine()
+                ),
+                new IllegalArgumentException(),
+                ctx.getStart().getLine()
+            );
         }
         this.dirs.attr("data", type);
         this.dirs.attr("base", type);
@@ -408,7 +415,11 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void visitErrorNode(final ErrorNode node) {
-        throw new ParsingException(node.getText());
+        throw new ParsingException(
+            node.getText(),
+            new IllegalArgumentException(),
+            0
+        );
     }
 
     @Override
