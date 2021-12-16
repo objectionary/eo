@@ -20,34 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
-+alias org.eolang.gray.heap
++package org.eolang
++alias org.eolang.io.stdout
 +junit
 
-[] > allocates-and-uses
-  "Hello, друг!" > txt
-  txt.as-bytes > bytes
-  heap 1024 > h
-  h.pointer 0 1 > p
-  p.block > data
-    bytes.size
-    [b] (b.as-string > @)
-  and. > @
-    data.write bytes
-    data.eq txt
+[] > prints-itself
+  greater. > @
+    length.
+      as-phi $
+    0
 
-[] > malloc-and-free
-  heap 1024 > h
-  h.malloc 64 > p1
-  h.malloc 32 > p2
-  and. > @
-    p1.less p2
-    h.free p1
-    h.free p2
-
-[] > write-and-read-without-error
-  heap 1024 > h
-  h.pointer 0 8 > p
-  [] > mem
-    p.block 8 > @
-  mem.write 01-02-03 > @
+[] > prints-itself-to-console
+  42 > x
+  stdout > @
+    as-phi $

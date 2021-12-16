@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
@@ -32,43 +32,33 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * CAGE.
+ * AS-PHI.
  *
- * @since 0.17
+ * @since 1.0
  */
-@XmirObject(oname = "cage")
-public class EOcage extends PhDefault {
+@XmirObject(oname = "as-phi")
+public class EOas_phi extends PhDefault {
 
-    public EOcage(final Phi sigma) {
+    public EOas_phi(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtCage());
-        this.add("write", new AtComposite(this, EOcage.Write::new));
-        this.add("is-empty", new AtComposite(this, EOcage.IsEmpty::new));
+        this.add("x", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi obj = rho.attr("x").get();
+            System.out.println(obj.getClass().getCanonicalName());
+            System.out.println(obj.φTerm());
+            obj.attr("ν").get();
+            return new Data.ToPhi(obj.φTerm());
+        }));
     }
 
-    @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
-        Write(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                final Phi obj = rho.attr("x").get();
-                rho.attr("σ").get().attr("φ").put(obj);
-                return new Data.ToPhi(true);
-            }));
-        }
+    @Override
+    public String toString() {
+        return "STOP";
     }
 
-    @XmirObject(oname = "cage.is-empty")
-    private final class IsEmpty extends PhDefault {
-        IsEmpty(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(
-                this, rho -> new Data.ToPhi(
-                    AtCage.class.cast(rho.attr("σ").get().attr("φ")).isEmpty()
-                )
-            ));
-        }
+    @Override
+    public String φTerm() {
+        return "STOP";
     }
 
 }
