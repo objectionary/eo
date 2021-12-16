@@ -105,6 +105,7 @@ public final class Xsline {
                 "org/eolang/parser/errors/unknown-names.xsl",
                 "org/eolang/parser/errors/noname-attributes.xsl",
                 "org/eolang/parser/errors/duplicate-names.xsl",
+                "org/eolang/parser/errors/unused-aliases.xsl",
                 "org/eolang/parser/errors/data-objects.xsl"
             )
         );

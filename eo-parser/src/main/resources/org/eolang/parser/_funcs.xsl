@@ -31,4 +31,12 @@ SOFTWARE.
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="$o/parent::o[not(@base)] and not($o/@base) and not($o/@atom) and not($o/o)"/>
   </xsl:function>
+  <xsl:function name="eo:alias-name" as="xs:string">
+    <xsl:param name="object" as="element()"/>
+    <xsl:sequence select="tokenize($object/tail, ' ')[1]"/>
+  </xsl:function>
+  <xsl:function name="eo:alias-qualified" as="xs:string">
+    <xsl:param name="object" as="element()"/>
+    <xsl:sequence select="tokenize($object/tail, ' ')[2]"/>
+  </xsl:function>
 </xsl:stylesheet>
