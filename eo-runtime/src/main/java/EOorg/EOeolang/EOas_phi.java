@@ -44,21 +44,9 @@ public class EOas_phi extends PhDefault {
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi obj = rho.attr("x").get();
-            System.out.println(obj.getClass().getCanonicalName());
-            System.out.println(obj.φTerm());
             obj.attr("ν").get();
             return new Data.ToPhi(obj.φTerm());
         }));
-    }
-
-    @Override
-    public String toString() {
-        return "STOP";
-    }
-
-    @Override
-    public String φTerm() {
-        return "STOP";
     }
 
 }
