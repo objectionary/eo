@@ -73,6 +73,31 @@
       "Hello"
       42
 
+[] > text-block-one-line
+  eq. > @
+    "Abc"
+    """
+    Abc
+    """
+
+[] > text-block-tree-lines
+  eq. > @
+    65-0A-65-0A-65
+    """
+    e
+    e
+    e
+    """.as-bytes
+
+[] > text-block-with-margin
+  eq. > @
+    20-7A-0A-20-20-79-0A-20-78
+    """
+     z
+      y
+     x
+    """.as-bytes
+
 [] > compares-two-different-strings
   not. > @
     eq.
@@ -83,3 +108,19 @@
   eq. > @
     "Hello, друг!\n"
     "Hello, \u0434\u0440\u0443\u0433!\n"
+
+[] > supports-escape-sequences-in-text
+  eq. > @
+    """
+    Hello, \u0434\u0440\u0443\u0433!\n
+    """
+    "Hello, друг!\n"
+
+[] > preserves-indentation-in-text
+  eq. > @
+    """
+    a
+     b
+      c
+    """
+    "a\n b\n  c"

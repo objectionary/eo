@@ -20,31 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
++package org.eolang
 +rt jvm org.eolang:eo-runtime:0.21.1
 
-# Non-conditional forward and backward jumps. Returns TRUE
-# if the backward jump happened, an object provided to
-# g.forward otherwise.
-#
-# Forward jump may look like this:
-#
-# ```
-# goto
-#   [g]
-#     seq
-#       g.forward TRUE
-#       stdout "Will never be printed"
-# ```
-#
-# Backward jump may be done this way:
-#
-# ```
-# goto
-#   [g]
-#     seq
-#       stdout "Will be printed forever"
-#       g.backward
-# ```
-#
-[f] > goto /?
+# Turns an object into a φ-term
+[x] > as-phi /string
