@@ -43,7 +43,7 @@ public final class EOstdoutTest {
     public void printsString() {
         final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
-            new PhCopy(new EOstdout(Phi.Φ), Phi.Φ),
+            new PhCopy(new EOstdout(Phi.Φ)),
             "text",
             format
         );

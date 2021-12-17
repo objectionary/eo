@@ -66,8 +66,12 @@ final class AtConst implements Attr {
 
     @Override
     public Phi get() {
-        if (this.cache.get() == null) {
-            this.cache.set(this.origin.copy(this.rho).get().copy(this.rho));
+        synchronized (this.cache) {
+            if (this.cache.get() == null) {
+                final Phi phi = this.origin.copy(this.rho).get().copy();
+                phi.move(this.rho);
+                this.cache.set(phi);
+            }
         }
         return this.cache.get();
     }

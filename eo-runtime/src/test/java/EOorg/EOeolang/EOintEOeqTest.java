@@ -45,8 +45,8 @@ public final class EOintEOeqTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
         final Phi eql = new PhWith(
-            new PhMethod(new PhCopy(left, Phi.Φ), "eq"),
-            0, new PhCopy(right, Phi.Φ)
+            new PhMethod(new PhCopy(left), "eq"),
+            0, new PhCopy(right)
         );
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),

@@ -82,8 +82,8 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public final Phi copy(final Phi rho) {
-        return this.object.take().copy(rho);
+    public final void move(final Phi rho) {
+        this.object.take().move(rho);
     }
 
     @Override

@@ -78,8 +78,8 @@ final class PhNamed implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi rho) {
-        return new PhNamed(this.origin.copy(rho), this.name);
+    public void move(final Phi rho) {
+        this.origin.move(rho);
     }
 
     @Override

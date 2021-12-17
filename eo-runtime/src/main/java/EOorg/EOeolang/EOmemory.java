@@ -61,17 +61,9 @@ public class EOmemory extends PhDefault {
     }
 
     @Override
-    protected final Phi copy(final Attr rho) {
-        final EOmemory copy = EOmemory.class.cast(super.copy(rho));
-        copy.phi = new AtomicReference<>();
-        copy.phi.set(this.phi.get());
-        return copy;
-    }
-
-    @Override
     public String toString() {
         return this.toStringWith(
-            String.format("▸memoized=%s", this.phi.get())
+            String.format("▸memoized=%d->%s", this.phi.hashCode(), this.phi.get())
         );
     }
 

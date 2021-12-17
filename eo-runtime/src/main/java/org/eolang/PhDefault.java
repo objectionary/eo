@@ -154,12 +154,24 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Phi copy() {
-        return this.copy(this.attrs.get("ρ"));
+        try {
+            final PhDefault copy = PhDefault.class.cast(this.clone());
+            copy.vertex = PhDefault.VTX.next();
+            copy.cached = new CachedPhi();
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                map.put(ent.getKey(), ent.getValue().copy(copy));
+            }
+            copy.attrs = map;
+            return copy;
+        } catch (final CloneNotSupportedException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     @Override
-    public final Phi copy(final Phi rho) {
-        return this.copy(new AtSimple(rho));
+    public final void move(final Phi rho) {
+        this.attrs.put("ρ", new AtSimple(rho));
     }
 
     @Override
@@ -209,9 +221,9 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                return new AtSimple(
-                    this.cached.get(name, phi::get).attr(name).get().copy(this)
-                );
+                final Phi found = this.cached.get(name, phi::get).attr(name).get();
+                found.move(this);
+                return new AtSimple(found);
             }
         }
         return this.named(attr, name);
@@ -269,31 +281,6 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
         }
         return txt;
-    }
-
-    /**
-     * Make a copy with a new \rho.
-     * @param rho The rho
-     * @return Copy
-     */
-    protected Phi copy(final Attr rho) {
-        try {
-            final PhDefault copy = PhDefault.class.cast(this.clone());
-            copy.vertex = PhDefault.VTX.next();
-            copy.cached = new CachedPhi();
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                if ("ρ".equals(ent.getKey())) {
-                    continue;
-                }
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            map.put("ρ", rho);
-            copy.attrs = map;
-            return copy;
-        } catch (final CloneNotSupportedException ex) {
-            throw new IllegalStateException(ex);
-        }
     }
 
     /**

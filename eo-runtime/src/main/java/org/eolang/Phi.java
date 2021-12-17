@@ -68,8 +68,8 @@ public interface Phi extends Term {
         }
 
         @Override
-        public Phi copy(final Phi rho) {
-            return Phi.Φ;
+        public void move(final Phi rho) {
+            //
         }
 
         @Override
@@ -91,12 +91,11 @@ public interface Phi extends Term {
     Phi copy();
 
     /**
-     * Make a copy, attaching it to a new parent.
+     * Move it to a new parent.
      *
      * @param rho New \rho to attach to
-     * @return A copy
      */
-    Phi copy(Phi rho);
+    void move(Phi rho);
 
     /**
      * Get attribute by position.

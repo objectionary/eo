@@ -68,7 +68,7 @@ public final class PhDefaultTest {
         final String data = "Hello, world!";
         final Phi phi = new PhDefaultTest.Foo(parent, data);
         phi.attr(0).put(num);
-        final Phi copy = phi.copy(Phi.Φ);
+        final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             new Dataized(copy).take(String.class),
             Matchers.equalTo(data)
@@ -103,9 +103,9 @@ public final class PhDefaultTest {
     public void changesRhoOnCopy() {
         final Phi foo = new Foo(Phi.Φ);
         final Phi kid = foo.attr("kid").get();
-        final Phi copy = kid.copy(Phi.Φ);
+        kid.move(Phi.Φ);
         MatcherAssert.assertThat(
-            copy.attr("ρ").get(),
+            kid.attr("ρ").get(),
             Matchers.not(Matchers.equalTo(foo))
         );
     }
@@ -229,7 +229,7 @@ public final class PhDefaultTest {
                 if (PhDefaultTest.EndlessRecursion.count <= 0) {
                     return new Data.ToPhi(0L);
                 }
-                return new PhCopy(new PhDefaultTest.EndlessRecursion(self), self);
+                return new PhCopy(new PhDefaultTest.EndlessRecursion(self));
             }));
         }
     }

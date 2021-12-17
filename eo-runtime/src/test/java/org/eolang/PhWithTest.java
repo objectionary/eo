@@ -65,7 +65,7 @@ public final class PhWithTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(dummy, "add"), dummy),
+                    new PhCopy(new PhMethod(dummy, "add")),
                     0, new Data.ToPhi(1L)
                 )
             ).take(Long.class),
@@ -78,9 +78,9 @@ public final class PhWithTest {
         final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
         MatcherAssert.assertThat(
             new PhWith(
-                new PhCopy(new PhMethod(dummy, "add"), dummy),
+                new PhCopy(new PhMethod(dummy, "add")),
                 0, new Data.ToPhi(1L)
-            ).copy(Phi.Φ).toString(),
+            ).copy().toString(),
             Matchers.containsString("ρ=Φ")
         );
     }

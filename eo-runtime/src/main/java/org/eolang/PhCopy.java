@@ -44,18 +44,4 @@ public final class PhCopy extends PhOnce {
         );
     }
 
-    /**
-     * Ctor.
-     *
-     * @param phi The object
-     * @param rho New \rho
-     */
-    public PhCopy(final Phi phi, final Phi rho) {
-        super(
-            () -> phi.copy(rho),
-            () -> String.format("%s'", phi),
-            () -> String.format("%s", phi.φTerm())
-        );
-    }
-
 }

@@ -62,7 +62,7 @@ public final class EOsprintfTest {
         final Phi format = new Data.ToPhi("Hello, %s %s!");
         final Phi num = new Data.ToPhi(5L);
         Phi phi = new EOsprintf(Phi.Φ);
-        phi = phi.copy(Phi.Φ);
+        phi = phi.copy();
         phi = new PhWith(phi, 0, format);
         phi = new PhWith(phi, 1, num);
         phi = new PhWith(phi, 2, num);

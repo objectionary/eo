@@ -23,13 +23,9 @@
  */
 package org.eolang;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  * Test case for {@link AtDecorated}.
@@ -75,7 +71,7 @@ public final class AtDecoratedTest {
     public void readsOnceAfterCopy() {
         final AtDecoratedTest.Num num = new AtDecoratedTest.Num(Phi.Φ);
         final Phi neg = num.attr("neg").get();
-        final Phi copy = neg.copy(num);
+        final Phi copy = neg.copy();
         copy.attr("Δ").get();
         MatcherAssert.assertThat(num.count, Matchers.equalTo(1));
     }

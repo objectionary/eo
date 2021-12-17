@@ -63,14 +63,14 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(mem, "eq"), mem),
+                    new PhCopy(new PhMethod(mem, "eq")),
                     0,
                     new Data.ToPhi(1L)
                 )
@@ -84,13 +84,13 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), Phi.Φ),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0, new Data.ToPhi(5L)
             )
         ).take(Boolean.class);
@@ -108,7 +108,7 @@ public final class EOmemoryTest {
         write.attr(0).put(text);
         new Dataized(write).take(Boolean.class);
         MatcherAssert.assertThat(
-            new Dataized(new PhCopy(mem, Phi.Φ)).take(Long.class),
+            new Dataized(new PhCopy(mem)).take(Long.class),
             Matchers.equalTo(1L)
         );
     }
@@ -118,12 +118,12 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         final Phi less = new PhWith(
-            new PhCopy(new PhMethod(mem, "less"), mem),
+            new PhCopy(new PhMethod(mem, "less")),
             0, new Data.ToPhi(10L)
         );
         MatcherAssert.assertThat(
@@ -132,7 +132,7 @@ public final class EOmemoryTest {
         );
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0, new Data.ToPhi(42L)
             )
         ).take(Boolean.class);
@@ -147,17 +147,17 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0,
                 new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE), mem),
+                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0,
                 new PhWith(
-                    new PhCopy(new PhMethod(mem, "add"), mem),
+                    new PhCopy(new PhMethod(mem, "add")),
                     0, new Data.ToPhi(42L)
                 )
             )

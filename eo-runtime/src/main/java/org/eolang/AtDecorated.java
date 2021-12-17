@@ -88,7 +88,8 @@ final class AtDecorated implements Attr {
     public Phi get() {
         final Phi base = this.phi.get();
         final Phi ret = base.attr(this.name).copy(base).get();
-        return ret.copy(this.rho);
+        ret.move(this.rho);
+        return ret;
     }
 
     @Override

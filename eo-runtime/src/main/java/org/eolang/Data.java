@@ -136,8 +136,8 @@ public interface Data<T> {
         }
 
         @Override
-        public Phi copy(final Phi rho) {
-            return this;
+        public void move(final Phi rho) {
+            // nothing
         }
 
         @Override

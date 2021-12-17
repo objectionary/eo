@@ -98,8 +98,8 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi rho) {
-        return new PhConst(this.origin.copy(rho), this.named, this.numbered);
+    public void move(final Phi rho) {
+        this.origin.move(rho);
     }
 
     @Override

@@ -50,16 +50,16 @@ public final class EOboolEOwhileTest {
     @Test
     public void loopsOverAbstractObjects() {
         final Phi parent = new Parent(Phi.Φ);
-        final Phi toggle = new PhCopy(new PhMethod(parent, "toggle"), parent);
+        final Phi toggle = new PhCopy(new PhMethod(parent, "toggle"));
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(toggle, "write"), toggle),
+                new PhCopy(new PhMethod(toggle, "write")),
                 0, new Data.ToPhi(true)
             )
         ).take();
         new Dataized(
             new PhWith(
-                new PhCopy(new PhMethod(toggle, "while"), toggle),
+                new PhCopy(new PhMethod(toggle, "while")),
                 0, new EOboolEOwhileTest.Kid(Phi.Φ)
             )
         ).take();
