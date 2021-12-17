@@ -86,7 +86,7 @@ public interface Attr extends Term {
     }
 
     /**
-     * The exception raised when trying to strong() an attribute,
+     * The exception raised when trying to get() an attribute,
      * which is still abstract.
      *
      * @since 0.13

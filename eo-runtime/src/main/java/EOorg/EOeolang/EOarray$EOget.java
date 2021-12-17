@@ -48,7 +48,7 @@ public class EOarray$EOget extends PhDefault {
             if (array.length <= idx) {
                 throw new IllegalArgumentException(
                     String.format(
-                        "Can't strong() the %dth element of the array, there are just %d of them",
+                        "Can't get() the %dth element of the array, there are just %d of them",
                         idx, array.length
                     )
                 );
