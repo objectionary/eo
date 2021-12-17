@@ -46,19 +46,9 @@ public abstract class PhDefault implements Phi, Cloneable {
     private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
 
     /**
-     * Indenter.
-     */
-    private static final Pattern INDENT = Pattern.compile("\n");
-
-    /**
      * Vertices.
      */
     protected static final Vertices VTX = new Vertices();
-
-    /**
-     * Shift right.
-     */
-    private static final String SHIFT = "\n\t";
 
     /**
      * Identity of it (the ID of the vertex).
@@ -129,7 +119,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             return String.format("ν%d", this.vertex);
         }
         this.terms.get().add(this.vertex);
-        final Collection<String> list = new ArrayList<>(this.attrs.size());
+        final List<String> list = new ArrayList<>(this.attrs.size());
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             final String attr = String.format(
                 "%s ↦ %s",
@@ -139,6 +129,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             list.add(attr);
         }
         this.terms.get().remove(this.vertex);
+        Collections.sort(list);
         String txt = this.getClass().getSimpleName();
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
         if (xmir != null) {
@@ -150,7 +141,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (!list.isEmpty()) {
             txt = String.format(
                 "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
-                PhDefault.shift(String.join(",\n", list))
+                new Indented(String.join(",\n", list))
             );
         }
         return txt;
@@ -320,10 +311,10 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.strings.get().add(this.vertex);
         final Collection<String> list = new ArrayList<>(this.attrs.size());
         for (final String line : lines) {
-            list.add(PhDefault.shift(line));
+            list.add(new Indented(line).toString());
         }
-        list.add(String.format("▸order=%s", PhDefault.shift(this.order)));
-        list.add(String.format("▸cached=%s", PhDefault.shift(this.cached)));
+        list.add(String.format("▸order=%s", new Indented(this.order)));
+        list.add(String.format("▸cached=%s", new Indented(this.cached)));
         final List<String> sorted = new ArrayList<>(this.attrs.size());
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
             final int idx = this.order.indexOf(ent.getKey());
@@ -332,7 +323,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                     "%s%s=%s",
                     ent.getKey(),
                     idx >= 0 ? String.format("(#%d)", idx) : "",
-                    PhDefault.shift(ent.getValue())
+                    new Indented(ent.getValue())
                 )
             );
         }
@@ -342,20 +333,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         return String.format(
             "%sν%d:{\n  %s\n}",
             this.getClass().getCanonicalName(),
-            this.hashCode(),
-            String.join(PhDefault.SHIFT, list)
+            this.vertex,
+            String.join("\n\t", list)
         );
-    }
-
-    /**
-     * Shift this text right, by two spaces.
-     * @param text The text to shift
-     * @return Shifted one
-     */
-    private static String shift(final Object text) {
-        return PhDefault.INDENT.matcher(
-            text.toString()
-        ).replaceAll(PhDefault.SHIFT);
     }
 
 }

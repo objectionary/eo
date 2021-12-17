@@ -163,3 +163,11 @@
     sprintf
       "Hello, %s, are you %d?"
       ...* "Jeff" 42
+
+[] > returns-same-object
+  [] > foo
+    [] > @
+      memory > x
+  eq. > @
+    foo.x.<
+    foo.x.<

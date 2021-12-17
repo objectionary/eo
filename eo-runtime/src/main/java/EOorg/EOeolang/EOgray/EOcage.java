@@ -26,6 +26,7 @@ package EOorg.EOeolang.EOgray;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -53,7 +54,8 @@ public class EOcage extends PhDefault {
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
                 final Phi obj = rho.attr("x").get();
-                rho.attr("σ").get().attr("φ").put(obj);
+                final Attr attr = rho.attr("σ").get().attr("φ");
+                attr.put(obj);
                 return new Data.ToPhi(true);
             }));
         }

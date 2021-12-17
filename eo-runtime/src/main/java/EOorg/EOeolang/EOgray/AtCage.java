@@ -96,7 +96,7 @@ final class AtCage implements Attr {
         } else {
             txt = this.object.toString();
         }
-        return txt;
+        return String.format("%d->%s", this.hashCode(), txt);
     }
 
     /**

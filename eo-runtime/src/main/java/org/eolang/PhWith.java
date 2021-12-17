@@ -48,14 +48,28 @@ public final class PhWith extends PhOnce {
                 "%s[%s=%s]",
                 phi,
                 name,
-                attr
+                new Indented(attr)
             ),
-            () -> String.format(
-                "%s(%s ↦ %s)",
-                phi.φTerm(),
-                name,
-                attr.φTerm()
-            )
+            () -> {
+                final String term = attr.φTerm();
+                final String txt;
+                if (term.contains("\n")) {
+                    txt = String.format(
+                        "%s(\n\t%s ↦ %s\n)",
+                        phi.φTerm(),
+                        name,
+                        new Indented(term)
+                    );
+                } else {
+                    txt = String.format(
+                        "%s(%s ↦ %s)",
+                        phi.φTerm(),
+                        name,
+                        term
+                    );
+                }
+                return txt;
+            }
         );
     }
 
@@ -76,14 +90,28 @@ public final class PhWith extends PhOnce {
                 "%s[#%d=%s]",
                 phi,
                 pos,
-                attr
+                new Indented(attr)
             ),
-            () -> String.format(
-                "%s(#%d ↦ %s)",
-                phi.φTerm(),
-                pos,
-                attr.φTerm()
-            )
+            () -> {
+                final String term = attr.φTerm();
+                final String txt;
+                if (term.contains("\n")) {
+                    txt = String.format(
+                        "%s(\n\t#%d ↦ %s\n)",
+                        phi.φTerm(),
+                        pos,
+                        new Indented(term)
+                    );
+                } else {
+                    txt = String.format(
+                        "%s(#%d ↦ %s)",
+                        phi.φTerm(),
+                        pos,
+                        term
+                    );
+                }
+                return txt;
+            }
         );
     }
 
