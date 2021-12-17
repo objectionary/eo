@@ -93,7 +93,7 @@ public final class Dataized {
                 String.format(
                     "%s\uD835\uDD3B( %s ) ➜ %s",
                     String.join("", Collections.nCopies(before, "·")),
-                    this.phi.φTerm(),
+                    this.phi.φTerm().replaceAll("\n\t", ""),
                     new Data.Value<>(data).φTerm()
                 )
             );

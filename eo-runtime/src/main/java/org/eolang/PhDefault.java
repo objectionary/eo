@@ -58,7 +58,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Shift right.
      */
-    private static final String SHIFT = "\n  ";
+    private static final String SHIFT = "\n\t";
 
     /**
      * Identity of it (the ID of the vertex).
@@ -126,7 +126,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.terms.set(new HashSet<>());
         }
         if (this.terms.get().contains(this.vertex)) {
-            return "✗";
+            return String.format("ν%d", this.vertex);
         }
         this.terms.get().add(this.vertex);
         final Collection<String> list = new ArrayList<>(this.attrs.size());
@@ -149,8 +149,8 @@ public abstract class PhDefault implements Phi, Cloneable {
         }
         if (!list.isEmpty()) {
             txt = String.format(
-                "%s⟦%s⟧", txt,
-                String.join(", ", list)
+                "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
+                PhDefault.shift(String.join(",\n", list))
             );
         }
         return txt;
@@ -315,7 +315,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.strings.set(new HashSet<>());
         }
         if (this.strings.get().contains(this.vertex)) {
-            return "✗";
+            return String.format("ν%d", this.vertex);
         }
         this.strings.get().add(this.vertex);
         final Collection<String> list = new ArrayList<>(this.attrs.size());

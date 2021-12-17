@@ -216,7 +216,7 @@ public interface Data<T> {
                 final Phi[] items = Phi[].class.cast(this.val);
                 for (int idx = 0; idx < items.length; ++idx) {
                     if (out.length() > 0) {
-                        out.append(", ");
+                        out.append(",\n");
                     }
                     out.append('ι').append(idx).append(" ↦ ");
                     if (items[idx] == null) {
@@ -225,9 +225,12 @@ public interface Data<T> {
                         out.append(items[idx].φTerm());
                     }
                 }
-                txt = String.format("⟦%s⟧", out.toString());
+                txt = String.format("⟦\n\t%s\n⟧", out.toString());
             } else {
-                txt = this.toString();
+                txt = this.toString()
+                    .replace("⟦", "\\uE29FA6")
+                    .replace("⟧", "\\uE29FA7")
+                    .replace(", ", "\\u2C ");
             }
             return txt;
         }
