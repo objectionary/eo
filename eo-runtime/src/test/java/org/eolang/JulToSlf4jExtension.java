@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -39,14 +40,13 @@ public final class JulToSlf4jExtension implements BeforeAllCallback {
     /**
      * Initialized already?
      */
-    private static boolean started = false;
+    private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
 
     @Override
     public void beforeAll(final ExtensionContext context) {
-        if (JulToSlf4jExtension.started) {
+        if (JulToSlf4jExtension.INITIALIZED.getAndSet(true)) {
             return;
         }
-        JulToSlf4jExtension.started = true;
         context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).put(
             "org.eolang.JulToSlf4jExtension", this
         );
