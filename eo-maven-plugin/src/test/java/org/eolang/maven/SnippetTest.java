@@ -102,7 +102,7 @@ public final class SnippetTest {
             new OutputTo(stdout)
         );
         MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
-        Logger.info(this, "Stdout: \"%s\"", stdout.toString());
+        Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
                 new String(stdout.toByteArray(), StandardCharsets.UTF_8),
