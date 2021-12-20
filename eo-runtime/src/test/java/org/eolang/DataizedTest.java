@@ -32,17 +32,21 @@ import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link Dataized}.
  *
  * @since 0.22
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public final class DataizedTest {
 
     @Test
     public void logsCorrectly() {
         final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Handler() {
@@ -61,6 +65,7 @@ public final class DataizedTest {
         };
         log.addHandler(hnd);
         new Dataized(new Data.ToPhi(1L)).take();
+        log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
             logs.get(0).getMessage(),
