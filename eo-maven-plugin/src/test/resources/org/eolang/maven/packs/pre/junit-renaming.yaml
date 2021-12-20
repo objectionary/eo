@@ -5,12 +5,14 @@ xsls:
 tests:
   - /program/errors[count(*)=0]
   - //class[@name='it-worksTest']
-  - //class[@name='it-worksTest$prints-well']
-  - //o[@base='it-worksTest$prints-well']
+  - //class[@name='it-worksTest$a$b$prints-well']
+  - //o[@base='it-worksTest$a$b$prints-well']
   - //o[@name='prints-well']
   - //class[@parent='it-worksTest']
 eo: |
   +junit
   [] > it-works
-    [] > prints-well
-      42 > @
+    [] > a
+      [] > b
+        [] > prints-well
+          42 > @
