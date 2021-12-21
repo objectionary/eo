@@ -312,7 +312,27 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:variable name="o" select="."/>
-    <xsl:variable name="b" select="//*[@name=$o/@base and @line=$o/@ref]"/>
+    <xsl:variable name="b" select="//*[generate-id()!=generate-id($o) and @name=$o/@base and @line=$o/@ref]"/>
+    <xsl:if test="count($b) &gt; 1">
+      <xsl:message terminate="yes">
+        <xsl:text>Found more than one target of '</xsl:text>
+        <xsl:value-of select="$o/@base"/>
+        <xsl:text>' at the line #</xsl:text>
+        <xsl:value-of select="$o/@line"/>
+        <xsl:text> leading to </xsl:text>
+        <xsl:for-each select="$b">
+          <xsl:if test="position()&gt;1">
+            <xsl:text>, </xsl:text>
+          </xsl:if>
+          <xsl:text>&lt;</xsl:text>
+          <xsl:value-of select="name(.)"/>
+          <xsl:text>/&gt;</xsl:text>
+          <xsl:text> at line #</xsl:text>
+          <xsl:value-of select="@line"/>
+        </xsl:for-each>
+        <xsl:text>; it's an internal bug</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:value-of select="$indent"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>

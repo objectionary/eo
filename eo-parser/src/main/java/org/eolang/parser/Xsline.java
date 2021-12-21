@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -219,9 +220,19 @@ public final class Xsline {
             final XML dom = new XMLDocument(xsl.toString());
             boolean more;
             do {
-                final XML after = each.with("step", index)
-                    .with("sheet", dom.xpath("/*/@id").get(0))
-                    .transform(xsl.transform(before));
+                final String sid = dom.xpath("/*/@id").get(0);
+                final XML after;
+                try {
+                    after = each.with("step", index)
+                        .with("sheet", sid)
+                        .transform(xsl.transform(before));
+                } catch (final IllegalArgumentException ex) {
+                    Logger.error(this, "The error happened here:%n%s", before);
+                    throw new IllegalArgumentException(
+                        String.format("XSL failure in '%s'", sid),
+                        ex
+                    );
+                }
                 this.spy.push(index, xsl, after);
                 ++index;
                 more = func.apply(before, after);

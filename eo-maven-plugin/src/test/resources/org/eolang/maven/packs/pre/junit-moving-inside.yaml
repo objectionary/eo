@@ -1,13 +1,22 @@
 xsls:
   - org/eolang/parser/optimize/abstracts-float-up.xsl
   - org/eolang/maven/pre/classes.xsl
+  - org/eolang/parser/remove-noise.xsl
   - org/eolang/maven/pre/junit.xsl
+  - org/eolang/maven/pre/rename-junit-inners.xsl
 tests:
   - /program/errors[count(*)=0]
-  - /program[count(//class)=3]
+  - /program[count(//class)=5]
+  - /program/objects[count(class)=1]
+  - //class[@name='ω3τ0$α0' and @parent='ω2c']
+  - //o[@base='ω2c' and @name='c']
 eo: |
   +junit
-  [] > it-works
-    [] > prints-well
-      [] > foo
-        42 > @
+  [] > a
+    [] > b
+      [] > c
+        d > @
+          []
+            c > @
+          []
+            42 > @

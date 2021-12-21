@@ -86,6 +86,7 @@ final class TranspilerCanonical implements Transpiler {
                 new ListOf<>(
                     "org/eolang/maven/pre/classes.xsl",
                     "org/eolang/maven/pre/junit.xsl",
+                    "org/eolang/maven/pre/rename-junit-inners.xsl",
                     "org/eolang/maven/pre/attrs.xsl",
                     "org/eolang/maven/pre/varargs.xsl",
                     "org/eolang/maven/pre/data.xsl",

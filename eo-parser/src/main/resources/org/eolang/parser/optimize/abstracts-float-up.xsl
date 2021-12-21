@@ -54,6 +54,7 @@ SOFTWARE.
             <xsl:value-of select="@name"/>
           </xsl:when>
           <xsl:otherwise>
+            <xsl:text>&#x3C4;</xsl:text>
             <xsl:value-of select="count(preceding-sibling::o)"/>
           </xsl:otherwise>
         </xsl:choose>
