@@ -195,7 +195,7 @@ public final class SnippetTest {
         );
         SnippetTest.exec(
             String.format(
-                "javac %s -d %s -cp %s",
+                "javac -encoding utf-8 %s -d %s -cp %s",
                 new Walk(generated).stream()
                     .map(Path::toAbsolutePath)
                     .map(Path::toString)
@@ -211,6 +211,7 @@ public final class SnippetTest {
                 new Joined<>(
                     new ListOf<>(
                         "java",
+                        "-Dfile.encoding=utf-8",
                         "-cp",
                         cpath,
                         "org.eolang.Main"
