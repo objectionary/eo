@@ -79,6 +79,7 @@ public final class MainTest {
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add("java");
+        args.add("-Dfile.encoding=utf-8");
         args.add("-cp");
         args.add(System.getProperty("java.class.path"));
         args.add(Main.class.getCanonicalName());

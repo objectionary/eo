@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -120,9 +121,15 @@ public final class TranspileMojoTest {
     @Test
     public void testRealCompilation(@TempDir final Path temp)
         throws Exception {
+        final String arpath;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            arpath = "org/eolang/maven/win-array.eo";
+        } else {
+            arpath = "org/eolang/maven/array.eo";
+        }
         final String java = this.compile(
             temp,
-            new ResourceOf("org/eolang/maven/array.eo"),
+            new ResourceOf(arpath),
             "EOorg/EOeolang/EOarray.java"
         );
         MatcherAssert.assertThat(java, Matchers.containsString("class"));
