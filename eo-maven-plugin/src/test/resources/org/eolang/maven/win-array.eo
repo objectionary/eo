@@ -1,0 +1,60 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2021 Yegor Bugayenko
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.0.0
+
+[] > array
+
+  # Is it empty?
+  [] > is-empty /bool
+
+  # Obtain the length of the array.
+  [] > length /int
+
+  # Take one element from the array, at the
+  # given position.
+  [i] > get /?
+
+  # Create a new array with this element added to
+  # the end of it.
+  [x] > append /array
+
+  # Reduce from start "a" using the function "f"
+  [a f] > reduce /a
+
+  # For each array element dataize the object
+  [f] > each /bool
+
+  # Map with index. Here "f" must be an abstract
+  # object with two free attributes. The first
+  # one for the element of the array, the second one
+  # for the index.
+  [f] > mapi /array
+
+  # Map without index. Here "f" must be an abstract
+  # object with one free attribute, for the element
+  # of the array.
+  [f] > map
+    ^.mapi > @
+      [x i]
+        &.f x > @
