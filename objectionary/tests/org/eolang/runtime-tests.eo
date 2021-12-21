@@ -171,3 +171,11 @@
   eq. > @
     foo.x.<
     foo.x.<
+
+[] > compiles-correctly-with-long-duplicate-names
+  [] > long-object-name
+    [] > long-object-name
+      [] > long-object-name
+        [] > long-object-name
+          [] > long-object-name
+  TRUE > @
