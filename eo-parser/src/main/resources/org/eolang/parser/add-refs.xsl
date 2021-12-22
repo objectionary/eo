@@ -38,19 +38,32 @@ SOFTWARE.
       <xsl:if test="$p">
         <xsl:variable name="x" select="$p/o[@name=$o/@base]"/>
         <xsl:if test="$p">
-          <xsl:if test="not($x/@line)">
-            <xsl:message terminate="yes">
-              <xsl:text>Attribute @line is absent at "</xsl:text>
-              <xsl:value-of select="$x/@name"/>
-              <xsl:text>"</xsl:text>
-            </xsl:message>
-          </xsl:if>
           <xsl:if test="count($x)!=1">
             <xsl:message terminate="yes">
               <xsl:text>Duplicate names inside "</xsl:text>
               <xsl:value-of select="@name"/>
               <xsl:text>", the base is "</xsl:text>
               <xsl:value-of select="@base"/>
+              <xsl:text>" at the line #</xsl:text>
+              <xsl:value-of select="@line"/>
+              <xsl:text> pointing to </xsl:text>
+              <xsl:for-each select="$x">
+                <xsl:if test="position()&gt;1">
+                  <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:text>&lt;</xsl:text>
+                <xsl:value-of select="name(.)"/>
+                <xsl:text>/&gt;</xsl:text>
+                <xsl:text> at line #</xsl:text>
+                <xsl:value-of select="@line"/>
+              </xsl:for-each>
+              <xsl:text>; it's internal bug</xsl:text>
+            </xsl:message>
+          </xsl:if>
+          <xsl:if test="not($x/@line)">
+            <xsl:message terminate="yes">
+              <xsl:text>Attribute @line is absent at "</xsl:text>
+              <xsl:value-of select="$x/@name"/>
               <xsl:text>"</xsl:text>
             </xsl:message>
           </xsl:if>

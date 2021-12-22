@@ -179,3 +179,16 @@
         [] > long-object-name
           [] > long-object-name
   TRUE > @
+
+[] > refers-to-inner-vars-correctly
+  memory > go
+  seq > @
+    go.write TRUE
+    go.while
+      [i]
+        memory > m
+        seq > @
+          42 > x
+          m.write x
+          go.write FALSE
+    TRUE

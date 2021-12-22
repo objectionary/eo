@@ -52,7 +52,10 @@ SOFTWARE.
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[eo:abstract(.)]" mode="full">
+  <xsl:template match="o[eo:abstract(.) and not(../objects)]" priority="0">
+    <xsl:apply-templates select="." mode="full"/>
+  </xsl:template>
+  <xsl:template match="o[eo:abstract(.)]" mode="full" priority="1">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
