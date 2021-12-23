@@ -198,3 +198,13 @@
     seq > @
       [] > a
         TRUE > @
+
+[] > xx
+  cage > h
+  [x] > func
+    sprintf "Hello, %s!" x > @
+  eq. > @
+    "Hello, Jeff!"
+    seq
+      h.write func
+      h.@ "Jeff"
