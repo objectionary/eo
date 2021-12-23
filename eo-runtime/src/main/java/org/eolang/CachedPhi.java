@@ -60,6 +60,13 @@ final class CachedPhi {
     }
 
     /**
+     * Reset it to NULL.
+     */
+    public void reset() {
+        this.cached.clear();
+    }
+
+    /**
      * Get it and clean if necessary.
      * @param name Attribute name
      * @param supplier of Phi

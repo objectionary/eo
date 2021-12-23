@@ -36,6 +36,8 @@ import java.util.regex.Pattern;
 /**
  * A simple object.
  *
+ * The class is thread-safe.
+ *
  * @since 0.1
  */
 public abstract class PhDefault implements Phi, Cloneable {
@@ -51,6 +53,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected static final Vertices VTX = new Vertices();
 
     /**
+     * Order of their names.
+     */
+    private final List<String> order;
+
+    /**
      * Identity of it (the ID of the vertex).
      */
     protected int vertex;
@@ -59,11 +66,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Attributes.
      */
     private Map<String, Attr> attrs;
-
-    /**
-     * Order of their names.
-     */
-    private final List<String> order;
 
     /**
      * Cached \phi.
@@ -226,7 +228,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 return new AtSimple(found);
             }
         }
-        return this.named(attr, name);
+        return new AtPhiSensitive(this.named(attr, name), this.cached);
     }
 
     /**

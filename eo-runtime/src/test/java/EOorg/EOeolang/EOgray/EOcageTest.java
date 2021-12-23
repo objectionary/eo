@@ -141,6 +141,32 @@ public final class EOcageTest {
         );
     }
 
+    @Test
+    public void overwritesCagedObject() {
+        final Phi cage = new EOcage(Phi.Φ);
+        new Dataized(
+            new PhWith(
+                new PhCopy(new PhMethod(cage, "write")),
+                0,
+                new PhWith(
+                    new EOcageTest.Dummy(Phi.Φ),
+                    0, new Data.ToPhi(1L)
+                )
+            )
+        ).take();
+        new Dataized(new PhMethod(cage, "x")).take();
+        new Dataized(
+            new PhWith(
+                new PhCopy(new PhMethod(cage, "write")),
+                0, new Data.ToPhi(0L)
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            new Dataized(cage).take(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
+
     public static class Dummy extends PhDefault {
         public Dummy(final Phi sigma) {
             super(sigma);
