@@ -63,3 +63,15 @@
     copy.<
     c.write (dummy copy)
     c.x.x.eq 42
+
+[] > overwrites-caged-object-with-integer
+  cage > c
+  [x] > t
+    42 > attr
+    seq > @
+      7
+  seq > @
+    c.write (t 0)
+    c.attr
+    c.write 66
+    c.eq 66
