@@ -228,7 +228,11 @@ public abstract class PhDefault implements Phi, Cloneable {
                 return new AtSimple(found);
             }
         }
-        return new AtPhiSensitive(this.named(attr, name), this.cached);
+        attr = this.named(attr, name);
+        if ("φ".equals(name)) {
+            attr = new AtPhiSensitive(attr, this.cached);
+        }
+        return attr;
     }
 
     /**
