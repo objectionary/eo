@@ -101,7 +101,7 @@ whether it's leap or not:
   stdout > @
     sprintf
       "%d is %sa leap year!"
-      (args.get 0).nextInt > year!
+      (args.get 0).as-int > year!
       if. (leap year:y) "" "not "
 ```
 
