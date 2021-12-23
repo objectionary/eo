@@ -150,7 +150,9 @@ public final class Save {
     public static String rel(final Path file) {
         final String cwd = Paths.get("").toAbsolutePath().toString();
         String path = file.toAbsolutePath().toString();
-        if (path.startsWith(cwd)) {
+        if (path.equals(cwd)) {
+            path = "./";
+        } else if (path.startsWith(cwd)) {
             path = String.format(
                 "./%s",
                 path.substring(cwd.length() + 1)
