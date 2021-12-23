@@ -29,7 +29,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import EOorg.EOeolang.EOint;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -114,26 +113,14 @@ public final class DataizedTest {
                         this,
                         (rho) -> {
                             Phi fvar = new PhCopy(new DataizedTest.Fvarargs(rho));
-                            Phi var1 = new PhWith(
-                                new EOint(rho), "Δ", new Data.Value<>(1L)
-                            );
-                            Phi var2 = new PhWith(
-                                new EOint(rho), "Δ", new Data.Value<>(2L)
-                            );
-                            Phi var3 = new PhWith(
-                                new EOint(rho), "Δ", new Data.Value<>(3L)
-                            );
+                            Phi var1 = new Data.ToPhi(1L);
+                            Phi var2 = new Data.ToPhi(2L);
+                            Phi var3 = new Data.ToPhi(3L);
                             Phi fvard = new PhWith(fvar, 0, var1);
                             fvard = new PhWith(fvard, 1, var2);
                             fvard = new PhWith(fvard, 2, var3);
                             return new PhWith(
-                                new PhCopy(
-                                    new PhMethod(fvard, "eq")
-                                ),
-                                0,
-                                new PhWith(
-                                    new EOint(rho), "Δ", new Data.Value<>(2L)
-                                )
+                                new PhCopy(new PhMethod(fvard, "eq")), 0, new Data.ToPhi(2L)
                             );
                         }
                     )
@@ -159,19 +146,13 @@ public final class DataizedTest {
             this.add(
                 "a",
                 new AtOnce(
-                    new AtComposite(
-                        this,
-                        (rho) -> new PhWith(new EOint(rho), "Δ", new Data.Value<>(1L))
-                    )
+                    new AtComposite(this, (rho) -> new Data.ToPhi(1L))
                 )
             );
             this.add(
                 "φ",
                 new AtOnce(
-                    new AtComposite(
-                        this,
-                        (rho) -> new PhWith(new EOint(rho), "Δ", new Data.Value<>(2L))
-                    )
+                    new AtComposite(this, (rho) -> new Data.ToPhi(2L))
                 )
             );
         }
