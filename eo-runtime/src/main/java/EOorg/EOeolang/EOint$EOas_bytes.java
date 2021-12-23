@@ -43,7 +43,7 @@ public class EOint$EOas_bytes extends PhDefault {
     public EOint$EOas_bytes(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            ByteBuffer.allocate(8).putLong(
+            ByteBuffer.allocate(Long.BYTES).putLong(
                 new Param(rho).strong(Long.class)
             ).array()
         )));
