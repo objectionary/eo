@@ -44,12 +44,12 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.22
  * @todo #414:30min Fix bug EO app calling a varargs func.
- *  We reproduced by a Java and EO test bug with exception `You can't overwrite X`
+ *  We reproduced by a Java and EO tests, the bug with exception `You can't overwrite X`
  *  when EO app try to call a function that uses varargs as parameter. Now, we must fix it
  *  and enable test below and eo test {@code [] > calls-varargs-func} located in
  *  `runtime-tests.eo`.
  */
-final class EODataizeVarargsFuncTest {
+final class EODataizeAppCallsVarargsFuncTest {
 
     @Test
     @Disabled
@@ -80,14 +80,11 @@ final class EODataizeVarargsFuncTest {
                         this,
                         (rho) -> {
                             Phi fvar = new PhCopy(new Fvarargs(rho));
-                            Phi var1 = new Data.ToPhi(1L);
-                            Phi var2 = new Data.ToPhi(2L);
-                            Phi var3 = new Data.ToPhi(3L);
-                            Phi fvard = new PhWith(fvar, 0, var1);
-                            fvard = new PhWith(fvard, 1, var2);
-                            fvard = new PhWith(fvard, 2, var3);
+                            fvar = new PhWith(fvar, 0, new Data.ToPhi(1L));
+                            fvar = new PhWith(fvar, 1, new Data.ToPhi(2L));
+                            fvar = new PhWith(fvar, 2, new Data.ToPhi(3L));
                             return new PhWith(
-                                new PhCopy(new PhMethod(fvard, "eq")), 0, new Data.ToPhi(2L)
+                                new PhCopy(new PhMethod(fvar, "eq")), 0, new Data.ToPhi(2L)
                             );
                         }
                     )
@@ -99,7 +96,7 @@ final class EODataizeVarargsFuncTest {
     /**
      * Varargs function sample.
      * {@code
-     *  [args] > f
+     *  [args...] > f
      *    1 > a
      *    2 > @
      * }
