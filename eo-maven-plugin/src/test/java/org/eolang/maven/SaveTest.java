@@ -25,10 +25,12 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -53,4 +55,11 @@ final class SaveTest {
         );
     }
 
+    @Test
+    void returnsRelativePathOfCurrentWorkingDirectory() {
+        MatcherAssert.assertThat(
+            Save.rel(Paths.get("")),
+            Matchers.is("./")
+        );
+    }
 }
