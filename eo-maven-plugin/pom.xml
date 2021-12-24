@@ -150,12 +150,9 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
+      <groupId>com.yegor256</groupId>
+      <artifactId>tojos</artifactId>
+      <version>0.3.0</version>
     </dependency>
   </dependencies>
   <build>

@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +33,6 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.tojos.Tojo;
 
 /**
  * Extend current list of foreign objects with those

@@ -24,6 +24,9 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Json;
+import com.yegor256.tojos.MonoTojos;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,9 +38,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.tojos.Json;
-import org.eolang.tojos.MonoTojos;
-import org.eolang.tojos.Tojos;
 
 /**
  * Take binary files from where ResolveMojo placed them and

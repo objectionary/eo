@@ -23,13 +23,13 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

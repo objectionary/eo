@@ -23,10 +23,10 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.MonoTojos;
+import com.yegor256.tojos.SmartTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.eolang.tojos.MonoTojos;
-import org.eolang.tojos.SmartTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

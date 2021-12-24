@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,7 +38,6 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
-import org.eolang.tojos.Tojo;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 

@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +33,6 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

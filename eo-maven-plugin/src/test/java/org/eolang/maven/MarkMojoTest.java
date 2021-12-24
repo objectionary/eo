@@ -23,8 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Path;
-import org.eolang.tojos.MonoTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

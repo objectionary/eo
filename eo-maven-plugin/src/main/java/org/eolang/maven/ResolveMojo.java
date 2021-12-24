@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +39,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.tojos.Tojo;
 
 /**
  * Find all required runtime dependencies, download

@@ -24,6 +24,9 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Json;
+import com.yegor256.tojos.MonoTojos;
+import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,9 +35,6 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.tojos.Json;
-import org.eolang.tojos.MonoTojos;
-import org.eolang.tojos.Tojo;
 
 /**
  * It deletes binary files, which were previously copied by "place" mojo.

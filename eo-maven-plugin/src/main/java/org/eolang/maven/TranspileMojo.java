@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -32,7 +33,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.tojos.Tojo;
 
 /**
  * Compile.

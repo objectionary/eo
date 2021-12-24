@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,7 +36,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
-import org.eolang.tojos.Tojo;
 
 /**
  * Optimize XML files.

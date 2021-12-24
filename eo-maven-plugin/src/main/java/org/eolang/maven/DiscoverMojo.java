@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,7 +37,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
-import org.eolang.tojos.Tojo;
 
 /**
  * Read all XMIR files and find foreign objects in them, then

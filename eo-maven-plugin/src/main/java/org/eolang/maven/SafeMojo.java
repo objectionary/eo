@@ -23,10 +23,16 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.Json;
+import com.yegor256.tojos.Mono;
+import com.yegor256.tojos.MonoTojos;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.function.Function;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -34,12 +40,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.cactoos.Func;
-import org.eolang.tojos.Json;
-import org.eolang.tojos.Mono;
-import org.eolang.tojos.MonoTojos;
-import org.eolang.tojos.Tojo;
-import org.eolang.tojos.Tojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -147,7 +147,7 @@ abstract class SafeMojo extends AbstractMojo {
         final Tojos tojos = this.tojos();
         return new Tojos() {
             @Override
-            public Tojo add(final String name) throws IOException {
+            public Tojo add(final String name) {
                 final Tojo tojo = tojos.add(name);
                 if (!tojo.exists(AssembleMojo.ATTR_SCOPE)) {
                     tojo.set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
@@ -156,7 +156,7 @@ abstract class SafeMojo extends AbstractMojo {
             }
 
             @Override
-            public Collection<Tojo> select(final Func<Tojo, Boolean> filter) throws IOException {
+            public Collection<Tojo> select(final Function<Tojo, Boolean> filter) {
                 return tojos.select(
                     t -> filter.apply(t)
                         && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)

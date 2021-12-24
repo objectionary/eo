@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Tojo;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -33,7 +34,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedFunc;
-import org.eolang.tojos.Tojo;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
