@@ -91,3 +91,15 @@
     sum.write (1.add x)
     x.write 7
     sum.eq 8
+
+[] > dataizes-encaged-object-lazily-third
+  cage > x
+  cage > y
+  cage > sum
+  seq > @
+    x.write 42
+    y.write 7
+    sum.write (x.add y)
+    y.write 13
+    x.write 4
+    sum.eq 17
