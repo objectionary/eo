@@ -139,6 +139,25 @@ public final class EOcageTest {
         );
     }
 
+    @Test
+    public void evaluatesLazily() {
+        final Phi item = new EOcage(Phi.Φ);
+        EOcageTest.writeTo(item, new Data.ToPhi(1L));
+        final Phi cage = new EOcage(Phi.Φ);
+        EOcageTest.writeTo(
+            cage,
+            new PhWith(
+                new PhCopy(new PhMethod(new Data.ToPhi(1L), "add")),
+                0, item
+            )
+        );
+        EOcageTest.writeTo(item, new Data.ToPhi(3L));
+        MatcherAssert.assertThat(
+            new Dataized(cage).take(Long.class),
+            Matchers.equalTo(4L)
+        );
+    }
+
     private static void writeTo(final Phi cage, final Phi obj) {
         new Dataized(
             new PhWith(

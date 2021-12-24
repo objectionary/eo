@@ -81,7 +81,7 @@
     x.write 42
     sum.write (x.add 1)
     x.write 7
-    sum.eq 49
+    sum.eq 8
 
 [] > dataizes-encaged-object-lazily-second
   cage > x
@@ -90,4 +90,4 @@
     x.write 42
     sum.write (1.add x)
     x.write 7
-    sum.eq 49
+    sum.eq 8
