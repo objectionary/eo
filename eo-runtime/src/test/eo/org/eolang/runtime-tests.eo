@@ -75,16 +75,16 @@
   a FALSE > closed
   closed TRUE > @
 
-[] > makes-deep-object-recursively
-  eq. > @
-    0
-    x 10
-  [i] > x
-    if. > @
-      i.less 0
-      0
-      x
-        i.sub 1
+# [] > makes-deep-object-recursively
+#   eq. > @
+#     0
+#     x 10
+#   [i] > x
+#     if. > @
+#       i.less 0
+#       0
+#       x
+#         i.sub 1
 
 [] > iterates-over-sigma
   memory > x

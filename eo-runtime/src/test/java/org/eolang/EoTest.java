@@ -23,34 +23,19 @@
  */
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.slf4j.bridge.SLF4JBridgeHandler;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Jul To Slf4j Extension.
+ * Marker annotation for EO test.
  *
  * @since 0.16.11
  */
-public final class JulToSlf4jExtension implements BeforeAllCallback {
-
-    /**
-     * Initialized already?
-     */
-    private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
-
-    @Override
-    public void beforeAll(final ExtensionContext context) {
-        if (JulToSlf4jExtension.INITIALIZED.getAndSet(true)) {
-            return;
-        }
-        context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).put(
-            "org.eolang.JulToSlf4jExtension", this
-        );
-        SLF4JBridgeHandler.install();
-        Logger.getLogger("").setLevel(Level.ALL);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(JulToSlf4jExtension.class)
+@Target(ElementType.TYPE)
+public @interface EoTest {
 }
