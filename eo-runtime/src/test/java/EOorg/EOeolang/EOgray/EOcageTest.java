@@ -46,12 +46,7 @@ public final class EOcageTest {
     @Test
     public void simpleWriteAndRead() {
         final Phi cage = new EOcage(Phi.Φ);
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(cage, "write")),
-                0, new Data.ToPhi(1L)
-            )
-        ).take();
+        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
@@ -70,26 +65,11 @@ public final class EOcageTest {
     @Test
     public void writesItselfToItself() {
         final Phi cage = new EOcage(Phi.Φ);
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(cage, "write")),
-                0, new Data.ToPhi(1L)
-            )
-        ).take();
+        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         final Phi first = cage.copy();
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(cage, "write")),
-                0, first
-            )
-        ).take();
+        EOcageTest.writeTo(cage, first);
         final Phi second = cage.copy();
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(cage, "write")),
-                0, second
-            )
-        ).take();
+        EOcageTest.writeTo(cage, second);
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
@@ -144,27 +124,29 @@ public final class EOcageTest {
     @Test
     public void overwritesCagedObject() {
         final Phi cage = new EOcage(Phi.Φ);
-        new Dataized(
+        EOcageTest.writeTo(
+            cage,
             new PhWith(
-                new PhCopy(new PhMethod(cage, "write")),
-                0,
-                new PhWith(
-                    new EOcageTest.Dummy(Phi.Φ),
-                    0, new Data.ToPhi(1L)
-                )
+                new EOcageTest.Dummy(Phi.Φ),
+                0, new Data.ToPhi(1L)
             )
-        ).take();
+        );
         new Dataized(new PhMethod(cage, "x")).take();
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(cage, "write")),
-                0, new Data.ToPhi(0L)
-            )
-        ).take();
+        EOcageTest.writeTo(cage, new Data.ToPhi(0L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(0L)
         );
+    }
+
+    private static void writeTo(final Phi cage, final Phi obj) {
+        new Dataized(
+            new PhWith(
+                new PhCopy(new PhMethod(cage, "write")),
+                0,
+                obj
+            )
+        ).take();
     }
 
     public static class Dummy extends PhDefault {
