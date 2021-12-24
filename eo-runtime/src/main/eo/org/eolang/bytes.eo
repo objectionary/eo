@@ -68,3 +68,7 @@
 
   # Calculate bitwise right shift
   [x] > right /bytes
+
+  # Return itself
+  [] > as-bytes
+    ^ > @

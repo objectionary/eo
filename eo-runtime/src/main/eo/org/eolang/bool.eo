@@ -24,8 +24,11 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > bool
-  # Equal to another bool?
-  [b] > eq /bool
+  # Equal to another object?
+  [x] > eq
+     eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # If true, return "t", otherwise "f"
   [t f] > if /?
@@ -44,3 +47,11 @@
   # of WHILE is the number of successful cycles. The \rho
   # of the object copied will be set to "while.\rho".
   [f] > while /int
+
+  # Converts this to bytes
+  [] > as-bytes
+    if. > @
+      ^
+      00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-00
+

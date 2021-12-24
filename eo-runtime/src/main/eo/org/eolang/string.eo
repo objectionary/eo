@@ -24,8 +24,11 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > string
-  # Is true if both strings are equal
-  [x] > eq /bool
+  # Is true if both objects are equal
+  [x] > eq
+     eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Get the length of it
   [] > length /int

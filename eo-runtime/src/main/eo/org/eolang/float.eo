@@ -25,7 +25,10 @@
 
 [] > float
   # Tests that $ = x
-  [x] > eq /bool
+  [x] > eq
+     eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Tests that $ ≠ x
   [x] > neq
