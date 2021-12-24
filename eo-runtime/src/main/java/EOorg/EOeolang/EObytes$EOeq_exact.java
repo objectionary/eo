@@ -38,10 +38,10 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "bytes.eq")
-public class EObytes$EOeq extends PhDefault {
+@XmirObject(oname = "bytes.eq-exact")
+public class EObytes$EOeq_exact extends PhDefault {
 
-    public EObytes$EOeq(final Phi sigma) {
+    public EObytes$EOeq_exact(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(

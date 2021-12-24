@@ -25,7 +25,13 @@
 
 [] > bytes
   # Equals to another bytes
-  [b] > eq /bool
+  [b] > eq-exact /bool
+
+  # Equals to another object
+  [x] > eq
+     eq-exact. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Total number of bytes
   [] > size /int
