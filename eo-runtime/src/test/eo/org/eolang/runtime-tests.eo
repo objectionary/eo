@@ -199,7 +199,7 @@
       [] > a
         TRUE > @
 
-[] > xx
+[] > calling-caged-function
   cage > h
   [x] > func
     sprintf "Hello, %s!" x > @
