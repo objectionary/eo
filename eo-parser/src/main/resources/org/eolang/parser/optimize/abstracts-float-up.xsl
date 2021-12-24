@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -41,20 +41,21 @@ SOFTWARE.
     foo$test > test
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">
       <xsl:for-each select="$object/ancestor-or-self::o">
         <xsl:choose>
           <xsl:when test="eo:abstract(.) and not(@name)">
-            <xsl:text>&#x3B1;</xsl:text>
+            <xsl:text>α</xsl:text>
             <xsl:value-of select="count(preceding-sibling::o)"/>
           </xsl:when>
           <xsl:when test="eo:abstract(.)">
             <xsl:value-of select="@name"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>&#x3C4;</xsl:text>
+            <xsl:text>τ</xsl:text>
             <xsl:value-of select="count(preceding-sibling::o)"/>
           </xsl:otherwise>
         </xsl:choose>

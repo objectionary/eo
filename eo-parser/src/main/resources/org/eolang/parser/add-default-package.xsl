@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -27,6 +27,7 @@ SOFTWARE.
   Here we go through all objects that DON'T have @ref attributes
   and add default package to them.
   -->
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and @base!='@' and @base!='^' and @base!='&amp;' and @base!='$']">
     <xsl:copy>
       <xsl:attribute name="base">

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -28,6 +28,7 @@ SOFTWARE.
   are missed/broken due to abstracts floating up. We find
   them and fix them.
   -->
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="o[@base and not(@ref)]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>

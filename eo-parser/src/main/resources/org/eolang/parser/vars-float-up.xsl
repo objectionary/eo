@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -42,6 +42,7 @@ SOFTWARE.
       x
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="objects">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="full"/>
