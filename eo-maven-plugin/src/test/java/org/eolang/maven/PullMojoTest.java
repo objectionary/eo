@@ -23,8 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.Json;
 import com.yegor256.tojos.MonoTojos;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
@@ -45,16 +45,17 @@ import org.junit.jupiter.api.io.TempDir;
 public final class PullMojoTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) throws IOException {
+    public void testSimplePull(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(foreign)
+        new MonoTojos(new Json(foreign))
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .with(
                 "objectionary",
                 (Func<String, Input>) input -> new InputOf("[] > hello\n")

@@ -64,7 +64,8 @@ SOFTWARE.
         <artifactId>eo-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
-          <foreign>${project.basedir}/target/eo-foreign.json</foreign>
+          <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
+          <foreignFormat>csv</foreignFormat>
           <hash>master</hash>
         </configuration>
         <executions>

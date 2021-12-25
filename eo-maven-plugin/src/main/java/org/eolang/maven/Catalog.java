@@ -23,42 +23,60 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.util.List;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import com.yegor256.tojos.Csv;
+import com.yegor256.tojos.Json;
+import com.yegor256.tojos.Mono;
+import com.yegor256.tojos.MonoTojos;
+import com.yegor256.tojos.Tojos;
+import java.nio.file.Path;
+import java.util.Locale;
 
 /**
- * Add object names to the "foreign" registry as demanded.
+ * Catalog with tojos, in some format.
  *
- * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.22
  */
-@Mojo(
-    name = "demand-foreign",
-    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true
-)
-public final class DemandMojo extends SafeMojo {
+final class Catalog {
 
     /**
-     * List of object names to add.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.17.0
+     * Path.
      */
-    @Parameter(required = true)
-    private List<String> objects;
+    private final Path path;
 
-    @Override
-    public void exec() {
-        for (final String obj : this.objects) {
-            this.scopedTojos().add(obj);
-        }
-        Logger.info(
-            this, "Added %d objects to foreign catalog at %s",
-            this.objects.size(), Save.rel(this.foreign.toPath())
-        );
+    /**
+     * Format.
+     */
+    private final String format;
+
+    /**
+     * Ctor.
+     * @param file Path
+     * @param fmt Format
+     */
+    Catalog(final Path file, final String fmt) {
+        this.path = file;
+        this.format = fmt;
     }
 
+    /**
+     * Make it.
+     * @return The tojos
+     */
+    public Tojos make() {
+        final String fmt = this.format.trim().toLowerCase(Locale.ENGLISH);
+        final Mono mono;
+        if ("json".equals(fmt)) {
+            mono = new Json(this.path);
+        } else if ("csv".equals(fmt)) {
+            mono = new Csv(this.path);
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unrecognized format '%s' for the file '%s'",
+                    fmt, this.path
+                )
+            );
+        }
+        return new MonoTojos(mono);
+    }
 }
