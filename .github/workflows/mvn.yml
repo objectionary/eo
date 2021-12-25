@@ -12,6 +12,7 @@ on:
 jobs:
   test:
     name: Tests
+    if: always()
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
