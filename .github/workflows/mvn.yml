@@ -12,7 +12,6 @@ on:
 jobs:
   test:
     name: Tests
-    if: always()
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -31,6 +30,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - name: Test
+        continue-on-error: ${{ runner.os == 'Windows' }}
         run: mvn clean test integration-test --errors --batch-mode
 
   qulice:
