@@ -132,9 +132,18 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.json"
+        defaultValue = "${project.build.directory}/eo-placed.csv"
     )
     private File placed;
+
+    /**
+     * Format of "placed" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(required = true, defaultValue = "csv")
+    private String placedFormat = "csv";
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -193,9 +202,8 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Status of tojos.
      * @return Status in text
-     * @throws IOException If fails
      */
-    private String status() throws IOException {
+    private String status() {
         final String[] attrs = {
             AssembleMojo.ATTR_EO,
             AssembleMojo.ATTR_XMIR,
