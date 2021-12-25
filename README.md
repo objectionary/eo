@@ -163,7 +163,7 @@ More examples are [here](https://github.com/cqfn/eo/tree/master/eo-maven-plugin/
 Let's start with a simple EO program:
 
 ```
-+alias stdout org.eolang.io.stdout
++alias org.eolang.io.stdout
 
 [] > app
   stdout > @
@@ -196,8 +196,8 @@ we may want to create a copy of the object `stdout` with a more complex
 argument: a copy of the object `sprintf`:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 
 [] > app
   stdout > @
@@ -211,8 +211,8 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`. This prog
 can be written using horizontal notation:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 
 [] > app
   (stdout (sprintf "Hello, %s!" "Jeffrey")) > @
@@ -228,8 +228,8 @@ attributes. For example, it's possible to define a new abstract object
 inside `app` and use it to build the output string:
 
 ```
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 
 [] > app
   stdout (msg "Jeffrey") > @
@@ -245,8 +245,8 @@ This is how you iterate:
 
 ```
 +package sandbox
-+alias stdout org.eolang.io.stdout
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 
 [args...] > app
   memory > x

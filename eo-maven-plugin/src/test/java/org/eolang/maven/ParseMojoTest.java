@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.SmartTojos;
 import java.nio.file.Files;
@@ -51,13 +52,14 @@ public final class ParseMojoTest {
             src
         ).save();
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(foreign)
+        new MonoTojos(new Csv(foreign))
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
@@ -68,7 +70,9 @@ public final class ParseMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new SmartTojos(new MonoTojos(foreign)).getById("foo.x.main").exists("xmir"),
+            new SmartTojos(
+                new MonoTojos(new Csv(foreign))
+            ).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
     }
@@ -79,7 +83,7 @@ public final class ParseMojoTest {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
         final Path foreign = temp.resolve("foreign-1.json");
-        new MonoTojos(foreign)
+        new MonoTojos(new Csv(foreign))
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -88,6 +92,7 @@ public final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
                 .execute()
         );
     }

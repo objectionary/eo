@@ -23,15 +23,11 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.Mono;
-import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Function;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -122,21 +118,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      */
     protected final Tojos tojos() {
-        final String fmt = this.foreignFormat.trim().toLowerCase(Locale.ENGLISH);
-        final Mono mono;
-        if ("json".equals(fmt)) {
-            mono = new Json(this.foreign);
-        } else if ("csv".equals(fmt)) {
-            mono = new Json(this.foreign);
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unrecognized format of foreign file: '%s'",
-                    fmt
-                )
-            );
-        }
-        return new MonoTojos(mono);
+        return new Catalog(this.foreign.toPath(), this.foreignFormat).make();
     }
 
     /**
