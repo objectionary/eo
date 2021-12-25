@@ -33,7 +33,6 @@ jobs:
         if: always()
         run: mvn clean test integration-test --errors --batch-mode
 
-
   qulice:
     name: Qulice
     runs-on: ubuntu-latest
