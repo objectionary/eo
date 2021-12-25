@@ -32,6 +32,13 @@ jobs:
       - name: Test
         continue-on-error: ${{ runner.os == 'Windows' }}
         run: mvn clean test integration-test --errors --batch-mode
+      - name: Success
+        run: exit 0
+        if: steps.Test.outcome  == 'success'
+      - name: Failure
+        run: exit 1
+        if: steps.Test.outcome != 'success'
+
 
   qulice:
     name: Qulice
