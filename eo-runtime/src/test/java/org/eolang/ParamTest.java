@@ -41,6 +41,7 @@ public final class ParamTest {
         "A,   java.lang.Byte, 65",
         "B,   java.lang.Double, 66.0",
         "Ф,   java.lang.Byte, 36",
+        "$,   java.lang.Byte, 36",
         "Ф,   java.lang.Long, 1060",
     })
     @ParameterizedTest

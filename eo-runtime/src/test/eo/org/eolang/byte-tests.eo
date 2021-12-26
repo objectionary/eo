@@ -30,5 +30,5 @@
 
 [] > narrows-to-byte
   eq. > @
-    'ф'.as-byte.as-char
+    'Ф'.as-byte.as-char
     '$'
