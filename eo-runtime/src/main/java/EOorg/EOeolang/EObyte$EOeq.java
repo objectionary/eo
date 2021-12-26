@@ -41,13 +41,13 @@ import org.eolang.XmirObject;
 public class EObyte$EOeq extends PhDefault {
     public EObyte$EOeq(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
+        this.add("x", new AtFree());
         this.add("φ", new AtOnce(
             new AtComposite(
                 this, rho -> new Data.ToPhi(
                 new Param(rho)
-                    .strong(Byte.class)
-                    .equals(new Param(rho, "x").strong(Byte.class))
+                    .numeric(Byte.class)
+                    .equals(new Param(rho, "x").numeric(Byte.class))
             )))
         );
     }
