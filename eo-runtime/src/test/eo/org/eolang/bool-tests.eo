@@ -116,17 +116,17 @@
     mFirst.eq 1
     mThird.eq 3
 
-[] > compares-bool-to-number
+[] > bool-is-a-number
   and. > @
-    TRUE.eq 1
-    FALSE.eq 0
+    TRUE.neq 1
+    FALSE.neq 0
 
 [] > compares-bool-to-bytes
   and. > @
-    TRUE.eq 00-00-00-00-00-00-00-01
-    FALSE.eq 00-00-00-00-00-00-00-00
+    TRUE.eq 01-
+    FALSE.eq 00-
 
 [] > compares-bool-to-string
   and. > @
-    TRUE.eq "\000\000\000\000\000\000\000\001"
-    FALSE.eq "\000\000\000\000\000\000\000\000"
+    TRUE.eq "\001"
+    FALSE.eq "\000"
