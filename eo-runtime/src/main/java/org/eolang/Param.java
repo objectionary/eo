@@ -90,4 +90,55 @@ public final class Param {
         ).take();
     }
 
+    /**
+     * Fetch a numeric value.
+     * @param type The type
+     * @param <T> The type
+     * @return The number
+     */
+    public <T> T numeric(final Class<T> type) {
+        final Object obj = this.weak();
+        final Number num;
+        if (Character.class.isInstance(obj)) {
+            num = (int) (char) obj;
+        } else if (Number.class.isInstance(obj)) {
+            num = Number.class.cast(obj);
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The argument '%s' is of type %s and not a number, cannot convert to '%s'",
+                    this.attr,
+                    obj.getClass().getCanonicalName(),
+                    type.getCanonicalName()
+                )
+            );
+        }
+        final T result;
+        if (type.equals(Integer.class)) {
+            result = type.cast(num.intValue());
+        } else if (type.equals(Long.class)) {
+            result = type.cast(num.longValue());
+        } else if (type.equals(Double.class)) {
+            result = type.cast(num.doubleValue());
+        } else if (type.equals(Float.class)) {
+            result = type.cast(num.floatValue());
+        } else if (type.equals(Short.class)) {
+            result = type.cast(num.shortValue());
+        } else if (type.equals(Byte.class)) {
+            result = type.cast(num.byteValue());
+        } else if (type.equals(Character.class)) {
+            result = type.cast((char) num.intValue());
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unable to convert '%s' is of type %s to '%s'",
+                    this.attr,
+                    obj.getClass().getCanonicalName(),
+                    type.getCanonicalName()
+                )
+            );
+
+        }
+        return result;
+    }
 }
