@@ -26,6 +26,7 @@ package org.eolang;
 
 import EOorg.EOeolang.EOarray;
 import EOorg.EOeolang.EObool;
+import EOorg.EOeolang.EObyte;
 import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOchar;
 import EOorg.EOeolang.EOfloat;
@@ -172,6 +173,8 @@ public interface Data<T> {
                 phi = new EOstring(Phi.Φ);
             } else if (obj instanceof Character) {
                 phi = new EOchar(Phi.Φ);
+            } else if (obj instanceof Byte) {
+                phi = new EObyte(Phi.Φ);
             } else if (obj instanceof Number) {
                 phi = new EOfloat(Phi.Φ);
             } else if (obj instanceof Pattern) {
