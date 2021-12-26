@@ -33,5 +33,6 @@ SOFTWARE.
     <a>org.eolang.double</a>
     <a>org.eolang.char</a>
     <a>org.eolang.regex</a>
+    <a>org.eolang.byte</a>
   </xsl:variable>
 </xsl:stylesheet>
