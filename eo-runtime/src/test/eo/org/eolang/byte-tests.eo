@@ -21,19 +21,14 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
-+alias sprintf org.eolang.txt.sprintf
++junit
 
-[data] > char
-  # Compares with another char
-  [c] > eq /bool
+[] > casts-to-byte-and-back
+  eq. > @
+    'A'.as-byte.as-char
+    'A'
 
-  # Converts char to bytes (of one byte)
-  [] > as-bytes /bytes
-
-  # Converts char to bytes (of one byte)
-  [] > as-byte /byte
-
-  # Converts char to string
-  [] > as-string
-    sprintf "%c" ^ > @
+[] > narrows-to-byte
+  eq. > @
+    'ф'.as-byte.as-char
+    '\036'
