@@ -42,7 +42,7 @@ public class EOint$EOas_float extends PhDefault {
     public EOint$EOas_float(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(Long.class).doubleValue()
+            new Param(rho).numeric(Double.class)
         )));
     }
 

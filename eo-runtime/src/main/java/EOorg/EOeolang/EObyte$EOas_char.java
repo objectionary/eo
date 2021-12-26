@@ -44,7 +44,11 @@ public class EObyte$EOas_char extends PhDefault {
             new AtOnce(
                 new AtComposite(
                     this,
-                    rho -> new Data.ToPhi((char) (byte) new Param(rho).strong(Byte.class)))
+                    rho -> new Data.ToPhi(
+                        new Param(rho).numeric(Byte.class)
+                    )
+
+                )
             )
         );
     }
