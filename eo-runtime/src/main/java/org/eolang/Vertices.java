@@ -71,8 +71,8 @@ final class Vertices {
             return this.next();
         }
         final String label;
-        if (obj instanceof Long || obj instanceof String || obj instanceof Character
-            || obj instanceof Double || obj instanceof Boolean) {
+        if (obj instanceof Number || obj instanceof String || obj instanceof Character
+            || obj instanceof Boolean) {
             label = obj.toString();
         } else if (obj instanceof Pattern) {
             label = Pattern.class.cast(obj).pattern();

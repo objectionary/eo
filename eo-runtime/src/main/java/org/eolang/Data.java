@@ -172,7 +172,7 @@ public interface Data<T> {
                 phi = new EOstring(Phi.Φ);
             } else if (obj instanceof Character) {
                 phi = new EOchar(Phi.Φ);
-            } else if (obj instanceof Double) {
+            } else if (obj instanceof Number) {
                 phi = new EOfloat(Phi.Φ);
             } else if (obj instanceof Pattern) {
                 phi = new EOregex(Phi.Φ);
