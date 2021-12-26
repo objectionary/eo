@@ -31,4 +31,4 @@
 [] > narrows-to-byte
   eq. > @
     'ф'.as-byte.as-char
-    '\036'
+    '$'
