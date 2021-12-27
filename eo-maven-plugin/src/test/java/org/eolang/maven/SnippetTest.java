@@ -135,10 +135,12 @@ public final class SnippetTest {
         final Path foreign = target.resolve("eo-foreign.json");
         new Moja<>(RegisterMojo.class)
             .with("foreign", target.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
             .execute();
         new Moja<>(DemandMojo.class)
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .with("objects", new ListOf<>("org.eolang.bool"))
             .execute();
         final Path home = Paths.get(
@@ -151,6 +153,7 @@ public final class SnippetTest {
             .with("outputDir", target.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .with("placed", target.resolve("list").toFile())
             .with(
                 "objectionary",
@@ -172,6 +175,7 @@ public final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .execute();
         final Path classes = target.resolve("classes");
         classes.toFile().mkdir();

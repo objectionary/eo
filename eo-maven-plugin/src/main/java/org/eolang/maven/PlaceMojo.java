@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
@@ -72,9 +70,18 @@ public final class PlaceMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.json"
+        defaultValue = "${project.build.directory}/eo-placed.csv"
     )
     private File placed;
+
+    /**
+     * Format of "placed" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    @Parameter(required = true, defaultValue = "csv")
+    private String placedFormat = "csv";
 
     /**
      * List of inclusion GLOB filters for finding class files.
@@ -126,7 +133,7 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
-        final Tojos tojos = new MonoTojos(new Json(this.placed.toPath()));
+        final Tojos tojos = new Catalog(this.placed.toPath(), this.placedFormat).make();
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {

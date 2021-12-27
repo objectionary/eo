@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
@@ -58,15 +56,25 @@ public final class UnplaceMojo extends SafeMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.json"
+        defaultValue = "${project.build.directory}/eo-placed.csv"
     )
     private File placed;
+
+    /**
+     * Format of "placed" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    @Parameter(required = true, defaultValue = "csv")
+    private String placedFormat = "csv";
 
     @Override
     public void exec() throws IOException {
         if (this.placed.exists()) {
-            final Collection<Tojo> tojos = new MonoTojos(new Json(this.placed.toPath()))
-                .select(t -> true);
+            final Collection<Tojo> tojos = new Catalog(
+                this.placed.toPath(), this.placedFormat
+            ).make().select(t -> true);
             for (final Tojo tojo : tojos) {
                 Files.delete(Paths.get(tojo.get("id")));
             }

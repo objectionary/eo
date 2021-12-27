@@ -23,15 +23,11 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.Mono;
-import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.List;
 import java.util.function.Function;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -74,7 +70,7 @@ abstract class SafeMojo extends AbstractMojo {
      * File with foreign "tojos".
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.json")
+    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.csv")
     protected File foreign;
 
     /**
@@ -83,8 +79,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    @Parameter(required = true, defaultValue = "json")
-    protected String foreignFormat = "json";
+    @Parameter(required = true, defaultValue = "csv")
+    protected String foreignFormat = "csv";
 
     /**
      * Target directory.
@@ -122,21 +118,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      */
     protected final Tojos tojos() {
-        final String fmt = this.foreignFormat.trim().toLowerCase(Locale.ENGLISH);
-        final Mono mono;
-        if ("json".equals(fmt)) {
-            mono = new Json(this.foreign.toPath());
-        } else if ("csv".equals(fmt)) {
-            mono = new Json(this.foreign.toPath());
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unrecognized format of foreign file: '%s'",
-                    fmt
-                )
-            );
-        }
-        return new MonoTojos(mono);
+        return new Catalog(this.foreign.toPath(), this.foreignFormat).make();
     }
 
     /**
@@ -156,7 +138,7 @@ abstract class SafeMojo extends AbstractMojo {
             }
 
             @Override
-            public Collection<Tojo> select(final Function<Tojo, Boolean> filter) {
+            public List<Tojo> select(final Function<Tojo, Boolean> filter) {
                 return tojos.select(
                     t -> filter.apply(t)
                         && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
