@@ -108,6 +108,13 @@ SOFTWARE.
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-maven-plugin</artifactId>
+          <configuration>
+            <treatWarningsAsErrors>true</treatWarningsAsErrors>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>com.jcabi</groupId>
           <artifactId>jcabi-maven-plugin</artifactId>
           <dependencies>
