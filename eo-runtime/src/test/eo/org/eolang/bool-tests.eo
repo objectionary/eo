@@ -116,11 +116,6 @@
     mFirst.eq 1
     mThird.eq 3
 
-[] > bool-is-a-number
-  and. > @
-    TRUE.neq 1
-    FALSE.neq 0
-
 [] > compares-bool-to-bytes
   and. > @
     TRUE.eq 01-
