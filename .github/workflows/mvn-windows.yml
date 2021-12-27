@@ -1,0 +1,33 @@
+---
+name: mvn-windows
+on:
+  push:
+    branches:
+      - master
+    paths-ignore: ['paper/**', 'sandbox/**']
+  pull_request:
+    branches:
+      - master
+    paths-ignore: ['paper/**', 'sandbox/**']
+jobs:
+  test:
+    name: Tests
+    strategy:
+      matrix:
+        os: [windows-latest]
+        java: [11, 17]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Java ${{ matrix.java }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - name: Test
+        run: mvn clean test integration-test --errors --batch-mode

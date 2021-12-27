@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,9 +44,10 @@ public final class UnplaceMojoTest {
         final Path foo = temp.resolve("a/b/c/foo.class");
         new Save("abc", foo).save();
         final Path list = temp.resolve("placed.json");
-        new MonoTojos(list).add(foo.toString());
+        new MonoTojos(new Csv(list)).add(foo.toString());
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
+            .with("placedFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
             Files.exists(foo),

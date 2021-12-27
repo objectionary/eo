@@ -8,9 +8,9 @@ eo: |
   #
   # License is MIT
 
-  +alias stdout org.eolang.io.stdout
-  +alias stdin org.eolang.io.stdin
-  +alias scanner org.eolang.txt.scanner
+  +alias org.eolang.io.stdout
+  +alias org.eolang.io.stdin
+  +alias org.eolang.txt.scanner
 
   [args] > main
     [y] > leap
