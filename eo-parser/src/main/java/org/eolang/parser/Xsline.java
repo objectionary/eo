@@ -30,7 +30,6 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Map;
 import org.cactoos.BiFunc;
@@ -243,7 +242,7 @@ public final class Xsline {
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
-                    new InputOf(before.toString(), StandardCharsets.UTF_8),
+                    new InputOf(before.toString()),
                     this.target
                 )
             )

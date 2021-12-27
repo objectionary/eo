@@ -28,15 +28,16 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Func;
 import org.cactoos.Input;
@@ -92,7 +93,7 @@ public final class SnippetTest {
             this.temp,
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
-            new InputOf(map.get("in").toString()),
+            map.get("in").toString(),
             new OutputTo(stdout)
         );
         MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
@@ -127,7 +128,7 @@ public final class SnippetTest {
      */
     @SuppressWarnings("unchecked")
     private static int run(final Path tmp, final Input code, final List<String> args,
-        final Input stdin, final Output stdout) throws Exception {
+        final String stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");
         new Save(code, src.resolve("code.eo")).save();
         final Path target = tmp.resolve("target");
@@ -189,14 +190,14 @@ public final class SnippetTest {
         );
         SnippetTest.exec(
             String.format(
-                "javac -encoding UTF-8 %s -d %s -cp %s",
-                new Walk(generated).stream()
-                    .map(Path::toAbsolutePath)
-                    .map(Path::toString)
-                    .collect(Collectors.joining(" ")),
+                "xargs javac -encoding UTF-8 -d %s -cp %s",
                 classes,
                 cpath
             ),
+            new Walk(generated).stream()
+                .map(Path::toAbsolutePath)
+                .map(Path::toString)
+                .collect(Collectors.joining(" ")),
             generated
         );
         SnippetTest.exec(
@@ -204,15 +205,14 @@ public final class SnippetTest {
                 " ",
                 new Joined<>(
                     new ListOf<>(
-                        "java",
-                        "-Dfile.encoding=UTF-8",
+                        "java -Dfile.encoding=UTF-8",
                         "-cp",
                         cpath,
                         "org.eolang.Main"
                     ),
                     args
                 )
-            ),
+            ), "",
             classes,
             stdin,
             stdout
@@ -223,12 +223,13 @@ public final class SnippetTest {
     /**
      * Run some command and print out the output.
      *
-     * @param cmd The command
+     * @param program The program
+     * @param args The program arguments
      * @param dir The home dir
      */
-    private static void exec(final String cmd, final Path dir) {
+    private static void exec(final String program, final String args, final Path dir) {
         SnippetTest.exec(
-            cmd, dir, new InputOf(""),
+            program, args, dir, "",
             new OutputTo(new ByteArrayOutputStream())
         );
     }
@@ -236,36 +237,43 @@ public final class SnippetTest {
     /**
      * Run some command and print out the output.
      *
-     * @param cmd The command
+     * @param program The program
+     * @param args The program arguments
      * @param dir The home dir
      * @param stdin Stdin
      * @param stdout Stdout
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private static void exec(final String cmd, final Path dir,
-        final Input stdin, final Output stdout) {
-        Logger.debug(SnippetTest.class, "+%s", cmd);
-        final String sysenc = System.getProperty("file.encoding");
+    private static void exec(final String program, final String args, final Path dir,
+        final String stdin, final Output stdout) {
+        Logger.debug(SnippetTest.class, "+%s %s", program, args);
         try {
-            // @checkstyle MethodBodyCommentsCheck (5 lines)
-            // We set here explicitly the default charset to UTF-8 because process
-            // needs it to read properly the command that we pass to it.
-            // We need it because process only works with the default charset,
-            // which is by default the encoding of the system, not the one we were
-            // running the tests with.
-            changeDefaultCharset("UTF-8");
-            final Process proc = new ProcessBuilder()
-                .command(cmd.split(" "))
+            final ProcessBuilder builder = new ProcessBuilder();
+            final List<String> cmd = new LinkedList<>();
+            if (SystemUtils.IS_OS_WINDOWS) {
+                cmd.add("cmd");
+                cmd.add("/c");
+                final Map<String, String> env = builder.environment();
+                env.put(
+                    "Path",
+                    String.format(
+                        "%s%s;",
+                        env.get("Path"),
+                        Paths.get("../xargs").toAbsolutePath()
+                    )
+                );
+            }
+            cmd.addAll(new ListOf<>(program.split(" ")));
+            final Process proc = builder.command(cmd)
                 .directory(dir.toFile())
                 .redirectErrorStream(true)
                 .start();
-            new LengthOf(
-                new TeeInput(
-                    stdin,
-                    new OutputTo(proc.getOutputStream())
-                )
-            ).value();
+            try (OutputStream out = proc.getOutputStream()) {
+                out.write(args.replace("\\", "/").getBytes(StandardCharsets.UTF_8));
+                out.write(stdin.getBytes(StandardCharsets.UTF_8));
+                out.write(0);
+            }
             try (VerboseProcess vproc = new VerboseProcess(proc)) {
                 new LengthOf(
                     new TeeInput(
@@ -277,27 +285,7 @@ public final class SnippetTest {
         // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Exception ex) {
             throw new IllegalStateException(ex);
-        } finally {
-            // @checkstyle MethodBodyCommentsCheck (1 line)
-            // We restore here the default charset.
-            changeDefaultCharset(sysenc);
         }
     }
 
-    /**
-     * Change default charset.
-     * @param charset Charset
-     */
-    @SuppressWarnings({"unchecked", "PMD.AvoidCatchingGenericException"})
-    private static void changeDefaultCharset(final String charset) {
-        try {
-            System.setProperty("file.encoding", charset);
-            final Field field = Charset.class.getDeclaredField("defaultCharset");
-            field.setAccessible(true);
-            field.set(null, null);
-        // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception exc) {
-            throw new IllegalArgumentException(exc);
-        }
-    }
 }
