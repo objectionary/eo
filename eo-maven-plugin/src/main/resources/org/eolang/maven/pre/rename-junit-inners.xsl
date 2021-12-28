@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -28,6 +28,7 @@ SOFTWARE.
   into junit objects by junit.xsl. Without this cleaning there
   could be too long class names.
   -->
+  <xsl:output encoding="UTF-8"/>
   <xsl:variable name="junit" select="exists(//meta[head='junit'])"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="class" as="node()"/>
@@ -35,7 +36,7 @@ SOFTWARE.
       <xsl:choose>
         <xsl:when test="$junit and $class/@parent">
           <xsl:variable name="parent" select="$class/@parent"/>
-          <xsl:text>&#x3C9;</xsl:text>
+          <xsl:text>ω</xsl:text>
           <xsl:value-of select="$class/@ancestors"/>
           <xsl:value-of select="substring-after($class/@name, concat($class/@parent, '$'))"/>
         </xsl:when>

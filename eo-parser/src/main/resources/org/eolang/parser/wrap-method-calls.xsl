@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -39,6 +39,7 @@ SOFTWARE.
   </o>
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="o[@method]" mode="#all" priority="0">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>
     <xsl:copy>

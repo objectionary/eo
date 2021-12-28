@@ -1,0 +1,15 @@
+---
+name: XCOP linter
+"on":
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  xcop-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: g4s8/xcop-action@master

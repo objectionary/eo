@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -27,6 +27,7 @@ SOFTWARE.
   This stylesheet will take outer objects and put them into
   classes that are unit tests.
   -->
+  <xsl:output encoding="UTF-8"/>
   <xsl:function name="eo:name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\$')"/>

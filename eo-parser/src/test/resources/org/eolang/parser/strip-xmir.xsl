@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -28,6 +28,7 @@ SOFTWARE.
   use this one to compare two XMIR documents for semantic
   equivalence.
   -->
+  <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:template match="/program/@*">
     <!-- Program attributes are not important -->
