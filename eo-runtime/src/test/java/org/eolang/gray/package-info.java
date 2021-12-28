@@ -21,21 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Marker annotation for EO test.
+ * Gray objects, tests.
  *
- * @since 0.16.11
+ * @since 0.21
  */
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(JulToSlf4jExtension.class)
-@Target(ElementType.TYPE)
-public @interface EoTest {
-}
+package org.eolang.gray;

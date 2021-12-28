@@ -121,10 +121,6 @@ SOFTWARE.
   <xsl:template match="class" mode="body">
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:if test="//meta[head='junit'] and not(@parent)">
-      <xsl:text>@EoTest</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:text>@XmirObject(name = "</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>", oname = "</xsl:text>
