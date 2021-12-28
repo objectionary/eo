@@ -107,12 +107,14 @@ final class AssembleMojoTest {
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
             .with("skipZeroVersions", true)
             .with(

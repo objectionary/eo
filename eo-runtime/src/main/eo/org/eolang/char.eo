@@ -22,11 +22,14 @@
 
 +package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.txt.sprintf
 
 [data] > char
-  # Compares with another char
-  [c] > eq /bool
+  # Compares with another object
+  [x] > eq
+     eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Converts char to bytes (of one byte)
   [] > as-bytes /bytes

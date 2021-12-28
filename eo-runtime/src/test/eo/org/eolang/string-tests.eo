@@ -57,6 +57,16 @@
     D0-B4-D1-80-D1-83-D0-B3
     "друг".as-bytes
 
+[] > bytes-equal-to-string
+  eq. > @
+    "друг"
+    D0-B4-D1-80-D1-83-D0-B3
+
+[] > string-equals-to-bytes
+  eq. > @
+    D0-B4-D1-80-D1-83-D0-B3
+    "друг"
+
 [] > picks-a-single-char
   eq. > @
     'e'

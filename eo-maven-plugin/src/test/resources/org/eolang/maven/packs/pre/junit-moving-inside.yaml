@@ -8,7 +8,7 @@ tests:
   - /program/errors[count(*)=0]
   - /program[count(//class)=5]
   - /program/objects[count(class)=1]
-  - //class[@name='ω3τ0$α0' and @parent='ω2c']
+  - //class[@name='ω3t0$a0' and @parent='ω2c']
   - //o[@base='ω2c' and @name='c']
 eo: |
   +junit

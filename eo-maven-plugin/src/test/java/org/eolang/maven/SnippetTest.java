@@ -49,8 +49,6 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -68,9 +66,11 @@ import org.yaml.snakeyaml.Yaml;
  * released, you enable this test again.
  *
  * @since 0.1
+ * @todo #526:30min Enable PlaceTest and UnplaceTest for Windows.
+ *  To continue on increasing portability of the project on Windows,
+ *  we should fix `PlaceTest` and `UnplaceTest`, and enable them on Windows.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@DisabledOnOs(OS.WINDOWS)
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
@@ -140,10 +140,12 @@ public final class SnippetTest {
         final Path foreign = target.resolve("eo-foreign.json");
         new Moja<>(RegisterMojo.class)
             .with("foreign", target.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
             .execute();
         new Moja<>(DemandMojo.class)
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .with("objects", new ListOf<>("org.eolang.bool"))
             .execute();
         final Path home = Paths.get(
@@ -156,6 +158,7 @@ public final class SnippetTest {
             .with("outputDir", target.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .with("placed", target.resolve("list").toFile())
             .with(
                 "objectionary",
@@ -177,6 +180,7 @@ public final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
             .execute();
         final Path classes = target.resolve("classes");
         classes.toFile().mkdir();
@@ -272,7 +276,7 @@ public final class SnippetTest {
                     )
                 ).value();
             }
-        // @checkstyle IllegalCatchCheck (1 line)
+            // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Exception ex) {
             throw new IllegalStateException(ex);
         }

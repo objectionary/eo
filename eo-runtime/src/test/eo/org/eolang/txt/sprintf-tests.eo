@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang.txt
-+alias sprintf org.eolang.txt.sprintf
++alias org.eolang.txt.sprintf
 +junit
 
 [] > prints-simple-string

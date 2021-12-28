@@ -24,16 +24,12 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.Mono;
-import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -137,7 +133,7 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
-        final Tojos tojos = this.catalog();
+        final Tojos tojos = new Catalog(this.placed.toPath(), this.placedFormat).make();
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
@@ -177,25 +173,4 @@ public final class PlaceMojo extends SafeMojo {
         return copied;
     }
 
-    /**
-     * Tojos to use.
-     * @return Tojos to use
-     */
-    private Tojos catalog() {
-        final String fmt = this.placedFormat.trim().toLowerCase(Locale.ENGLISH);
-        final Mono mono;
-        if ("json".equals(fmt)) {
-            mono = new Json(this.placed);
-        } else if ("csv".equals(fmt)) {
-            mono = new Json(this.placed);
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unrecognized format of placed file: '%s'",
-                    fmt
-                )
-            );
-        }
-        return new MonoTojos(mono);
-    }
 }

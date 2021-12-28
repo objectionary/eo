@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -29,7 +29,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
-  <xsl:output method="text"/>
+  <xsl:output method="text" encoding="UTF-8"/>
   <xsl:template match="program">
     <xsl:apply-templates select="license"/>
     <xsl:apply-templates select="metas[meta]"/>

@@ -222,3 +222,13 @@
     as-float.
       as-bytes.
         3.1415926
+
+[] > as-bytes-equals-to-float
+  eq. > @
+    3.1415926
+    3.1415926.as-bytes
+
+[] > as-bytes-equals-to-float-backwards
+  eq. > @
+    3.1415926.as-bytes
+    3.1415926
