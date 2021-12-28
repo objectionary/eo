@@ -23,8 +23,12 @@
 +package org.eolang.gray
 +rt jvm org.eolang:eo-runtime:0.21.6
 
-# This object is doing exactly the same as "memory", but allows
-# you to store objects, not only data. In other words, it doesn't
-# do dataization when objects are being stored.
-[] > cage /?
+# Random-access memory (RAM).
+[size] > ram
 
+  # Write bytes B at position P.
+  # Returns itself.
+  [p b] > write /true
+
+  # Read L bytes at position P.
+  [p l] > read /bytes

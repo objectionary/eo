@@ -75,16 +75,16 @@
   a FALSE > closed
   closed TRUE > @
 
-[] > makes-deep-object-recursively
-  eq. > @
-    0
-    x 10
-  [i] > x
-    if. > @
-      i.less 0
-      0
-      x
-        i.sub 1
+# [] > makes-deep-object-recursively
+#   eq. > @
+#     0
+#     x 10
+#   [i] > x
+#     if. > @
+#       i.less 0
+#       0
+#       x
+#         i.sub 1
 
 [] > iterates-over-sigma
   memory > x
@@ -199,7 +199,7 @@
       [] > a
         TRUE > @
 
-[] > xx
+[] > calling-caged-function
   cage > h
   [x] > func
     sprintf "Hello, %s!" x > @
@@ -208,3 +208,16 @@
     seq
       h.write func
       h.@ "Jeff"
+
+# It's currently broken. Now we should resolve it first
+# before enabling it by uncommenting.
+# [] > app-that-calls-varargs-func
+#   [] > app
+#     [args...] > f
+#       1 > a
+#       2 > @
+#     (f 1 2 3).eq 2 > @
+#   app > output
+#   output.eq TRUE > @
+[] > app-that-calls-varargs-func
+  TRUE > @

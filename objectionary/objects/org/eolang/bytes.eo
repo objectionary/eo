@@ -21,11 +21,12 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.21.5
++rt jvm org.eolang:eo-runtime:0.21.6
 
 [] > bytes
-  # Equals to another bytes
-  [b] > eq /bool
+
+  # Equals to another object
+  [x] > eq /bool
 
   # Total number of bytes
   [] > size /int
@@ -68,3 +69,7 @@
 
   # Calculate bitwise right shift
   [x] > right /bytes
+
+  # Return itself
+  [] > as-bytes
+    ^ > @

@@ -115,3 +115,13 @@
       mThird.write 4
     mFirst.eq 1
     mThird.eq 3
+
+[] > compares-bool-to-bytes
+  and. > @
+    TRUE.eq 01-
+    FALSE.eq 00-
+
+[] > compares-bool-to-string
+  and. > @
+    TRUE.eq "\001"
+    FALSE.eq "\000"

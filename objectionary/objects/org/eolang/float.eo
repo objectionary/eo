@@ -21,11 +21,14 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.21.5
++rt jvm org.eolang:eo-runtime:0.21.6
 
 [] > float
   # Tests that $ = x
-  [x] > eq /bool
+  [x] > eq
+     eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Tests that $ ≠ x
   [x] > neq

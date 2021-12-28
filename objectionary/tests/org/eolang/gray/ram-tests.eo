@@ -21,10 +21,29 @@
 # SOFTWARE.
 
 +package org.eolang.gray
-+rt jvm org.eolang:eo-runtime:0.21.6
++alias org.eolang.gray.ram
++junit
 
-# This object is doing exactly the same as "memory", but allows
-# you to store objects, not only data. In other words, it doesn't
-# do dataization when objects are being stored.
-[] > cage /?
+[] > writes-into-ram-and-reads-from-ram
+  ram 10 > r
+  r.write 0 65-66-67-68-69 > w
+  r.read 0 5 > data
+  and. > @
+    eq.
+      w
+      TRUE
+    eq.
+      data
+      65-66-67-68-69
 
+[] > writes-at-random-position
+  ram 1024 > r
+  r.write 512 65-66-67-68-69 > w
+  r.read 513 4 > data
+  and. > @
+    eq.
+      w
+      TRUE
+    eq.
+      data
+      66-67-68-69
