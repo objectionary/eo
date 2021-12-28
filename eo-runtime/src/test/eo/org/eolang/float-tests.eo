@@ -23,200 +23,200 @@
 +package org.eolang
 +junit
 
-[] > converts-to-string
+[] > float-converts-float-to-string
   eq. > @
     "3.1415926"
     3.1415926.as-string
 
-[] > less-true
+[] > float-less-true
   less. > @
     -10.5
     50.3
 
-[] > less-equal
+[] > float-less-equal
   not. > @
     less.
       -10.7
       -10.7
 
-[] > less-false
+[] > float-less-false
   not. > @
     less.
       10.13
       -5.3
 
-[] > greater-true
+[] > float-greater-true
   greater. > @
     -200.1
     -1000.0
 
-[] > greater-false
+[] > float-greater-false
   not. > @
     greater.
       0.5
       100.1
 
-[] > greater-equal
+[] > float-greater-equal
   not. > @
     greater.
       0.7
       0.7
 
-[] > leq-true
+[] > float-leq-true
   leq. > @
     -200.5
     -100.6
 
-[] > leq-equal
+[] > float-leq-equal
   leq. > @
     50.1
     50.1
 
-[] > leq-false
+[] > float-leq-false
   not. > @
     leq.
       0.9
       -10.11
 
-[] > geq-true
+[] > float-geq-true
   geq. > @
     -1000.1
     -1100.1
 
-[] > geq-equal
+[] > float-geq-equal
   geq. > @
     113.333
     113.333
 
-[] > geq-false
+[] > float-geq-false
   not. > @
     geq.
       0.7
       10.9
 
-[] > eq-true
+[] > float-eq-true
   eq. > @
     123.5
     123.5
 
-[] > eq-false
+[] > float-eq-false
   not. > @
     eq.
       123.5
       42.4
 
-[] > compares-two-different-types
+[] > float-compares-two-different-types
   not. > @
     eq.
       3.14
       "Hello"
 
-[] > neq-true
+[] > float-neq-true
   neq. > @
     123.5
     125.2
 
-[] > neq-false
+[] > float-neq-false
   not. > @
     neq.
       -133.9
       -133.9
 
-[] > mul-by-zero
+[] > float-mul-by-zero
   eq. > @
     0.0
     mul.
       574.9
       0.0
 
-[] > mul-by-one
+[] > float-mul-by-one
   eq. > @
     574.9
     mul.
       574.9
       1.0
 
-[] > mul-two-positives
+[] > float-mul-two-positives
   eq. > @
     179235.3825
     mul.
       574.5
       311.985
 
-[] > mul-two-negatives
+[] > float-mul-two-negatives
   eq. > @
     179235.3825
     mul.
       -574.5
       -311.985
 
-[] > mul-diff-sign
+[] > float-mul-diff-sign
   eq. > @
     -0.1792353825
     mul.
       -0.5745
       0.311985
 
-[] > add-test
+[] > float-add-test
   eq. > @
     886.485
     add.
       574.5
       311.985
 
-[] > neg-test
+[] > float-neg-test
   eq. > @
     -886.485
     886.485.neg
 
-[] > signum-negative
+[] > float-signum-negative
   eq. > @
     -1.0
     (-345.17.signum)
 
-[] > signum-positive
+[] > float-signum-positive
   eq. > @
     1.0
     (145.18.signum)
 
-[] > signum-zero
+[] > float-signum-zero
   eq. > @
     0.0
     (0.0.signum)
 
-[] > sub-test
+[] > float-sub-test
   eq. > @
     262.515
     sub.
       574.5
       311.985
 
-[] > div-test
+[] > float-div-test
   eq. > @
     31.0
     div.
       15.5
       0.5
 
-[] > abs-positive
+[] > float-abs-positive
   eq. > @
     13.5
     (13.5.abs)
 
-[] > abs-negative
+[] > float-abs-negative
   eq. > @
     17.9
     (-17.9.abs)
 
-[] > abs-zero
+[] > float-abs-zero
   eq. > @
     0.0
     (0.0.abs)
 
-[] > as-int-works
+[] > float-as-int-works
   3.57.as-int.eq 3 > @
 
-[] > to-bytes-and-backwards
+[] > float-to-bytes-and-backwards
   eq. > @
     3.1415926
     as-float.

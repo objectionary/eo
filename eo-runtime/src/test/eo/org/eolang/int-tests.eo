@@ -23,106 +23,106 @@
 +package org.eolang
 +junit
 
-[] > converts-to-string
+[] > int-converts-to-string
   eq. > @
     "42"
     42.as-string
 
-[] > less-true
+[] > int-less-true
   less. > @
     10
     50
 
-[] > less-equal
+[] > int-less-equal
   not. > @
     less.
       10
       10
 
-[] > less-false
+[] > int-less-false
   not. > @
     less.
       10
       -5
 
-[] > greater-true
+[] > int-greater-true
   greater. > @
     -200
     -1000
 
-[] > greater-false
+[] > int-greater-false
   not. > @
     greater.
       0
       100
 
-[] > greater-equal
+[] > int-greater-equal
   not. > @
     greater.
       0
       0
 
-[] > leq-true
+[] > int-leq-true
   leq. > @
     -200
     -100
 
-[] > leq-equal
+[] > int-leq-equal
   leq. > @
     50
     50
 
-[] > leq-false
+[] > int-leq-false
   not. > @
     leq.
       0
       -10
 
-[] > geq-true
+[] > int-geq-true
   geq. > @
     -1000
     -1100
 
-[] > geq-equal
+[] > int-geq-equal
   geq. > @
     113
     113
 
-[] > geq-false
+[] > int-geq-false
   not. > @
     geq.
       0
       10
 
-[] > eq-true
+[] > int-eq-true
   eq. > @
     123
     123
 
-[] > eq-false
+[] > int-eq-false
   not. > @
     eq.
       123
       42
 
-[] > compares-two-different-types
+[] > int-compares-two-different-types
   not. > @
     eq.
       42
       "Hello!"
 
-[] > neq-true
+[] > int-neq-true
   neq. > @
     123
     125
 
-[] > neq-false
+[] > int-neq-false
   not. > @
     neq.
       -133
       -133
 
-[] > calculates-fibonacci-number-with-recursion
+[] > int-calculates-fibonacci-number-with-recursion
   eq. > @
     3
     fibo 4
@@ -134,7 +134,7 @@
         fibo (n.sub 1)
         fibo (n.sub 2)
 
-[] > calculates-fibonacci-number-with-tail
+[] > int-calculates-fibonacci-number-with-tail
   eq. > @
     3
     fibonacci 4
@@ -155,14 +155,14 @@
         rec (n.sub 1) (minus1.add minus2) minus1
 
 # Checks that division by zero returns an error object
-[] > zero-division
+[] > int-zero-division
   eq. > @
     (2.div 0).msg
     "Division by zero is undefined"
 
 # Checks mathematical equality
 # A = ((A div B) * B) + (A mod B)
-[] > div-mod-compatibility
+[] > int-div-mod-compatibility
   -13 > dividend
   5 > divisor
   dividend.mod divisor > remainder
@@ -176,37 +176,37 @@
         quotient
 
 # Checks that division by one returns the dividend
-[] > division-by-one
+[] > int-division-by-one
   -235 > dividend
   eq. > @
     dividend.div 1
     dividend
 
 # Checks that div works properly with dividends greater than zero
-[] > div-for-dividend-greater-than-zero
+[] > int-div-for-dividend-greater-than-zero
   256.div 16 > quotient
   quotient.eq 16 > @
 
 # Checks div with remainder
-[] > div-with-remainder
+[] > int-div-with-remainder
   (13.div -5).eq -2 > @
 
 # Checks that int.as-float works properly
-[] > as-float-works
+[] > int-as-float-works
   eq. > @
     -17.0
     17.neg.as-float
 
-[] > abs-positive
+[] > int-abs-positive
   3.abs.eq 3 > @
 
-[] > abs-negative
+[] > int-abs-negative
   -3.abs.eq 3 > @
 
-[] > abs-zero
+[] > int-abs-zero
   0.abs.eq 0 > @
 
-[] > to-bytes-and-backwards
+[] > int-to-bytes-and-backwards
   eq. > @
     42
     as-int.
