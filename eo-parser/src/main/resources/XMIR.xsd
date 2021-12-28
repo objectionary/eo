@@ -42,6 +42,7 @@ SOFTWARE.
     <xs:attribute name="vararg" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
+    <xs:attribute name="foreign" type="xs:boolean"/>
   </xs:complexType>
   <xs:complexType name="program">
     <xs:sequence>

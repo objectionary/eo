@@ -58,6 +58,9 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
+      <xsl:attribute name="foreign">
+        <xsl:value-of select="true()"/>
+      </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
   </xsl:template>
