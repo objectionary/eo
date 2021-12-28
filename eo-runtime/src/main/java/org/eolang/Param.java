@@ -27,6 +27,14 @@ package org.eolang;
 /**
  * Param of an object (convenient retrieval mechanism).
  *
+ * <p>The job of the utility object is to help our EO objects retrieve
+ * attributes from other objects and from their own \rho (owners). On top of
+ * retrieval this object also does simple type checking. When an attribute
+ * is expected to be of some type, we use {@link #strong(Class)}. This method
+ * will throw a runtime exception if types don't match. If just a simple
+ * retrieval without type checking is necessary, just use the method
+ * {@link #weak()}.
+ *
  * @since 0.20
  */
 public final class Param {
@@ -70,7 +78,7 @@ public final class Param {
         if (!type.isInstance(ret)) {
             throw new IllegalArgumentException(
                 String.format(
-                    "The argument '%s' is of type %s, not '%s'",
+                    "The argument '.%s' is of Java type '%s', not '%s' as expected",
                     this.attr,
                     ret.getClass().getCanonicalName(),
                     type.getCanonicalName()

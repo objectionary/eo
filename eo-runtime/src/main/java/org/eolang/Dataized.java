@@ -31,7 +31,17 @@ import java.util.logging.Logger;
 /**
  * A dataized object.
  *
+ * <p>The class automates the process of turning EO objects into data. The
+ * mechanism is explained in details in our canonical paper. Simply put,
+ * it makes an attempt to either type-cast the provided object into data
+ * or find "Δ" attribute inside it. If neither of that works, there is a
+ * runtime exception.
+ *
+ * <p>It's recommended to use {@link Param} object, when you are inside
+ * a EO object: it will add type checking on top of dataization.
+ *
  * @since 0.1
+ * @see <a href="https://arxiv.org/abs/2111.13384">Canonical explanation of the Dataization concept</a>
  */
 public final class Dataized {
 

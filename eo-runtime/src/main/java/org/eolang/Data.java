@@ -99,12 +99,13 @@ public interface Data<T> {
     }
 
     /**
-     * Makes a {@code Phi} out of a Java object, like String or integer.
+     * Makes a {@link Phi} out of a Java object, like {@link String} or {@link Integer}.
      *
-     * This is more convenient than making EOstring and then
+     * <p>This is more convenient than making {@link EOstring} and then
      * injecting "Δ" into it. This class is used in Java tests mostly
-     * for the sake of brevity. In auto-generated Java code we use EOint/EOstring
-     * and then inject "Δ" with Data.Value into it.
+     * for the sake of brevity. In auto-generated Java code we use
+     * {@link EOint}/{@link EOstring}
+     * and then inject "Δ" with {@link Data.Value} into it.
      *
      * @since 0.1
      */
