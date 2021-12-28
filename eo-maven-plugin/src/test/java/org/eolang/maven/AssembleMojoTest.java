@@ -30,6 +30,7 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -40,10 +41,59 @@ import org.junit.jupiter.api.io.TempDir;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class AssembleMojoTest {
+final class AssembleMojoTest {
 
     @Test
-    public void assemblesTogether(@TempDir final Path temp) throws Exception {
+    void failsIfDuplicatedInsidePackage(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("src");
+        new Save(
+            String.join(
+                "\n",
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[x] > main\n  \"Hello!\"\n"
+            ),
+            src.resolve("hello.eo")
+        ).save();
+        new Save(
+            String.join(
+                "\n",
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[x] > main\n  \"Good bye!\"\n"
+            ),
+            src.resolve("goodbye.eo")
+        ).save();
+        final Path target = temp.resolve("target");
+        new Moja<>(RegisterMojo.class)
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("sourcesDir", src.toFile())
+            .execute();
+        final Moja<?> moja = new Moja<>(AssembleMojo.class)
+            .with("outputDir", temp.resolve("out").toFile())
+            .with("targetDir", target.toFile())
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("placed", temp.resolve("list").toFile())
+            .with("skipZeroVersions", true)
+            .with(
+                "objectionary",
+                (Func<String, Input>) input -> new InputOf(
+                    "[] > string\n"
+                )
+            );
+        MatcherAssert.assertThat(
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                moja::execute
+            ),
+            Matchers.hasToString(
+                Matchers.containsString("Found 1 duplicate")
+            )
+        );
+    }
+
+    @Test
+    void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             String.join(

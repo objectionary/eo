@@ -26,11 +26,16 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.OutputTo;
@@ -62,6 +67,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        final Map<String, Collection<String>> objects = new HashMap<>();
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
@@ -79,9 +85,14 @@ public final class OptimizeMojo extends SafeMojo {
                 }
             }
             ++done;
+            final Map.Entry<Path, Collection<String>> optimized = this.optimize(src);
+            for (final String fqdn : optimized.getValue()) {
+                objects.putIfAbsent(fqdn, new HashSet<>());
+                objects.get(fqdn).add(Save.rel(optimized.getKey()));
+            }
             tojo.set(
                 AssembleMojo.ATTR_XMIR2,
-                this.optimize(src).toAbsolutePath().toString()
+                optimized.getKey().toAbsolutePath().toString()
             );
         }
         if (done > 0) {
@@ -89,17 +100,50 @@ public final class OptimizeMojo extends SafeMojo {
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
+        this.checkForDuplicates(objects);
+    }
+
+    /**
+     * Find duplicates in the current compilation scope.
+     * @param objects Top-level compiled objects.
+     */
+    private void checkForDuplicates(final Map<String, Collection<String>> objects) {
+        final Collection<String> duplicates = objects
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue().size() > 1)
+            .map(
+                entry -> {
+                    final String msg = String.format(
+                        "object '%s' defined %d times (%s)",
+                        entry.getKey(),
+                        entry.getValue().size(),
+                        String.join(", ", entry.getValue())
+                    );
+                    Logger.error(this, msg);
+                    return msg;
+                }
+            ).collect(Collectors.toList());
+        if (!duplicates.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Found %d duplicates: %s",
+                    duplicates.size(),
+                    String.join(", ", duplicates)
+                )
+            );
+        }
     }
 
     /**
      * Optimize XML file after parsing.
      *
      * @param file EO file
-     * @return The file with optimized XMIR
+     * @return The file with optimized XMIR and top level objects.
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    private Path optimize(final Path file) throws IOException {
+    private Map.Entry<Path, Collection<String>> optimize(final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Path dir = place.make(
@@ -108,10 +152,9 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
         );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         new Xsline(
             new XMLDocument(file),
-            new OutputTo(baos),
+            new OutputTo(target),
             new TargetSpy(dir)
         ).with(
             new ListOf<>(
@@ -125,12 +168,17 @@ public final class OptimizeMojo extends SafeMojo {
                 "org/eolang/parser/errors/broken-refs.xsl"
             )
         ).pass();
-        new Save(baos.toByteArray(), target).save();
+        final String pack = name.replaceFirst("[^.]+$", "");
+        final List<String> atoms = new XMLDocument(target)
+            .xpath("/program/objects/o[@name and not(@level) and not(@foreign)]/@name")
+            .stream()
+            .map(x -> String.format("%s%s", pack, x))
+            .collect(Collectors.toList());
         Logger.debug(
             this, "Optimized %s (program:%s) to %s, all steps are in %s",
             Save.rel(file), name, Save.rel(target), Save.rel(dir)
         );
-        return target;
+        return new AbstractMap.SimpleEntry<>(target, atoms);
     }
 
 }
