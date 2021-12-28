@@ -48,14 +48,14 @@ SOFTWARE.
       <xsl:for-each select="$object/ancestor-or-self::o">
         <xsl:choose>
           <xsl:when test="eo:abstract(.) and not(@name)">
-            <xsl:text>α</xsl:text>
+            <xsl:text>a</xsl:text>
             <xsl:value-of select="count(preceding-sibling::o)"/>
           </xsl:when>
           <xsl:when test="eo:abstract(.)">
             <xsl:value-of select="@name"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>τ</xsl:text>
+            <xsl:text>t</xsl:text>
             <xsl:value-of select="count(preceding-sibling::o)"/>
           </xsl:otherwise>
         </xsl:choose>
