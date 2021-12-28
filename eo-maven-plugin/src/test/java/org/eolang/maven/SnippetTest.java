@@ -66,9 +66,6 @@ import org.yaml.snakeyaml.Yaml;
  * released, you enable this test again.
  *
  * @since 0.1
- * @todo #526:30min Enable PlaceTest and UnplaceTest for Windows.
- *  To continue on increasing portability of the project on Windows,
- *  we should fix `PlaceTest` and `UnplaceTest`, and enable them on Windows.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
