@@ -73,7 +73,8 @@ public final class XMIR {
      */
     public String toEO() {
         return new XSLDocument(
-            this.getClass().getResourceAsStream("xmir-to-eo.xsl")
+            this.getClass().getResourceAsStream("xmir-to-eo.xsl"),
+            "xmir-to-eo"
         ).with(new ClasspathSources()).applyTo(this.xml);
     }
 

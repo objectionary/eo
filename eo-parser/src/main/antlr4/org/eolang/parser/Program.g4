@@ -186,6 +186,8 @@ head
   :
   DOTS?
   (
+    ROOT
+    |
     AT
     |
     RHO
@@ -238,6 +240,7 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 REGEX: SLASH ~[\r\n]+ SLASH [a-z]*;
 
+ROOT: 'Q';
 STAR: '*';
 DOTS: '...';
 CONST: '!';
