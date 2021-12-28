@@ -77,13 +77,6 @@ public final class DataizedTest {
         );
     }
 
-    /**
-     * Try to datarize an EO app that calls a varargs func.
-     * @todo #414:30min Fix bug execute an EO program calling a varargs func.
-     *  We reproduced by a test bug during execution with exception `You can't overwrite X`
-     *  when EO app try to call a function that uses varargs as parameter. Now, we must fix it
-     *  and disable the test (test below).
-     */
     @Test
     @Disabled
     public void datarizesEOappCallingVarargsFunc() {
