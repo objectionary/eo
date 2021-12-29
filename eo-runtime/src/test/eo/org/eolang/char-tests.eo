@@ -61,7 +61,7 @@
     '\u0424'
     'Ф'
 
-[] > char-as-bytes-equals-to-bytes
+[] > char-equals-to-bytes
   eq. > @
-    'Ф'.as-bytes
+    'Ф'
     04-24

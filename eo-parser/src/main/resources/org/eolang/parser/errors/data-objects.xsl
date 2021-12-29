@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -24,6 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data-objects" version="2.0">
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

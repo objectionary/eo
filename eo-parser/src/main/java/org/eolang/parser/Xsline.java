@@ -261,7 +261,8 @@ public final class Xsline {
                 new XSLDocument(
                     new TextOf(
                         new ResourceOf(name)
-                    ).asString()
+                    ).asString(),
+                    name
                 ).with(new ClasspathSources()),
                 (before, after) -> false
             ),

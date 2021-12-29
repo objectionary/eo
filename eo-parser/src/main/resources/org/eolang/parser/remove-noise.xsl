@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -28,6 +28,7 @@ SOFTWARE.
   the XMIR document by removing all listings, metas, etc. Only
   objects will stay with the information relevant to processing of them.
   -->
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="/program/listing">
     <!-- delete it -->
   </xsl:template>

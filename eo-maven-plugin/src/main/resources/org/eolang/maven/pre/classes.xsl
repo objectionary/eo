@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -24,6 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="pre-classes" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:template name="serialize">
     <xsl:param name="node"/>
     <xsl:param name="indent"/>

@@ -22,32 +22,9 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
-
 /**
- * BOOL.EQ.
+ * Gray objects, tests.
  *
- * @since 1.0
+ * @since 0.21
  */
-@XmirObject(oname = "bool.eq")
-public class EObool$EOeq extends PhDefault {
-
-    public EObool$EOeq(final Phi sigma) {
-        super(sigma);
-        this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(Boolean.class).equals(
-                new Param(rho, "b").weak()
-            )
-        )));
-    }
-
-}
+package org.eolang.gray;

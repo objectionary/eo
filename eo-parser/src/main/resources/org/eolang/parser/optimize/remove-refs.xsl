@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -26,6 +26,7 @@ SOFTWARE.
   <!--
   Here we remove @ref attribute from all objects.
   -->
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@* except @ref"/>

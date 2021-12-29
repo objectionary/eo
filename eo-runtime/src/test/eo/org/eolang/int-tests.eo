@@ -212,3 +212,13 @@
     as-int.
       as-bytes.
         42
+
+[] > as-bytes-equals-to-int
+  eq. > @
+    42
+    42.as-bytes
+
+[] > as-bytes-equals-to-int-backwards
+  eq. > @
+    42.as-bytes
+    42

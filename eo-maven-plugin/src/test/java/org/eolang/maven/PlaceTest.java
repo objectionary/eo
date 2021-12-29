@@ -27,21 +27,21 @@ import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link Place}.
  *
  * @since 0.11
  */
-@DisabledOnOs(OS.WINDOWS)
 public final class PlaceTest {
 
     @Test
     public void makesPath() {
         MatcherAssert.assertThat(
-            new Place("hello.foo.bar").make(Paths.get("/tmp/test"), Transpiler.EXT).toString(),
+            new Place("hello.foo.bar")
+                .make(Paths.get("/tmp/test"), Transpiler.EXT)
+                .toString()
+                .replace("\\", "/"),
             Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", Transpiler.EXT))
         );
     }
@@ -49,7 +49,10 @@ public final class PlaceTest {
     @Test
     public void makesSimplePath() {
         MatcherAssert.assertThat(
-            new Place("hey").make(Paths.get("/tmp"), "xml").toString(),
+            new Place("hey")
+                .make(Paths.get("/tmp"), "xml")
+                .toString()
+                .replace("\\", "/"),
             Matchers.equalTo("/tmp/hey.xml")
         );
     }

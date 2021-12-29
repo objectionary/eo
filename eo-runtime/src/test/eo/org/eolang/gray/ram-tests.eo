@@ -20,76 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
++package org.eolang.gray
++alias org.eolang.gray.ram
++junit
 
-[] > int
-  # Tests that $ = x
-  [x] > eq
-     eq. > @
-      ^.as-bytes
-      x.as-bytes
+[] > writes-into-ram-and-reads-from-ram
+  ram 10 > r
+  r.write 0 65-66-67-68-69 > w
+  r.read 0 5 > data
+  and. > @
+    eq.
+      w
+      TRUE
+    eq.
+      data
+      65-66-67-68-69
 
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
-
-  # Tests that $ < x
-  [x] > less
-    and. > @
-      (^.eq x).not
-      (^.greater x).not
-
-  # Tests that $ ≤ x
-  [x] > leq
-    or. > @
-      ^.eq x
-      ^.less x
-
-  # Tests that $ > x
-  [x] > greater /bool
-
-  # Tests that $ ≥ x
-  [x] > geq
-    or. > @
-      ^.eq x
-      ^.greater x
-
-  # Change the sign of the number
-  [] > neg
-    ^.mul -1 > @
-
-  # Add to the current one
-  [x] > add /int
-
-  # Subtract from the current one
-  [x] > sub
-    ^.add (x.neg) > @
-
-  # Multiply this one by another int
-  [x] > mul /int
-
-  # Divide this one by another int
-  [x] > div /int
-
-  # Calculate MOD
-  [x] > mod /int
-
-  # Make it power x
-  [x] > pow /int
-
-  # Converts this to float
-  [] > as-float /float
-
-  # Converts this to string
-  [] > as-string /string
-
-  # Converts this to bytes
-  [] > as-bytes /bytes
-
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    if. > @
-      ^.geq 0
-      ^
-      ^.neg
+[] > writes-at-random-position
+  ram 1024 > r
+  r.write 512 65-66-67-68-69 > w
+  r.read 513 4 > data
+  and. > @
+    eq.
+      w
+      TRUE
+    eq.
+      data
+      66-67-68-69

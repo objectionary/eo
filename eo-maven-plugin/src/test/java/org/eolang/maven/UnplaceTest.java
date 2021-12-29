@@ -27,15 +27,12 @@ import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link Unplace}.
  *
  * @since 0.11
  */
-@DisabledOnOs(OS.WINDOWS)
 public final class UnplaceTest {
 
     @Test

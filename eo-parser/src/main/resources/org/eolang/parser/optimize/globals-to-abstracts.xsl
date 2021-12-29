@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -39,6 +39,7 @@ SOFTWARE.
       pi
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:template match="objects/o[not(eo:abstract(.))]">
     <xsl:element name="o">
       <xsl:apply-templates select="@name|@line|@ref"/>

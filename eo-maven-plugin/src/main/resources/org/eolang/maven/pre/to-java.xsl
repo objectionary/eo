@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 The MIT License (MIT)
 
@@ -24,6 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
+  <xsl:output encoding="UTF-8"/>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
@@ -55,7 +56,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(replace(replace($n, '-', '_'), '@', '&#x3C6;'), '&#x3B1;', '_'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO', replace(replace(replace(replace($n, '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
   </xsl:function>
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -84,7 +85,7 @@ SOFTWARE.
     <xsl:param name="n" as="xs:string"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:text>&#x3C6;</xsl:text>
+        <xsl:text>φ</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="concat('', $n)"/>
@@ -120,10 +121,6 @@ SOFTWARE.
   <xsl:template match="class" mode="body">
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:if test="//meta[head='junit'] and not(@parent)">
-      <xsl:text>@EoTest</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:text>@XmirObject(name = "</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>", oname = "</xsl:text>
@@ -185,7 +182,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$data-objects[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("&#x394;", new AtFree());</xsl:text>
+      <xsl:text>this.add("Δ", new AtFree());</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
@@ -205,7 +202,7 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>public int hashCode() {</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>return this.attr("&#x394;").get().hashCode();</xsl:text>
+      <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>}</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
@@ -213,7 +210,7 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>public boolean equals(final Object obj) {</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>return this.attr("&#x394;").get().equals(obj);</xsl:text>
+      <xsl:text>return this.attr("Δ").get().equals(obj);</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>}</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
@@ -291,7 +288,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "&#x394;", new Data.Value&lt;Phi[]&gt;(</xsl:text>
+    <xsl:text>, "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_a));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -346,10 +343,10 @@ SOFTWARE.
         <xsl:text>rho</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
-        <xsl:text>new PhMethod(rho, "&#x3C1;")</xsl:text>
+        <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
       </xsl:when>
       <xsl:when test="@base='&amp;'">
-        <xsl:text>new PhMethod(rho, "&#x3C3;")</xsl:text>
+        <xsl:text>new PhMethod(rho, "σ")</xsl:text>
       </xsl:when>
       <xsl:when test="$b and name($b)='class'">
         <xsl:text>new </xsl:text>
@@ -362,7 +359,7 @@ SOFTWARE.
         </xsl:for-each>
         <xsl:text>rho</xsl:text>
         <xsl:for-each select="1 to $b/@level">
-          <xsl:text>, "&#x3C3;")</xsl:text>
+          <xsl:text>, "σ")</xsl:text>
         </xsl:for-each>
         <xsl:text>, "</xsl:text>
         <xsl:value-of select="$b/@name"/>
@@ -419,10 +416,10 @@ SOFTWARE.
     <xsl:variable name="method" select="substring-after(@base, '.')"/>
     <xsl:choose>
       <xsl:when test="$method='^'">
-        <xsl:text>&#x3C1;</xsl:text>
+        <xsl:text>ρ</xsl:text>
       </xsl:when>
       <xsl:when test="$method='&lt;'">
-        <xsl:text>&#x3BD;</xsl:text>
+        <xsl:text>ν</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:attr-name($method)"/>
@@ -522,7 +519,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "&#x394;", new Data.Value&lt;</xsl:text>
+    <xsl:text>, "Δ", new Data.Value&lt;</xsl:text>
     <xsl:value-of select="@java-type"/>
     <xsl:text>&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
