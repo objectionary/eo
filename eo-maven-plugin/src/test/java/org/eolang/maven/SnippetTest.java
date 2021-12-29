@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
@@ -159,7 +158,7 @@ public final class SnippetTest {
             .with("placed", target.resolve("list").toFile())
             .with(
                 "objectionary",
-                (Func<String, Input>) name -> new InputOf(
+                (Objectionary) name -> new InputOf(
                     home.resolve(
                         String.format(
                             "src/main/eo/%s.eo",

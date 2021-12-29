@@ -25,8 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.Func;
-import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -69,7 +67,7 @@ public final class AssembleMojoTest {
             .with("skipZeroVersions", true)
             .with(
                 "objectionary",
-                (Func<String, Input>) input -> new InputOf(
+                (Objectionary) input -> new InputOf(
                     "[] > sprintf\n"
                 )
             )
