@@ -119,9 +119,8 @@ suffix
 method
   :
   DOT
-  (
+  mtd=(
     NAME
-    COPY?
     |
     RHO
     |

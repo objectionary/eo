@@ -1,0 +1,10 @@
+xsls: []
+tests:
+  - //o[@name='b' and @copy and @base='a']
+  - //o[@name='c' and @base='a' and @copy and o[@base='b' and @copy]]
+eo: |
+  [] > foo
+    [i] > a
+    a' > b
+    a' b' > c
+
