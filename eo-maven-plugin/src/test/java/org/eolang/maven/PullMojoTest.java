@@ -27,8 +27,6 @@ import com.yegor256.tojos.Json;
 import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.Func;
-import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,7 +56,7 @@ public final class PullMojoTest {
             .with("foreignFormat", "json")
             .with(
                 "objectionary",
-                (Func<String, Input>) input -> new InputOf("[] > hello\n")
+                (Objectionary) input -> new InputOf("[] > hello\n")
             )
             .execute();
         MatcherAssert.assertThat(

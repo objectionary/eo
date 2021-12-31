@@ -23,53 +23,21 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.net.URL;
-import org.cactoos.Func;
+import java.io.IOException;
 import org.cactoos.Input;
-import org.cactoos.io.InputOf;
 
 /**
- * The abstraction of the Objectionary server.
+ * Objectionary.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class Objectionary implements Func<String, Input> {
-
+public interface Objectionary {
     /**
-     * The hash code to fetch.
+     * Resolve object.
+     * @param name Object name.
+     * @return Object code.
+     * @throws IOException If fails to fetch.
      */
-    private final String hash;
-
-    /**
-     * Ctor.
-     */
-    public Objectionary() {
-        this("master");
-    }
-
-    /**
-     * Ctor.
-     * @param hsh The GitHub hash
-     */
-    public Objectionary(final String hsh) {
-        this.hash = hsh;
-    }
-
-    @Override
-    public Input apply(final String name) throws Exception {
-        final URL url = new URL(
-            String.format(
-                // @checkstyle LineLength (1 line)
-                "https://raw.githubusercontent.com/yegor256/objectionary/%s/objects/%s.eo",
-                this.hash, name.replace(".", "/")
-            )
-        );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
-    }
+    Input get(String name) throws IOException;
 
 }

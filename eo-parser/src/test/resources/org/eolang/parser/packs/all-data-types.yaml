@@ -3,6 +3,7 @@ tests:
   - /program/errors[count(*)=0]
   - //objects[count(o[@base='bytes'])=6]
   - //o[@base='bytes' and @name='bytesX' and @data]
+  - //o[@base='bytes' and @name='ml' and @data]
   - //o[@base='bool' and @name='boolX' and @data]
   - //o[@base='int' and @name='intX' and @data]
   - //o[@base='float' and @data='float' and @name='largestNegativeFloat' and text()='-1.7976931348623157E308']
@@ -51,3 +52,8 @@ eo: |
   AA- > bytesX
 
   -- > bytesX
+
+  foo
+    11-A2-B3-C4-
+    21-A2-B3-C4-
+    31-A2-B3-C4 > ml
