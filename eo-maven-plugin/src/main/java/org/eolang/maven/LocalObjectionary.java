@@ -57,10 +57,12 @@ public final class LocalObjectionary implements Objectionary {
 
     @Override
     public Input get(final String name) throws IOException {
-        final Path file = this.eopath
-            .resolve("sources")
-            .resolve(this.version)
-            .resolve(String.format("%s.eo", name.replace(".", "/")));
+        final Path file = new Place(name).make(
+            this.eopath
+                .resolve("sources")
+                .resolve(this.version),
+            "eo"
+        );
         if (!file.toFile().exists()) {
             throw new FileNotFoundException(name);
         }

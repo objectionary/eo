@@ -70,10 +70,12 @@ public final class CachingObjectionary implements Objectionary {
     public Input get(final String name) throws IOException {
         return new TeeInput(
             this.primary.get(name),
-            this.cache
-                .resolve("sources")
-                .resolve(this.version)
-                .resolve(String.format("%s.eo", name.replace(".", "/")))
+            new Place(name).make(
+                this.cache
+                    .resolve("sources")
+                    .resolve(this.version),
+                "eo"
+            )
         );
     }
 }
