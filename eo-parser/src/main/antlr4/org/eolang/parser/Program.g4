@@ -306,7 +306,8 @@ STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
 
 fragment ESCAPE_SEQUENCE
     : '\\' [btnfr"'\\]
-    | '\\' ([0-3]? [0-7])? [0-7]
+    // allowed numbers 000.255 (ASCII range)
+    | '\\' ([01][0-9][0-9]|'2'[0-4][0-9]|'25'[0-5])
     | '\\' 'u'+ BYTE BYTE
     ;
 INT: (PLUS | MINUS)? [0-9]+;
