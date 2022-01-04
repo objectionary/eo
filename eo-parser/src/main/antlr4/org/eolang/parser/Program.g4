@@ -86,9 +86,9 @@ attributes
     // starts with @ | @? is somewhere btw names
     // ends with dots?
     (
-  AT
-  |
-  NAME
+      AT 
+      | 
+      NAME 
       (
         SPACE 
         NAME
@@ -102,7 +102,7 @@ attributes
       SPACE 
       NAME
     )* 
-  DOTS?
+    DOTS?
   )?
   RSQ
   ;
@@ -310,8 +310,10 @@ fragment ESCAPE_SEQUENCE
     | '\\' ([01][0-9][0-9]|'2'[0-4][0-9]|'25'[0-5])
     | '\\' 'u'+ BYTE BYTE
     ;
-INT: (PLUS | MINUS)? [0-9]+;
-FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+;
+
+// no leading zeros allowed
+INT: (PLUS | MINUS)? ([1-9][0-9]*|[0]);
+FLOAT: INT DOT [0-9]+;
 HEX: '0x' [0-9a-f]+;
 
 NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
