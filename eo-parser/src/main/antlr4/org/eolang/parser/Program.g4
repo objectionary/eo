@@ -82,21 +82,29 @@ abstraction
 attributes
   :
   LSQ
-  (attribute (SPACE attribute)*)?
-  RSQ
-  ;
-
-attribute
-  :
-  label
-  ;
-
-label
-  :
+  (
+    // starts with @ | @? is somewhere btw names
+    // ends with dots?
+    (
   AT
   |
   NAME
+      (
+        SPACE 
+        NAME
+      )* 
+      (
+        SPACE 
+        AT
+      )?
+    ) 
+    (
+      SPACE 
+      NAME
+    )* 
   DOTS?
+  )?
+  RSQ
   ;
 
 tail
@@ -112,7 +120,7 @@ suffix
   SPACE
   ARROW
   SPACE
-  label
+  NAME
   CONST?
   ;
 
