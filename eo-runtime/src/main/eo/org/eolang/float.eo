@@ -26,7 +26,7 @@
 [] > float
   # Tests that $ = x
   [x] > eq
-     eq. > @
+    eq. > @
       ^.as-bytes
       x.as-bytes
 
