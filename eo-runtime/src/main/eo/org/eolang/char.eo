@@ -27,7 +27,7 @@
 [data] > char
   # Compares with another object
   [x] > eq
-     eq. > @
+    eq. > @
       ^.as-bytes
       x.as-bytes
 
