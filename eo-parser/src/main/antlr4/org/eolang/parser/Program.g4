@@ -120,7 +120,11 @@ suffix
   SPACE
   ARROW
   SPACE
-  NAME
+  (
+	NAME
+	|
+	AT
+  )
   CONST?
   ;
 
