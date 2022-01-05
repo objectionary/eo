@@ -23,16 +23,21 @@
 .SHELLFLAGS = -e -x -c
 .ONESHELL:
 
+TLROOT=/usr/local/texlive/2021/texmf-dist
+PACKAGES=ffcode to-be-determined
+REPO=cqfn/eo
+LATEXOPTS=-shell-escape -interaction=nonstopmode -halt-on-error
+
 zip: *.tex sections/*.tex
 	rm -rf package
 	mkdir package
 	cd package
-	cp ../*.tex .
-	cp ../*.bib .
-	cp ../.latexmkrc .
-	cp ../*.sty .
+	cp ../eolang-paper.tex .
+	cp ../main.bib .
+	cp ../eo.sty .
+	for p in $(PACKAGES); do cp $(TLROOT)/tex/latex/$${p}/$${p}.sty .; done
 	cp -r ../sections .
-	version=$$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/cqfn/eo/releases/latest | jq -r '.tag_name')
+	version=$$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$(REPO)/releases/latest | jq -r '.tag_name')
 	echo "Version is: $${version}"
 	date=$$(date +%Y/%m/%d)
 	echo "Date is: $${date}"
@@ -41,8 +46,10 @@ zip: *.tex sections/*.tex
 	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
 	gsed -i "s|00\.00\.0000|$${date}|" eolang-paper.tex
 	gsed -i "s|00000000|$${hash}|" eolang-paper.tex
-	latexmk -pdf eolang-paper.tex
-	rm .latexmkrc
+	pdflatex $(LATEXOPTS) eolang-paper.tex >/dev/null
+	bibtex eolang-paper
+	pdflatex $(LATEXOPTS) eolang-paper.tex >/dev/null
+	pdflatex $(LATEXOPTS) eolang-paper.tex >/dev/null
 	rm -rf _minted-* *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc
 	zip -x eolang-paper.pdf -r paper-$${version}.zip *
 	mv paper-$${version}.zip ..
