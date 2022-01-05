@@ -23,7 +23,7 @@
 .SHELLFLAGS = -e -x -c
 .ONESHELL:
 
-TLROOT=/usr/local/texlive/2021/texmf-dist
+TLROOT=$$(kpsewhich -var-value TEXMFDIST)
 PACKAGES=ffcode to-be-determined href-ul
 REPO=cqfn/eo
 
