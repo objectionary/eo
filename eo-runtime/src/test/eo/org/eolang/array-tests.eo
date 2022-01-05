@@ -124,8 +124,8 @@
 # check that array.is-empty works properly
 [] > should-not-be-empty
   * > xs
-     1
-     2
+    1
+    2
   xs.is-empty.not > @
 
 # check that array.is-empty works properly

@@ -26,7 +26,7 @@
 [] > bool
   # Equal to another object?
   [x] > eq
-     eq. > @
+    eq. > @
       ^.as-bytes
       x.as-bytes
 

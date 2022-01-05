@@ -262,11 +262,19 @@ RB: ')';
 AT: '@';
 RHO: '^';
 HASH: '#';
+
+
+fragment INDENT:
+    SPACE SPACE
+    ;
+fragment LINEBREAK:
+    ('\n' | '\r\n')
+    ;
 EOL
   :
-  ('\n' | '\r\n')
-  ('\n' | '\r\n')?
-  SPACE*
+  LINEBREAK
+  LINEBREAK?
+  INDENT*
   {
     int tabs = getText().replaceAll("[\r]?[\n]", "").length() / 2;
     if (tabs < this.currentTabs) {
