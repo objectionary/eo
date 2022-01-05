@@ -4,12 +4,10 @@
 
 This is a more or less formal description of EOLANG and 𝜑-calculus.
 
-This is its compiled version: [eolang-paper.pdf](https://www.eolang.org/eolang-paper.pdf).
-
 To build it, just run:
 
 ```bash
-$ latexmk -pdf
+$ make
 ```
 
 You need to have
@@ -20,3 +18,5 @@ LaTeX,
 and
 [`texqc`](https://rubygems.org/gems/texqc)
 installed.
+
+Once compiled and packaged, upload zip archive to [arXiv](https://arxiv.org/abs/2111.13384).
