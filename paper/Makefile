@@ -24,9 +24,8 @@
 .ONESHELL:
 
 TLROOT=/usr/local/texlive/2021/texmf-dist
-PACKAGES=ffcode to-be-determined
+PACKAGES=ffcode to-be-determined href-ul
 REPO=cqfn/eo
-LATEXOPTS=-shell-escape -interaction=nonstopmode -halt-on-error
 
 zip: *.tex sections/*.tex
 	rm -rf package
@@ -46,11 +45,12 @@ zip: *.tex sections/*.tex
 	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
 	gsed -i "s|00\.00\.0000|$${date}|" eolang-paper.tex
 	gsed -i "s|00000000|$${hash}|" eolang-paper.tex
-	pdflatex $(LATEXOPTS) eolang-paper.tex >/dev/null
+	gsed -i "s|REPOSITORY|$(REPO)|" eolang-paper.tex
+	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
 	bibtex eolang-paper
-	pdflatex $(LATEXOPTS) eolang-paper.tex >/dev/null
-	pdflatex $(LATEXOPTS) eolang-paper.tex >/dev/null
-	rm -rf _minted-* *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc
+	pdflatex -halt-on-error eolang-paper.tex > /dev/null
+	pdflatex -halt-on-error eolang-paper.tex > /dev/null
+	rm -rf *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc
 	zip -x eolang-paper.pdf -r paper-$${version}.zip *
 	mv paper-$${version}.zip ..
 	cd ..

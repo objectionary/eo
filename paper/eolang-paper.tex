@@ -22,16 +22,25 @@
 
 \documentclass[sigplan,nonacm=true]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
+
+\ifnum\pdfshellescape=1
+  \usepackage[finalizecache]{minted}
+\else
+  \usepackage[frozencache]{minted}
+\fi
+
 \usepackage{eo}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{$\varphi$}{phi}-calculus}
 \subtitle{\anon{}{%
-  ver: \ff{0.0.0}
+  Ver: \href{https://github.com/REPOSITORY/releases/tag/0.0.0}
+    {\ff{0.0.0}}
   \quad
-  git: \ff{00000000}
+  Git: \href{https://github.com/REPOSITORY/commit/00000000}
+    {\ff{00000000}}
   \quad
-  date: \ff{00.00.0000}
+  Date: \ff{00.00.0000}
 }}
 \author{Yegor Bugayenko}
 \orcid{0000-0001-6370-0678}
