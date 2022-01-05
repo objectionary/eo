@@ -38,13 +38,7 @@ zip: *.tex sections/*.tex
 	cp -r ../sections .
 	version=$$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$(REPO)/releases/latest | jq -r '.tag_name')
 	echo "Version is: $${version}"
-	date=$$(date +%Y/%m/%d)
-	echo "Date is: $${date}"
-	hash=$$(git log -n 1 --pretty='format:%h')
-	echo "Hash is: $${hash}"
 	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
-	gsed -i "s|00\.00\.0000|$${date}|" eolang-paper.tex
-	gsed -i "s|00000000|$${hash}|" eolang-paper.tex
 	gsed -i "s|REPOSITORY|$(REPO)|" eolang-paper.tex
 	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
 	bibtex eolang-paper
