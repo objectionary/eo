@@ -37,6 +37,10 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #490:30min Enable Objectionary caching in PullMojo.
+ *  Replace usages of RemoteObjectionary with a
+ *  combination of Local and Caching and Remote.
+ *  Add a parameter to bypass/overwrite cache.
  */
 @Mojo(
     name = "pull",
