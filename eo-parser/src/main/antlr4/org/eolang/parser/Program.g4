@@ -1,9 +1,5 @@
 grammar Program;
 
-@header {
-  import java.util.LinkedList;
-}
-
 tokens { TAB, UNTAB }
 
 program
@@ -35,8 +31,7 @@ objects
 
 object
   :
-  anonymous
-  |
+  (COMMENT EOL)*
   (
     abstraction
     |
@@ -52,17 +47,13 @@ object
   )*
   ;
 
-anonymous
-  :
-  attributes
-  htail
-  ;
-
 abstraction
   :
-  (COMMENT EOL)*
   attributes
-  (suffix (SPACE SLASH (NAME | QUESTION))?)?
+  (
+     (suffix (SPACE SLASH (NAME | QUESTION))?)
+   | htail
+  )?
   ;
 
 attributes
@@ -163,7 +154,7 @@ htail
     suffix
     |
     SPACE
-    anonymous
+    abstraction
   )+
   ;
 
