@@ -248,11 +248,18 @@ RB: ')';
 AT: '@';
 RHO: '^';
 HASH: '#';
+
+fragment INDENT:
+    SPACE SPACE
+    ;
+fragment LINEBREAK:
+    ('\n' | '\r\n')
+    ;
 EOL
   :
-  ('\n' | '\r\n')
-  ('\n' | '\r\n')?
-  SPACE*
+  LINEBREAK
+  LINEBREAK?
+  INDENT*
   ;
 
 fragment BYTE: [0-9A-F][0-9A-F];
