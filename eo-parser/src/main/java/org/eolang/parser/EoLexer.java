@@ -30,7 +30,6 @@ import java.util.LinkedList;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
@@ -39,11 +38,6 @@ import org.cactoos.io.InputStreamOf;
  * Indentation-aware Lexer.
  *
  * @since 1.0
- * @todo #430:30m Remove EoLexer.action method.
- *  Having an action is not necessary, it should
- *  be enough to look up upcoming token from
- *  nextToken(). Also remove empty action for the
- *  grammar.
  */
 public final class EoLexer extends ProgramLexer {
     /**
@@ -79,18 +73,18 @@ public final class EoLexer extends ProgramLexer {
 
     @Override
     public Token nextToken() {
-        final Token result;
         if (this.tokens.isEmpty()) {
-            result = super.nextToken();
-        } else {
-            result = this.tokens.poll();
+            this.lookAhead();
         }
-        return result;
+        return this.tokens.poll();
     }
 
-    @Override
-    public void action(final RuleContext ctx, final int rindx, final int aindx) {
-        if (rindx == this.getRuleIndexMap().get("EOL")) {
+    /**
+     * Look for upcoming token.
+     */
+    private void lookAhead() {
+        final Token token = super.nextToken();
+        if (token.getType() == ProgramParser.EOL) {
             final int tabs = this.getText().replaceAll("[\r\n]", "").length() / 2;
             final int last = this.indent.peekLast();
             final int shift = tabs - last;
@@ -101,6 +95,7 @@ public final class EoLexer extends ProgramLexer {
             }
             this.indent.add(tabs);
         }
+        this.tokens.addFirst(token);
     }
 
     /**

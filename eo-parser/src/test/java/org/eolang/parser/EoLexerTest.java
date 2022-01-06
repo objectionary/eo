@@ -64,4 +64,17 @@ final class EoLexerTest {
             )
         );
     }
+
+    @Test
+    void readsEmptyString() throws IOException {
+        final EoLexer lexer = new EoLexer(
+            new TextOf("")
+        );
+        MatcherAssert.assertThat(
+            lexer.nextToken().getType(),
+            Matchers.is(
+                ProgramParser.EOF
+            )
+        );
+    }
 }

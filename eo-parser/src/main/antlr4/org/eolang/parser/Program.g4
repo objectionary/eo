@@ -260,7 +260,6 @@ EOL
   LINEBREAK
   LINEBREAK?
   INDENT*
-  { }
   ;
 
 fragment BYTE: [0-9A-F][0-9A-F];
