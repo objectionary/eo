@@ -253,7 +253,6 @@ EOL
   ('\n' | '\r\n')
   ('\n' | '\r\n')?
   SPACE*
-  { }
   ;
 
 fragment BYTE: [0-9A-F][0-9A-F];
