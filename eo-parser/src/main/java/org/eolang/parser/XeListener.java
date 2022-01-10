@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -168,19 +168,6 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    public void enterAnonymous(final ProgramParser.AnonymousContext ctx) {
-        this.dirs.add("o")
-            .attr("line", ctx.getStart().getLine())
-            .up();
-    }
-
-    @Override
-    public void exitAnonymous(final ProgramParser.AnonymousContext ctx) {
-        this.enter();
-        this.dirs.xpath("o[@base][1]").up().up();
-    }
-
-    @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
         if (ctx.SLASH() != null) {
@@ -265,10 +252,7 @@ public final class XeListener implements ProgramListener {
         this.dirs.add("o")
             .attr("method", "")
             .attr("line", ctx.getStart().getLine())
-            .attr("base", ctx.getText()).up();
-        if (ctx.COPY() != null) {
-            this.dirs.attr("copy", "");
-        }
+            .attr("base", String.format(".%s", ctx.mtd.getText())).up();
     }
 
     @Override
@@ -277,32 +261,32 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ConfusingTernary"})
     public void enterHead(final ProgramParser.HeadContext ctx) {
         this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        if (ctx.COPY() != null) {
+            this.dirs.attr("copy", "");
+        }
+        String base = "";
         if (ctx.NAME() != null) {
-            String base = ctx.NAME().getText();
+            base = ctx.NAME().getText();
             if (ctx.DOT() != null) {
                 base = String.format(".%s", base);
             }
+        } else if (ctx.AT() != null) {
+            base = "@";
+        } else if (ctx.XI() != null) {
+            base = "$";
+        } else if (ctx.STAR() != null) {
+            base = "array";
+            this.dirs.attr("data", "array");
+        } else if (ctx.RHO() != null) {
+            base = "^";
+        } else if (ctx.SIGMA() != null) {
+            base = "&";
+        }
+        if (!base.isEmpty()) {
             this.dirs.attr("base", base);
-        }
-        if (ctx.AT() != null) {
-            this.dirs.attr("base", "@");
-        }
-        if (ctx.XI() != null) {
-            this.dirs.attr("base", "$");
-        }
-        if (ctx.STAR() != null) {
-            this.dirs.attr("base", "array").attr("data", "array");
-        }
-        if (ctx.RHO() != null) {
-            this.dirs.attr("base", "^");
-        }
-        if (ctx.SIGMA() != null) {
-            this.dirs.attr("base", "&");
-        }
-        if (ctx.COPY() != null) {
-            this.dirs.attr("copy", "");
         }
     }
 

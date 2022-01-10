@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 
 /**
- * The abstraction of the Objectionary server.
+ * The simple HTTP Objectionary server.
  *
  * @since 0.1
  */
@@ -56,6 +56,10 @@ public final class RemoteObjectionary implements Objectionary {
     /**
      * Ctor.
      * @param hsh The GitHub hash
+     * @todo #490:30m Resolve abbreviated hash to a proper hash.
+     *  In order to avoid collisions resolve hash
+     *  (or branch) to a complete sha-256 hash of the commit.
+     *  Use only sha-256 hashes as a caching criteria.
      */
     public RemoteObjectionary(final String hsh) {
         this(

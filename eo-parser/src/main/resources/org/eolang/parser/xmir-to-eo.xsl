@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -124,6 +124,9 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:text>]</xsl:text>
   </xsl:template>
+  <xsl:template match="o[@data='array']" mode="head">
+    <xsl:text>*</xsl:text>
+  </xsl:template>
   <xsl:template match="o[@data='char']" mode="head">
     <xsl:text>'</xsl:text>
     <xsl:value-of select="text()"/>
@@ -134,7 +137,7 @@ SOFTWARE.
     <xsl:value-of select="text()"/>
     <xsl:text>"</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='char' and @data!='string']" mode="head">
+  <xsl:template match="o[@data and @data!='char' and @data!='string' and @data!='array']" mode="head">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="node()|@*">

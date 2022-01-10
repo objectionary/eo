@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,10 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #490:30min Enable Objectionary caching in PullMojo.
+ *  Replace usages of RemoteObjectionary with a
+ *  combination of Local and Caching and Remote.
+ *  Add a parameter to bypass/overwrite cache.
  */
 @Mojo(
     name = "pull",

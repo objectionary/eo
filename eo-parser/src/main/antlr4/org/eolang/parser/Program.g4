@@ -1,24 +1,6 @@
 grammar Program;
 
-@header {
-  import java.util.LinkedList;
-}
-
 tokens { TAB, UNTAB }
-
-@lexer::members {
-  private int currentTabs = 0;
-  private LinkedList<Token> tokens = new LinkedList<>();
-  @Override
-  public Token nextToken() {
-    return this.tokens.isEmpty() ? super.nextToken() : this.tokens.poll();
-  }
-  public void emitToken(int t, int line) {
-    CommonToken tkn = new CommonToken(t, "");
-    tkn.setLine(line);
-    this.tokens.offer(tkn);
-  }
-}
 
 program
   :
@@ -49,8 +31,7 @@ objects
 
 object
   :
-  anonymous
-  |
+  (COMMENT EOL)*
   (
     abstraction
     |
@@ -66,17 +47,13 @@ object
   )*
   ;
 
-anonymous
-  :
-  attributes
-  htail
-  ;
-
 abstraction
   :
-  (COMMENT EOL)*
   attributes
-  (suffix (SPACE SLASH (NAME | QUESTION))?)?
+  (
+     (suffix (SPACE SLASH (NAME | QUESTION))?)
+   | htail
+  )?
   ;
 
 attributes
@@ -119,9 +96,8 @@ suffix
 method
   :
   DOT
-  (
+  mtd=(
     NAME
-    COPY?
     |
     RHO
     |
@@ -178,7 +154,7 @@ htail
     suffix
     |
     SPACE
-    anonymous
+    abstraction
   )+
   ;
 
@@ -263,25 +239,18 @@ RB: ')';
 AT: '@';
 RHO: '^';
 HASH: '#';
+
+fragment INDENT:
+    SPACE SPACE
+    ;
+fragment LINEBREAK:
+    ('\n' | '\r\n')
+    ;
 EOL
   :
-  ('\n' | '\r\n')
-  ('\n' | '\r\n')?
-  SPACE*
-  {
-    int tabs = getText().replaceAll("[\r]?[\n]", "").length() / 2;
-    if (tabs < this.currentTabs) {
-      for (int i = 0; i < this.currentTabs - tabs; ++i) {
-        this.emitToken(ProgramParser.UNTAB, getLine() + 1);
-        this.emitToken(ProgramParser.EOL, getLine() + 1);
-      }
-    } else if (tabs > this.currentTabs) {
-      for (int i = 0; i < tabs - this.currentTabs; ++i) {
-        this.emitToken(ProgramParser.TAB, getLine() + 1);
-      }
-    }
-    this.currentTabs = tabs;
-  }
+  LINEBREAK
+  LINEBREAK?
+  INDENT*
   ;
 
 fragment BYTE: [0-9A-F][0-9A-F];

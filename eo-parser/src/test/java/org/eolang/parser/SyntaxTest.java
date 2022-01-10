@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +76,6 @@ public final class SyntaxTest {
         "1 > x\n\n2 > y",
         "[]",
         "[] > x",
-        "[] > x\n x ^ > @",
         "a b c > x\n  x ^ > @",
         "[] > x\n  x ^ > @"
     })
@@ -114,8 +113,8 @@ public final class SyntaxTest {
         "a>b",
         "@ > []",
         "^ > ^",
-        "this < code is definitely > wrong"
-
+        "this < code is definitely > wrong",
+        "[] > x\n x ^ > @"
     })
     public void failsOnBrokenSyntax(final String code) throws IOException {
         final Syntax syntax = new Syntax(

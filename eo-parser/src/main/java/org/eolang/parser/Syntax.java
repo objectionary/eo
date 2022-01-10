@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.List;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -38,7 +37,6 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
@@ -110,11 +108,7 @@ public final class Syntax {
                 );
             }
         };
-        final ProgramLexer lexer = new ProgramLexer(
-            CharStreams.fromStream(
-                new InputStreamOf(this.normalize())
-            )
-        );
+        final ProgramLexer lexer = new EoLexer(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(errors);
         final ProgramParser parser = new ProgramParser(

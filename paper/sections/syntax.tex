@@ -73,7 +73,7 @@ Java-notation is used for numbers, strings, and character literals.
   \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} } \\
 \T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
   \> \alt \T{char} \alt \T{float} \alt \T{regex} \\
-\T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \alt \V{--} \\
+\T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \alt \V{-{}-} \\
 \T{bool} \df \V{TRUE} \alt \V{FALSE} \\
 \T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
 \T{string} \df \RE{"[\^{}"]*"} \\
@@ -155,19 +155,19 @@ book3.set-price 19.99
 \subsection{Indentation}
 
 This is an example of an abstract object \ff{vector}, where
-spaces are replaced with the ``␣'' symbol in order to demonstrate
+spaces are replaced with the ``\textvisiblespace'' symbol in order to demonstrate
 the importance of their presence in specific quantity
 (for example, there has to be exactly one space after the closing square bracket at the
 second line and the \ff{>} symbol, while two spaces will break the syntax):
 
-\begin{ffcode}
-#␣This is a vector in 2D space |$\label{ln:comment}$|
-[dx␣dy]␣>␣vector |$\label{ln:vector}$|
-␣␣sqrt.␣>␣length |$\label{ln:length}$|
-␣␣␣␣add.
-␣␣␣␣␣␣dx.pow 2
-␣␣␣␣␣␣dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
-\end{ffcode}
+\begin{ffcode*}{showspaces=true}
+# This is a vector in 2D space |$\label{ln:comment}$|
+[dx dy] > vector |$\label{ln:vector}$|
+  sqrt. > length |$\label{ln:length}$|
+    add.
+      dx.pow 2
+      dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
+\end{ffcode*}
 
 The code at \lref{comment} is a \emph{comment}.
 Two \emph{free attributes} \ff{dx} and \ff{dy}
