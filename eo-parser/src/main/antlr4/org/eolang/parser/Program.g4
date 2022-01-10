@@ -6,20 +6,6 @@ grammar Program;
 
 tokens { TAB, UNTAB }
 
-@lexer::members {
-  private int currentTabs = 0;
-  private LinkedList<Token> tokens = new LinkedList<>();
-  @Override
-  public Token nextToken() {
-    return this.tokens.isEmpty() ? super.nextToken() : this.tokens.poll();
-  }
-  public void emitToken(int t, int line) {
-    CommonToken tkn = new CommonToken(t, "");
-    tkn.setLine(line);
-    this.tokens.offer(tkn);
-  }
-}
-
 program
   :
   license?
@@ -119,9 +105,8 @@ suffix
 method
   :
   DOT
-  (
+  mtd=(
     NAME
-    COPY?
     |
     RHO
     |
@@ -263,33 +248,28 @@ RB: ')';
 AT: '@';
 RHO: '^';
 HASH: '#';
+
+fragment INDENT:
+    SPACE SPACE
+    ;
+fragment LINEBREAK:
+    ('\n' | '\r\n')
+    ;
 EOL
   :
-  ('\n' | '\r\n')
-  ('\n' | '\r\n')?
-  SPACE*
-  {
-    int tabs = getText().replaceAll("[\r]?[\n]", "").length() / 2;
-    if (tabs < this.currentTabs) {
-      for (int i = 0; i < this.currentTabs - tabs; ++i) {
-        this.emitToken(ProgramParser.UNTAB, getLine() + 1);
-        this.emitToken(ProgramParser.EOL, getLine() + 1);
-      }
-    } else if (tabs > this.currentTabs) {
-      for (int i = 0; i < tabs - this.currentTabs; ++i) {
-        this.emitToken(ProgramParser.TAB, getLine() + 1);
-      }
-    }
-    this.currentTabs = tabs;
-  }
+  LINEBREAK
+  LINEBREAK?
+  INDENT*
   ;
 
 fragment BYTE: [0-9A-F][0-9A-F];
 fragment EMPTY_BYTES : MINUS MINUS;
+fragment LINE_BYTES : BYTE (MINUS BYTE)+;
+
 BYTES:
        EMPTY_BYTES
     |  BYTE MINUS
-    |  BYTE (MINUS BYTE)+;
+    |  LINE_BYTES (MINUS EOL LINE_BYTES)*;
 
 BOOL: 'TRUE' | 'FALSE';
 CHAR:  '\'' (~['\\\r\n] | ESCAPE_SEQUENCE) '\'';

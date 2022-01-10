@@ -34,8 +34,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.Func;
-import org.cactoos.Input;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -100,7 +98,7 @@ public final class AssembleMojo extends SafeMojo {
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Func<String, Input> objectionary = new Objectionary();
+    private Objectionary objectionary = new RemoteObjectionary();
 
     /**
      * The central.

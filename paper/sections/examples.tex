@@ -14,11 +14,11 @@ by~\citet[p.743]{deitel2007java} (code style is modified):
 
 \begin{ffcode}
 public class FibonacciCalculator {
-  public long fibonacci(long n) {
+  public long fibo(long n) {
     if (n < 2) {
       return n;
     } else {
-      return fibonacci(n-1) + fibonacci(n-2);
+      return fibo(n-1) + fibo(n-2);
     }
   }
 }
@@ -62,21 +62,18 @@ public class LeapYear {
 The same functionality would require the following code in \eo{}:
 
 \begin{ffcode}
-+alias org.eolang.*
 +alias org.eolang.io.stdout
 +alias org.eolang.io.stdin
-+alias org.eolang.txt.scanner
++alias org.eolang.txt.sprintf
 
-[args] > main
+[args...] > main
   seq > @
     stdout
       "Enter a year:"
     stdout
-      concat
-        scanner > year
-          stdin
-        .nextInt
-        " is a leap year?"
+      sprintf
+        "%d is a leap year? %b"
+        stdin.next.as-int > year
         or.
           and.
             eq. (mod. year 4) 0
@@ -274,7 +271,7 @@ Then, the decorator would look like this:
 [@] > prefixed_stream
   [text] > print
     ^.@.print
-      concat
+      concat.
         "DEBUG: "
         text
 \end{ffcode}
@@ -287,7 +284,8 @@ If the object is used like this, where \ff{stdout} is another stream,
 printing texts to the console:
 
 \begin{ffcode}
-prefixed_stream(stdout).print("Hello, world!")
+prefixed_stream(stdout)
+  .print("Hello, world!")
 \end{ffcode}
 
 Then the console will print:

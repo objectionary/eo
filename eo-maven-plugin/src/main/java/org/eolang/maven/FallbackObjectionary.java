@@ -25,19 +25,50 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import org.cactoos.Input;
+import org.cactoos.func.FuncWithFallback;
+import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.scalar.FallbackFrom;
 
 /**
- * Objectionary.
+ * Objectionary with fallback.
  *
  * @since 1.0
  */
-public interface Objectionary {
-    /**
-     * Resolve object.
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
-     */
-    Input get(String name) throws IOException;
+public final class FallbackObjectionary implements Objectionary {
 
+    /**
+     * Primary Objectionary.
+     */
+    private final Objectionary first;
+
+    /**
+     * Fallback Objectionary.
+     */
+    private final Objectionary second;
+
+    /**
+     * Ctor.
+     * @param primary Primary source.
+     * @param secondary Secondary source.
+     */
+    public FallbackObjectionary(
+        final Objectionary primary,
+        final Objectionary secondary
+    ) {
+        this.first = primary;
+        this.second = secondary;
+    }
+
+    @Override
+    public Input get(final String name) throws IOException {
+        return new IoCheckedFunc<>(
+            new FuncWithFallback<>(
+                this.first::get,
+                new FallbackFrom<>(
+                    IOException.class,
+                    ex -> this.second.get(name)
+                )
+            )
+        ).apply(name);
+    }
 }

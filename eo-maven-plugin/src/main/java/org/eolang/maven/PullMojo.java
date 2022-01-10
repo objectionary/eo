@@ -31,15 +31,16 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.Func;
-import org.cactoos.Input;
-import org.cactoos.func.IoCheckedFunc;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #490:30min Enable Objectionary caching in PullMojo.
+ *  Replace usages of RemoteObjectionary with a
+ *  combination of Local and Caching and Remote.
+ *  Add a parameter to bypass/overwrite cache.
  */
 @Mojo(
     name = "pull",
@@ -74,7 +75,7 @@ public final class PullMojo extends SafeMojo {
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Func<String, Input> objectionary = new Objectionary();
+    private Objectionary objectionary = new RemoteObjectionary();
 
     @Override
     public void exec() throws IOException {
@@ -83,7 +84,7 @@ public final class PullMojo extends SafeMojo {
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         if (!"master".equals(this.hash)) {
-            this.objectionary = new Objectionary(this.hash);
+            this.objectionary = new RemoteObjectionary(this.hash);
         }
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
@@ -114,7 +115,7 @@ public final class PullMojo extends SafeMojo {
             );
         } else {
             new Save(
-                new IoCheckedFunc<>(this.objectionary).apply(name),
+                this.objectionary.get(name),
                 src
             ).save();
             Logger.debug(

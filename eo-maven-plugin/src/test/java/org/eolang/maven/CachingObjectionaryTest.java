@@ -23,21 +23,39 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
-import org.cactoos.Input;
+import java.nio.file.Path;
+import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Objectionary.
+ * Test for {@link CachingObjectionary}.
  *
  * @since 1.0
  */
-public interface Objectionary {
-    /**
-     * Resolve object.
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
-     */
-    Input get(String name) throws IOException;
+final class CachingObjectionaryTest {
 
+    @Test
+    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
+        final String content = "[] > main\n";
+        MatcherAssert.assertThat(
+            new TextOf(
+                new CachingObjectionary(
+                    "master",
+                    path,
+                    name -> new InputOf(content)
+                ).get("org.example.main")
+            ).asString(),
+            Matchers.is(content)
+        );
+        Assertions.assertTrue(
+            path.resolve("sources/master/org/example/main.eo")
+                .toFile()
+                .exists()
+        );
+    }
 }

@@ -24,20 +24,58 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import org.cactoos.Input;
+import org.cactoos.io.TeeInput;
 
 /**
- * Objectionary.
+ * Objectionary which caches objects locally.
  *
  * @since 1.0
  */
-public interface Objectionary {
-    /**
-     * Resolve object.
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
-     */
-    Input get(String name) throws IOException;
+public final class CachingObjectionary implements Objectionary {
 
+    /**
+     * Cache location.
+     */
+    private final Path cache;
+
+    /**
+     * Version or hash.
+     */
+    private final String version;
+
+    /**
+     * Remote Objectionary.
+     */
+    private final Objectionary primary;
+
+    /**
+     * Ctor.
+     * @param ver Version.
+     * @param cache Cache directory.
+     * @param primary Primary objectionary.
+     */
+    public CachingObjectionary(
+        final String ver,
+        final Path cache,
+        final Objectionary primary
+    ) {
+        this.version = ver;
+        this.cache = cache;
+        this.primary = primary;
+    }
+
+    @Override
+    public Input get(final String name) throws IOException {
+        return new TeeInput(
+            this.primary.get(name),
+            new Place(name).make(
+                this.cache
+                    .resolve("sources")
+                    .resolve(this.version),
+                "eo"
+            )
+        );
+    }
 }

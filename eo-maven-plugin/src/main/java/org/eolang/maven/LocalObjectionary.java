@@ -23,21 +23,49 @@
  */
 package org.eolang.maven;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 
 /**
- * Objectionary.
+ * Objectionary stored locally.
  *
  * @since 1.0
  */
-public interface Objectionary {
+public final class LocalObjectionary implements Objectionary {
     /**
-     * Resolve object.
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
+     * Local storage.
      */
-    Input get(String name) throws IOException;
+    private final Path eopath;
 
+    /**
+     * Version.
+     */
+    private final String version;
+
+    /**
+     * Ctor.
+     * @param ver Version.
+     * @param path Root.
+     */
+    public LocalObjectionary(final String ver, final Path path) {
+        this.version = ver;
+        this.eopath = path;
+    }
+
+    @Override
+    public Input get(final String name) throws IOException {
+        final Path file = new Place(name).make(
+            this.eopath
+                .resolve("sources")
+                .resolve(this.version),
+            "eo"
+        );
+        if (!file.toFile().exists()) {
+            throw new FileNotFoundException(name);
+        }
+        return new InputOf(file);
+    }
 }

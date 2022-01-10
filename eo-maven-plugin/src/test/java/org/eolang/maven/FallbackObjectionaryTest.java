@@ -23,53 +23,49 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PullMojo}.
+ * Test for {@link FallbackObjectionary}.
  *
- * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 1.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class PullMojoTest {
+final class FallbackObjectionaryTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) {
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
-            .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with(
-                "objectionary",
-                (Objectionary) input -> new InputOf("[] > hello\n")
+    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
+        final AtomicInteger counter = new AtomicInteger();
+        final String branch = "master";
+        final Objectionary objectionary = new FallbackObjectionary(
+            new LocalObjectionary(branch, path),
+            new CachingObjectionary(
+                branch,
+                path,
+                name -> {
+                    counter.incrementAndGet();
+                    return new InputOf("[] > main\n");
+                }
             )
-            .execute();
+        );
+        final String object = "org.example.main";
+        Assertions.assertNotNull(
+            new TextOf(objectionary.get(object)).asString()
+        );
+        Assertions.assertTrue(
+            path.resolve("sources/master/org/example/main.eo").toFile().exists()
+        );
+        Assertions.assertNotNull(objectionary.get(object));
         MatcherAssert.assertThat(
-            Files.exists(
-                target.resolve(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
-            Matchers.is(true)
+            counter.get(),
+            Matchers.is(1)
         );
     }
-
 }
