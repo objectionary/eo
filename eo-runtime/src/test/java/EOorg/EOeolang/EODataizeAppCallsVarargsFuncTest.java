@@ -31,34 +31,28 @@ import org.eolang.Dataized;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
+import org.eolang.PhUnvar;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests dataization of an EO app that calls a function
  * with varargs.
  *
- * @since 0.22
- * @todo #414:30min Fix bug EO app calling a varargs func.
- *  We reproduced by a Java and EO tests, the bug with exception `You can't overwrite X`
- *  when EO app try to call a function that uses varargs as parameter. Now, we must fix it
- *  and enable test below and eo test {@code [] > calls-varargs-func} located in
- *  `runtime-tests.eo`.
+ * @since 0.21
  */
 final class EODataizeAppCallsVarargsFuncTest {
 
     @Test
-    @Disabled
-    public void dataizesEOappThatCallsVarargsFunc() {
+    void dataizesEOappThatCallsVarargsFunc() {
         MatcherAssert.assertThat(
             new Dataized(
                 new EOappThatCallsVarargsFunc(Phi.Φ)
-            ).take(Long.class),
-            Matchers.is(2L)
+            ).take(Boolean.class),
+            Matchers.is(true)
         );
     }
 
@@ -66,9 +60,9 @@ final class EODataizeAppCallsVarargsFuncTest {
      * Main program sample.
      * {@code
      *  [] > app
-     *    (f 1 2 3).eq 2 > @
+     *    (f 1 2 3).eq 3 > @
      * }
-     * @since 0.22
+     * @since 0.21
      */
     private static class EOappThatCallsVarargsFunc extends PhDefault {
         public EOappThatCallsVarargsFunc(Phi sigma) {
@@ -79,12 +73,21 @@ final class EODataizeAppCallsVarargsFuncTest {
                     new AtComposite(
                         this,
                         (rho) -> {
-                            Phi fvar = new PhCopy(new Fvarargs(rho));
-                            fvar = new PhWith(fvar, 0, new Data.ToPhi(1L));
-                            fvar = new PhWith(fvar, 1, new Data.ToPhi(2L));
-                            fvar = new PhWith(fvar, 2, new Data.ToPhi(3L));
+                            final Phi fvar = new PhWith(
+                                new PhCopy(new Fvarargs(rho)),
+                                0,
+                                new PhUnvar(
+                                    new Data.ToPhi(
+                                        new Phi[] {
+                                            new Data.ToPhi(1L),
+                                            new Data.ToPhi(2L),
+                                            new Data.ToPhi(3L)
+                                        }
+                                    )
+                                )
+                            );
                             return new PhWith(
-                                new PhCopy(new PhMethod(fvar, "eq")), 0, new Data.ToPhi(2L)
+                                new PhCopy(new PhMethod(fvar, "eq")), 0, new Data.ToPhi(3L)
                             );
                         }
                     )
@@ -98,9 +101,9 @@ final class EODataizeAppCallsVarargsFuncTest {
      * {@code
      *  [args...] > f
      *    1 > a
-     *    2 > @
+     *    args.get 0 > @
      * }
-     * @since 0.22
+     * @since 0.21
      */
     @SuppressWarnings("unchecked")
     private static class Fvarargs extends PhDefault {
@@ -116,7 +119,19 @@ final class EODataizeAppCallsVarargsFuncTest {
             this.add(
                 "φ",
                 new AtOnce(
-                    new AtComposite(this, (rho) -> new Data.ToPhi(2L))
+                    new AtComposite(
+                        this,
+                        (rho) -> new PhWith(
+                            new PhCopy(
+                                new PhMethod(
+                                    new PhMethod(rho, "args"),
+                                    "get"
+                                )
+                            ),
+                            0,
+                            new Data.ToPhi(2L)
+                        )
+                    )
                 )
             );
         }
