@@ -1,0 +1,16 @@
++package sandbox
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
+
+[n args...] > app
+  stdout > @
+    sprintf
+      "n is %s and args length is %s"
+      n
+      args.length
+
+[n] > small
+  if. > @
+    n.eq 2
+    1
+    n

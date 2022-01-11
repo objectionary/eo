@@ -74,6 +74,14 @@ abstract class SafeMojo extends AbstractMojo {
     protected File foreign;
 
     /**
+     * File with eo headers.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-header-registry.xml")
+    protected File headerRegistry;
+
+    /**
      * Format of "foreign" file ("json" or "csv").
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)

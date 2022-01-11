@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.Xsline;
@@ -83,6 +84,7 @@ public final class OptimizeMojo extends SafeMojo {
                 AssembleMojo.ATTR_XMIR2,
                 this.optimize(src).toAbsolutePath().toString()
             );
+            this.registerEoHeaders(src);
         }
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
@@ -133,4 +135,28 @@ public final class OptimizeMojo extends SafeMojo {
         return target;
     }
 
+    /**
+     * Registers EO headers.
+     * @param eofile EO file
+     * @throws IOException If fails
+     */
+    private void registerEoHeaders(final Path eofile) throws IOException {
+        final EoHeader header = new EoHeader(new XMLDocument(eofile));
+        if (header.isValid()) {
+            final Path hfile = this.headerRegistry.toPath();
+            if (!hfile.toFile().exists()) {
+                hfile.toFile().createNewFile();
+            }
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            new EoHeaderRegistry(
+                header,
+                new InputOf(hfile),
+                new OutputTo(baos)
+            ).register();
+            new Save(
+                new XMLDocument(baos.toByteArray()).toString(),
+                hfile
+            ).save();
+        }
+    }
 }
