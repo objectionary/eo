@@ -24,15 +24,20 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
 
 /**
  * Compile.
@@ -110,10 +115,9 @@ public final class TranspileMojo extends SafeMojo {
         );
         int total = 0;
         for (final Tojo tojo : sources) {
-            final int done = cmp.transpile(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2)),
-                this.generatedDir.toPath()
-            );
+            final Path path = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            this.resolveEoHeaders(path);
+            final int done = cmp.transpile(path, this.generatedDir.toPath());
             total += done;
         }
         Logger.info(
@@ -140,4 +144,21 @@ public final class TranspileMojo extends SafeMojo {
         }
     }
 
+    /**
+     * Resolves EO headers.
+     * @param path Path of xmir
+     * @throws IOException If fails
+     */
+    private void resolveEoHeaders(final Path path) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new ResolveEoHeaders(
+            new XMLDocument(this.headerRegistry),
+            new InputOf(path),
+            new OutputTo(baos)
+        ).exec();
+        new Save(
+            new XMLDocument(baos.toByteArray()).toString(),
+            path
+        ).save();
+    }
 }
