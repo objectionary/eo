@@ -127,22 +127,25 @@ public final class SnippetTest {
      * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
     private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");
         new Save(code, src.resolve("code.eo")).save();
         final Path target = tmp.resolve("target");
         final Path foreign = target.resolve("eo-foreign.json");
+        final Path registry = target.resolve("eo-header-registry.xml");
         new Moja<>(RegisterMojo.class)
             .with("foreign", target.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(DemandMojo.class)
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
             .with("objects", new ListOf<>("org.eolang.bool"))
+            .with("headerRegistry", registry.toFile())
             .execute();
         final Path home = Paths.get(
             System.getProperty(
@@ -155,6 +158,7 @@ public final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
+            .with("headerRegistry", registry.toFile())
             .with("placed", target.resolve("list").toFile())
             .with(
                 "objectionary",
@@ -177,6 +181,7 @@ public final class SnippetTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
+            .with("headerRegistry", registry.toFile())
             .execute();
         final Path classes = target.resolve("classes");
         classes.toFile().mkdir();

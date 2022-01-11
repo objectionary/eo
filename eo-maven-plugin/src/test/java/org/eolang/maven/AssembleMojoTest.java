@@ -53,16 +53,20 @@ public final class AssembleMojoTest {
             src.resolve("main.eo")
         ).save();
         final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        final Path registry = temp.resolve("eo-header-registry.xml");
         new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
+            .with("headerRegistry", registry.toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("skipZeroVersions", true)
             .with(

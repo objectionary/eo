@@ -51,6 +51,7 @@ public final class OptimizeMojoTest {
         ).save();
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path registry = temp.resolve("eo-header-registry.xml");
         new MonoTojos(new Csv(foreign))
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -59,11 +60,13 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         final Path tgt = target.resolve(
             String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
@@ -73,6 +76,7 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         MatcherAssert.assertThat(
             tgt.toFile().lastModified(),
@@ -89,6 +93,7 @@ public final class OptimizeMojoTest {
         ).save();
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path registry = temp.resolve("eo-header-registry.xml");
         new MonoTojos(new Csv(foreign))
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -97,11 +102,13 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         final Path tgt = target.resolve(
             String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
@@ -114,6 +121,7 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         MatcherAssert.assertThat(
             tgt.toFile().lastModified(),
@@ -130,6 +138,7 @@ public final class OptimizeMojoTest {
         ).save();
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path registry = temp.resolve("eo-header-registry.xml");
         new MonoTojos(new Csv(foreign))
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -138,11 +147,13 @@ public final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         MatcherAssert.assertThat(
             Files.exists(

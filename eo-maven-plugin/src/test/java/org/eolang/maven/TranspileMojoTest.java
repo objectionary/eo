@@ -58,6 +58,7 @@ public final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path registry = temp.resolve("eo-header-registry.xml");
         new MonoTojos(new Csv(foreign))
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -66,11 +67,13 @@ public final class TranspileMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(TranspileMojo.class)
             .with("compiler", "canonical")
@@ -79,6 +82,7 @@ public final class TranspileMojoTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
@@ -103,6 +107,7 @@ public final class TranspileMojoTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         MatcherAssert.assertThat(
             java.toFile().lastModified(),
@@ -154,6 +159,7 @@ public final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path registry = temp.resolve("eo-header-registry.xml");
         new MonoTojos(new Csv(foreign))
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -162,11 +168,13 @@ public final class TranspileMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         new Moja<>(TranspileMojo.class)
             .with("compiler", "canonical")
@@ -175,6 +183,7 @@ public final class TranspileMojoTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("headerRegistry", registry.toFile())
             .execute();
         final Path java = generated.resolve(file);
         MatcherAssert.assertThat(
