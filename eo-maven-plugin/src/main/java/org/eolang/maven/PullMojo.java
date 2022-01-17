@@ -25,8 +25,11 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -37,15 +40,13 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #490:30min Enable Objectionary caching in PullMojo.
- *  Replace usages of RemoteObjectionary with a
- *  combination of Local and Caching and Remote.
- *  Add a parameter to bypass/overwrite cache.
+ * @todo #561:30min Add a parameter to bypass/overwrite cache.
+ *  for combination of Local and Caching and Remote.
  */
 @Mojo(
-    name = "pull",
-    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true
+        name = "pull",
+        defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+        threadSafe = true
 )
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PullMojo extends SafeMojo {
@@ -77,20 +78,37 @@ public final class PullMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary = new RemoteObjectionary();
 
+    /**
+     * Target directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    private Path outputPath = Paths.get(
+            System.getProperty("user.home")
+                    .concat(System.getProperty("file.separator"))
+                    .concat(".eo")
+    );
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> !row.exists(AssembleMojo.ATTR_EO)
-                && !row.exists(AssembleMojo.ATTR_XMIR)
+                row -> !row.exists(AssembleMojo.ATTR_EO)
+                        && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        if (!"master".equals(this.hash)) {
-            this.objectionary = new RemoteObjectionary(this.hash);
-        }
+        this.objectionary = new FallbackObjectionary(
+                new LocalObjectionary(
+                        this.hash,
+                        this.outputPath),
+                new CachingObjectionary(
+                        this.hash,
+                        this.outputPath,
+                        new RemoteObjectionary(this.hash)
+                )
+        );
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
                 tojo.set(
-                    AssembleMojo.ATTR_EO,
-                    this.pull(tojo.get("id")).toAbsolutePath().toString()
+                        AssembleMojo.ATTR_EO,
+                        this.pull(tojo.get("id")).toAbsolutePath().toString()
                 );
             }
             Logger.info(this, "%d program(s) pulled", tojos.size());
@@ -106,21 +124,22 @@ public final class PullMojo extends SafeMojo {
      */
     private Path pull(final String name) throws IOException {
         final Path src = new Place(name).make(
-            this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
+                this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
         );
+
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
-                this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, Save.rel(src)
+                    this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
+                    name, Save.rel(src)
             );
         } else {
             new Save(
-                this.objectionary.get(name),
-                src
+                    this.objectionary.get(name),
+                    src
             ).save();
             Logger.debug(
-                this, "The sources of the object '%s' pulled to %s",
-                name, Save.rel(src)
+                    this, "The sources of the object '%s' pulled to %s",
+                    name, Save.rel(src)
             );
         }
         return src;

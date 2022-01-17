@@ -44,44 +44,44 @@ public final class AssembleMojoTest {
     public void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            src.resolve("main.eo")
+                String.join(
+                        "\n",
+                        "+alias stdout org.eolang.io.stdout",
+                        "",
+                        "[x] > main\n  (stdout \"Hello!\" x).print\n"
+                ),
+                src.resolve("main.eo")
         ).save();
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
-            .execute();
+                .with("foreign", temp.resolve("eo-foreign.json").toFile())
+                .with("foreignFormat", "json")
+                .with("sourcesDir", src.toFile())
+                .execute();
         new Moja<>(AssembleMojo.class)
-            .with("outputDir", temp.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("placed", temp.resolve("list").toFile())
-            .with("skipZeroVersions", true)
-            .with(
-                "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
+                .with("outputDir", temp.resolve("out").toFile())
+                .with("targetDir", target.toFile())
+                .with("foreign", temp.resolve("eo-foreign.json").toFile())
+                .with("foreignFormat", "json")
+                .with("placed", temp.resolve("list").toFile())
+                .with("skipZeroVersions", true)
+                .with(
+                        "objectionary",
+                        (Objectionary) input -> new InputOf(
+                                "[] > sprintf\n"
+                        )
                 )
-            )
-            .execute();
+                .execute();
         MatcherAssert.assertThat(
-            Files.exists(
-                target.resolve(
-                    String.format(
-                        "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, Transpiler.EXT
-                    )
-                )
-            ),
-            Matchers.is(true)
+                Files.exists(
+                        target.resolve(
+                                String.format(
+                                        "%s/org/eolang/io/stdout.%s",
+                                        ParseMojo.DIR, Transpiler.EXT
+                                )
+                        )
+                ),
+                Matchers.is(true)
         );
     }
 
