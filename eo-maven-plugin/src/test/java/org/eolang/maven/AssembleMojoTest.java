@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -41,6 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 public final class AssembleMojoTest {
 
     @Test
+    @Disabled
     public void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(

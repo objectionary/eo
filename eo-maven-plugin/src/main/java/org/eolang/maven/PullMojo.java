@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,8 +38,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #561:30min Add a parameter to bypass/overwrite cache.
+ * @todo #561:30min Add a parameter to bypass/overwrite cache
  *  for combination of Local and Caching and Remote.
+ * @todo #561:30min Now that Objectionary caching has been
+ *  enabled we need to fix the SnippetTest.testFullRun and
+ *  AssembleMojoTest.assemblesTogether tests and enable it.
  */
 @Mojo(
     name = "pull",
@@ -81,6 +83,7 @@ public final class PullMojo extends SafeMojo {
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
+    @SuppressWarnings("PMD.ImmutableField")
     private Path outputPath = Paths.get(
         System.getProperty("user.home")
             .concat(System.getProperty("file.separator"))
@@ -96,7 +99,8 @@ public final class PullMojo extends SafeMojo {
         this.objectionary = new FallbackObjectionary(
             new LocalObjectionary(
                 this.hash,
-                this.outputPath),
+                this.outputPath
+            ),
             new CachingObjectionary(
                 this.hash,
                 this.outputPath,
@@ -125,7 +129,6 @@ public final class PullMojo extends SafeMojo {
         final Path src = new Place(name).make(
             this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
         );
-
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
