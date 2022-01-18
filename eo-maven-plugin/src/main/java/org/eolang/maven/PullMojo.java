@@ -86,9 +86,7 @@ public final class PullMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Path outputPath = Paths.get(
         System.getProperty("user.home")
-            .concat(System.getProperty("file.separator"))
-            .concat(".eo")
-    );
+    ).resolve(".eo");
 
     @Override
     public void exec() throws IOException {
