@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -140,3 +140,10 @@
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
   (a.and b).eq 02-23-C0-05-5E-70-10 > @
+
+[] > written-in-several-lines
+  eq. > @
+    size.
+      CA-FE-
+      BE-BE
+    4

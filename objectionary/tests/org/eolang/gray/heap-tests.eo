@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -51,3 +51,21 @@
   [] > mem
     p.block 8 > @
   mem.write 01-02-03 > @
+
+[] > increments-pointer
+  heap 1024 > h
+  h.pointer 0 2 > p1
+  p1.add 2 > p2
+  p2.sub 1 > p3
+  and. > @
+    (p1.block 6).write ("HELLO!".as-bytes)
+    eq.
+      p2.block
+        2
+        [b] (b.as-string > @)
+      "O!"
+    eq.
+      p3.block
+        2
+        [b] (b.as-string > @)
+      "LL"

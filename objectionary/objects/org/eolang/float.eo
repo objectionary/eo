@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.21.8
++rt jvm org.eolang:eo-runtime:0.21.9
 
 [] > float
   # Tests that $ = x
   [x] > eq
-     eq. > @
+    eq. > @
       ^.as-bytes
       x.as-bytes
 
@@ -70,10 +70,10 @@
     if. > @
       ^.less 0.0
       -1.0
-       if.
-         ^.eq 0.0
-         0.0
-         1.0
+      if.
+        ^.eq 0.0
+        0.0
+        1.0
 
   # Difference between $ and x
   [x] > sub
