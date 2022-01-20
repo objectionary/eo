@@ -39,17 +39,12 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests dataization of an EO app that calls a function
+ * Tests dataization of an EO app that calls an abject
  * with varargs.
  *
  * @since 0.22
- * @todo #414:30min Fix bug EO app calling a varargs func.
- *  We reproduced by a Java and EO tests, the bug with exception `You can't overwrite X`
- *  when EO app try to call a function that uses varargs as parameter. Now, we must fix it
- *  and enable test below and eo test {@code [] > calls-varargs-func} located in
- *  `runtime-tests.eo`.
  */
-final class EODataizeAppCallsVarargsFuncTest {
+final class EOAppCallsObjectWithVarargsAttrTest {
 
     @Test
     public void dataizesEOappThatCallsVarargsFunc() {
