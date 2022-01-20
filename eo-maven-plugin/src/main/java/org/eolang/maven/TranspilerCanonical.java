@@ -84,6 +84,7 @@ final class TranspilerCanonical implements Transpiler {
                 new OutputTo(target),
                 new TargetSpy(place.make(this.pre, "")),
                 new ListOf<>(
+                    "org/eolang/maven/pre/called-objects.xsl",
                     "org/eolang/maven/pre/classes.xsl",
                     "org/eolang/maven/pre/junit.xsl",
                     "org/eolang/maven/pre/rename-junit-inners.xsl",
