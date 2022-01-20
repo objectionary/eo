@@ -43,6 +43,10 @@ import org.junit.jupiter.api.Test;
  * with varargs.
  *
  * @since 0.22
+ * @todo #534:30min Vararg: fix bug readonly attribute for external objects.
+ *  We resolved bug for local object with vararg as free attribute. We need now to
+ *  fix bug for external ones. To resolve it, we should firstly know the free attributes
+ *  of these external objects.
  */
 final class EOAppCallsObjectWithVarargsAttrTest {
 
