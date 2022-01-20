@@ -286,11 +286,25 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:choose>
+      <xsl:when test="../@unvaring">
+        <xsl:text> = new PhUnvar(new PhWith(</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text> = new PhWith(</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="$name"/>
     <xsl:text>, "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_a));</xsl:text>
+    <xsl:choose>
+      <xsl:when test="../@unvaring">
+        <xsl:text>_a)));</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>_a));</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o[not(@base) and @name]">
