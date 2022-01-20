@@ -51,3 +51,15 @@
   [] > mem
     p.block 8 > @
   mem.write 01-02-03 > @
+
+[] > increments-pointer
+  heap 1024 > h
+  h.pointer 0 2 > p1
+  p1.add 1 > p2
+  and. > @
+    (p1.block 4).write ("DUDE".as-bytes)
+    eq.
+      p2.block
+        2
+        [b] (b.as-string > @)
+      "DE"
