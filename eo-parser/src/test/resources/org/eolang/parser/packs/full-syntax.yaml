@@ -16,6 +16,8 @@ tests:
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@vararg and @name='a']]
+  - //o[@base='float' and text()='-2400.0']
+  - //o[@base='float' and text()='7.33E-10']
 eo: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
@@ -79,3 +81,7 @@ eo: |
 
     # This is two
     [] > o2
+  
+  -2.4E3 > x
+  
+  7.33e-10 > y
