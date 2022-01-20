@@ -31,11 +31,11 @@ import org.eolang.Dataized;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
+import org.eolang.PhUnvar;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -52,13 +52,12 @@ import org.junit.jupiter.api.Test;
 final class EODataizeAppCallsVarargsFuncTest {
 
     @Test
-    @Disabled
     public void dataizesEOappThatCallsVarargsFunc() {
         MatcherAssert.assertThat(
             new Dataized(
                 new EOappThatCallsVarargsFunc(Phi.Φ)
-            ).take(Long.class),
-            Matchers.is(2L)
+            ).take(Boolean.class),
+            Matchers.is(true)
         );
     }
 
@@ -79,10 +78,19 @@ final class EODataizeAppCallsVarargsFuncTest {
                     new AtComposite(
                         this,
                         (rho) -> {
-                            Phi fvar = new PhCopy(new Fvarargs(rho));
-                            fvar = new PhWith(fvar, 0, new Data.ToPhi(1L));
-                            fvar = new PhWith(fvar, 1, new Data.ToPhi(2L));
-                            fvar = new PhWith(fvar, 2, new Data.ToPhi(3L));
+                            final Phi fvar = new PhWith(
+                                new PhCopy(new Fvarargs(rho)),
+                                0,
+                                new PhUnvar(
+                                    new Data.ToPhi(
+                                        new Phi[] {
+                                            new Data.ToPhi(1L),
+                                            new Data.ToPhi(2L),
+                                            new Data.ToPhi(3L)
+                                        }
+                                    )
+                                )
+                            );
                             return new PhWith(
                                 new PhCopy(new PhMethod(fvar, "eq")), 0, new Data.ToPhi(2L)
                             );
