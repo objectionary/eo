@@ -41,5 +41,17 @@
   [address length] > pointer
     address > @
 
+    # Increment this pointer by x steps forward
+    [x] > add
+      &.^.pointer > @
+        address.add
+          length.mul x
+        length
+
+    # Decrement this pointer by x steps backward
+    [x] > sub
+      &.add > @
+        x.mul -1
+
     # One block in the heap.
     [len inverse] > block /?
