@@ -23,6 +23,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pre-called-objects" version="2.0">
+  <!--
+    When we detect a call of an abstract object with
+    vararg as free attribute :
+    [] > test
+      [] > app
+        (f 1 2 3) > @
+      [args...] > f
+        args.length > @
+
+    We transform the vararg attribute to an array as below :
+    [] > test
+      [] > app
+        (f (* 1 2 3)) > @
+      [args...] > f
+        args.length > @
+  -->
   <xsl:output encoding="UTF-8"/>
   <xsl:template name="convert-vararg-to-array">
     <xsl:param name="called-obj"/>
