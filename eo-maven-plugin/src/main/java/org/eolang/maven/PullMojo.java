@@ -94,17 +94,19 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        this.objectionary = new FallbackObjectionary(
-            new LocalObjectionary(
-                this.hash,
-                this.outputPath
-            ),
-            new CachingObjectionary(
-                this.hash,
-                this.outputPath,
-                new RemoteObjectionary(this.hash)
-            )
-        );
+        if (this.objectionary == null) {
+            this.objectionary = new FallbackObjectionary(
+                    new LocalObjectionary(
+                            this.hash,
+                            this.outputPath
+                    ),
+                    new CachingObjectionary(
+                            this.hash,
+                            this.outputPath,
+                            new RemoteObjectionary(this.hash)
+                    )
+            );
+        }
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
                 tojo.set(

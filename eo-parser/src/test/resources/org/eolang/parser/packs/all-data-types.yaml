@@ -12,6 +12,8 @@ tests:
   - //o[@base='float' and @data='float' and @name='smallestPositiveNormalizedFloat' and text()='2.2250738585072014E-308']
   - //o[@base='float' and @data='float' and @name='smallestNegativeDenormalizedFloat' and text()='-4.9E-324']
   - //o[@base='float' and @data='float' and @name='smallestPositiveDenormalizedFloat' and text()='4.9E-324']
+  - //o[@base='float' and @data='float' and @name='positiveExponentialFormatFloat' and text()='1.7E25']
+  - //o[@base='float' and @data='float' and @name='negatieExponentialFormatFloat' and text()='-1.7E-25']
   - //o[@base='string' and @name='stringX' and @data]
   - //o[@base='char' and @name='charX' and @data]
   - //o[@base='string' and @name='textX' and @data]
@@ -31,6 +33,10 @@ eo: |
   -0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000049 > smallestNegativeDenormalizedFloat
 
   +0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000049 > smallestPositiveDenormalizedFloat
+
+  1.7E25 > positiveExponentialFormatFloat
+
+  -1.7E-25 > negatieExponentialFormatFloat
 
   0x1ffff > intX
 

@@ -42,7 +42,6 @@ import org.junit.jupiter.api.io.TempDir;
 public final class AssembleMojoTest {
 
     @Test
-    @Disabled
     public void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(

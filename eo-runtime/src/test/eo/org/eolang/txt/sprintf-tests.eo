@@ -27,5 +27,15 @@
 [] > prints-simple-string
   eq. > @
     "Hello, Jeffrey!"
-    sprintf "Hello, %s!"
+    sprintf
+      "Hello, %s!"
       "Jeffrey"
+
+[] > prints-complex-string
+  eq. > @
+    "Привет 3.14 Jeff X!"
+    sprintf
+      "Привет %.2f %s %c!"
+      3.14
+      "Jeff"
+      'X'

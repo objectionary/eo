@@ -77,8 +77,7 @@ public final class SnippetTest {
      */
     @TempDir
     public Path temp;
-
-    @Disabled
+    
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
