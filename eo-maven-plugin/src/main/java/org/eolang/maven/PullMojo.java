@@ -96,15 +96,15 @@ public final class PullMojo extends SafeMojo {
         );
         if (this.objectionary == null) {
             this.objectionary = new FallbackObjectionary(
-                    new LocalObjectionary(
-                            this.hash,
-                            this.outputPath
-                    ),
-                    new CachingObjectionary(
-                            this.hash,
-                            this.outputPath,
-                            new RemoteObjectionary(this.hash)
-                    )
+                new LocalObjectionary(
+                    this.hash,
+                    this.outputPath
+                ),
+                new CachingObjectionary(
+                    this.hash,
+                    this.outputPath,
+                    new RemoteObjectionary(this.hash)
+                )
             );
         }
         if (!tojos.isEmpty()) {
