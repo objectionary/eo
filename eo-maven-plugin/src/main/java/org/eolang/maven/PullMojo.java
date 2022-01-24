@@ -40,9 +40,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #561:30min Add a parameter to bypass/overwrite cache
  *  for combination of Local and Caching and Remote.
- * @todo #561:30min Now that Objectionary caching has been
- *  enabled we need to fix the SnippetTest.testFullRun and
- *  AssembleMojoTest.assemblesTogether tests and enable it.
  */
 @Mojo(
     name = "pull",
