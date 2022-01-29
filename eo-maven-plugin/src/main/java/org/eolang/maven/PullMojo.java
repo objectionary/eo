@@ -40,6 +40,9 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #561:30min Add a parameter to bypass/overwrite cache
  *  for combination of Local and Caching and Remote.
+ *  It was suggested by @yegor256 to rely on -U parameter of Maven
+ *  (https://github.com/cqfn/eo/issues/561#issuecomment-1007128430).
+ *  If it is possible to access it from the plugin.
  */
 @Mojo(
     name = "pull",
