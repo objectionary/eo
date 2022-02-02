@@ -156,7 +156,7 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
-More examples are [here](https://github.com/cqfn/eo/tree/master/eo-maven-plugin/src/it).
+More examples are [here](https://github.com/cqfn/eo/tree/master/sandbox/).
 
 ## Tutorial
 
