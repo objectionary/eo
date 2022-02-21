@@ -133,7 +133,7 @@
   * > xs
   xs.is-empty > @
 
-# arrays of anonymous objects
+# arrays of objects
 [] > should-not-be-empty-with-3-objects
   [x] > a-1
     (x.as-int > @)
@@ -145,4 +145,11 @@
     a-1
     a-2
     a-3
+  xs.is-empty.not > @
+
+# arrays with anonymous object
+[] > should-not-be-empty-with-1-anon-object
+  * > xs
+    [f]
+      f.as-int > @
   xs.is-empty.not > @
