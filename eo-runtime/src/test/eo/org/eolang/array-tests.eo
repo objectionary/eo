@@ -153,3 +153,9 @@
     [f]
       f.as-int > @
   xs.is-empty.not > @
+
+# arrays with anonymous one-line-object
+[] > should-not-be-empty-with-1-anon-object-one-liner
+  * > xs
+    [f] (f.as-int > @)
+  xs.is-empty.not > @
