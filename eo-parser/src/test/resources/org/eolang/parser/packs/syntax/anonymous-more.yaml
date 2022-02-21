@@ -1,0 +1,9 @@
+xsls:
+  - org/eolang/parser/wrap-method-calls.xsl
+
+tests:
+  - //objects[count(o)=1]
+eo: |
+  (dir "/tmp").walk
+    *
+      [f] (f.is-dir > @)
