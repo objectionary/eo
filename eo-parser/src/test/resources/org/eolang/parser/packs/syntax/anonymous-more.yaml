@@ -2,8 +2,12 @@ xsls:
   - org/eolang/parser/wrap-method-calls.xsl
 
 tests:
-  - //objects[count(o)=1]
+  - //objects[count(o)=2]
 eo: |
   (dir "/tmp").walk
     *
       [f] (f.is-dir > @)
+
+  (dir "/tmp").walk
+    *
+      ([f] (f.is-dir > @))
