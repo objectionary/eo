@@ -181,6 +181,8 @@ head
     DOT
     |
     data
+    |
+    abstraction
   )
   ;
 
