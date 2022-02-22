@@ -147,3 +147,9 @@
       CA-FE-
       BE-BE
     4
+
+[] > convertable-to-bool
+  and. > @
+    01-.as-bool
+    not.
+      00-.as-bool
