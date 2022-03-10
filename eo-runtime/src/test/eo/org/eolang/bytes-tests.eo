@@ -147,3 +147,11 @@
       CA-FE-
       BE-BE
     4
+
+[] > bitwise-works
+  eq. > @
+    as-int.
+      and.
+        1.as-bytes
+        1.as-bytes
+    1

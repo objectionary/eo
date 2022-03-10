@@ -24,7 +24,8 @@
 
 package EOorg.EOeolang;
 
-import java.nio.ByteBuffer;
+import java.math.BigInteger;
+
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -42,10 +43,9 @@ public class EObytes$EOas_int extends PhDefault {
 
     public EObytes$EOas_int(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            return new Data.ToPhi(ByteBuffer.wrap(array).getLong());
-        }));
+        this.add("φ", new AtComposite(this, rho ->
+	    new Data.ToPhi(new Param(rho).fromBytes(BigInteger.class).longValueExact())
+        ));
     }
 
 }

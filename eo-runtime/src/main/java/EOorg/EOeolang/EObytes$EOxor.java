@@ -44,13 +44,13 @@ public class EObytes$EOxor extends PhDefault {
     public EObytes$EOxor(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            final byte[] another = new Param(rho, "b").strong(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).xor(new BigInteger(another)).toByteArray()
-            );
-        }));
+        this.add("φ", new AtComposite(this, rho ->
+            new Data.ToPhi(
+                new Param(rho).fromBytes(BigInteger.class)
+                  .xor(new Param(rho, "b").fromBytes(BigInteger.class))
+                  .toByteArray()
+            )
+        ));
     }
 
 }

@@ -38,13 +38,16 @@ public class EObytes$EOand extends PhDefault {
     public EObytes$EOand(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            final byte[] another = new Param(rho, "b").strong(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).and(new BigInteger(another)).toByteArray()
-            );
-        }));
+        this.add("φ", new AtComposite(this, rho ->
+            new Data.ToPhi(
+                new Param(rho)
+                   .fromBytes(BigInteger.class)
+                   .and(
+                       new Param(rho, "b")
+                           .fromBytes(BigInteger.class)
+                    ).toByteArray()
+            )
+        ));
     }
 
 }

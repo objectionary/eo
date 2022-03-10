@@ -24,6 +24,9 @@
 
 package org.eolang;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+
 /**
  * Param of an object (convenient retrieval mechanism).
  *
@@ -96,6 +99,47 @@ public final class Param {
         return new Dataized(
             this.rho.attr(this.attr).get()
         ).take();
+    }
+
+    /**
+     * Fetch BYTES as type.
+     * @param type The type
+     * @param <T> The type
+     * @return The object
+     */
+    public <T> T fromBytes(final Class<T> type) {
+        final byte[] ret = this.strong(byte[].class);
+        final Object res;
+        if (BigInteger.class.equals(type)) {
+            res = new BigInteger(ret);
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unsupported type: %s",
+                    type
+                )
+            );
+        }
+        return type.cast(res);
+    }
+
+    /**
+     * Fetch BYTES of any type.
+     * @return The bytes.
+     */
+    public byte[] asBytes() {
+	final Object ret = this.weak();
+	final byte[] res;
+	if (Long.class.isInstance(ret)) {
+	    res = BigInteger.valueOf((long) ret).toByteArray();
+	} else {
+	    throw new IllegalArgumentException(
+	        String.format(
+	            "Unsupported type: %s", ret.getClass()
+	        )
+            );
+	}
+	return res;
     }
 
 }
