@@ -70,6 +70,10 @@
   # Calculate bitwise right shift
   [x] > right /bytes
 
+  # Converts to bool
+  [] > as-bool
+    ^.eq 01- > @
+
   # Return itself
   [] > as-bytes
     ^ > @
