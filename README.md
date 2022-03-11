@@ -250,7 +250,7 @@ This is how you iterate:
 
 [args...] > app
   memory > x
-  and. > @
+  seq. > @
     x.write 2
     while.
       x.less 6
