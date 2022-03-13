@@ -139,7 +139,7 @@ create a file `pom.xml` with this content (it's just a sample):
           </execution>
         </executions>
         <configuration>
-          <mainClass>org.eolang.phi.Main</mainClass>
+          <mainClass>org.eolang.Main</mainClass>
           <arguments>
             <argument>main</argument>
             <argument>2008</argument>
