@@ -13,49 +13,53 @@ public final class EOfloatEOsinTest {
 
     @Test
     public void sin0() {
+        final double sin0 = Math.sin(0);
         MatcherAssert.assertThat(
             new Dataized(
                 new EOfloat$EOsin(
                     new Data.ToPhi(0)
                 )
             ).take(Double.class),
-            Matchers.equalTo(0)
+            Matchers.equalTo(sin0)
         );
     }
 
     @Test
     public void sinPi() {
+        final double sinPi = Math.sin(Math.PI);
         MatcherAssert.assertThat(
             new Dataized(
                 new EOfloat$EOsin(
                     new Data.ToPhi(Math.PI)
                 )
             ).take(Double.class),
-            Matchers.equalTo(0)
+            Matchers.equalTo(sinPi)
         );
     }
 
     @Test
     public void sinPiDiv2() {
+        final double sinPiDiv2 = Math.sin(Math.PI / 2);
         MatcherAssert.assertThat(
             new Dataized(
                 new EOfloat$EOsin(
                     new Data.ToPhi(Math.PI / 2)
                 )
             ).take(Double.class),
-            Matchers.equalTo(1)
+            Matchers.equalTo(sinPiDiv2)
         );
     }
 
     @Test
     public void sinMinusPiDiv2() {
+        final double sinMinusPiDiv2 = Math.sin(-Math.PI / 2);
         MatcherAssert.assertThat(
             new Dataized(
                 new EOfloat$EOsin(
                     new Data.ToPhi(-Math.PI / 2)
                 )
             ).take(Double.class),
-            Matchers.equalTo(-1)
+            Matchers.equalTo(sinMinusPiDiv2)
         );
     }
 }
