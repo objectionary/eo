@@ -132,3 +132,30 @@
 [] > should-be-empty
   * > xs
   xs.is-empty > @
+
+# arrays of objects
+[] > should-not-be-empty-with-3-objects
+  [x] > a-1
+    (x.as-int > @)
+  [x] > a-2
+    (x.as-byte > @)
+  [x] > a-3
+    (x.as-string > @)
+  * > xs
+    a-1
+    a-2
+    a-3
+  xs.is-empty.not > @
+
+# arrays with anonymous object
+[] > should-not-be-empty-with-1-anon-object
+  * > xs
+    [f]
+      f.as-int > @
+  xs.is-empty.not > @
+
+# arrays with anonymous one-line-object
+[] > should-not-be-empty-with-1-anon-object-one-liner
+  * > xs
+    [f] (f.as-int > @)
+  xs.is-empty.not > @

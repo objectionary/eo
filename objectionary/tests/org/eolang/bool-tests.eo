@@ -125,3 +125,8 @@
   and. > @
     TRUE.eq "\001"
     FALSE.eq "\000"
+
+[] > compares-bool-to-bytes-reverse
+  and. > @
+    01-.as-bytes.eq TRUE
+    00-.as-bytes.eq FALSE

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.21.9
++rt jvm org.eolang:eo-runtime:0.21.10
 
 [] > bytes
 
@@ -69,6 +69,10 @@
 
   # Calculate bitwise right shift
   [x] > right /bytes
+
+  # Converts to bool
+  [] > as-bool
+    ^.eq 01- > @
 
   # Return itself
   [] > as-bytes
