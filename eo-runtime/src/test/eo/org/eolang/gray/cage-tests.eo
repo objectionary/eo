@@ -103,3 +103,13 @@
     y.write 13
     x.write 4
     sum.eq 17
+
+[] > stores-abstract-object-into-cage
+  cage > c
+  seq > @
+    write.
+      c
+      [x]
+        TRUE > @
+    c.@
+      42

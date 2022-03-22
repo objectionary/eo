@@ -139,7 +139,7 @@ create a file `pom.xml` with this content (it's just a sample):
           </execution>
         </executions>
         <configuration>
-          <mainClass>org.eolang.phi.Main</mainClass>
+          <mainClass>org.eolang.Main</mainClass>
           <arguments>
             <argument>main</argument>
             <argument>2008</argument>
@@ -250,7 +250,7 @@ This is how you iterate:
 
 [args...] > app
   memory > x
-  seq. > @
+  seq > @
     x.write 2
     while.
       x.less 6
@@ -259,6 +259,7 @@ This is how you iterate:
           stdout
             sprintf "%dx%d = %d\n" x x (x.pow 2)
           x.write (x.add 1)
+    TRUE
 ```
 
 This code will print this:
