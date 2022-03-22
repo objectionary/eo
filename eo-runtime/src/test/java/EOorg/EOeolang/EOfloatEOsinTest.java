@@ -17,7 +17,7 @@ public final class EOfloatEOsinTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new EOfloat$EOsin(
-                    new Data.ToPhi(0)
+                    new Data.ToPhi((double) 0)
                 )
             ).take(Double.class),
             Matchers.equalTo(sin0)

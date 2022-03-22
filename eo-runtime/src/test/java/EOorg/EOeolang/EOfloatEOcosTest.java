@@ -17,7 +17,7 @@ public final class EOfloatEOcosTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new EOfloat$EOcos(
-                    new Data.ToPhi(0)
+                    new Data.ToPhi((double) 0)
                 )
             ).take(Double.class),
             Matchers.equalTo(cos0)
