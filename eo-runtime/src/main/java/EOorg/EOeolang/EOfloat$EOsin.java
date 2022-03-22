@@ -1,7 +1,6 @@
-package EOorg.EOeolang.EOmath;
+package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -9,16 +8,15 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * COS.
+ * Sin.
  */
-@XmirObject(oname = "cos")
-public class EOcos extends PhDefault {
+@XmirObject(oname = "float.sin")
+public class EOfloat$EOsin extends PhDefault {
 
-    public EOcos(final Phi sigma) {
+    public EOfloat$EOsin(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Math.cos(new Param(rho, "x").strong(Double.class))
+            Math.sin(new Param(rho).strong(Double.class))
         )));
     }
 }
