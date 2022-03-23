@@ -216,6 +216,36 @@
 [] > as-int-works
   3.57.as-int.eq 3 > @
 
+[] > sin-zero
+  eq. > @
+    0.0
+    (0.0.sin)
+
+[] > sin-pi-div-2
+  eq. > @
+    1.0
+    (1.5707963267948966.sin)
+
+[] > sin-pi-as-int
+  eq. > @
+    0
+    (3.141592653589793.sin).as-int
+
+[] > cos-zero
+  eq. > @
+    1.0
+    0.0.cos
+
+[] > cos-pi-div-2-as-int
+  eq. > @
+    0
+    (1.5707963267948966.cos).as-int
+
+[] > cos-pi
+  eq. > @
+    -1.0
+    3.141592653589793.cos
+
 [] > to-bytes-and-backwards
   eq. > @
     3.1415926

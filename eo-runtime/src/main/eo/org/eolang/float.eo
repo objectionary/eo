@@ -93,6 +93,12 @@
       ^
       ^.neg
 
+  # Sine of $
+  [] > sin /float
+
+  # Cosine of $
+  [] > cos /float
+
   # Converts this to bytes
   [] > as-bytes /bytes
 
