@@ -51,8 +51,8 @@ abstraction
   :
   attributes
   (
-     (suffix (SPACE SLASH (NAME | QUESTION))?)
-   | htail
+    (suffix (SPACE SLASH (NAME | QUESTION))?)
+    | htail
   )?
   ;
 

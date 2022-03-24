@@ -25,7 +25,7 @@
 package org.eolang;
 
 /**
- * Basic exception.
+ * Abstract exception.
  *
  * The exception raised when something is not right inside
  * attributes.

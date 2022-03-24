@@ -26,7 +26,6 @@ package EOorg.EOeolang.EOgray;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;

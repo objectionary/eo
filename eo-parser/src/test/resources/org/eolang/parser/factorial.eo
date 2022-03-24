@@ -1,0 +1,7 @@
+[n] > f
+  if. > @
+    n.less 1
+    n
+    mul.
+      n
+      f (sub. n 1)
