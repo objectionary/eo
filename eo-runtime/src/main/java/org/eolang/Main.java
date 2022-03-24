@@ -88,7 +88,28 @@ public final class Main {
                 "A name of EO object is expected as a command line argument"
             );
         }
-        Main.run(opts);
+        try {
+            Main.run(opts);
+        } catch (final Attr.IllegalAttrException ex) {
+            Main.print(ex);
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Print exception line.
+     *
+     * @param thr The cause
+     */
+    private static void print(final Throwable thr) {
+        Main.LOGGER.log(
+            Level.SEVERE,
+            String.format("%s: %s", thr.getClass().getSimpleName(), thr.getMessage())
+        );
+        final Throwable cause = thr.getCause();
+        if (cause != null) {
+            Main.print(cause);
+        }
     }
 
     /**
