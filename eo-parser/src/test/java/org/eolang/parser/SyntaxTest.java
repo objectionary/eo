@@ -72,7 +72,7 @@ public final class SyntaxTest {
         );
     }
 
-    // @todo #603 This test doesn't work, because the listing is not
+    // @todo #603:30m This test doesn't work, because the listing is not
     //  received correctly from ANTLR4. There are some extra lexems,
     //  which must be removed. Let's find out what's going on and fix
     //  the code. The test must remain unchanged.
