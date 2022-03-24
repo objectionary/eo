@@ -25,32 +25,17 @@
 package org.eolang;
 
 /**
- * Attribute.
+ * Control flow exception (see {@link EOorg.EOeolang.EOgray.EOgoto}
+ * for a good example of its usage).
  *
- * @since 0.1
+ * @since 0.21
  */
-public interface Attr extends Term {
+public final class ExFlow extends ExAbstract {
 
-    /**
-     * Make a copy of it.
-     *
-     * @param self The object that this attribute will belong to
-     * @return A copy
-     */
-    Attr copy(Phi self);
+    private static final long serialVersionUID = 597746420437007615L;
 
-    /**
-     * Take the object out.
-     *
-     * @return The object
-     */
-    Phi get();
-
-    /**
-     * Put a new object in.
-     *
-     * @param phi The object to put
-     */
-    void put(Phi phi);
+    public ExFlow() {
+        super(null);
+    }
 
 }

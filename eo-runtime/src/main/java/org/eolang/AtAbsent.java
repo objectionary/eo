@@ -56,7 +56,7 @@ final class AtAbsent implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        throw new Attr.StillAbstractException(
+        throw new ExUnset(
             String.format(
                 "Can't copy(), attribute \"%s\" is absent%s",
                 this.name, this.suffix
@@ -66,7 +66,7 @@ final class AtAbsent implements Attr {
 
     @Override
     public Phi get() {
-        throw new Attr.StillAbstractException(
+        throw new ExUnset(
             String.format(
                 "Can't get(), attribute \"%s\" is absent%s",
                 this.name, this.suffix
@@ -76,7 +76,7 @@ final class AtAbsent implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new Attr.StillAbstractException(
+        throw new ExUnset(
             String.format(
                 "Can't put(), attribute \"%s\" is absent%s",
                 this.name, this.suffix

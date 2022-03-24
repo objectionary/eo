@@ -25,32 +25,21 @@
 package org.eolang;
 
 /**
- * Attribute.
+ * The exception raised when trying to put() an attribute,
+ * which is read-only.
  *
- * @since 0.1
+ * @since 0.21
  */
-public interface Attr extends Term {
+public final class ExReadOnly extends ExAbstract {
 
-    /**
-     * Make a copy of it.
-     *
-     * @param self The object that this attribute will belong to
-     * @return A copy
-     */
-    Attr copy(Phi self);
+    private static final long serialVersionUID = 697748420447017615L;
 
-    /**
-     * Take the object out.
-     *
-     * @return The object
-     */
-    Phi get();
+    public ExReadOnly(final String cause) {
+        super(cause);
+    }
 
-    /**
-     * Put a new object in.
-     *
-     * @param phi The object to put
-     */
-    void put(Phi phi);
+    public ExReadOnly(final String cause, final Throwable root) {
+        super(cause, root);
+    }
 
 }

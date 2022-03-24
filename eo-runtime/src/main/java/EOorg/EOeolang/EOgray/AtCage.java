@@ -25,6 +25,7 @@
 package EOorg.EOeolang.EOgray;
 
 import org.eolang.Attr;
+import org.eolang.ExFailure;
 import org.eolang.Phi;
 
 /**
@@ -65,7 +66,7 @@ final class AtCage implements Attr {
     @Override
     public Phi get() {
         if (this.object == null) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 "The cage is empty, can't read it"
             );
         }

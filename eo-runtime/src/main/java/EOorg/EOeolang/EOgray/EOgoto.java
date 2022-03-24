@@ -29,6 +29,7 @@ import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExAbstract;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -125,7 +126,7 @@ public class EOgoto extends PhDefault {
      * When going back.
      * @since 0.17
      */
-    private static class BackwardException extends Attr.FlowException {
+    private static class BackwardException extends ExAbstract {
         private static final long serialVersionUID = 1735493012609760997L;
         public final Phi sigma;
         BackwardException(final Phi sgm) {
@@ -138,7 +139,7 @@ public class EOgoto extends PhDefault {
      * When going forward.
      * @since 0.17
      */
-    private static class ForwardException extends Attr.FlowException {
+    private static class ForwardException extends ExAbstract {
         private static final long serialVersionUID = 1501718836588849754L;
         public final Phi sigma;
         public final Phi ret;

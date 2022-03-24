@@ -94,7 +94,7 @@ final class AtDecorated implements Attr {
 
     @Override
     public void put(final Phi obj) {
-        throw new Attr.ReadOnlyException(
+        throw new ExReadOnly(
             String.format(
                 "It's not allowed to set attribute '%s' of a decoratee",
                 this.name

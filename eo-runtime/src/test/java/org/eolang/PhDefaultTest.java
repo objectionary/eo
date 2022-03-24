@@ -85,7 +85,7 @@ public final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Foo(Phi.Φ);
         phi.attr(0).put(num);
         Assertions.assertThrows(
-            Attr.ReadOnlyException.class,
+            ExReadOnly.class,
             () -> phi.attr(0).put(num)
         );
     }

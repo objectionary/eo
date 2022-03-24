@@ -121,7 +121,7 @@ public final class PhConstTest {
     public void doesntAllowAttributesOfDecorateeToBeSet() {
         final Phi phi = new Boom();
         Assertions.assertThrows(
-            Attr.StillAbstractException.class,
+            ExUnset.class,
             () -> phi.attr("x").put(new Data.ToPhi(1L))
         );
     }

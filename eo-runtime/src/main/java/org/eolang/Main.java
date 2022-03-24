@@ -90,7 +90,7 @@ public final class Main {
         }
         try {
             Main.run(opts);
-        } catch (final Attr.IllegalAttrException ex) {
+        } catch (final ExFailure ex) {
             Main.print(ex);
             System.exit(1);
         }
@@ -102,10 +102,7 @@ public final class Main {
      * @param thr The cause
      */
     private static void print(final Throwable thr) {
-        Main.LOGGER.log(
-            Level.SEVERE,
-            String.format("%s: %s", thr.getClass().getSimpleName(), thr.getMessage())
-        );
+        Main.LOGGER.log(Level.SEVERE, thr.getMessage());
         final Throwable cause = thr.getCause();
         if (cause != null) {
             Main.print(cause);

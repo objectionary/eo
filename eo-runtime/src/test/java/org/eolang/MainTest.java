@@ -76,6 +76,14 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void jvmFullRunWithError() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "org.eolang.io.stdout"),
+            Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
+        );
+    }
+
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add("java");
@@ -91,7 +99,7 @@ public final class MainTest {
         try (VerboseProcess vproc = new VerboseProcess(proc)) {
             new LengthOf(
                 new TeeInput(
-                    new InputOf(vproc.stdout()),
+                    new InputOf(vproc.stdoutQuietly()),
                     new OutputTo(stdout)
                 )
             ).value();

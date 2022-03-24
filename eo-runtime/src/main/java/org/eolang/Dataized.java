@@ -80,19 +80,22 @@ public final class Dataized {
             if (!(src instanceof Data)) {
                 src = src.attr("Δ").get();
             }
-        } catch (final Attr.IllegalAttrException ex) {
-            throw new Attr.IllegalAttrException(
-                String.format("Attribute failure at:%n%s", this.phi),
+        } catch (final ExFailure ex) {
+            throw new ExFailure(
+                String.format(
+                    "Attribute failure at:%n\t%s",
+                    new Indented(this.phi.toString())
+                ),
                 ex
             );
         }
         if (!(src instanceof Data)) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
-                    "The attribute Δ has %s instead of %s at:%n%s",
+                    "The attribute Δ has %s instead of %s at:%n\t%s",
                     src.getClass().getCanonicalName(),
                     Data.class.getCanonicalName(),
-                    this.phi
+                    new Indented(this.phi)
                 )
             );
         }

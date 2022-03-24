@@ -179,7 +179,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public final Attr attr(final int pos) {
         if (pos < 0) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
                     "Attribute position can't be negative (%d)",
                     pos
@@ -187,7 +187,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             );
         }
         if (this.order.isEmpty()) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
                     "There are no attributes here, can't read the %d-th one",
                     pos

@@ -30,6 +30,7 @@ import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -50,7 +51,7 @@ public class EOmemory extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             final Phi object = this.phi.get();
             if (object == null) {
-                throw new Attr.IllegalAttrException(
+                throw new ExFailure(
                     "The memory is not yet written"
                 );
             }

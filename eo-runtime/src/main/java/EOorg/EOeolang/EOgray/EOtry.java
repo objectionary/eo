@@ -29,6 +29,7 @@ import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExAbstract;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -103,7 +104,7 @@ public class EOtry extends PhDefault {
      * When exception happens.
      * @since 0.19
      */
-    private static class ThrowException extends Attr.FlowException {
+    private static class ThrowException extends ExAbstract {
         private static final long serialVersionUID = 1735493012609760997L;
         public final Phi sigma;
         public final Phi exception;

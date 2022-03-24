@@ -80,7 +80,7 @@ public final class AtComposite implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        throw new Attr.ReadOnlyException(
+        throw new ExReadOnly(
             "You can't overwrite static expression"
         );
     }

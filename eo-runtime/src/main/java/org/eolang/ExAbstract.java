@@ -25,32 +25,26 @@
 package org.eolang;
 
 /**
- * Attribute.
+ * Basic exception.
  *
- * @since 0.1
+ * The exception raised when something is not right inside
+ * attributes.
+
+ * @since 0.21
  */
-public interface Attr extends Term {
+public abstract class ExAbstract extends RuntimeException {
 
-    /**
-     * Make a copy of it.
-     *
-     * @param self The object that this attribute will belong to
-     * @return A copy
-     */
-    Attr copy(Phi self);
+    private static final long serialVersionUID = 597749420437007615L;
 
-    /**
-     * Take the object out.
-     *
-     * @return The object
-     */
-    Phi get();
+    public ExAbstract() {
+        this(null);
+    }
 
-    /**
-     * Put a new object in.
-     *
-     * @param phi The object to put
-     */
-    void put(Phi phi);
+    ExAbstract(final String cause) {
+        super(cause);
+    }
 
+    ExAbstract(final String cause, final Throwable root) {
+        super(cause, root);
+    }
 }

@@ -21,36 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 /**
- * Attribute.
+ * Test case for {@link AtNamed}.
  *
- * @since 0.1
+ * @since 0.21
  */
-public interface Attr extends Term {
+public final class AtNamedTest {
 
-    /**
-     * Make a copy of it.
-     *
-     * @param self The object that this attribute will belong to
-     * @return A copy
-     */
-    Attr copy(Phi self);
+    @Test
+    public void rethrowsCorrectly() {
+        final Phi phi = new AtNamedTest.Dummy();
+        final Attr named = new AtNamed("attr", "object", phi, phi.attr("x"));
+        MatcherAssert.assertThat(
+            Assertions.assertThrows(
+                ExFailure.class,
+                named::get
+            ).getMessage(),
+            Matchers.containsString("Error at \"attr\" attribute")
+        );
+    }
 
-    /**
-     * Take the object out.
-     *
-     * @return The object
-     */
-    Phi get();
-
-    /**
-     * Put a new object in.
-     *
-     * @param phi The object to put
-     */
-    void put(Phi phi);
+    private static class Dummy extends PhDefault {
+        Dummy() {
+            super();
+            this.add("x", new AtComposite(this, rho -> {
+                throw new ExFailure("intended");
+            }));
+        }
+    }
 
 }

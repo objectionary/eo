@@ -79,7 +79,7 @@ public final class Param {
     public <T> T strong(final Class<T> type) {
         final Object ret = this.weak();
         if (!type.isInstance(ret)) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
                     "The argument '.%s' is of Java type '%s', not '%s' as expected",
                     this.attr,
@@ -113,9 +113,9 @@ public final class Param {
         if (BigInteger.class.equals(type)) {
             res = new BigInteger(ret);
         } else {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
-                    "Unsupported type: %s",
+                    "Unsupported type: '%s'",
                     type
                 )
             );
@@ -133,7 +133,7 @@ public final class Param {
 	    if (Long.class.isInstance(ret)) {
 	        res = BigInteger.valueOf((long) ret).toByteArray();
 	    } else {
-	        throw new Attr.IllegalAttrException(
+	        throw new ExFailure(
 	            String.format(
 	                "Unsupported type: %s", ret.getClass()
 	            )
