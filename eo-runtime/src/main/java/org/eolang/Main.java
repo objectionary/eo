@@ -90,7 +90,7 @@ public final class Main {
         }
         try {
             Main.run(opts);
-        } catch (final ExFailure ex) {
+        } catch (final ExAbstract ex) {
             Main.print(ex);
             System.exit(1);
         }
