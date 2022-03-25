@@ -378,6 +378,10 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="located">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -427,6 +431,10 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="located">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -447,6 +455,21 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="*" mode="located">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:if test="@line">
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="eo:tabs(1)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhLocated(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>, </xsl:text>
+      <xsl:value-of select="@line"/>
+      <xsl:text>, 0);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
