@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
@@ -76,7 +77,7 @@ public final class CheckXSL {
         final XML output = new XMLDocument(map.get("output").toString());
         final XSL xsl = new XSLDocument(
             this.home.resolve(map.get("xsl").toString())
-        );
+        ).with(new ClasspathSources());
         final XML after = new XMLDocument(xsl.applyTo(input));
         final boolean matches = after.toString().equals(output.toString());
         if (!matches) {

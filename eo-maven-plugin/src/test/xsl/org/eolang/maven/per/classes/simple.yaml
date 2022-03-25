@@ -1,9 +1,0 @@
-xsl: eo-maven-plugin/src/main/resources/org/eolang/maven/pre/classes.xsl
-input:
-  <xmir>
-    <listing>[] > foo</listing>
-  </xmir>
-output:
-  <xmir>
-    <listing>[] > foo</listing>
-  </xmir>
