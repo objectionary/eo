@@ -1,0 +1,9 @@
+xsls: []
+tests:
+  - //o[@base='foo' and @line='1' and @pos='0']
+  - //o[@base='bar' and @line='2' and @pos='2']
+  - //o[@base='int' and @line='3' and @pos='4']
+eo: |
+  foo
+    bar
+      42

@@ -169,7 +169,9 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
-        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        this.dirs.add("o")
+            .attr("line", ctx.getStart().getLine())
+            .attr("pos", ctx.getStart().getCharPositionInLine());
         if (ctx.SLASH() != null) {
             if (ctx.QUESTION() == null) {
                 this.dirs.attr("atom", ctx.NAME());
@@ -198,7 +200,9 @@ public final class XeListener implements ProgramListener {
     @Override
     public void enterAttribute(final ProgramParser.AttributeContext ctx) {
         this.enter();
-        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        this.dirs.add("o")
+            .attr("line", ctx.getStart().getLine())
+            .attr("pos", ctx.getStart().getCharPositionInLine());
     }
 
     @Override
@@ -263,7 +267,9 @@ public final class XeListener implements ProgramListener {
     @Override
     @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ConfusingTernary"})
     public void enterHead(final ProgramParser.HeadContext ctx) {
-        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        this.dirs.add("o")
+            .attr("line", ctx.getStart().getLine())
+            .attr("pos", ctx.getStart().getCharPositionInLine());
         if (ctx.COPY() != null) {
             this.dirs.attr("copy", "");
         }

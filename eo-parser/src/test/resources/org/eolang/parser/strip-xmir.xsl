@@ -45,6 +45,9 @@ SOFTWARE.
   <xsl:template match="@line">
     <!-- Not important -->
   </xsl:template>
+  <xsl:template match="@pos">
+    <!-- Not important -->
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

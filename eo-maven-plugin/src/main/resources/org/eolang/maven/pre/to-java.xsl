@@ -459,7 +459,7 @@ SOFTWARE.
   <xsl:template match="*" mode="located">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:if test="@line">
+    <xsl:if test="@line and @pos">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
@@ -467,7 +467,9 @@ SOFTWARE.
       <xsl:value-of select="$name"/>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="@line"/>
-      <xsl:text>, 0);</xsl:text>
+      <xsl:text>, </xsl:text>
+      <xsl:value-of select="@pos"/>
+      <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
   </xsl:template>
