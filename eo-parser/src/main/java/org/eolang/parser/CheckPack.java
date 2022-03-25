@@ -41,10 +41,10 @@ import org.yaml.snakeyaml.Yaml;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class Scenario {
+public final class CheckPack {
 
     /**
-     * The scenario in plain text.
+     * The scenario in YAML.
      */
     private final String script;
 
@@ -52,7 +52,7 @@ public final class Scenario {
      * Ctor.
      * @param scrpt The script
      */
-    public Scenario(final String scrpt) {
+    public CheckPack(final String scrpt) {
         this.script = scrpt;
     }
 
@@ -81,13 +81,13 @@ public final class Scenario {
             xsline = new Xsline(
                 xml,
                 new OutputTo(baos),
-                new Spy.Verbose(Scenario.class)
+                new Spy.Verbose(CheckPack.class)
             );
         } else {
             xsline = new Xsline(
                 xml,
                 new OutputTo(baos),
-                new Spy.Verbose(Scenario.class),
+                new Spy.Verbose(CheckPack.class),
                 xsls
             );
         }

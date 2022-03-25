@@ -21,66 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.parser;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
-import org.cactoos.io.ResourceOf;
+import java.util.stream.Collectors;
 import org.cactoos.text.TextOf;
-import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test case for packs.
+ * Test case for all .xsl files, which are specified in .yaml files
+ * in {@code src/test/xsl} directories.
  *
- * @since 1.0
+ * @since 0.21
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class OptimizePacksTest {
+public final class XslsTest {
+
+    /**
+     * Where is the home of this module.
+     */
+    private static final Path HOME = Paths.get(
+        System.getProperty("basedir", "eo-parser")
+    );
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    public void testPacks(final String pack) throws Exception {
+    public void testPacks(final Path path) throws Exception {
         MatcherAssert.assertThat(
-            new CheckPack(
-                new TextOf(
-                    new ResourceOf(
-                        String.format("org/eolang/maven/packs/%s", pack)
-                    )
-                ).asString()
-            ).failures(),
-            Matchers.empty()
+            new CheckXSL(
+                XslsTest.HOME.resolve("src/main/resources"),
+                new TextOf(path).asString()
+            ).isValid(),
+            Matchers.is(true)
         );
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlPacks() throws IOException {
-        return OptimizePacksTest.yamls("org/eolang/maven/packs/", "");
+    private static Collection<Path> yamlPacks() throws IOException {
+        return Files.walk(XslsTest.HOME)
+            .filter(file -> file.toString().contains("src/test/xsl/"))
+            .filter(file -> file.toString().endsWith(".yml"))
+            .filter(file -> !file.toFile().isDirectory())
+            .collect(Collectors.toList());
     }
-
-    private static Collection<String> yamls(final String path,
-        final String prefix) throws IOException {
-        final Collection<String> out = new LinkedList<>();
-        final String[] paths = new TextOf(
-            new ResourceOf(path)
-        ).asString().split("\n");
-        for (final String sub : paths) {
-            if (sub.endsWith(".yaml")) {
-                out.add(String.format("%s%s", prefix, sub));
-            } else {
-                out.addAll(
-                    OptimizePacksTest.yamls(
-                        String.format("%s%s/", path, sub),
-                        String.format("%s/", sub)
-                    )
-                );
-            }
-        }
-        return out;
-    }
-
 }

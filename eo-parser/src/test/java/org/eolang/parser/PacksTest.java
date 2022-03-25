@@ -45,7 +45,7 @@ public final class PacksTest {
     @MethodSource("yamlPacks")
     public void testPacks(final String pack) throws Exception {
         MatcherAssert.assertThat(
-            new Scenario(
+            new CheckPack(
                 new TextOf(
                     new ResourceOf(
                         String.format("org/eolang/parser/packs/%s", pack)
