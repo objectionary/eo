@@ -28,7 +28,7 @@ SOFTWARE.
   and add default package to them.
   -->
   <xsl:output encoding="UTF-8"/>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and @base!='@' and @base!='^' and @base!='&amp;' and @base!='$']">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and @base!='@' and @base!='Q' and @base!='^' and @base!='&amp;' and @base!='$']">
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:text>org.eolang.</xsl:text>

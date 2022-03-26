@@ -41,6 +41,7 @@ import org.xembly.Xembler;
  * The listener for ANTLR4 walker.
  *
  * @since 0.1
+ * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class XeListener implements ProgramListener {
@@ -288,6 +289,8 @@ public final class XeListener implements ProgramListener {
             this.dirs.attr("data", "array");
         } else if (ctx.RHO() != null) {
             base = "^";
+        } else if (ctx.ROOT() != null) {
+            base = "Q";
         } else if (ctx.SIGMA() != null) {
             base = "&";
         }

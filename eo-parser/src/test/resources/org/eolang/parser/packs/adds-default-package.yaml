@@ -8,6 +8,7 @@ tests:
   - //o[@base='org.eolang.and' and @line='7']
   - //o[@base='$']
   - //o[@base='^']
+  - //o[@base='Q']
 eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdin org.eolang.io.stdin
@@ -20,3 +21,4 @@ eo: |
       (stdout "You entered" line).print
       $
       ^.i
+      Q.org.eolang.random
