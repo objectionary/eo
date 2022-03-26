@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.21.11
++rt jvm org.eolang:eo-runtime:0.22.0
 
 [] > float
   # Tests that $ = x
@@ -92,6 +92,12 @@
       ^.geq 0.0
       ^
       ^.neg
+
+  # Sine of $
+  [] > sin /float
+
+  # Cosine of $
+  [] > cos /float
 
   # Converts this to bytes
   [] > as-bytes /bytes
