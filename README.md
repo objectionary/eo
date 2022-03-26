@@ -69,6 +69,8 @@ There are products that use EO or 𝜑-calculus
   * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
   * [try-phi](https://github.com/fizruk/try-phi) is an online interpreter of 𝜑-calculus expressions
 
+## Papers
+
 If you want to cite us, use this BibTeX citation:
 
 ```
@@ -81,6 +83,15 @@ If you want to cite us, use this BibTeX citation:
   primaryClass={cs.PL}
 }
 ```
+
+Here is a full list of papers related to EO:
+
+  * Yegor Bugayenko, 
+    [EOLANG and phi-calculus](https://arxiv.org/abs/2111.13384), 
+    2021
+  * Yegor Bugayenko,
+    [Reducing Programs to Objects](https://arxiv.org/abs/2112.11988),
+    2021
 
 ## Quick Start
 
