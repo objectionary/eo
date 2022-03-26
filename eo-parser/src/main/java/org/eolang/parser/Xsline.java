@@ -40,8 +40,8 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
@@ -153,7 +153,9 @@ public final class Xsline {
     public Xsline with(final Iterable<String> sheets) {
         return new Xsline(
             this.input, this.target,
-            new Joined<>(this.xsls, Xsline.mapped(sheets)),
+            new Joined<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
+                this.xsls, Xsline.mapped(sheets)
+            ),
             this.spy
         );
     }
@@ -168,7 +170,7 @@ public final class Xsline {
     public Xsline with(final XSL sheet) {
         return new Xsline(
             this.input, this.target,
-            new Joined<>(
+            new Joined<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
                 this.xsls,
                 new IterableOf<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
                     new AbstractMap.SimpleEntry<>(
@@ -192,7 +194,7 @@ public final class Xsline {
     public Xsline with(final XSL sheet, final BiFunc<XML, XML, Boolean> func) {
         return new Xsline(
             this.input, this.target,
-            new Joined<>(
+            new Joined<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
                 this.xsls,
                 new IterableOf<Map.Entry<XSL, BiFunc<XML, XML, Boolean>>>(
                     new AbstractMap.SimpleEntry<>(sheet, func)

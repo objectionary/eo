@@ -51,7 +51,7 @@ final class LocalObjectionaryTest {
                     path.resolve("sources/master/org/example/main.eo")
                 )
             )
-        ).floatValue();
+        ).value();
         MatcherAssert.assertThat(
             new TextOf(
                 new LocalObjectionary("master", path)

@@ -23,11 +23,11 @@
  */
 package org.eolang.parser;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,15 +57,15 @@ public final class PacksTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlPacks() throws IOException {
+    private static Collection<String> yamlPacks() {
         return PacksTest.yamls("org/eolang/parser/packs/", "");
     }
 
     private static Collection<String> yamls(final String path,
-        final String prefix) throws IOException {
+        final String prefix) {
         final Collection<String> out = new LinkedList<>();
-        final String[] paths = new TextOf(
-            new ResourceOf(path)
+        final String[] paths = new UncheckedText(
+            new TextOf(new ResourceOf(path))
         ).asString().split("\n");
         for (final String sub : paths) {
             if (sub.endsWith(".yaml")) {

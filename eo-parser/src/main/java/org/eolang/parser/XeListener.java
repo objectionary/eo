@@ -32,7 +32,7 @@ import java.time.format.DateTimeFormatter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cactoos.list.Mapped;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
 import org.xembly.Directives;
 import org.xembly.Xembler;

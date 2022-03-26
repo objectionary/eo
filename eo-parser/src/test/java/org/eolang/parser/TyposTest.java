@@ -24,7 +24,6 @@
 package org.eolang.parser;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
@@ -32,6 +31,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -74,15 +74,17 @@ public final class TyposTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlTypos() throws IOException {
+    private static Collection<String> yamlTypos() {
         return TyposTest.yamls("org/eolang/parser/typos/", "");
     }
 
     private static Collection<String> yamls(final String path,
-        final String prefix) throws IOException {
+        final String prefix) {
         final Collection<String> out = new LinkedList<>();
-        final String[] paths = new TextOf(
-            new ResourceOf(path)
+        final String[] paths = new UncheckedText(
+            new TextOf(
+                new ResourceOf(path)
+            )
         ).asString().split("\n");
         for (final String sub : paths) {
             if (sub.endsWith(".yaml")) {

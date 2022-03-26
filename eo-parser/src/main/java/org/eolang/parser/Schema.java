@@ -31,6 +31,7 @@ import java.util.Collection;
 import javax.xml.transform.dom.DOMSource;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -59,7 +60,9 @@ public final class Schema {
      */
     public void check() throws IOException {
         final Collection<SAXParseException> violations = new XSDDocument(
-            new TextOf(new ResourceOf("XMIR.xsd")).asString()
+            new UncheckedText(
+                new TextOf(new ResourceOf("XMIR.xsd"))
+            ).asString()
         ).validate(new DOMSource(this.xmir.node()));
         if (!violations.isEmpty()) {
             Logger.error(this, "XML with XSD failures:%n%s", this.xmir);

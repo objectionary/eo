@@ -34,6 +34,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Copy all .eo files from src/main/eo to target/classes/EO-SOURCES
@@ -97,7 +98,7 @@ public final class CopyMojo extends SafeMojo {
         for (final Path src : sources) {
             new Save(
                 CopyMojo.REPLACE
-                    .matcher(new TextOf(new InputOf(src)).asString())
+                    .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),
                 target.resolve(
                     src.toAbsolutePath().toString().substring(
