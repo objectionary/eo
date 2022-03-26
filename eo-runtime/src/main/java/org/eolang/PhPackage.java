@@ -50,30 +50,14 @@ final class PhPackage implements Phi {
     public Attr attr(final String name) {
         final String abs = String.format("%s.%s", this.pkg, name);
         final String target = abs.replaceAll("(^|\\.)([^.]+)", "$1EO$2");
+        Phi phi;
         try {
             Class.forName(String.format("%s.package-info", target));
-            return new AtSimple(new PhPackage(abs));
+            phi = new PhPackage(abs);
         } catch (final ClassNotFoundException ex) {
-            // ignore it
-            System.out.println("failed: " + target);
+            phi = this.sub(target);
         }
-        try {
-            return new AtSimple(
-                Phi.class.cast(
-                    Class.forName(target).getConstructor(Phi.class).newInstance(Phi.Φ)
-                )
-            );
-        } catch (final NoSuchMethodException | ClassNotFoundException
-            | InvocationTargetException | InstantiationException
-            | IllegalAccessException ex) {
-            throw new ExFailure(
-                String.format(
-                    "Can't find EO object '%s' in Java package '%s' by the name '%s'",
-                    name, this.pkg, target
-                ),
-                ex
-            );
-        }
+        return new AtSimple(phi);
     }
 
     @Override
@@ -103,5 +87,29 @@ final class PhPackage implements Phi {
             String.format("Can't #move() package object '%s'", this.pkg)
         );
     }
+
+    /**
+     * Make a sub package.
+     * @param target The name
+     * @return Phi
+     */
+    private Phi sub(final String target) {
+        try {
+            return Phi.class.cast(
+                Class.forName(target).getConstructor(Phi.class).newInstance(Phi.Φ)
+            );
+        } catch (final NoSuchMethodException | ClassNotFoundException
+            | InvocationTargetException | InstantiationException
+            | IllegalAccessException ex) {
+            throw new ExFailure(
+                String.format(
+                    "Can't find EO object '%s' in Java package '%s'",
+                    target, this.pkg
+                ),
+                ex
+            );
+        }
+    }
+
 
 }
