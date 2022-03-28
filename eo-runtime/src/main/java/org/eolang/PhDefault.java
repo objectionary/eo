@@ -212,8 +212,8 @@ public abstract class PhDefault implements Phi, Cloneable {
             attr = this.attrs.get(name);
         }
         if (attr == null) {
-            final Attr phi = this.attrs.get("φ");
-            if (phi == null) {
+            final Attr aphi = this.attrs.get("φ");
+            if (aphi == null) {
                 attr = new AtAbsent(
                     name,
                     String.format(
@@ -223,7 +223,8 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                final Phi found = this.cached.get(name, phi::get).attr(name).get();
+                final Phi phi = this.cached.get(name, aphi::get);
+                final Phi found = phi.attr(name).get();
                 found.move(this);
                 return new AtSimple(found);
             }

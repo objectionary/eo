@@ -162,6 +162,34 @@ public final class PhDefaultTest {
         );
     }
 
+    @Test
+    public void readsMultipleTimes() {
+        final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
+        final long total = 2L;
+        for (long idx = 0L; idx < total; ++idx) {
+            new Dataized(phi).take();
+        }
+        MatcherAssert.assertThat(
+            new Dataized(new PhMethod(phi, "count")).take(Long.class),
+            Matchers.equalTo(total)
+        );
+    }
+
+    @Test
+    public void readsMultipleTimesThroughAttribute() {
+        final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
+        final Phi eql = phi.attr("eq").get().copy();
+        eql.attr(0).put(new Data.ToPhi(true));
+        final long total = 3L;
+        for (long idx = 0L; idx < total; ++idx) {
+            eql.attr("Δ").get();
+        }
+        MatcherAssert.assertThat(
+            new Dataized(new PhMethod(phi, "count")).take(Long.class),
+            Matchers.equalTo(total)
+        );
+    }
+
     public static class Foo extends PhDefault {
          public Foo(final Phi sigma) {
              this(sigma, new Object());
@@ -187,6 +215,22 @@ public final class PhDefaultTest {
                     ++PhDefaultTest.Dummy.count;
                     return new Data.ToPhi(1L);
                 }
+            ));
+        }
+    }
+
+    public static class Counter extends PhDefault {
+        private long count;
+        public Counter(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, self -> {
+                    ++this.count;
+                    return new Data.ToPhi(new byte[] { (byte) 0x01 });
+                }
+            ));
+            this.add("count", new AtComposite(
+                this, self -> new Data.ToPhi(this.count)
             ));
         }
     }

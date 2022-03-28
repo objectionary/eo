@@ -130,3 +130,17 @@
   and. > @
     01-.as-bytes.eq TRUE
     00-.as-bytes.eq FALSE
+
+[] > complex-bool-expression-in-while
+  memory > m
+  seq > @
+    m.write 5
+    while.
+      eq.
+        m.greater 0
+        TRUE
+      [i]
+        seq > @
+          m.write (m.sub 1)
+          stdout (sprintf "%d\n" m)
+    TRUE
