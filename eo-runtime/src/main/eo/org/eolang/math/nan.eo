@@ -27,13 +27,29 @@
 [] > nan
   1.633123E16 > @
 
-  #[x] > eq
-  #    eq. > @
-  #      ^.as-bytes
-  #      x.as-bytes
+  # Tests that $ > x
+  [x] > eq
+    FALSE > @
+
+  # Tests that $ ≠ x
+  [x] > neq
+    TRUE > @
+
+  # Tests that $ < x
+  [x] > less
+    FALSE > @
+
+  # Tests that $ ≤ x
+  [x] > leq
+    FALSE > @
 
   # Tests that $ > x
-  # [x] > greater /bool
+  [x] > greater
+    FALSE > @
+
+  # Tests that $ ≥ x
+  [x] > geq
+    FALSE > @
 
   # Multiplication of $ and x
   [x] > mul
@@ -44,6 +60,11 @@
   [x] > add
     [] > @
       "You can't add to NaN" > msg
+
+  # Sign of $ (-1.0, 0.0, or 1.0)
+  [] > signum
+    [] > @
+      "You can't get sign of NaN" > msg
 
   # x'th power of $
   [x] > pow
@@ -56,7 +77,9 @@
       "You can't convert NaN to angle" > msg
 
   # Converts this to bytes
-  #[] > as-bytes /bytes
+  [] > as-bytes
+    [] > @
+      "You can't convert NaN to bytes" > msg
 
   # Converts this to int
   [] > as-int

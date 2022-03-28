@@ -26,7 +26,8 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 # The angle in radians
-[] > angle
+[x] > angle
+  x > @
 
   # Sine of $
   [] > sin /float
@@ -52,13 +53,8 @@
         ^.cos
         ^.sin
 
-  # Converts this to float
-  [] > as-float /float
-
   # Coverts this from radians to degrees
   [] > as-degrees
     div. > @
-      mul.
-        ^.as-float
-        180
+      ^.mul 180
       pi
