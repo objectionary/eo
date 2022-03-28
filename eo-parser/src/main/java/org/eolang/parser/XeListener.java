@@ -30,6 +30,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cactoos.iterable.Mapped;
@@ -90,7 +91,7 @@ public final class XeListener implements ProgramListener {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .add("listing").set(ctx.getText()).up()
+            .add("listing").set(XeListener.sourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up();
     }
@@ -430,6 +431,20 @@ public final class XeListener implements ProgramListener {
      */
     private void enter() {
         this.dirs.xpath("o[last()]").strict(1);
+    }
+
+    /**
+     * Text source code.
+     * @param ctx Program context.
+     * @return Original code.
+     */
+    private static String sourceText(final ProgramParser.ProgramContext ctx) {
+        return ctx.getStart().getInputStream().getText(
+            new Interval(
+                ctx.getStart().getStartIndex(),
+                ctx.getStop().getStopIndex()
+                )
+            );
     }
 
     /**

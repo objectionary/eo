@@ -36,7 +36,6 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -72,12 +71,7 @@ public final class SyntaxTest {
         );
     }
 
-    // @todo #603:30m This test doesn't work, because the listing is not
-    //  received correctly from ANTLR4. There are some extra lexems,
-    //  which must be removed. Let's find out what's going on and fix
-    //  the code. The test must remain unchanged.
     @Test
-    @Disabled
     public void copiesListingCorrectly() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = new TextOf(
@@ -94,7 +88,7 @@ public final class SyntaxTest {
         );
         MatcherAssert.assertThat(
             xml.xpath("/program/listing/text()"),
-            Matchers.equalTo(src)
+            Matchers.contains(src)
         );
     }
 
