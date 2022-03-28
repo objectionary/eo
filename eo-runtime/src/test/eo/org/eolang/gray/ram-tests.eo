@@ -47,3 +47,11 @@
     eq.
       data
       66-67-68-69
+
+[] > writes-integer-to-ram
+  ram 1024 > r
+  3.as-bytes > b
+  r.write 0 b > w
+  and. > @
+    w.eq TRUE
+    (r.read 0 8).as-int.eq 3

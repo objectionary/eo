@@ -39,10 +39,10 @@ public class EObytes$EOor extends PhDefault {
         super(sigma);
         this.add("b", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            final byte[] another = new Param(rho, "b").strong(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).or(new BigInteger(another)).toByteArray()
+            final BigInteger fst = new Param(rho).fromBytes(BigInteger.class);
+			final BigInteger snd = new Param(rho, "b").fromBytes(BigInteger.class);
+			return new Data.ToPhi(
+                fst.or(snd).toByteArray()
             );
         }));
     }

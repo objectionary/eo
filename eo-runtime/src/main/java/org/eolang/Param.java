@@ -26,6 +26,7 @@ package org.eolang;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * Param of an object (convenient retrieval mechanism).
@@ -112,7 +113,29 @@ public final class Param {
         final Object res;
         if (BigInteger.class.equals(type)) {
             res = new BigInteger(ret);
-        } else {
+        }
+        else if (Long.class.equals(type)) {
+            if (ret.length == 1) {
+                res = (long) ret[0];
+            }
+            else {
+                final byte[] cpy = new byte[Long.BYTES];
+                cpy[0] = ret[0];
+                int posx = cpy.length;
+                int posy = ret.length;
+                while (posy-- > 1 && posx-- > 1) {
+                    cpy[posx] = ret[posy];
+                }
+                res = ByteBuffer.wrap(cpy).getLong();
+            }
+        }
+        else if (Character.class.equals(type)) {
+            res = ByteBuffer.wrap(ret).getChar();
+        }
+        else if (Double.class.equals(type)) {
+            res = ByteBuffer.wrap(ret).getDouble();
+        }
+        else {
             throw new ExFailure(
                 String.format(
                     "Unsupported type: '%s'",
@@ -131,7 +154,13 @@ public final class Param {
 	    final Object ret = this.weak();
 	    final byte[] res;
 	    if (Long.class.isInstance(ret)) {
-	        res = BigInteger.valueOf((long) ret).toByteArray();
+	        res = ByteBuffer.allocate(Long.BYTES).putLong((long) ret).array();
+	    }
+	    else if (Character.class.isInstance(ret)) {
+	        res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
+	    }
+	    else if (Double.class.isInstance(ret)) {
+	        res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
 	    } else {
 	        throw new ExFailure(
 	            String.format(

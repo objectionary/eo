@@ -161,3 +161,11 @@
     01-.as-bool
     not.
       00-.as-bool
+
+[] > bitwise-works-negative
+  eq. > @
+    as-int.
+      or.
+        -127.as-bytes
+        127.as-bytes
+    -1

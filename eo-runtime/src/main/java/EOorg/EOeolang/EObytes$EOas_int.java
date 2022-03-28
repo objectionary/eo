@@ -44,7 +44,7 @@ public class EObytes$EOas_int extends PhDefault {
     public EObytes$EOas_int(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
-	    new Data.ToPhi(new Param(rho).fromBytes(BigInteger.class).longValueExact())
+	        new Data.ToPhi(new Param(rho).fromBytes(Long.class))
         ));
     }
 

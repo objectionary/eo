@@ -42,10 +42,9 @@ public class EObytes$EOas_float extends PhDefault {
 
     public EObytes$EOas_float(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            return new Data.ToPhi(ByteBuffer.wrap(array).getDouble());
-        }));
+        this.add("φ", new AtComposite(this, rho ->
+            new Data.ToPhi(new Param(rho).fromBytes(Double.class)))
+        );
     }
 
 }
