@@ -20,88 +20,49 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+package org.eolang.math.angle
++package org.eolang.math
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > float
-  # Tests that $ = x
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+# Not a number
+[] > nan
+  1.633123E16 > @
 
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
-
-  # Tests that $ < x
-  [x] > less
-    and. > @
-      (^.eq x).not
-      (^.greater x).not
-
-  # Tests that $ ≤ x
-  [x] > leq
-    or. > @
-      ^.eq x
-      ^.less x
+  #[x] > eq
+  #    eq. > @
+  #      ^.as-bytes
+  #      x.as-bytes
 
   # Tests that $ > x
-  [x] > greater /bool
-
-  # Tests that $ ≥ x
-  [x] > geq
-    or. > @
-      ^.eq x
-      ^.greater x
+  # [x] > greater /bool
 
   # Multiplication of $ and x
-  [x] > mul /float
+  [x] > mul
+    [] > @
+      "You can't mul to NaN" > msg
 
   # Sum of $ and x
-  [x] > add /float
-
-  # Negation of $
-  [] > neg
-    ^.mul -1.0 > @
-
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    if. > @
-      ^.less 0.0
-      -1.0
-      if.
-        ^.eq 0.0
-        0.0
-        1.0
-
-  # Difference between $ and x
-  [x] > sub
-    ^.add (x.neg) > @
+  [x] > add
+    [] > @
+      "You can't add to NaN" > msg
 
   # x'th power of $
-  [x] > pow /float
-
-  # Quotient of the division of $ by x
-  [x] > div
-    ^.mul (x.pow -1.0) > @
-
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    if. > @
-      ^.geq 0.0
-      ^
-      ^.neg
+  [x] > pow
+    [] > @
+      "You can't get power of NaN" > msg
 
   # Converts this to angle
-  #[] > as-angle /angle
+  [] > as-angle
+    [] > @
+      "You can't convert NaN to angle" > msg
 
   # Converts this to bytes
-  [] > as-bytes /bytes
+  #[] > as-bytes /bytes
 
   # Converts this to int
-  [] > as-int /int
+  [] > as-int
+    [] > @
+      "You can't convert NaN to int" > msg
 
   # Converts this to string
-  [] > as-string /string
+  [] > as-string
+    "NaN" > @
