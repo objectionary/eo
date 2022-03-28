@@ -44,7 +44,7 @@
     'Ф'
     'Ф'
 
-[] > to-bytes-and-backwards
+[] > to-bytes-and-backwards-char
   eq. > @
     'Ф'
     as-char.
