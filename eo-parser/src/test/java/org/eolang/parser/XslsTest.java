@@ -65,10 +65,23 @@ public final class XslsTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Collection<Path> yamlPacks() throws IOException {
-        return Files.walk(XslsTest.HOME)
-            .filter(file -> file.toString().contains("src/test/xsl/"))
+        final Collection<Path> list = Files.walk(XslsTest.HOME)
+            .filter(
+                file -> file.toString().contains(
+                    Paths.get("src").resolve("/test/xsl/").toString()
+                )
+            )
             .filter(file -> file.toString().endsWith(".yml"))
             .filter(file -> !file.toFile().isDirectory())
             .collect(Collectors.toList());
+        MatcherAssert.assertThat(
+            String.format(
+                "Can't find any .yml files in '%s' directory",
+                XslsTest.HOME
+            ),
+            list,
+            Matchers.not(Matchers.emptyIterable())
+        );
+        return list;
     }
 }

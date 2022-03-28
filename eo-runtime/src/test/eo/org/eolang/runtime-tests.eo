@@ -221,3 +221,12 @@
 #   output.eq TRUE > @
 [] > app-that-calls-varargs-func
   TRUE > @
+
+[] > directly-accesses-objects-from-root
+  Q.org.eolang.memory > m
+  seq > @
+    m.write 42
+    Q.org.eolang.io.stdout
+      "Hello, world!"
+    m.write (m.sub 2)
+    m.eq 40

@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.TreeSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
@@ -94,7 +95,7 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = new HashSet<>(
+        final Collection<String> names = new TreeSet<>(
             new ListOf<>(
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
@@ -103,6 +104,7 @@ public final class DiscoverMojo extends SafeMojo {
                             " ",
                             "//o[",
                             "not(starts-with(@base,'.'))",
+                            " and @base != 'Q'",
                             " and @base != '^'",
                             " and @base != '$'",
                             " and @base != '&'",

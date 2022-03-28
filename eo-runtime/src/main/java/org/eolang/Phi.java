@@ -69,17 +69,19 @@ public interface Phi extends Term {
 
         @Override
         public void move(final Phi rho) {
-            //
+            throw new ExFailure("Can't #move() root object");
         }
 
         @Override
         public Attr attr(final int pos) {
-            return this.attr(String.format("#%d", pos));
+            throw new ExFailure(
+                String.format("Can't #attr(%d) in Φ", pos)
+            );
         }
 
         @Override
         public Attr attr(final String name) {
-            return new AtAbsent(name, " in Φ");
+            return new AtSimple(new PhPackage(name));
         }
     };
 

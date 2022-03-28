@@ -21,43 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang;
 
-import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link LocalObjectionary}.
+ * Test case for {@link Phi}.
  *
- * @since 1.0
+ * @since 0.22
  */
-final class LocalObjectionaryTest {
+public final class PhiTest {
 
     @Test
-    void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        new LengthOf(
-            new TeeInput(
-                new InputOf(content),
-                new OutputTo(
-                    path.resolve("sources/master/org/example/main.eo")
-                )
-            )
-        ).value();
+    public void takesPackage() {
         MatcherAssert.assertThat(
-            new TextOf(
-                new LocalObjectionary("master", path)
-                    .get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
+            new Dataized(
+                new PhCopy(
+                    new PhMethod(
+                        new PhMethod(
+                            Phi.Φ.attr("org").get(),
+                            "eolang"
+                        ),
+                        "random"
+                    )
+                )
+            ).take(Double.class),
+            Matchers.greaterThan(-1.0d)
         );
     }
+
 }

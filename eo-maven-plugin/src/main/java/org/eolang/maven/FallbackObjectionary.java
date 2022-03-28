@@ -24,10 +24,10 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import org.cactoos.Fallback;
 import org.cactoos.Input;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.scalar.FallbackFrom;
 
 /**
  * Objectionary with fallback.
@@ -64,7 +64,7 @@ public final class FallbackObjectionary implements Objectionary {
         return new IoCheckedFunc<>(
             new FuncWithFallback<>(
                 this.first::get,
-                new FallbackFrom<>(
+                new Fallback.From<>(
                     IOException.class,
                     ex -> this.second.get(name)
                 )
