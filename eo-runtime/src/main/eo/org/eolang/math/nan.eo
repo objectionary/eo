@@ -27,13 +27,11 @@
 [] > nan
   1.633123E16 > @
 
-  # Tests that $ > x
+  # Tests that $ = x
   [x] > eq
-    FALSE > @
-
-  # Tests that $ ≠ x
-  [x] > neq
-    TRUE > @
+    eq. > @
+      x.<
+      ^.<
 
   # Tests that $ < x
   [x] > less
@@ -54,27 +52,27 @@
   # Multiplication of $ and x
   [x] > mul
     [] > @
-      "You can't mul to NaN" > msg
+      "You can't manipulate with NaN" > msg
 
   # Sum of $ and x
   [x] > add
     [] > @
-      "You can't add to NaN" > msg
+      "You can't manipulate with NaN" > msg
 
   # Sign of $ (-1.0, 0.0, or 1.0)
   [] > signum
     [] > @
-      "You can't get sign of NaN" > msg
+      "You can't manipulate with NaN" > msg
 
   # x'th power of $
   [x] > pow
     [] > @
-      "You can't get power of NaN" > msg
+      You can't manipulate with NaN" > msg
 
-  # Converts this to angle
-  [] > as-angle
+  # Absolute value of $ (i.e., with no sign)
+  [] > abs
     [] > @
-      "You can't convert NaN to angle" > msg
+      You can't manipulate with NaN" > msg
 
   # Converts this to bytes
   [] > as-bytes
