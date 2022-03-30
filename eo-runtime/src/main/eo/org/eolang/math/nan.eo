@@ -29,9 +29,7 @@
 
   # Tests that $ = x
   [x] > eq
-    eq. > @
-      x.<
-      ^.<
+    FALSE > @
 
   # Tests that $ < x
   [x] > less
