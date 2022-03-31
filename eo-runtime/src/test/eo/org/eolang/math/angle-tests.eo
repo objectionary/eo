@@ -100,56 +100,37 @@
 [] > tan-pi-div-two
   eq. > @
     nan.<
-    <.
-      tan.
-        angle
-          pi.div 2
+    (angle (pi.div 2)).tan.<
 
 [] > tan-minus-pi-div-two
   eq. > @
     nan.<
-    <.
-      tan.
-        angle
-          neg.
-            pi.div 2
+    (angle (pi.div 2).neg).tan.<
 
 [] > ctan-zero
   eq. > @
     nan.<
-    <.
-      ctan.
-        angle 0.0
+    (angle 0.0).ctan.<
 
 [] > ctan-pi
   eq. > @
     nan.<
-    <.
-      ctan.
-        angle pi
+    (angle pi).ctan.<
 
 [] > ctan-minus-pi-div-four
   eq. > @
     -1.0
-    сtan.
-      angle
-        neg.
-          pi.div 4
+    (angle (pi.div 4).neg).ctan
 
 [] > ctan-pi-div-two
   eq. > @
     0.0
-    ctan.
-      angle
-        pi.div 2
+    (angle (pi.div 2)).ctan
 
 [] > ctan-minus-pi-div-two
   eq. > @
     0.0
-    ctan.
-      angle
-        neg.
-          pi.div 2
+    (angle (pi.div 2).neg).ctan
 
 [] > zero-radians-as-degrees
   eq. > @
@@ -158,7 +139,7 @@
       angle 0.0
 
 [] > pi-as-degrees
-  eq. > 0
+  eq. > @
     180.0
     as-degrees.
       angle pi
