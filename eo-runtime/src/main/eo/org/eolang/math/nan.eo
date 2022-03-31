@@ -65,12 +65,12 @@
   # x'th power of $
   [x] > pow
     [] > @
-      You can't manipulate with NaN" > msg
+      "You can't manipulate with NaN" > msg
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs
     [] > @
-      You can't manipulate with NaN" > msg
+      "You can't manipulate with NaN" > msg
 
   # Converts this to bytes
   [] > as-bytes
