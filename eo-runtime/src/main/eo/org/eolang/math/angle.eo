@@ -36,22 +36,17 @@
   [] > cos /float
 
   # Tangent of $
-  [] > tan
-    if. > @
-      ^.eq (pi.div 2)
-      nan
-      div.
-        ^.sin
-        ^.cos
+  [] > tan /float
 
   # Cotangent of $
   [] > ctan
+    ^.tan > tangent!
     if. > @
-      ^.eq 0
+      tangent.eq 0.0
       nan
       div.
-        ^.cos
-        ^.sin
+        1.0
+        tangent
 
   # Coverts this from radians to degrees
   [] > as-degrees
