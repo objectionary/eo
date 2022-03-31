@@ -1,0 +1,177 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2022 Yegor Bugayenko
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++package org.eolang.math
++alias sprintf org.eolang.math.angle
++alias sprintf org.eolang.math.pi
++alias sprintf org.eolang.math.nan
++junit
+
+[] > phi-equals-to-angle-free-arg
+  eq. > @
+    angle 42
+    42
+
+[] > sin-zero
+  eq. > @
+    0.0
+    (angle 0.0).sin
+
+[] > sin-pi-div-two
+  eq. > @
+    1.0
+    sin.
+      angle
+        pi.div 2
+
+[] > sin-pi-as-int
+  eq. > @
+    0
+    as-int.
+      sin.
+        angle pi
+
+[] > cos-zero
+  eq. > @
+    1.0
+    cos.
+      angle 0.0
+
+[] > cos-pi-div-two-as-int
+  eq. > @
+    0
+    as-int.
+      cos.
+        angle
+          pi.div 2
+
+[] > cos-pi
+  eq. > @
+    -1.0
+    cos.
+      angle pi
+
+[] > tan-zero
+  eq. > @
+    0.0
+    tan.
+      angle 0.0
+
+[] > tan-pi
+  eq. > @
+    0.0
+    tan.
+      angle pi
+
+[] > tan-pi-div-four
+  eq. > @
+    1.0
+    tan.
+      angle
+        pi.div 4
+
+[] > tan-minus-pi-div-four
+  eq. > @
+    -1.0
+    tan.
+      angle
+        neg.
+          pi.div 4
+
+[] > tan-pi-div-two
+  eq. > @
+    nan.<
+    <.
+      tan.
+        angle
+          pi.div 2
+
+[] > tan-minus-pi-div-two
+  eq. > @
+    nan.<
+    <.
+      tan.
+        angle
+          neg.
+            pi.div 2
+
+[] > ctan-zero
+  eq. > @
+    nan.<
+    <.
+      ctan.
+        angle 0.0
+
+[] > ctan-pi
+  eq. > @
+    nan.<
+    <.
+      ctan.
+        angle pi
+
+[] > ctan-minus-pi-div-four
+  eq. > @
+    -1.0
+    сtan.
+      angle
+        neg.
+          pi.div 4
+
+[] > ctan-pi-div-two
+  eq. > @
+    0.0
+    ctan.
+      angle
+        pi.div 2
+
+[] > ctan-minus-pi-div-two
+  eq. > @
+    0.0
+    ctan.
+      angle
+        neg.
+          pi.div 2
+
+[] > zero-radians-as-degrees
+  eq. > @
+    0.0
+    as-degrees.
+      angle 0.0
+
+[] > pi-as-degrees
+  eq. > 0
+    180.0
+    as-degrees.
+      angle pi
+
+[] > pi-div-two-as-degrees
+  eq. > @
+    90.0
+    as-degrees.
+      angle
+        pi.div 2
+
+
+
+
+
+
