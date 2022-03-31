@@ -1,5 +1,6 @@
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
+import EOorg.EOeolang.EOmath.EOangle$EOcos;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.hamcrest.MatcherAssert;
@@ -7,59 +8,59 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOfloat}
+ * Test case for {@link EOangle}
  */
-public final class EOfloatEOsinTest {
+public final class EOangleEOcosTest {
 
     @Test
-    public void sin0() {
-        final double sin0 = Math.sin(0);
+    public void cos0() {
+        final double cos0 = Math.cos(0);
         MatcherAssert.assertThat(
             new Dataized(
-                new EOfloat$EOsin(
+                new EOangle$EOcos(
                     new Data.ToPhi((double) 0)
                 )
             ).take(Double.class),
-            Matchers.equalTo(sin0)
+            Matchers.equalTo(cos0)
         );
     }
 
     @Test
-    public void sinPi() {
-        final double sinPi = Math.sin(Math.PI);
+    public void cosPi() {
+        final double cosPi = Math.cos(Math.PI);
         MatcherAssert.assertThat(
             new Dataized(
-                new EOfloat$EOsin(
+                new EOangle$EOcos(
                     new Data.ToPhi(Math.PI)
                 )
             ).take(Double.class),
-            Matchers.equalTo(sinPi)
+            Matchers.equalTo(cosPi)
         );
     }
 
     @Test
-    public void sinPiDiv2() {
-        final double sinPiDiv2 = Math.sin(Math.PI / 2);
+    public void cosPiDiv2() {
+        final double cosPiDiv2 = Math.cos(Math.PI / 2);
         MatcherAssert.assertThat(
             new Dataized(
-                new EOfloat$EOsin(
+                new EOangle$EOcos(
                     new Data.ToPhi(Math.PI / 2)
                 )
             ).take(Double.class),
-            Matchers.equalTo(sinPiDiv2)
+            Matchers.equalTo(cosPiDiv2)
         );
     }
 
     @Test
-    public void sinMinusPiDiv2() {
-        final double sinMinusPiDiv2 = Math.sin(-Math.PI / 2);
+    public void cosMinusPiDiv2() {
+        final double cosMinusPiDiv2 = Math.cos(-Math.PI / 2);
         MatcherAssert.assertThat(
             new Dataized(
-                new EOfloat$EOsin(
+                new EOangle$EOcos(
                     new Data.ToPhi(-Math.PI / 2)
                 )
             ).take(Double.class),
-            Matchers.equalTo(sinMinusPiDiv2)
+            Matchers.equalTo(cosMinusPiDiv2)
         );
     }
 }
