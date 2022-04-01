@@ -42,7 +42,7 @@
   [] > ctan
     ^.tan > tangent!
     if. > @
-      tangent.eq 0.0
+      tangent.as-int.eq 0
       nan
       div.
         1.0
@@ -51,5 +51,5 @@
   # Coverts this from radians to degrees
   [] > as-degrees
     div. > @
-      ^.mul 180
+      ^.mul 180.0
       pi

@@ -21,9 +21,9 @@
 # SOFTWARE.
 
 +package org.eolang.math
-+alias sprintf org.eolang.math.angle
-+alias sprintf org.eolang.math.pi
-+alias sprintf org.eolang.math.nan
++alias org.eolang.math.angle
++alias org.eolang.math.pi
++alias org.eolang.math.nan
 +junit
 
 [] > phi-equals-to-angle-free-arg
@@ -36,19 +36,20 @@
     0.0
     (angle 0.0).sin
 
-[] > sin-pi-div-two
-  eq. > @
-    1.0
-    sin.
-      angle
-        pi.div 2
-
-[] > sin-pi-as-int
+[] > sin-pi
   eq. > @
     0
     as-int.
       sin.
         angle pi
+
+[] > sin-pi-div-two
+  eq. > @
+    1
+    as-int.
+      sin.
+        angle
+          pi.div 2.0
 
 [] > cos-zero
   eq. > @
@@ -56,19 +57,16 @@
     cos.
       angle 0.0
 
-[] > cos-pi-div-two-as-int
-  eq. > @
-    0
-    as-int.
-      cos.
-        angle
-          pi.div 2
-
 [] > cos-pi
   eq. > @
     -1.0
     cos.
       angle pi
+
+[] > cos-pi-div-two
+  eq. > @
+    0
+    (angle (pi.div 2.0)).cos.as-int
 
 [] > tan-zero
   eq. > @
@@ -78,34 +76,10 @@
 
 [] > tan-pi
   eq. > @
-    0.0
-    tan.
-      angle pi
-
-[] > tan-pi-div-four
-  eq. > @
-    1.0
-    tan.
-      angle
-        pi.div 4
-
-[] > tan-minus-pi-div-four
-  eq. > @
-    -1.0
-    tan.
-      angle
-        neg.
-          pi.div 4
-
-[] > tan-pi-div-two
-  eq. > @
-    nan.<
-    (angle (pi.div 2)).tan.<
-
-[] > tan-minus-pi-div-two
-  eq. > @
-    nan.<
-    (angle (pi.div 2).neg).tan.<
+    0
+    as-int.
+      tan.
+        angle pi
 
 [] > ctan-zero
   eq. > @
@@ -117,20 +91,10 @@
     nan.<
     (angle pi).ctan.<
 
-[] > ctan-minus-pi-div-four
-  eq. > @
-    -1.0
-    (angle (pi.div 4).neg).ctan
-
 [] > ctan-pi-div-two
   eq. > @
-    0.0
-    (angle (pi.div 2)).ctan
-
-[] > ctan-minus-pi-div-two
-  eq. > @
-    0.0
-    (angle (pi.div 2).neg).ctan
+    0
+    (angle (pi.div 2.0)).ctan.as-int
 
 [] > zero-radians-as-degrees
   eq. > @
@@ -143,16 +107,3 @@
     180.0
     as-degrees.
       angle pi
-
-[] > pi-div-two-as-degrees
-  eq. > @
-    90.0
-    as-degrees.
-      angle
-        pi.div 2
-
-
-
-
-
-

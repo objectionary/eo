@@ -21,30 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang.math
-+alias sprintf org.eolang.math.nan
++alias org.eolang.math.nan
 +junit
-
-[] > comparisons-to-nan
-  and. > @
-    (nan.eq 42).eq FALSE
-    (nan.less 42).eq FALSE
-    (nan.leq 42).eq FALSE
-    (nan.greater 42).eq FALSE
-    (nan.geq 42).eq FALSE
-    (nan.eq nan).eq FALSE
-    (nan.neq 42).eq TRUE
-    (nan.neq nan).eq TRUE
-
-[] > nan-arithmetics
-  and. > @
-    (nan.mul 42).msg.eq "You can't manipulate with NaN"
-    (nan.add 42).msg.eq "You can't manipulate with NaN"
-    (nan.signum 42).msg.eq "You can't manipulate with NaN"
-    (nan.pow 42).msg.eq "You can't manipulate with NaN"
-    (nan.abs 42).msg.eq "You can't manipulate with NaN"
-    (nan.div 42).msg.eq "You can't manipulate with NaN"
-    (nan.sub 42).msg.eq "You can't manipulate with NaN"
-    (nan.neg 42).msg.eq "You can't manipulate with NaN"
 
 [] > nan-as-bytes
   eq. > @
