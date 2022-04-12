@@ -1,6 +1,6 @@
 xsls:
-  - org/eolang/parser/add-refs.xsl
-  - org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
 tests:
   - /program/errors[count(*)=0]
   - //o[@name='a$m$t2$a0' and @parent='a$m']

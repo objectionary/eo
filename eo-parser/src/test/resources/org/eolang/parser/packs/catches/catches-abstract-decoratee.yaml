@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/parser/errors/abstract-decoratee.xsl
+  - /org/eolang/parser/errors/abstract-decoratee.xsl
 tests:
   - /program/errors[count(error)=1]
   - /program/errors/error[@line='2']

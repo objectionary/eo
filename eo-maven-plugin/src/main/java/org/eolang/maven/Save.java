@@ -105,6 +105,17 @@ public final class Save {
     }
 
     /**
+     * Save the file to the path, without any checked exceptions.
+     */
+    public void saveQuietly() {
+        try {
+            this.save();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
      * Save the file to the path.
      *
      * @throws IOException If fails

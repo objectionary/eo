@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/parser/expand-aliases.xsl
+  - /org/eolang/parser/expand-aliases.xsl
 tests:
   - /program/errors[count(*)=0]
   - //meta[head='alias' and tail='scanner org.eolang.txt.scanner' and part[1]='scanner' and part[2]='org.eolang.txt.scanner']

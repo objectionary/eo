@@ -26,6 +26,10 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
@@ -75,24 +79,15 @@ public final class CheckPack {
         ).parse();
         final XML xml = new XMLDocument(baos.toByteArray());
         baos.reset();
-        final Collection<String> xsls = (Collection<String>) map.get("xsls");
-        final Xsline xsline;
-        if (xsls == null) {
-            xsline = new Xsline(
-                xml,
-                new OutputTo(baos),
-                new Spy.Verbose(CheckPack.class)
-            );
-        } else {
-            xsline = new Xsline(
-                xml,
-                new OutputTo(baos),
-                new Spy.Verbose(CheckPack.class),
-                xsls
-            );
+        final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
+        Train<Shift> train = new ParsingTrain();
+        if (xsls != null) {
+            train = train.empty();
+            for (final String xsl : xsls) {
+                train = train.with(new StClasspath(xsl));
+            }
         }
-        xsline.pass();
-        final XML out = new XMLDocument(baos.toByteArray());
+        final XML out = new Xsline(train).pass(xml);
         Logger.debug(this, "Output XML:\n%s", out);
         final Collection<String> failures = new LinkedList<>();
         for (final String xpath : (Iterable<String>) map.get("tests")) {

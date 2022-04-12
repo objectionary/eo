@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/wrap-method-calls.xsl
 
 tests:
   - //objects[count(o)=3]

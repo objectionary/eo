@@ -51,6 +51,10 @@ SOFTWARE.
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>xsline</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
     </dependency>

@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/parser/errors/not-empty-atoms.xsl
+  - /org/eolang/parser/errors/not-empty-atoms.xsl
 tests:
   - //o[@name='x' and text()='    ']
   - //o[@name='y' and text()=' foo']

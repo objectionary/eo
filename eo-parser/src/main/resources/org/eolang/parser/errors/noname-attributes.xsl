@@ -34,7 +34,8 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o" mode="abstract">
-    <xsl:if test="o[not(@name) and not(starts-with(@base, '.'))]">
+    <xsl:variable name="attr" select="o[not(@name) and not(starts-with(@base, '.'))]"/>
+    <xsl:if test="$attr">
       <xsl:element name="error">
         <xsl:attribute name="check">
           <xsl:text>noname-attributes</xsl:text>
@@ -49,6 +50,10 @@ SOFTWARE.
           <xsl:text>" </xsl:text>
         </xsl:if>
         <xsl:text>has attribute without a name</xsl:text>
+        <xsl:text>, line=</xsl:text>
+        <xsl:value-of select="$attr/@line"/>
+        <xsl:text>, pos=</xsl:text>
+        <xsl:value-of select="$attr/@pos"/>
       </xsl:element>
     </xsl:if>
   </xsl:template>

@@ -26,14 +26,18 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.cactoos.io.OutputTo;
-import org.cactoos.list.ListOf;
 import org.cactoos.text.Joined;
-import org.eolang.parser.Xsline;
+import org.eolang.parser.ParsingTrain;
 
 /**
  * Native compiler.
@@ -79,21 +83,21 @@ final class TranspilerCanonical implements Transpiler {
                 Save.rel(file), name, Save.rel(target)
             );
         } else {
-            new Xsline(
-                input,
-                new OutputTo(target),
-                new TargetSpy(place.make(this.pre, "")),
-                new ListOf<>(
-                    "org/eolang/maven/pre/classes.xsl",
-                    "org/eolang/maven/pre/junit.xsl",
-                    "org/eolang/maven/pre/rename-junit-inners.xsl",
-                    "org/eolang/maven/pre/attrs.xsl",
-                    "org/eolang/maven/pre/varargs.xsl",
-                    "org/eolang/maven/pre/data.xsl",
-                    "org/eolang/maven/pre/to-java.xsl"
+            Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain().empty())).with(
+                Arrays.asList(
+                    "/org/eolang/maven/pre/classes.xsl",
+                    "/org/eolang/maven/pre/junit.xsl",
+                    "/org/eolang/maven/pre/rename-junit-inners.xsl",
+                    "/org/eolang/maven/pre/attrs.xsl",
+                    "/org/eolang/maven/pre/varargs.xsl",
+                    "/org/eolang/maven/pre/data.xsl",
+                    "/org/eolang/maven/pre/to-java.xsl"
                 )
-            ).pass();
-            final XML after = this.noErrors(new XMLDocument(target), name);
+            ).back().back();
+            train = new SpyTrain(train, place.make(this.pre, ""));
+            final XML out = new Xsline(train).pass(input);
+            new Save(out.toString(), target).saveQuietly();
+            final XML after = this.noErrors(out, name);
             final Collection<XML> nodes = after.nodes("//class[java and not(@atom)]");
             if (nodes.isEmpty()) {
                 Logger.info(

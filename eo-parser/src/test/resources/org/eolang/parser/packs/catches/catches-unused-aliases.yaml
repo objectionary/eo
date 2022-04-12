@@ -1,7 +1,7 @@
 xsls:
-  - org/eolang/parser/expand-aliases.xsl
-  - org/eolang/parser/resolve-aliases.xsl
-  - org/eolang/parser/errors/unused-aliases.xsl
+  - /org/eolang/parser/expand-aliases.xsl
+  - /org/eolang/parser/resolve-aliases.xsl
+  - /org/eolang/parser/errors/unused-aliases.xsl
 tests:
   - /program/errors[count(error)=2]
   - /program/errors/error[@line='1']

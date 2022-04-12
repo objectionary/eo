@@ -21,53 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.parser;
 
-import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import org.eolang.parser.Spy;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * The spy to log all results.
+ * Test case for {@link ParsingTrain}.
  *
- * @since 0.1
+ * @since 0.23
  */
-final class TargetSpy implements Spy {
+public final class ParsingTrainTest {
 
-    /**
-     * The dir.
-     */
-    private final Path dir;
-
-    /**
-     * Ctor.
-     * @param target The path
-     */
-    TargetSpy(final Path target) {
-        this.dir = target;
+    @Test
+    public void buildsList() {
+        MatcherAssert.assertThat(
+            new ParsingTrain(),
+            Matchers.iterableWithSize(Matchers.greaterThan(1))
+        );
     }
 
-    @Override
-    public void push(final int index, final XSL xsl, final XML xml)
-        throws IOException {
-        final List<String> names = new XMLDocument(xsl.toString()).xpath("/*/@id");
-        final String file;
-        if (names.isEmpty()) {
-            file = String.format("%d", index);
-        } else {
-            file = names.get(0).replaceAll("[^a-z0-9]", "-");
-        }
-        new Save(
-            xml.toString(),
-            this.dir.resolve(
-                String.format("%02d-%s.xml", index, file)
-            )
-        ).save();
-        Logger.debug(this, "Step #%d by %s:\n%s", index, file, xml);
-    }
 }

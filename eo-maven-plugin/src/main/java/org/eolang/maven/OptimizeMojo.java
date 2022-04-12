@@ -24,18 +24,22 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import java.io.ByteArrayOutputStream;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.cactoos.io.OutputTo;
-import org.cactoos.list.ListOf;
-import org.eolang.parser.Xsline;
+import org.eolang.parser.ParsingTrain;
 
 /**
  * Optimize XML files.
@@ -108,24 +112,21 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
         );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Xsline(
-            new XMLDocument(file),
-            new OutputTo(baos),
-            new TargetSpy(dir)
-        ).with(
-            new ListOf<>(
-                "org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                "org/eolang/parser/optimize/remove-refs.xsl",
-                "org/eolang/parser/optimize/abstracts-float-up.xsl",
-                "org/eolang/parser/optimize/remove-levels.xsl",
-                "org/eolang/parser/add-refs.xsl",
-                "org/eolang/parser/optimize/fix-missed-names.xsl",
-                "org/eolang/parser/add-refs.xsl",
-                "org/eolang/parser/errors/broken-refs.xsl"
+        Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain())).with(
+            Arrays.asList(
+                "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                "/org/eolang/parser/optimize/remove-refs.xsl",
+                "/org/eolang/parser/optimize/abstracts-float-up.xsl",
+                "/org/eolang/parser/optimize/remove-levels.xsl",
+                "/org/eolang/parser/add-refs.xsl",
+                "/org/eolang/parser/optimize/fix-missed-names.xsl",
+                "/org/eolang/parser/add-refs.xsl",
+                "/org/eolang/parser/errors/broken-refs.xsl"
             )
-        ).pass();
-        new Save(baos.toByteArray(), target).save();
+        ).back().back();
+        train = new SpyTrain(train, dir);
+        final XML out = new Xsline(train).pass(new XMLDocument(file));
+        new Save(out.toString(), target).save();
         Logger.debug(
             this, "Optimized %s (program:%s) to %s, all steps are in %s",
             Save.rel(file), name, Save.rel(target), Save.rel(dir)

@@ -89,13 +89,11 @@ public final class TranspileMojoTest {
         Assertions.assertTrue(
             java.toFile().setLastModified(0L)
         );
-        Assertions.assertTrue(
-            target.resolve("06-transpile")
-                .resolve("foo")
-                .resolve("src.xmir")
-                .toFile()
-                .setLastModified(0L)
-        );
+        final Path xmir = target.resolve("06-transpile")
+            .resolve("foo")
+            .resolve("src.xmir");
+        Assertions.assertTrue(Files.exists(xmir));
+        Assertions.assertTrue(xmir.toFile().setLastModified(0L));
         new Moja<>(TranspileMojo.class)
             .with("compiler", "canonical")
             .with("project", new MavenProjectStub())

@@ -1,5 +1,5 @@
 xsls:
-  - org/eolang/parser/errors/not-empty-atoms.xsl
+  - /org/eolang/parser/errors/not-empty-atoms.xsl
 tests:
   - /program/errors[count(error)=2]
   - /program/errors/error[@line='1']
