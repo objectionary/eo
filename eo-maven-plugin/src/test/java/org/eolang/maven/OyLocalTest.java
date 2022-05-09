@@ -23,52 +23,41 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
-import org.cactoos.Fallback;
-import org.cactoos.Input;
-import org.cactoos.func.FuncWithFallback;
-import org.cactoos.func.IoCheckedFunc;
+import java.nio.file.Path;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Objectionary with fallback.
+ * Test for {@link OyLocal}.
  *
  * @since 1.0
  */
-public final class FallbackObjectionary implements Objectionary {
+final class OyLocalTest {
 
-    /**
-     * Primary Objectionary.
-     */
-    private final Objectionary first;
-
-    /**
-     * Fallback Objectionary.
-     */
-    private final Objectionary second;
-
-    /**
-     * Ctor.
-     * @param primary Primary source.
-     * @param secondary Secondary source.
-     */
-    public FallbackObjectionary(
-        final Objectionary primary,
-        final Objectionary secondary
-    ) {
-        this.first = primary;
-        this.second = secondary;
-    }
-
-    @Override
-    public Input get(final String name) throws IOException {
-        return new IoCheckedFunc<>(
-            new FuncWithFallback<>(
-                this.first::get,
-                new Fallback.From<>(
-                    IOException.class,
-                    ex -> this.second.get(name)
+    @Test
+    void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
+        final String content = "[] > main\n";
+        new LengthOf(
+            new TeeInput(
+                new InputOf(content),
+                new OutputTo(
+                    path.resolve("sources/master/org/example/main.eo")
                 )
             )
-        ).apply(name);
+        ).value();
+        MatcherAssert.assertThat(
+            new TextOf(
+                new OyLocal("master", path)
+                    .get("org.example.main")
+            ).asString(),
+            Matchers.is(content)
+        );
     }
 }

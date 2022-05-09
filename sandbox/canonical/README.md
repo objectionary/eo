@@ -1,6 +1,6 @@
 <img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
 
-[![sandbox](https://github.com/cqfn/eo/actions/workflows/sandbox.yml/badge.svg?branch=master)](https://github.com/cqfn/eo/actions/workflows/sandbox.yml)
+[![sandbox](https://github.com/objectionary/eo/actions/workflows/sandbox.yml/badge.svg?branch=master)](https://github.com/objectionary/eo/actions/workflows/sandbox.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
 
 You can play with EOLANG here, in a few simple steps:
@@ -11,7 +11,7 @@ to the `sandbox` directory (you will need
 installed):
 
 ```bash
-$ git clone https://github.com/cqfn/eo.git
+$ git clone https://github.com/objectionary/eo.git
 $ cd eo/sandbox/canonical
 ```
 
@@ -32,7 +32,7 @@ $ ./run.sh 9
 9th Fibonacci number is 34
 ```
 
-Should work. If it doesn't, [submit an issue](https://github.com/cqfn/eo/issues),
+Should work. If it doesn't, [submit an issue](https://github.com/objectionary/eo/issues),
 we will fix it.
 
 Then, you can modify `*.eo` files, run `mvn compile` to compile them

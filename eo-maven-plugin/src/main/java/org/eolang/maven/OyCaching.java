@@ -23,39 +23,59 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.cactoos.Input;
+import org.cactoos.io.TeeInput;
 
 /**
- * Test for {@link CachingObjectionary}.
+ * Objectionary which caches objects locally.
  *
  * @since 1.0
  */
-final class CachingObjectionaryTest {
+public final class OyCaching implements Objectionary {
 
-    @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        MatcherAssert.assertThat(
-            new TextOf(
-                new CachingObjectionary(
-                    "master",
-                    path,
-                    name -> new InputOf(content)
-                ).get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
-        );
-        Assertions.assertTrue(
-            path.resolve("sources/master/org/example/main.eo")
-                .toFile()
-                .exists()
+    /**
+     * Cache location.
+     */
+    private final Path cache;
+
+    /**
+     * Version or hash.
+     */
+    private final String version;
+
+    /**
+     * Remote Objectionary.
+     */
+    private final Objectionary primary;
+
+    /**
+     * Ctor.
+     * @param ver Version.
+     * @param cache Cache directory.
+     * @param primary Primary objectionary.
+     */
+    public OyCaching(
+        final String ver,
+        final Path cache,
+        final Objectionary primary
+    ) {
+        this.version = ver;
+        this.cache = cache;
+        this.primary = primary;
+    }
+
+    @Override
+    public Input get(final String name) throws IOException {
+        return new TeeInput(
+            this.primary.get(name),
+            new Place(name).make(
+                this.cache
+                    .resolve("sources")
+                    .resolve(this.version),
+                "eo"
+            )
         );
     }
 }

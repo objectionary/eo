@@ -1,6 +1,6 @@
 <img src="https://rawgithub.com/yegor256/elegantobjects/master/cactus.svg" height="100px"/>
 
-[![make](https://github.com/cqfn/eo/actions/workflows/latexmk.yml/badge.svg)](https://github.com/cqfn/eo/actions/workflows/latexmk.yml)
+[![make](https://github.com/objectionary/eo/actions/workflows/latexmk.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/latexmk.yml)
 
 This is a more or less formal description of EOLANG and 𝜑-calculus.
 

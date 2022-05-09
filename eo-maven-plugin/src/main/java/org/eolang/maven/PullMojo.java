@@ -41,7 +41,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @todo #561:30min Add a parameter to bypass/overwrite cache
  *  for combination of Local and Caching and Remote.
  *  It was suggested by @yegor256 to rely on -U parameter of Maven
- *  (https://github.com/cqfn/eo/issues/561#issuecomment-1007128430).
+ *  (https://github.com/objectionary/eo/issues/561#issuecomment-1007128430).
  *  If it is possible to access it from the plugin.
  */
 @Mojo(
@@ -77,7 +77,7 @@ public final class PullMojo extends SafeMojo {
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new RemoteObjectionary();
+    private Objectionary objectionary = new OyRemote();
 
     /**
      * Target directory.
@@ -95,15 +95,15 @@ public final class PullMojo extends SafeMojo {
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         if (this.objectionary == null) {
-            this.objectionary = new FallbackObjectionary(
-                new LocalObjectionary(
+            this.objectionary = new OyFallback(
+                new OyLocal(
                     this.hash,
                     this.outputPath
                 ),
-                new CachingObjectionary(
+                new OyCaching(
                     this.hash,
                     this.outputPath,
-                    new RemoteObjectionary(this.hash)
+                    new OyRemote(this.hash)
                 )
             );
         }

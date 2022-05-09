@@ -53,7 +53,7 @@ to the `eo` directory (you will need
 installed):
 
 ```bash
-$ git clone https://github.com/cqfn/eo.git
+$ git clone https://github.com/objectionary/eo.git
 $ cd eo
 ```
 Second, compile the transpiler and the runtime of the EO programming language (you will need

@@ -25,7 +25,7 @@
 
 TLROOT=$$(kpsewhich -var-value TEXMFDIST)
 PACKAGES=ffcode to-be-determined href-ul
-REPO=cqfn/eo
+REPO=objectionary/eo
 
 zip: *.tex sections/*.tex
 	rm -rf package

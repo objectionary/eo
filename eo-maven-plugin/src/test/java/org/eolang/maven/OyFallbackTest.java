@@ -34,19 +34,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link FallbackObjectionary}.
+ * Test for {@link OyFallback}.
  *
  * @since 1.0
  */
-final class FallbackObjectionaryTest {
+final class OyFallbackTest {
 
     @Test
     void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
         final AtomicInteger counter = new AtomicInteger();
         final String branch = "master";
-        final Objectionary objectionary = new FallbackObjectionary(
-            new LocalObjectionary(branch, path),
-            new CachingObjectionary(
+        final Objectionary objectionary = new OyFallback(
+            new OyLocal(branch, path),
+            new OyCaching(
                 branch,
                 path,
                 name -> {

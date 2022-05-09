@@ -2,18 +2,18 @@
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/C63314D6Z.svg)](https://www.0crat.com/p/C63314D6Z)
-[![DevOps By Rultor.com](http://www.rultor.com/b/cqfn/eo)](http://www.rultor.com/p/cqfn/eo)
+[![DevOps By Rultor.com](http://www.rultor.com/b/objectionary/eo)](http://www.rultor.com/p/objectionary/eo)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
-[![mvn-linux](https://github.com/cqfn/eo/actions/workflows/mvn.yml/badge.svg)](https://github.com/cqfn/eo/actions/workflows/mvn.yml)
-[![PDD status](http://www.0pdd.com/svg?name=cqfn/eo)](http://www.0pdd.com/p?name=cqfn/eo)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b8b59692f3c8c973ac54/maintainability)](https://codeclimate.com/github/cqfn/eo/maintainability)
+[![mvn-linux](https://github.com/objectionary/eo/actions/workflows/mvn.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/mvn.yml)
+[![PDD status](http://www.0pdd.com/svg?name=objectionary/eo)](http://www.0pdd.com/p?name=objectionary/eo)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b8b59692f3c8c973ac54/maintainability)](https://codeclimate.com/github/objectionary/eo/maintainability)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
 
-[![codecov](https://codecov.io/gh/cqfn/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/cqfn/eo)
-[![Hits-of-Code](https://hitsofcode.com/github/cqfn/eo)](https://hitsofcode.com/view/github/cqfn/eo)
-![Lines of code](https://img.shields.io/tokei/lines/github/cqfn/eo)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/eo/blob/master/LICENSE.txt)
+[![codecov](https://codecov.io/gh/objectionary/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eo)
+[![Hits-of-Code](https://hitsofcode.com/github/objectionary/eo)](https://hitsofcode.com/view/github/objectionary/eo)
+![Lines of code](https://img.shields.io/tokei/lines/github/objectionary/eo)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eo/blob/master/LICENSE.txt)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/reports/0ebb3149-4934-4565-bf6f-6fa41aed3b49)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
@@ -59,7 +59,7 @@ These things we **don't** tolerate:
   * operators
   * traits and mixins ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
   * flow control statements (`for`, `while`, `if`, etc)
-  * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/cqfn/eo/issues/51))
+  * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
 
 There are products that use EO or 𝜑-calculus
 (if you want yours to be in the list, submit a pull request):
@@ -167,7 +167,7 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
-More examples are [here](https://github.com/cqfn/eo/tree/master/sandbox/).
+More examples are [here](https://github.com/objectionary/eo/tree/master/sandbox/).
 
 ## Tutorial
 

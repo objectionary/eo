@@ -1,7 +1,7 @@
 assets:
-  settings.xml: cqfn/secrets#settings.xml
-  pubring.gpg: cqfn/secrets#pubring.gpg
-  secring.gpg: cqfn/secrets#secring.gpg
+  settings.xml: objectionary/secrets#settings.xml
+  pubring.gpg: objectionary/secrets#pubring.gpg
+  secring.gpg: objectionary/secrets#secring.gpg
 install: |
   javac -version
   pdd --file=/dev/null

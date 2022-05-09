@@ -24,58 +24,51 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import org.cactoos.Fallback;
 import org.cactoos.Input;
-import org.cactoos.io.TeeInput;
+import org.cactoos.func.FuncWithFallback;
+import org.cactoos.func.IoCheckedFunc;
 
 /**
- * Objectionary which caches objects locally.
+ * Objectionary with fallback.
  *
  * @since 1.0
  */
-public final class CachingObjectionary implements Objectionary {
+public final class OyFallback implements Objectionary {
 
     /**
-     * Cache location.
+     * Primary Objectionary.
      */
-    private final Path cache;
+    private final Objectionary first;
 
     /**
-     * Version or hash.
+     * Fallback Objectionary.
      */
-    private final String version;
-
-    /**
-     * Remote Objectionary.
-     */
-    private final Objectionary primary;
+    private final Objectionary second;
 
     /**
      * Ctor.
-     * @param ver Version.
-     * @param cache Cache directory.
-     * @param primary Primary objectionary.
+     * @param primary Primary source.
+     * @param secondary Secondary source.
      */
-    public CachingObjectionary(
-        final String ver,
-        final Path cache,
-        final Objectionary primary
+    public OyFallback(
+        final Objectionary primary,
+        final Objectionary secondary
     ) {
-        this.version = ver;
-        this.cache = cache;
-        this.primary = primary;
+        this.first = primary;
+        this.second = secondary;
     }
 
     @Override
     public Input get(final String name) throws IOException {
-        return new TeeInput(
-            this.primary.get(name),
-            new Place(name).make(
-                this.cache
-                    .resolve("sources")
-                    .resolve(this.version),
-                "eo"
+        return new IoCheckedFunc<>(
+            new FuncWithFallback<>(
+                this.first::get,
+                new Fallback.From<>(
+                    IOException.class,
+                    ex -> this.second.get(name)
+                )
             )
-        );
+        ).apply(name);
     }
 }
