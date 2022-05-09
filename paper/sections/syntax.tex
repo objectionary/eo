@@ -307,11 +307,11 @@ The abstract objects which can't be used directly and can only be
 created by the compiler through \sntx{data}---are called \emph{data}.
 The examples of some possible data are in the Tab.~\ref{tab:types}.
 
-\begin{table}[H]
-\begin{tabular}{|l|l|l|}
-\hline
+\begin{table}
+\begin{tabularx}{\columnwidth}{l|l|l}
+\toprule
 Data & Example & Size \\
-\hline
+\midrule
 \ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
 \ff{string} & \ff{"Hello, \foreignlanguage{russian}{друг}!"} & 16 \\
 \ff{char} & \begin{CJK}{UTF8}{gbsn}\ff{'家'}\end{CJK} or \ff{'\textbackslash{}u5BB6'} & 2 \\
@@ -319,8 +319,8 @@ Data & Example & Size \\
 \ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 8 \\
 \ff{bool} & \ff{TRUE} or \ff{FALSE} & 1 \\
 \ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
-\hline
-\end{tabular}
+\bottomrule
+\end{tabularx}
 \figcap{The syntax of all data with examples. The ``Size'' column
 denotes the number of bytes to be used by the value in the column
 ``Example''. UTF-8 is the encoding used in \ff{string}, \ff{char},
