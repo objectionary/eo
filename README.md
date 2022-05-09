@@ -37,12 +37,6 @@ examples, but in real code that works. That's why EO is being created&mdash;to
 put all that "crazy" pure object-oriented ideas into practice and
 see whether they can work.
 
-EO is based on [𝜑-calculus](https://arxiv.org/abs/2111.13384).
-
-If you want to discuss, join our Telegram chat: [@polystat_org](https://t.me/polystat_org).
-
-Our Twitter tag is [#eolang](https://twitter.com/search?q=%23eolang).
-
 These things we **don't** tolerate:
 
   * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
