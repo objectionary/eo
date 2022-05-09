@@ -1,7 +1,6 @@
-<img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
+<img src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
-[![Managed by Zerocracy](https://www.0crat.com/badge/C63314D6Z.svg)](https://www.0crat.com/p/C63314D6Z)
 [![DevOps By Rultor.com](http://www.rultor.com/b/objectionary/eo)](http://www.rultor.com/p/objectionary/eo)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
@@ -54,14 +53,6 @@ These things we **don't** tolerate:
   * traits and mixins ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
-
-There are products that use EO or 𝜑-calculus
-(if you want yours to be in the list, submit a pull request):
-
-  * [objectionary](https://github.com/yegor256/objectionary) is a repository of EO objects
-  * [polystat](https://github.com/polystat/polystat) is a static analyzer of EO programs
-  * [eo2py](https://github.com/polystat/eo2py) is a translator of EO to Python
-  * [try-phi](https://github.com/fizruk/try-phi) is an online interpreter of 𝜑-calculus expressions
 
 ## Papers
 
@@ -148,7 +139,7 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
-More examples are [here](https://github.com/objectionary/eo/tree/master/sandbox/).
+More examples are [here](https://github.com/objectionary/sandbox).
 
 ## Tutorial
 
