@@ -73,7 +73,6 @@ public final class TranspileMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(TranspileMojo.class)
-            .with("compiler", "canonical")
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
@@ -95,7 +94,6 @@ public final class TranspileMojoTest {
         Assertions.assertTrue(Files.exists(xmir));
         Assertions.assertTrue(xmir.toFile().setLastModified(0L));
         new Moja<>(TranspileMojo.class)
-            .with("compiler", "canonical")
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
@@ -167,7 +165,6 @@ public final class TranspileMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(TranspileMojo.class)
-            .with("compiler", "canonical")
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())

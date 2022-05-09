@@ -1,4 +1,4 @@
-<img src="https://www.objectionary.com/cactus.svg" height="100px" />
+<img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![DevOps By Rultor.com](http://www.rultor.com/b/objectionary/eo)](http://www.rultor.com/p/objectionary/eo)

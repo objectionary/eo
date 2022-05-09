@@ -173,7 +173,6 @@ public final class SnippetTest {
             .execute();
         final Path generated = target.resolve("generated");
         new Moja<>(TranspileMojo.class)
-            .with("compiler", "canonical")
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())

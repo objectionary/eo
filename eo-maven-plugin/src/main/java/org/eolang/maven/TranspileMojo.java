@@ -86,24 +86,12 @@ public final class TranspileMojo extends SafeMojo {
     @Parameter
     private boolean addTestSourcesRoot;
 
-    /**
-     * Which compiler to use: original or HSE.
-     */
-    @Parameter(property = "compiler", defaultValue = "canonical")
-    @SuppressWarnings("PMD.ImmutableField")
-    private String compiler;
-
     @Override
     public void exec() throws IOException {
-        final Transpiler cmp;
-        if ("canonical".equals(this.compiler)) {
-            cmp = new TranspilerCanonical(
-                this.targetDir.toPath().resolve(TranspileMojo.DIR),
-                this.targetDir.toPath().resolve(TranspileMojo.PRE)
-            );
-        } else {
-            cmp = new TranspilerAlternative(this.compiler);
-        }
+        final Transpiler cmp = new Transpiler(
+            this.targetDir.toPath().resolve(TranspileMojo.DIR),
+            this.targetDir.toPath().resolve(TranspileMojo.PRE)
+        );
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
