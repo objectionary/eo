@@ -27,6 +27,7 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
@@ -46,6 +47,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SyntaxTest {
 
     @Test
@@ -143,13 +145,90 @@ public final class SyntaxTest {
     })
     public void failsOnBrokenSyntax(final String code) {
         final Syntax syntax = new Syntax(
-            "test-it",
+            "test-it-2",
             new InputOf(code),
             new DeadOutput()
         );
         Assertions.assertThrows(
             ParsingException.class,
             syntax::parse
+        );
+    }
+
+    @Test
+    public void parsesArrow() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Syntax syntax = new Syntax(
+            "test-it-3",
+            new InputOf("1 > x"),
+            new OutputTo(baos)
+        );
+        syntax.parse();
+        MatcherAssert.assertThat(
+            new XMLDocument(baos.toByteArray()),
+            XhtmlMatchers.hasXPaths(
+                "/program/objects/o[@base='int' and @name='x' and text()='1']"
+            )
+        );
+    }
+
+    @Test
+    public void prasesNested() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Syntax syntax = new Syntax(
+            "test-it-4",
+            new InputOf(
+                "[] > base\n  memory > x\n  [self] > f\n    v > @\n      v\n"
+            ),
+            new OutputTo(baos)
+        );
+        syntax.parse();
+        MatcherAssert.assertThat(
+            new XMLDocument(baos.toByteArray()),
+            XhtmlMatchers.hasXPaths(
+                "/program/objects[count(o)=1]",
+                "/program/objects/o[count(o)=2]"
+            )
+        );
+    }
+
+    @Test
+    public void prasesDefinition() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Syntax syntax = new Syntax(
+            "test-it-5",
+            new InputOf(
+                "[v] > p\n  f.write > @\n"
+            ),
+            new OutputTo(baos)
+        );
+        syntax.parse();
+        MatcherAssert.assertThat(
+            new XMLDocument(baos.toByteArray()),
+            XhtmlMatchers.hasXPaths(
+                "/program/objects[count(o)=1]",
+                "/program/objects/o[count(o)=3]"
+            )
+        );
+    }
+
+    @Test
+    public void prasesMethodCalls() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Syntax syntax = new Syntax(
+            "test-it-1",
+            new InputOf("add.\n  0\n  TRUE"),
+            new OutputTo(baos)
+        );
+        syntax.parse();
+        MatcherAssert.assertThat(
+            new XMLDocument(baos.toByteArray()),
+            XhtmlMatchers.hasXPaths(
+                "/program[@name='test-it-1']",
+                "/program/objects/o[@base='.add']",
+                "/program/objects/o/o[@data='int']",
+                "/program/objects/o/o[@data='bool']"
+            )
         );
     }
 

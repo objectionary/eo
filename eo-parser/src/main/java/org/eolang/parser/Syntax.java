@@ -25,6 +25,7 @@ package org.eolang.parser;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.util.List;
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -45,6 +46,7 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
+import org.xembly.Xembler;
 
 /**
  * Syntax parser, from EO to XMIR, using ANTLR4.
@@ -118,7 +120,7 @@ public final class Syntax {
         parser.addErrorListener(errors);
         final XeListener xel = new XeListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = xel.xml();
+        final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
         new Schema(dom).check();
         Logger.debug(this, "Raw XML:\n%s", dom.toString());
         new Unchecked<>(
