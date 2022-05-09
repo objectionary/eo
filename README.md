@@ -71,19 +71,6 @@ There are products that use EO or 𝜑-calculus
 
 ## Papers
 
-If you want to cite us, use this BibTeX citation:
-
-```
-@misc{bugayenko2021eolang,
-  title={EOLANG and phi-calculus},
-  author={Yegor Bugayenko},
-  year={2021},
-  eprint={2111.13384},
-  archivePrefix={arXiv},
-  primaryClass={cs.PL}
-}
-```
-
 Here is a full list of papers related to EO:
 
   * Yegor Bugayenko, 
