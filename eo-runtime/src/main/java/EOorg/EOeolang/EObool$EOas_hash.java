@@ -38,7 +38,7 @@ public class EObool$EOas_hash extends PhDefault {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
                 new Data.ToPhi(
-                        new Param(rho).strong(Boolean.class)
+                        (long) new Param(rho).strong(Boolean.class).hashCode()
                 )
         ));
     }

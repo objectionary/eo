@@ -34,21 +34,11 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "int.as-hash")
 public class EOint$EOas_hash extends PhDefault {
 
-    public static Long hash (Long value) {
-        long res = 1L;
-        long inv = (1L << 63L) - 1;
-        for (int i = 0;i < 8;++i) {
-            value *= value;
-            res += value ^ inv;
-        }
-        return res;
-    }
-
     public EOint$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
                 new Data.ToPhi(
-                        hash(new Param(rho).strong(Long.class))
+                        (long) (new Param(rho).strong(Long.class)).hashCode()
                 )
         ));
     }

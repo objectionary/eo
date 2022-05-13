@@ -32,7 +32,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 @XmirObject(oname = "char.as-hash")
-public class EOchar$EOas_hash extends PhDefault {
+public class  EOchar$EOas_hash extends PhDefault {
 
     public static Long hash(Character v) {
         long value = Character.getNumericValue(v);
@@ -49,7 +49,7 @@ public class EOchar$EOas_hash extends PhDefault {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
                 new Data.ToPhi(
-                        hash(new Param(rho).strong(Character.class))
+                        (long) new Param(rho).strong(Character.class).hashCode()
                 )
         ));
     }

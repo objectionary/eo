@@ -148,8 +148,8 @@
 [] > hash-equals-the-value
   and. > @
     eq.
-      TRUE
+      1231
       TRUE.as-hash
     eq.
-      FALSE
+      1237
       FALSE.as-hash
