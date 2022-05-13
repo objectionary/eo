@@ -34,17 +34,6 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "char.as-hash")
 public class  EOchar$EOas_hash extends PhDefault {
 
-    public static Long hash(Character v) {
-        long value = Character.getNumericValue(v);
-        long res = 1L;
-        long inv = (1L << 63L) - 1;
-        for (int i = 0; i < 8; ++i) {
-            value *= value;
-            res += value ^ inv;
-        }
-        return res;
-    }
-
     public EOchar$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
