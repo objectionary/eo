@@ -19,8 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Java ${{ matrix.java }}
-        uses: actions/setup-java@v1
+      - uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
       - uses: actions/cache@v1
@@ -29,5 +28,4 @@ jobs:
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
-      - name: Test
-        run: mvn clean test integration-test --errors --batch-mode
+      - run: mvn clean test integration-test --errors --batch-mode
