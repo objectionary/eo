@@ -134,3 +134,8 @@
       c
     """
     "a\n b\n  c"
+
+[] > similar-strings-generate-similar-hashes
+  eq. > @
+    "hello world".as-hash
+    "hello world".as-hash
