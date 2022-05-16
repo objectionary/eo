@@ -222,3 +222,18 @@
   eq. > @
     42.as-bytes
     42
+
+[] > xor-3-6
+  eq. > @
+    3.xor 6
+    5
+
+[] > left-1-2
+  eq. > @
+    1.left 2
+    4
+
+[] > right-8-2
+  eq. > @
+    8.right 2
+    2

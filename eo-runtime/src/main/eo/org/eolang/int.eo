@@ -24,6 +24,27 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > int
+
+  [x] > xor
+    as-int. > @
+      xor.
+        ^.as-bytes
+        x.as-bytes
+
+  # Calculate bitwise left shift
+  [x] > left
+    as-int. > @
+      left.
+        ^.as-bytes
+        x.as-bytes
+
+  # Calculate bitwise right shift
+  [x] > right
+    as-int. > @
+      right.
+        ^.as-bytes
+        x.as-bytes
+
   # Tests that $ = x
   [x] > eq
     eq. > @
