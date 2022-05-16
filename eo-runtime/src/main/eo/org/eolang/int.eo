@@ -36,14 +36,14 @@
     as-int. > @
       left.
         ^.as-bytes
-        x.as-bytes
+        x
 
   # Calculate bitwise right shift
   [x] > right
     as-int. > @
       right.
         ^.as-bytes
-        x.as-bytes
+        x
 
   # Tests that $ = x
   [x] > eq
