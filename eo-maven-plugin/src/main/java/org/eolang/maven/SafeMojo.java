@@ -68,9 +68,13 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * File with foreign "tojos".
-     * @checkstyle VisibilityModifierCheck (5 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
      */
-    @Parameter(required = true, defaultValue = "${project.build.directory}/eo-foreign.csv")
+    @Parameter(
+        property = "eo.foreign",
+        required = true,
+        defaultValue = "${project.build.directory}/eo-foreign.csv"
+    )
     protected File foreign;
 
     /**
@@ -79,22 +83,26 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    @Parameter(required = true, defaultValue = "csv")
+    @Parameter(property = "eo.foreignFormat", required = true, defaultValue = "csv")
     protected String foreignFormat = "csv";
 
     /**
      * Target directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
      */
-    @Parameter(required = true, defaultValue = "${project.build.directory}/eo")
+    @Parameter(
+        property = "eo.targetDir",
+        required = true,
+        defaultValue = "${project.build.directory}/eo"
+    )
     protected File targetDir;
 
     /**
      * Current scope (either "compile" or "test").
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter
+    @Parameter(property = "eo.scope")
     protected String scope = "compile";
 
     @Override

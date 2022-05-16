@@ -68,7 +68,7 @@ public final class ResolveMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
     private Boolean skipZeroVersions;
 
     /**
@@ -76,7 +76,7 @@ public final class ResolveMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.12.0
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
 
     /**
