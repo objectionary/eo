@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -66,6 +65,7 @@ public final class RegisterMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.sourcesDir",
         required = true,
         defaultValue = "${project.basedir}/src/main/eo"
     )
@@ -76,7 +76,13 @@ public final class RegisterMojo extends SafeMojo {
      * in the {@code &lt;includeSources&gt;} directory, which can be
      * pretty global (or even a root one).
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (15 lines)
+     * @todo #636:30min Here, the "property" attribute of the @Parameter
+     *  annotation is not set. If we set it, in order to enable configuration
+     *  through command line arguments, the default value won't be set.
+     *  I don't know how to fix this. Let's investigate what is the right
+     *  way according to Maven traditions. If we fix this, let's also
+     *  fix "excludeSources" here and "include/excludeBinaries" in PlaceMojo.
      */
     @Parameter
     private Set<String> includeSources = new SetOf<>("**.eo");
@@ -89,7 +95,7 @@ public final class RegisterMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> excludeSources = new HashSet<>(0);
+    private Set<String> excludeSources = new SetOf<>();
 
     @Override
     public void exec() throws IOException {
@@ -110,9 +116,10 @@ public final class RegisterMojo extends SafeMojo {
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(
-            this, "Registered %d EO sources from %s to %s",
+            this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
             sources.size(), Save.rel(this.sourcesDir.toPath()),
-            Save.rel(this.foreign.toPath())
+            Save.rel(this.foreign.toPath()),
+            this.includeSources, this.excludeSources
         );
     }
 

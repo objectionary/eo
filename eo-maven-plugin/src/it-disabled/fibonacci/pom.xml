@@ -27,14 +27,13 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.50.9</version>
+    <version>0.57.2</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
   <version>@project.version@</version>
   <packaging>jar</packaging>
   <name>Fibonacci Numbers Calculator</name>
-  <url>https://www.eolang.org/</url>
   <build>
     <plugins>
       <plugin>

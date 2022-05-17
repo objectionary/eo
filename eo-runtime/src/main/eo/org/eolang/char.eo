@@ -37,3 +37,6 @@
   # Converts char to string
   [] > as-string
     sprintf "%c" ^ > @
+
+  # Converts this to hash
+  [] > as-hash /int

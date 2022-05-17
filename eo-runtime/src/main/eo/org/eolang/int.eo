@@ -108,6 +108,9 @@
   # Converts this to bytes
   [] > as-bytes /bytes
 
+  # Converts this to hash
+  [] > as-hash /int
+
   # Absolute value of $ (i.e., with no sign)
   [] > abs
     if. > @

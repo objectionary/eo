@@ -62,7 +62,7 @@ public final class PullMojo extends SafeMojo {
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(required = true, defaultValue = "master")
+    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
     private String hash = "master";
 
     /**
@@ -70,7 +70,7 @@ public final class PullMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
 
     /**
