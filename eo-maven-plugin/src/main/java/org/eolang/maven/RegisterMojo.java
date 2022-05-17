@@ -76,7 +76,7 @@ public final class RegisterMojo extends SafeMojo {
      * in the {@code &lt;includeSources&gt;} directory, which can be
      * pretty global (or even a root one).
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (15 lines)
      * @todo #636:30min Here, the "property" attribute of the @Parameter
      *  annotation is not set. If we set it, in order to enable configuration
      *  through command line arguments, the default value won't be set.
