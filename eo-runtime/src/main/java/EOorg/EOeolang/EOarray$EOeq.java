@@ -36,7 +36,7 @@ import org.eolang.XmirObject;
 /**
  * ARRAY.EQ.
  *
- * @since 1.0
+ * @since 0.23
  */
 @XmirObject(oname = "array.eq")
 public class EOarray$EOeq extends PhDefault {

@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 /**
  * Test case for {@link EOarray}.
  *
- * @since 0.1
+ * @since 0.23
  */
 public final class EOarrayEOeqTest {
 
