@@ -58,3 +58,6 @@
     ^.mapi > @
       [x i]
         &.f x > @
+
+  # Equal to another object?
+  [x] > eq /bool
