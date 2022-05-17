@@ -69,6 +69,7 @@ public final class CopyMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.sourcesDir",
         required = true,
         defaultValue = "${project.basedir}/src/main/eo"
     )
@@ -79,6 +80,7 @@ public final class CopyMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.outputDir",
         required = true,
         defaultValue = "${project.build.outputDirectory}"
     )
@@ -88,7 +90,7 @@ public final class CopyMojo extends SafeMojo {
      * The version to use for 0.0.0 replacements.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(required = true, defaultValue = "${project.version}")
+    @Parameter(property = "eo.version", required = true, defaultValue = "${project.version}")
     private String version;
 
     @Override
