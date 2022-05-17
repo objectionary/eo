@@ -60,4 +60,26 @@
         &.f x > @
 
   # Equal to another object?
-  [x] > eq /bool
+  [x] > eq
+    memory > cnt
+    if. > @
+      eq.
+        ^.length
+        x.length
+      seq
+        ^ > origin
+        x > cmp
+        cnt.write 0
+        while.
+          and.
+            cnt.less (origin.length)
+            cnt.geq 0
+          [i]
+            if. > @
+              eq.
+                origin.get i
+                cmp.get i
+              cnt.write (i.add 1)
+              cnt.write -1
+        cnt.greater 0
+      FALSE
