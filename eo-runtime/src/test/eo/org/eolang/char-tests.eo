@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 +junit
 
 [] > compares-two-chars
@@ -65,3 +67,18 @@
   eq. > @
     'Ф'
     04-24
+
+[] > as-hash-equals-to-similar-values
+  eq. > @
+    'a'.as-hash
+    'a'.as-hash
+
+[] > print-char-hashes
+  seq > @
+    stdout
+      sprintf
+        "a, b, c hashes = %d %d %d\n"
+        'a'.as-hash
+        'b'.as-hash
+        'c'.as-hash
+    TRUE
