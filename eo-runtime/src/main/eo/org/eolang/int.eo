@@ -106,7 +106,44 @@
   [x] > div /int
 
   # Calculate MOD
-  [x] > mod /int
+  [x] > mod
+
+    [] > check-divisor
+      x.eq 0 > @
+
+    [] > check-divisor-sign
+      if. > @
+        x.less 0
+        x.neg
+        x
+
+    [] > check-int-sign
+      if. > @
+        ^.less 0
+        ^.neg
+        ^
+
+    if. > @
+      check-divisor
+      error "can't divide by zero"
+      seq
+        check-divisor-sign > d
+        check-int-sign > n
+        memory > product
+        memory > cnt
+        product.write 0
+        cnt.write 1
+        while.
+          product.leq n
+          [i]
+            seq > @
+              product.write
+                d.mul cnt
+              cnt.write
+                i.add 1
+        sub.
+          n
+          product.sub d
 
   # Make it power x
   [x] > pow /int
