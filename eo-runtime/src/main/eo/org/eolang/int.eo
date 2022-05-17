@@ -31,6 +31,18 @@
         ^.as-bytes
         x.as-bytes
 
+  [x] > or
+    as-int. > @
+      or.
+        ^.as-bytes
+        x.as-bytes
+
+  [x] > and
+    as-int. > @
+      and.
+        ^.as-bytes
+        x.as-bytes
+
   # Calculate bitwise left shift
   [x] > left
     as-int. > @
