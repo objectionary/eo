@@ -255,3 +255,13 @@
         42.as-hash
         43.as-hash
     TRUE
+
+[] > or-1-2
+  eq. > @
+    1.or 2
+    3
+
+[] > and-3-6
+  eq. > @
+    3.and 6
+    2
