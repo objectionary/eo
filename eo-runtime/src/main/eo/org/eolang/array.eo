@@ -61,25 +61,22 @@
 
   # Equal to another object?
   [x] > eq
-    memory > cnt
+    ^ > copy
     if. > @
       eq.
-        ^.length
+        copy.length
         x.length
-      seq
-        ^ > origin
-        x > cmp
-        cnt.write 0
-        while.
-          and.
-            cnt.less (origin.length)
-            cnt.geq 0
-          [i]
+      get.
+        copy.mapi
+          [e i]
+            [idx] > cond
+              eq. > @
+                copy.get idx
+                x.get idx
             if. > @
-              eq.
-                origin.get i
-                cmp.get i
-              cnt.write (i.add 1)
-              cnt.write -1
-        cnt.greater 0
+              i.less 1
+              cond i
+              cond
+                i.sub 1
+        copy.length.sub 1
       FALSE

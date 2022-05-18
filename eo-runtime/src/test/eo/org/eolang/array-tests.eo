@@ -200,3 +200,12 @@
         13.as-float
         's'
         "bbt"
+
+# nested array equal object should works
+[] > nested-array-eq-should-works
+  * 1 "2" 3.0 > a
+  * 1 "2" 3.as-float > b
+  eq. > @
+    * 'w' a
+    * 'w' b
+
