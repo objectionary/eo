@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.0
++rt jvm org.eolang:eo-runtime:0.23.2
 
 [] > string
   # Is true if both objects are equal
@@ -51,3 +51,6 @@
   # Joins an array of strings, using current string
   # as a delimiter
   [items] > joined /string
+
+  # Converts this to hash
+  [] > as-hash /int

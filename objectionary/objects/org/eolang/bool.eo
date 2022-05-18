@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.0
++rt jvm org.eolang:eo-runtime:0.23.2
 
 [] > bool
   # Equal to another object?
@@ -34,7 +34,10 @@
   [t f] > if /?
 
   # NOT
-  [] > not /bool
+  [] > not
+    eq. > @
+      ^
+      FALSE
 
   # AND
   [x...] > and /bool
@@ -55,3 +58,5 @@
       01-
       00-
 
+  # Converts this to hash
+  [] > as-hash /int

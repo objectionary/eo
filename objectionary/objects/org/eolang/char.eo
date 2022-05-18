@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.0
++rt jvm org.eolang:eo-runtime:0.23.2
 +alias org.eolang.txt.sprintf
 
 [data] > char
@@ -37,3 +37,6 @@
   # Converts char to string
   [] > as-string
     sprintf "%c" ^ > @
+
+  # Converts this to hash
+  [] > as-hash /int

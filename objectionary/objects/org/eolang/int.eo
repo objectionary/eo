@@ -21,9 +21,42 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.0
++rt jvm org.eolang:eo-runtime:0.23.2
 
 [] > int
+
+  [x] > xor
+    as-int. > @
+      xor.
+        ^.as-bytes
+        x.as-bytes
+
+  [x] > or
+    as-int. > @
+      or.
+        ^.as-bytes
+        x.as-bytes
+
+  [x] > and
+    as-int. > @
+      and.
+        ^.as-bytes
+        x.as-bytes
+
+  # Calculate bitwise left shift
+  [x] > left
+    as-int. > @
+      left.
+        ^.as-bytes
+        x
+
+  # Calculate bitwise right shift
+  [x] > right
+    as-int. > @
+      right.
+        ^.as-bytes
+        x
+
   # Tests that $ = x
   [x] > eq
     eq. > @
@@ -86,6 +119,9 @@
 
   # Converts this to bytes
   [] > as-bytes /bytes
+
+  # Converts this to hash
+  [] > as-hash /int
 
   # Absolute value of $ (i.e., with no sign)
   [] > abs

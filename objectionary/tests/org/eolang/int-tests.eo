@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 +junit
 
 [] > converts-to-string
@@ -222,3 +224,44 @@
   eq. > @
     42.as-bytes
     42
+
+[] > xor-3-6
+  eq. > @
+    3.xor 6
+    5
+
+[] > left-1-2
+  eq. > @
+    1.left 2
+    4
+
+[] > right-8-2
+  eq. > @
+    8.right 2
+    2
+
+[] > as-hash-equals-to-similar-values
+  eq. > @
+    42.as-hash
+    42.as-hash
+
+# We can have collisions, so in this test just check if values not similar
+[] > as-hash-have-different-hashes
+  seq > @
+    stdout
+      sprintf
+        "%d %d %d\n"
+        41.as-hash
+        42.as-hash
+        43.as-hash
+    TRUE
+
+[] > or-1-2
+  eq. > @
+    1.or 2
+    3
+
+[] > and-3-6
+  eq. > @
+    3.and 6
+    2

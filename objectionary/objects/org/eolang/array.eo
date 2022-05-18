@@ -21,12 +21,15 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.0
++rt jvm org.eolang:eo-runtime:0.23.2
 
 [] > array
 
   # Is it empty?
-  [] > is-empty /bool
+  [] > is-empty
+    eq. > @
+      ^.length
+      0
 
   # Obtain the length of the array.
   [] > length /int

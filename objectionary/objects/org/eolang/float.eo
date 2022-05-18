@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.0
++rt jvm org.eolang:eo-runtime:0.23.2
 
 [] > float
   # Tests that $ = x
@@ -107,3 +107,6 @@
 
   # Converts this to string
   [] > as-string /string
+
+  # Converts this to hash
+  [] > as-hash /int

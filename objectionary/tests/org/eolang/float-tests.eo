@@ -262,3 +262,8 @@
   eq. > @
     3.1415926.as-bytes
     3.1415926
+
+[] > similar-values-have-similar-hash
+  eq. > @
+    (3.1415926).as-hash
+    (3.1415926).as-hash
