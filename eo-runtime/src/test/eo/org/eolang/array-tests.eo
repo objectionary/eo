@@ -159,3 +159,53 @@
   * > xs
     [f] (f.as-int > @)
   xs.is-empty.not > @
+
+# array equal to another array
+[] > array-equal-to-another-array
+  eq. > @
+    *
+      1
+      "str"
+      'f'
+      22.0
+      "друг".as-bytes
+      TRUE
+    *
+      1
+      "str"
+      'f'
+      (11.mul 2).as-float
+      D0-B4-D1-80-D1-83-D0-B3
+      FALSE.not
+
+# array not equal to another object by length
+[] > array-not-equal-to-another-array-by-length
+  not. > @
+    eq.
+      * 1 2 3
+      * 1 2 3 4
+
+# check that varargs eq works
+[] > varargs-eq-should-works
+  [args...] > a
+  [args...] > b
+  eq. > @
+    args.
+      a
+        13.as-float
+        's'
+        "bbt"
+    args.
+      b
+        13.as-float
+        's'
+        "bbt"
+
+# nested array equal object should works
+[] > nested-array-eq-should-works
+  * 1 "2" 3.0 > a
+  * 1 "2" 3.as-float > b
+  eq. > @
+    * 'w' a
+    * 'w' b
+
