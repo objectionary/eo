@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,7 @@ public final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
+            .with("includeSources", new SetOf<>("**.eo"))
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("outputDir", temp.resolve("out").toFile())

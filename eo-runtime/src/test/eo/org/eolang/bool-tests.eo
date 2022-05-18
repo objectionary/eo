@@ -144,3 +144,12 @@
           m.write (m.sub 1)
           stdout (sprintf "%d\n" m)
     TRUE
+
+[] > hash-equals-the-value
+  and. > @
+    eq.
+      1231
+      TRUE.as-hash
+    eq.
+      1237
+      FALSE.as-hash

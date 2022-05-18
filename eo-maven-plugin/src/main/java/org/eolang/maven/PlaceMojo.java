@@ -57,6 +57,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.outputDir",
         required = true,
         defaultValue = "${project.build.outputDirectory}"
     )
@@ -69,6 +70,7 @@ public final class PlaceMojo extends SafeMojo {
      * @since 0.11.0
      */
     @Parameter(
+        property = "eo.placed",
         required = true,
         defaultValue = "${project.build.directory}/eo-placed.csv"
     )
@@ -80,7 +82,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    @Parameter(required = true, defaultValue = "csv")
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
     private String placedFormat = "csv";
 
     /**

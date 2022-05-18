@@ -89,6 +89,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.outputDir",
         required = true,
         defaultValue = "${project.build.outputDirectory}"
     )
@@ -111,7 +112,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
 
     /**
@@ -119,7 +120,7 @@ public final class AssembleMojo extends SafeMojo {
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(required = true, defaultValue = "master")
+    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
     private String hash = "master";
 
     /**
@@ -129,6 +130,7 @@ public final class AssembleMojo extends SafeMojo {
      * @since 0.11.0
      */
     @Parameter(
+        property = "eo.placed",
         required = true,
         defaultValue = "${project.build.directory}/eo-placed.csv"
     )
@@ -140,7 +142,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(required = true, defaultValue = "csv")
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
     private String placedFormat = "csv";
 
     /**
@@ -148,7 +150,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
     private boolean skipZeroVersions;
 
     /**
@@ -156,7 +158,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.12.0
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
 
     @Override

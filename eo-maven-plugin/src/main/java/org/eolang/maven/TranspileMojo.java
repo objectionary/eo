@@ -64,6 +64,7 @@ public final class TranspileMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.generatedDir",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources"
     )
@@ -74,7 +75,7 @@ public final class TranspileMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter
+    @Parameter(property = "eo.addSourcesRoot")
     @SuppressWarnings("PMD.ImmutableField")
     private boolean addSourcesRoot = true;
 
@@ -83,7 +84,7 @@ public final class TranspileMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter
+    @Parameter(property = "eo.addTestSourcesRoot")
     private boolean addTestSourcesRoot;
 
     @Override
