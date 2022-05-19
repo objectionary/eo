@@ -36,7 +36,7 @@
     0.0
     (angle 0.0).sin
 
-[] > sin-pi
+[] > sin-pi-as-int
   eq. > @
     0
     as-int.
@@ -45,11 +45,10 @@
 
 [] > sin-pi-div-two
   eq. > @
-    1
-    as-int.
-      sin.
-        angle
-          pi.div 2.0
+    1.0
+    sin.
+      angle
+        pi.div 2.0
 
 [] > cos-zero
   eq. > @
@@ -63,7 +62,7 @@
     cos.
       angle pi
 
-[] > cos-pi-div-two
+[] > cos-pi-div-two-as-int
   eq. > @
     0
     (angle (pi.div 2.0)).cos.as-int
@@ -74,24 +73,19 @@
     tan.
       angle 0.0
 
-[] > tan-pi
+[] > tan-pi-as-int
   eq. > @
     0
     as-int.
       tan.
         angle pi
 
-[] > ctan-zero
+[] > ctan-zero-returns-nan
   eq. > @
-    nan.<
-    (angle 0.0).ctan.<
+    nan.as-bytes
+    (angle 0.0).ctan.as-bytes
 
-[] > ctan-pi
-  eq. > @
-    nan.<
-    (angle pi).ctan.<
-
-[] > ctan-pi-div-two
+[] > ctan-pi-div-two-as-int
   eq. > @
     0
     (angle (pi.div 2.0)).ctan.as-int

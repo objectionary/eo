@@ -70,9 +70,9 @@
     (nan.sub nan).msg.eq "You can't manipulate with NaN"
 
 [] > nan-signum
-  and. > @
-    nan.signum.msg.eq "You can't manipulate with NaN"
-    nan.signum.msg.eq "You can't manipulate with NaN"
+  eq. > @
+    "You can't manipulate with NaN"
+    nan.signum.msg
 
 [] > nan-pow
   and. > @
@@ -80,14 +80,14 @@
     (nan.pow nan).msg.eq "You can't manipulate with NaN"
 
 [] > nan-abs
-  and. > @
-    nan.abs.msg.eq "You can't manipulate with NaN"
-    nan.abs.msg.eq "You can't manipulate with NaN"
+  eq. > @
+    "You can't manipulate with NaN"
+    nan.abs.msg
 
 [] > nan-as-bytes
   eq. > @
-    "You can't convert NaN to bytes"
-    nan.as-bytes.msg
+    7F-C0-00-00
+    nan.as-bytes
 
 [] > nan-as-int
   eq. > @

@@ -25,11 +25,13 @@
 
 # Not a number
 [] > nan
-  3.14159265 > @
-
   # Tests that $ = x
   [x] > eq
     FALSE > @
+
+  # Tests that $ ≠ x
+  [x] > neq
+    TRUE > @
 
   # Tests that $ < x
   [x] > less
@@ -57,13 +59,28 @@
     [] > @
       "You can't manipulate with NaN" > msg
 
+  # Negation of $
+  [] > neg
+    [] > @
+      "You can't manipulate with NaN" > msg
+
   # Sign of $ (-1.0, 0.0, or 1.0)
   [] > signum
     [] > @
       "You can't manipulate with NaN" > msg
 
+  # Difference between $ and x
+  [x] > sub
+    [] > @
+      "You can't manipulate with NaN" > msg
+
   # x'th power of $
   [x] > pow
+    [] > @
+      "You can't manipulate with NaN" > msg
+
+  # Quotient of the division of $ by x
+  [x] > div
     [] > @
       "You can't manipulate with NaN" > msg
 
@@ -74,8 +91,7 @@
 
   # Converts this to bytes
   [] > as-bytes
-    [] > @
-      "You can't convert NaN to bytes" > msg
+    7F-C0-00-00 > @
 
   # Converts this to int
   [] > as-int

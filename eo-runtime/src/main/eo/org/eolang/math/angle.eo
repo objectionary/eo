@@ -39,7 +39,7 @@
   [] > tan
     ^.cos > cosine!
     if. > @
-      cosine.as-int.eq 0
+      cosine.eq 0.0
       nan
       div.
         ^.sin
@@ -49,7 +49,7 @@
   [] > ctan
     ^.sin > sine!
     if. > @
-      sine.as-int.eq 0
+      sine.eq 0.0
       nan
       div.
         ^.cos
