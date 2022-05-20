@@ -83,17 +83,12 @@
       eq.
         copy.length
         x.length
-      get.
-        copy.mapi
-          [e i]
-            [idx] > cond
-              eq. > @
-                copy.get idx
-                x.get idx
-            if. > @
-              i.less 1
-              cond i
-              cond
-                i.sub 1
-        copy.length.sub 1
+      copy.reducei
+        TRUE
+        [a i el]
+          and. > @
+            a
+            eq.
+              el
+              x.get i
       FALSE
