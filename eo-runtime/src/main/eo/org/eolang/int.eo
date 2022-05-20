@@ -109,7 +109,15 @@
   [x] > mod /int
 
   # Make it power x
-  [x] > pow /int
+  [x] > pow
+
+    [b p] > f
+      if. > @
+        p.eq 0
+        1
+        b.mul (f b (p.sub 1))
+
+    f ^ x > @
 
   # Converts this to float
   [] > as-float /float
