@@ -209,3 +209,28 @@
     * 'w' a
     * 'w' b
 
+# reduce with index test
+[] > reduce-with-index-test
+  * 2 2 > src
+  eq. > @
+    reducei.
+      * 1 1
+      0
+      [a i x]
+        add. > @
+          x
+          a.add
+            src.get i
+    6
+
+# reduce without index test
+[] > reduce-without-index-test
+  eq. > @
+    reduce.
+      * 1 2 3 4
+      -1
+      [a x]
+        mul. > @
+          a
+          x
+    -24
