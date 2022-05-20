@@ -39,7 +39,7 @@ public final class PhMethod extends PhOnce {
      */
     public PhMethod(final Phi phi, final String mtd) {
         super(
-            () -> phi.attr(mtd).get(),
+            () -> new PhImmovable(phi.attr(mtd).get()),
             () -> String.format("%s.%s", phi, mtd),
             () -> String.format("%s.%s", phi.φTerm(), mtd)
         );

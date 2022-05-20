@@ -22,39 +22,67 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * REDUCE.
+ * An object that ignores all moves.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "array.reduce")
-public class EOarray$EOreduce extends PhDefault {
+final class PhImmovable implements Phi {
 
-    public EOarray$EOreduce(final Phi sigma) {
-        super(sigma);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            Phi out = rho.attr("a").get();
-            for (final Phi arg : array) {
-                final Phi after = rho.attr("f").get().copy();
-                after.move(rho);
-                after.attr(0).put(out);
-                after.attr(1).put(arg);
-                out = after;
-            }
-            return out;
-        }));
+    /**
+     * The original.
+     */
+    private final Phi origin;
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     */
+    PhImmovable(final Phi phi) {
+        this.origin = phi;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public Phi copy() {
+        return new PhImmovable(this.origin.copy());
+    }
+
+    @Override
+    public void move(final Phi rho) {
+        // ignore it
+    }
+
+    @Override
+    public Attr attr(final int pos) {
+        return this.origin.attr(pos);
+    }
+
+    @Override
+    public Attr attr(final String attr) {
+        return this.origin.attr(attr);
     }
 
 }

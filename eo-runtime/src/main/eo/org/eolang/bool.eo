@@ -34,7 +34,10 @@
   [t f] > if /?
 
   # NOT
-  [] > not /bool
+  [] > not
+    eq. > @
+      ^
+      FALSE
 
   # AND
   [x...] > and /bool

@@ -25,6 +25,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -32,18 +33,29 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * EMPTY.
+ * REDUCE.
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.is-empty")
-public class EOarray$EOis_empty extends PhDefault {
+@XmirObject(oname = "array.reducei")
+public class EOarray$EOreducei extends PhDefault {
 
-    public EOarray$EOis_empty(final Phi sigma) {
+    public EOarray$EOreducei(final Phi sigma) {
         super(sigma);
+        this.add("a", new AtFree());
+        this.add("f", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi[] array = new Param(rho).strong(Phi[].class);
-            return new Data.ToPhi(array.length == 0);
+            Phi out = rho.attr("a").get();
+            for (int idx = 0; idx < array.length; ++idx) {
+                final Phi after = rho.attr("f").get().copy();
+                after.move(rho);
+                after.attr(0).put(out);
+                after.attr(1).put(new Data.ToPhi((long)idx));
+                after.attr(2).put(array[idx]);
+                out = after;
+            }
+            return out;
         }));
     }
 
