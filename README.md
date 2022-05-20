@@ -62,10 +62,10 @@ Here is a full list of papers related to EO (in reverse chronological order):
     [Formalizing 𝜑-calculus: a purely object-oriented calculus of decorated objects](https://arxiv.org/abs/2204.07454),
     2022
   * Yegor Bugayenko<br/>
-    [EOLANG and phi-calculus](https://arxiv.org/abs/2111.13384), 
+    [Reducing Programs to Objects](https://arxiv.org/abs/2112.11988),
     2021
   * Yegor Bugayenko<br/>
-    [Reducing Programs to Objects](https://arxiv.org/abs/2112.11988),
+    [EOLANG and phi-calculus](https://arxiv.org/abs/2111.13384), 
     2021
 
 ## Quick Start
