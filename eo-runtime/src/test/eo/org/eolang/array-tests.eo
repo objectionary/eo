@@ -234,3 +234,13 @@
           a
           x
     -24
+
+[] > appends-in-seq
+  [a] > foo
+    seq > @
+      a.append "hi" > t
+      t
+  seq > @
+    foo
+      * 1 2 3
+    TRUE
