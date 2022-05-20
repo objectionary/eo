@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.2
++rt jvm org.eolang:eo-runtime:0.23.3
 
 [] > array
 
@@ -61,3 +61,25 @@
     ^.mapi > @
       [x i]
         &.f x > @
+
+  # Equal to another object?
+  [x] > eq
+    ^ > copy
+    if. > @
+      eq.
+        copy.length
+        x.length
+      get.
+        copy.mapi
+          [e i]
+            [idx] > cond
+              eq. > @
+                copy.get idx
+                x.get idx
+            if. > @
+              i.less 1
+              cond i
+              cond
+                i.sub 1
+        copy.length.sub 1
+      FALSE

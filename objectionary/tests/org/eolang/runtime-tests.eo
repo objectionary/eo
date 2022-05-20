@@ -230,3 +230,12 @@
       "Hello, world!"
     m.write (m.sub 2)
     m.eq 40
+
+[] > extract-attribute-from-decoratee
+  [foo] > return
+  [] > a
+    return > @
+      add.
+        42
+        1
+  a.foo.eq 43 > @
