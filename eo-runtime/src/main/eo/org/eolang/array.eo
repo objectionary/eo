@@ -22,7 +22,6 @@
 
 +package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
-+alias org.eolang.gray.goto
 
 [] > array
 
@@ -84,18 +83,12 @@
       eq.
         copy.length
         x.length
-      goto
-        [g]
-          copy.reducei > @
-            TRUE
-            [a i el]
-              and. > cond
-                a
-                eq.
-                  el
-                  x.get i
-              if. > @
-                cond
-                cond
-                g.forward FALSE
+      copy.reducei
+        TRUE
+        [a i el]
+          and. > @
+            a
+            eq.
+              el
+              x.get i
       FALSE
