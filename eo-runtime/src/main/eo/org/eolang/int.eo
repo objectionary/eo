@@ -120,7 +120,7 @@
 
     if. > @
       check-divisor
-      error "div by zero"
+      error "mod by zero"
       if.
         check-dividend
         0
