@@ -23,6 +23,7 @@
 +package org.eolang
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > converts-to-string
@@ -265,3 +266,23 @@
   eq. > @
     3.and 6
     2
+
+[] > pow-test
+  assert-that > @
+    (2.pow 4)
+    $.equal-to 16
+
+[] > pow-x-is-zero
+  assert-that > @
+    (2.pow 0)
+    $.equal-to 1
+
+[] > pow-x-is-negative
+  assert-that > @
+    (984782.pow -12341)
+    $.equal-to 0
+
+[] > power-of-two
+  assert-that > @
+    (3.pow 2)
+    $.equal-to 9
