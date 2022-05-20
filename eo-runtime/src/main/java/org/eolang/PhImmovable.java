@@ -25,24 +25,64 @@
 package org.eolang;
 
 /**
- * A method-calling object.
+ * An object that ignores all moves.
  *
- * @since 0.1
+ * @since 0.23
  */
-public final class PhMethod extends PhOnce {
+final class PhImmovable implements Phi {
+
+    /**
+     * The original.
+     */
+    private final Phi origin;
 
     /**
      * Ctor.
      *
      * @param phi The object
-     * @param mtd The name of method
      */
-    public PhMethod(final Phi phi, final String mtd) {
-        super(
-            () -> new PhImmovable(phi.attr(mtd).get()),
-            () -> String.format("%s.%s", phi, mtd),
-            () -> String.format("%s.%s", phi.φTerm(), mtd)
-        );
+    PhImmovable(final Phi phi) {
+        this.origin = phi;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public Phi copy() {
+        return new PhImmovable(this.origin.copy());
+    }
+
+    @Override
+    public void move(final Phi rho) {
+        // ignore it
+    }
+
+    @Override
+    public Attr attr(final int pos) {
+        return this.origin.attr(pos);
+    }
+
+    @Override
+    public Attr attr(final String attr) {
+        return this.origin.attr(attr);
     }
 
 }
