@@ -93,11 +93,11 @@
     $.equal-to TRUE
 
 [] > print-char-hashes
-  assert-that > @
+  seq > @
     stdout
       sprintf
         "a, b, c hashes = %d %d %d\n"
         'a'.as-hash
         'b'.as-hash
         'c'.as-hash
-    $.anything
+    TRUE
