@@ -43,10 +43,8 @@
 
 [] > char-to-string
   assert-that > @
-    eq.
-      "A"
-      'A'.as-string
-    $.equal-to TRUE
+    'A'.as-string
+    $.equal-to "A"
 
 [] > char-to-char-compares
   assert-that > @
@@ -57,40 +55,31 @@
 
 [] > to-bytes-and-backwards-char
   assert-that > @
-    eq.
-      'Ф'
-      as-char.
-        as-bytes.
-          'Ф'
-    $.equal-to TRUE
+    as-char.
+      as-bytes.
+        'Ф'
+    $.equal-to 'Ф'
 
 [] > supports-escape-sequences-line-break
   assert-that > @
-    eq.
-      '\n'
-      '\012'
-    $.equal-to TRUE
+    '\n'
+    $.equal-to '\012'
 
 [] > supports-escape-sequences-unicode
   assert-that > @
-    eq.
-      '\u0424'
-      'Ф'
-    $.equal-to TRUE
+    '\u0424'
+    $.equal-to 'Ф'
 
 [] > char-equals-to-bytes
   assert-that > @
-    eq.
-      'Ф'
-      04-24
-    $.equal-to TRUE
+    'Ф'
+    $.equal-to 04-24
 
 [] > as-hash-equals-to-similar-values
   assert-that > @
-    eq.
+    'a'.as-hash
+    $.equal-to
       'a'.as-hash
-      'a'.as-hash
-    $.equal-to TRUE
 
 [] > print-char-hashes
   seq > @

@@ -27,40 +27,32 @@
 [] > two-random-numbers-without-const
   random > r
   assert-that > @
-    eq.
-      r
-      r
-    $.equal-to FALSE
+    r
+    $.not
+      $.equal-to r
 
 [] > two-random-numbers-with-const
   random > r!
   assert-that > @
-    eq.
-      r
-      r
-    $.equal-to TRUE
+    r
+    $.equal-to r
 
 [] > two-random-numbers-with-phi
   random.@ > r
   assert-that > @
-    eq.
-      r
-      r
-    $.equal-to TRUE
+    r
+    $.equal-to r
 
 [] > two-random-numbers-with-increment-with-const
   random.add 3.1416 > r!
   assert-that > @
-    eq.
-      r
-      r
-    $.equal-to TRUE
+    r
+    $.equal-to r
 
 [] > two-random-numbers-with-increment
   random.add 3.1416 > r
   assert-that > @
-    eq.
-      r
-      r
-    $.equal-to FALSE
+    r
+    $.not
+      $.equal-to r
 
