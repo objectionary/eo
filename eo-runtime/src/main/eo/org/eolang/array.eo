@@ -80,7 +80,7 @@
     ^.reducei > @
       *
       [a i x]
-        append. > @
+        with. > @
           a
           &.f x i
 
