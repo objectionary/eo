@@ -33,14 +33,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * APPEND.
+ * WITH.
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.append")
-public class EOarray$EOappend extends PhDefault {
+@XmirObject(oname = "array.with")
+public class EOarray$EOwith extends PhDefault {
 
-    public EOarray$EOappend(final Phi sigma) {
+    public EOarray$EOwith(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
