@@ -40,7 +40,17 @@
 
   # Create a new array with this element added to
   # the end of it.
-  [x] > append /array
+  [x] > with /array
+
+  # Create a new array without the i-th element
+  [i] > without
+    ^.reducei > @
+      *
+      [a idx x]
+        if. > @
+          idx.eq i
+          a
+          a.with x
 
   # Reduce with index from start "a" using the function "f".
   # Here "f" must be an abstract

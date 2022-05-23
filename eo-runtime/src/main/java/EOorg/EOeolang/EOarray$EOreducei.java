@@ -33,7 +33,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * REDUCE.
+ * REDUCEI.
  *
  * @since 1.0
  */
