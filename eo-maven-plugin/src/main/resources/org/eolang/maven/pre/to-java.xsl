@@ -583,13 +583,19 @@ SOFTWARE.
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Assertions.assertTrue(</xsl:text>
-    <xsl:value-of select="eo:eol(3 + $indent)"/>
-    <xsl:text>new Dataized(new </xsl:text>
+    <xsl:text>Object obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
-    <xsl:text>()).take(Boolean.class)</xsl:text>
+    <xsl:text>()).take();</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>);</xsl:text>
+    <xsl:text>if (obj instanceof String) {</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>  Assertions.fail(obj.toString());</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>} else {</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>  Assertions.assertTrue((Boolean) obj);</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>}</xsl:text>
   </xsl:template>
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
