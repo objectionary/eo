@@ -21,37 +21,46 @@
 # SOFTWARE.
 
 +package org.eolang
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > two-random-numbers-without-const
   random > r
-  not. > @
+  assert-that > @
     eq.
       r
       r
+    $.equal-to FALSE
 
 [] > two-random-numbers-with-const
   random > r!
-  eq. > @
-    r
-    r
-
-[] > two-random-numbers-with-phi
-  random.@ > r
-  eq. > @
-    r
-    r
-
-[] > two-random-numbers-with-increment-with-const
-  random.add 3.1416 > r!
-  eq. > @
-    r
-    r
-
-[] > two-random-numbers-with-increment
-  random.add 3.1416 > r
-  not. > @
+  assert-that > @
     eq.
       r
       r
+    $.equal-to TRUE
+
+[] > two-random-numbers-with-phi
+  random.@ > r
+  assert-that > @
+    eq.
+      r
+      r
+    $.equal-to TRUE
+
+[] > two-random-numbers-with-increment-with-const
+  random.add 3.1416 > r!
+  assert-that > @
+    eq.
+      r
+      r
+    $.equal-to TRUE
+
+[] > two-random-numbers-with-increment
+  random.add 3.1416 > r
+  assert-that > @
+    eq.
+      r
+      r
+    $.equal-to FALSE
 
