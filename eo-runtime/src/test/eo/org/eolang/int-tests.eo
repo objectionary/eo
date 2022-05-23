@@ -227,13 +227,13 @@
   dividend.mod divisor > remainder
   dividend.div divisor > quotient
   assert-that > @
-    dividend
+    add.
+      remainder
+      mul.
+        divisor
+        quotient
     $.equal-to
-      add.
-        remainder
-        mul.
-          divisor
-          quotient
+      dividend
 
 # Checks Euclid's division lemma
 # A = B * Q + R
@@ -265,70 +265,62 @@
 # Checks modulo: dividend < divisor
 [] > mod-dividend-less-than-divisor
   assert-that > @
-    0
-    $.equal-to
-      -1.mod 5
+    -1.mod 5
+    $.equal-to 0
 
 # Checks modulo by 1
 [] > mod-dividend-by-one
   assert-that > @
-    0
-    $.equal-to
-      133.mod 1
+    133.mod 1
+    $.equal-to 0
 
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend
   assert-that > @
-    dividend
+    dividend.div 1
     $.equal-to
-      dividend.div 1
+      dividend
 
 # Checks that div works properly with dividends greater than zero
 [] > div-for-dividend-greater-than-zero
   assert-that > @
-    16
-    $.equal-to
-      256.div 16
+    256.div 16
+    $.equal-to 16
 
 # Checks div with remainder
 [] > div-with-remainder
   assert-that > @
-    -2
-    $.equal-to (13.div -5)
+    13.div -5
+    $.equal-to -2
 
 # Checks that int.as-float works properly
 [] > as-float-works
   assert-that > @
-    -17.0
-    $.equal-to
-      17.neg.as-float
+    17.neg.as-float
+    $.equal-to -17.0
 
 [] > abs-positive
   assert-that > @
-    3
-    $.equal-to
-      3.abs
+    3.abs
+    $.equal-to 3
 
 [] > abs-negative
   assert-that > @
-    3
-    $.equal-to
-      -3.abs
+    -3.abs
+    $.equal-to 3
 
 [] > abs-zero
   assert-that > @
-    0
-    $.equal-to
-      0.abs
+    0.abs
+    $.equal-to 0
 
 [] > to-bytes-and-backwards
   assert-that > @
-    42
-    $.equal-to
-      as-int.
-        as-bytes.
-          42
+    as-int.
+      as-bytes.
+        42
+    $.equal-to 42
 
 [] > as-bytes-equals-to-int
   assert-that > @
