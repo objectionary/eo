@@ -23,62 +23,81 @@
 +package org.eolang
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > compares-two-chars
-  eq. > @
-    'x'
-    'x'
-
-[] > compares-two-different-types
-  not. > @
+  assert-that > @
     eq.
       'x'
-      42
+      'x'
+    $.equal-to TRUE
+
+[] > compares-two-different-types
+  assert-that > @
+    not.
+      eq.
+        'x'
+        42
+    $.equal-to TRUE
 
 [] > char-to-string
-  eq. > @
-    "A"
-    'A'.as-string
+  assert-that > @
+    eq.
+      "A"
+      'A'.as-string
+    $.equal-to TRUE
 
 [] > char-to-char-compares
-  eq. > @
-    'Ф'
-    'Ф'
+  assert-that > @
+    eq.
+      'Ф'
+      'Ф'
+    $.equal-to TRUE
 
 [] > to-bytes-and-backwards-char
-  eq. > @
-    'Ф'
-    as-char.
-      as-bytes.
-        'Ф'
+  assert-that > @
+    eq.
+      'Ф'
+      as-char.
+        as-bytes.
+          'Ф'
+    $.equal-to TRUE
 
 [] > supports-escape-sequences-line-break
-  eq. > @
-    '\n'
-    '\012'
+  assert-that > @
+    eq.
+      '\n'
+      '\012'
+    $.equal-to TRUE
 
 [] > supports-escape-sequences-unicode
-  eq. > @
-    '\u0424'
-    'Ф'
+  assert-that > @
+    eq.
+      '\u0424'
+      'Ф'
+    $.equal-to TRUE
 
 [] > char-equals-to-bytes
-  eq. > @
-    'Ф'
-    04-24
+  assert-that > @
+    eq.
+      'Ф'
+      04-24
+    $.equal-to TRUE
 
 [] > as-hash-equals-to-similar-values
-  eq. > @
-    'a'.as-hash
-    'a'.as-hash
+  assert-that > @
+    eq.
+      'a'.as-hash
+      'a'.as-hash
+    $.equal-to TRUE
 
 [] > print-char-hashes
-  seq > @
+  assert-that > @
     stdout
       sprintf
         "a, b, c hashes = %d %d %d\n"
         'a'.as-hash
         'b'.as-hash
         'c'.as-hash
-    TRUE
+    $.anything
