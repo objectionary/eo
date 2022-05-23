@@ -23,6 +23,7 @@
 +package org.eolang
 +alias org.eolang.txt.sprintf
 +alias org.eolang.io.stdout
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > makes-array-through-special-syntax
@@ -271,3 +272,12 @@
     foo
       * 1 2 3
     TRUE
+
+[] > mapi-should-works
+  assert-that > @
+    mapi.
+      * 1 2 3 4
+      [x i]
+        x.mul 2 > @
+    $.equal-to
+      * 2 4 6 8
