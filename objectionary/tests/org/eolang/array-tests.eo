@@ -204,8 +204,70 @@
 # nested array equal object should works
 [] > nested-array-eq-should-works
   * 1 "2" 3.0 > a
-  * 1 "2" 3.as-float > b
+  * 1 "2" (3.as-float) > b
   eq. > @
     * 'w' a
     * 'w' b
 
+# two different arrays not equal
+[] > two-different-arrays-not-equal
+  not. > @
+    eq.
+      * 1 2 3
+      * 1 5 "text"
+
+#two different nested arrays not eq
+[] > nested-array-not-eq-should-works
+  * 5 'o' "18" > a
+  * 5 'm' (18.as-string) > b
+  not. > @
+    eq.
+      * "not eq" a
+      * "not eq" b
+
+# check that varargs not eq works
+[] > varargs-not-eq-should-works
+  [args...] > a
+  [args...] > b
+  not. > @
+    eq.
+      args.
+        a 1 2 3
+      args.
+        b 1 2 "fail"
+
+# reduce with index test
+[] > reduce-with-index-test
+  * 2 2 > src
+  eq. > @
+    reducei.
+      * 1 1
+      0
+      [a i x]
+        add. > @
+          x
+          a.add
+            src.get i
+    6
+
+# reduce without index test
+[] > reduce-without-index-test
+  eq. > @
+    reduce.
+      * 1 2 3 4
+      -1
+      [a x]
+        mul. > @
+          a
+          x
+    -24
+
+[] > appends-in-seq
+  [a] > foo
+    seq > @
+      a.append "hi" > t
+      t
+  seq > @
+    foo
+      * 1 2 3
+    TRUE

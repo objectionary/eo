@@ -113,3 +113,13 @@
         TRUE > @
     c.@
       42
+
+[] > test-for-emptiness
+  cage > x
+  x.is-empty > @
+
+[] > test-for-non-emptiness
+  cage > x
+  and. > @
+    x.write 1
+    x.is-empty.not

@@ -177,6 +177,48 @@
         divisor
         quotient
 
+# Checks Euclid's division lemma
+# A = B * Q + R
+# and 0 <= R <= |B|
+[] > euclids-mod-lemma
+  * -201 -201 201 201 > dividends
+  * -25 25 -25 25 > divisors
+  [x y] > remainder
+    x.mod y > @
+  [x y] > quotient
+    x.div y > @
+  [dividend divisor] > euclids-lemma
+    eq. > @
+      dividend
+      add.
+        divisor.mul
+          quotient dividend divisor
+        remainder dividend divisor
+  reducei. > @
+    dividends
+    TRUE
+    [a i el]
+      and. > @
+        euclids-lemma
+          el
+          divisors.get i
+        a
+
+# Checks modulo: dividend < divisor
+[] > mod-dividend-less-than-divisor
+  -1 > dividend
+  5 > divisor
+  eq. > @
+    dividend.mod divisor
+    0
+
+# Checks modulo by 1
+[] > mod-dividend-by-one
+  133 > dividend
+  eq. > @
+    dividend.mod 1
+    0
+
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend

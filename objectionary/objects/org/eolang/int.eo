@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.3
++rt jvm org.eolang:eo-runtime:0.23.4
 
 [] > int
 
@@ -106,7 +106,37 @@
   [x] > div /int
 
   # Calculate MOD
-  [x] > mod /int
+  [x] > mod
+    ^ > dividend
+    x > divisor
+
+    [] > check-divisor
+      divisor.eq 0 > @
+
+    [] > check-dividend
+      greater. > @
+        divisor.abs
+        dividend.abs
+
+    if. > @
+      check-divisor
+      error "mod by zero"
+      if.
+        check-dividend
+        0
+        if.
+          dividend.greater 0
+          abs-mod
+          neg.
+            abs-mod
+
+    [] > abs-mod
+      dividend.abs > int-abs
+      divisor.abs > x-abs
+      sub. > @
+        int-abs
+        x-abs.mul
+          int-abs.div x-abs
 
   # Make it power x
   [x] > pow /int
