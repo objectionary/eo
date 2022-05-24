@@ -266,7 +266,7 @@
 [] > mod-dividend-less-than-divisor
   assert-that > @
     -1.mod 5
-    $.equal-to 0
+    $.equal-to -1
 
 # Checks modulo by 1
 [] > mod-dividend-by-one
@@ -381,3 +381,28 @@
   assert-that > @
     3.and 6
     $.equal-to 2
+
+[] > mod-1-2
+  assert-that > @
+    1.mod 2
+    $.equal-to 1
+
+[] > mod-0-5
+  assert-that > @
+    0.mod 5
+    $.equal-to 0
+
+[] > mod-0-15-neg
+  assert-that > @
+    0.mod -15
+    $.equal-to 0
+
+[] > mod-1-neg-7
+  assert-that > @
+    -1.mod 7
+    $.equal-to -1
+
+[] > mod-16-200-neg
+  assert-that > @
+    16.mod -200
+    $.equal-to 16
