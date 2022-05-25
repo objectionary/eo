@@ -194,11 +194,20 @@ public abstract class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        final int idx;
-        if (pos >= this.order.size()) {
-            idx = this.order.size() - 1;
-        } else {
-            idx = pos;
+        int idx;
+        for (idx = 0; idx < pos; ++idx) {
+            if (idx >= this.order.size()) {
+                throw new ExFailure(
+                    String.format(
+                        "There are just %d attributes here, can't read the %d-th one",
+                        this.order.size(), pos
+                    )
+                );
+            }
+            final String name = this.order.get(idx);
+            if (this.attrs.get(name) instanceof AtVararg) {
+                break;
+            }
         }
         return this.attr(this.order.get(idx));
     }
