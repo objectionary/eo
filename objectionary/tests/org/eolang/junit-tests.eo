@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > x
@@ -30,3 +31,10 @@
   [x] > y
     x > @
   TRUE > @
+
+[] > assert-that-should-works
+  assert-that > @
+    "anything"
+    $.is
+      $.anything
+    "assert that should works with junit"

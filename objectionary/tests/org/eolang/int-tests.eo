@@ -23,106 +23,161 @@
 +package org.eolang
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > converts-to-string
-  eq. > @
-    "42"
-    42.as-string
+  assert-that > @
+    eq.
+      "42"
+      42.as-string
+    $.equal-to TRUE
+    "converts int to string"
 
 [] > less-true
-  less. > @
-    10
-    50
+  assert-that > @
+    less.
+      10
+      50
+    $.equal-to TRUE
+    "check int.less"
 
 [] > less-equal
-  not. > @
-    less.
-      10
-      10
+  assert-that > @
+    not.
+      less.
+        10
+        10
+    $.equal-to TRUE
+    "check int.less.not equal"
 
 [] > less-false
-  not. > @
-    less.
-      10
-      -5
+  assert-that > @
+    not.
+      less.
+        10
+        -5
+    $.equal-to TRUE
+    "check int.less.not less"
 
 [] > greater-true
-  greater. > @
-    -200
-    -1000
+  assert-that > @
+    greater.
+      -200
+      -1000
+    $.equal-to TRUE
+    "check int.greater"
 
 [] > greater-false
-  not. > @
-    greater.
-      0
-      100
+  assert-that > @
+    not.
+      greater.
+        0
+        100
+    $.equal-to TRUE
+    "check int.greater.not"
 
 [] > greater-equal
-  not. > @
-    greater.
-      0
-      0
+  assert-that > @
+    not.
+      greater.
+        0
+        0
+    $.equal-to TRUE
+    "check int.greater.not zero"
 
 [] > leq-true
-  leq. > @
-    -200
-    -100
+  assert-that > @
+    leq.
+      -200
+      -100
+    $.equal-to TRUE
+    "check int.leq"
 
 [] > leq-equal
-  leq. > @
-    50
-    50
+  assert-that > @
+    leq.
+      50
+      50
+    $.equal-to TRUE
+    "check int.leq equal"
 
 [] > leq-false
-  not. > @
-    leq.
-      0
-      -10
+  assert-that > @
+    not.
+      leq.
+        0
+        -10
+    $.equal-to TRUE
+    "check int.leq.not"
 
 [] > geq-true
-  geq. > @
-    -1000
-    -1100
+  assert-that > @
+    geq.
+      -1000
+      -1100
+    $.equal-to TRUE
+    "check int.geq negative int"
 
 [] > geq-equal
-  geq. > @
-    113
-    113
+  assert-that > @
+    geq.
+      113
+      113
+    $.equal-to TRUE
+    "check int.geq positive int"
 
 [] > geq-false
-  not. > @
-    geq.
-      0
-      10
+  assert-that > @
+    not.
+      geq.
+        0
+        10
+    $.equal-to TRUE
+    "check int.geq.not"
 
 [] > eq-true
-  eq. > @
-    123
-    123
-
-[] > eq-false
-  not. > @
+  assert-that > @
     eq.
       123
-      42
+      123
+    $.equal-to TRUE
+    "check int.eq"
+
+[] > eq-false
+  assert-that > @
+    not.
+      eq.
+        123
+        42
+    $.equal-to TRUE
+    "check int.eq.not"
 
 [] > compares-two-different-types
-  not. > @
-    eq.
-      42
-      "Hello!"
+  assert-that > @
+    not.
+      eq.
+        42
+        "Hello!"
+    $.equal-to TRUE
+    "check int.eq.not string"
 
 [] > neq-true
-  neq. > @
-    123
-    125
+  assert-that > @
+    neq.
+      123
+      125
+    $.equal-to TRUE
+    "check int.neq"
 
 [] > neq-false
-  not. > @
-    neq.
-      -133
-      -133
+  assert-that > @
+    not.
+      neq.
+        -133
+        -133
+    $.equal-to TRUE
+    "check int.neq.not negative"
 
 [] > calculates-fibonacci-number-with-recursion
   eq. > @
@@ -137,9 +192,10 @@
         fibo (n.sub 2)
 
 [] > calculates-fibonacci-number-with-tail
-  eq. > @
-    3
+  assert-that > @
     fibonacci 4
+    $.equal-to 3
+    "calculates fibonacci number with tail "
   [n] > fibonacci
     if. > @
       n.less 3
@@ -158,9 +214,10 @@
 
 # Checks that division by zero returns an error object
 [] > zero-division
-  eq. > @
+  assert-that > @
     (2.div 0).msg
-    "Division by zero is undefined"
+    $.equal-to
+      "Division by zero is undefined"
 
 # Checks mathematical equality
 # A = ((A div B) * B) + (A mod B)
@@ -169,13 +226,14 @@
   5 > divisor
   dividend.mod divisor > remainder
   dividend.div divisor > quotient
-  eq. > @
-    dividend
+  assert-that > @
     add.
       remainder
       mul.
         divisor
         quotient
+    $.equal-to
+      dividend
 
 # Checks Euclid's division lemma
 # A = B * Q + R
@@ -206,86 +264,95 @@
 
 # Checks modulo: dividend < divisor
 [] > mod-dividend-less-than-divisor
-  -1 > dividend
-  5 > divisor
-  eq. > @
-    dividend.mod divisor
-    0
+  assert-that > @
+    -1.mod 5
+    $.equal-to -1
 
 # Checks modulo by 1
 [] > mod-dividend-by-one
-  133 > dividend
-  eq. > @
-    dividend.mod 1
-    0
+  assert-that > @
+    133.mod 1
+    $.equal-to 0
 
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend
-  eq. > @
+  assert-that > @
     dividend.div 1
-    dividend
+    $.equal-to
+      dividend
 
 # Checks that div works properly with dividends greater than zero
 [] > div-for-dividend-greater-than-zero
-  256.div 16 > quotient
-  quotient.eq 16 > @
+  assert-that > @
+    256.div 16
+    $.equal-to 16
 
 # Checks div with remainder
 [] > div-with-remainder
-  (13.div -5).eq -2 > @
+  assert-that > @
+    13.div -5
+    $.equal-to -2
 
 # Checks that int.as-float works properly
 [] > as-float-works
-  eq. > @
-    -17.0
+  assert-that > @
     17.neg.as-float
+    $.equal-to -17.0
 
 [] > abs-positive
-  3.abs.eq 3 > @
+  assert-that > @
+    3.abs
+    $.equal-to 3
 
 [] > abs-negative
-  -3.abs.eq 3 > @
+  assert-that > @
+    -3.abs
+    $.equal-to 3
 
 [] > abs-zero
-  0.abs.eq 0 > @
+  assert-that > @
+    0.abs
+    $.equal-to 0
 
 [] > to-bytes-and-backwards
-  eq. > @
-    42
+  assert-that > @
     as-int.
       as-bytes.
         42
+    $.equal-to 42
 
 [] > as-bytes-equals-to-int
-  eq. > @
+  assert-that > @
     42
-    42.as-bytes
+    $.equal-to
+      42.as-bytes
 
 [] > as-bytes-equals-to-int-backwards
-  eq. > @
+  assert-that > @
     42.as-bytes
-    42
+    $.equal-to 42
 
 [] > xor-3-6
-  eq. > @
+  assert-that > @
     3.xor 6
-    5
+    $.equal-to 5
 
 [] > left-1-2
-  eq. > @
+  assert-that > @
     1.left 2
-    4
+    $.equal-to 4
 
 [] > right-8-2
-  eq. > @
+  assert-that > @
     8.right 2
-    2
+    $.equal-to 2
 
 [] > as-hash-equals-to-similar-values
-  eq. > @
+  assert-that > @
     42.as-hash
-    42.as-hash
+    $.equal-to
+      42.as-hash
 
 # We can have collisions, so in this test just check if values not similar
 [] > as-hash-have-different-hashes
@@ -298,12 +365,44 @@
         43.as-hash
     TRUE
 
+[] > as-hash-not-equal
+  assert-that > @
+    41.as-hash
+    $.not
+      $.equal-to
+        42.as-hash
+
 [] > or-1-2
-  eq. > @
+  assert-that > @
     1.or 2
-    3
+    $.equal-to 3
 
 [] > and-3-6
-  eq. > @
+  assert-that > @
     3.and 6
-    2
+    $.equal-to 2
+
+[] > mod-1-2
+  assert-that > @
+    1.mod 2
+    $.equal-to 1
+
+[] > mod-0-5
+  assert-that > @
+    0.mod 5
+    $.equal-to 0
+
+[] > mod-0-15-neg
+  assert-that > @
+    0.mod -15
+    $.equal-to 0
+
+[] > mod-1-neg-7
+  assert-that > @
+    -1.mod 7
+    $.equal-to -1
+
+[] > mod-16-200-neg
+  assert-that > @
+    16.mod -200
+    $.equal-to 16

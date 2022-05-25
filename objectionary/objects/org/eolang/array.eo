@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.4
++rt jvm org.eolang:eo-runtime:0.23.5
 
 [] > array
 
@@ -40,7 +40,17 @@
 
   # Create a new array with this element added to
   # the end of it.
-  [x] > append /array
+  [x] > with /array
+
+  # Create a new array without the i-th element
+  [i] > without
+    ^.reducei > @
+      *
+      [a idx item]
+        if. > @
+          idx.eq i
+          a
+          a.with item
 
   # Reduce with index from start "a" using the function "f".
   # Here "f" must be an abstract
@@ -54,10 +64,10 @@
   [a f] > reduce
     ^.reducei > @
       a
-      [a i x]
+      [a idx item]
         &.f > @
           a
-          x
+          item
 
   # For each array element dataize the object
   [f] > each /bool
@@ -66,29 +76,34 @@
   # object with two free attributes. The first
   # one for the element of the array, the second one
   # for the index.
-  [f] > mapi /array
+  [f] > mapi
+    ^.reducei > @
+      *
+      [a idx item]
+        with. > @
+          a
+          &.f item idx
 
   # Map without index. Here "f" must be an abstract
   # object with one free attribute, for the element
   # of the array.
   [f] > map
     ^.mapi > @
-      [x i]
+      [x idx]
         &.f x > @
 
   # Equal to another object?
   [x] > eq
-    ^ > copy
     if. > @
       eq.
-        copy.length
+        ^.length
         x.length
-      copy.reducei
+      ^.reducei
         TRUE
-        [a i el]
+        [a idx item]
           and. > @
             a
             eq.
-              el
-              x.get i
+              item
+              x.get idx
       FALSE

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.4
++rt jvm org.eolang:eo-runtime:0.23.5
 
 [] > int
 
@@ -123,7 +123,7 @@
       error "mod by zero"
       if.
         check-dividend
-        0
+        dividend
         if.
           dividend.greater 0
           abs-mod

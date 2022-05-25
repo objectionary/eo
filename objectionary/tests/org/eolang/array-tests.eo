@@ -23,6 +23,7 @@
 +package org.eolang
 +alias org.eolang.txt.sprintf
 +alias org.eolang.io.stdout
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > makes-array-through-special-syntax
@@ -262,12 +263,57 @@
           x
     -24
 
-[] > appends-in-seq
+[] > array-with-in-seq
   [a] > foo
     seq > @
-      a.append "hi" > t
+      a.with "hi" > t
       t
   seq > @
     foo
       * 1 2 3
     TRUE
+
+[] > array-with
+  assert-that > @
+    with.
+      * 1 2 3
+      "with"
+    $.equal-to
+      * 1 2 3 "with"
+
+[] > array-without
+  assert-that > @
+    without.
+      * 1 2 3
+      1
+    $.equal-to
+      * 1 3
+
+[] > array-without-complex-case
+  [a] > foo
+    seq > @
+      a.without 0 > t
+      t
+  assert-that > @
+    foo
+      * 1 "text" 'f'
+    $.equal-to
+      * "text" 'f'
+
+[] > array-without-nested-array
+  * 3 2 1 > nested
+  assert-that > @
+    without.
+      * "smthg" 27 nested
+      2
+    $.equal-to
+      * "smthg" 27
+
+[] > mapi-should-works
+  assert-that > @
+    mapi.
+      * 1 2 3 4
+      [x i]
+        x.mul 2 > @
+    $.equal-to
+      * 2 4 6 8
