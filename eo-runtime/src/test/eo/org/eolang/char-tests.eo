@@ -35,11 +35,9 @@
 
 [] > compares-two-different-types
   assert-that > @
-    not.
-      eq.
-        'x'
-        42
-    $.equal-to TRUE
+    'x'
+    $.not
+      $.equal-to 42
 
 [] > char-to-string
   assert-that > @
@@ -48,10 +46,8 @@
 
 [] > char-to-char-compares
   assert-that > @
-    eq.
-      'Ф'
-      'Ф'
-    $.equal-to TRUE
+    'Ф'
+    $.equal-to 'Ф'
 
 [] > to-bytes-and-backwards-char
   assert-that > @

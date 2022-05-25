@@ -29,28 +29,28 @@
 [] > writes-into-memory
   memory > x
   assert-that > @
-    and.
+    seq
       x.write 10
-      x.eq 10
-    $.equal-to TRUE
+      x
+    $.equal-to 10
 
 [] > double-writes
   memory > m
   assert-that > @
-    and.
+    seq
       m.write "Hello, world!"
       m.write 42
-      m.eq 42
-    $.equal-to TRUE
+      m
+    $.equal-to 42
 
 [] > rewrites-and-increments-itself
   memory > m
   assert-that > @
-    and.
+    seq
       m.write 1
       m.write (m.add 5)
-      m.eq 6
-    $.equal-to TRUE
+      m
+    $.equal-to 6
 
 [] > memory-in-outer-scope
   [] > outer
@@ -79,3 +79,13 @@
         b.write 20
       a.eq 10
     $.equal-to TRUE
+
+[] > writes-into-two-memory-objects-and-check-first
+  memory > a
+  memory > b
+  assert-that > @
+    seq
+      a.write 10
+      b.write 20
+      a
+    $.equal-to 10
