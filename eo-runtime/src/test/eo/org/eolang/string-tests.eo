@@ -143,13 +143,6 @@
 
 [] > string-to-regex
   assert-that > @
-    "([a-z]+)".as-regex
-    .matches "a"
-    $.equal-to TRUE
-
-[] > string-to-regexf
-  assert-that > @
-    "([a-z]+)"
-    .as-regexf 0x02
-    .matches "Uppercase"
+    "/(word)/i".as-regex
+    .matches "WORD"
     $.equal-to TRUE

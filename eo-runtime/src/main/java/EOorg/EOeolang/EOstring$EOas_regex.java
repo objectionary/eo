@@ -25,7 +25,6 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -33,22 +32,31 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
- * AS-REGEXF.
+ * AS-REGEX.
  *
  */
-@XmirObject(oname = "string.as-regexf")
-public class EOstring$EOas_regexf extends PhDefault {
+@XmirObject(oname = "string.as-regex")
+public class EOstring$EOas_regex extends PhDefault {
 
-    public EOstring$EOas_regexf(final Phi sigma) {
+    public EOstring$EOas_regex(final Phi sigma) {
         super(sigma);
-        this.add("flag", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Pattern.compile(
-                new Param(rho).strong(String.class),
-                new Param(rho, "flag").strong(Long.class).intValue()))
-            ));
+        this.add("φ", new AtComposite(this, rho -> {
+            final String pattern = new Param(rho).strong(String.class);
+            StringBuilder builder = new StringBuilder();
+            if (pattern.startsWith("/")) {
+                if (!pattern.endsWith("/")) {
+                    builder.append("(?").append(pattern.substring(pattern.length() - 1)).append(")");
+                }
+                builder.append(pattern, 1, pattern.length() - 2);
+                return new Data.ToPhi(Pattern.compile(builder.toString()));
+            } else {
+                throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
+            }
+        }
+        ));
     }
 
 }

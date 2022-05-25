@@ -55,18 +55,13 @@
   # Converts this to hash
   [] > as-hash /int
 
-  # Converts this to regex
-  [] > as-regex
-    ^.as-regexf 0 > @
-
-  # Converts this to regex with flag value as:
-  # 0x01 - Enables Unix lines mode.
-  # 0x02 - Enables case-insensitive matching.
-  # 0x04 - Permits whitespace and comments in pattern.
-  # 0x08 - Enables multiline mode.
-  # 0x10 - Enables literal parsing of the pattern.
-  # 0x20 - Enables dotall mode.
-  # 0x40 - Enables Unicode-aware case folding.
-  # 0x80 - Enables canonical equivalence.
-  # 0x100 - Enables the Unicode version of Predefined character classes and POSIX character classes.
-  [flag] > as-regexf /regex
+  # Converts this to regex.
+  # e.g. ("/word/i".as-regex).matches "WORD" return TRUE
+  # other flags:
+  # /d - Enables Unix lines mode.
+  # /i - Enables case-insensitive matching.
+  # /x - Permits whitespace and comments in pattern.
+  # /m - Enables multiline mode.
+  # /s - Enables dotall mode.
+  # /u - Enables Unicode-aware case folding.
+  [] > as-regex /regex
