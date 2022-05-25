@@ -46,11 +46,11 @@
   [i] > without
     ^.reducei > @
       *
-      [a idx x]
+      [a idx item]
         if. > @
           idx.eq i
           a
-          a.with x
+          a.with item
 
   # Reduce with index from start "a" using the function "f".
   # Here "f" must be an abstract
@@ -64,10 +64,10 @@
   [a f] > reduce
     ^.reducei > @
       a
-      [a i x]
+      [a idx item]
         &.f > @
           a
-          x
+          item
 
   # For each array element dataize the object
   [f] > each /bool
@@ -79,32 +79,31 @@
   [f] > mapi
     ^.reducei > @
       *
-      [a i x]
+      [a idx item]
         with. > @
           a
-          &.f x i
+          &.f item idx
 
   # Map without index. Here "f" must be an abstract
   # object with one free attribute, for the element
   # of the array.
   [f] > map
     ^.mapi > @
-      [x i]
+      [x idx]
         &.f x > @
 
   # Equal to another object?
   [x] > eq
-    ^ > copy
     if. > @
       eq.
-        copy.length
+        ^.length
         x.length
-      copy.reducei
+      ^.reducei
         TRUE
-        [a i el]
+        [a idx item]
           and. > @
             a
             eq.
-              el
-              x.get i
+              item
+              x.get idx
       FALSE
