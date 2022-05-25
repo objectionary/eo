@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > matches-against-regular-expression
@@ -139,3 +140,16 @@
   eq. > @
     "hello world".as-hash
     "hello world".as-hash
+
+[] > string-to-regex
+  assert-that > @
+    "([a-z]+)".as-regex
+    .matches "a"
+    $.equal-to TRUE
+
+[] > string-to-regexf
+  assert-that > @
+    "([a-z]+)"
+    .as-regexf 0x02
+    .matches "Uppercase"
+    $.equal-to TRUE

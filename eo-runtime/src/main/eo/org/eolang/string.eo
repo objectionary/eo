@@ -54,3 +54,10 @@
 
   # Converts this to hash
   [] > as-hash /int
+
+  # Converts this to regex
+  [] > as-regex
+    ^.as-regexf 0 > @
+
+  # Converts this to regex
+  [flag] > as-regexf /regex
