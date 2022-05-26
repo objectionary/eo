@@ -46,15 +46,15 @@ public class EOstring$EOas_regex extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             final String pattern = new Param(rho).strong(String.class);
             StringBuilder builder = new StringBuilder();
-            if (pattern.startsWith("/")) {
-                final int lastIndex = pattern.lastIndexOf("/");
-                if (!pattern.endsWith("/")) {
-                    builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
-                }
-                builder.append(pattern, 1, lastIndex);
-                return new Data.ToPhi(Pattern.compile(builder.toString()));
+            if (!pattern.startsWith("/")) {
+                throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
             }
-            throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
+            final int lastIndex = pattern.lastIndexOf("/");
+            if (!pattern.endsWith("/")) {
+                builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
+            }
+            builder.append(pattern, 1, lastIndex);
+            return new Data.ToPhi(Pattern.compile(builder.toString()));
         }
         ));
     }
