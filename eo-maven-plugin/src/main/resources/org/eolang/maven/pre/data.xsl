@@ -104,7 +104,7 @@ SOFTWARE.
                   <xsl:when test="$flag='m'">
                     <xsl:text>MULTILINE</xsl:text>
                   </xsl:when>
-                  <xsl:when test="$flag='a'">
+                  <xsl:when test="$flag='s'">
                     <xsl:text>DOTALL</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
