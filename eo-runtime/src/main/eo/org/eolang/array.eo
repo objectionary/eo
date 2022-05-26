@@ -59,7 +59,25 @@
   # one for the accumulator, the second one
   # for the index and the third one for the element
   # of the array.
-  [a f] > reducei /a
+  [a f] > reducei
+    0 > i
+    if. > @
+      eq.
+        length
+        i
+      f
+        a
+        i
+        get i
+      reducei
+        f > fa
+          a
+          i
+          get i
+        f
+          fa
+          i.add 1
+          get i
 
   # Reduce from start "a" using the function "f"
   [a f] > reduce
