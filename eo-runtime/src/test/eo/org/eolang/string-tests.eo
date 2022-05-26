@@ -177,3 +177,10 @@
     "/(yildirim)/ui".as-regex
     .matches "Yıldırım"
     $.equal-to TRUE
+
+[] > string-to-regex-div
+  assert-that > @
+    "/([0-9]+/\\d+)/".as-regex
+    .matches "15/3"
+    $.equal-to TRUE
+

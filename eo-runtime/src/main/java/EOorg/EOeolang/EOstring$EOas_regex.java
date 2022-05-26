@@ -47,15 +47,14 @@ public class EOstring$EOas_regex extends PhDefault {
             final String pattern = new Param(rho).strong(String.class);
             StringBuilder builder = new StringBuilder();
             if (pattern.startsWith("/")) {
-                int lastIndex = pattern.lastIndexOf("/");
+                final int lastIndex = pattern.lastIndexOf("/");
                 if (!pattern.endsWith("/")) {
                     builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
                 }
                 builder.append(pattern, 1, lastIndex);
                 return new Data.ToPhi(Pattern.compile(builder.toString()));
-            } else {
-                throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
             }
+            throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
         }
         ));
     }
