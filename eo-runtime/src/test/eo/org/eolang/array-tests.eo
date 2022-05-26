@@ -252,6 +252,49 @@
             src.get i
     6
 
+[] > reducei-long-int-array
+  assert-that > @
+    reducei.
+      * 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
+      0
+      [a i x]
+        add. > @
+          x
+          a
+    $.equal-to 435
+
+[] > reducei-bools-array
+  assert-that > @
+    reducei.
+      * TRUE TRUE FALSE
+      TRUE
+      [a i x]
+        and. > @
+          x
+          a
+    $.equal-to FALSE
+
+[] > reducei-nested-functions
+  [] > a
+    10 > @
+  [] > b
+    500 > @
+  assert-that > @
+    reducei.
+      * a b
+      0
+      [acc i x]
+        check x > @
+        [el] > check
+          if. > @
+            x.less 100
+            acc.add x
+            acc.sub x
+    $.equal-to
+      add.
+        0.sub 500
+        10
+
 # reduce without index test
 [] > reduce-without-index-test
   eq. > @

@@ -60,24 +60,25 @@
   # for the index and the third one for the element
   # of the array.
   [a f] > reducei
-    0 > i
-    if. > @
-      eq.
-        length
-        i
-      f
-        a
-        i
-        get i
-      reducei
-        f > fa
-          a
-          i
-          get i
-        f
-          fa
-          i.add 1
-          get i
+    func 0 a f ^ > @
+
+    [idx acc fn arr] > func
+      if. > @
+        eq.
+          (arr.length).sub 1
+          idx
+        fn
+          acc
+          idx
+          arr.get idx
+        func
+          idx.add 1
+          fn
+            acc
+            idx
+            arr.get idx
+          fn
+          arr
 
   # Reduce from start "a" using the function "f"
   [a f] > reduce
