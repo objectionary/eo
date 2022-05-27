@@ -21,57 +21,62 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > compares-two-chars
-  eq. > @
-    'x'
-    'x'
-
-[] > compares-two-different-types
-  not. > @
+  assert-that > @
     eq.
       'x'
-      42
+      'x'
+    $.equal-to TRUE
+
+[] > compares-two-different-types
+  assert-that > @
+    'x'
+    $.not
+      $.equal-to 42
 
 [] > char-to-string
-  eq. > @
-    "A"
+  assert-that > @
     'A'.as-string
+    $.equal-to "A"
 
 [] > char-to-char-compares
-  eq. > @
+  assert-that > @
     'Ф'
-    'Ф'
+    $.equal-to 'Ф'
 
 [] > to-bytes-and-backwards-char
-  eq. > @
-    'Ф'
+  assert-that > @
     as-char.
       as-bytes.
         'Ф'
+    $.equal-to 'Ф'
 
 [] > supports-escape-sequences-line-break
-  eq. > @
+  assert-that > @
     '\n'
-    '\012'
+    $.equal-to '\012'
 
 [] > supports-escape-sequences-unicode
-  eq. > @
+  assert-that > @
     '\u0424'
-    'Ф'
+    $.equal-to 'Ф'
 
 [] > char-equals-to-bytes
-  eq. > @
+  assert-that > @
     'Ф'
-    04-24
+    $.equal-to 04-24
 
 [] > as-hash-equals-to-similar-values
-  eq. > @
+  assert-that > @
     'a'.as-hash
-    'a'.as-hash
+    $.equal-to
+      'a'.as-hash
 
 [] > print-char-hashes
   seq > @

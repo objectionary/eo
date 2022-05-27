@@ -25,29 +25,38 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
-/**
- * MOD.
- *
- * @since 1.0
- */
-@XmirObject(oname = "int.mod")
-public class EOint$EOmod extends PhDefault {
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
-    public EOint$EOmod(final Phi sigma) {
+/**
+ * AS-REGEX.
+ *
+ */
+@XmirObject(oname = "string.as-regex")
+public class EOstring$EOas_regex extends PhDefault {
+
+    public EOstring$EOas_regex(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(Long.class)
-            %
-            new Param(rho, "x").strong(Long.class)
-        )));
+        this.add("φ", new AtComposite(this, rho -> {
+            final String pattern = new Param(rho).strong(String.class);
+            StringBuilder builder = new StringBuilder();
+            if (!pattern.startsWith("/")) {
+                throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
+            }
+            final int lastIndex = pattern.lastIndexOf("/");
+            if (!pattern.endsWith("/")) {
+                builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
+            }
+            builder.append(pattern, 1, lastIndex);
+            return new Data.ToPhi(Pattern.compile(builder.toString()));
+        }
+        ));
     }
 
 }

@@ -36,6 +36,11 @@ import org.eolang.Phi;
 final class AtCage implements Attr {
 
     /**
+     * The term to show when empty.
+     */
+    public static final String EMPTY_TERM = "Ø";
+
+    /**
      * The object being caged.
      */
     private Phi object;
@@ -82,7 +87,7 @@ final class AtCage implements Attr {
     public String φTerm() {
         final String txt;
         if (this.object == null) {
-            txt = "Ø";
+            txt = AtCage.EMPTY_TERM;
         } else {
             txt = this.object.φTerm();
         }
@@ -100,11 +105,4 @@ final class AtCage implements Attr {
         return String.format("%d->%s", this.hashCode(), txt);
     }
 
-    /**
-     * Is it empty?
-     * @return TRUE if empty
-     */
-    public boolean isEmpty() {
-        return this.object == null;
-    }
 }

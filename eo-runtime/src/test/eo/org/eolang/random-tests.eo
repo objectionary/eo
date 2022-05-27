@@ -21,37 +21,39 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > two-random-numbers-without-const
   random > r
-  not. > @
-    eq.
-      r
-      r
+  assert-that > @
+    r
+    $.not
+      $.equal-to r
 
 [] > two-random-numbers-with-const
   random > r!
-  eq. > @
+  assert-that > @
     r
-    r
+    $.equal-to r
 
 [] > two-random-numbers-with-phi
   random.@ > r
-  eq. > @
+  assert-that > @
     r
-    r
+    $.equal-to r
 
 [] > two-random-numbers-with-increment-with-const
   random.add 3.1416 > r!
-  eq. > @
+  assert-that > @
     r
-    r
+    $.equal-to r
 
 [] > two-random-numbers-with-increment
   random.add 3.1416 > r
-  not. > @
-    eq.
-      r
-      r
+  assert-that > @
+    r
+    $.not
+      $.equal-to r
 

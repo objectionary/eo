@@ -33,29 +33,22 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * REDUCE.
+ * WITH.
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.reducei")
-public class EOarray$EOreducei extends PhDefault {
+@XmirObject(oname = "array.with")
+public class EOarray$EOwith extends PhDefault {
 
-    public EOarray$EOreducei(final Phi sigma) {
+    public EOarray$EOwith(final Phi sigma) {
         super(sigma);
-        this.add("a", new AtFree());
-        this.add("f", new AtFree());
+        this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi[] array = new Param(rho).strong(Phi[].class);
-            Phi out = rho.attr("a").get();
-            for (int idx = 0; idx < array.length; ++idx) {
-                final Phi after = rho.attr("f").get().copy();
-                after.move(rho);
-                after.attr(0).put(out);
-                after.attr(1).put(new Data.ToPhi((long)idx));
-                after.attr(2).put(array[idx]);
-                out = after;
-            }
-            return out;
+            final Phi[] dest = new Phi[array.length + 1];
+            System.arraycopy(array, 0, dest, 0, array.length);
+            dest[array.length] = rho.attr("x").get();
+            return new Data.ToPhi(dest);
         }));
     }
 

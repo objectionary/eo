@@ -68,7 +68,7 @@ public class EOcage extends PhDefault {
             super(sigma);
             this.add("φ", new AtComposite(
                 this, rho -> new Data.ToPhi(
-                    AtCage.class.cast(rho.attr("σ").get().attr("φ")).isEmpty()
+                    AtCage.EMPTY_TERM.equals(sigma.attr("φ").φTerm())
                 )
             ));
         }

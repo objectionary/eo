@@ -17,7 +17,7 @@
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
-is an object-oriented programming language.
+is an object-oriented programming language based on [𝜑-calculus](https://arxiv.org/abs/2111.13384).
 We're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
@@ -56,13 +56,16 @@ These things we **don't** tolerate:
 
 ## Papers
 
-Here is a full list of papers related to EO:
+Here is a full list of papers related to EO (in reverse chronological order):
 
-  * Yegor Bugayenko, 
-    [EOLANG and phi-calculus](https://arxiv.org/abs/2111.13384), 
-    2021
-  * Yegor Bugayenko,
+  * Nikolai Kudasov, Violetta Sim<br/>
+    [Formalizing 𝜑-calculus: a purely object-oriented calculus of decorated objects](https://arxiv.org/abs/2204.07454),
+    2022
+  * Yegor Bugayenko<br/>
     [Reducing Programs to Objects](https://arxiv.org/abs/2112.11988),
+    2021
+  * Yegor Bugayenko<br/>
+    [EOLANG and phi-calculus](https://arxiv.org/abs/2111.13384), 
     2021
 
 ## Quick Start

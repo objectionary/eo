@@ -21,14 +21,16 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
 +alias org.eolang.io.stdout
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > prints-itself
-  greater. > @
+  assert-that > @
     length.
       as-phi $
-    0
+    $.greater-than 0
 
 [] > prints-itself-to-console
   42 > x
