@@ -110,10 +110,15 @@
 
   # Make it power x
   [x] > pow
-    as-int. > @
-      pow.
-        ^.as-float
-        x.as-float
+    if. > @
+      and.
+        ^.eq 0
+        x.less 0
+      error "0 cannot be raised to a negative power"
+      as-int.
+        pow.
+          ^.as-float
+          x.as-float
 
   # Converts this to float
   [] > as-float /float

@@ -301,3 +301,8 @@
   assert-that > @
     0.pow 145
     $.equal-to 0
+
+[] > negative-power-of-zero
+  assert-that > @
+    (0.pow -567).msg
+    $.equal-to "0 cannot be raised to a negative power"
