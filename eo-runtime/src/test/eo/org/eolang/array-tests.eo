@@ -28,14 +28,14 @@
 +junit
 
 [] > makes-array-through-special-syntax
-  eq. > @
-    2
+  assert-that > @
     (* 1 2).length
+    $.equal-to 2
 
 [] > gets-lengths-of-empty-array-through-special-syntax
-  eq. > @
-    0
+  assert-that > @
     *.length
+    $.equal-to 0
 
 [] > iterates-with-each
   *
@@ -46,36 +46,36 @@
     [i] (stdout i > @)
 
 [] > simple-mapping-int-to-string
-  eq. > @
+  assert-that > @
     length.
       map.
         * 1 2 3
         [i]
           i.as-string > @
-    3
+    $.equal-to 3
 
 [] > using-map-as-object
-  eq. > @
+  assert-that > @
     " ".joined
       map.
         * 1 2
         [i]
           i.as-string > @
-    "1 2"
+    $.equal-to "1 2"
 
 # check that an empty array's .length equals to zero
 [] > empty-array-length
   [elements...] > arr
-  eq. > @
-    0
+  assert-that > @
     (arr).elements.length
+    $.equal-to 0
 
 # check that array.length works properly for non-empty arrays
 [] > non-empty-array-length-test
   [elements...] > arr
-  eq. > @
-    5
+  assert-that > @
     (arr "a" "b" "c" "d" "e").elements.length
+    $.equal-to 5
 
 # if map does mutate arrays, then this test would fail
 # because of the absence of the as-int attribute
@@ -90,9 +90,10 @@
           current.as-int
           2
   (squares "1" "2" "3") > sq
-  eq. > @
-    (sprintf "%d %d %d" 1 4 9)
-    (sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2))
+  assert-that > @
+    sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
 
 # this test performs mapping of array using the index for it
 [] > mapi-index-can-be-accessed
@@ -104,18 +105,23 @@
           current.as-int
           index.add 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
-  eq. > @
-    (sprintf "%d %d %d" 1 4 9)
-    (sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2))
+  assert-that > @
+    sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
 
 [] > array-as-a-bound-attribute-size-0
   * > anArray
-  0.eq (anArray.length) > @
+  assert-that > @
+    anArray.length
+    $.equal-to 0
 
 [] > array-as-a-bound-attribute-size-1
   * > anArray
     100
-  ((anArray.get 0).eq 100) > @
+  assert-that > @
+    anArray.get 0
+  $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
   * > anArray
@@ -128,12 +134,16 @@
   * > xs
     1
     2
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # check that array.is-empty works properly
 [] > should-be-empty
   * > xs
-  xs.is-empty > @
+  assert-that > @
+    xs.is-empty
+    $.equal-to TRUE
 
 # arrays of objects
 [] > should-not-be-empty-with-3-objects
@@ -147,24 +157,30 @@
     a-1
     a-2
     a-3
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # arrays with anonymous object
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
       f.as-int > @
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # arrays with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
     [f] (f.as-int > @)
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # array equal to another array
 [] > array-equal-to-another-array
-  eq. > @
+  assert-that > @
     *
       1
       "str"
@@ -172,13 +188,15 @@
       22.0
       "друг".as-bytes
       TRUE
-    *
-      1
-      "str"
-      'f'
-      (11.mul 2).as-float
-      D0-B4-D1-80-D1-83-D0-B3
-      FALSE.not
+    $.is
+      $.equal-to
+        *
+          1
+          "str"
+          'f'
+          (11.mul 2).as-float
+          D0-B4-D1-80-D1-83-D0-B3
+          FALSE.not
 
 # array not equal to another object by length
 [] > array-not-equal-to-another-array-by-length
