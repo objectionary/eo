@@ -110,56 +110,10 @@
 
   # Make it power x
   [x] > pow
-
-    # @todo #670:45min Add NaN checks.
-    #  Here will be very useful to add check of not-a-number
-    #  objects, to improve pow calculating speed.
-    #  We can do it only after eo-math project release.
-    [y] > is-nan
-      # y.is-nan.or x.is-nan > @
-      FALSE > @
-
-    # @todo #671:45min Add NaN checks.
-    #  Here the numbers infinity checks doesn't implemented.
-    #  I suggest to add check that current number is infinity
-    #  or not. Then implement conditions according to Math.pow()
-    #  in java.lang package.
-    #  Then add is-infinity object to @ checks chain.
-    #  We can do it only after eo-math project release.
-    [] > is-infinity
-      FALSE > @
-
-    if. > @
-      or.
-        x.eq 0
-        x.eq -0
-      1
-      if.
-        x.less 0
-        0
-        if.
-          is-nan
-          ^.add x
-          if.
-            x.eq 2
-            ^.mul ^
-            compute ^ x
-
-    [base pow] > compute
-      memory > idx
-      memory > c
-      seq > @
-        idx.write
-          pow.sub 1
-        c.write base
-        while.
-          idx.greater 0
-          [i]
-            seq > @
-              c.write
-                c.mul base
-              idx.write (idx.sub 1)
-        c
+    as-int. > @
+      pow.
+        ^.as-float
+        x.as-float
 
   # Converts this to float
   [] > as-float /float

@@ -269,20 +269,35 @@
 
 [] > pow-test
   assert-that > @
-    (2.pow 4)
+    2.pow 4
     $.equal-to 16
 
-[] > pow-x-is-zero
+[] > power-is-zero
   assert-that > @
-    (2.pow 0)
+    2.pow 0
     $.equal-to 1
 
-[] > pow-x-is-negative
+[] > power-is-negative-zero
   assert-that > @
-    (984782.pow -12341)
+    2.pow -0
+    $.equal-to 1
+
+[] > power-is-negative
+  assert-that > @
+    984782.pow -12341
     $.equal-to 0
 
 [] > power-of-two
   assert-that > @
-    (3.pow 2)
+    3.pow 2
     $.equal-to 9
+
+[] > power-of-big-number
+  assert-that > @
+    999999999.pow 5
+    $.equal-to 9223372036854775807
+
+[] > power-of-zero
+  assert-that > @
+    0.pow 145
+    $.equal-to 0
