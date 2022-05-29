@@ -181,9 +181,6 @@
     "check int.neq.not negative"
 
 [] > calculates-fibonacci-number-with-recursion
-  eq. > @
-    3
-    fibo 4
   [n] > fibo
     if. > @
       n.less 3
@@ -191,6 +188,9 @@
       add.
         fibo (n.sub 1)
         fibo (n.sub 2)
+  assert-that > @
+    fibo 4
+    $.equal-to 3
 
 [] > calculates-fibonacci-number-with-tail
   assert-that > @
