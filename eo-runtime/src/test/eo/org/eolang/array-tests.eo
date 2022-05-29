@@ -121,13 +121,17 @@
     100
   assert-that > @
     anArray.get 0
-  $.equal-to 100
+    $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
   * > anArray
     1
     2
-  ((anArray.get 0).eq 1).and ((anArray.get 1).eq 2) > @
+  assert-that > @
+    anArray
+    $.array-each
+      $.equal-to 1
+      $.equal-to 2
 
 # check that array.is-empty works properly
 [] > should-not-be-empty
@@ -200,66 +204,73 @@
 
 # array not equal to another object by length
 [] > array-not-equal-to-another-array-by-length
-  not. > @
-    eq.
-      * 1 2 3
-      * 1 2 3 4
+  assert-that > @
+    * 1 2 3
+    $.is
+      $.not
+        $.equal-to
+          * 1 2 3 4
 
 # check that varargs eq works
 [] > varargs-eq-should-works
   [args...] > a
   [args...] > b
-  eq. > @
+  assert-that > @
     args.
       a
         13.as-float
         's'
         "bbt"
-    args.
-      b
-        13.as-float
-        's'
-        "bbt"
+    $.equal-to
+      args.
+        b
+          13.as-float
+          's'
+          "bbt"
 
 # nested array equal object should works
 [] > nested-array-eq-should-works
   * 1 "2" 3.0 > a
   * 1 "2" (3.as-float) > b
-  eq. > @
+  assert-that > @
     * 'w' a
-    * 'w' b
+    $.equal-to
+      * 'w' b
 
 # two different arrays not equal
 [] > two-different-arrays-not-equal
-  not. > @
-    eq.
-      * 1 2 3
-      * 1 5 "text"
+  assert-that > @
+    * 1 2 3
+    $.not
+      $.equal-to
+        * 1 5 "text"
 
 #two different nested arrays not eq
 [] > nested-array-not-eq-should-works
   * 5 'o' "18" > a
   * 5 'm' (18.as-string) > b
-  not. > @
-    eq.
-      * "not eq" a
-      * "not eq" b
+  assert-that > @
+    * "not eq" a
+    $.not
+      $.equal-to
+        * "not eq" b
 
 # check that varargs not eq works
 [] > varargs-not-eq-should-works
   [args...] > a
   [args...] > b
-  not. > @
-    eq.
-      args.
-        a 1 2 3
-      args.
-        b 1 2 "fail"
+  assert-that > @
+    args.
+      a 1 2 3
+    $.not
+      $.equal-to
+        args.
+          b 1 2 "fail"
 
 # reduce with index test
 [] > reduce-with-index-test
   * 2 2 > src
-  eq. > @
+  assert-that > @
     reducei.
       * 1 1
       0
@@ -268,7 +279,7 @@
           x
           a.add
             src.get i
-    6
+    $.equal-to 6
 
 [] > reducei-long-int-array
   assert-that > @
@@ -315,7 +326,7 @@
 
 # reduce without index test
 [] > reduce-without-index-test
-  eq. > @
+  assert-that > @
     reduce.
       * 1 2 3 4
       -1
@@ -323,7 +334,7 @@
         mul. > @
           a
           x
-    -24
+    $.equal-to -24
 
 [] > array-with-in-seq
   [a] > foo
