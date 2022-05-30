@@ -53,3 +53,10 @@
     /(^([0-9]+).*)/m
     .matches "1 bottle of water on the wall. \\n1 bottle of water."
     $.equal-to TRUE
+
+[] > check-entire-pattern
+  assert-that > @
+    /[0-9]/\\d+/
+    .match "2/75"
+    .length
+    $.equal-to 1
