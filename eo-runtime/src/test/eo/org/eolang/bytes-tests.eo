@@ -57,26 +57,30 @@
 [] > left-zero
   assert-that > @
     0.as-bytes.left 1
-    $.equal-to
-      -1.as-bytes.not
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > left-with-zero
   assert-that > @
     2.as-bytes.left 0
-    $.equal-to
-      -3.as-bytes.not
+    $.not
+      $.equal-to
+        -3.as-bytes
 
 [] > left-with-odd-neg
   assert-that > @
     -17.as-bytes.left 1
-    $.equal-to
-      33.as-bytes.not
+    $.not
+      $.equal-to
+        33.as-bytes
 
 [] > left-with-minus-one
   assert-that > @
     -1.as-bytes.left 3
-    $.equal-to
-      7.as-bytes.not
+    $.not
+      $.equal-to
+        7.as-bytes
 
 [] > left-with-even-neg
   assert-that > @
@@ -87,50 +91,58 @@
 [] > left-with-even-plus
   assert-that > @
     4.as-bytes.left 3
-    $.equal-to
-      -33.as-bytes.not
+    $.not
+      $.equal-to
+        -33.as-bytes
 
 [] > left-with-odd-plus
   assert-that > @
     5.as-bytes.left 3
-    $.equal-to
-      -41.as-bytes.not
+    $.not
+      $.equal-to
+        -41.as-bytes
 
 [] > right-with-zero
   assert-that > @
     0.as-bytes.right 2
-    $.equal-to
-      -1.as-bytes.not
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > right-with-odd-neg
   assert-that > @
     -37.as-bytes.right 3
-    $.equal-to
-      4.as-bytes.not
+    $.not
+      $.equal-to
+        4.as-bytes
 
 [] > right-with-minus-one
   assert-that > @
     -1.as-bytes.right 4
-    $.equal-to
-      0.as-bytes.not
+    $.not
+      $.equal-to
+        0.as-bytes
 
 [] > right-with-even-neg
   assert-that > @
     -38.as-bytes.right 1
-    $.equal-to
-      18.as-bytes.not
+    $.not
+      $.equal-to
+        18.as-bytes
 
 [] > right-with-even-plus
   assert-that > @
     36.as-bytes.right 2
-    $.equal-to
-      -10.as-bytes.not
+    $.not
+      $.equal-to
+        -10.as-bytes
 
 [] > right-with-odd-plus
   assert-that > @
     37.as-bytes.right 3
-    $.equal-to
-      -5.as-bytes.not
+    $.not
+      $.equal-to
+        -5.as-bytes
 
 [] > and-with-zero
   assert-that > @
@@ -144,22 +156,25 @@
 [] > and-with-two-neg
   assert-that > @
     -6.as-bytes.and (-4.as-bytes)
-    $.equal-to
-      7.as-bytes.not
+    $.not
+      $.equal-to
+        7.as-bytes
 
 [] > and-with-two-plus
   assert-that > @
     and.
       5.as-bytes
       10.as-bytes
-    $.equal-to
-      -1.as-bytes.not
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > and-with-one-neg-one-plus
   assert-that > @
     -7.as-bytes.and (7.as-bytes)
-    $.equal-to
-      -2.as-bytes.not
+    $.not
+      $.equal-to
+        -2.as-bytes
 
 [] > or-with-zero
   assert-that > @
@@ -171,44 +186,51 @@
 [] > or-with-two-neg
   assert-that > @
     -27.as-bytes.or (-13.as-bytes)
-    $.equal-to
-      8.as-bytes.not
+    $.not
+      $.equal-to
+        8.as-bytes
 
 [] > or-with-two-plus
   assert-that > @
     5.as-bytes.or (14.as-bytes)
-    $.equal-to
-      -16.as-bytes.not
+    $.not
+      $.equal-to
+        -16.as-bytes
 
 [] > or-with-one-neg-one-plus
   assert-that > @
     -7.as-bytes.or (23.as-bytes)
-    $.equal-to
-      0.as-bytes.not
+    $.not
+      $.equal-to
+        0.as-bytes
 
 [] > xor-with-zero
   assert-that > @
     0.as-bytes.xor (29.as-bytes)
-    $.equal-to
-      -30.as-bytes.not
+    $.not
+      $.equal-to
+        -30.as-bytes
 
 [] > xor-with-two-neg
   assert-that > @
     -1.as-bytes.xor (-123.as-bytes)
-    $.equal-to
-      -123.as-bytes.not
+    $.not
+      $.equal-to
+        -123.as-bytes
 
 [] > xor-with-two-plus
   assert-that > @
     53.as-bytes.xor (24.as-bytes)
-    $.equal-to
-      -46.as-bytes.not
+    $.not
+      $.equal-to
+        -46.as-bytes
 
 [] > xor-with-one-neg-one-plus
   assert-that > @
     -36.as-bytes.xor (43.as-bytes)
-    $.equal-to
-      8.as-bytes.not
+    $.not
+      $.equal-to
+        8.as-bytes
 
 [] > not-with-zero
   assert-that > @
