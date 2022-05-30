@@ -23,20 +23,21 @@
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > prints-simple-string
-  eq. > @
-    "Hello, Jeffrey!"
+  assert-that > @
     sprintf
       "Hello, %s!"
       "Jeffrey"
+    $.equal-to "Hello, Jeffrey!"
 
 [] > prints-complex-string
-  eq. > @
-    "Привет 3.14 Jeff X!"
+  assert-that > @
     sprintf
       "Привет %.2f %s %c!"
       3.14
       "Jeff"
       'X'
+    $.equal-to "Привет 3.14 Jeff X!"
