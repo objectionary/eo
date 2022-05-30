@@ -26,15 +26,20 @@
 +junit
 
 [] > matches-string-against-pattern
-  /([a-z]+)/i
-  .match "hello"
-  .is-empty
-  .not > @
+  assert-that > @
+    /([a-z]+)/i
+    .match "hello"
+    .is-empty
+    $.is
+      $.not
+        $.equal-to TRUE
 
 [] > doesnt-match-string-against-pattern
-  /([A-Z]{2})/
-  .matches "Hello, World!"
-  .not > @
+  assert-that > @
+    /([A-Z]{2})/
+    .matches "Hello, World!"
+    $.is
+      $.equal-to FALSE
 
 [] > check-dotall-option
   assert-that > @
