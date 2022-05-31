@@ -46,9 +46,6 @@ SOFTWARE.
               <xsl:when test="@data='regex'">
                 <xsl:text>java.util.regex.Pattern</xsl:text>
               </xsl:when>
-              <xsl:when test="@data='char'">
-                <xsl:text>Character</xsl:text>
-              </xsl:when>
               <xsl:when test="@data='float'">
                 <xsl:text>Double</xsl:text>
               </xsl:when>

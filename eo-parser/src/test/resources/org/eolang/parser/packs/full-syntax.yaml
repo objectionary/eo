@@ -5,7 +5,7 @@ tests:
   - /program/metas/meta[head='foo' and tail='']
   - //o[@base='bool']
   - //o[@base='string']
-  - //o[@base='char' and text()='e']
+  - //o[@base='bytes' and text()='\t']
   - //o[@base='float' and text()='500.43']
   - //o[@base='int' and text()='31']
   - //o[@base='string' and text()='Hello, друг!']
@@ -42,7 +42,7 @@ eo: |
       $.add.@ 5.< > i
       third:foo > x...!
         f 12 false
-          (((t' 22) r:t 8.54 "yes".< 'e').print 88 0x1f):hey TRUE.< FALSE > a!
+          (((t' 22) r:t 8.54 "yes".< "\t").print 88 0x1f):hey TRUE.< FALSE > a!
             # This object is also very good
             []
               Q.x.f.d Q Q
@@ -50,7 +50,7 @@ eo: |
               ^.@.hey > you...
               Q
             ...kid.^.^
-            '家'
+            "家"
       f':u
         z'
           z 5
