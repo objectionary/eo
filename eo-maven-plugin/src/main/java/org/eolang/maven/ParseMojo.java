@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -96,6 +95,7 @@ public final class ParseMojo extends SafeMojo {
      * @param tojo The tojo
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get("id");
@@ -106,7 +106,8 @@ public final class ParseMojo extends SafeMojo {
                 new InputOf(source),
                 new OutputTo(baos)
             ).parse();
-        } catch (final ParsingException ex) {
+        // @checkstyle IllegalCatchCheck (1 line)
+        } catch (final RuntimeException ex) {
             throw new IllegalArgumentException(
                 String.format("Failed to parse %s", source),
                 ex
