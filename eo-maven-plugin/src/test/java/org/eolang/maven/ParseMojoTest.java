@@ -100,7 +100,7 @@ public final class ParseMojoTest {
     @Test
     public void testCrashesWithFileName(@TempDir final Path temp)
         throws Exception {
-        final Path src = temp.resolve("foo/bar.eo");
+        final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
         final Path foreign = temp.resolve("foreign-1.json");
         new MonoTojos(new Csv(foreign))
@@ -115,7 +115,7 @@ public final class ParseMojoTest {
                 .with("foreignFormat", "csv")
                 .execute()
         );
-        Assertions.assertTrue(exception.getMessage().endsWith("foo/bar.eo"));
+        Assertions.assertTrue(exception.getMessage().endsWith("/bar/src.eo"));
     }
 
 }
