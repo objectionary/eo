@@ -97,4 +97,25 @@ public final class ParseMojoTest {
         );
     }
 
+    @Test
+    public void testCrashesWithFileName(@TempDir final Path temp)
+        throws Exception {
+        final Path src = temp.resolve("bar/src.eo");
+        new Save("something < is wrong here", src).save();
+        final Path foreign = temp.resolve("foreign-1.json");
+        new MonoTojos(new Csv(foreign))
+            .add("bar.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        final IllegalArgumentException exception = Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Moja<>(ParseMojo.class)
+                .with("targetDir", temp.resolve("target").toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .execute()
+        );
+        Assertions.assertTrue(exception.getMessage().endsWith("/bar/src.eo"));
+    }
+
 }
