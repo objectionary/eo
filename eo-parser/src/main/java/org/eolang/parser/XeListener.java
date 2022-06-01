@@ -353,7 +353,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             type = "bytes";
-            data = text.replace("-", " ").trim();
+            data = text.replaceAll("\\s+", "").replace("-", " ").trim();
         } else if (ctx.BOOL() != null) {
             type = "bool";
             data = Boolean.toString(Boolean.parseBoolean(text));

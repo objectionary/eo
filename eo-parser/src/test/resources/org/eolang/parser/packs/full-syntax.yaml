@@ -5,7 +5,7 @@ tests:
   - /program/metas/meta[head='foo' and tail='']
   - //o[@base='bool']
   - //o[@base='string']
-  - //o[@base='bytes' and text()='\t']
+  - //o[@base='string' and text()='\t']
   - //o[@base='float' and text()='500.43']
   - //o[@base='int' and text()='31']
   - //o[@base='string' and text()='Hello, друг!']

@@ -136,12 +136,12 @@ public final class DataTest {
             Matchers.not(Matchers.equalTo(new Data.Value<>(1.0d)))
         );
         MatcherAssert.assertThat(
-            new Data.Value<>('x'),
-            Matchers.equalTo(new Data.Value<>('x'))
+            new Data.Value<>("\n"),
+            Matchers.equalTo(new Data.Value<>("\n"))
         );
         MatcherAssert.assertThat(
-            new Data.Value<>('f'),
-            Matchers.not(Matchers.equalTo(new Data.Value<>('a')))
+            new Data.Value<>("\t"),
+            Matchers.not(Matchers.equalTo(new Data.Value<>("a")))
         );
         MatcherAssert.assertThat(
             new Data.Value<>(Pattern.compile("abc")),

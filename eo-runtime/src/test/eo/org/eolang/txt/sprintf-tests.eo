@@ -36,8 +36,8 @@
 [] > prints-complex-string
   assert-that > @
     sprintf
-      "Привет %.2f %s %c!"
+      "Привет %.2f %s %s!"
       3.14
       "Jeff"
-      'X'
+      "X"
     $.equal-to "Привет 3.14 Jeff X!"

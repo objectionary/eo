@@ -117,11 +117,6 @@ SOFTWARE.
               </xsl:for-each>
               <xsl:text>)</xsl:text>
             </xsl:when>
-            <xsl:when test="@data='char'">
-              <xsl:text>'</xsl:text>
-              <xsl:value-of select="text()"/>
-              <xsl:text>'</xsl:text>
-            </xsl:when>
             <xsl:when test="@data='int'">
               <xsl:value-of select="text()"/>
               <xsl:text>L</xsl:text>

@@ -4,7 +4,6 @@ tests:
   - //objects[count(o[@base='bytes'])=6]
   - //o[@base='bytes' and @name='bytesX' and @data]
   - //o[@base='bytes' and @name='ml' and @data]
-  - //o[@base='bytes' and @name='bytesY' and @data]
   - //o[@base='bool' and @name='boolX' and @data]
   - //o[@base='int' and @name='intX' and @data]
   - //o[@base='float' and @data='float' and @name='largestNegativeFloat' and text()='-1.7976931348623157E308']
@@ -16,6 +15,7 @@ tests:
   - //o[@base='float' and @data='float' and @name='positiveExponentialFormatFloat' and text()='1.7E25']
   - //o[@base='float' and @data='float' and @name='negatieExponentialFormatFloat' and text()='-1.7E-25']
   - //o[@base='string' and @name='stringX' and @data]
+  - //o[@base='string' and @name='stringY' and @data]
   - //o[@base='string' and @name='textX' and @data]
 eo: |
   01- > bytesX
@@ -42,7 +42,7 @@ eo: |
 
   "Hello, друг! 谢谢!" > stringX
 
-  "\n" > bytesY
+  "\n\t\07" > stringY
 
   TRUE > boolX
 

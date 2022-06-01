@@ -1,15 +1,7 @@
 xsls: []
 tests:
-  - //objects[count(.//o[@base='bytes'])=7]
   - //objects[count(.//o[@base='string'])=7]
 eo: |
-  "\n"
-  "\r"
-  "\f"
-  "\b"
-  "\t"
-  "\000"
-  "\uFFFF"
   "\n"
   "\r"
   "\f"
