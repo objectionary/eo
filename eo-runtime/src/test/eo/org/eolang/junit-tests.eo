@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+alias org.eolang.hamcrest.assert-that
++alias assertThat org.eolang.hamcrest.assert-that
 +junit
 
 [] > x
@@ -34,7 +34,7 @@
   TRUE > @
 
 [] > assert-that-should-works
-  assert-that > @
+  assertThat > @
     "anything"
     $.is
       $.anything
