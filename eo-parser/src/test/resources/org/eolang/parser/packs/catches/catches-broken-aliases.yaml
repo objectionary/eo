@@ -1,11 +1,17 @@
 xsls:
   - /org/eolang/parser/errors/broken-aliases.xsl
 tests:
-  - /program/errors[count(error)=2]
-  - /program/errors/error[@line='2']
+  - /program/errors[count(error)=3]
+  - /program/errors/error[@line='5']
+  - /program/errors/error[@line='6']
+  - /program/errors/error[@line='7']
 eo: |
   +alias org.eolang.io.stdout
+  +alias caseInsensitive thiS.IS.2
+  +alias with-Dash-and-number-999 0.1.2
+  +alias i文件 this.is.legal2
   +alias this is some mistake
+  +alias FirstLetter Should.Be.Small
   +alias
 
   [] > main
