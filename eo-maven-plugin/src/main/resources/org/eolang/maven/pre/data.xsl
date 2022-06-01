@@ -46,9 +46,6 @@ SOFTWARE.
               <xsl:when test="@data='regex'">
                 <xsl:text>java.util.regex.Pattern</xsl:text>
               </xsl:when>
-              <xsl:when test="@data='char'">
-                <xsl:text>Character</xsl:text>
-              </xsl:when>
               <xsl:when test="@data='float'">
                 <xsl:text>Double</xsl:text>
               </xsl:when>
@@ -119,11 +116,6 @@ SOFTWARE.
                 </xsl:choose>
               </xsl:for-each>
               <xsl:text>)</xsl:text>
-            </xsl:when>
-            <xsl:when test="@data='char'">
-              <xsl:text>'</xsl:text>
-              <xsl:value-of select="text()"/>
-              <xsl:text>'</xsl:text>
             </xsl:when>
             <xsl:when test="@data='int'">
               <xsl:value-of select="text()"/>

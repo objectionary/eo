@@ -208,8 +208,6 @@ data
   |
   HEX
   |
-  CHAR
-  |
   REGEX
   ;
 
@@ -265,7 +263,6 @@ BYTES:
     |  LINE_BYTES (MINUS EOL LINE_BYTES)*;
 
 BOOL: 'TRUE' | 'FALSE';
-CHAR:  '\'' (~['\\\r\n] | ESCAPE_SEQUENCE) '\'';
 STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
 
 fragment ESCAPE_SEQUENCE

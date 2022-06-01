@@ -71,11 +71,6 @@
     "друг"
     $.equal-to D0-B4-D1-80-D1-83-D0-B3
 
-[] > picks-a-single-char
-  assert-that > @
-    "Hello, world!".char-at 1
-    $.equal-to 'e'
-
 [] > reads-the-length
   assert-that > @
     "Hello, друг!".length

@@ -188,7 +188,7 @@
     *
       1
       "str"
-      'f'
+      "\n"
       22.0
       "друг".as-bytes
       TRUE
@@ -197,7 +197,7 @@
         *
           1
           "str"
-          'f'
+          "\n"
           (11.mul 2).as-float
           D0-B4-D1-80-D1-83-D0-B3
           FALSE.not
@@ -219,13 +219,13 @@
     args.
       a
         13.as-float
-        's'
+        "\t"
         "bbt"
     $.equal-to
       args.
         b
           13.as-float
-          's'
+          "\t"
           "bbt"
 
 # nested array equal object should works
@@ -233,9 +233,9 @@
   * 1 "2" 3.0 > a
   * 1 "2" (3.as-float) > b
   assert-that > @
-    * 'w' a
+    * "w" a
     $.equal-to
-      * 'w' b
+      * "w" b
 
 # two different arrays not equal
 [] > two-different-arrays-not-equal
@@ -247,8 +247,8 @@
 
 #two different nested arrays not eq
 [] > nested-array-not-eq-should-works
-  * 5 'o' "18" > a
-  * 5 'm' (18.as-string) > b
+  * 5 "\07" "18" > a
+  * 5 "neq" (18.as-string) > b
   assert-that > @
     * "not eq" a
     $.not
@@ -369,9 +369,9 @@
       t
   assert-that > @
     foo
-      * 1 "text" 'f'
+      * 1 "text" "f"
     $.equal-to
-      * "text" 'f'
+      * "text" "f"
 
 [] > array-without-nested-array
   * 3 2 1 > nested
