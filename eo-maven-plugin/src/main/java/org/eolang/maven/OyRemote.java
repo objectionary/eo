@@ -26,6 +26,8 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.URL;
+import java.security.InvalidParameterException;
+
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 
@@ -53,20 +55,17 @@ public final class OyRemote implements Objectionary {
         this("master");
     }
 
-    /**
+    /*
      * Ctor.
-     * @param hsh The GitHub hash
-     * @todo #490:30m Resolve abbreviated hash to a proper hash.
-     *  In order to avoid collisions resolve hash
-     *  (or branch) to a complete sha-256 hash of the commit.
-     *  Use only sha-256 hashes as a caching criteria.
+     * @param hsh the hash or branch,
+     * throws an error if hash is abbreviated
      */
-    public OyRemote(final String hsh) {
-        this(
-            // @checkstyle LineLength (1 line)
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-            hsh
-        );
+    public OyRemote(final String hsh) throws InvalidParameterException {
+        if (hsh.length() != 40) {  // 40 is length of correct hash
+            throw new InvalidParameterException();
+        }
+        this.addr = "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo";
+        this.hash = hsh;
     }
 
     /**
