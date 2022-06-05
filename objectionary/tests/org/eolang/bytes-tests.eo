@@ -21,151 +21,272 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > takes-part-of-bytes
-  eq. > @
+  assert-that > @
     part.
       20-1F-EE-B5-90
       1
       3
-    1F-EE-B5
+    $.equal-to 1F-EE-B5
 
 [] > size-of-part-is-correct
-  eq. > @
+  assert-that > @
     size.
       part.
         20-1F-EE-B5-90-EE-BB
         2
         3
-    3
+    $.equal-to 3
 
 [] > counts-size-of-bytes
-  eq. > @
+  assert-that > @
     size.
       F1-20-5F-EC-B5-90-32
-    7
+    $.equal-to 7
 
 [] > turns-bytes-into-a-string
-  eq. > @
+  assert-that > @
     as-string.
       E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
-    "你好, друг!"
+    $.equal-to "你好, друг!"
 
 [] > left-zero
-  (0.as-bytes.left 1).eq (-1.as-bytes.not) > @
+  assert-that > @
+    0.as-bytes.left 1
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > left-with-zero
-  (2.as-bytes.left 0).eq (-3.as-bytes.not) > @
+  assert-that > @
+    2.as-bytes.left 0
+    $.not
+      $.equal-to
+        -3.as-bytes
 
 [] > left-with-odd-neg
-  (-17.as-bytes.left 1).eq (33.as-bytes.not) > @
+  assert-that > @
+    -17.as-bytes.left 1
+    $.not
+      $.equal-to
+        33.as-bytes
 
 [] > left-with-minus-one
-  (-1.as-bytes.left 3).eq (7.as-bytes.not) > @
+  assert-that > @
+    -1.as-bytes.left 3
+    $.not
+      $.equal-to
+        7.as-bytes
 
 [] > left-with-even-neg
-  (-18.as-bytes.left 2).eq (71.as-bytes.not) > @
+  assert-that > @
+    -18.as-bytes.left 2
+    $.equal-to
+      71.as-bytes.not
 
 [] > left-with-even-plus
-  (4.as-bytes.left 3).eq (-33.as-bytes.not) > @
+  assert-that > @
+    4.as-bytes.left 3
+    $.not
+      $.equal-to
+        -33.as-bytes
 
 [] > left-with-odd-plus
-  (5.as-bytes.left 3).eq (-41.as-bytes.not) > @
+  assert-that > @
+    5.as-bytes.left 3
+    $.not
+      $.equal-to
+        -41.as-bytes
 
 [] > right-with-zero
-  (0.as-bytes.right 2).eq (-1.as-bytes.not) > @
+  assert-that > @
+    0.as-bytes.right 2
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > right-with-odd-neg
-  (-37.as-bytes.right 3).eq (4.as-bytes.not) > @
+  assert-that > @
+    -37.as-bytes.right 3
+    $.not
+      $.equal-to
+        4.as-bytes
 
 [] > right-with-minus-one
-  (-1.as-bytes.right 4).eq (0.as-bytes.not) > @
+  assert-that > @
+    -1.as-bytes.right 4
+    $.not
+      $.equal-to
+        0.as-bytes
 
 [] > right-with-even-neg
-  (-38.as-bytes.right 1).eq (18.as-bytes.not) > @
+  assert-that > @
+    -38.as-bytes.right 1
+    $.not
+      $.equal-to
+        18.as-bytes
 
 [] > right-with-even-plus
-  (36.as-bytes.right 2).eq (-10.as-bytes.not) > @
+  assert-that > @
+    36.as-bytes.right 2
+    $.not
+      $.equal-to
+        -10.as-bytes
 
 [] > right-with-odd-plus
-  (37.as-bytes.right 3).eq (-5.as-bytes.not) > @
+  assert-that > @
+    37.as-bytes.right 3
+    $.not
+      $.equal-to
+        -5.as-bytes
 
 [] > and-with-zero
-  (0.as-bytes.and (32.as-bytes)).eq (-1.as-bytes.not) > @
+  assert-that > @
+    and.
+      0.as-bytes
+      32.as-bytes
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > and-with-two-neg
-  (-6.as-bytes.and (-4.as-bytes)).eq (7.as-bytes.not) > @
+  assert-that > @
+    -6.as-bytes.and (-4.as-bytes)
+    $.not
+      $.equal-to
+        7.as-bytes
 
 [] > and-with-two-plus
-  (5.as-bytes.and (10.as-bytes)).eq (-1.as-bytes.not) > @
+  assert-that > @
+    and.
+      5.as-bytes
+      10.as-bytes
+    $.not
+      $.equal-to
+        -1.as-bytes
 
 [] > and-with-one-neg-one-plus
-  (-7.as-bytes.and (7.as-bytes)).eq (-2.as-bytes.not) > @
+  assert-that > @
+    -7.as-bytes.and (7.as-bytes)
+    $.not
+      $.equal-to
+        -2.as-bytes
 
 [] > or-with-zero
-  (-11.as-bytes.or (0.as-bytes)).eq (10.as-bytes.not) > @
+  assert-that > @
+    -11.as-bytes.or (0.as-bytes)
+    $.not
+      $.equal-to
+        10.as-bytes
 
 [] > or-with-two-neg
-  (-27.as-bytes.or (-13.as-bytes)).eq (8.as-bytes.not) > @
+  assert-that > @
+    -27.as-bytes.or (-13.as-bytes)
+    $.not
+      $.equal-to
+        8.as-bytes
 
 [] > or-with-two-plus
-  (5.as-bytes.or (14.as-bytes)).eq (-16.as-bytes.not) > @
+  assert-that > @
+    5.as-bytes.or (14.as-bytes)
+    $.not
+      $.equal-to
+        -16.as-bytes
 
 [] > or-with-one-neg-one-plus
-  (-7.as-bytes.or (23.as-bytes)).eq (0.as-bytes.not) > @
+  assert-that > @
+    -7.as-bytes.or (23.as-bytes)
+    $.not
+      $.equal-to
+        0.as-bytes
 
 [] > xor-with-zero
-  (0.as-bytes.xor (29.as-bytes)).eq (-30.as-bytes.not) > @
+  assert-that > @
+    0.as-bytes.xor (29.as-bytes)
+    $.not
+      $.equal-to
+        -30.as-bytes
 
 [] > xor-with-two-neg
-  (-1.as-bytes.xor (-123.as-bytes)).eq (-123.as-bytes.not) > @
+  assert-that > @
+    -1.as-bytes.xor (-123.as-bytes)
+    $.not
+      $.equal-to
+        -123.as-bytes
 
 [] > xor-with-two-plus
-  (53.as-bytes.xor (24.as-bytes)).eq (-46.as-bytes.not) > @
+  assert-that > @
+    53.as-bytes.xor (24.as-bytes)
+    $.not
+      $.equal-to
+        -46.as-bytes
 
 [] > xor-with-one-neg-one-plus
-  (-36.as-bytes.xor (43.as-bytes)).eq (8.as-bytes.not) > @
+  assert-that > @
+    -36.as-bytes.xor (43.as-bytes)
+    $.not
+      $.equal-to
+        8.as-bytes
 
 [] > not-with-zero
-  0.as-bytes.not.eq (0.as-bytes.not) > @
+  assert-that > @
+    0.as-bytes
+    $.not
+      $.equal-to
+        0.as-bytes.not
 
 [] > not-with-neg
-  -1.as-bytes.not.eq (-1.as-bytes.not) > @
+  assert-that > @
+    -1.as-bytes
+    $.not
+      $.equal-to
+        -1.as-bytes.not
 
 [] > not-with-plus
-  53.as-bytes.not.eq (53.as-bytes.not) > @
+  assert-that > @
+    53.as-bytes
+    $.not
+      $.equal-to
+        53.as-bytes.not
 
 [] > conjuction-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
-  (a.and b).eq 02-23-C0-05-5E-70-10 > @
+  assert-that > @
+    a.and b
+    $.equal-to
+      02-23-C0-05-5E-70-10
 
 [] > written-in-several-lines
-  eq. > @
+  assert-that > @
     size.
       CA-FE-
       BE-BE
-    4
+    $.equal-to 4
 
 [] > bitwise-works
-  eq. > @
+  assert-that > @
     as-int.
       and.
         1.as-bytes
         1.as-bytes
-    1
+    $.equal-to 1
 
 [] > convertable-to-bool
-  and. > @
+  assert-that > @
     01-.as-bool
-    not.
-      00-.as-bool
+    $.not
+      $.equal-to
+        00-.as-bool
 
 [] > bitwise-works-negative
-  eq. > @
+  assert-that > @
     as-int.
       or.
         -127.as-bytes
         127.as-bytes
-    -1
+    $.equal-to -1

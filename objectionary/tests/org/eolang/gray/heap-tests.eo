@@ -21,7 +21,9 @@
 # SOFTWARE.
 
 +package org.eolang.gray
++home https://github.com/objectionary/eo
 +alias org.eolang.gray.heap
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > allocates-and-uses
@@ -32,40 +34,48 @@
   p.block > data
     bytes.size
     [b] (b.as-string > @)
-  and. > @
-    data.write bytes
-    data.eq txt
+  assert-that > @
+    seq
+      data.write bytes
+      data
+    $.equal-to txt
 
 [] > malloc-and-free
   heap 1024 > h
   h.malloc 64 > p1
   h.malloc 32 > p2
-  and. > @
-    p1.less p2
-    h.free p1
-    h.free p2
+  assert-that > @
+    and.
+      p1.less p2
+      h.free p1
+      h.free p2
+    $.equal-to TRUE
 
 [] > write-and-read-without-error
   heap 1024 > h
   h.pointer 0 8 > p
   [] > mem
     p.block 8 > @
-  mem.write 01-02-03 > @
+  assert-that > @
+    mem.write 01-02-03
+    $.equal-to TRUE
 
 [] > increments-pointer
   heap 1024 > h
   h.pointer 0 2 > p1
   p1.add 2 > p2
   p2.sub 1 > p3
-  and. > @
-    (p1.block 6).write ("HELLO!".as-bytes)
-    eq.
-      p2.block
-        2
-        [b] (b.as-string > @)
-      "O!"
-    eq.
-      p3.block
-        2
-        [b] (b.as-string > @)
-      "LL"
+  assert-that > @
+    and.
+      (p1.block 6).write ("HELLO!".as-bytes)
+      eq.
+        p2.block
+          2
+          [b] (b.as-string > @)
+        "O!"
+      eq.
+        p3.block
+          2
+          [b] (b.as-string > @)
+        "LL"
+    $.equal-to TRUE

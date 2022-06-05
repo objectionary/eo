@@ -21,25 +21,31 @@
 # SOFTWARE.
 
 +package org.eolang.gray
++home https://github.com/objectionary/eo
 +alias org.eolang.gray.cage
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > writes-into-cage
   [z] > a
   cage > x
-  and. > @
-    x.write
-      a 7
-    x.z.eq 7
+  assert-that > @
+    seq
+      x.write
+        a 7
+      x.z
+    $.equal-to 7
 
 [] > avoid-infinite-loop
   cage > x
   x' > copy
-  seq > @
-    x.write 42
-    copy.<
-    x.write (7.add copy)
-    x.eq 49
+  assert-that > @
+    seq
+      x.write 42
+      copy.<
+      x.write (7.add copy)
+      x
+    $.equal-to 49
 
 [] > avoid-infinite-loop-second-case
   [first second] > pair
@@ -47,79 +53,97 @@
     pair head tail > @
   cage > list
   list' > copy
-  seq > @
-    list.write (pair 1 0)
-    copy.<
-    list.write (add 2 copy)
-    list.second.second.eq 0
+  assert-that > @
+    seq
+      list.write (pair 1 0)
+      copy.<
+      list.write (add 2 copy)
+      list.second.second
+    $.equal-to 0
 
 [] > cage-nested-objects
   cage > c
   c' > copy
   [x] > dummy
     x > @
-  seq > @
-    c.write (dummy 42)
-    copy.<
-    c.write (dummy copy)
-    c.x.x.eq 42
+  assert-that > @
+    seq
+      c.write (dummy 42)
+      copy.<
+      c.write (dummy copy)
+      c.x.x
+    $.equal-to 42
 
 [] > overwrites-caged-object-with-integer
   cage > c
   [] > t
     42 > attr
-  seq > @
-    c.write t
-    c.attr
-    c.write 66
-    c.eq 66
+  assert-that > @
+    seq
+      c.write t
+      c.attr
+      c.write 66
+      c
+    $.equal-to 66
 
 [] > dataizes-encaged-object-lazily-first
   cage > x
   cage > sum
-  seq > @
-    x.write 42
-    sum.write (x.add 1)
-    x.write 7
-    sum.eq 8
+  assert-that > @
+    seq
+      x.write 42
+      sum.write (x.add 1)
+      x.write 7
+      sum
+    $.equal-to 8
 
 [] > dataizes-encaged-object-lazily-second
   cage > x
   cage > sum
-  seq > @
-    x.write 42
-    sum.write (1.add x)
-    x.write 7
-    sum.eq 8
+  assert-that > @
+    seq
+      x.write 42
+      sum.write (1.add x)
+      x.write 7
+      sum
+    $.equal-to 8
 
 [] > dataizes-encaged-object-lazily-third
   cage > x
   cage > y
   cage > sum
-  seq > @
-    x.write 42
-    y.write 7
-    sum.write (x.add y)
-    y.write 13
-    x.write 4
-    sum.eq 17
+  assert-that > @
+    seq
+      x.write 42
+      y.write 7
+      sum.write (x.add y)
+      y.write 13
+      x.write 4
+      sum
+    $.equal-to 17
 
 [] > stores-abstract-object-into-cage
   cage > c
-  seq > @
-    write.
-      c
-      [x]
-        TRUE > @
-    c.@
-      42
+  assert-that > @
+    seq
+      write.
+        c
+        [x]
+          112 > @
+      c.@
+        42
+    $.equal-to 112
 
 [] > test-for-emptiness
   cage > x
-  x.is-empty > @
+  assert-that > @
+    x.is-empty
+    $.equal-to TRUE
 
 [] > test-for-non-emptiness
   cage > x
-  and. > @
-    x.write 1
-    x.is-empty.not
+  assert-that > @
+    and.
+      x.write 1
+      x.is-empty.not
+    $.equal-to TRUE

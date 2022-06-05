@@ -21,23 +21,28 @@
 # SOFTWARE.
 
 +package org.eolang.gray
++home https://github.com/objectionary/eo
 +alias org.eolang.io.stdout
 +alias org.eolang.gray.goto
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > goto-jumps-backwards
   memory > i
-  seq > @
-    i.write 1
-    goto
-      [g]
-        seq > @
-          i.write (i.add 1)
-          if.
-            i.less 10
-            g.backward
-            TRUE
-    stdout "Finished!"
+  assert-that > @
+    seq
+      i.write 1
+      goto
+        [g]
+          seq > @
+            i.write (i.add 1)
+            if.
+              i.less 10
+              g.backward
+              TRUE
+      stdout "Finished!"
+      i
+    $.equal-to 10
 
 [] > goto-jumps-forward
   [x] > div
@@ -53,13 +58,15 @@
               TRUE
             r.write (42.div x)
       r
-  and. > @
-    eq.
-      div 7
-      6
-    eq.
-      div 0
-      0
+  assert-that > @
+    and.
+      eq.
+        div 7
+        6
+      eq.
+        div 0
+        0
+    $.equal-to TRUE
 
 [] > returns-from-method-body
   [a b] > max
@@ -71,13 +78,12 @@
             g.forward a
             TRUE
           b
-  eq. > @
+  assert-that > @
     max 7 42
-    42
+    $.equal-to 42
 
 [] > nested-goto
-  eq. > @
-    42
+  assert-that > @
     goto
       [g1]
         seq > @
@@ -85,3 +91,4 @@
             [g2]
               g1.forward 42 > @
           7
+    $.equal-to 42

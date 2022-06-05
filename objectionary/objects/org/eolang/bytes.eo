@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.5
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.23.6
 
 [] > bytes
 
@@ -46,11 +47,6 @@
   # If there are less or more than eight bytes, there will
   # be an error returned.
   [] > as-float /float
-
-  # Turn this chain of one byte into a char.
-  # If there are less or more than one byte, there will
-  # be an error returned.
-  [] > as-char /char
 
   # Calculate bitwise and
   [b] > and /bytes

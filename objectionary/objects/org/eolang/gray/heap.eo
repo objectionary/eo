@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang.gray
-+rt jvm org.eolang:eo-runtime:0.23.5
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.23.6
 
 # Emulation of random-access memory (RAM).
 [size] > heap

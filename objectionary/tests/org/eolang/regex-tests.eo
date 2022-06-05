@@ -21,15 +21,47 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > matches-string-against-pattern
-  /([a-z]+)/i
-  .match "hello"
-  .is-empty
-  .not > @
+  assert-that > @
+    /([a-z]+)/i
+    .match "hello"
+    .is-empty
+    $.is
+      $.not
+        $.equal-to TRUE
 
 [] > doesnt-match-string-against-pattern
-  /([A-Z]{2})/
-  .matches "Hello, World!"
-  .not > @
+  assert-that > @
+    /([A-Z]{2})/
+    .matches "Hello, World!"
+    $.is
+      $.equal-to FALSE
+
+[] > check-dotall-option
+  assert-that > @
+    /(.*)/s
+    .matches "too \\n many \\n line \\n Feed\\n"
+    $.equal-to TRUE
+
+[] > check-case-insensitive-option
+  assert-that > @
+    /(string)/i
+    .matches "StRiNg"
+    $.equal-to TRUE
+
+[] > check-multiline-option
+  assert-that > @
+    /(^([0-9]+).*)/m
+    .matches "1 bottle of water on the wall. \\n1 bottle of water."
+    $.equal-to TRUE
+
+[] > check-entire-pattern
+  assert-that > @
+    /[0-9]/\\d+/
+    .match "2/75"
+    .length
+    $.equal-to 1

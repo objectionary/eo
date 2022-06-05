@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -180,9 +181,6 @@
     "check int.neq.not negative"
 
 [] > calculates-fibonacci-number-with-recursion
-  eq. > @
-    3
-    fibo 4
   [n] > fibo
     if. > @
       n.less 3
@@ -190,6 +188,9 @@
       add.
         fibo (n.sub 1)
         fibo (n.sub 2)
+  assert-that > @
+    fibo 4
+    $.equal-to 3
 
 [] > calculates-fibonacci-number-with-tail
   assert-that > @
@@ -406,3 +407,43 @@
   assert-that > @
     16.mod -200
     $.equal-to 16
+
+[] > pow-test
+  assert-that > @
+    2.pow 4
+    $.equal-to 16
+
+[] > power-is-zero
+  assert-that > @
+    2.pow 0
+    $.equal-to 1
+
+[] > power-is-negative-zero
+  assert-that > @
+    2.pow -0
+    $.equal-to 1
+
+[] > power-is-negative
+  assert-that > @
+    984782.pow -12341
+    $.equal-to 0
+
+[] > power-of-two
+  assert-that > @
+    3.pow 2
+    $.equal-to 9
+
+[] > power-of-big-number
+  assert-that > @
+    999999999.pow 5
+    $.equal-to 9223372036854775807
+
+[] > power-of-zero
+  assert-that > @
+    0.pow 145
+    $.equal-to 0
+
+[] > negative-power-of-zero
+  assert-that > @
+    (0.pow -567).msg
+    $.equal-to "0 cannot be raised to a negative power"

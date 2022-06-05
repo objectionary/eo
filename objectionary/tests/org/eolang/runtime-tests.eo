@@ -21,25 +21,27 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
 +alias org.eolang.txt.sprintf
 +alias org.eolang.gray.cage
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > understands-this-correctly
   [x] > a
     $.x > @
-  eq. > @
+  assert-that > @
     a 42
-    42
+    $.equal-to 42
 
 [] > takes-parent-object
   [x] > a
     [] > take
       ^.x > @
     take > @
-  eq. > @
+  assert-that > @
     a 42
-    42
+    $.equal-to 42
 
 [] > makes-object-a-constant
   [] > foo
@@ -48,16 +50,18 @@
         random
         100.0
   foo.@ > f!
-  f.eq f > @
+  assert-that > @
+    f
+    $.equal-to f
 
 [] > kids-are-accessible-in-const-object
   [] > a
     [] > hello
       42 > @
   a > b!
-  eq. > @
-    42
+  assert-that > @
     b.hello
+    $.equal-to 42
 
 [] > takes-parent-through-attribute
   42 > x
@@ -65,9 +69,9 @@
   [] > @
     [] > @
       [] > @
-        eq. > @
-          42
+        assert-that > @
           this.x
+          $.equal-to 42
 
 [] > throws-when-applies-to-closed-object
   [x] > a
@@ -75,26 +79,28 @@
   a FALSE > closed
   closed TRUE > @
 
-# [] > makes-deep-object-recursively
-#   eq. > @
-#     0
-#     x 10
-#   [i] > x
-#     if. > @
-#       i.less 0
-#       0
-#       x
-#         i.sub 1
+[] > makes-deep-object-recursively
+  assert-that > @
+    x 10
+    $.equal-to 0
+  [i] > x
+    if. > @
+      i.less 0
+      0
+      x
+        i.sub 1
 
 [] > iterates-over-sigma
   memory > x
-  seq > @
-    x.write TRUE
-    eq.
-      1
-      x.while
-        [i]
-          &.x.write FALSE > @
+  assert-that > @
+    seq
+      x.write TRUE
+      eq.
+        1
+        x.while
+          [i]
+            &.x.write FALSE > @
+    $.equal-to TRUE
 
 [] > calculates-only-once-BROKEN
   memory > x
@@ -102,38 +108,47 @@
     seq > @
       x.write (x.add 1)
       42
-  seq > @
-    x.write 0
-    a.neg.neg.neg.neg.eq 42
-    x.eq 1
+  assert-that > @
+    seq
+      x.write 0
+      a.neg.neg.neg.neg.eq 42
+      x
+    $.equal-to 1
 
 [] > rho-of-add-should-not-change
   memory > f1
   cage > f2
   memory > f0
-  seq > @
-    f0.write 0
-    f1.write 1
-    f2.write ((f0).add (f1))
-    f1.write f2
-    TRUE
+  assert-that > @
+    seq
+      f0.write 0
+      f1.write 1
+      f2.write ((f0).add (f1))
+      f1.write f2
+      TRUE
+    $.equal-to TRUE
 
 [] > positive-object-vertices
-  and. > @
-    42.<.eq (42.<)
-    "Hello".<.eq ("Hello".<)
-    42.add.<.greater 0
-    45-1F-E7.<.eq (45-1F-E7.<)
+  assert-that > @
+    and.
+      42.<.eq (42.<)
+      "Hello".<.eq ("Hello".<)
+      42.add.<.greater 0
+      45-1F-E7.<.eq (45-1F-E7.<)
+    $.equal-to TRUE
 
 [] > negative-object-vertices
   [x] > a
-  not. > @
+  assert-that > @
     or.
       (2.add 3).<.eq (5.<)
       42.<.eq (42.0.<)
       45-1F-E8.<.eq (45-1F-E8-83.<)
       (a 5).<.eq ((a 5).<)
       (* 1 2 3).<.eq ((* 1 2 3).<)
+    $.is
+      $.not
+        $.equal-to TRUE
 
 [] > recursion-without-arguments
   memory > n
@@ -145,32 +160,35 @@
         ^.func
         TRUE
       TRUE
-  seq > @
-    n.write 4
-    func
+  assert-that > @
+    seq
+      n.write 4
+      func
+    $.equal-to TRUE
 
 [] > creates-vararg-from-variable-array
   * "Jeff" 42 > a
-  eq. > @
-    "Hello, Jeff, are you 42?"
+  assert-that > @
     sprintf
       "Hello, %s, are you %d?"
       ...a
+    $.equal-to "Hello, Jeff, are you 42?"
 
 [] > creates-vararg-from-array
-  eq. > @
-    "Hello, Jeff, are you 42?"
+  assert-that > @
     sprintf
       "Hello, %s, are you %d?"
       ...* "Jeff" 42
+    $.equal-to "Hello, Jeff, are you 42?"
 
 [] > returns-same-object
   [] > foo
     [] > @
       memory > x
-  eq. > @
+  assert-that > @
     foo.x.<
-    foo.x.<
+    $.equal-to
+      foo.x.<
 
 [] > compiles-correctly-with-long-duplicate-names
   [] > long-object-name
@@ -178,20 +196,25 @@
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
-  TRUE > @
+  assert-that > @
+    long-object-name
+    $.is
+      $.anything
 
 [] > refers-to-inner-vars-correctly
   memory > go
-  seq > @
-    go.write TRUE
-    go.while
-      [i]
-        memory > m
-        seq > @
-          42 > x
-          m.write x
-          go.write FALSE
-    TRUE
+  assert-that > @
+    seq
+      go.write TRUE
+      go.while
+        [i]
+          memory > m
+          seq > @
+            42 > x
+            m.write x
+            go.write FALSE
+      TRUE
+    $.equal-to TRUE
 
 [] > named-inner-abstract-object
   [] > @
@@ -203,33 +226,33 @@
   cage > h
   [x] > func
     sprintf "Hello, %s!" x > @
-  eq. > @
-    "Hello, Jeff!"
+  assert-that > @
     seq
       h.write func
       h.@ "Jeff"
+    $.equal-to "Hello, Jeff!"
 
-# It's currently broken. Now we should resolve it first
-# before enabling it by uncommenting.
-# [] > app-that-calls-varargs-func
-#   [] > app
-#     [args...] > f
-#       1 > a
-#       2 > @
-#     (f 1 2 3).eq 2 > @
-#   app > output
-#   output.eq TRUE > @
 [] > app-that-calls-varargs-func
-  TRUE > @
+  [] > app
+    [args...] > f
+      1 > a
+      2 > @
+    (f 1 2 3) > @
+  app > output
+  assert-that > @
+    output
+    $.equal-to 2
 
 [] > directly-accesses-objects-from-root
   Q.org.eolang.memory > m
-  seq > @
-    m.write 42
-    Q.org.eolang.io.stdout
-      "Hello, world!"
-    m.write (m.sub 2)
-    m.eq 40
+  assert-that > @
+    seq
+      m.write 42
+      Q.org.eolang.io.stdout
+        "Hello, world!"
+      m.write (m.sub 2)
+      m
+    $.equal-to 40
 
 [] > extract-attribute-from-decoratee
   [foo] > return
@@ -238,4 +261,6 @@
       add.
         42
         1
-  a.foo.eq 43 > @
+  assert-that > @
+    a.foo
+    $.equal-to 43

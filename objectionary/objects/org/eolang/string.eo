@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.5
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.23.6
 
 [] > string
   # Is true if both objects are equal
@@ -42,9 +43,6 @@
   # Make a float out of this string
   [] > as-float /float
 
-  # Take a char from the given position
-  [p] > char-at /char
-
   # Turn it into bytes.
   [] > as-bytes /bytes
 
@@ -54,3 +52,17 @@
 
   # Converts this to hash
   [] > as-hash /int
+
+  # Converts this to regex.
+  # This string construction must starts and ends from "\" characters,
+  # then in parenthesis should be patter string and then, after the last
+  # "\" can be specified flag option (like this: "/(your-pattern)/s")
+  # e.g. ("/(word)/i".as-regex).matches "WORD" return TRUE
+  # other flags:
+  # /d - Enables Unix lines mode.
+  # /i - Enables case-insensitive matching.
+  # /x - Permits whitespace and comments in pattern.
+  # /m - Enables multiline mode.
+  # /s - Enables dotall mode.
+  # /u - Enables Unicode-aware case folding.
+  [] > as-regex /regex

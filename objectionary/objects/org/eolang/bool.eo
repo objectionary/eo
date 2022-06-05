@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.5
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.23.6
 
 [] > bool
   # Equal to another object?

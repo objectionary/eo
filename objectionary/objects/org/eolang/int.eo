@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.5
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.23.6
 
 [] > int
 
@@ -120,7 +121,8 @@
 
     if. > @
       check-divisor
-      error "mod by zero"
+      []
+        "mod by zero" > msg
       if.
         check-dividend
         dividend
@@ -139,7 +141,17 @@
           int-abs.div x-abs
 
   # Make it power x
-  [x] > pow /int
+  [x] > pow
+    if. > @
+      and.
+        ^.eq 0
+        x.less 0
+      []
+        "0 cannot be raised to a negative power" > msg
+      as-int.
+        pow.
+          ^.as-float
+          x.as-float
 
   # Converts this to float
   [] > as-float /float

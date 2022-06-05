@@ -21,135 +21,158 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > compares-two-bools
-  eq. > @
+  assert-that > @
     TRUE
-    TRUE
+    $.equal-to TRUE
 
 [] > compares-two-different-types
-  not. > @
-    eq.
-      TRUE
-      42
+  assert-that > @
+    TRUE
+    $.is
+      $.not
+        $.equal-to 42
 
 [] > joins-many-ANDs
-  and. > @
-    TRUE
-    5.less 10
-    4.greater -6
-    TRUE
-    0.eq 0
+  assert-that > @
+    and.
+      TRUE
+      5.less 10
+      4.greater -6
+      TRUE
+      0.eq 0
+    $.equal-to TRUE
 
 [] > forks-on-condition
-  eq. > @
-    42
+  assert-that > @
     if.
       5.eq 8
       123
       42
+    $.equal-to 42
 
 [] > iterates-over-simple-counter
   memory > x
-  and. > @
-    x.write 5
-    eq.
-      4
-      while.
-        x.less 10
-        [i]
-          ^.^.^ > x
-          x.write (x.add i) > @
+  assert-that > @
+    and.
+      x.write 5
+      eq.
+        4
+        while.
+          x.less 10
+          [i]
+            ^.^.^ > x
+            x.write (x.add i) > @
+    $.equal-to TRUE
 
 [] > prints-nice-formulas
   memory > x
-  seq > @
-    x.write 2
-    while.
-      x.less 6
-      [i]
-        ^.^.^ > x
-        seq > @
-          stdout
-            sprintf "%dx%d = %d\n" x x (x.pow 2)
-          x.write (x.add 1)
-    TRUE
+  assert-that > @
+    seq
+      x.write 2
+      while.
+        x.less 6
+        [i]
+          ^.^.^ > x
+          seq > @
+            stdout
+              sprintf "%dx%d = %d\n" x x (x.pow 2)
+            x.write (x.add 1)
+      TRUE
+    $.equal-to TRUE
 
 # tests that bool.and stops calculations if its i'th
 # object is false (including the base object)
 [] > and-short-circuiting
   memory > mFirst
   memory > mThird
-  and. > @
-    not.
-      and.
-        (mFirst.write 1).not
-        mFirst.write 2
-        mFirst.write 3
-    not.
-      and.
-        mThird.write 1
-        mThird.write 2
-        (mThird.write 3).not
-        (mThird.write 4)
-    mFirst.eq 1
-    mThird.eq 3
+  assert-that > @
+    and.
+      not.
+        and.
+          (mFirst.write 1).not
+          mFirst.write 2
+          mFirst.write 3
+      not.
+        and.
+          mThird.write 1
+          mThird.write 2
+          (mThird.write 3).not
+          (mThird.write 4)
+      mFirst.eq 1
+      mThird.eq 3
+    $.equal-to TRUE
 
 # tests that bool.or stops calculations if its i'th
 # object is true (including the base object)
 [] > or-short-circuiting
   memory > mFirst
   memory > mThird
-  and. > @
-    or.
-      mFirst.write 1
-      mFirst.write 2
-      mFirst.write 3
-    or.
-      (mThird.write 1).not
-      (mThird.write 2).not
-      mThird.write 3
-      mThird.write 4
-    mFirst.eq 1
-    mThird.eq 3
+  assert-that > @
+    and.
+      or.
+        mFirst.write 1
+        mFirst.write 2
+        mFirst.write 3
+      or.
+        (mThird.write 1).not
+        (mThird.write 2).not
+        mThird.write 3
+        mThird.write 4
+      mFirst.eq 1
+      mThird.eq 3
+    $.equal-to TRUE
 
 [] > compares-bool-to-bytes
-  and. > @
-    TRUE.eq 01-
-    FALSE.eq 00-
+  assert-that > @
+    and.
+      TRUE.eq 01-
+      FALSE.eq 00-
+    $.equal-to TRUE
 
 [] > compares-bool-to-string
-  and. > @
-    TRUE.eq "\001"
-    FALSE.eq "\000"
+  assert-that > @
+    and.
+      TRUE.eq "\001"
+      FALSE.eq "\000"
+    $.equal-to TRUE
 
 [] > compares-bool-to-bytes-reverse
-  and. > @
-    01-.as-bytes.eq TRUE
-    00-.as-bytes.eq FALSE
+  assert-that > @
+    and.
+      01-.as-bytes.eq TRUE
+      00-.as-bytes.eq FALSE
+    $.equal-to TRUE
 
 [] > complex-bool-expression-in-while
   memory > m
-  seq > @
-    m.write 5
-    while.
-      eq.
-        m.greater 0
-        TRUE
-      [i]
-        seq > @
-          m.write (m.sub 1)
-          stdout (sprintf "%d\n" m)
-    TRUE
+  assert-that > @
+    seq
+      m.write 5
+      while.
+        eq.
+          m.greater 0
+          TRUE
+        [i]
+          seq > @
+            m.write (m.sub 1)
+            stdout (sprintf "%d\n" m)
+      TRUE
+    $.equal-to TRUE
 
 [] > hash-equals-the-value
-  and. > @
-    eq.
-      1231
-      TRUE.as-hash
-    eq.
-      1237
-      FALSE.as-hash
+  assert-that > @
+    and.
+      eq.
+        1231
+        TRUE.as-hash
+      eq.
+        1237
+        FALSE.as-hash
+    $.equal-to TRUE

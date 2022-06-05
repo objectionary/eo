@@ -21,121 +21,164 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > matches-against-regular-expression
-  (/([a-z])+/.matches "dude") > @
+  assert-that > @
+    /([a-z])+/.matches "dude"
+    $.equal-to TRUE
 
 [] > calculates-length-of-spaces-only
-  eq. > @
+  assert-that > @
     " ".length
-    1
+    $.equal-to 1
 
 [] > joins-array
-  eq. > @
+  assert-that > @
     "..".joined
       * "foo" "друг" "bar"
-    "foo..друг..bar"
+    $.equal-to "foo..друг..bar"
 
 [] > trims-string
-  eq. > @
-    "Hello, dude"
+  assert-that > @
     "Hello, dude  ".trim
+    $.equal-to "Hello, dude"
 
 [] > turns-string-into-int
-  eq. > @
-    42
+  assert-that > @
     "42".as-int
+    $.equal-to 42
 
 [] > turns-string-into-float
-  eq. > @
-    3.1415926
+  assert-that > @
     "3.1415926".as-float
+    $.equal-to 3.1415926
 
 [] > turns-string-into-bytes
-  eq. > @
-    D0-B4-D1-80-D1-83-D0-B3
+  assert-that > @
     "друг".as-bytes
+    $.equal-to D0-B4-D1-80-D1-83-D0-B3
 
 [] > bytes-equal-to-string
-  eq. > @
-    "друг"
+  assert-that > @
     D0-B4-D1-80-D1-83-D0-B3
+    $.equal-to "друг"
 
 [] > string-equals-to-bytes
-  eq. > @
-    D0-B4-D1-80-D1-83-D0-B3
+  assert-that > @
     "друг"
-
-[] > picks-a-single-char
-  eq. > @
-    'e'
-    "Hello, world!".char-at 1
+    $.equal-to D0-B4-D1-80-D1-83-D0-B3
 
 [] > reads-the-length
-  eq. > @
-    12
+  assert-that > @
     "Hello, друг!".length
+    $.equal-to 12
 
 [] > compares-two-different-types
-  not. > @
-    eq.
-      "Hello"
-      42
+  assert-that > @
+    "Hello"
+    $.not
+      $.equal-to 42
 
 [] > text-block-one-line
-  eq. > @
-    "Abc"
+  assert-that > @
     """
     Abc
     """
+    $.equal-to "Abc"
 
 [] > text-block-tree-lines
-  eq. > @
-    65-0A-65-0A-65
+  assert-that > @
     """
     e
     e
     e
     """.as-bytes
+    $.equal-to 65-0A-65-0A-65
 
 [] > text-block-with-margin
-  eq. > @
-    20-7A-0A-20-20-79-0A-20-78
+  assert-that > @
     """
      z
       y
      x
     """.as-bytes
+    $.equal-to 20-7A-0A-20-20-79-0A-20-78
 
 [] > compares-two-different-strings
-  not. > @
-    eq.
-      "Hello"
-      "Good bye"
+  assert-that > @
+    "Hello"
+    $.not
+      $.equal-to "Good bye"
 
 [] > supports-escape-sequences
-  eq. > @
-    "Hello, друг!\n"
+  assert-that > @
     "Hello, \u0434\u0440\u0443\u0433!\n"
+    $.equal-to "Hello, друг!\n"
 
 [] > supports-escape-sequences-in-text
-  eq. > @
+  assert-that > @
     """
     Hello, \u0434\u0440\u0443\u0433!\n
     """
-    "Hello, друг!\n"
+    $.equal-to "Hello, друг!\n"
 
 [] > preserves-indentation-in-text
-  eq. > @
+  assert-that > @
     """
     a
      b
       c
     """
-    "a\n b\n  c"
+    $.equal-to "a\n b\n  c"
 
 [] > similar-strings-generate-similar-hashes
-  eq. > @
+  assert-that > @
     "hello world".as-hash
-    "hello world".as-hash
+    $.equal-to
+      "hello world".as-hash
+
+[] > string-to-regex-unix-lines
+  assert-that > @
+    "/(.+)/d".as-regex
+    .matches "A\\r\\nB\\rC\\nD"
+    $.equal-to TRUE
+
+[] > string-to-regex-case-insensitive
+  assert-that > @
+    "/(word)/i".as-regex
+    .matches "WORD"
+    $.equal-to TRUE
+
+[] > string-to-regex-comments
+  assert-that > @
+    "/(\\d) #ignore this comment/x".as-regex
+    .matches "4"
+    $.equal-to TRUE
+
+[] > string-to-regex-multiline
+  assert-that > @
+    "/(^([0-9]+).*)/m".as-regex
+    .matches "2234 This is a sample text\\n1424 This second 2335 line\\n"
+    $.equal-to TRUE
+
+[] > string-to-regex-dotall
+  assert-that > @
+    "/(.*)/s".as-regex
+    .matches "this is a sample \\nthis is second line"
+    $.equal-to TRUE
+
+[] > string-to-regex-unicode-case-and-insensitive
+  assert-that > @
+    "/(yildirim)/ui".as-regex
+    .matches "Yıldırım"
+    $.equal-to TRUE
+
+[] > string-to-regex-div
+  assert-that > @
+    "/([0-9]+/\\d+)/".as-regex
+    .matches "15/3"
+    $.equal-to TRUE
+

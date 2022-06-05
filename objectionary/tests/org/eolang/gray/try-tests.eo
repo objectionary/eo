@@ -21,7 +21,9 @@
 # SOFTWARE.
 
 +package org.eolang.gray
++home https://github.com/objectionary/eo
 +alias org.eolang.gray.try
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > catches-simple-exception
@@ -30,27 +32,28 @@
       x.eq 0
       throw "div by zero"
       42.div x
-  and. > @
-    eq.
-      6
-      try
-        [throw]
-          main 7 throw > @
-        [ex] (TRUE > @)
-        TRUE
-    eq.
-      FALSE
-      try
-        [throw]
-          main 0 throw > @
-        [ex] (FALSE > @)
-        TRUE
+  assert-that > @
+    and.
+      eq.
+        6
+        try
+          [throw]
+            main 7 throw > @
+          [ex] (TRUE > @)
+          TRUE
+      eq.
+        FALSE
+        try
+          [throw]
+            main 0 throw > @
+          [ex] (FALSE > @)
+          TRUE
+    $.equal-to TRUE
 
 [] > two-nested-try-blocks
   [throw] > failure
     throw "Hello!" > @
-  eq. > @
-    1
+  assert-that > @
     try
       [t1]
         try > @
@@ -62,3 +65,4 @@
       [ex]
         1 > @
       TRUE
+    $.equal-to 1

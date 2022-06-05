@@ -21,20 +21,21 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
 +alias org.eolang.txt.sprintf
 +alias org.eolang.io.stdout
 +alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > makes-array-through-special-syntax
-  eq. > @
-    2
+  assert-that > @
     (* 1 2).length
+    $.equal-to 2
 
 [] > gets-lengths-of-empty-array-through-special-syntax
-  eq. > @
-    0
+  assert-that > @
     *.length
+    $.equal-to 0
 
 [] > iterates-with-each
   *
@@ -45,36 +46,36 @@
     [i] (stdout i > @)
 
 [] > simple-mapping-int-to-string
-  eq. > @
+  assert-that > @
     length.
       map.
         * 1 2 3
         [i]
           i.as-string > @
-    3
+    $.equal-to 3
 
 [] > using-map-as-object
-  eq. > @
+  assert-that > @
     " ".joined
       map.
         * 1 2
         [i]
           i.as-string > @
-    "1 2"
+    $.equal-to "1 2"
 
 # check that an empty array's .length equals to zero
 [] > empty-array-length
   [elements...] > arr
-  eq. > @
-    0
+  assert-that > @
     (arr).elements.length
+    $.equal-to 0
 
 # check that array.length works properly for non-empty arrays
 [] > non-empty-array-length-test
   [elements...] > arr
-  eq. > @
-    5
+  assert-that > @
     (arr "a" "b" "c" "d" "e").elements.length
+    $.equal-to 5
 
 # if map does mutate arrays, then this test would fail
 # because of the absence of the as-int attribute
@@ -89,9 +90,10 @@
           current.as-int
           2
   (squares "1" "2" "3") > sq
-  eq. > @
-    (sprintf "%d %d %d" 1 4 9)
-    (sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2))
+  assert-that > @
+    sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
 
 # this test performs mapping of array using the index for it
 [] > mapi-index-can-be-accessed
@@ -103,36 +105,49 @@
           current.as-int
           index.add 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
-  eq. > @
-    (sprintf "%d %d %d" 1 4 9)
-    (sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2))
+  assert-that > @
+    sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
 
 [] > array-as-a-bound-attribute-size-0
   * > anArray
-  0.eq (anArray.length) > @
+  assert-that > @
+    anArray.length
+    $.equal-to 0
 
 [] > array-as-a-bound-attribute-size-1
   * > anArray
     100
-  ((anArray.get 0).eq 100) > @
+  assert-that > @
+    anArray.get 0
+    $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
   * > anArray
     1
     2
-  ((anArray.get 0).eq 1).and ((anArray.get 1).eq 2) > @
+  assert-that > @
+    anArray
+    $.array-each
+      $.equal-to 1
+      $.equal-to 2
 
 # check that array.is-empty works properly
 [] > should-not-be-empty
   * > xs
     1
     2
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # check that array.is-empty works properly
 [] > should-be-empty
   * > xs
-  xs.is-empty > @
+  assert-that > @
+    xs.is-empty
+    $.equal-to TRUE
 
 # arrays of objects
 [] > should-not-be-empty-with-3-objects
@@ -146,101 +161,116 @@
     a-1
     a-2
     a-3
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # arrays with anonymous object
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
       f.as-int > @
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # arrays with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
     [f] (f.as-int > @)
-  xs.is-empty.not > @
+  assert-that > @
+    xs.is-empty.not
+    $.equal-to TRUE
 
 # array equal to another array
 [] > array-equal-to-another-array
-  eq. > @
+  assert-that > @
     *
       1
       "str"
-      'f'
+      "\n"
       22.0
       "друг".as-bytes
       TRUE
-    *
-      1
-      "str"
-      'f'
-      (11.mul 2).as-float
-      D0-B4-D1-80-D1-83-D0-B3
-      FALSE.not
+    $.is
+      $.equal-to
+        *
+          1
+          "str"
+          "\n"
+          (11.mul 2).as-float
+          D0-B4-D1-80-D1-83-D0-B3
+          FALSE.not
 
 # array not equal to another object by length
 [] > array-not-equal-to-another-array-by-length
-  not. > @
-    eq.
-      * 1 2 3
-      * 1 2 3 4
+  assert-that > @
+    * 1 2 3
+    $.is
+      $.not
+        $.equal-to
+          * 1 2 3 4
 
 # check that varargs eq works
 [] > varargs-eq-should-works
   [args...] > a
   [args...] > b
-  eq. > @
+  assert-that > @
     args.
       a
         13.as-float
-        's'
+        "\t"
         "bbt"
-    args.
-      b
-        13.as-float
-        's'
-        "bbt"
+    $.equal-to
+      args.
+        b
+          13.as-float
+          "\t"
+          "bbt"
 
 # nested array equal object should works
 [] > nested-array-eq-should-works
   * 1 "2" 3.0 > a
   * 1 "2" (3.as-float) > b
-  eq. > @
-    * 'w' a
-    * 'w' b
+  assert-that > @
+    * "w" a
+    $.equal-to
+      * "w" b
 
 # two different arrays not equal
 [] > two-different-arrays-not-equal
-  not. > @
-    eq.
-      * 1 2 3
-      * 1 5 "text"
+  assert-that > @
+    * 1 2 3
+    $.not
+      $.equal-to
+        * 1 5 "text"
 
 #two different nested arrays not eq
 [] > nested-array-not-eq-should-works
-  * 5 'o' "18" > a
-  * 5 'm' (18.as-string) > b
-  not. > @
-    eq.
-      * "not eq" a
-      * "not eq" b
+  * 5 "\07" "18" > a
+  * 5 "neq" (18.as-string) > b
+  assert-that > @
+    * "not eq" a
+    $.not
+      $.equal-to
+        * "not eq" b
 
 # check that varargs not eq works
 [] > varargs-not-eq-should-works
   [args...] > a
   [args...] > b
-  not. > @
-    eq.
-      args.
-        a 1 2 3
-      args.
-        b 1 2 "fail"
+  assert-that > @
+    args.
+      a 1 2 3
+    $.not
+      $.equal-to
+        args.
+          b 1 2 "fail"
 
 # reduce with index test
 [] > reduce-with-index-test
   * 2 2 > src
-  eq. > @
+  assert-that > @
     reducei.
       * 1 1
       0
@@ -249,11 +279,54 @@
           x
           a.add
             src.get i
-    6
+    $.equal-to 6
+
+[] > reducei-long-int-array
+  assert-that > @
+    reducei.
+      * 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
+      0
+      [a i x]
+        add. > @
+          x
+          a
+    $.equal-to 435
+
+[] > reducei-bools-array
+  assert-that > @
+    reducei.
+      * TRUE TRUE FALSE
+      TRUE
+      [a i x]
+        and. > @
+          x
+          a
+    $.equal-to FALSE
+
+[] > reducei-nested-functions
+  [] > a
+    10 > @
+  [] > b
+    500 > @
+  assert-that > @
+    reducei.
+      * a b
+      0
+      [acc i x]
+        check x > @
+        [el] > check
+          if. > @
+            x.less 100
+            acc.add x
+            acc.sub x
+    $.equal-to
+      add.
+        0.sub 500
+        10
 
 # reduce without index test
 [] > reduce-without-index-test
-  eq. > @
+  assert-that > @
     reduce.
       * 1 2 3 4
       -1
@@ -261,7 +334,7 @@
         mul. > @
           a
           x
-    -24
+    $.equal-to -24
 
 [] > array-with-in-seq
   [a] > foo
@@ -296,9 +369,9 @@
       t
   assert-that > @
     foo
-      * 1 "text" 'f'
+      * 1 "text" "f"
     $.equal-to
-      * "text" 'f'
+      * "text" "f"
 
 [] > array-without-nested-array
   * 3 2 1 > nested

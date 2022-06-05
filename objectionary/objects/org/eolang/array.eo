@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.23.5
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.23.6
 
 [] > array
 
@@ -58,7 +59,28 @@
   # one for the accumulator, the second one
   # for the index and the third one for the element
   # of the array.
-  [a f] > reducei /a
+  [a f] > reducei
+    func a f ^ > @
+
+    [ac fn arr] > func
+      memory > idx
+      memory > acc
+      seq > @
+        idx.write 0
+        acc.write ac
+        while.
+          less.
+            idx
+            arr.length
+          [i]
+            seq > @
+              idx.write (i.add 1)
+              acc.write
+                fn
+                  acc
+                  i
+                  arr.get i
+        acc
 
   # Reduce from start "a" using the function "f"
   [a f] > reduce
