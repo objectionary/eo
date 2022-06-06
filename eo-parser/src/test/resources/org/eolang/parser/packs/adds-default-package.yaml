@@ -9,6 +9,7 @@ tests:
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
+  - //o[@base='QQ']
 eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdin org.eolang.io.stdin
@@ -22,3 +23,4 @@ eo: |
       $
       ^.i
       Q.org.eolang.random
+      QQ.memory

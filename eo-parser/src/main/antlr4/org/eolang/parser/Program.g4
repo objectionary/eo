@@ -164,6 +164,8 @@ head
   (
     ROOT
     |
+    STANDARD_ROOT
+    |
     AT
     |
     RHO
@@ -217,6 +219,7 @@ META: PLUS NAME (SPACE ~[\r\n]+)?;
 REGEX: SLASH ~[\r\n]+ SLASH [a-z]*;
 
 ROOT: 'Q';
+STANDARD_ROOT: 'QQ';
 STAR: '*';
 DOTS: '...';
 CONST: '!';

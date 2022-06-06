@@ -49,7 +49,7 @@ final class PhPackage implements Phi {
     @Override
     public Attr attr(final String name) {
         final String abs = String.format("%s.%s", this.pkg, name);
-        final String target = abs.replaceAll("(^|\\.)([^.]+)", "$1EO$2");
+        final String target = abs.replaceAll("(^|\\.)([^.]+)", "$1EO$2").replace("-", "_");
         Phi phi;
         try {
             Class.forName(String.format("%s.package-info", target));

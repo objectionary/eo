@@ -255,6 +255,28 @@
       m
     $.equal-to 40
 
+[] > directly-accesses-objects-from-standard-root
+  QQ.memory > m
+  assert-that > @
+    seq
+      m.write 42
+      QQ.io.stdout
+        "Works fine!"
+      m.write (m.sub 2)
+      m
+    $.equal-to 40
+
+[] > standard-root-and-root
+  QQ.txt.sprintf > stand-root
+    "one %s"
+    "two"
+  Q.org.eolang.txt.sprintf > root
+    "%s two"
+    "one"
+  assert-that > @
+    root
+    $.equal-to stand-root
+
 [] > extract-attribute-from-decoratee
   [foo] > return
   [] > a

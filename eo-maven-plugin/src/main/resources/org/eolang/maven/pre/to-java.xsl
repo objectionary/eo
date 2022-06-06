@@ -345,6 +345,9 @@ SOFTWARE.
       <xsl:when test="@base='Q'">
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
+      <xsl:when test="@base='QQ'">
+        <xsl:text>Phi.Φ.attr("org.eolang").get()</xsl:text>
+      </xsl:when>
       <xsl:when test="@base='^'">
         <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
       </xsl:when>

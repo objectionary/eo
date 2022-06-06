@@ -52,4 +52,19 @@ public final class PhiTest {
         );
     }
 
+    @Test
+    public void takesStandardPackage() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhCopy(
+                        new PhMethod(
+                            Phi.Φ.attr("org.eolang").get(),
+                        "random"
+                    )
+                )
+            ).take(Double.class),
+            Matchers.greaterThan(-1.0d)
+        );
+    }
+
 }
