@@ -58,14 +58,6 @@
 \newtheorem{eodefinition}{Definition}
 \newtheorem{eotheorem}{Theorem}
 
-\makeatletter\newcommand\anon[2]{%
-  \if@ACM@anonymous%
-    {\color{gray}#1}%
-  \else%
-    #2%
-  \fi%
-}\makeatother
-
 \tolerance=1500
 \raggedbottom
 \setlength\headheight{21pt}
@@ -73,9 +65,9 @@
 \newcommand\nospell[1]{#1}
 \newcommand\br{\\[-4pt]}
 \newcommand\figcap[1]{\caption{#1}\Description{#1}}
-\newcommand\phic{\anon{X}{$\varphi$}-calculus}
-\newcommand\eo{\anon{XYZ}{{\sffamily EO}}}
-\newcommand\XMIR{\anon{XML'}{{\sffamily XMIR}}}
+\newcommand\phic{$\varphi$-calculus}
+\newcommand\eo{{\sffamily EO}}
+\newcommand\XMIR{{\sffamily XMIR}}
 \newcommand\lref[1]{the line no.~\ref{ln:#1}}
 \newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
 
