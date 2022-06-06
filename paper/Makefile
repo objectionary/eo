@@ -33,7 +33,6 @@ zip: *.tex sections/*.tex
 	cd package
 	cp ../eolang-paper.tex .
 	cp ../main.bib .
-	cp ../eo.sty .
 	for p in $(PACKAGES); do cp $(TLROOT)/tex/latex/$${p}/$${p}.sty .; done
 	cp -r ../sections .
 	version=$$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$(REPO)/releases/latest | jq -r '.tag_name')
@@ -41,7 +40,7 @@ zip: *.tex sections/*.tex
 	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
 	gsed -i "s|REPOSITORY|$(REPO)|" eolang-paper.tex
 	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
-	bibtex eolang-paper
+	biber eolang-paper
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	rm -rf *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc
