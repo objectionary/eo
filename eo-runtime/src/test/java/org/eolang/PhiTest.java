@@ -57,9 +57,8 @@ public final class PhiTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhCopy(
-                        new PhMethod(
-                            Phi.Φ.attr("org.eolang").get(),
-                        "random"
+                    new PhMethod(
+                        Phi.Φ.attr("org.eolang").get(), "random"
                     )
                 )
             ).take(Double.class),
