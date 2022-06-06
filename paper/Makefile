@@ -41,7 +41,7 @@ zip: *.tex sections/*.tex
 	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
 	gsed -i "s|REPOSITORY|$(REPO)|" eolang-paper.tex
 	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
-	bibtex eolang-paper
+	biber eolang-paper
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	rm -rf *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc

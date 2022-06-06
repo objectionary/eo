@@ -20,8 +20,9 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-\documentclass[sigplan,nonacm=true]{acmart}
+\documentclass[sigplan,nonacm,natbib=false]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
+\usepackage[maxnames=1,minnames=1,maxbibnames=100,natbib=true,citestyle=authoryear,bibstyle=authoryear,doi=false,url=false,isbn=false,isbn=false,backend=biber]{biblatex}
 
 \ifnum\pdfshellescape=1
   \usepackage[finalizecache]{minted}
@@ -30,6 +31,11 @@
 \fi
 
 \usepackage{eo}
+\usepackage{csquotes}
+
+\addbibresource{main.bib}
+
+\setlength{\footskip}{13.0pt}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{$\varphi$}{phi}-calculus}
@@ -44,7 +50,7 @@
 \orcid{0000-0001-6370-0678}
 \email{yegor256@gmail.com}
 \affiliation{
-  \institution{}
+  \institution{Huawei}
   \city{Moscow}
   \country{Russia}
 }
@@ -132,9 +138,8 @@ formalization of OOP.
 \section{Acknowledgments}
 \input{sections/acks}
 
-\bibliographystyle{ACM-Reference-Format}
-\raggedright
-\bibliography{main}
+\printbibliography
+
 \clearpage
 
 \end{document}
