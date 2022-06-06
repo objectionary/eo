@@ -287,3 +287,11 @@
   assert-that > @
     a.foo
     $.equal-to 43
+
+[] > takes-object-id-from-abstract-empty
+  [] > foo
+    [] > y
+  assert-that > @
+    foo.y.<.eq
+      foo.y.<
+    $.equal-to TRUE

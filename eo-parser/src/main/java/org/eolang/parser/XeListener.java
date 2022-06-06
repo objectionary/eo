@@ -173,6 +173,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );
+        this.objects.prop("abstract", "");
         if (ctx.SLASH() != null) {
             if (ctx.QUESTION() == null) {
                 this.objects.prop("atom", ctx.NAME());
