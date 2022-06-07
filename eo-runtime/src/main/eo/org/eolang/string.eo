@@ -46,7 +46,7 @@
 
   # Turn it into bytes.
   [] > as-bytes /bytes
-  
+
   # Make as-string polymorphic
   [] > as-string
     ^ > @
