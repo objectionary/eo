@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidParameterException;
-
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 
@@ -36,6 +35,7 @@ import org.cactoos.io.InputOf;
  *
  * @since 0.1
  */
+final 
 public final class OyRemote implements Objectionary {
 
     /**
@@ -57,8 +57,10 @@ public final class OyRemote implements Objectionary {
 
     /*
      * Ctor.
-     * @param hsh the hash or branch,
-     * throws an error if hash is abbreviated
+     * @Param hsh the hash or branch, throws an error if hash is abbreviated
+     * @checkstyle MagicNumber (10 lines)
+     * @checkstyle ConstructorOnlyInitializesOrCallOtherConstructors (10 lines)
+     * @checkstyle OnlyOneConstructorShouldDoInitialization (10 lines)
      */
     public OyRemote(final String hsh) throws InvalidParameterException {
         if (hsh.length() != 40) {  // 40 is length of correct hash
@@ -70,8 +72,8 @@ public final class OyRemote implements Objectionary {
 
     /**
      * Ctor.
-     * @param url The url template.
-     * @param hsh The hash or branch.
+     * @Param url The url template.
+     * @Param hsh The hash or branch.
      */
     public OyRemote(final String url, final String hsh) {
         this.addr = url;
