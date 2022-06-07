@@ -183,3 +183,6 @@
     .matches "15/3"
     $.equal-to TRUE
 
+[] > as-string-test
+  "s" > s
+  s.eq (s.as-string) > @
