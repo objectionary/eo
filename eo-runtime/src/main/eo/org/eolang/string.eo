@@ -46,6 +46,10 @@
 
   # Turn it into bytes.
   [] > as-bytes /bytes
+  
+  # Make as-string polymorphic
+  [] > as-string
+    ^ > @
 
   # Joins an array of strings, using current string
   # as a delimiter
