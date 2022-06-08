@@ -56,9 +56,12 @@ These things we **don't** tolerate:
 
 ## Papers
 
-Here is a full list of papers related to EO (in reverse chronological order):
+Here is a full list of academic papers related to EO and 𝜑-calculus (in reverse chronological order):
 
-  * Nikolai Kudasov, Violetta Sim<br/>
+  * Yegor Bugayenko<br/>
+    [On the Origins of Objects by Means of Careful Selection](https://arxiv.org/abs/2206.02585),
+    2022
+  * Nikolai Kudasov and Violetta Sim<br/>
     [Formalizing 𝜑-calculus: a purely object-oriented calculus of decorated objects](https://arxiv.org/abs/2204.07454),
     2022
   * Yegor Bugayenko<br/>
