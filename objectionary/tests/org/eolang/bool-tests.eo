@@ -22,6 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++version 0.23.7
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -58,7 +59,7 @@
     $.equal-to 42
 
 [] > iterates-over-simple-counter
-  memory > x
+  memory 0 > x
   assert-that > @
     and.
       x.write 5
@@ -72,7 +73,7 @@
     $.equal-to TRUE
 
 [] > prints-nice-formulas
-  memory > x
+  memory 0 > x
   assert-that > @
     seq
       x.write 2
@@ -90,8 +91,8 @@
 # tests that bool.and stops calculations if its i'th
 # object is false (including the base object)
 [] > and-short-circuiting
-  memory > mFirst
-  memory > mThird
+  memory 0 > mFirst
+  memory 0 > mThird
   assert-that > @
     and.
       not.
@@ -112,8 +113,8 @@
 # tests that bool.or stops calculations if its i'th
 # object is true (including the base object)
 [] > or-short-circuiting
-  memory > mFirst
-  memory > mThird
+  memory 0 > mFirst
+  memory 0 > mThird
   assert-that > @
     and.
       or.
@@ -151,7 +152,7 @@
     $.equal-to TRUE
 
 [] > complex-bool-expression-in-while
-  memory > m
+  memory 0 > m
   assert-that > @
     seq
       m.write 5

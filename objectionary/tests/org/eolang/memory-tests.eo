@@ -22,13 +22,14 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++version 0.23.7
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > writes-into-memory
-  memory > x
+  memory 0 > x
   assert-that > @
     seq
       x.write 10
@@ -36,7 +37,7 @@
     $.equal-to 10
 
 [] > double-writes
-  memory > m
+  memory 0 > m
   assert-that > @
     seq
       m.write "Hello, world!"
@@ -45,7 +46,7 @@
     $.equal-to 42
 
 [] > rewrites-and-increments-itself
-  memory > m
+  memory 0 > m
   assert-that > @
     seq
       m.write 1
@@ -55,7 +56,7 @@
 
 [] > memory-in-outer-scope
   [] > outer
-    memory > x
+    memory 0 > x
   outer > a
   seq > @
     a.x.write 1
@@ -64,15 +65,9 @@
         "%d"
         a.x
 
-[] > checks-for-emptiness
-  memory > x
-  assert-that > @
-    x.is-empty
-    $.equal-to TRUE
-
 [] > writes-into-two-memory-objects
-  memory > a
-  memory > b
+  memory 0 > a
+  memory 0 > b
   assert-that > @
     and.
       seq
@@ -82,8 +77,8 @@
     $.equal-to TRUE
 
 [] > writes-into-two-memory-objects-and-check-first
-  memory > a
-  memory > b
+  memory 0 > a
+  memory 0 > b
   assert-that > @
     seq
       a.write 10

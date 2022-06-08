@@ -22,7 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.23.6
++version 0.23.7
++rt jvm org.eolang:eo-runtime:0.23.7
 
 [] > int
 
@@ -111,26 +112,15 @@
     ^ > dividend
     x > divisor
 
-    [] > check-divisor
-      divisor.eq 0 > @
-
-    [] > check-dividend
-      greater. > @
-        divisor.abs
-        dividend.abs
-
     if. > @
-      check-divisor
+      divisor.eq 0
       []
         "mod by zero" > msg
       if.
-        check-dividend
-        dividend
-        if.
-          dividend.greater 0
+        dividend.greater 0
+        abs-mod
+        neg.
           abs-mod
-          neg.
-            abs-mod
 
     [] > abs-mod
       dividend.abs > int-abs

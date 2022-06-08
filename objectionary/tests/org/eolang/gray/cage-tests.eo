@@ -22,13 +22,14 @@
 
 +package org.eolang.gray
 +home https://github.com/objectionary/eo
++version 0.23.7
 +alias org.eolang.gray.cage
 +alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > writes-into-cage
   [z] > a
-  cage > x
+  cage 0 > x
   assert-that > @
     seq
       x.write
@@ -37,7 +38,7 @@
     $.equal-to 7
 
 [] > avoid-infinite-loop
-  cage > x
+  cage 0 > x
   x' > copy
   assert-that > @
     seq
@@ -51,7 +52,7 @@
   [first second] > pair
   [head tail] > add
     pair head tail > @
-  cage > list
+  cage 0 > list
   list' > copy
   assert-that > @
     seq
@@ -62,7 +63,7 @@
     $.equal-to 0
 
 [] > cage-nested-objects
-  cage > c
+  cage 0 > c
   c' > copy
   [x] > dummy
     x > @
@@ -75,7 +76,7 @@
     $.equal-to 42
 
 [] > overwrites-caged-object-with-integer
-  cage > c
+  cage 0 > c
   [] > t
     42 > attr
   assert-that > @
@@ -87,8 +88,8 @@
     $.equal-to 66
 
 [] > dataizes-encaged-object-lazily-first
-  cage > x
-  cage > sum
+  cage 0 > x
+  cage 0 > sum
   assert-that > @
     seq
       x.write 42
@@ -98,8 +99,8 @@
     $.equal-to 8
 
 [] > dataizes-encaged-object-lazily-second
-  cage > x
-  cage > sum
+  cage 0 > x
+  cage 0 > sum
   assert-that > @
     seq
       x.write 42
@@ -109,9 +110,9 @@
     $.equal-to 8
 
 [] > dataizes-encaged-object-lazily-third
-  cage > x
-  cage > y
-  cage > sum
+  cage 0 > x
+  cage 0 > y
+  cage 0 > sum
   assert-that > @
     seq
       x.write 42
@@ -123,7 +124,7 @@
     $.equal-to 17
 
 [] > stores-abstract-object-into-cage
-  cage > c
+  cage 0 > c
   assert-that > @
     seq
       write.
@@ -133,17 +134,3 @@
       c.@
         42
     $.equal-to 112
-
-[] > test-for-emptiness
-  cage > x
-  assert-that > @
-    x.is-empty
-    $.equal-to TRUE
-
-[] > test-for-non-emptiness
-  cage > x
-  assert-that > @
-    and.
-      x.write 1
-      x.is-empty.not
-    $.equal-to TRUE

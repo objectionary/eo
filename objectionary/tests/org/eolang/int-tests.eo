@@ -22,6 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++version 0.23.7
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -447,3 +448,22 @@
   assert-that > @
     (0.pow -567).msg
     $.equal-to "0 cannot be raised to a negative power"
+
+[] > mod-into-while-and-seq-objects
+  [condition body] > while-loop
+    while. > @
+      condition
+      [i]
+        body > @
+
+  memory > n
+
+  assert-that > @
+    seq
+      n.write 0
+      while-loop
+        n.less 5
+        seq
+          n.write (n.add 1)
+          (n.mod 2).eq 0
+    $.equal-to 5

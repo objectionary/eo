@@ -22,7 +22,8 @@
 
 +package org.eolang.gray
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.23.6
++version 0.23.7
++rt jvm org.eolang:eo-runtime:0.23.7
 
 # Non-conditional forward and backward jumps. Returns TRUE
 # if the backward jump happened, an object provided to

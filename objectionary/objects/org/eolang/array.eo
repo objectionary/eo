@@ -22,7 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.23.6
++version 0.23.7
++rt jvm org.eolang:eo-runtime:0.23.7
 
 [] > array
 
@@ -63,8 +64,8 @@
     func a f ^ > @
 
     [ac fn arr] > func
-      memory > idx
-      memory > acc
+      memory 0 > idx
+      memory 0 > acc
       seq > @
         idx.write 0
         acc.write ac

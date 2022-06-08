@@ -22,13 +22,14 @@
 
 +package org.eolang.gray
 +home https://github.com/objectionary/eo
++version 0.23.7
 +alias org.eolang.io.stdout
 +alias org.eolang.gray.goto
 +alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > goto-jumps-backwards
-  memory > i
+  memory 0 > i
   assert-that > @
     seq
       i.write 1
@@ -46,7 +47,7 @@
 
 [] > goto-jumps-forward
   [x] > div
-    memory > r
+    memory 0 > r
     seq > @
       r.write 0
       goto
