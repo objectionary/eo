@@ -69,7 +69,7 @@ public final class AtVararg implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtVararg(this.array);
+        return new AtVararg();
     }
 
     @Override

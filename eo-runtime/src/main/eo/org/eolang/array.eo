@@ -64,8 +64,8 @@
     func a f ^ > @
 
     [ac fn arr] > func
-      memory > idx
-      memory > acc
+      memory 0 > idx
+      memory 0 > acc
       seq > @
         idx.write 0
         acc.write ac

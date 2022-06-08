@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
 import org.eolang.Attr;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
 
 /**
- * CAGE attribute.
+ * An attribute that knows how to memoize an object.
  *
- * @since 0.19
+ * @since 0.24
  */
-final class AtCage implements Attr {
+public final class AtMemoized implements Attr {
 
     /**
      * The term to show when empty.
@@ -41,17 +41,14 @@ final class AtCage implements Attr {
     public static final String EMPTY_TERM = "Ø";
 
     /**
-     * The object being caged.
+     * The object in memory.
      */
     private Phi object;
 
     /**
-     * Ctor.
-     *
-     * It sets the encapsulated object to NULL, which means
-     * that there is nothing yet in the cage.
+     * Ctor, needed for copying.
      */
-    AtCage() {
+    public AtMemoized() {
         this(null);
     }
 
@@ -59,20 +56,20 @@ final class AtCage implements Attr {
      * Ctor, needed for copying.
      * @param obj New object
      */
-    private AtCage(final Phi obj) {
+    private AtMemoized(final Phi obj) {
         this.object = obj;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtCage(this.object);
+        return new AtMemoized(this.object);
     }
 
     @Override
     public Phi get() {
         if (this.object == null) {
             throw new ExFailure(
-                "The cage is empty, can't read it"
+                "The memory is empty, can't read it"
             );
         }
         return this.object;
@@ -87,7 +84,7 @@ final class AtCage implements Attr {
     public String φTerm() {
         final String txt;
         if (this.object == null) {
-            txt = AtCage.EMPTY_TERM;
+            txt = AtMemoized.EMPTY_TERM;
         } else {
             txt = this.object.φTerm();
         }

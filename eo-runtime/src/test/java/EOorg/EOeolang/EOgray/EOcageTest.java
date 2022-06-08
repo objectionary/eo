@@ -77,7 +77,7 @@ public final class EOcageTest {
     }
 
     // [] > test
-    //   cage > c
+    //   cage 0 > c
     //   [x] > dummy
     //     x > @
     //   seq > @
@@ -158,6 +158,23 @@ public final class EOcageTest {
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(10L)
+        );
+    }
+
+    @Test
+    public void makesTrueCopy() {
+        final Phi first = new EOcage(Phi.Φ);
+        first.attr(0).put(new Data.ToPhi(1L));
+        final Phi second = first.copy();
+        new Dataized(
+            new PhWith(
+                second.attr("write").get(),
+                "x", new Data.ToPhi(2L)
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            new Dataized(first).take(Long.class),
+            Matchers.equalTo(1L)
         );
     }
 

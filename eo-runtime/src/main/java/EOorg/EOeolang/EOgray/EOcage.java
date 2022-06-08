@@ -24,6 +24,7 @@
 
 package EOorg.EOeolang.EOgray;
 
+import EOorg.EOeolang.AtMemoized;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Attr;
@@ -42,9 +43,10 @@ public class EOcage extends PhDefault {
 
     public EOcage(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtCage());
+        final Attr attr = new AtMemoized();
+        this.add("enclosure", attr);
+        this.add("φ", attr);
         this.add("write", new AtComposite(this, EOcage.Write::new));
-        this.add("is-empty", new AtComposite(this, EOcage.IsEmpty::new));
     }
 
     @XmirObject(oname = "cage.write")
@@ -59,18 +61,6 @@ public class EOcage extends PhDefault {
                 attr.put(obj);
                 return new Data.ToPhi(true);
             }));
-        }
-    }
-
-    @XmirObject(oname = "cage.is-empty")
-    private final class IsEmpty extends PhDefault {
-        IsEmpty(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(
-                this, rho -> new Data.ToPhi(
-                    AtCage.EMPTY_TERM.equals(sigma.attr("φ").φTerm())
-                )
-            ));
         }
     }
 

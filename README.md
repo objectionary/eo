@@ -235,7 +235,7 @@ This is how you iterate:
 +alias org.eolang.txt.sprintf
 
 [args...] > app
-  memory > x
+  memory 0 > x
   seq > @
     x.write 2
     while.

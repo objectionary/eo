@@ -92,7 +92,7 @@
         i.sub 1
 
 [] > iterates-over-sigma
-  memory > x
+  memory 0 > x
   assert-that > @
     seq
       x.write TRUE
@@ -104,7 +104,7 @@
     $.equal-to TRUE
 
 [] > calculates-only-once-BROKEN
-  memory > x
+  memory 0 > x
   [] > a
     seq > @
       x.write (x.add 1)
@@ -117,9 +117,9 @@
     $.equal-to 1
 
 [] > rho-of-add-should-not-change
-  memory > f1
-  cage > f2
-  memory > f0
+  memory 0 > f1
+  cage 0 > f2
+  memory 0 > f0
   assert-that > @
     seq
       f0.write 0
@@ -152,7 +152,7 @@
         $.equal-to TRUE
 
 [] > recursion-without-arguments
-  memory > n
+  memory 0 > n
   [] > func
     if. > @
       n.greater 0
@@ -185,7 +185,7 @@
 [] > returns-same-object
   [] > foo
     [] > @
-      memory > x
+      memory 0 > x
   assert-that > @
     foo.x.<
     $.equal-to
@@ -203,13 +203,13 @@
       $.anything
 
 [] > refers-to-inner-vars-correctly
-  memory > go
+  memory 0 > go
   assert-that > @
     seq
       go.write TRUE
       go.while
         [i]
-          memory > m
+          memory 0 > m
           seq > @
             42 > x
             m.write x
@@ -224,7 +224,7 @@
         TRUE > @
 
 [] > calling-caged-function
-  cage > h
+  cage 0 > h
   [x] > func
     sprintf "Hello, %s!" x > @
   assert-that > @
@@ -245,7 +245,7 @@
     $.equal-to 2
 
 [] > directly-accesses-objects-from-root
-  Q.org.eolang.memory > m
+  Q.org.eolang.memory 0 > m
   assert-that > @
     seq
       m.write 42
@@ -256,7 +256,7 @@
     $.equal-to 40
 
 [] > directly-accesses-objects-from-standard-root
-  QQ.memory > m
+  QQ.memory 0 > m
   assert-that > @
     seq
       m.write 42
@@ -295,3 +295,20 @@
     foo.y.<.eq
       foo.y.<
     $.equal-to TRUE
+
+[] > compares-two-foreign-objects
+  assert-that > @
+    sprintf.<
+    $.all-of
+      $.equal-to
+        QQ.txt.sprintf.<
+      $.equal-to
+        Q.org.eolang.txt.sprintf.<
+
+[] > compares-two-local-objects
+  assert-that > @
+    5.add.<
+    $.is
+      $.not
+        $.equal-to
+          5.add.<

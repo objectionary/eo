@@ -25,6 +25,8 @@
 package org.eolang;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A package object, coming from {@link Phi}.
@@ -39,6 +41,12 @@ final class PhPackage implements Phi {
     private final String pkg;
 
     /**
+     * All of them.
+     */
+    private final Map<String, Phi> objects =
+        new ConcurrentHashMap<>(0);
+
+    /**
      * Ctor.
      * @param name The name
      */
@@ -48,14 +56,24 @@ final class PhPackage implements Phi {
 
     @Override
     public Attr attr(final String name) {
-        final String abs = String.format("%s.%s", this.pkg, name);
-        final String target = abs.replaceAll("(^|\\.)([^.]+)", "$1EO$2").replace("-", "_");
+        final StringBuilder abs = new StringBuilder(0).append(this.pkg);
+        if (abs.length() > 0) {
+            abs.append('.');
+        }
+        abs.append(name);
+        final String target = abs.toString()
+            .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
+            .replace("-", "_");
         Phi phi;
         try {
             Class.forName(String.format("%s.package-info", target));
-            phi = new PhPackage(abs);
+            phi = this.objects.computeIfAbsent(
+                target, t -> new PhPackage(abs.toString())
+            );
         } catch (final ClassNotFoundException ex) {
-            phi = this.sub(target);
+            phi = this.objects.computeIfAbsent(
+                target, this::sub
+            );
         }
         return new AtSimple(phi);
     }
@@ -103,7 +121,7 @@ final class PhPackage implements Phi {
             | IllegalAccessException ex) {
             throw new ExFailure(
                 String.format(
-                    "Can't find EO object '%s' in Java package '%s'",
+                    "Can't find Java object/package '%s' in EO package '%s'",
                     target, this.pkg
                 ),
                 ex

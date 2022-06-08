@@ -286,9 +286,9 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhWith(new PhCopy(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
+    <xsl:text>), "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_a));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -339,6 +339,11 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
+      <xsl:when test="@primitive and @base">
+        <xsl:text>new </xsl:text>
+        <xsl:value-of select="eo:class-name(@base)"/>
+        <xsl:text>(Phi.Φ)</xsl:text>
+      </xsl:when>
       <xsl:when test="@base='$'">
         <xsl:text>rho</xsl:text>
       </xsl:when>
@@ -346,7 +351,7 @@ SOFTWARE.
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
       <xsl:when test="@base='QQ'">
-        <xsl:text>Phi.Φ.attr("org.eolang").get()</xsl:text>
+        <xsl:text>Phi.Φ.attr("org").get().attr("eolang").get()</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
         <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
@@ -377,9 +382,13 @@ SOFTWARE.
         <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name(@base)"/>
-        <xsl:text>(rho)</xsl:text>
+        <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
+        <xsl:text>Phi.Φ</xsl:text>
+        <xsl:for-each select="$parts">
+          <xsl:text>.attr("</xsl:text>
+          <xsl:value-of select="."/>
+          <xsl:text>").get()</xsl:text>
+        </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>

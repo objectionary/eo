@@ -28,51 +28,19 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Phi}.
+ * Test case for {@link PhPackage}.
  *
- * @since 0.22
+ * @since 0.24
  */
-public final class PhiTest {
+public final class PhPackageTest {
 
     @Test
     public void takesPackage() {
         MatcherAssert.assertThat(
-            new Dataized(
-                new PhCopy(
-                    new PhMethod(
-                        new PhMethod(
-                            Phi.Φ.attr("org").get(),
-                            "eolang"
-                        ),
-                        "random"
-                    )
-                )
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
-        );
-    }
-
-    @Test
-    public void takesStandardPackage() {
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhCopy(
-                    new PhMethod(
-                        Phi.Φ.attr("org.eolang").get(), "random"
-                    )
-                )
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
-        );
-    }
-
-    @Test
-    public void takesDirectly() {
-        MatcherAssert.assertThat(
-            new Dataized(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("random").get()
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+            Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get(),
+            Matchers.equalTo(
+                Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get()
+            )
         );
     }
 

@@ -29,7 +29,7 @@
 +junit
 
 [] > goto-jumps-backwards
-  memory > i
+  memory 0 > i
   assert-that > @
     seq
       i.write 1
@@ -47,7 +47,7 @@
 
 [] > goto-jumps-forward
   [x] > div
-    memory > r
+    memory 0 > r
     seq > @
       r.write 0
       goto

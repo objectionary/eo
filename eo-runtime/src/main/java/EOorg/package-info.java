@@ -22,39 +22,9 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
-
 /**
- * GET.
+ * EO org package.
  *
- * @since 1.0
+ * @since 0.1
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
-
-    public EOarray$EOget(final Phi sigma) {
-        super(sigma);
-        this.add("i", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Can't get() the %dth element of the array, there are just %d of them",
-                        idx, array.length
-                    )
-                );
-            }
-            return array[idx];
-        }));
-    }
-
-}
+package EOorg;

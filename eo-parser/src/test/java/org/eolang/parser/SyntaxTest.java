@@ -178,7 +178,7 @@ public final class SyntaxTest {
         final Syntax syntax = new Syntax(
             "test-it-4",
             new InputOf(
-                "[] > base\n  memory > x\n  [self] > f\n    v > @\n      v\n"
+                "[] > base\n  memory 0 > x\n  [self] > f\n    v > @\n      v\n"
             ),
             new OutputTo(baos)
         );

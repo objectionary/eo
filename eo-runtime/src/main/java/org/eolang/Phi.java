@@ -42,6 +42,8 @@ public interface Phi extends Term {
      * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
+        private final Phi pkg = new PhPackage("");
+
         @Override
         public boolean equals(final Object obj) {
             return obj == this;
@@ -81,7 +83,7 @@ public interface Phi extends Term {
 
         @Override
         public Attr attr(final String name) {
-            return new AtSimple(new PhPackage(name));
+            return this.pkg.attr(name);
         }
     };
 

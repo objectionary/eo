@@ -24,13 +24,11 @@
 
 package EOorg.EOeolang;
 
-import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,29 +41,12 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "memory")
 public class EOmemory extends PhDefault {
 
-    private AtomicReference<Phi> phi;
-
     public EOmemory(final Phi sigma) {
         super(sigma);
-        this.phi = new AtomicReference<>();
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi object = this.phi.get();
-            if (object == null) {
-                throw new ExFailure(
-                    "The memory is not yet written"
-                );
-            }
-            return object;
-        }));
+        final Attr attr = new AtMemoized();
+        this.add("enclosure", attr);
+        this.add("φ", attr);
         this.add("write", new AtComposite(this, EOmemory.Write::new));
-        this.add("is-empty", new AtComposite(this, EOmemory.IsEmpty::new));
-    }
-
-    @Override
-    public String toString() {
-        return this.toStringWith(
-            String.format("▸memoized=%d->%s", this.phi.hashCode(), this.phi.get())
-        );
     }
 
     @XmirObject(oname = "memory.write")
@@ -77,19 +58,11 @@ public class EOmemory extends PhDefault {
                 final Object obj = new Dataized(
                     rho.attr("x").get()
                 ).take();
-                EOmemory.this.phi.set(new Data.ToPhi(obj));
+                final Phi mem = rho.attr("σ").get();
+                final Attr attr = mem.attr("φ");
+                attr.put(new Data.ToPhi(obj));
                 return new Data.ToPhi(true);
             }));
-        }
-    }
-
-    @XmirObject(oname = "memory.is-empty")
-    private final class IsEmpty extends PhDefault {
-        IsEmpty(final Phi sigma) {
-            super(sigma);
-            this.add("φ", new AtComposite(
-                this, rho -> new Data.ToPhi(EOmemory.this.phi.get() == null)
-            ));
         }
     }
 

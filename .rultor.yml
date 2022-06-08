@@ -1,7 +1,7 @@
 assets:
-  settings.xml: objectionary/secrets#settings.xml
-  pubring.gpg: objectionary/secrets#pubring.gpg
-  secring.gpg: objectionary/secrets#secring.gpg
+  settings.xml: yegor256/objectionary-secrets#settings.xml
+  pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
+  secring.gpg: yegor256/objectionary-secrets#secring.gpg
 install: |
   javac -version
   pdd --file=/dev/null

@@ -122,7 +122,7 @@ look like:
 \begin{ffcode}
 [isbn] > book2  |$\label{ln:book2}$|
   "Object Thinking" > title
-  memory > price |$\label{ln:book2-end}$|
+  memory 0 > price |$\label{ln:book2-end}$|
 \end{ffcode}
 
 The attribute \ff{title} is a constant, while the \ff{price}
@@ -139,7 +139,7 @@ abstract object \ff{set-price}:
 \begin{ffcode}
 [isbn] > book3 |$\label{ln:book3}$|
   "Object Thinking" > title
-  memory > price
+  memory 0 > price
   [p] > set-price
     ^.price.write p > @ |$\label{ln:book3-end}$|
 \end{ffcode}
