@@ -230,10 +230,24 @@
     "no slice".slice 0 0
     $.equal-to ""
 
-[] > slice-escape-sequences
+[] > slice-escape-sequences-line-break
   assert-that > @
     "\n".slice
       0
       "\n".length
     $.equal-to "\012"
+
+[] > slice-escape-sequences-unicode
+  assert-that > @
+    "\u0424".slice
+      0
+      "\u0424".length
+    $.equal-to "Ф"
+
+[] > slice-foreign-literals
+  assert-that > @
+    "привет".slice
+      0
+      1
+    $.equal-to "п"
 
