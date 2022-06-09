@@ -242,6 +242,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
+        if (this.getClass().isAnnotationPresent(Volatile.class)) {
+            this.cached.reset();
+        }
         return attr;
     }
 

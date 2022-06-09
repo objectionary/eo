@@ -47,10 +47,11 @@ public final class EOmemoryTest {
 
     @Test
     public void writeAfterCopy() {
-        final Phi mem = new EOmemory(Phi.Φ);
-        mem.attr(0).put(new Data.ToPhi(1L));
+        final Phi first = new EOmemory(Phi.Φ);
+        final Phi second = first.copy();
+        second.attr(0).put(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            new Dataized(mem).take(Long.class),
+            new Dataized(second).take(Long.class),
             Matchers.equalTo(1L)
         );
     }
@@ -98,6 +99,10 @@ public final class EOmemoryTest {
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Dataized(mem).take(Long.class),
+            Matchers.equalTo(1L)
+        );
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),

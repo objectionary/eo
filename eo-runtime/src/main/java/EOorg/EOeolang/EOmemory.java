@@ -26,7 +26,6 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -43,9 +42,8 @@ public class EOmemory extends PhDefault {
 
     public EOmemory(final Phi sigma) {
         super(sigma);
-        final Attr attr = new AtMemoized();
-        this.add("enclosure", attr);
-        this.add("φ", attr);
+        this.add("enclosure", new AtMemoized());
+        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
         this.add("write", new AtComposite(this, EOmemory.Write::new));
     }
 
@@ -55,12 +53,13 @@ public class EOmemory extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(this, rho -> {
-                final Object obj = new Dataized(
-                    rho.attr("x").get()
-                ).take();
-                final Phi mem = rho.attr("σ").get();
-                final Attr attr = mem.attr("φ");
-                attr.put(new Data.ToPhi(obj));
+                rho.attr("σ").get().attr("enclosure").put(
+                    new Data.ToPhi(
+                        new Dataized(
+                            rho.attr("x").get()
+                        ).take()
+                    )
+                );
                 return new Data.ToPhi(true);
             }));
         }

@@ -37,8 +37,8 @@ zip: *.tex sections/*.tex
 	cp -r ../sections .
 	version=$$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$(REPO)/releases/latest | jq -r '.tag_name')
 	echo "Version is: $${version}"
-	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
-	gsed -i "s|REPOSITORY|$(REPO)|" eolang-paper.tex
+	gsed -i "s|0\.0\.0|$${version}|g" eolang-paper.tex
+	gsed -i "s|REPOSITORY|$(REPO)|g" eolang-paper.tex
 	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
 	biber eolang-paper
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
