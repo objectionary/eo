@@ -67,3 +67,9 @@
   # /s - Enables dotall mode.
   # /u - Enables Unicode-aware case folding.
   [] > as-regex /regex
+
+  # Takes a piece of a string as another string
+  [start len] > slice
+    ^.as-bytes.slice > @
+      start
+      len

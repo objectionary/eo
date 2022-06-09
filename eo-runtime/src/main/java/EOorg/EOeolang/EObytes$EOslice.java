@@ -34,14 +34,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * BYTES.PART.
+ * BYTES.SLICE.
  *
  * @since 1.0
  */
-@XmirObject(oname = "bytes.part")
-public class EObytes$EOpart extends PhDefault {
+@XmirObject(oname = "bytes.slice")
+public class EObytes$EOslice extends PhDefault {
 
-    public EObytes$EOpart(final Phi sigma) {
+    public EObytes$EOslice(final Phi sigma) {
         super(sigma);
         this.add("start", new AtFree());
         this.add("len", new AtFree());
