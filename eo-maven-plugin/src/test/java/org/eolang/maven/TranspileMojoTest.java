@@ -85,9 +85,7 @@ public final class TranspileMojoTest {
             Files.exists(java),
             Matchers.is(true)
         );
-        Assertions.assertTrue(
-            java.toFile().setLastModified(0L)
-        );
+        Assertions.assertTrue(java.toFile().setLastModified(0L));
         final Path xmir = target.resolve("06-transpile")
             .resolve("foo")
             .resolve("src.xmir");

@@ -64,18 +64,17 @@ final class PhPackage implements Phi {
         final String target = abs.toString()
             .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
             .replace("-", "_");
-        Phi phi;
-        try {
-            Class.forName(String.format("%s.package-info", target));
-            phi = this.objects.computeIfAbsent(
-                target, t -> new PhPackage(abs.toString())
-            );
-        } catch (final ClassNotFoundException ex) {
-            phi = this.objects.computeIfAbsent(
-                target, this::sub
-            );
-        }
-        return new AtSimple(phi);
+        return new AtSimple(
+            this.objects.computeIfAbsent(
+                target, t -> {
+                    try {
+                        return this.sub(t);
+                    } catch (final ClassNotFoundException ex) {
+                        return new PhPackage(abs.toString());
+                    }
+                }
+            )
+        );
     }
 
     @Override
@@ -110,13 +109,14 @@ final class PhPackage implements Phi {
      * Make a sub package.
      * @param target The name
      * @return Phi
+     * @throws ClassNotFoundException If not found
      */
-    private Phi sub(final String target) {
+    private Phi sub(final String target) throws ClassNotFoundException {
         try {
             return Phi.class.cast(
                 Class.forName(target).getConstructor(Phi.class).newInstance(Phi.Φ)
             );
-        } catch (final NoSuchMethodException | ClassNotFoundException
+        } catch (final NoSuchMethodException
             | InvocationTargetException | InstantiationException
             | IllegalAccessException ex) {
             throw new ExFailure(

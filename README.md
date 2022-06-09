@@ -54,23 +54,6 @@ These things we **don't** tolerate:
   * flow control statements (`for`, `while`, `if`, etc)
   * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
 
-## Papers
-
-Here is a full list of academic papers related to EO and 𝜑-calculus (in reverse chronological order):
-
-  * Yegor Bugayenko<br/>
-    [On the Origins of Objects by Means of Careful Selection](https://arxiv.org/abs/2206.02585),
-    2022
-  * Nikolai Kudasov and Violetta Sim<br/>
-    [Formalizing 𝜑-calculus: a purely object-oriented calculus of decorated objects](https://arxiv.org/abs/2204.07454),
-    2022
-  * Yegor Bugayenko<br/>
-    [Reducing Programs to Objects](https://arxiv.org/abs/2112.11988),
-    2021
-  * Yegor Bugayenko<br/>
-    [EOLANG and phi-calculus](https://arxiv.org/abs/2111.13384), 
-    2021
-
 ## Quick Start
 
 Here is a simple program that gets a year from command line and tells you
