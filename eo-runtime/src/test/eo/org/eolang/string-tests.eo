@@ -251,3 +251,19 @@
       1
     $.equal-to "п"
 
+[] > slice-foreign-literals-2
+  assert-that > @
+    "hello, 大家!".slice
+      7
+      1
+    $.equal-to "大"
+
+[] > slice-is-broken
+  assert-that > @
+    msg.
+      slice.
+        "wrong"
+        -1
+        40
+    $.equal-to "Parameters are out of bound: start -1, len: 40, string length: 5"
+
