@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.7
-+rt jvm org.eolang:eo-runtime:0.23.7
++version 0.23.8
++rt jvm org.eolang:eo-runtime:0.23.8
 
 [] > bytes
 
@@ -33,8 +33,8 @@
   # Total number of bytes
   [] > size /int
 
-  # Take a part of the line
-  [start len] > part /bytes
+  # Represents a sub-sequence inside the current one
+  [start len] > slice /bytes
 
   # Turn this chain of bytes into a string in UTF-8
   [] > as-string /string

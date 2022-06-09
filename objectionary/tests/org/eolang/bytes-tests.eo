@@ -22,13 +22,13 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.7
++version 0.23.8
 +alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > takes-part-of-bytes
   assert-that > @
-    part.
+    slice.
       20-1F-EE-B5-90
       1
       3
@@ -37,7 +37,7 @@
 [] > size-of-part-is-correct
   assert-that > @
     size.
-      part.
+      slice.
         20-1F-EE-B5-90-EE-BB
         2
         3

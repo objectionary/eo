@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.7
-+rt jvm org.eolang:eo-runtime:0.23.7
++version 0.23.8
++rt jvm org.eolang:eo-runtime:0.23.8
 
 [] > string
   # Is true if both objects are equal
@@ -67,3 +67,6 @@
   # /s - Enables dotall mode.
   # /u - Enables Unicode-aware case folding.
   [] > as-regex /regex
+
+  # Takes a piece of a string as another string
+  [start len] > slice /string

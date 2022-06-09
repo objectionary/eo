@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.7
++version 0.23.8
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -182,4 +182,88 @@
     "/([0-9]+/\\d+)/".as-regex
     .matches "15/3"
     $.equal-to TRUE
+
+[] > compares-two-strings
+  assert-that > @
+    eq.
+      "x"
+      "x"
+    $.equal-to TRUE
+
+[] > one-symbol-string-compares
+  assert-that > @
+    "Ф"
+    $.equal-to "Ф"
+
+[] > supports-escape-sequences-line-break
+  assert-that > @
+    "\n"
+    $.equal-to "\012"
+
+[] > supports-escape-sequences-unicode
+  assert-that > @
+    "\u0424"
+    $.equal-to "Ф"
+
+[] > slice-from-start
+  assert-that > @
+    "hello".slice 0 1
+    $.equal-to "h"
+
+[] > slice-in-the-middle
+  assert-that > @
+    "hello".slice 2 3
+    $.equal-to "llo"
+
+[] > slice-from-the-end
+  assert-that > @
+    "hello".slice 4 1
+    $.equal-to "o"
+
+[] > slice-empty-string
+  assert-that > @
+    "".slice 0 0
+    $.equal-to ""
+
+[] > no-slice-string
+  assert-that > @
+    "no slice".slice 0 0
+    $.equal-to ""
+
+[] > slice-escape-sequences-line-break
+  assert-that > @
+    "\n".slice
+      0
+      "\n".length
+    $.equal-to "\012"
+
+[] > slice-escape-sequences-unicode
+  assert-that > @
+    "\u0424".slice
+      0
+      "\u0424".length
+    $.equal-to "Ф"
+
+[] > slice-foreign-literals
+  assert-that > @
+    "привет".slice
+      0
+      1
+    $.equal-to "п"
+
+[] > slice-foreign-literals-2
+  assert-that > @
+    "hello, 大家!".slice
+      7
+      1
+    $.equal-to "大"
+
+[] > slice-is-broken
+  assert-that > @
+    msg.
+      slice.
+        "wrong"
+        -1
+        40
+    $.equal-to "Parameters are out of bound: start -1, len: 40, string length: 5"
 
