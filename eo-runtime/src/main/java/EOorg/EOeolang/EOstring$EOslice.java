@@ -36,7 +36,7 @@ import org.eolang.XmirObject;
 /**
  * SLICE.
  *
- * @since 1.0
+ * @since 0.23
  */
 @XmirObject(oname = "string.slice")
 public class EOstring$EOslice extends PhDefault {
