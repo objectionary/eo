@@ -29,7 +29,7 @@ import EOorg.EOeolang.EObool;
 import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
-import EOorg.EOeolang.EOregex;
+import EOorg.EOeolang.EOtxt.EOregex;
 import EOorg.EOeolang.EOstring;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;

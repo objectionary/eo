@@ -51,7 +51,9 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void matchesString() {
-        final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
+        String r = "/([a-z]+)/";
+        final Phi regex = new EOregex(Phi.Φ);
+        regex.attr("r").put(new Data.ToPhi(r));
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -66,7 +68,9 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void matchesStringWithEntirePattern() {
-        final Phi regex = new Data.ToPhi(Pattern.compile("[a-z]+"));
+        String r = "/([a-z]+)/";
+        final Phi regex = new Data.ToPhi(Pattern.compile(r));
+        regex.attr(0).put(new Data.ToPhi(r));
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -81,7 +85,9 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void doesntMatchString() {
-        final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
+        String r = "/([A-Z]{2})/";
+        final Phi regex = new Data.ToPhi(Pattern.compile(r));
+        regex.attr(0).put(new Data.ToPhi(r));
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(

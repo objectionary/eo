@@ -22,41 +22,42 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
 /**
- * AS-REGEX.
+ * REGEX.MATCH.
  *
+ * @since 0.2
  */
-@XmirObject(oname = "string.as-regex")
-public class EOstring$EOas_regex extends PhDefault {
+@XmirObject(oname = "regex.match")
+public class EOregex$EOmatch extends PhDefault {
 
-    public EOstring$EOas_regex(final Phi sigma) {
+    public EOregex$EOmatch(final Phi sigma) {
         super(sigma);
+        this.add("txt", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final String pattern = new Param(rho).strong(String.class);
-            StringBuilder builder = new StringBuilder();
-            if (!pattern.startsWith("/")) {
-                throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
+            final Phi regex = rho.attr("ρ").get().copy();
+            final Pattern pattern = new Param(regex, "compile").strong(Pattern.class);
+            final String txt = new Param(rho, "txt").strong(String.class);
+            final Matcher matcher = pattern.matcher(txt);
+            if (matcher.matches()) {
+                final Phi[] dest = new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
+                return new Data.ToPhi(dest);
+            } else {
+                return new Data.ToPhi(new Phi[]{});
             }
-            final int lastIndex = pattern.lastIndexOf("/");
-            if (!pattern.endsWith("/")) {
-                builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
-            }
-            builder.append(pattern, 1, lastIndex);
-            return new Data.ToPhi(Pattern.compile(builder.toString()));
-        }
-        ));
+        }));
     }
 
 }

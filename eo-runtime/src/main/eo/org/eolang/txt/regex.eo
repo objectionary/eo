@@ -20,49 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.txt
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.hamcrest.assert-that
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > matches-string-against-pattern
-  assert-that > @
-    /([a-z]+)/i
-    .match "hello"
-    .is-empty
-    $.is
-      $.not
-        $.equal-to TRUE
+# Regular expression in Perl format, for example: /[a-z]+/i
+# Free attribute "r" is a string represenation of regex object.
+# It must starts and ends with "/" characters (regex "/(your-pattern)/s"),
+# Also it can be specified by the flag option.
+# e.g. (QQ.txt.regex "/(word)/i").compile.matches "WORD".
+# other flags:
+# /d - Enables Unix lines mode.
+# /i - Enables case-insensitive matching.
+# /x - Permits whitespace and comments in pattern.
+# /m - Enables multiline mode.
+# /s - Enables dotall mode.
+# /u - Enables Unicode-aware case folding.
+#
+[r] > regex
 
-[] > doesnt-match-string-against-pattern
-  assert-that > @
-    /([A-Z]{2})/
-    .matches "Hello, World!"
-    $.is
-      $.equal-to FALSE
+  [] > compile /regex
 
-[] > check-dotall-option
-  assert-that > @
-    /(.*)/s
-    .matches "too \\n many \\n line \\n Feed\\n"
-    $.equal-to TRUE
+  # Match the text and return the array of matched groups
+  [txt] > match /array
 
-[] > check-case-insensitive-option
-  assert-that > @
-    /(string)/i
-    .matches "StRiNg"
-    $.equal-to TRUE
+  # Matches
+  [txt] > matches
+    (^.match txt).is-empty.not > @
 
-[] > check-multiline-option
-  assert-that > @
-    /(^([0-9]+).*)/m
-    .matches "1 bottle of water on the wall. \\n1 bottle of water."
-    $.equal-to TRUE
-
-[] > check-entire-pattern
-  assert-that > @
-    /[0-9]/\\d+/
-    .match "2/75"
-    .length
-    $.equal-to 1
