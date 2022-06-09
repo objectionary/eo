@@ -21,39 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
-import java.util.Arrays;
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
+import org.eolang.Dataized;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * BYTES.PART.
+ * Test case for {@link EOstring}.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "bytes.part")
-public class EObytes$EOpart extends PhDefault {
+public final class EOstringEOsliceTest {
 
-    public EObytes$EOpart(final Phi sigma) {
-        super(sigma);
-        this.add("start", new AtFree());
-        this.add("len", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final long start = new Param(rho, "start").strong(Long.class);
-            final long length = new Param(rho, "len").strong(Long.class);
-            final byte[] array = new Param(rho).strong(byte[].class);
-            final byte[] target = Arrays.copyOfRange(
-                array, (int) start, (int) (start + length)
-            );
-            return new Data.ToPhi(target);
-        }));
+    @Test
+    public void sliceString() {
+        final Phi str = new Data.ToPhi("строка ㄤㄠ");
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOstring$EOslice(str),
+                "start",
+                new Data.ToPhi(7L)
+            ),
+            "len",
+            new Data.ToPhi(1L)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi.copy()).take(String.class),
+            Matchers.equalTo("ㄤ")
+        );
     }
 
 }

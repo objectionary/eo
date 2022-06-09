@@ -28,7 +28,7 @@
 
 [] > takes-part-of-bytes
   assert-that > @
-    part.
+    slice.
       20-1F-EE-B5-90
       1
       3
@@ -37,7 +37,7 @@
 [] > size-of-part-is-correct
   assert-that > @
     size.
-      part.
+      slice.
         20-1F-EE-B5-90-EE-BB
         2
         3
