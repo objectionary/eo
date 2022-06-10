@@ -80,6 +80,14 @@ public final class OyRemote implements Objectionary {
     }
 
     @Override
+    public String toString() {
+        return String.format(
+            "%s (%s)",
+            this.addr, this.hash
+        );
+    }
+
+    @Override
     public Input get(final String name) throws IOException {
         final URL url = new URL(
             String.format(

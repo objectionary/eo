@@ -60,6 +60,14 @@ public final class OyFallback implements Objectionary {
     }
 
     @Override
+    public String toString() {
+        return String.format(
+            "[%s]+[fallback to %s]",
+            this.first, this.second
+        );
+    }
+
+    @Override
     public Input get(final String name) throws IOException {
         return new IoCheckedFunc<>(
             new FuncWithFallback<>(

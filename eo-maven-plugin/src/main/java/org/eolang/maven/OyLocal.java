@@ -56,6 +56,14 @@ public final class OyLocal implements Objectionary {
     }
 
     @Override
+    public String toString() {
+        return String.format(
+            "%s (%s)",
+            this.eopath, this.version
+        );
+    }
+
+    @Override
     public Input get(final String name) throws IOException {
         final Path file = new Place(name).make(
             this.eopath
