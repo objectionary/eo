@@ -24,11 +24,13 @@
 
 package org.eolang;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A constant object.
+ *
+ * <p>This class is thread-safe.</p>
  *
  * @since 0.16
  */
@@ -42,7 +44,7 @@ public final class PhConst implements Phi {
     /**
      * Cached attributes.
      */
-    private final Map<String, Attr> cached = new HashMap<>(0);
+    private final Map<String, Attr> cached = new ConcurrentHashMap<>(0);
 
     /**
      * Ctor.
@@ -91,10 +93,9 @@ public final class PhConst implements Phi {
 
     @Override
     public Attr attr(final String name) {
-        this.cached.computeIfAbsent(
+        return this.cached.computeIfAbsent(
             name, x -> new AtConst(this.origin.attr(name), this)
         );
-        return this.cached.get(name);
     }
 
 }
