@@ -37,6 +37,7 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -120,11 +121,11 @@ public final class TranspileMojoTest {
     @Test
     public void testRealCompilation(@TempDir final Path temp)
         throws Exception {
+        final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo");
+        Assumptions.assumeTrue(Files.exists(src));
         final String java = this.compile(
             temp,
-            new InputOf(
-                Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo")
-            ),
+            new InputOf(src),
             "EOorg/EOeolang/EOarray.java"
         );
         MatcherAssert.assertThat(java, Matchers.containsString("class"));

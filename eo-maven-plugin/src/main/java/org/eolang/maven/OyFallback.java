@@ -51,10 +51,7 @@ public final class OyFallback implements Objectionary {
      * @param primary Primary source.
      * @param secondary Secondary source.
      */
-    public OyFallback(
-        final Objectionary primary,
-        final Objectionary secondary
-    ) {
+    public OyFallback(final Objectionary primary, final Objectionary secondary) {
         this.first = primary;
         this.second = secondary;
     }

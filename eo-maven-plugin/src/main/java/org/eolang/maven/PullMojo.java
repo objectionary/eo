@@ -77,7 +77,7 @@ public final class PullMojo extends SafeMojo {
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new OyRemote();
+    private Objectionary objectionary;
 
     /**
      * Target directory.

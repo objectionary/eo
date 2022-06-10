@@ -24,7 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -37,14 +37,9 @@ import org.cactoos.io.InputOf;
 public final class OyRemote implements Objectionary {
 
     /**
-     * The hash code to fetch.
-     */
-    private final String hash;
-
-    /**
      * The address template.
      */
-    private final String addr;
+    private final String template;
 
     /**
      * Ctor.
@@ -55,45 +50,29 @@ public final class OyRemote implements Objectionary {
 
     /**
      * Ctor.
-     * @param hsh The GitHub hash
+     * @param hash The GitHub hash
      * @todo #490:30m Resolve abbreviated hash to a proper hash.
      *  In order to avoid collisions resolve hash
      *  (or branch) to a complete sha-256 hash of the commit.
      *  Use only sha-256 hashes as a caching criteria.
      */
-    public OyRemote(final String hsh) {
-        this(
+    public OyRemote(final String hash) {
+        this.template = String.format(
             // @checkstyle LineLength (1 line)
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-            hsh
+            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
+            hash
         );
-    }
-
-    /**
-     * Ctor.
-     * @param url The url template.
-     * @param hsh The hash or branch.
-     */
-    public OyRemote(final String url, final String hsh) {
-        this.addr = url;
-        this.hash = hsh;
     }
 
     @Override
     public String toString() {
-        return String.format(
-            "%s (%s)",
-            this.addr, this.hash
-        );
+        return this.template;
     }
 
     @Override
-    public Input get(final String name) throws IOException {
+    public Input get(final String name) throws MalformedURLException {
         final URL url = new URL(
-            String.format(
-                this.addr,
-                this.hash, name.replace(".", "/")
-            )
+            String.format(this.template, name.replace(".", "/"))
         );
         Logger.debug(
             this, "The object '%s' will be pulled from %s...",
