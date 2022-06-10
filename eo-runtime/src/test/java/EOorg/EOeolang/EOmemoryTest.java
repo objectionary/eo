@@ -203,4 +203,5 @@ public final class EOmemoryTest {
             Matchers.equalTo(43L)
         );
     }
+
 }

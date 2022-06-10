@@ -33,16 +33,36 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 final class AtConst implements Attr {
 
+    /**
+     * The original attribute to make const.
+     */
     private final Attr origin;
 
+    /**
+     * Its \rho.
+     */
     private final Phi rho;
 
+    /**
+     * Cached value of the attribute.
+     */
     private final AtomicReference<Phi> cache;
 
+    /**
+     * Ctor.
+     * @param attr The attr
+     * @param phi Its \rho
+     */
     AtConst(final Attr attr, final Phi phi) {
         this(attr, phi, null);
     }
 
+    /**
+     * Ctor.
+     * @param attr The original
+     * @param phi Its \rho
+     * @param cached The value to be cached
+     */
     private AtConst(final Attr attr, final Phi phi, final Phi cached) {
         this.origin = attr;
         this.rho = phi;
