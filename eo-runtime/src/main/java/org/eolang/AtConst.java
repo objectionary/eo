@@ -81,14 +81,16 @@ final class AtConst implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtConst(this.origin.copy(self), this.rho, this.cache.get());
+        throw new IllegalStateException(
+            "This should never happen"
+        );
     }
 
     @Override
     public Phi get() {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
-                final Phi phi = this.origin.copy(this.rho).get().copy();
+                final Phi phi = this.origin.get();
                 phi.move(this.rho);
                 this.cache.set(phi);
             }
