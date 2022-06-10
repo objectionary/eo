@@ -54,3 +54,5 @@
   # Converts this to hash
   [] > as-hash /int
 
+  # Takes a piece of a string as another string
+  [start len] > slice /string

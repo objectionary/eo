@@ -29,12 +29,10 @@ import EOorg.EOeolang.EObool;
 import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
-import EOorg.EOeolang.EOtxt.EOregex;
 import EOorg.EOeolang.EOstring;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 /**
  * A data container.
@@ -172,8 +170,6 @@ public interface Data<T> {
                 phi = new EOstring(Phi.Φ);
             } else if (obj instanceof Double) {
                 phi = new EOfloat(Phi.Φ);
-            } else if (obj instanceof Pattern) {
-                phi = new EOregex(Phi.Φ);
             } else if (obj instanceof Phi[]) {
                 phi = new EOarray(Phi.Φ);
             } else {

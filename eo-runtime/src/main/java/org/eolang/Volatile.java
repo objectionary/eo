@@ -22,45 +22,19 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package org.eolang;
 
-import EOorg.EOeolang.AtMemoized;
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Volatile;
-import org.eolang.XmirObject;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * CAGE.
+ * Annotation for an object with a volatile phi (never cached).
  *
- * @since 0.17
+ * @since 0.24
  */
-@Volatile
-@XmirObject(oname = "cage")
-public class EOcage extends PhDefault {
-
-    public EOcage(final Phi sigma) {
-        super(sigma);
-        this.add("enclosure", new AtMemoized());
-        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtComposite(this, EOcage.Write::new));
-    }
-
-    @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
-        Write(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                rho.attr("σ").get().attr("enclosure").put(
-                    rho.attr("x").get()
-                );
-                return new Data.ToPhi(true);
-            }));
-        }
-    }
-
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Volatile {
 }

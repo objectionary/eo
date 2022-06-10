@@ -131,7 +131,10 @@ public final class EOcageTest {
                 0, new Data.ToPhi(1L)
             )
         );
-        new Dataized(new PhMethod(cage, "x")).take();
+        MatcherAssert.assertThat(
+            new Dataized(new PhMethod(cage, "x")).take(Long.class),
+            Matchers.equalTo(1L)
+        );
         EOcageTest.writeTo(cage, new Data.ToPhi(0L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
@@ -178,6 +181,21 @@ public final class EOcageTest {
         );
     }
 
+    @Test
+    public void writesAndRewritesPrimitive() {
+        final Phi cage = new EOcage(Phi.Φ);
+        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
+        MatcherAssert.assertThat(
+            new Dataized(cage).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+        EOcageTest.writeTo(cage, new Data.ToPhi(5L));
+        MatcherAssert.assertThat(
+            new Dataized(cage).take(Long.class),
+            Matchers.equalTo(5L)
+        );
+    }
+
     private static void writeTo(final Phi cage, final Phi obj) {
         new Dataized(
             new PhWith(
@@ -185,7 +203,7 @@ public final class EOcageTest {
                 0,
                 obj
             )
-        ).take();
+        ).take(Boolean.class);
     }
 
     public static class Dummy extends PhDefault {

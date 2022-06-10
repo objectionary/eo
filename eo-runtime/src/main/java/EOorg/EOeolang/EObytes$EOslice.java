@@ -22,45 +22,38 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
-import EOorg.EOeolang.AtMemoized;
+import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
 /**
- * CAGE.
+ * BYTES.SLICE.
  *
- * @since 0.17
+ * @since 1.0
  */
-@Volatile
-@XmirObject(oname = "cage")
-public class EOcage extends PhDefault {
+@XmirObject(oname = "bytes.slice")
+public class EObytes$EOslice extends PhDefault {
 
-    public EOcage(final Phi sigma) {
+    public EObytes$EOslice(final Phi sigma) {
         super(sigma);
-        this.add("enclosure", new AtMemoized());
-        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtComposite(this, EOcage.Write::new));
-    }
-
-    @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
-        Write(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                rho.attr("σ").get().attr("enclosure").put(
-                    rho.attr("x").get()
-                );
-                return new Data.ToPhi(true);
-            }));
-        }
+        this.add("start", new AtFree());
+        this.add("len", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> {
+            final long start = new Param(rho, "start").strong(Long.class);
+            final long length = new Param(rho, "len").strong(Long.class);
+            final byte[] array = new Param(rho).strong(byte[].class);
+            final byte[] target = Arrays.copyOfRange(
+                array, (int) start, (int) (start + length)
+            );
+            return new Data.ToPhi(target);
+        }));
     }
 
 }

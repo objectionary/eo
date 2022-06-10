@@ -77,7 +77,7 @@ public final class PullMojo extends SafeMojo {
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new OyRemote();
+    private Objectionary objectionary;
 
     /**
      * Target directory.
@@ -114,7 +114,10 @@ public final class PullMojo extends SafeMojo {
                     this.pull(tojo.get("id")).toAbsolutePath().toString()
                 );
             }
-            Logger.info(this, "%d program(s) pulled", tojos.size());
+            Logger.info(
+                this, "%d program(s) pulled from %s",
+                tojos.size(), this.objectionary
+            );
         }
     }
 

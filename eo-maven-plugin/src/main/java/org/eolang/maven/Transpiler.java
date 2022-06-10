@@ -118,15 +118,7 @@ final class Transpiler {
                 );
             } else {
                 for (final XML java : nodes) {
-                    new Save(
-                        new Joined(
-                            "",
-                            java.xpath("java/text()")
-                        ),
-                        new Place(java.xpath("@java-name").get(0)).make(
-                            generated, "java"
-                        )
-                    ).save();
+                    Transpiler.saveJava(java, generated);
                     ++total;
                 }
                 Logger.info(
@@ -136,6 +128,26 @@ final class Transpiler {
             }
         }
         return total;
+    }
+
+    /**
+     * Save this Java file.
+     * @param java The XML with Java
+     * @param generated Path to all files
+     * @throws IOException If fails
+     */
+    private static void saveJava(final XML java, final Path generated) throws IOException {
+        final String type = java.xpath("@java-name").get(0);
+        final Path dest = new Place(type).make(
+            generated, "java"
+        );
+        new Save(
+            new Joined(
+                "",
+                java.xpath("java/text()")
+            ),
+            dest
+        ).save();
     }
 
     /**

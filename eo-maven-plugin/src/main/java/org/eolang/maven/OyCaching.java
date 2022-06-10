@@ -67,6 +67,14 @@ public final class OyCaching implements Objectionary {
     }
 
     @Override
+    public String toString() {
+        return String.format(
+            "[%s]+(%s cache to %s)",
+            this.primary, this.version, this.cache
+        );
+    }
+
+    @Override
     public Input get(final String name) throws IOException {
         return new TeeInput(
             this.primary.get(name),

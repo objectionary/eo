@@ -22,45 +22,47 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
-import EOorg.EOeolang.AtMemoized;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
 /**
- * CAGE.
+ * SLICE.
  *
- * @since 0.17
+ * @since 0.23
  */
-@Volatile
-@XmirObject(oname = "cage")
-public class EOcage extends PhDefault {
+@XmirObject(oname = "string.slice")
+public class EOstring$EOslice extends PhDefault {
 
-    public EOcage(final Phi sigma) {
+    public EOstring$EOslice(final Phi sigma) {
         super(sigma);
-        this.add("enclosure", new AtMemoized());
-        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtComposite(this, EOcage.Write::new));
-    }
-
-    @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
-        Write(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                rho.attr("σ").get().attr("enclosure").put(
-                    rho.attr("x").get()
+        this.add("start", new AtFree());
+        this.add("len", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> {
+            final String str = new Param(rho).strong(String.class);
+            final int start = new Param(rho, "start").strong(Long.class).intValue();
+            final int length = new Param(rho, "len").strong(Long.class).intValue();
+            final int end = length + start;
+            if (start < 0 || start > end || end > str.length()) {
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi(
+                        String.format(
+                            "Parameters are out of bound: start %d, len: %d, string length: %d",
+                            start, length, str.length()
+                        )
+                    )
                 );
-                return new Data.ToPhi(true);
-            }));
-        }
+            }
+            return new Data.ToPhi(str.substring(start, end));
+        }));
     }
 
 }

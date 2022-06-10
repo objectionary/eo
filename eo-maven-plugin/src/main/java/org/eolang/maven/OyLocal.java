@@ -38,7 +38,7 @@ public final class OyLocal implements Objectionary {
     /**
      * Local storage.
      */
-    private final Path eopath;
+    private final Path home;
 
     /**
      * Version.
@@ -52,13 +52,21 @@ public final class OyLocal implements Objectionary {
      */
     public OyLocal(final String ver, final Path path) {
         this.version = ver;
-        this.eopath = path;
+        this.home = path;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "%s (%s)",
+            this.home, this.version
+        );
     }
 
     @Override
     public Input get(final String name) throws IOException {
         final Path file = new Place(name).make(
-            this.eopath
+            this.home
                 .resolve("sources")
                 .resolve(this.version),
             "eo"
