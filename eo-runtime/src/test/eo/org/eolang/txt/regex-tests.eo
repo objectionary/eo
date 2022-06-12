@@ -132,16 +132,3 @@
     .msg
     $.is
       $.equal-to "Wrong regex syntax: \"/\" is missing"
-
-[] > check-regex-compile-error-msg
-  assert-that > @
-    regex "/.)+/"
-    .compile
-    .msg
-    $.is
-      $.equal-to
-        """
-        Unmatched closing ')' near index 0
-        .)+
-        ^
-        """
