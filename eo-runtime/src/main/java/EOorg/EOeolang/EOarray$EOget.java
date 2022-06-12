@@ -26,8 +26,10 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -46,10 +48,13 @@ public class EOarray$EOget extends PhDefault {
             final Phi[] array = new Param(rho).strong(Phi[].class);
             final int idx = new Param(rho, "i").strong(Long.class).intValue();
             if (array.length <= idx) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Can't get() the %dth element of the array, there are just %d of them",
-                        idx, array.length
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi(
+                        String.format(
+                            "Can't get() the %dth element of the array, there are just %d of them",
+                            idx, array.length
+                        )
                     )
                 );
             }

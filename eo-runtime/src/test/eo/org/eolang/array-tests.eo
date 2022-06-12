@@ -391,3 +391,13 @@
         x.mul 2 > @
     $.equal-to
       * 2 4 6 8
+
+[] > array-get-with-error
+  assert-that > @
+    msg.
+      get.
+        * 1 2 3 4
+        20
+    $.is
+      $.equal-to
+        "Can't get() the 20th element of the array, there are just 4 of them"
