@@ -1,10 +1,23 @@
 xsls:
   - /org/eolang/parser/errors/broken-aliases.xsl
 tests:
-  - /program/errors[count(error)=3]
+  - /program/errors[count(error)=16]
   - /program/errors/error[@line='5']
   - /program/errors/error[@line='6']
   - /program/errors/error[@line='7']
+  - /program/errors/error[@line='8']
+  - /program/errors/error[@line='9']
+  - /program/errors/error[@line='10']
+  - /program/errors/error[@line='11']
+  - /program/errors/error[@line='12']
+  - /program/errors/error[@line='13']
+  - /program/errors/error[@line='14']
+  - /program/errors/error[@line='15']
+  - /program/errors/error[@line='16']
+  - /program/errors/error[@line='17']
+  - /program/errors/error[@line='18']
+  - /program/errors/error[@line='19']
+  - /program/errors/error[@line='20']
 eo: |
   +alias org.eolang.io.stdout
   +alias caseInsensitive thiS.IS.2
@@ -12,6 +25,19 @@ eo: |
   +alias i文件 this.is.legal2
   +alias this is some mistake
   +alias FirstLetter Should.Be.Small
+  +alias the> symbol.is.not.allowed
+  +alias the. symbol.is.not.allowed
+  +alias the[ symbol.is.not.allowed
+  +alias the] symbol.is.not.allowed
+  +alias the( symbol.is.not.allowed
+  +alias the) symbol.is.not.allowed
+  +alias the! symbol.is.not.allowed
+  +alias the: symbol.is.not.allowed
+  +alias the" symbol.is.not.allowed
+  +alias the@ symbol.is.not.allowed
+  +alias the^ symbol.is.not.allowed
+  +alias the$ symbol.is.not.allowed
+  +alias the  symbol.is.not.allowed
   +alias
 
   [] > main
