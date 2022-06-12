@@ -74,3 +74,8 @@
   # Return itself
   [] > as-bytes
     ^ > @
+
+  # Concatenation of two byte sequences:
+  # the current and the provided one,
+  # as a new sequence
+  [b] > concat /bytes
