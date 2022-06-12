@@ -46,7 +46,7 @@ public class EOregex$EOmatch extends PhDefault {
         super(sigma);
         this.add("txt", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi regex = rho.attr("ρ").get().copy();
+            final Phi regex = rho.attr("ρ").get();
             final String r = new Param(regex, "r").strong(String.class);
             final String txt = new Param(rho, "txt").strong(String.class);
             final Matcher matcher = Pattern.compile(r).matcher(txt);
