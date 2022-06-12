@@ -29,10 +29,11 @@
 
 [] > matches-string-against-pattern
   assert-that > @
-    regex "/([a-z]+)/i"
-    .compile
-    .match "hello"
-    .is-empty
+    is-empty.
+      match.
+        compile.
+          regex "/([a-z]+)/i"
+        "hello"
     $.is
       $.not
         $.equal-to TRUE
@@ -41,35 +42,35 @@
   assert-that > @
     matches.
       compile.
-        QQ.txt.regex "/([A-Z]{2})/"
+        regex "/([A-Z]{2})/"
       "Hello, World!"
     $.is
       $.equal-to FALSE
 
 [] > check-dotall-option
   assert-that > @
-    QQ.txt.regex "/(.*)/s"
+    regex "/(.*)/s"
     .compile
     .matches "too \\n many \\n line \\n Feed\\n"
     $.equal-to TRUE
 
 [] > check-case-insensitive-option
   assert-that > @
-    QQ.txt.regex "/(string)/i"
+    regex "/(string)/i"
     .compile
     .matches "StRiNg"
     $.equal-to TRUE
 
 [] > check-multiline-option
   assert-that > @
-    QQ.txt.regex "/(^([0-9]+).*)/m"
+    regex "/(^([0-9]+).*)/m"
     .compile
     .matches "1 bottle of water on the wall. \\n1 bottle of water."
     $.equal-to TRUE
 
 [] > check-entire-pattern
   assert-that > @
-    QQ.txt.regex "/[0-9]/\\d+/"
+    regex "/[0-9]/\\d+/"
     .compile
     .match "2/75"
     .length
@@ -124,3 +125,23 @@
     .matches "15/3"
     $.equal-to TRUE
 
+[] > check-regex-compile-error-msg-missing-slash
+  assert-that > @
+    regex "(.)+"
+    .compile
+    .msg
+    $.is
+      $.equal-to "Wrong regex syntax: \"/\" is missing"
+
+[] > check-regex-compile-error-msg
+  assert-that > @
+    regex "/.)+/"
+    .compile
+    .msg
+    $.is
+      $.equal-to
+        """
+        Unmatched closing ')' near index 0
+        .)+
+        ^
+        """

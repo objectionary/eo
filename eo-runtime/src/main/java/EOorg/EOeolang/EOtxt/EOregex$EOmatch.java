@@ -31,14 +31,13 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
  * REGEX.MATCH.
  *
- * @since 0.2
+ * @since 0.23
  */
 @XmirObject(oname = "regex.match")
 public class EOregex$EOmatch extends PhDefault {
@@ -48,9 +47,9 @@ public class EOregex$EOmatch extends PhDefault {
         this.add("txt", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi regex = rho.attr("ρ").get().copy();
-            final Pattern pattern = new Param(regex, "compile").strong(Pattern.class);
+            final String r = new Param(regex, "r").strong(String.class);
             final String txt = new Param(rho, "txt").strong(String.class);
-            final Matcher matcher = pattern.matcher(txt);
+            final Matcher matcher = Pattern.compile(r).matcher(txt);
             if (matcher.matches()) {
                 final Phi[] dest = new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
                 return new Data.ToPhi(dest);

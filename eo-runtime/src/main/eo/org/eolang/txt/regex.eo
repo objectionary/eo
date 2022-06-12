@@ -25,10 +25,10 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-# Regular expression in Perl format, for example: /[a-z]+/i
+# Regular expression in Perl format.
 # Free attribute "r" is a string represenation of regex object.
-# It must starts and ends with "/" characters (regex "/(your-pattern)/s"),
-# Also it can be specified by the flag option.
+# It starts and ends with slash (e.g. "/(your-pattern)/s"),
+# Also it can be specified by the flag option,
 # e.g. (QQ.txt.regex "/(word)/i").compile.matches "WORD".
 # other flags:
 # /d - Enables Unix lines mode.

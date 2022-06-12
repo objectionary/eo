@@ -26,13 +26,6 @@
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > matches-against-regular-expression
-  assert-that > @
-    regex "/([a-z])+/"
-    .compile
-    .matches "dude"
-    $.equal-to TRUE
-
 [] > calculates-length-of-spaces-only
   assert-that > @
     " ".length
