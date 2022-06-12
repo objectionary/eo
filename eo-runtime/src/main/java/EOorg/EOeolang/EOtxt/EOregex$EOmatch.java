@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,9 +35,9 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * REGEX.
+ * REGEX.MATCH.
  *
- * @since 0.2
+ * @since 0.23
  */
 @XmirObject(oname = "regex.match")
 public class EOregex$EOmatch extends PhDefault {
@@ -46,9 +46,10 @@ public class EOregex$EOmatch extends PhDefault {
         super(sigma);
         this.add("txt", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Pattern pattern = new Param(rho).strong(Pattern.class);
+            final Phi regex = rho.attr("ρ").get();
+            final String r = new Param(regex, "r").strong(String.class);
             final String txt = new Param(rho, "txt").strong(String.class);
-            final Matcher matcher = pattern.matcher(txt);
+            final Matcher matcher = Pattern.compile(r).matcher(txt);
             if (matcher.matches()) {
                 final Phi[] dest = new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
                 return new Data.ToPhi(dest);

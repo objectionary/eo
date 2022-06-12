@@ -366,11 +366,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         } else if (ctx.INT() != null) {
             type = "int";
             data = Long.toString(Long.parseLong(text));
-        } else if (ctx.REGEX() != null) {
-            type = "regex";
-            data = text.substring(1, text.lastIndexOf('/'));
-            this.objects
-                .prop("flags", text.substring(text.lastIndexOf('/') + 1));
         } else if (ctx.HEX() != null) {
             type = "int";
             data = Long.toString(

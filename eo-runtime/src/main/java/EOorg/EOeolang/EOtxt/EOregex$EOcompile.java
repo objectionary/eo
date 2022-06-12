@@ -22,41 +22,62 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
+import EOorg.EOeolang.EOerror;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
- * AS-REGEX.
+ * REGEX.COMPILE.
  *
+ * @since 0.23
  */
-@XmirObject(oname = "string.as-regex")
-public class EOstring$EOas_regex extends PhDefault {
+@XmirObject(oname = "regex.compile")
+public class EOregex$EOcompile extends PhDefault {
 
-    public EOstring$EOas_regex(final Phi sigma) {
+    public EOregex$EOcompile(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {
-            final String pattern = new Param(rho).strong(String.class);
+            final Phi regex = rho.attr("ρ").get();
+            final String pattern = new Param(regex, "r").strong(String.class);
             StringBuilder builder = new StringBuilder();
             if (!pattern.startsWith("/")) {
-                throw new PatternSyntaxException("Wrong regex syntax", pattern, 0);
+                return new PhWith(
+                    new EOerror(Phi.Φ),
+                    "msg",
+                    new Data.ToPhi("Wrong regex syntax: \"/\" is missing")
+                );
             }
             final int lastIndex = pattern.lastIndexOf("/");
             if (!pattern.endsWith("/")) {
                 builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
             }
             builder.append(pattern, 1, lastIndex);
-            return new Data.ToPhi(Pattern.compile(builder.toString()));
-        }
-        ));
+            Phi phi;
+            try {
+                String compiled = Pattern.compile(builder.toString()).pattern();
+                phi = new PhWith(
+                    new EOregex(rho),
+                    "r",
+                    new Data.ToPhi(compiled)
+                );
+            } catch (IllegalArgumentException e) {
+                phi = new PhWith(
+                    new EOerror(Phi.Φ),
+                    "msg",
+                    new Data.ToPhi(e.getMessage())
+                );
+            }
+            return phi;
+        }));
     }
 
 }

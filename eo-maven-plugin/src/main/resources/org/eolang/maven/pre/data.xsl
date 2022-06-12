@@ -46,9 +46,6 @@ SOFTWARE.
               <xsl:when test="@data='string'">
                 <xsl:text>String</xsl:text>
               </xsl:when>
-              <xsl:when test="@data='regex'">
-                <xsl:text>java.util.regex.Pattern</xsl:text>
-              </xsl:when>
               <xsl:when test="@data='float'">
                 <xsl:text>Double</xsl:text>
               </xsl:when>
@@ -83,42 +80,6 @@ SOFTWARE.
               <xsl:text>"</xsl:text>
               <xsl:value-of select="text()"/>
               <xsl:text>"</xsl:text>
-            </xsl:when>
-            <xsl:when test="@data='regex'">
-              <xsl:text>java.util.regex.Pattern.compile("</xsl:text>
-              <xsl:value-of select="text()"/>
-              <xsl:text>"</xsl:text>
-              <xsl:for-each select="string-to-codepoints(@flags)">
-                <xsl:if test="position() = 1">
-                  <xsl:text>, </xsl:text>
-                </xsl:if>
-                <xsl:if test="position() &gt; 1">
-                  <xsl:text> | </xsl:text>
-                </xsl:if>
-                <xsl:variable name="flag" select="codepoints-to-string(.)"/>
-                <xsl:text>java.util.regex.Pattern.</xsl:text>
-                <xsl:choose>
-                  <xsl:when test="$flag='i'">
-                    <xsl:text>CASE_INSENSITIVE</xsl:text>
-                  </xsl:when>
-                  <xsl:when test="$flag='m'">
-                    <xsl:text>MULTILINE</xsl:text>
-                  </xsl:when>
-                  <xsl:when test="$flag='s'">
-                    <xsl:text>DOTALL</xsl:text>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:message terminate="yes">
-                      <xsl:text>Unknown flag "</xsl:text>
-                      <xsl:value-of select="$flag"/>
-                      <xsl:text>" in regex "</xsl:text>
-                      <xsl:value-of select="$o/text()"/>
-                      <xsl:text>"</xsl:text>
-                    </xsl:message>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:for-each>
-              <xsl:text>)</xsl:text>
             </xsl:when>
             <xsl:when test="@data='int'">
               <xsl:value-of select="text()"/>
