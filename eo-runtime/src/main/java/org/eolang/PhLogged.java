@@ -24,17 +24,15 @@
 
 package org.eolang;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * A constant object.
+ * An object that reports all manipulations with it to the log (very useful
+ * for debugging purposes).
  *
  * <p>This class is thread-safe.</p>
  *
- * @since 0.16
+ * @since 0.24
  */
-public final class PhConst implements Phi {
+public final class PhLogged implements Phi {
 
     /**
      * The origin being turned into a const.
@@ -42,16 +40,11 @@ public final class PhConst implements Phi {
     private final Phi origin;
 
     /**
-     * Cached attributes.
-     */
-    private final Map<String, Attr> cached = new ConcurrentHashMap<>(0);
-
-    /**
      * Ctor.
      *
      * @param phi The origin
      */
-    public PhConst(final Phi phi) {
+    public PhLogged(final Phi phi) {
         this.origin = phi;
     }
 
@@ -67,37 +60,48 @@ public final class PhConst implements Phi {
 
     @Override
     public String toString() {
-        return String.format("!%s%s", this.cached.keySet(), this.origin);
+        return this.origin.toString();
     }
 
     @Override
     public String φTerm() {
-        return String.format("%s!", this.origin.φTerm());
+        return this.origin.φTerm();
     }
 
     @Override
     public Phi copy() {
-        return new PhConst(this.origin.copy());
+        System.out.printf("%d.copy()...\n", this.hashCode());
+        final Phi ret = this.origin.copy();
+        System.out.printf("%d.copy()! -> %d\n", this.hashCode(), ret.hashCode());
+        return ret;
     }
 
     @Override
     public void move(final Phi rho) {
-        synchronized (this.cached) {
-            this.origin.move(rho);
-            this.cached.clear();
-        }
+        this.origin.move(rho);
+        System.out.printf("%d.move()!\n", this.hashCode());
     }
 
     @Override
     public Attr attr(final int pos) {
-        return this.origin.attr(pos);
+        System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
+        final Attr ret = new AtLogged(
+            this.origin.attr(pos),
+            String.format("%d#%d", this.hashCode(), pos)
+        );
+        System.out.printf("%d.attr(#%d)!\n", this.hashCode(), pos);
+        return ret;
     }
 
     @Override
     public Attr attr(final String name) {
-        return this.cached.computeIfAbsent(
-            name, x -> new AtConst(this.origin.attr(name), this)
+        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
+        final Attr ret = new AtLogged(
+            this.origin.attr(name),
+            String.format("%d#%s", this.hashCode(), name)
         );
+        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
+        return ret;
     }
 
 }

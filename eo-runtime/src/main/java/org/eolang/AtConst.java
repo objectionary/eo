@@ -29,6 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Const attribute.
  *
+ * <p>This class is thread-safe.</p>
+ *
  * @since 0.16
  */
 final class AtConst implements Attr {
@@ -100,7 +102,10 @@ final class AtConst implements Attr {
 
     @Override
     public void put(final Phi src) {
-        this.origin.put(src);
+        synchronized (this.cache) {
+            this.origin.put(src);
+            this.cache.set(null);
+        }
     }
 
 }

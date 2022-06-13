@@ -86,7 +86,11 @@ public final class ParseMojo extends SafeMojo {
             this.parse(tojo);
             ++total;
         }
-        Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
+        if (total == 0) {
+            Logger.warn(this, "No .EO sources parsed to XMIRs");
+        } else {
+            Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
+        }
     }
 
     /**

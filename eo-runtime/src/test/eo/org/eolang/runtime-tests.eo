@@ -312,3 +312,17 @@
       $.not
         $.equal-to
           5.add.<
+
+[] > constant-defends-against-side-effects
+  memory 7 > a
+  [x] > inc
+    seq > @
+      x.write
+        x.add 1
+      x
+  inc a > n!
+  assert-that > @
+    mul.
+      n
+      n
+    $.equal-to 64

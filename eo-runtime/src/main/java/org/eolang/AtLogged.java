@@ -24,80 +24,54 @@
 
 package org.eolang;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * A constant object.
+ * An attribute that logs all its operations to the console (very
+ * convenient for debugging).
  *
- * <p>This class is thread-safe.</p>
- *
- * @since 0.16
+ * @since 0.24
  */
-public final class PhConst implements Phi {
+final class AtLogged implements Attr {
 
-    /**
-     * The origin being turned into a const.
-     */
-    private final Phi origin;
+    private final Attr origin;
 
-    /**
-     * Cached attributes.
-     */
-    private final Map<String, Attr> cached = new ConcurrentHashMap<>(0);
+    private final String owner;
 
-    /**
-     * Ctor.
-     *
-     * @param phi The origin
-     */
-    public PhConst(final Phi phi) {
-        this.origin = phi;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
+    AtLogged(final Attr attr, final String label) {
+        this.origin = attr;
+        this.owner = label;
     }
 
     @Override
     public String toString() {
-        return String.format("!%s%s", this.cached.keySet(), this.origin);
+        return this.origin.toString();
     }
 
     @Override
     public String φTerm() {
-        return String.format("%s!", this.origin.φTerm());
+        return this.origin.φTerm();
     }
 
     @Override
-    public Phi copy() {
-        return new PhConst(this.origin.copy());
+    public Attr copy(final Phi self) {
+        System.out.printf("  %s.copy()...\n", this.owner);
+        final Attr ret = this.origin.copy(self);
+        System.out.printf("  %s.copy()!\n", this.owner);
+        return ret;
     }
 
     @Override
-    public void move(final Phi rho) {
-        synchronized (this.cached) {
-            this.origin.move(rho);
-            this.cached.clear();
-        }
+    public Phi get() {
+        System.out.printf("  %s.get()...\n", this.owner);
+        final Phi ret = this.origin.get();
+        System.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
+        return ret;
     }
 
     @Override
-    public Attr attr(final int pos) {
-        return this.origin.attr(pos);
-    }
-
-    @Override
-    public Attr attr(final String name) {
-        return this.cached.computeIfAbsent(
-            name, x -> new AtConst(this.origin.attr(name), this)
-        );
+    public void put(final Phi src) {
+        System.out.printf("  %s.put()...\n", this.owner);
+        this.origin.put(src);
+        System.out.printf("  %s.put()!\n", this.owner);
     }
 
 }

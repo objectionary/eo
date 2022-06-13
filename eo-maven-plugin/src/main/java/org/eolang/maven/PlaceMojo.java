@@ -110,10 +110,17 @@ public final class PlaceMojo extends SafeMojo {
             for (final String dep : deps) {
                 copied += this.place(home, dep);
             }
-            Logger.info(
-                this, "Placed %d binary files found in %d dependencies",
-                copied, deps.size()
-            );
+            if (copied == 0) {
+                Logger.info(
+                    this, "No binary files placed from %d dependencies",
+                    deps.size()
+                );
+            } else {
+                Logger.info(
+                    this, "Placed %d binary files found in %d dependencies",
+                    copied, deps.size()
+                );
+            }
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",
