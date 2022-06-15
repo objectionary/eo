@@ -21,46 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package EOorg.EOeolang;
 
-package EOorg.EOeolang.EOgray;
-
-import EOorg.EOeolang.AtMemoized;
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.PhDefault;
+import EOorg.EOeolang.EOgray.EOheap;
 import org.eolang.Phi;
-import org.eolang.Volatile;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * CAGE.
+ * Test case for {@link Heaps}.
  *
- * @since 0.17
+ * @since 0.19
  */
-@Volatile
-@XmirObject(oname = "cage")
-public class EOcage extends PhDefault {
+public final class HeapsTest {
 
-    public EOcage(final Phi sigma) {
-        super(sigma);
-        this.add("enclosure", new AtMemoized());
-        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtComposite(this, EOcage.Write::new));
-    }
-
-    @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
-        Write(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                rho.attr("σ").get().attr("enclosure").put(
-                    rho.attr("x").get()
-                );
-                return new Data.ToPhi(true);
-            }));
-        }
+    @Test
+    public void mallocAndFreeWork() {
+        final Phi heap = new EOheap(Phi.Φ);
+        final int pointer = Heaps.INSTANCE.malloc(heap, 100);
+        MatcherAssert.assertThat(
+            Heaps.INSTANCE.malloc(heap, 64),
+            Matchers.not(Matchers.equalTo(pointer))
+        );
+        Heaps.INSTANCE.free(heap, pointer);
     }
 
 }

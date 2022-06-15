@@ -22,33 +22,44 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
 /**
- * HEAP.FREE.
+ * CAGE.
  *
- * @since 0.19
+ * @since 0.17
  */
-@XmirObject(oname = "heap.free")
-public class EOheap$EOfree extends PhDefault {
+@Volatile
+@XmirObject(oname = "cage")
+public class EOcage extends PhDefault {
 
-    public EOheap$EOfree(final Phi sigma) {
+    public EOcage(final Phi sigma) {
         super(sigma);
-        this.add("p", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi heap = rho.attr("ρ").get();
-            final int ptr = new Param(rho, "p").strong(Long.class).intValue();
-            Heaps.INSTANCE.free(heap, ptr);
-            return new Data.ToPhi(true);
-        }));
+        this.add("enclosure", new AtMemoized());
+        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
+        this.add("write", new AtComposite(this, EOcage.Write::new));
+    }
+
+    @XmirObject(oname = "cage.write")
+    private final class Write extends PhDefault {
+        Write(final Phi sigma) {
+            super(sigma);
+            this.add("x", new AtFree());
+            this.add("φ", new AtComposite(this, rho -> {
+                rho.attr("σ").get().attr("enclosure").put(
+                    rho.attr("x").get()
+                );
+                return new Data.ToPhi(true);
+            }));
+        }
     }
 
 }

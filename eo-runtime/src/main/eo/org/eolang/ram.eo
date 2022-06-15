@@ -20,40 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
++package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-# Emulation of random-access memory (RAM).
-[size] > heap
+# Random-access memory (RAM).
+[size] > ram
 
-  # Allocates a block in memory of "s" bytes,
-  # and returns a pointer to it.
-  # The "length" attribute of the pointer won't be bound.
-  [s] > malloc /pointer
+  # Write bytes B at position P.
+  # Returns itself.
+  [p b] > write /true
 
-  # Freed a block in memory, which is referred by the
-  # given pointer, which was earlier obtained with malloc().
-  # Returns TRUE if works. If the pointer provided wasn't
-  # previously allocated, the result will be [].
-  [p] > free /bool
-
-  # Pointer inside the heap
-  [address length] > pointer
-    address > @
-
-    # Increment this pointer by x steps forward
-    [x] > add
-      &.^.pointer > @
-        address.add
-          length.mul x
-        length
-
-    # Decrement this pointer by x steps backward
-    [x] > sub
-      &.add > @
-        x.mul -1
-
-    # One block in the heap.
-    [len inverse] > block /?
+  # Read L bytes at position P.
+  [p l] > read /bytes

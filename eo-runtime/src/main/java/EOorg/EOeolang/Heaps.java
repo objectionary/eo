@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.Dataized;

@@ -22,9 +22,33 @@
  * SOFTWARE.
  */
 
+package EOorg.EOeolang;
+
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.XmirObject;
+
 /**
- * EO runtime, tests.
+ * HEAP.FREE.
  *
  * @since 0.19
  */
-package EOorg.EOeolang.EOgray;
+@XmirObject(oname = "heap.free")
+public class EOheap$EOfree extends PhDefault {
+
+    public EOheap$EOfree(final Phi sigma) {
+        super(sigma);
+        this.add("p", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi heap = rho.attr("ρ").get();
+            final int ptr = new Param(rho, "p").strong(Long.class).intValue();
+            Heaps.INSTANCE.free(heap, ptr);
+            return new Data.ToPhi(true);
+        }));
+    }
+
+}

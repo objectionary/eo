@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
+import EOorg.EOeolang.EOgray.EOheap;
 import java.nio.charset.StandardCharsets;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;

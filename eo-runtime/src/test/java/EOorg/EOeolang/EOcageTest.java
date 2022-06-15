@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang.EOgray;
+package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOseq;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;

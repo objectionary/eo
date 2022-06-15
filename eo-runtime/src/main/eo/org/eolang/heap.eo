@@ -20,47 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
++package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.gray.ram
-+alias org.eolang.hamcrest.assert-that
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > writes-into-ram-and-reads-from-ram
-  ram 10 > r
-  r.write 0 65-66-67-68-69 > w
-  r.read 0 5 > data
-  assert-that > @
-    and.
-      eq.
-        w
-        TRUE
-      eq.
-        data
-        65-66-67-68-69
-    $.equal-to TRUE
+# Emulation of random-access memory (RAM).
+[size] > heap
 
-[] > writes-at-random-position
-  ram 1024 > r
-  r.write 512 65-66-67-68-69 > w
-  r.read 513 4 > data
-  assert-that > @
-    and.
-      eq.
-        w
-        TRUE
-      eq.
-        data
-        66-67-68-69
-    $.equal-to TRUE
+  # Allocates a block in memory of "s" bytes,
+  # and returns a pointer to it.
+  # The "length" attribute of the pointer won't be bound.
+  [s] > malloc /pointer
 
-[] > writes-integer-to-ram
-  ram 1024 > r
-  3.as-bytes > b
-  r.write 0 b > w
-  assert-that > @
-    and.
-      w.eq TRUE
-      (r.read 0 8).as-int.eq 3
-    $.equal-to TRUE
+  # Freed a block in memory, which is referred by the
+  # given pointer, which was earlier obtained with malloc().
+  # Returns TRUE if works. If the pointer provided wasn't
+  # previously allocated, the result will be [].
+  [p] > free /bool
+
+  # Pointer inside the heap
+  [address length] > pointer
+    address > @
+
+    # Increment this pointer by x steps forward
+    [x] > add
+      &.^.pointer > @
+        address.add
+          length.mul x
+        length
+
+    # Decrement this pointer by x steps backward
+    [x] > sub
+      &.add > @
+        x.mul -1
+
+    # One block in the heap.
+    [len inverse] > block /?
