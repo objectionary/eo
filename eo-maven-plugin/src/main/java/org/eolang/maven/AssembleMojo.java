@@ -99,7 +99,7 @@ public final class AssembleMojo extends SafeMojo {
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new OyRemote();
+    private Objectionary objectionary;
 
     /**
      * The central.
