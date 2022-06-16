@@ -276,7 +276,7 @@ a special syntax for data, for example:
 
 \begin{ffcode}
 [r] > circle
-  r.mul 2 3.14 > circumference
+  r.times 2 3.14 > circumference
 \end{ffcode}
 
 This syntax would be translated to XMIR (XML based
@@ -285,7 +285,7 @@ data format explained in Sec.~\ref{sec:xmir}):
 \begin{ffcode}
 <o name="circle"> |$\label{ln:xml-circle}$|
   <o name="r"/>
-  <o base=".mul" name="circumference">
+  <o base=".times" name="circumference">
     <o base="r"/>  |$\label{ln:xml-circle-r}$|
     <o base="int" data="int">2</o>
     <o base="float" data="float">3.14</o>
@@ -296,7 +296,7 @@ data format explained in Sec.~\ref{sec:xmir}):
 Each object, if it is not abstract, has a ``base'' attribute in XML,
 which contains that name of an abstract object to be copied. The
 objects \ff{int} and \ff{float} are abstracts, but their names
-can't be used directly in a program, similar to how \ff{r} or \ff{mul}
+can't be used directly in a program, similar to how \ff{r} or \ff{times}
 are used. The only way to make a copy of the abstract object \ff{int}
 is to use a numeric literal like \ff{2}. The literal \ff{3.14}
 is turned into a copy of the object \ff{float}.

@@ -92,7 +92,7 @@
 
   # Change the sign of the number
   [] > neg
-    ^.mul -1 > @
+    ^.times -1 > @
 
   # Add to the current one
   [x] > add /int
@@ -101,8 +101,8 @@
   [x] > sub
     ^.add (x.neg) > @
 
-  # Multiply this one by another int
-  [x] > mul /int
+  # Multiplication this one by another int
+  [x] > times /int
 
   # Divide this one by another int
   [x] > div /int
@@ -127,7 +127,7 @@
       divisor.abs > x-abs
       sub. > @
         int-abs
-        x-abs.mul
+        x-abs.times
           int-abs.div x-abs
 
   # Make it power x
