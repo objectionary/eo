@@ -134,15 +134,3 @@
         42
     $.equal-to 112
 
-[] > multi-layer-volatility
-  [] > a
-    [] > @
-      [] > @
-        cage 0 > d
-  assert-that > @
-    seq
-      a.d.write 1
-      a.d.write 2
-      a.d.add 40
-    $.equal-to 42
-
