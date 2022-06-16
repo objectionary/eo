@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2022 Eugene Darashkevich
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,18 +31,22 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
-/**
- * BYTES.AS-INT.
- *
- * @since 0.18
- */
-@XmirObject(oname = "bytes.as-int")
-public class EObytes$EOas_int extends PhDefault {
+import java.util.Arrays;
 
-    public EObytes$EOas_int(final Phi sigma) {
+/**
+ * BYTES.AS-HASH.
+ *
+ * @since 0.23
+ */
+@XmirObject(oname = "bytes.as-hash")
+public class EObytes$EOas_hash extends PhDefault {
+
+    public EObytes$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
-	        new Data.ToPhi(new Param(rho).fromBytes(Long.class))
+            new Data.ToPhi(
+                (long) Arrays.hashCode(new Param(rho).strong(byte[].class))
+            )
         ));
     }
 
