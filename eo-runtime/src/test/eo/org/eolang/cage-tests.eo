@@ -134,3 +134,32 @@
         42
     $.equal-to 112
 
+[] > multi-layer-volatility
+  memory 0 > ma
+  cage a > ca
+  [] > a
+    [] > @
+      [] > @
+        [] > @
+          seq > @
+            ma.write (ma.add 1)
+            ma
+  memory 0 > mb
+  cage b > cb
+  [] > b
+    [] > @
+      [] > @
+        [] > @
+          seq > z
+            mb.write (mb.add 1)
+            mb
+  assert-that > @
+    seq
+      ca
+      ca.add 40
+    $.equal-to
+      seq
+        cb.z
+        cb.z.add 40
+
+
