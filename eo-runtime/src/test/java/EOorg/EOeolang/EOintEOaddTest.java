@@ -41,7 +41,7 @@ public final class EOintEOaddTest {
     public void addsNumbers() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
-        final Phi add = left.attr("add").get();
+        final Phi add = left.attr("plus").get();
         add.attr(0).put(right);
         MatcherAssert.assertThat(
             new Dataized(add).take(Long.class),

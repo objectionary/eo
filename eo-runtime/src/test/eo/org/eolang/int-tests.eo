@@ -186,7 +186,7 @@
     if. > @
       n.less 3
       1
-      add.
+      plus.
         fibo (n.minus 1)
         fibo (n.minus 2)
   assert-that > @
@@ -211,8 +211,8 @@
     [n minus1 minus2] > rec
       if. > @
         n.eq 3
-        minus1.add minus2
-        rec (n.minus 1) (minus1.add minus2) minus1
+        minus1.plus minus2
+        rec (n.minus 1) (minus1.plus minus2) minus1
 
 # Checks that division by zero returns an error object
 [] > zero-division
@@ -229,7 +229,7 @@
   dividend.mod divisor > remainder
   dividend.div divisor > quotient
   assert-that > @
-    add.
+    plus.
       remainder
       times.
         divisor
@@ -250,7 +250,7 @@
   [dividend divisor] > euclids-lemma
     eq. > @
       dividend
-      add.
+      plus.
         divisor.times
           quotient dividend divisor
         remainder dividend divisor
@@ -464,6 +464,6 @@
       while-loop
         n.less 5
         seq
-          n.write (n.add 1)
+          n.write (n.plus 1)
           (n.mod 2).eq 0
     $.equal-to 5

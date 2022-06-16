@@ -36,7 +36,7 @@
       goto
         [g]
           seq > @
-            i.write (i.add 1)
+            i.write (i.plus 1)
             if.
               i.less 10
               g.backward

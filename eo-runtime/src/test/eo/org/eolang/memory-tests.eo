@@ -50,7 +50,7 @@
   assert-that > @
     seq
       m.write 1
-      m.write (m.add 5)
+      m.write (m.plus 5)
       m
     $.equal-to 6
 

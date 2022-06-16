@@ -230,7 +230,7 @@ This is how you iterate:
         seq > @
           stdout
             sprintf "%dx%d = %d\n" x x (x.pow 2)
-          x.write (x.add 1)
+          x.write (x.plus 1)
     TRUE
 ```
 

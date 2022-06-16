@@ -193,7 +193,7 @@ public final class EOmemoryTest {
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0,
                 new PhWith(
-                    new PhCopy(new PhMethod(mem, "add")),
+                    new PhCopy(new PhMethod(mem, "plus")),
                     0, new Data.ToPhi(42L)
                 )
             )
