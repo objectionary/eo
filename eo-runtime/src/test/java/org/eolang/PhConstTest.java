@@ -215,18 +215,6 @@ public final class PhConstTest {
         );
         new Dataized(phi).take();
         new Dataized(phi).take();
-//        new Dataized(
-//            new PhWith(
-//                phi.attr("add").get(),
-//                0, new Data.ToPhi(1L)
-//            )
-//        );
-//        new Dataized(
-//            new PhWith(
-//                phi.attr("sub").get(),
-//                0, new Data.ToPhi(1L)
-//            )
-//        );
         MatcherAssert.assertThat(
             dummy.count,
             Matchers.equalTo(1)
@@ -248,7 +236,6 @@ public final class PhConstTest {
             super();
             this.add("φ", new AtComposite(this, self -> {
                 ++this.count;
-                System.out.println("boom");
                 return new Data.ToPhi(1L);
             }));
             this.add(name, new AtComposite(this, PhConstTest.Kid::new));

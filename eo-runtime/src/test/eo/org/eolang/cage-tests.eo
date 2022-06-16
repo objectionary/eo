@@ -23,7 +23,6 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.cage
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -134,3 +133,16 @@
       c.@
         42
     $.equal-to 112
+
+[] > multi-layer-volatility
+  [] > a
+    [] > @
+      [] > @
+        cage 0 > d
+  assert-that > @
+    seq
+      a.d.write 1
+      a.d.write 2
+      a.d.add 40
+    $.equal-to 42
+

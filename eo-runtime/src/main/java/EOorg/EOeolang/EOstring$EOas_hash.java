@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -37,9 +36,9 @@ public class EOstring$EOas_hash extends PhDefault {
     public EOstring$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
-                new Data.ToPhi(
-                        (long) new Param(rho).strong(String.class).hashCode()
-                )
+            new Data.ToPhi(
+                (long) new Param(rho).strong(String.class).hashCode()
+            )
         ));
     }
 
