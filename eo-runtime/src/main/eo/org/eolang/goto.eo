@@ -25,34 +25,28 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
-
-  # Get the length of it
-  [] > length /int
-
-  # Trim it from both sides
-  [] > trim /string
-
-  # Make an integer out of this string
-  [] > as-int /int
-
-  # Make a float out of this string
-  [] > as-float /float
-
-  # Turn it into bytes.
-  [] > as-bytes /bytes
-
-  # Joins an array of strings, using current string
-  # as a delimiter
-  [items] > joined /string
-
-  # Converts this to hash
-  [] > as-hash /int
-
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+# Non-conditional forward and backward jumps. Returns TRUE
+# if the backward jump happened, an object provided to
+# g.forward otherwise.
+#
+# Forward jump may look like this:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       g.forward TRUE
+#       stdout "Will never be printed"
+# ```
+#
+# Backward jump may be done this way:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       stdout "Will be printed forever"
+#       g.backward
+# ```
+#
+[f] > goto /?

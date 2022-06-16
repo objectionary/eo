@@ -24,8 +24,10 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOgoto;
+
 /**
- * Control flow exception (see {@link EOorg.EOeolang.EOgray.EOgoto}
+ * Control flow exception (see {@link EOgoto}
  * for a good example of its usage).
  *
  * @since 0.21

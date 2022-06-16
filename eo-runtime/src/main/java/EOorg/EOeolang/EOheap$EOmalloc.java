@@ -28,37 +28,32 @@ import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
+import org.eolang.PhCopy;
 import org.eolang.PhDefault;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * GET.
+ * HEAP.MALLOC.
  *
- * @since 1.0
+ * @since 0.19
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+@XmirObject(oname = "heap.malloc")
+public class EOheap$EOmalloc extends PhDefault {
 
-    public EOarray$EOget(final Phi sigma) {
+    public EOheap$EOmalloc(final Phi sigma) {
         super(sigma);
-        this.add("i", new AtFree());
+        this.add("s", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
-                );
-            }
-            return array[idx];
+            final Phi heap = rho.attr("ρ").get();
+            final int size = new Param(rho, "s").strong(Long.class).intValue();
+            final int ptr = Heaps.INSTANCE.malloc(heap, size);
+            return new PhWith(
+                new PhCopy(new PhMethod(heap, "pointer")),
+                0, new Data.ToPhi((long) ptr)
+            );
         }));
     }
 

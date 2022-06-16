@@ -21,45 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import EOorg.EOeolang.EOgray.EOheap;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * GET.
+ * Test case for {@link Heaps}.
  *
- * @since 1.0
+ * @since 0.19
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+public final class HeapsTest {
 
-    public EOarray$EOget(final Phi sigma) {
-        super(sigma);
-        this.add("i", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
-                );
-            }
-            return array[idx];
-        }));
+    @Test
+    public void mallocAndFreeWork() {
+        final Phi heap = new EOheap(Phi.Φ);
+        final int pointer = Heaps.INSTANCE.malloc(heap, 100);
+        MatcherAssert.assertThat(
+            Heaps.INSTANCE.malloc(heap, 64),
+            Matchers.not(Matchers.equalTo(pointer))
+        );
+        Heaps.INSTANCE.free(heap, pointer);
     }
 
 }

@@ -39,10 +39,13 @@ public final class EOrandomTest {
     @Test
     public void readsTwice() {
         final Phi rnd = new EOrandom(Phi.Φ);
-        final Double first = new Dataized(rnd).take(Double.class);
         MatcherAssert.assertThat(
             new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(first))
+            Matchers.not(
+                Matchers.equalTo(
+                    new Dataized(rnd).take(Double.class)
+                )
+            )
         );
     }
 

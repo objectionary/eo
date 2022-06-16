@@ -25,34 +25,35 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+# Emulation of random-access memory (RAM).
+[size] > heap
 
-  # Get the length of it
-  [] > length /int
+  # Allocates a block in memory of "s" bytes,
+  # and returns a pointer to it.
+  # The "length" attribute of the pointer won't be bound.
+  [s] > malloc /pointer
 
-  # Trim it from both sides
-  [] > trim /string
+  # Freed a block in memory, which is referred by the
+  # given pointer, which was earlier obtained with malloc().
+  # Returns TRUE if works. If the pointer provided wasn't
+  # previously allocated, the result will be [].
+  [p] > free /bool
 
-  # Make an integer out of this string
-  [] > as-int /int
+  # Pointer inside the heap
+  [address length] > pointer
+    address > @
 
-  # Make a float out of this string
-  [] > as-float /float
+    # Increment this pointer by x steps forward
+    [x] > add
+      &.^.pointer > @
+        address.add
+          length.mul x
+        length
 
-  # Turn it into bytes.
-  [] > as-bytes /bytes
+    # Decrement this pointer by x steps backward
+    [x] > sub
+      &.add > @
+        x.mul -1
 
-  # Joins an array of strings, using current string
-  # as a delimiter
-  [items] > joined /string
-
-  # Converts this to hash
-  [] > as-hash /int
-
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+    # One block in the heap.
+    [len inverse] > block /?

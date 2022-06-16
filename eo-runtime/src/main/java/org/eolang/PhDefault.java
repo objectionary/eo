@@ -252,7 +252,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Add new attribute.
      *
      * This method can only be called from child classes, in their
-     * constructors, when the declare their attributes. This is why it's
+     * constructors, when they declare their attributes. This is why it's
      * protected. Not the brightest design, I admit.
      *
      * @param name The name

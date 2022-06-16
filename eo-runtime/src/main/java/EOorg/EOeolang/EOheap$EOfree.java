@@ -29,36 +29,25 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * GET.
+ * HEAP.FREE.
  *
- * @since 1.0
+ * @since 0.19
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+@XmirObject(oname = "heap.free")
+public class EOheap$EOfree extends PhDefault {
 
-    public EOarray$EOget(final Phi sigma) {
+    public EOheap$EOfree(final Phi sigma) {
         super(sigma);
-        this.add("i", new AtFree());
+        this.add("p", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
-                );
-            }
-            return array[idx];
+            final Phi heap = rho.attr("ρ").get();
+            final int ptr = new Param(rho, "p").strong(Long.class).intValue();
+            Heaps.INSTANCE.free(heap, ptr);
+            return new Data.ToPhi(true);
         }));
     }
 

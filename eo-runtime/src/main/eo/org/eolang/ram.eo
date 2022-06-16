@@ -25,34 +25,12 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+# Random-access memory (RAM).
+[size] > ram
 
-  # Get the length of it
-  [] > length /int
+  # Write bytes B at position P.
+  # Returns itself.
+  [p b] > write /true
 
-  # Trim it from both sides
-  [] > trim /string
-
-  # Make an integer out of this string
-  [] > as-int /int
-
-  # Make a float out of this string
-  [] > as-float /float
-
-  # Turn it into bytes.
-  [] > as-bytes /bytes
-
-  # Joins an array of strings, using current string
-  # as a delimiter
-  [items] > joined /string
-
-  # Converts this to hash
-  [] > as-hash /int
-
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+  # Read L bytes at position P.
+  [p l] > read /bytes

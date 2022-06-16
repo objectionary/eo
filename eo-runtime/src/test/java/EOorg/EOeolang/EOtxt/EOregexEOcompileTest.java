@@ -33,12 +33,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOregex$EOmatch}.
+ * Test case for {@link EOregex$EOcompile}.
  *
- * @since 0.1
+ * @since 0.23
  */
-public final class EOregexEOmatchTest {
-
+public final class EOregexEOcompileTest {
     /**
      * Method name.
      */
@@ -49,7 +48,7 @@ public final class EOregexEOmatchTest {
     private static final String TXT = "txt";
 
     @Test
-    public void matchesString() {
+    public void compiledWithoutFlag() {
         final String r = "/([a-z]+)/";
         final Phi regex = new EOregex(Phi.Φ);
         regex.attr("r").put(new Data.ToPhi(r));
@@ -59,7 +58,7 @@ public final class EOregexEOmatchTest {
                 new PhWith(
                     new PhMethod(compiled, MATCH),
                     TXT,
-                    new Data.ToPhi("hello")
+                    new Data.ToPhi("test")
                 )
             ).take(Phi[].class).length,
             Matchers.equalTo(1)
@@ -67,38 +66,20 @@ public final class EOregexEOmatchTest {
     }
 
     @Test
-    public void matchesStringWithEntirePattern() {
-        final String r = "/([a-z]+)/";
+    public void compiledWithFlag() {
+        String r = "/([a-z]+)/i";
         final Phi regex = new EOregex(Phi.Φ);
-        regex.attr(0).put(new Data.ToPhi(r));
+        regex.attr("r").put(new Data.ToPhi(r));
         final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
                     new PhMethod(compiled, MATCH),
                     TXT,
-                    new Data.ToPhi("welcome")
+                    new Data.ToPhi("UPPERCASE")
                 )
             ).take(Phi[].class).length,
             Matchers.equalTo(1)
-        );
-    }
-
-    @Test
-    public void doesntMatchString() {
-        final String r = "/([A-Z]{2})/";
-        final Phi regex = new EOregex(Phi.Φ);
-        regex.attr(0).put(new Data.ToPhi(r));
-        final Phi compiled = new EOregex$EOcompile(regex);
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhMethod(compiled, MATCH),
-                    TXT,
-                    new Data.ToPhi("Hello, World!")
-                )
-            ).take(Phi[].class).length,
-            Matchers.equalTo(0)
         );
     }
 

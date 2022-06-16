@@ -22,43 +22,40 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * GET.
+ * REGEX.MATCH.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+@XmirObject(oname = "regex.match")
+public class EOregex$EOmatch extends PhDefault {
 
-    public EOarray$EOget(final Phi sigma) {
+    public EOregex$EOmatch(final Phi sigma) {
         super(sigma);
-        this.add("i", new AtFree());
+        this.add("txt", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
-                );
+            final Phi regex = rho.attr("ρ").get();
+            final String r = new Param(regex, "r").strong(String.class);
+            final String txt = new Param(rho, "txt").strong(String.class);
+            final Matcher matcher = Pattern.compile(r).matcher(txt);
+            if (matcher.matches()) {
+                final Phi[] dest = new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
+                return new Data.ToPhi(dest);
+            } else {
+                return new Data.ToPhi(new Phi[]{});
             }
-            return array[idx];
         }));
     }
 

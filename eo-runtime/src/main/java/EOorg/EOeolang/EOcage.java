@@ -27,39 +27,39 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
 /**
- * GET.
+ * CAGE.
  *
- * @since 1.0
+ * @since 0.17
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+@Volatile
+@XmirObject(oname = "cage")
+public class EOcage extends PhDefault {
 
-    public EOarray$EOget(final Phi sigma) {
+    public EOcage(final Phi sigma) {
         super(sigma);
-        this.add("i", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
+        this.add("enclosure", new AtMemoized());
+        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
+        this.add("write", new AtComposite(this, EOcage.Write::new));
+    }
+
+    @XmirObject(oname = "cage.write")
+    private final class Write extends PhDefault {
+        Write(final Phi sigma) {
+            super(sigma);
+            this.add("x", new AtFree());
+            this.add("φ", new AtComposite(this, rho -> {
+                rho.attr("σ").get().attr("enclosure").put(
+                    rho.attr("x").get()
                 );
-            }
-            return array[idx];
-        }));
+                return new Data.ToPhi(true);
+            }));
+        }
     }
 
 }

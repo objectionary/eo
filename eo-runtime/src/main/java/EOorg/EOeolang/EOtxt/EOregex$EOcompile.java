@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
+import EOorg.EOeolang.EOerror;
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -33,32 +33,50 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
-/**
- * GET.
- *
- * @since 1.0
- */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+import java.util.regex.Pattern;
 
-    public EOarray$EOget(final Phi sigma) {
+/**
+ * REGEX.COMPILE.
+ *
+ * @since 0.23
+ */
+@XmirObject(oname = "regex.compile")
+public class EOregex$EOcompile extends PhDefault {
+
+    public EOregex$EOcompile(final Phi sigma) {
         super(sigma);
-        this.add("i", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
+            final Phi regex = rho.attr("ρ").get();
+            final String pattern = new Param(regex, "r").strong(String.class);
+            StringBuilder builder = new StringBuilder();
+            if (!pattern.startsWith("/")) {
                 return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
+                    new EOerror(Phi.Φ),
+                    "msg",
+                    new Data.ToPhi("Wrong regex syntax: \"/\" is missing")
                 );
             }
-            return array[idx];
+            final int lastIndex = pattern.lastIndexOf("/");
+            if (!pattern.endsWith("/")) {
+                builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
+            }
+            builder.append(pattern, 1, lastIndex);
+            Phi phi;
+            try {
+                String compiled = Pattern.compile(builder.toString()).pattern();
+                phi = new PhWith(
+                    new EOregex(rho),
+                    "r",
+                    new Data.ToPhi(compiled)
+                );
+            } catch (IllegalArgumentException e) {
+                phi = new PhWith(
+                    new EOerror(Phi.Φ),
+                    "msg",
+                    new Data.ToPhi(e.getMessage())
+                );
+            }
+            return phi;
         }));
     }
 

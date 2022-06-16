@@ -47,8 +47,8 @@ public class EObytes$EOxor extends PhDefault {
         this.add("φ", new AtComposite(this, rho ->
             new Data.ToPhi(
                 new Param(rho).fromBytes(BigInteger.class)
-                  .xor(new Param(rho, "b").fromBytes(BigInteger.class))
-                  .toByteArray()
+                    .xor(new Param(rho, "b").fromBytes(BigInteger.class))
+                    .toByteArray()
             )
         ));
     }

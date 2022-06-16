@@ -23,36 +23,47 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+rt jvm org.eolang:eo-runtime:0.0.0
++alias org.eolang.try
++alias org.eolang.hamcrest.assert-that
++junit
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+[] > catches-simple-exception
+  [x throw] > main
+    if. > @
+      x.eq 0
+      throw "div by zero"
+      42.div x
+  assert-that > @
+    and.
+      eq.
+        6
+        try
+          [throw]
+            main 7 throw > @
+          [ex] (TRUE > @)
+          TRUE
+      eq.
+        FALSE
+        try
+          [throw]
+            main 0 throw > @
+          [ex] (FALSE > @)
+          TRUE
+    $.equal-to TRUE
 
-  # Get the length of it
-  [] > length /int
-
-  # Trim it from both sides
-  [] > trim /string
-
-  # Make an integer out of this string
-  [] > as-int /int
-
-  # Make a float out of this string
-  [] > as-float /float
-
-  # Turn it into bytes.
-  [] > as-bytes /bytes
-
-  # Joins an array of strings, using current string
-  # as a delimiter
-  [items] > joined /string
-
-  # Converts this to hash
-  [] > as-hash /int
-
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+[] > two-nested-try-blocks
+  [throw] > failure
+    throw "Hello!" > @
+  assert-that > @
+    try
+      [t1]
+        try > @
+          [t2]
+            failure t1 > @
+          [ex]
+            2 > @
+          TRUE
+      [ex]
+        1 > @
+      TRUE
+    $.equal-to 1
