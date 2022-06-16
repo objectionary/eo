@@ -61,7 +61,7 @@
   [x] > mul /float
 
   # Sum of $ and x
-  [x] > add /float
+  [x] > plus /float
 
   # Negation of $
   [] > neg
@@ -79,7 +79,7 @@
 
   # Difference between $ and x
   [x] > sub
-    ^.add (x.neg) > @
+    ^.plus (x.neg) > @
 
   # x'th power of $
   [x] > pow /float

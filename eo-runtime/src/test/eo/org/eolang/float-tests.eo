@@ -176,7 +176,7 @@
 
 [] > add-test
   assert-that > @
-    add.
+    plus.
       574.5
       311.985
     $.equal-to 886.485

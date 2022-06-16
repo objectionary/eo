@@ -33,14 +33,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * ADD.
+ * plus.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "float.add")
-public class EOfloat$EOadd extends PhDefault {
+@XmirObject(oname = "float.plus")
+public class EOfloat$EOplus extends PhDefault {
 
-    public EOfloat$EOadd(final Phi sigma) {
+    public EOfloat$EOplus(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
