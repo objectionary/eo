@@ -31,18 +31,22 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
-/**
- * BYTES.AS-INT.
- *
- * @since 0.18
- */
-@XmirObject(oname = "bytes.as-int")
-public class EObytes$EOas_int extends PhDefault {
+import java.util.Arrays;
 
-    public EObytes$EOas_int(final Phi sigma) {
+/**
+ * BYTES.AS-HASH.
+ *
+ * @since 0.23
+ */
+@XmirObject(oname = "bytes.as-hash")
+public class EObytes$EOas_hash extends PhDefault {
+
+    public EObytes$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
-	        new Data.ToPhi(new Param(rho).fromBytes(Long.class))
+            new Data.ToPhi(
+                (long) Arrays.hashCode(new Param(rho).strong(byte[].class))
+            )
         ));
     }
 

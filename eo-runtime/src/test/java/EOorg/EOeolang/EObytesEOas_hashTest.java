@@ -21,29 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
+import org.eolang.Dataized;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * BYTES.AS-INT.
+ * Test case for {@link EObytes}.
  *
- * @since 0.18
+ * @since 0.23
  */
-@XmirObject(oname = "bytes.as-int")
-public class EObytes$EOas_int extends PhDefault {
+public final class EObytesEOas_hashTest {
 
-    public EObytes$EOas_int(final Phi sigma) {
-        super(sigma);
-        this.add("φ", new AtComposite(this, rho ->
-	        new Data.ToPhi(new Param(rho).fromBytes(Long.class))
-        ));
+    @Test
+    public void bytesAsHashEquals() {
+        final Phi str = new Data.ToPhi("check bytes.as-hash");
+        final Phi bytes = new EOstring$EOas_bytes(str);
+        final Phi phi = new EObytes$EOas_hash(bytes);
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(
+                new Dataized(phi).take(Long.class)
+            )
+        );
+    }
+
+    @Test
+    public void bytesAsHash() {
+        final Phi str = new Data.ToPhi("check bytes.as-hash value");
+        final Phi bytes = new EOstring$EOas_bytes(str);
+        final Phi phi = new EObytes$EOas_hash(bytes);
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(-115760098L)
+        );
     }
 
 }
