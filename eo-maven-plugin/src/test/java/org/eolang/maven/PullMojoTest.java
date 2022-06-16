@@ -71,4 +71,5 @@ public final class PullMojoTest {
             Matchers.is(true)
         );
     }
+
 }
