@@ -296,15 +296,6 @@
       foo.y.<
     $.equal-to TRUE
 
-[] > compares-two-foreign-objects
-  assert-that > @
-    sprintf.<
-    $.all-of
-      $.equal-to
-        QQ.txt.sprintf.<
-      $.equal-to
-        Q.org.eolang.txt.sprintf.<
-
 [] > compares-two-local-objects
   assert-that > @
     5.plus.<
