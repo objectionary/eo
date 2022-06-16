@@ -187,8 +187,8 @@
       n.less 3
       1
       add.
-        fibo (n.sub 1)
-        fibo (n.sub 2)
+        fibo (n.minus 1)
+        fibo (n.minus 2)
   assert-that > @
     fibo 4
     $.equal-to 3
@@ -212,7 +212,7 @@
       if. > @
         n.eq 3
         minus1.add minus2
-        rec (n.sub 1) (minus1.add minus2) minus1
+        rec (n.minus 1) (minus1.add minus2) minus1
 
 # Checks that division by zero returns an error object
 [] > zero-division

@@ -89,7 +89,7 @@
       i.less 0
       0
       x
-        i.sub 1
+        i.minus 1
 
 [] > iterates-over-sigma
   memory 0 > x
@@ -157,7 +157,7 @@
     if. > @
       n.greater 0
       seq
-        n.write (n.sub 1)
+        n.write (n.minus 1)
         ^.func
         TRUE
       TRUE
@@ -251,7 +251,7 @@
       m.write 42
       Q.org.eolang.io.stdout
         "Hello, world!"
-      m.write (m.sub 2)
+      m.write (m.minus 2)
       m
     $.equal-to 40
 
@@ -262,7 +262,7 @@
       m.write 42
       QQ.io.stdout
         "Works fine!"
-      m.write (m.sub 2)
+      m.write (m.minus 2)
       m
     $.equal-to 40
 

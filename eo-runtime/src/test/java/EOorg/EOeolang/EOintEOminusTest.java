@@ -37,14 +37,14 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOintEOsubTest {
+public final class EOintEOminusTest {
 
     @Test
     public void subtractsNumber() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
         final Phi sub = new PhWith(
-            new PhMethod(left, "sub"),
+            new PhMethod(left, "minus"),
             0, right
         );
         MatcherAssert.assertThat(

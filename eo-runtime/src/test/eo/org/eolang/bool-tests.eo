@@ -162,7 +162,7 @@
           TRUE
         [i]
           seq > @
-            m.write (m.sub 1)
+            m.write (m.minus 1)
             stdout (sprintf "%d\n" m)
       TRUE
     $.equal-to TRUE

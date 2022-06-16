@@ -98,7 +98,7 @@
   [x] > add /int
 
   # Subtract from the current one
-  [x] > sub
+  [x] > minus
     ^.add (x.neg) > @
 
   # Multiply this one by another int
@@ -125,7 +125,7 @@
     [] > abs-mod
       dividend.abs > int-abs
       divisor.abs > x-abs
-      sub. > @
+      minus. > @
         int-abs
         x-abs.mul
           int-abs.div x-abs

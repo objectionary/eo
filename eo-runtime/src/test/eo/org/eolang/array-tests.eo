@@ -319,10 +319,10 @@
           if. > @
             x.less 100
             acc.add x
-            acc.sub x
+            acc.minus x
     $.equal-to
       add.
-        0.sub 500
+        0.minus 500
         10
 
 # reduce without index test
