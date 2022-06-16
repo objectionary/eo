@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public final class EObytesEOas_hashTest {
 
     @Test
-    public void bytesAsHash() {
+    public void bytesAsHashEquals() {
         final Phi str = new Data.ToPhi("check bytes.as-hash");
         final Phi bytes = new EOstring$EOas_bytes(str);
         final Phi phi = new EObytes$EOas_hash(bytes);
@@ -47,6 +47,17 @@ public final class EObytesEOas_hashTest {
             Matchers.equalTo(
                 new Dataized(phi).take(Long.class)
             )
+        );
+    }
+
+    @Test
+    public void bytesAsHash() {
+        final Phi str = new Data.ToPhi("check bytes.as-hash value");
+        final Phi bytes = new EOstring$EOas_bytes(str);
+        final Phi phi = new EObytes$EOas_hash(bytes);
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(-115760098L)
         );
     }
 
