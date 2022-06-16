@@ -25,17 +25,11 @@ package org.eolang.maven;
 
 import com.yegor256.tojos.Json;
 import com.yegor256.tojos.MonoTojos;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -47,22 +41,6 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PullMojoTest {
-    private final static ByteArrayOutputStream out = new ByteArrayOutputStream();
-    private final static ByteArrayOutputStream err = new ByteArrayOutputStream();
-    private final static PrintStream originalOut = System.out;
-    private final static PrintStream originalErr = System.err;
-
-    @BeforeAll
-    public static void setStreams() {
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(err));
-    }
-
-    @AfterAll
-    public static void restoreInitialStreams() {
-        System.setOut(originalOut);
-        System.setErr(originalErr);
-    }
 
     @Test
     public void testSimplePull(@TempDir final Path temp) {
@@ -93,26 +71,4 @@ public final class PullMojoTest {
             Matchers.is(true)
         );
     }
-
-    @Test
-    public void testHashOutput(@TempDir final Path temp) throws IOException {
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
-            .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("hash", "a146994fd1cfaf6d04258731d80f48b333ca1991")
-            .execute();
-
-        MatcherAssert.assertThat(
-            out.toString().contains("a146994fd1cfaf6d04258731d80f48b333ca1991"),
-            Matchers.is(true)
-        );
-    }
-
 }
