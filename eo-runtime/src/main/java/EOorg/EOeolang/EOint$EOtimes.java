@@ -33,14 +33,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * MUL.
+ * TIMES.
  *
  * @since 1.0
  */
-@XmirObject(oname = "int.mul")
-public class EOint$EOmul extends PhDefault {
+@XmirObject(oname = "int.times")
+public class EOint$EOtimes extends PhDefault {
 
-    public EOint$EOmul(final Phi sigma) {
+    public EOint$EOtimes(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
