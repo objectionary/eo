@@ -27,14 +27,14 @@ SOFTWARE.
   Here we convert global closed objects to abstract ones. For example,
   this code:
 
-  mul > c
+  times > c
     2
     pi
 
   Would be converted to:
 
   [] > c
-    mul > @
+    times > @
       2
       pi
   -->

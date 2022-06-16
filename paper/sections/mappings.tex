@@ -70,12 +70,12 @@ This code would be represented in \eo{} as the following:
 \begin{ffcode}
 [child height] > shape
   [] > volume
-    child.square.mul ^.height
+    child.square.times ^.height
 [height radius] > circle |$\label{ln:eo-circle}$|
   shape $ height > @
   [] > square
-    3.14.mul
-      radius.mul
+    3.14.times
+      radius.times
         radius |$\label{ln:eo-circle-end}$|
 \end{ffcode}
 
@@ -104,7 +104,7 @@ and a better way of mapping it to \eo{} would be the following:
       c > child
       h > height
       [] > volume
-        child.square.mul ^.height
+        child.square.times ^.height
 \end{ffcode}
 
 Here, \ff{shapes} is the representation of Java class \ff{Shape}. It technically
@@ -130,8 +130,8 @@ may be fixed by using the object \ff{memory}:
   memory r > radius
   shape $ height > @
   [] > square
-    3.14.mul
-      radius.mul
+    3.14.times
+      radius.times
         radius
 \end{ffcode}
 

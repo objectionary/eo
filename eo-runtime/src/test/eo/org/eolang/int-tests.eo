@@ -231,7 +231,7 @@
   assert-that > @
     add.
       remainder
-      mul.
+      times.
         divisor
         quotient
     $.equal-to
@@ -251,7 +251,7 @@
     eq. > @
       dividend
       add.
-        divisor.mul
+        divisor.times
           quotient dividend divisor
         remainder dividend divisor
   reducei. > @

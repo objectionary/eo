@@ -322,7 +322,7 @@
       x
   inc a > n!
   assert-that > @
-    mul.
+    times.
       n
       n
     $.equal-to 64
