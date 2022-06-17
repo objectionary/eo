@@ -317,7 +317,7 @@
         check x > @
         [el] > check
           if. > @
-            x.less 100
+            x.lt 100
             acc.plus x
             acc.minus x
     $.equal-to

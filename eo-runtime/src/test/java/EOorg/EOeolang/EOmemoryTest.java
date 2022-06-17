@@ -159,7 +159,7 @@ public final class EOmemoryTest {
             )
         ).take(Boolean.class);
         final Phi less = new PhWith(
-            new PhCopy(new PhMethod(mem, "less")),
+            new PhCopy(new PhMethod(mem, "lt")),
             0, new Data.ToPhi(10L)
         );
         MatcherAssert.assertThat(

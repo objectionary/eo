@@ -225,7 +225,7 @@ This is how you iterate:
   seq > @
     x.write 2
     while.
-      x.less 6
+      x.lt 6
       [i]
         seq > @
           stdout

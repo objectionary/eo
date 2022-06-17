@@ -38,16 +38,16 @@
 
 [] > less-true
   assert-that > @
-    less.
+    lt.
       10
       50
     $.equal-to TRUE
-    "check int.less"
+    "check int.lt"
 
 [] > less-equal
   assert-that > @
     not.
-      less.
+      lt.
         10
         10
     $.equal-to TRUE
@@ -56,11 +56,11 @@
 [] > less-false
   assert-that > @
     not.
-      less.
+      lt.
         10
         -5
     $.equal-to TRUE
-    "check int.less.not less"
+    "check int.lt.not lt"
 
 [] > greater-true
   assert-that > @
@@ -184,7 +184,7 @@
 [] > calculates-fibonacci-number-with-recursion
   [n] > fibo
     if. > @
-      n.less 3
+      n.lt 3
       1
       plus.
         fibo (n.minus 1)
@@ -200,7 +200,7 @@
     "calculates fibonacci number with tail "
   [n] > fibonacci
     if. > @
-      n.less 3
+      n.lt 3
       small n
       rec n 1 1
     [n] > small
@@ -462,7 +462,7 @@
     seq
       n.write 0
       while-loop
-        n.less 5
+        n.lt 5
         seq
           n.write (n.plus 1)
           (n.mod 2).eq 0

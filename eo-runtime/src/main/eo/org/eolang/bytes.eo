@@ -75,6 +75,9 @@
   [] > as-bytes
     ^ > @
 
+  # Converts this to hash
+  [] > as-hash /int
+
   # Concatenation of two byte sequences:
   # the current and the provided one,
   # as a new sequence

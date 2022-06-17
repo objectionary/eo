@@ -70,7 +70,7 @@
     (^.eq x).not > @
 
   # Tests that $ < x
-  [x] > less
+  [x] > lt
     and. > @
       (^.eq x).not
       (^.greater x).not
@@ -79,7 +79,7 @@
   [x] > leq
     or. > @
       ^.eq x
-      ^.less x
+      ^.lt x
 
   # Tests that $ > x
   [x] > greater /bool
@@ -135,7 +135,7 @@
     if. > @
       and.
         ^.eq 0
-        x.less 0
+        x.lt 0
       []
         "0 cannot be raised to a negative power" > msg
       as-int.

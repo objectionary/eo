@@ -44,7 +44,7 @@
   assert-that > @
     and.
       TRUE
-      5.less 10
+      5.lt 10
       4.greater -6
       TRUE
       0.eq 0
@@ -66,7 +66,7 @@
       eq.
         4
         while.
-          x.less 10
+          x.lt 10
           [i]
             ^.^.^ > x
             x.write (x.plus i) > @
@@ -78,7 +78,7 @@
     seq
       x.write 2
       while.
-        x.less 6
+        x.lt 6
         [i]
           ^.^.^ > x
           seq > @

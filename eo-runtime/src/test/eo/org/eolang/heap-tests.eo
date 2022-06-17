@@ -47,7 +47,7 @@
   h.malloc 32 > p2
   assert-that > @
     and.
-      p1.less p2
+      p1.lt p2
       h.free p1
       h.free p2
     $.equal-to TRUE

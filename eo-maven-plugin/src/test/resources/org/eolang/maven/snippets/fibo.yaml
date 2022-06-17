@@ -10,7 +10,7 @@ eo: |
   [args...] > main
     [n] > f
       if. > @
-        n.less 2
+        n.lt 2
         n
         add.
           f (n.sub 1)

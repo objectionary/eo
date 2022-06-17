@@ -21,32 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOint}.
+ * plus.
  *
- * @since 0.1
+ * @since 0.23
  */
-public final class EOintEOlessTest {
+@XmirObject(oname = "float.plus")
+public class EOfloat$EOplus extends PhDefault {
 
-    @Test
-    public void comparesWithAnotherNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("less").get();
-        less.attr(0).put(right);
-        MatcherAssert.assertThat(
-            new Dataized(less).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
+    public EOfloat$EOplus(final Phi sigma) {
+        super(sigma);
+        this.add("x", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            Double.sum(
+                new Param(rho).strong(Double.class),
+                new Param(rho, "x").strong(Double.class)
+            )
+        )));
     }
 
 }
