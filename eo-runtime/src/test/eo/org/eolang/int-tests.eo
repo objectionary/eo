@@ -90,28 +90,28 @@
 
 [] > leq-true
   assert-that > @
-    leq.
+    lte.
       -200
       -100
     $.equal-to TRUE
-    "check int.leq"
+    "check int.lte"
 
 [] > leq-equal
   assert-that > @
-    leq.
+    lte.
       50
       50
     $.equal-to TRUE
-    "check int.leq equal"
+    "check int.lte equal"
 
 [] > leq-false
   assert-that > @
     not.
-      leq.
+      lte.
         0
         -10
     $.equal-to TRUE
-    "check int.leq.not"
+    "check int.lte.not"
 
 [] > geq-true
   assert-that > @
