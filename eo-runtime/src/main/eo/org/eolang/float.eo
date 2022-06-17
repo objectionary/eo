@@ -40,7 +40,7 @@
   [x] > lt
     and. > @
       (^.eq x).not
-      (^.greater x).not
+      (^.gt x).not
 
   # Tests that $ ≤ x
   [x] > leq
@@ -49,13 +49,13 @@
       ^.lt x
 
   # Tests that $ > x
-  [x] > greater /bool
+  [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > geq
     or. > @
       ^.eq x
-      ^.greater x
+      ^.gt x
 
   # Multiplication of $ and x
   [x] > mul /float

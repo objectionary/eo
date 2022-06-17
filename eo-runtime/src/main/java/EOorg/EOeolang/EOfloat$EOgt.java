@@ -33,14 +33,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * GREATER.
+ * GT.
  *
  * @since 1.0
  */
-@XmirObject(oname = "float.greater")
-public class EOfloat$EOgreater extends PhDefault {
+@XmirObject(oname = "float.gt")
+public class EOfloat$EOgt extends PhDefault {
 
-    public EOfloat$EOgreater(final Phi sigma) {
+    public EOfloat$EOgt(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(

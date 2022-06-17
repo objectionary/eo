@@ -45,7 +45,7 @@
     and.
       TRUE
       5.lt 10
-      4.greater -6
+      4.gt -6
       TRUE
       0.eq 0
     $.equal-to TRUE
@@ -158,7 +158,7 @@
       m.write 5
       while.
         eq.
-          m.greater 0
+          m.gt 0
           TRUE
         [i]
           seq > @

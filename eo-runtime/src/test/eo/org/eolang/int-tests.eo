@@ -64,29 +64,29 @@
 
 [] > greater-true
   assert-that > @
-    greater.
+    gt.
       -200
       -1000
     $.equal-to TRUE
-    "check int.greater"
+    "check int.gt"
 
 [] > greater-false
   assert-that > @
     not.
-      greater.
+      gt.
         0
         100
     $.equal-to TRUE
-    "check int.greater.not"
+    "check int.gt.not"
 
 [] > greater-equal
   assert-that > @
     not.
-      greater.
+      gt.
         0
         0
     $.equal-to TRUE
-    "check int.greater.not zero"
+    "check int.gt.not zero"
 
 [] > leq-true
   assert-that > @
