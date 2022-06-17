@@ -38,7 +38,7 @@
           seq > @
             i.write (i.add 1)
             if.
-              i.less 10
+              i.lt 10
               g.backward
               TRUE
       stdout "Finished!"

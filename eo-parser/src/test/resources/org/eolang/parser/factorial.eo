@@ -1,6 +1,6 @@
 [n] > f
   if. > @
-    n.less 1
+    n.lt 1
     n
     times.
       n

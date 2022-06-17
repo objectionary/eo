@@ -10,7 +10,7 @@ eo: |
   [args...] > main
     [n] > f
       if. > @
-        n.less 0
+        n.lt 0
         "smaller"
         "greater"
     stdout > @
