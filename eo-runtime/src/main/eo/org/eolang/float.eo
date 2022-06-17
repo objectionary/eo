@@ -78,7 +78,7 @@
         1.0
 
   # Difference between $ and x
-  [x] > sub
+  [x] > minus
     ^.plus (x.neg) > @
 
   # x'th power of $

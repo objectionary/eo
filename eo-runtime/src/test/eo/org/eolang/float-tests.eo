@@ -203,7 +203,7 @@
 
 [] > sub-test
   assert-that > @
-    sub.
+    minus.
       574.5
       311.985
     $.equal-to 262.515
