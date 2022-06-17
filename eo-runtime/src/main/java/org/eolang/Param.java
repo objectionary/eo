@@ -120,10 +120,9 @@ public final class Param {
             }
             else {
                 final byte[] cpy = new byte[Long.BYTES];
-                cpy[0] = ret[0];
                 int posx = cpy.length;
                 int posy = ret.length;
-                while (posy-- > 1 && posx-- > 1) {
+                while (posy-- > 0 && posx-- > 0) {
                     cpy[posx] = ret[posy];
                 }
                 res = ByteBuffer.wrap(cpy).getLong();

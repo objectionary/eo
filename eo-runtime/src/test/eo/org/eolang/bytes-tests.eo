@@ -353,3 +353,23 @@
     02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55.as-hash
     $.equal-to -1535034036
 
+[] > xor-as-int
+  assert-that > @
+    (2397719729.as-bytes.xor (4294967295.as-bytes)).as-int
+    $.equal-to 1897247566
+
+[] > one-xor-one-as-int
+  assert-that > @
+    (1.as-bytes.xor (1.as-bytes)).as-int
+    $.equal-to 0
+
+[] > eight-byte-numbers-xor-as-int
+  assert-that > @
+    as-int.
+      xor.
+        as-bytes.
+          1823872398572932454
+        as-bytes.
+          1284294810240192840
+    $.equal-to 620662338699844654
+
