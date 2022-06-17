@@ -286,8 +286,8 @@ The tranformation of the internals of \ff{is-inside} with \rrule{attribute}
 would look like the following:
 \begin{equation*}
 \dfrac
-  {v_{12} | \ohat{a}{\varphi} \mapsto \ohat{x}{\rho} \; \ohat{E}{.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius})}}
-  {\ff{REF}(e_{14}, v_{12},v_{5},\varphi) \quad e_{14}|.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius})}
+  {v_{12} | \ohat{a}{\varphi} \mapsto \ohat{x}{\rho} \; \ohat{E}{.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius})}}
+  {\ff{REF}(e_{14}, v_{12},v_{5},\varphi) \quad e_{14}|.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius})}
 \end{equation*}
 Here $\rho$ represents the $x$ part of the premise and the expression
 that starts with a dot represents the $E$ part. At the conclusion,
@@ -323,8 +323,8 @@ else, the tail of the expression. In this example, the instance
 of the rule would look like this:
 \begin{equation*}
 \dfrac
-  {e_{14} | \ohat{.x}{.\ff{distance}} \; \ohat{E}{(\ff{p}).\ff{leq}(\ff{radius})}}
-  {\ff{DOT}(e_{14}, \ff{distance}, v_{15}, e_{16}) \quad e_{16}|(\ff{p}).\ff{leq}(\ff{radius})}
+  {e_{14} | \ohat{.x}{.\ff{distance}} \; \ohat{E}{(\ff{p}).\ff{lte}(\ff{radius})}}
+  {\ff{DOT}(e_{14}, \ff{distance}, v_{15}, e_{16}) \quad e_{16}|(\ff{p}).\ff{lte}(\ff{radius})}
 \end{equation*}
 Visually, the execution of this rule would lead to the following
 modifications on the object graph:
@@ -357,8 +357,8 @@ To continue the processing of the expression inside the abstract object
 \ff{is-inside} the rule may be applied as the following:
 \begin{equation*}
 \dfrac
-  {e_{16} | \ohat{E_1}{(\ff{to} \mapsto \xi.\ff{p})} \; \ohat{E_2}{.\ff{leq}(\ff{radius})}}
-  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad v_{17}|\ff{to} \mapsto \xi.\ff{p} \quad e_{18}|.\ff{leq}(\ff{radius})}
+  {e_{16} | \ohat{E_1}{(\ff{to} \mapsto \xi.\ff{p})} \; \ohat{E_2}{.\ff{lte}(\ff{radius})}}
+  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad v_{17}|\ff{to} \mapsto \xi.\ff{p} \quad e_{18}|.\ff{lte}(\ff{radius})}
 \end{equation*}
 Visually, this rule would produce the following modifications on the graph:
 
@@ -615,7 +615,7 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     $d_{22} \to +1$ \\
     $d_{23} \to +7$ \\
     $M_{14} \to \sqrt{\begin{matrix*}[l](\mathbb{R}(\xi.\ff{to}.\ff{x}, \delta, s)-\mathbb{R}(\rho.\ff{x}, \delta, s))^2 + \\ + (\mathbb{R}(\xi.\ff{to}.\ff{y}, \delta, s)-\mathbb{R}(\rho.\ff{y}, \delta, s))^2\end{matrix*}}$ \\
-    $M_5 \to \mathbb{R}(\xi.\ff{t}, \ff{leq}, s)$ \\
+    $M_5 \to \mathbb{R}(\xi.\ff{t}, \ff{lte}, s)$ \\
     $M_7 \to \mathbb{R}(\xi.\ff{t}, \ff{distance}, s)$ \\
   \end{minipage}};
 \end{ingraph}}

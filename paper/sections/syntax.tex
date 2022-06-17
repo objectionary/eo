@@ -432,7 +432,7 @@ An object may extend another object by \emph{decorating} it:
 [center radius] > circle |$\label{ln:circle}$|
   center > @ |$\label{ln:circle-phi}$|
   [p] > is-inside
-    leq. > @
+    lte. > @
       ^.@.distance $.p  |$\label{ln:circle-phi-2}$|
       ^.radius |$\label{ln:circle-end}$|
 \end{ffcode}
@@ -458,7 +458,7 @@ and omitting the reference to \ff{\$} because the default scope of visibility of
 \end{ffcode}
 
 The inner object \ff{is-inside} also has the \ff{@} attribute: it
-decorates the object \ff{leq} (stands for ``less than equal'').
+decorates the object \ff{lte} (stands for ``less than equal'').
 The expression at \lref{circle-phi-2} means:
 take the parent object of \ff{is-inside},
 take the attribute \ff{@} from it, then take the inner object \ff{distance}
@@ -474,7 +474,7 @@ c.is-inside (point 0 0) > i
 \end{ffcode}
 
 Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{TRUE}
-because \ff{leq} decorates \ff{bool}.
+because \ff{lte} decorates \ff{bool}.
 
 It is also possible to make decoratee free, similar to other free
 attributes, specifying it in the list of free attributes in

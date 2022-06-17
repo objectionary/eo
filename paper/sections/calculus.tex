@@ -211,7 +211,7 @@ be denoted by this formula:
 & \ff{circle}(\ff{center}, \ff{radius}) \mapsto \llbracket \br
 & \quad \varphi \mapsto \ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\varphi.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
+& \quad \quad \varphi \mapsto \rho.\varphi.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket,
 \end{split}
@@ -230,7 +230,7 @@ producing:
 & \quad \ff{radius} \mapsto \ff{40}, \br
 & \quad \varphi \mapsto \ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket.
 \end{split}
@@ -241,7 +241,7 @@ $\rho$.$\varphi$.\ff{distance} in Eq.~\ref{eq:c-empty} is semantically equivalen
 $\rho$.\ff{distance} in Eq.~\ref{eq:c-fin}.
 
 The following expression makes a new object \ff{is}, which represents
-a sequence of object applications ending with a copy of \ff{leq}:
+a sequence of object applications ending with a copy of \ff{lte}:
 \begin{equation}\label{eq:is}
 \begin{split}
 & \ff{is} \mapsto \ff{c}.\ff{is-inside}(\ff{point}(\ff{1}, \ff{7})),
@@ -256,7 +256,7 @@ producing:
 & \quad \varphi \mapsto \ff{center}, \br
 & \quad \ff{is-inside} \mapsto \llbracket \br
 & \quad \quad \ff{p} \mapsto \ff{point}(\ff{1}, \ff{7}), \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket.
 \end{split}
@@ -314,7 +314,7 @@ For example, Eq.~\ref{eq:c-fin} may be refined as
 & \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
 & \quad \varphi \mapsto \xi.\ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\xi.\ff{p}).\ff{leq}( \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\xi.\ff{p}).\ff{lte}( \br
 & \quad \quad \quad \rho.\ff{radius} \br
 & \quad \quad ) \br
 & \quad \rrbracket \br
@@ -340,7 +340,7 @@ the object application:
 & \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
 & \quad \varphi \mapsto \xi.\ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \xi.\rho.\ff{distance}(\ff{to} \mapsto \xi.\ff{p}).\ff{leq}( \br
+& \quad \quad \varphi \mapsto \xi.\rho.\ff{distance}(\ff{to} \mapsto \xi.\ff{p}).\ff{lte}( \br
 & \quad \quad \quad \ff{other} \mapsto \xi.\rho.\ff{radius} \br
 & \quad \quad ) \br
 & \quad \rrbracket \br
