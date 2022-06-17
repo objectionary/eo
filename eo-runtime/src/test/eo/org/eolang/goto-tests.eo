@@ -75,7 +75,7 @@
       [g]
         seq > @
           if.
-            a.greater b
+            a.gt b
             g.forward a
             TRUE
           b

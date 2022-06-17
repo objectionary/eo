@@ -134,7 +134,7 @@
     and.
       42.<.eq (42.<)
       "Hello".<.eq ("Hello".<)
-      42.plus.<.greater 0
+      42.plus.<.gt 0
       45-1F-E7.<.eq (45-1F-E7.<)
     $.equal-to TRUE
 
@@ -155,7 +155,7 @@
   memory 0 > n
   [] > func
     if. > @
-      n.greater 0
+      n.gt 0
       seq
         n.write (n.minus 1)
         ^.func
