@@ -113,30 +113,30 @@
     $.equal-to TRUE
     "check int.lte.not"
 
-[] > geq-true
+[] > gte-true
   assert-that > @
-    geq.
+    gte.
       -1000
       -1100
     $.equal-to TRUE
-    "check int.geq negative int"
+    "check int.gte negative int"
 
-[] > geq-equal
+[] > gte-equal
   assert-that > @
-    geq.
+    gte.
       113
       113
     $.equal-to TRUE
-    "check int.geq positive int"
+    "check int.gte positive int"
 
-[] > geq-false
+[] > gte-false
   assert-that > @
     not.
-      geq.
+      gte.
         0
         10
     $.equal-to TRUE
-    "check int.geq.not"
+    "check int.gte.not"
 
 [] > eq-true
   assert-that > @

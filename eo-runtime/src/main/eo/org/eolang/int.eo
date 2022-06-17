@@ -85,7 +85,7 @@
   [x] > greater /bool
 
   # Tests that $ ≥ x
-  [x] > geq
+  [x] > gte
     or. > @
       ^.eq x
       ^.greater x
@@ -158,6 +158,6 @@
   # Absolute value of $ (i.e., with no sign)
   [] > abs
     if. > @
-      ^.geq 0
+      ^.gte 0
       ^
       ^.neg
