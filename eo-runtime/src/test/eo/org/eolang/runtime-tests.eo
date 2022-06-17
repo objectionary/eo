@@ -107,7 +107,7 @@
   memory 0 > x
   [] > a
     seq > @
-      x.write (x.add 1)
+      x.write (x.plus 1)
       42
   assert-that > @
     seq
@@ -124,7 +124,7 @@
     seq
       f0.write 0
       f1.write 1
-      f2.write ((f0).add (f1))
+      f2.write ((f0).plus (f1))
       f1.write f2
       TRUE
     $.equal-to TRUE
@@ -142,7 +142,7 @@
   [x] > a
   assert-that > @
     or.
-      (2.add 3).<.eq (5.<)
+      (2.plus 3).<.eq (5.<)
       42.<.eq (42.0.<)
       45-1F-E8.<.eq (45-1F-E8-83.<)
       (a 5).<.eq ((a 5).<)
@@ -281,7 +281,7 @@
   [foo] > return
   [] > a
     return > @
-      add.
+      plus.
         42
         1
   assert-that > @
@@ -313,18 +313,18 @@
 
 [] > compares-two-local-objects
   assert-that > @
-    5.add.<
+    5.plus.<
     $.is
       $.not
         $.equal-to
-          5.add.<
+          5.plus.<
 
 [] > constant-defends-against-side-effects
   memory 7 > a
   [x] > inc
     seq > @
       x.write
-        x.add 1
+        x.plus 1
       x
   inc a > n!
   assert-that > @

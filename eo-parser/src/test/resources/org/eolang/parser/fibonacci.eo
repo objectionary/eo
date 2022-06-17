@@ -8,6 +8,6 @@
   if. > @
     n.lt 2
     n
-    add.
+    plus.
       fibo (minus. n 1)
       fibo (minus. n 2)

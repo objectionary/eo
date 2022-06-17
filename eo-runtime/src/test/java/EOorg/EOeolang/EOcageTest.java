@@ -151,7 +151,7 @@ public final class EOcageTest {
         EOcageTest.writeTo(
             cage,
             new PhWith(
-                new PhCopy(new PhMethod(first, "add")),
+                new PhCopy(new PhMethod(first, "plus")),
                 0, second
             )
         );

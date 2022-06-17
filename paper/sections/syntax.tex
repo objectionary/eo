@@ -162,7 +162,7 @@ second line and the \ff{>} symbol, while two spaces will break the syntax):
 # This is a vector in 2D space |$\label{ln:comment}$|
 [dx dy] > vector |$\label{ln:vector}$|
   sqrt. > length |$\label{ln:length}$|
-    add.
+    plus.
       dx.pow 2
       dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
 \end{ffcode*}
@@ -179,7 +179,7 @@ The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
 can be written in one line, using \emph{dot notation}:
 
 \begin{ffcode}
-((dx.pow 2).add (dy.pow 2)).sqrt > length
+((dx.pow 2).plus (dy.pow 2)).sqrt > length
 \end{ffcode}
 
 An \emph{inverse} dot notation is used in order to simplify
@@ -191,15 +191,15 @@ inverse notation, but it will look less readable:
 
 \begin{ffcode}
 dx.pow 2 |$\label{ln:dx-pow}$|
-.add
+.plus
   dy.pow 2 |$\label{ln:dx-pow-2}$|
 .sqrt > length |$\label{ln:dx-pow-3}$|
 \end{ffcode}
 
 Here, \lref{dx-pow} is the application of the object \ff{dx.pow} with
-a new argument \ff{2}. Then, the next line is the object \ff{add} taken
+a new argument \ff{2}. Then, the next line is the object \ff{plus} taken
 from the object created at the first line, using the dot notation. Then,
-\lref{dx-pow-2} is the argument passed to the object \ff{add}.
+\lref{dx-pow-2} is the argument passed to the object \ff{plus}.
 The code at \lref{dx-pow-3} takes the object \ff{sqrt} from the object constructed
 at the previous line, and gives it the name \ff{length}.
 
@@ -214,19 +214,19 @@ with one free attribute \ff{x} and two bound attributes \ff{succ} and \ff{prev}:
 
 \begin{ffcode}
 [x]
-  x.add 1 > succ
-  x.sub 1 > prev
+  x.plus 1 > succ
+  x.minus 1 > prev
 \end{ffcode}
 
-The arguments of \ff{add} and \ff{sub} are provided in a \emph{horizontal}
+The arguments of \ff{plus} and \ff{minus} are provided in a \emph{horizontal}
 mode, without the use of indentation. It is possible to rewrite this code
 in a \emph{vertical} mode, where indentation will be required:
 
 \begin{ffcode}
 [x] |$\label{ln:succ}$|
-  x.add > succ
+  x.plus > succ
     1
-  x.sub > prev
+  x.minus > prev
     1 |$\label{ln:succ-end}$|
 \end{ffcode}
 
@@ -234,7 +234,7 @@ This abstract object can also be written in a horizontal mode,
 because it is anonymous:
 
 \begin{ffcode}
-[x] (x.add 1 > succ) (x.sub 1 > prev)
+[x] (x.plus 1 > succ) (x.minus 1 > prev)
 \end{ffcode}
 
 \subsection{\eo{} to XML}\label{sec:xml}
@@ -248,7 +248,7 @@ this XML tree of elements and attributes:
   <o name="dx"/>
   <o name="dy"/>
   <o name="length" base=".sqrt">
-    <o base=".add">
+    <o base=".plus">
       <o base=".pow">
         <o base="dx"/>
         <o base="int" data="int">2</>
@@ -432,7 +432,7 @@ An object may extend another object by \emph{decorating} it:
 [center radius] > circle |$\label{ln:circle}$|
   center > @ |$\label{ln:circle-phi}$|
   [p] > is-inside
-    leq. > @
+    lte. > @
       ^.@.distance $.p  |$\label{ln:circle-phi-2}$|
       ^.radius |$\label{ln:circle-end}$|
 \end{ffcode}
@@ -458,7 +458,7 @@ and omitting the reference to \ff{\$} because the default scope of visibility of
 \end{ffcode}
 
 The inner object \ff{is-inside} also has the \ff{@} attribute: it
-decorates the object \ff{leq} (stands for ``less than equal'').
+decorates the object \ff{lte} (stands for ``less than equal'').
 The expression at \lref{circle-phi-2} means:
 take the parent object of \ff{is-inside},
 take the attribute \ff{@} from it, then take the inner object \ff{distance}
@@ -474,7 +474,7 @@ c.is-inside (point 0 0) > i
 \end{ffcode}
 
 Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{TRUE}
-because \ff{leq} decorates \ff{bool}.
+because \ff{lte} decorates \ff{bool}.
 
 It is also possible to make decoratee free, similar to other free
 attributes, specifying it in the list of free attributes in
@@ -511,7 +511,7 @@ The syntax may be simplified and the abstract object may be inlined
 An anonymous abstract object may have multiple attributes:
 
 \begin{ffcode}
-[x] (x.add 1 > succ) (x.sub 1 > prev)
+[x] (x.plus 1 > succ) (x.minus 1 > prev)
 \end{ffcode}
 
 This object has two attributes \ff{succ} and \ff{prev}, and doesn't
@@ -584,7 +584,7 @@ All of the following expressions are false:
 
 \begin{ffcode}
 42.<.eq (7.<)
-(2.add 2).<.eq (4.<)
+(2.plus 2).<.eq (4.<)
 (point 3 5).<.eq ((point 3 5).<)
 (* 1 2).<.eq ((* 1 2).<)
 \end{ffcode}

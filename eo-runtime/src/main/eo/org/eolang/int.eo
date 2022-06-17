@@ -76,7 +76,7 @@
       (^.gt x).not
 
   # Tests that $ ≤ x
-  [x] > leq
+  [x] > lte
     or. > @
       ^.eq x
       ^.lt x
@@ -95,11 +95,11 @@
     ^.times -1 > @
 
   # Add to the current one
-  [x] > add /int
+  [x] > plus /int
 
   # Subtract from the current one
   [x] > minus
-    ^.add (x.neg) > @
+    ^.plus (x.neg) > @
 
   # Multiplication this one by another int
   [x] > times /int

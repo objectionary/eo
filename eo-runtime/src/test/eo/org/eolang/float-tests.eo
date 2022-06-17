@@ -73,21 +73,21 @@
 
 [] > leq-true
   assert-that > @
-    leq.
+    lte.
       -200.5
       -100.6
     $.equal-to TRUE
 
 [] > leq-equal
   assert-that > @
-    leq.
+    lte.
       50.1
       50.1
     $.equal-to TRUE
 
 [] > leq-false
   assert-that > @
-    leq.
+    lte.
       0.9
       -10.11
     $.equal-to FALSE

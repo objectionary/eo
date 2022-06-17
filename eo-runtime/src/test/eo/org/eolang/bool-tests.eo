@@ -69,7 +69,7 @@
           x.lt 10
           [i]
             ^.^.^ > x
-            x.write (x.add i) > @
+            x.write (x.plus i) > @
     $.equal-to TRUE
 
 [] > prints-nice-formulas
@@ -84,7 +84,7 @@
           seq > @
             stdout
               sprintf "%dx%d = %d\n" x x (x.pow 2)
-            x.write (x.add 1)
+            x.write (x.plus 1)
       TRUE
     $.equal-to TRUE
 

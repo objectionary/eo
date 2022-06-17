@@ -104,7 +104,7 @@
       [current index]
         times. > @
           current.as-int
-          index.add 1
+          index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @
     sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2)
@@ -276,9 +276,9 @@
       * 1 1
       0
       [a i x]
-        add. > @
+        plus. > @
           x
-          a.add
+          a.plus
             src.get i
     $.equal-to 6
 
@@ -288,7 +288,7 @@
       * 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
       0
       [a i x]
-        add. > @
+        plus. > @
           x
           a
     $.equal-to 435
@@ -318,10 +318,10 @@
         [el] > check
           if. > @
             x.lt 100
-            acc.add x
+            acc.plus x
             acc.minus x
     $.equal-to
-      add.
+      plus.
         0.minus 500
         10
 

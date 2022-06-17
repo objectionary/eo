@@ -43,7 +43,7 @@
       (^.gt x).not
 
   # Tests that $ ≤ x
-  [x] > leq
+  [x] > lte
     or. > @
       ^.eq x
       ^.lt x

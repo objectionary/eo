@@ -75,7 +75,7 @@
             arr.length
           [i]
             seq > @
-              idx.write (i.add 1)
+              idx.write (i.plus 1)
               acc.write
                 fn
                   acc

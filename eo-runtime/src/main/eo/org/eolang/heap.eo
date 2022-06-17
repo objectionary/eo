@@ -46,7 +46,7 @@
     # Increment this pointer by x steps forward
     [x] > add
       &.^.pointer > @
-        address.add
+        address.plus
           length.times x
         length
 

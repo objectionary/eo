@@ -11,7 +11,7 @@
   5 > iTest_me
   [] > rr /int
   if. > @
-    add.
+    plus.
       $
         minus.
           n:hello
@@ -21,6 +21,6 @@
             "Hello, друг"
             2.18
       bar
-        add.
+        plus.
           n
           "hello, 大家!"

@@ -152,10 +152,10 @@ public final class PhDefaultTest {
     @Test
     public void resetsCacheOnCopy() {
         final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
-        phi.attr("add").get();
+        phi.attr("plus").get();
         final Phi copy = phi.copy();
-        copy.attr("add").get();
-        phi.attr("add").get();
+        copy.attr("plus").get();
+        phi.attr("plus").get();
         MatcherAssert.assertThat(
             PhDefaultTest.Dummy.count,
             Matchers.equalTo(2)
