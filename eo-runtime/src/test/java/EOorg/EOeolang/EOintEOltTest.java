@@ -35,13 +35,13 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOintEOlessTest {
+public final class EOintEOltTest {
 
     @Test
     public void comparesWithAnotherNumber() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("less").get();
+        final Phi less = left.attr("lt").get();
         less.attr(0).put(right);
         MatcherAssert.assertThat(
             new Dataized(less).take(Boolean.class),

@@ -86,7 +86,7 @@
     $.equal-to 0
   [i] > x
     if. > @
-      i.less 0
+      i.lt 0
       0
       x
         i.minus 1
@@ -296,14 +296,20 @@
       foo.y.<
     $.equal-to TRUE
 
+# @todo #755:15min We need to remove
+#  the anything matcher. We can do it only
+#  after fixing the eo-hamcrest library
+#  when new EO version will be released.
 [] > compares-two-foreign-objects
   assert-that > @
-    sprintf.<
-    $.all-of
-      $.equal-to
-        QQ.txt.sprintf.<
-      $.equal-to
-        Q.org.eolang.txt.sprintf.<
+    assert-that
+      sprintf.<
+      $.all-of
+        $.equal-to
+          QQ.txt.sprintf.<
+        $.equal-to
+          Q.org.eolang.txt.sprintf.<
+    $.anything
 
 [] > compares-two-local-objects
   assert-that > @

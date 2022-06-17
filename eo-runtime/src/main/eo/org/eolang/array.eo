@@ -70,7 +70,7 @@
         idx.write 0
         acc.write ac
         while.
-          less.
+          lt.
             idx
             arr.length
           [i]
