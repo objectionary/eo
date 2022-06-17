@@ -297,8 +297,8 @@
     $.equal-to TRUE
 
 # @todo #755:15min Remove anything matcher
-# after fixing the eo-hamcrest library
-# when new EO version will be released.
+#  after fixing the eo-hamcrest library
+#  when new EO version will be released.
 [] > compares-two-foreign-objects
   assert-that > @
     assert-that
