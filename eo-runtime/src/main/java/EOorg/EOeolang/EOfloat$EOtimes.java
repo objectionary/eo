@@ -37,10 +37,10 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "float.mul")
-public class EOfloat$EOmul extends PhDefault {
+@XmirObject(oname = "float.times")
+public class EOfloat$EOtimes extends PhDefault {
 
-    public EOfloat$EOmul(final Phi sigma) {
+    public EOfloat$EOtimes(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(

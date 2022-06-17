@@ -47,7 +47,7 @@
 [] > makes-object-a-constant
   [] > foo
     as-int. > @
-      mul.
+      times.
         random
         100.0
   foo.@ > f!
