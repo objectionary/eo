@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -50,59 +50,65 @@
 
 [] > greater-true
   assert-that > @
-    -200.1
-    $.greater-than -1000.0
+    assert-that
+      -200.1
+      $.greater-than -1000.0
+    $.anything
 
 [] > greater-false
   assert-that > @
-    0.5
-    $.not
-      $.greater-than 100.1
+    assert-that
+      0.5
+      $.not
+        $.greater-than 100.1
+    $.anything
 
 [] > greater-equal
   assert-that > @
-    0.7
-    $.not
-      $.greater-than 0.7
+    assert-that
+      0.7
+      $.not
+        $.greater-than 0.7
+    $.anything
 
 [] > leq-true
   assert-that > @
-    leq.
+    lte.
       -200.5
       -100.6
     $.equal-to TRUE
 
 [] > leq-equal
   assert-that > @
-    leq.
+    lte.
       50.1
       50.1
     $.equal-to TRUE
 
 [] > leq-false
   assert-that > @
-    leq.
+    lte.
       0.9
       -10.11
     $.equal-to FALSE
 
-[] > geq-true
+[] > gte-true
   assert-that > @
-    geq.
+    gte.
       -1000.1
       -1100.1
     $.equal-to TRUE
 
-[] > geq-equal
+[] > gte-equal
   assert-that > @
-    geq.
+    gte.
       113.333
       113.333
     $.equal-to TRUE
 
-[] > geq-false
+[] > gte-false
   assert-that > @
-    geq.
+    gte.
       0.7
       10.9
     $.equal-to FALSE
@@ -139,44 +145,44 @@
     $.not
       $.equal-to TRUE
 
-[] > mul-by-zero
+[] > times-by-zero
   assert-that > @
-    mul.
+    times.
       574.9
       0.0
     $.equal-to 0.0
 
-[] > mul-by-one
+[] > times-by-one
   assert-that > @
-    mul.
+    times.
       574.9
       1.0
     $.equal-to 574.9
 
-[] > mul-two-positives
+[] > times-two-positives
   assert-that > @
-    mul.
+    times.
       574.5
       311.985
     $.equal-to 179235.3825
 
-[] > mul-two-negatives
+[] > times-two-negatives
   assert-that > @
-    mul.
+    times.
       -574.5
       -311.985
     $.equal-to 179235.3825
 
-[] > mul-diff-sign
+[] > times-diff-sign
   assert-that > @
-    mul.
+    times.
       -0.5745
       0.311985
     $.equal-to -0.1792353825
 
 [] > add-test
   assert-that > @
-    add.
+    plus.
       574.5
       311.985
     $.equal-to 886.485
@@ -203,7 +209,7 @@
 
 [] > sub-test
   assert-that > @
-    sub.
+    minus.
       574.5
       311.985
     $.equal-to 262.515

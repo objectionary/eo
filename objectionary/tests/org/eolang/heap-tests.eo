@@ -22,47 +22,61 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
++alias org.eolang.heap
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > matches-string-against-pattern
+[] > allocates-and-uses
+  "Hello, друг!" > txt
+  txt.as-bytes > bytes
+  heap 1024 > h
+  h.pointer 0 1 > p
+  p.block > data
+    bytes.size
+    [b] (b.as-string > @)
   assert-that > @
-    /([a-z]+)/i
-    .match "hello"
-    .is-empty
-    $.is
-      $.not
-        $.equal-to TRUE
+    seq
+      data.write bytes
+      data
+    $.equal-to txt
 
-[] > doesnt-match-string-against-pattern
+[] > malloc-and-free
+  heap 1024 > h
+  h.malloc 64 > p1
+  h.malloc 32 > p2
   assert-that > @
-    /([A-Z]{2})/
-    .matches "Hello, World!"
-    $.is
-      $.equal-to FALSE
-
-[] > check-dotall-option
-  assert-that > @
-    /(.*)/s
-    .matches "too \\n many \\n line \\n Feed\\n"
+    and.
+      p1.lt p2
+      h.free p1
+      h.free p2
     $.equal-to TRUE
 
-[] > check-case-insensitive-option
+[] > write-and-read-without-error
+  heap 1024 > h
+  h.pointer 0 8 > p
+  [] > mem
+    p.block 8 > @
   assert-that > @
-    /(string)/i
-    .matches "StRiNg"
+    mem.write 01-02-03
     $.equal-to TRUE
 
-[] > check-multiline-option
+[] > increments-pointer
+  heap 1024 > h
+  h.pointer 0 2 > p1
+  p1.add 2 > p2
+  p2.sub 1 > p3
   assert-that > @
-    /(^([0-9]+).*)/m
-    .matches "1 bottle of water on the wall. \\n1 bottle of water."
+    and.
+      (p1.block 6).write ("HELLO!".as-bytes)
+      eq.
+        p2.block
+          2
+          [b] (b.as-string > @)
+        "O!"
+      eq.
+        p3.block
+          2
+          [b] (b.as-string > @)
+        "LL"
     $.equal-to TRUE
-
-[] > check-entire-pattern
-  assert-that > @
-    /[0-9]/\\d+/
-    .match "2/75"
-    .length
-    $.equal-to 1

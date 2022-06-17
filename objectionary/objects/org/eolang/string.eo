@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
-+rt jvm org.eolang:eo-runtime:0.23.10
++version 0.23.11
++rt jvm org.eolang:eo-runtime:0.23.11
 
 [] > string
   # Is true if both objects are equal
@@ -53,20 +53,6 @@
 
   # Converts this to hash
   [] > as-hash /int
-
-  # Converts this to regex.
-  # This string construction must starts and ends from "\" characters,
-  # then in parenthesis should be patter string and then, after the last
-  # "\" can be specified flag option (like this: "/(your-pattern)/s")
-  # e.g. ("/(word)/i".as-regex).matches "WORD" return TRUE
-  # other flags:
-  # /d - Enables Unix lines mode.
-  # /i - Enables case-insensitive matching.
-  # /x - Permits whitespace and comments in pattern.
-  # /m - Enables multiline mode.
-  # /s - Enables dotall mode.
-  # /u - Enables Unicode-aware case folding.
-  [] > as-regex /regex
 
   # Takes a piece of a string as another string
   [start len] > slice /string

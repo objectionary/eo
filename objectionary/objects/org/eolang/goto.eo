@@ -20,17 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
++package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
-+rt jvm org.eolang:eo-runtime:0.23.10
++version 0.23.11
++rt jvm org.eolang:eo-runtime:0.23.11
 
-# Random-access memory (RAM).
-[size] > ram
-
-  # Write bytes B at position P.
-  # Returns itself.
-  [p b] > write /true
-
-  # Read L bytes at position P.
-  [p l] > read /bytes
+# Non-conditional forward and backward jumps. Returns TRUE
+# if the backward jump happened, an object provided to
+# g.forward otherwise.
+#
+# Forward jump may look like this:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       g.forward TRUE
+#       stdout "Will never be printed"
+# ```
+#
+# Backward jump may be done this way:
+#
+# ```
+# goto
+#   [g]
+#     seq
+#       stdout "Will be printed forever"
+#       g.backward
+# ```
+#
+[f] > goto /?

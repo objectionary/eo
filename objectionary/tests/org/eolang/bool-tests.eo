@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -44,8 +44,8 @@
   assert-that > @
     and.
       TRUE
-      5.less 10
-      4.greater -6
+      5.lt 10
+      4.gt -6
       TRUE
       0.eq 0
     $.equal-to TRUE
@@ -66,10 +66,10 @@
       eq.
         4
         while.
-          x.less 10
+          x.lt 10
           [i]
             ^.^.^ > x
-            x.write (x.add i) > @
+            x.write (x.plus i) > @
     $.equal-to TRUE
 
 [] > prints-nice-formulas
@@ -78,13 +78,13 @@
     seq
       x.write 2
       while.
-        x.less 6
+        x.lt 6
         [i]
           ^.^.^ > x
           seq > @
             stdout
               sprintf "%dx%d = %d\n" x x (x.pow 2)
-            x.write (x.add 1)
+            x.write (x.plus 1)
       TRUE
     $.equal-to TRUE
 
@@ -158,11 +158,11 @@
       m.write 5
       while.
         eq.
-          m.greater 0
+          m.gt 0
           TRUE
         [i]
           seq > @
-            m.write (m.sub 1)
+            m.write (m.minus 1)
             stdout (sprintf "%d\n" m)
       TRUE
     $.equal-to TRUE

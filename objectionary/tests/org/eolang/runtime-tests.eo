@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.txt.sprintf
 +alias org.eolang.gray.cage
 +alias org.eolang.hamcrest.assert-that
@@ -47,7 +47,7 @@
 [] > makes-object-a-constant
   [] > foo
     as-int. > @
-      mul.
+      times.
         random
         100.0
   foo.@ > f!
@@ -86,10 +86,10 @@
     $.equal-to 0
   [i] > x
     if. > @
-      i.less 0
+      i.lt 0
       0
       x
-        i.sub 1
+        i.minus 1
 
 [] > iterates-over-sigma
   memory 0 > x
@@ -107,7 +107,7 @@
   memory 0 > x
   [] > a
     seq > @
-      x.write (x.add 1)
+      x.write (x.plus 1)
       42
   assert-that > @
     seq
@@ -124,7 +124,7 @@
     seq
       f0.write 0
       f1.write 1
-      f2.write ((f0).add (f1))
+      f2.write ((f0).plus (f1))
       f1.write f2
       TRUE
     $.equal-to TRUE
@@ -134,7 +134,7 @@
     and.
       42.<.eq (42.<)
       "Hello".<.eq ("Hello".<)
-      42.add.<.greater 0
+      42.plus.<.gt 0
       45-1F-E7.<.eq (45-1F-E7.<)
     $.equal-to TRUE
 
@@ -142,7 +142,7 @@
   [x] > a
   assert-that > @
     or.
-      (2.add 3).<.eq (5.<)
+      (2.plus 3).<.eq (5.<)
       42.<.eq (42.0.<)
       45-1F-E8.<.eq (45-1F-E8-83.<)
       (a 5).<.eq ((a 5).<)
@@ -155,9 +155,9 @@
   memory 0 > n
   [] > func
     if. > @
-      n.greater 0
+      n.gt 0
       seq
-        n.write (n.sub 1)
+        n.write (n.minus 1)
         ^.func
         TRUE
       TRUE
@@ -251,7 +251,7 @@
       m.write 42
       Q.org.eolang.io.stdout
         "Hello, world!"
-      m.write (m.sub 2)
+      m.write (m.minus 2)
       m
     $.equal-to 40
 
@@ -262,7 +262,7 @@
       m.write 42
       QQ.io.stdout
         "Works fine!"
-      m.write (m.sub 2)
+      m.write (m.minus 2)
       m
     $.equal-to 40
 
@@ -281,7 +281,7 @@
   [foo] > return
   [] > a
     return > @
-      add.
+      plus.
         42
         1
   assert-that > @
@@ -296,19 +296,39 @@
       foo.y.<
     $.equal-to TRUE
 
+# @todo #755:15min We need to remove
+#  the anything matcher. We can do it only
+#  after fixing the eo-hamcrest library
+#  when new EO version will be released.
 [] > compares-two-foreign-objects
   assert-that > @
-    sprintf.<
-    $.all-of
-      $.equal-to
-        QQ.txt.sprintf.<
-      $.equal-to
-        Q.org.eolang.txt.sprintf.<
+    assert-that
+      sprintf.<
+      $.all-of
+        $.equal-to
+          QQ.txt.sprintf.<
+        $.equal-to
+          Q.org.eolang.txt.sprintf.<
+    $.anything
 
 [] > compares-two-local-objects
   assert-that > @
-    5.add.<
+    5.plus.<
     $.is
       $.not
         $.equal-to
-          5.add.<
+          5.plus.<
+
+[] > constant-defends-against-side-effects
+  memory 7 > a
+  [x] > inc
+    seq > @
+      x.write
+        x.plus 1
+      x
+  inc a > n!
+  assert-that > @
+    times.
+      n
+      n
+    $.equal-to 64

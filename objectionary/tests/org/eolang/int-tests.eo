@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -38,16 +38,16 @@
 
 [] > less-true
   assert-that > @
-    less.
+    lt.
       10
       50
     $.equal-to TRUE
-    "check int.less"
+    "check int.lt"
 
 [] > less-equal
   assert-that > @
     not.
-      less.
+      lt.
         10
         10
     $.equal-to TRUE
@@ -56,87 +56,87 @@
 [] > less-false
   assert-that > @
     not.
-      less.
+      lt.
         10
         -5
     $.equal-to TRUE
-    "check int.less.not less"
+    "check int.lt.not lt"
 
 [] > greater-true
   assert-that > @
-    greater.
+    gt.
       -200
       -1000
     $.equal-to TRUE
-    "check int.greater"
+    "check int.gt"
 
 [] > greater-false
   assert-that > @
     not.
-      greater.
+      gt.
         0
         100
     $.equal-to TRUE
-    "check int.greater.not"
+    "check int.gt.not"
 
 [] > greater-equal
   assert-that > @
     not.
-      greater.
+      gt.
         0
         0
     $.equal-to TRUE
-    "check int.greater.not zero"
+    "check int.gt.not zero"
 
 [] > leq-true
   assert-that > @
-    leq.
+    lte.
       -200
       -100
     $.equal-to TRUE
-    "check int.leq"
+    "check int.lte"
 
 [] > leq-equal
   assert-that > @
-    leq.
+    lte.
       50
       50
     $.equal-to TRUE
-    "check int.leq equal"
+    "check int.lte equal"
 
 [] > leq-false
   assert-that > @
     not.
-      leq.
+      lte.
         0
         -10
     $.equal-to TRUE
-    "check int.leq.not"
+    "check int.lte.not"
 
-[] > geq-true
+[] > gte-true
   assert-that > @
-    geq.
+    gte.
       -1000
       -1100
     $.equal-to TRUE
-    "check int.geq negative int"
+    "check int.gte negative int"
 
-[] > geq-equal
+[] > gte-equal
   assert-that > @
-    geq.
+    gte.
       113
       113
     $.equal-to TRUE
-    "check int.geq positive int"
+    "check int.gte positive int"
 
-[] > geq-false
+[] > gte-false
   assert-that > @
     not.
-      geq.
+      gte.
         0
         10
     $.equal-to TRUE
-    "check int.geq.not"
+    "check int.gte.not"
 
 [] > eq-true
   assert-that > @
@@ -184,11 +184,11 @@
 [] > calculates-fibonacci-number-with-recursion
   [n] > fibo
     if. > @
-      n.less 3
+      n.lt 3
       1
-      add.
-        fibo (n.sub 1)
-        fibo (n.sub 2)
+      plus.
+        fibo (n.minus 1)
+        fibo (n.minus 2)
   assert-that > @
     fibo 4
     $.equal-to 3
@@ -200,7 +200,7 @@
     "calculates fibonacci number with tail "
   [n] > fibonacci
     if. > @
-      n.less 3
+      n.lt 3
       small n
       rec n 1 1
     [n] > small
@@ -211,8 +211,8 @@
     [n minus1 minus2] > rec
       if. > @
         n.eq 3
-        minus1.add minus2
-        rec (n.sub 1) (minus1.add minus2) minus1
+        minus1.plus minus2
+        rec (n.minus 1) (minus1.plus minus2) minus1
 
 # Checks that division by zero returns an error object
 [] > zero-division
@@ -229,9 +229,9 @@
   dividend.mod divisor > remainder
   dividend.div divisor > quotient
   assert-that > @
-    add.
+    plus.
       remainder
-      mul.
+      times.
         divisor
         quotient
     $.equal-to
@@ -250,8 +250,8 @@
   [dividend divisor] > euclids-lemma
     eq. > @
       dividend
-      add.
-        divisor.mul
+      plus.
+        divisor.times
           quotient dividend divisor
         remainder dividend divisor
   reducei. > @
@@ -462,8 +462,8 @@
     seq
       n.write 0
       while-loop
-        n.less 5
+        n.lt 5
         seq
-          n.write (n.add 1)
+          n.write (n.plus 1)
           (n.mod 2).eq 0
     $.equal-to 5

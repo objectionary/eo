@@ -20,10 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
++package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
-+alias org.eolang.gray.cage
++version 0.23.11
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -44,7 +43,7 @@
     seq
       x.write 42
       copy.<
-      x.write (7.add copy)
+      x.write (7.plus copy)
       x
     $.equal-to 49
 
@@ -93,7 +92,7 @@
   assert-that > @
     seq
       x.write 42
-      sum.write (x.add 1)
+      sum.write (x.plus 1)
       x.write 7
       sum
     $.equal-to 8
@@ -104,7 +103,7 @@
   assert-that > @
     seq
       x.write 42
-      sum.write (1.add x)
+      sum.write (1.plus x)
       x.write 7
       sum
     $.equal-to 8
@@ -117,7 +116,7 @@
     seq
       x.write 42
       y.write 7
-      sum.write (x.add y)
+      sum.write (x.plus y)
       y.write 13
       x.write 4
       sum
@@ -134,3 +133,33 @@
       c.@
         42
     $.equal-to 112
+
+[] > multi-layer-volatility
+  memory 0 > ma
+  cage a > ca
+  [] > a
+    [] > @
+      [] > @
+        [] > @
+          seq > @
+            ma.write (ma.plus 1)
+            ma
+  memory 0 > mb
+  cage b > cb
+  [] > b
+    [] > @
+      [] > @
+        [] > @
+          seq > z
+            mb.write (mb.plus 1)
+            mb
+  assert-that > @
+    seq
+      ca
+      ca.plus 40
+    $.equal-to
+      seq
+        cb.z
+        cb.z.plus 40
+
+

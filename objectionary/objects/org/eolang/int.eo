@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
-+rt jvm org.eolang:eo-runtime:0.23.10
++version 0.23.11
++rt jvm org.eolang:eo-runtime:0.23.11
 
 [] > int
 
@@ -70,39 +70,39 @@
     (^.eq x).not > @
 
   # Tests that $ < x
-  [x] > less
+  [x] > lt
     and. > @
       (^.eq x).not
-      (^.greater x).not
+      (^.gt x).not
 
   # Tests that $ ≤ x
-  [x] > leq
+  [x] > lte
     or. > @
       ^.eq x
-      ^.less x
+      ^.lt x
 
   # Tests that $ > x
-  [x] > greater /bool
+  [x] > gt /bool
 
   # Tests that $ ≥ x
-  [x] > geq
+  [x] > gte
     or. > @
       ^.eq x
-      ^.greater x
+      ^.gt x
 
   # Change the sign of the number
   [] > neg
-    ^.mul -1 > @
+    ^.times -1 > @
 
   # Add to the current one
-  [x] > add /int
+  [x] > plus /int
 
   # Subtract from the current one
-  [x] > sub
-    ^.add (x.neg) > @
+  [x] > minus
+    ^.plus (x.neg) > @
 
-  # Multiply this one by another int
-  [x] > mul /int
+  # Multiplication this one by another int
+  [x] > times /int
 
   # Divide this one by another int
   [x] > div /int
@@ -117,7 +117,7 @@
       []
         "mod by zero" > msg
       if.
-        dividend.greater 0
+        dividend.gt 0
         abs-mod
         neg.
           abs-mod
@@ -125,9 +125,9 @@
     [] > abs-mod
       dividend.abs > int-abs
       divisor.abs > x-abs
-      sub. > @
+      minus. > @
         int-abs
-        x-abs.mul
+        x-abs.times
           int-abs.div x-abs
 
   # Make it power x
@@ -135,7 +135,7 @@
     if. > @
       and.
         ^.eq 0
-        x.less 0
+        x.lt 0
       []
         "0 cannot be raised to a negative power" > msg
       as-int.
@@ -158,6 +158,6 @@
   # Absolute value of $ (i.e., with no sign)
   [] > abs
     if. > @
-      ^.geq 0
+      ^.gte 0
       ^
       ^.neg

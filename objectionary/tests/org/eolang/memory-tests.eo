@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -50,7 +50,7 @@
   assert-that > @
     seq
       m.write 1
-      m.write (m.add 5)
+      m.write (m.plus 5)
       m
     $.equal-to 6
 

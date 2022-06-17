@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -46,13 +46,13 @@
     $.equal-to r
 
 [] > two-random-numbers-with-increment-with-const
-  random.add 3.1416 > r!
+  random.plus 3.1416 > r!
   assert-that > @
     r
     $.equal-to r
 
 [] > two-random-numbers-with-increment
-  random.add 3.1416 > r
+  random.plus 3.1416 > r
   assert-that > @
     r
     $.not

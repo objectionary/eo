@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -291,3 +291,85 @@
         -127.as-bytes
         127.as-bytes
     $.equal-to -1
+
+[] > concatenation-of-bytes
+  02-EF-D4-05-5E-78-3A > a
+  12-33-C1-B5-5E-71-55 > b
+  assert-that > @
+    a.concat b
+    $.is
+      $.equal-to
+        02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
+
+[] > concat-bools-as-bytes
+  TRUE.as-bytes > b1
+  FALSE.as-bytes > b2
+  assert-that > @
+    concat.
+      b1
+      b2
+    $.equal-to 01-00
+
+[] > concat-with-empty
+  assert-that > @
+    concat.
+      05-5E-78
+      --
+    $.equal-to 05-5E-78
+
+[] > concat-empty-with
+  assert-that > @
+    concat.
+      --
+      05-5E-78
+    $.equal-to 05-5E-78
+
+[] > concat-empty
+  assert-that > @
+    concat.
+      --
+      --
+    $.equal-to --
+
+[] > concat-strings
+  concat. > s-bytes
+    "hello ".as-bytes
+    "world".as-bytes
+  assert-that > @
+    as-string.
+      s-bytes
+    $.is
+      $.equal-to
+        "hello world"
+
+[] > bytes-hashes-equals
+  assert-that > @
+    05-5E-78.as-hash
+    $.equal-to
+      05-5E-78.as-hash
+
+[] > bytes-as-hash-value
+  assert-that > @
+    02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55.as-hash
+    $.equal-to -1535034036
+
+[] > xor-as-int
+  assert-that > @
+    (2397719729.as-bytes.xor (4294967295.as-bytes)).as-int
+    $.equal-to 1897247566
+
+[] > one-xor-one-as-int
+  assert-that > @
+    (1.as-bytes.xor (1.as-bytes)).as-int
+    $.equal-to 0
+
+[] > eight-byte-numbers-xor-as-int
+  assert-that > @
+    as-int.
+      xor.
+        as-bytes.
+          1823872398572932454
+        as-bytes.
+          1284294810240192840
+    $.equal-to 620662338699844654
+

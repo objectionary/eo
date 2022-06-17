@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.txt.sprintf
 +alias org.eolang.io.stdout
 +alias org.eolang.hamcrest.assert-that
@@ -102,9 +102,9 @@
     mapi. > @
       numbers
       [current index]
-        mul. > @
+        times. > @
           current.as-int
-          index.add 1
+          index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @
     sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2)
@@ -199,7 +199,7 @@
           1
           "str"
           "\n"
-          (11.mul 2).as-float
+          (11.times 2).as-float
           D0-B4-D1-80-D1-83-D0-B3
           FALSE.not
 
@@ -276,9 +276,9 @@
       * 1 1
       0
       [a i x]
-        add. > @
+        plus. > @
           x
-          a.add
+          a.plus
             src.get i
     $.equal-to 6
 
@@ -288,7 +288,7 @@
       * 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
       0
       [a i x]
-        add. > @
+        plus. > @
           x
           a
     $.equal-to 435
@@ -317,12 +317,12 @@
         check x > @
         [el] > check
           if. > @
-            x.less 100
-            acc.add x
-            acc.sub x
+            x.lt 100
+            acc.plus x
+            acc.minus x
     $.equal-to
-      add.
-        0.sub 500
+      plus.
+        0.minus 500
         10
 
 # reduce without index test
@@ -332,7 +332,7 @@
       * 1 2 3 4
       -1
       [a x]
-        mul. > @
+        times. > @
           a
           x
     $.equal-to -24
@@ -388,6 +388,16 @@
     mapi.
       * 1 2 3 4
       [x i]
-        x.mul 2 > @
+        x.times 2 > @
     $.equal-to
       * 2 4 6 8
+
+[] > array-get-with-error
+  assert-that > @
+    msg.
+      get.
+        * 1 2 3 4
+        20
+    $.is
+      $.equal-to
+        "Can't get() the 20th element of the array, there are just 4 of them"

@@ -1,0 +1,134 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2022 Yegor Bugayenko
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++package org.eolang.txt
++home https://github.com/objectionary/eo
++version 0.23.11
++alias org.eolang.hamcrest.assert-that
++alias org.eolang.txt.regex
++junit
+
+[] > matches-string-against-pattern
+  assert-that > @
+    is-empty.
+      match.
+        compile.
+          regex "/([a-z]+)/i"
+        "hello"
+    $.is
+      $.not
+        $.equal-to TRUE
+
+[] > doesnt-match-string-against-pattern
+  assert-that > @
+    matches.
+      compile.
+        regex "/([A-Z]{2})/"
+      "Hello, World!"
+    $.is
+      $.equal-to FALSE
+
+[] > check-dotall-option
+  assert-that > @
+    regex "/(.*)/s"
+    .compile
+    .matches "too \\n many \\n line \\n Feed\\n"
+    $.equal-to TRUE
+
+[] > check-case-insensitive-option
+  assert-that > @
+    regex "/(string)/i"
+    .compile
+    .matches "StRiNg"
+    $.equal-to TRUE
+
+[] > check-multiline-option
+  assert-that > @
+    regex "/(^([0-9]+).*)/m"
+    .compile
+    .matches "1 bottle of water on the wall. \\n1 bottle of water."
+    $.equal-to TRUE
+
+[] > check-entire-pattern
+  assert-that > @
+    regex "/[0-9]/\\d+/"
+    .compile
+    .match "2/75"
+    .length
+    $.equal-to 1
+
+[] > check-regex-unix-lines
+  assert-that > @
+    QQ.txt.regex "/(.+)/d"
+    .compile
+    .matches "A\\r\\nB\\rC\\nD"
+    $.equal-to TRUE
+
+[] > check-regex-case-insensitive
+  assert-that > @
+    QQ.txt.regex "/(word)/i"
+    .compile
+    .matches "WORD"
+    $.equal-to TRUE
+
+[] > check-regex-comments
+  assert-that > @
+    QQ.txt.regex "/(\\d) #ignore this comment/x"
+    .compile
+    .matches "4"
+    $.equal-to TRUE
+
+[] > check-regex-multiline
+  assert-that > @
+    QQ.txt.regex "/(^([0-9]+).*)/m"
+    .compile
+    .matches "2234 This is a sample text\\n1424 This second 2335 line\\n"
+    $.equal-to TRUE
+
+[] > check-regex-dotall
+  assert-that > @
+    QQ.txt.regex "/(.*)/s"
+    .compile
+    .matches "this is a sample \\nthis is second line"
+    $.equal-to TRUE
+
+[] > check-regex-unicode-case-and-insensitive
+  assert-that > @
+    QQ.txt.regex "/(yildirim)/ui"
+    .compile
+    .matches "Yıldırım"
+    $.equal-to TRUE
+
+[] > check-regex-div
+  assert-that > @
+    QQ.txt.regex "/([0-9]+/\\d+)/"
+    .compile
+    .matches "15/3"
+    $.equal-to TRUE
+
+[] > check-regex-compile-error-msg-missing-slash
+  assert-that > @
+    regex "(.)+"
+    .compile
+    .msg
+    $.is
+      $.equal-to "Wrong regex syntax: \"/\" is missing"

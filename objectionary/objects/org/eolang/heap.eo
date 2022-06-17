@@ -20,50 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.gray
++package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
-+alias org.eolang.gray.try
-+alias org.eolang.hamcrest.assert-that
-+junit
++version 0.23.11
++rt jvm org.eolang:eo-runtime:0.23.11
 
-[] > catches-simple-exception
-  [x throw] > main
-    if. > @
-      x.eq 0
-      throw "div by zero"
-      42.div x
-  assert-that > @
-    and.
-      eq.
-        6
-        try
-          [throw]
-            main 7 throw > @
-          [ex] (TRUE > @)
-          TRUE
-      eq.
-        FALSE
-        try
-          [throw]
-            main 0 throw > @
-          [ex] (FALSE > @)
-          TRUE
-    $.equal-to TRUE
+# Emulation of random-access memory (RAM).
+[size] > heap
 
-[] > two-nested-try-blocks
-  [throw] > failure
-    throw "Hello!" > @
-  assert-that > @
-    try
-      [t1]
-        try > @
-          [t2]
-            failure t1 > @
-          [ex]
-            2 > @
-          TRUE
-      [ex]
-        1 > @
-      TRUE
-    $.equal-to 1
+  # Allocates a block in memory of "s" bytes,
+  # and returns a pointer to it.
+  # The "length" attribute of the pointer won't be bound.
+  [s] > malloc /pointer
+
+  # Freed a block in memory, which is referred by the
+  # given pointer, which was earlier obtained with malloc().
+  # Returns TRUE if works. If the pointer provided wasn't
+  # previously allocated, the result will be [].
+  [p] > free /bool
+
+  # Pointer inside the heap
+  [address length] > pointer
+    address > @
+
+    # Increment this pointer by x steps forward
+    [x] > add
+      &.^.pointer > @
+        address.plus
+          length.times x
+        length
+
+    # Decrement this pointer by x steps backward
+    [x] > sub
+      &.add > @
+        x.times -1
+
+    # One block in the heap.
+    [len inverse] > block /?

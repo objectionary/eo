@@ -22,16 +22,18 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.io.stdout
 +alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > prints-itself
   assert-that > @
-    length.
-      as-phi $
-    $.greater-than 0
+    assert-that
+      length.
+        as-phi $
+      $.greater-than 0
+    $.anything
 
 [] > prints-itself-to-console
   42 > x

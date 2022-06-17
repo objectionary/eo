@@ -22,14 +22,9 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.10
++version 0.23.11
 +alias org.eolang.hamcrest.assert-that
 +junit
-
-[] > matches-against-regular-expression
-  assert-that > @
-    /([a-z])+/.matches "dude"
-    $.equal-to TRUE
 
 [] > calculates-length-of-spaces-only
   assert-that > @
@@ -140,48 +135,6 @@
     "hello world".as-hash
     $.equal-to
       "hello world".as-hash
-
-[] > string-to-regex-unix-lines
-  assert-that > @
-    "/(.+)/d".as-regex
-    .matches "A\\r\\nB\\rC\\nD"
-    $.equal-to TRUE
-
-[] > string-to-regex-case-insensitive
-  assert-that > @
-    "/(word)/i".as-regex
-    .matches "WORD"
-    $.equal-to TRUE
-
-[] > string-to-regex-comments
-  assert-that > @
-    "/(\\d) #ignore this comment/x".as-regex
-    .matches "4"
-    $.equal-to TRUE
-
-[] > string-to-regex-multiline
-  assert-that > @
-    "/(^([0-9]+).*)/m".as-regex
-    .matches "2234 This is a sample text\\n1424 This second 2335 line\\n"
-    $.equal-to TRUE
-
-[] > string-to-regex-dotall
-  assert-that > @
-    "/(.*)/s".as-regex
-    .matches "this is a sample \\nthis is second line"
-    $.equal-to TRUE
-
-[] > string-to-regex-unicode-case-and-insensitive
-  assert-that > @
-    "/(yildirim)/ui".as-regex
-    .matches "Yıldırım"
-    $.equal-to TRUE
-
-[] > string-to-regex-div
-  assert-that > @
-    "/([0-9]+/\\d+)/".as-regex
-    .matches "15/3"
-    $.equal-to TRUE
 
 [] > compares-two-strings
   assert-that > @
