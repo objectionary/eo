@@ -114,7 +114,7 @@ public final class TranspileMojo extends SafeMojo {
                 this.generatedDir.getAbsolutePath()
             );
             Logger.info(
-                this, "The directory added to compile-source-root: %s",
+                this, "The directory added to Maven 'compile-source-root': %s",
                 Save.rel(this.generatedDir.toPath())
             );
         }
@@ -123,7 +123,7 @@ public final class TranspileMojo extends SafeMojo {
                 this.generatedDir.getAbsolutePath()
             );
             Logger.info(
-                this, "The directory added to test-compile-source-root: %s",
+                this, "The directory added to Maven 'test-compile-source-root': %s",
                 Save.rel(this.generatedDir.toPath())
             );
         }
