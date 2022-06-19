@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -63,6 +64,15 @@ public final class OptimizeMojo extends SafeMojo {
      * The directory where to transpile to.
      */
     public static final String DIR = "03-optimize";
+
+    /**
+     * Track optimization steps into intermediate XML files?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.24.0
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
+    private boolean trackOptimizationSteps;
 
     @Override
     public void exec() throws IOException {
@@ -106,9 +116,6 @@ public final class OptimizeMojo extends SafeMojo {
     private Path optimize(final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path dir = place.make(
-            this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
-        );
         final Path target = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
         );
@@ -124,12 +131,21 @@ public final class OptimizeMojo extends SafeMojo {
                 "/org/eolang/parser/errors/broken-refs.xsl"
             )
         ).back().back();
-        train = new SpyTrain(train, dir);
+        if (this.trackOptimizationSteps) {
+            final Path dir = place.make(
+                this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
+            );
+            train = new SpyTrain(train, dir);
+            Logger.debug(
+                this, "Optimization steps will be tracked to %s",
+                Save.rel(dir)
+            );
+        }
         final XML out = new Xsline(train).pass(new XMLDocument(file));
         new Save(out.toString(), target).save();
         Logger.debug(
-            this, "Optimized %s (program:%s) to %s, all steps are in %s",
-            Save.rel(file), name, Save.rel(target), Save.rel(dir)
+            this, "Optimized %s (program:%s) to %s",
+            Save.rel(file), name, Save.rel(target)
         );
         return target;
     }

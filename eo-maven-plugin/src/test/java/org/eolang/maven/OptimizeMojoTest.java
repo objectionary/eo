@@ -142,6 +142,7 @@ public final class OptimizeMojoTest {
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("trackOptimizationSteps", true)
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(

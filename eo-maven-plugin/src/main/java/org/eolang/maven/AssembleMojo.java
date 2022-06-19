@@ -161,6 +161,15 @@ public final class AssembleMojo extends SafeMojo {
     @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
 
+    /**
+     * Track optimization steps into intermediate XML files?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.24.0
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
+    private boolean trackOptimizationSteps;
+
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void exec() throws IOException {
