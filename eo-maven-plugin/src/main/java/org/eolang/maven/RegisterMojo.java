@@ -99,6 +99,10 @@ public final class RegisterMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        final int before = this.tojos().select(t -> true).size();
+        if (before > 0) {
+            Logger.info(this, "There are %d EO sources registered already", before);
+        }
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
             .includes(this.includeSources)
             .excludes(this.excludeSources);
