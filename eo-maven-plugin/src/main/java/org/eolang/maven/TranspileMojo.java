@@ -107,7 +107,7 @@ public final class TranspileMojo extends SafeMojo {
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
-            total, sources.size(), Save.rel(this.generatedDir.toPath())
+            sources.size(), total, Save.rel(this.generatedDir.toPath())
         );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(
