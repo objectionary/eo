@@ -72,7 +72,9 @@ public final class DiscoverMojo extends SafeMojo {
             }
             tojo.set(AssembleMojo.ATTR_DISCOVERED, Integer.toString(names.size()));
         }
-        if (discovered.isEmpty()) {
+        if (tojos.isEmpty()) {
+            Logger.warn(this, "Nothing to discover, since there are no programs");
+        } else if (discovered.isEmpty()) {
             Logger.info(
                 this, "No foreign objects discovered in %d programs",
                 tojos.size()

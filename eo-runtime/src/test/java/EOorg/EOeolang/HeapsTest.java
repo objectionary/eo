@@ -23,7 +23,6 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOgray.EOheap;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

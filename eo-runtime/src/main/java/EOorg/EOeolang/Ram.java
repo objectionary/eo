@@ -1,4 +1,4 @@
-package org.eolang.gray;
+package EOorg.EOeolang;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

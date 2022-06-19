@@ -1,12 +1,10 @@
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOgray.EOram;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.eolang.Data;
 import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.gray.Ram;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
