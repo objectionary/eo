@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.11
++version 0.23.12
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -54,8 +54,8 @@
 
 [] > turns-string-into-bytes
   assert-that > @
-    "друг".as-bytes
-    $.equal-to D0-B4-D1-80-D1-83-D0-B3
+    "€ друг".as-bytes
+    $.equal-to E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
 [] > bytes-equal-to-string
   assert-that > @
@@ -219,4 +219,3 @@
         -1
         40
     $.equal-to "Parameters are out of bound: start -1, len: 40, string length: 5"
-
