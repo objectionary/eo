@@ -26,9 +26,17 @@ SOFTWARE.
   <!--
   Here we go through all objects that DON'T have @ref attributes
   and add default package to them.
+
+  We ignore objects that are present in aliases with their exact
+  names. For example, this object 'hello' won't be touched, we
+  won't think that it belongs to org.eolang package:
+
+  +alias hello
+  [] > app
+    hello > @
   -->
   <xsl:output encoding="UTF-8"/>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and @base!='@' and @base!='Q' and @base!='QQ' and @base!='^' and @base!='&amp;' and @base!='$']">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and not(@base = //meta[head='alias']/part[1]) and @base != '@' and @base != 'Q' and @base != 'QQ' and @base != '^' and @base != '&amp;' and @base != '$']">
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:text>org.eolang.</xsl:text>

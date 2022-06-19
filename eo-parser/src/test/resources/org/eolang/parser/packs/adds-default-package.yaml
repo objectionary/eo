@@ -1,11 +1,13 @@
 xsls:
   - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
-  - //o[@base='org.eolang.and' and @line='7']
+  - //o[@base='org.eolang.and' and @line='8']
+  - //o[@base='foo']
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
@@ -15,6 +17,7 @@ eo: |
   +alias stdin org.eolang.io.stdin
   +alias scanner org.eolang.txt.scanner
   +foo Some other meta
+  +alias foo
 
   [args] > main
     and
@@ -22,5 +25,6 @@ eo: |
       (stdout "You entered" line).print
       $
       ^.i
+      foo
       Q.org.eolang.random
       QQ.memory

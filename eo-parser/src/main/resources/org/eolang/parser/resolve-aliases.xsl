@@ -29,8 +29,6 @@ SOFTWARE.
   we change their @base attributes. If not, we decide that they
   are in org.eolang package and also change the @base attribute.
 
-  At the end of this transformation all aliases are deleted.
-
   If some alias is badly formatted, a runtime error is issued.
   -->
   <xsl:output encoding="UTF-8"/>
