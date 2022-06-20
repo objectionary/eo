@@ -162,8 +162,13 @@ This is how you iterate:
       [i]
         seq > @
           QQ.io.stdout
-            QQ.txt.sprintf "%dx%d = %d\n" x x (x.pow 2)
-          x.write (x.plus 1)
+            QQ.txt.sprintf
+              "%dx%d = %d\n"
+              x
+              x
+              x.pow 2
+          x.write
+            x.plus 1
     TRUE
 ```
 
