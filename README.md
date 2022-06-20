@@ -46,7 +46,7 @@ These things we **don't** tolerate:
   * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
   * global scope ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
   * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
-  * reflection
+  * reflection ([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
   * scalar types and data primitives
   * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
   * operators
