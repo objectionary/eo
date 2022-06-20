@@ -83,7 +83,7 @@ $ eoc --alone dataize app
 
 You should see "Hello, world!" printed.
 
-## Tutorial
+## Simple Tutorial
 
 In the example above, we create a new [abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
 named `app`, which has got a single attribute named `@`. The object attached to the attribute
@@ -153,10 +153,6 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```
-+package sandbox
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-
 [args...] > app
   memory 0 > x
   seq > @
@@ -165,8 +161,8 @@ This is how you iterate:
       x.lt 6
       [i]
         seq > @
-          stdout
-            sprintf "%dx%d = %d\n" x x (x.pow 2)
+          QQ.io.stdout
+            QQ.txt.sprintf "%dx%d = %d\n" x x (x.pow 2)
           x.write (x.plus 1)
     TRUE
 ```
@@ -182,9 +178,22 @@ This code will print this:
 
 Got the idea?
 
-How to use it with Maven, read [here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
+## What's Next?
 
-More examples are [here](https://github.com/objectionary/sandbox).
+Join [our Telegram group](https://t.me/polystat_org).
+
+Read [our blog](https://news.eolang.org), especially the section with
+[recently published papers](https://news.eolang.org/papers.html).
+
+See the full collection of canonical objects: [objectionary](https://github.com/objectionary/home).
+
+Take a look how we use EO as an Intermediary Representation (IR) in
+[Polystat](https://www.polystat.org), a polyglot static analyzer.
+
+Play with more examples [here](https://github.com/objectionary/sandbox).
+
+Read about integration with Maven,
+[here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
 
 ## How it Works?
 
