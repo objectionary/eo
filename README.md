@@ -52,17 +52,16 @@ These things we **don't** tolerate:
   * operators
   * traits and mixins ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
   * flow control statements (`for`, `while`, `if`, etc)
-  * DSL and [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
+  * [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
 
 ## Quick Start
+
+The quickest start is [explained here](https://github.com/objectionary/eoc).
 
 Here is a simple program that gets a year from command line and tells you
 whether it's leap or not:
 
 ```
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-
 [args...] > main
   [y] > leap
     or. > @
@@ -70,8 +69,8 @@ whether it's leap or not:
         eq. (mod. y 4) 0
         not. (eq. (mod. y 100) 0)
       eq. (mod. y 400) 0
-  stdout > @
-    sprintf
+  QQ.io.stdout > @
+    QQ.txt.sprintf
       "%d is %sa leap year!"
       (args.get 0).as-int > year!
       if. (leap year:y) "" "not "
@@ -135,10 +134,8 @@ More examples are [here](https://github.com/objectionary/sandbox).
 Let's start with a simple EO program:
 
 ```
-+alias org.eolang.io.stdout
-
 [] > app
-  stdout > @
+  QQ.io.stdout > @
     "Hello, world!"
 ```
 
@@ -150,7 +147,7 @@ It can't be used directly, a copy of it has to be created, with a few requiremen
 This is how a copy of the object `stdout` is made:
 
 ```
-stdout
+QQ.io.stdout
   "Hello, world!"
 ```
 
@@ -159,7 +156,7 @@ in front of the line in order to go to the deeper level of nesting. This code ca
 in a "horizontal" notation:
 
 ```
-stdout "Hello, world!"
+QQ.io.stdout "Hello, world!"
 ```
 
 Moreover, it's possible to use brackets in order to group arguments and avoid
@@ -168,12 +165,9 @@ we may want to create a copy of the object `stdout` with a more complex
 argument: a copy of the object `sprintf`:
 
 ```
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-
 [] > app
-  stdout > @
-    sprintf
+  QQ.io.stdout > @
+    QQ.txt.sprintf
       "Hello, %s!"
       "Jeffrey"
 ```
@@ -200,13 +194,10 @@ attributes. For example, it's possible to define a new abstract object
 inside `app` and use it to build the output string:
 
 ```
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-
 [] > app
-  stdout (msg "Jeffrey") > @
+  QQ.io.stdout (msg "Jeffrey") > @
   [name] > msg
-    sprintf "Hello, %s!" name > @
+    QQ.txt.sprintf "Hello, %s!" name > @
 ```
 
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
