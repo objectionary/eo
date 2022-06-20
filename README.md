@@ -17,7 +17,8 @@
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
-is an object-oriented programming language based on [𝜑-calculus](https://arxiv.org/abs/2111.13384).
+is an object-oriented programming language based on
+[𝜑-calculus](https://arxiv.org/abs/2111.13384).
 We're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
@@ -54,7 +55,7 @@ These things we **don't** tolerate:
   * flow control statements (`for`, `while`, `if`, etc)
   * [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
 
-## Tutorial
+## Quick Start
 
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm),
@@ -82,7 +83,9 @@ $ eoc --alone dataize app
 
 You should see "Hello, world!" printed.
 
-Here we create a new [abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
+## Tutorial
+
+In the example above, we create a new [abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
 named `app`, which has got a single attribute named `@`. The object attached to the attribute
 `@` is a copy of the object `stdout` with a single argument `"Hello, world!"`. The object
 `stdout` is also [abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
