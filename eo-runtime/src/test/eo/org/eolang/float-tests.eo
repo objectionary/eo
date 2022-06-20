@@ -50,26 +50,20 @@
 
 [] > greater-true
   assert-that > @
-    assert-that
-      -200.1
-      $.greater-than -1000.0
-    $.anything
+    -200.1
+    $.greater-than -1000.0
 
 [] > greater-false
   assert-that > @
-    assert-that
-      0.5
-      $.not
-        $.greater-than 100.1
-    $.anything
+    0.5
+    $.not
+      $.greater-than 100.1
 
 [] > greater-equal
   assert-that > @
-    assert-that
-      0.7
-      $.not
-        $.greater-than 0.7
-    $.anything
+    0.7
+    $.not
+      $.greater-than 0.7
 
 [] > leq-true
   assert-that > @

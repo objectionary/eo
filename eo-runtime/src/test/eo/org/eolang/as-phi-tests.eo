@@ -29,11 +29,9 @@
 
 [] > prints-itself
   assert-that > @
-    assert-that
-      length.
-        as-phi $
-      $.greater-than 0
-    $.anything
+    length.
+      as-phi $
+    $.greater-than 0
 
 [] > prints-itself-to-console
   42 > x
