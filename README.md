@@ -56,7 +56,9 @@ These things we **don't** tolerate:
 
 ## Tutorial
 
-First, install [eoc](https://github.com/objectionary/eoc).
+First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm),
+and [eoc](https://github.com/objectionary/eoc).
 
 Then, start with a simple EO program in `app.eo` file:
 
@@ -66,10 +68,16 @@ Then, start with a simple EO program in `app.eo` file:
     "Hello, world!\n"
 ```
 
-Run it like this:
+Compile it like this (may take a minute or so):
 
 ```
-$ eoc dataize app
+$ eoc link
+```
+
+Then, run it:
+
+```
+$ eoc --alone dataize app
 ```
 
 You should see "Hello, world!" printed.
@@ -170,6 +178,8 @@ This code will print this:
 ```
 
 Got the idea?
+
+How to use it with Maven, read [here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
 
 More examples are [here](https://github.com/objectionary/sandbox).
 
