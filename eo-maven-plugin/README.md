@@ -74,3 +74,38 @@ and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 8+.
 
+## How it Works?
+
+The entire process of turning an `.eo` program into an executable
+binary code constists of a few steps, which must be done
+one after another:
+
+  * **Parsing**.
+    It's done by the `org.eolang.parser.Syntax` class in the `eo-parser` module. It takes
+    the source code in a plain text format and parses into XML document,
+    using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
+    The output of the parser you can find in the `target/eo/parse` directory.
+
+  * **Optimization**.
+    There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
+    that need to be done
+    with the XML document in order to make it ready for compilation.
+    Each transformation has its own `.xsl` file in the `eo-parser` directory.
+    The class `org.eolang.parser.Program` is responsible for making XSLT
+    transformations and the entire list of them is stored in the
+    `org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
+    The output of each transformation you can find in the `target/eo/optimize` directory.
+
+  * **Compilation**.
+    The class `org.eolang.maven.CompileMojo` in the `eo-maven-plugin` module is responsible
+    for putting parsing and optimization steps together and then transforming
+    the XML document into a collection of `.java` files. There are a number
+    of transformations that do this, they all exist in `.xsl` files.
+    The output of this step you can find in the `target/generated-sources` directory.
+
+There is also a module called `eo-runtime`, which includes both `.eo` and `.java` code
+for most popular and important objects that any of you will need in order
+to write even a simple EO program. There are objects like `string`, `int`, `sprintf`,
+`stdout`, and so on. By the way, you may want to contribute there by creating new objects.
+
+
