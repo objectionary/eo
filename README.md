@@ -54,90 +54,25 @@ These things we **don't** tolerate:
   * flow control statements (`for`, `while`, `if`, etc)
   * [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
 
-## Quick Start
-
-The quickest start is [explained here](https://github.com/objectionary/eoc).
-
-Here is a simple program that gets a year from command line and tells you
-whether it's leap or not:
-
-```
-[args...] > main
-  [y] > leap
-    or. > @
-      and.
-        eq. (mod. y 4) 0
-        not. (eq. (mod. y 100) 0)
-      eq. (mod. y 400) 0
-  QQ.io.stdout > @
-    QQ.txt.sprintf
-      "%d is %sa leap year!"
-      (args.get 0).as-int > year!
-      if. (leap year:y) "" "not "
-```
-
-In order to compile this program, put it into `src/main/eo/main.eo` and then
-create a file `pom.xml` with this content (it's just a sample):
-
-```xml
-<project>
-  [...]
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eolang</groupId>
-        <artifactId>eo-maven-plugin</artifactId>
-        <version><!-- check Maven Central --></version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>register</goal>
-              <goal>assemble</goal>
-              <goal>transpile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.eolang.Main</mainClass>
-          <arguments>
-            <argument>main</argument>
-            <argument>2008</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-</project>
-```
-
-Then, you just run `mvn clean test` (you will need [Maven 3.3+](https://maven.apache.org/))
-and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
-and then compiled to `.class` files. You can see them all in the `target` directory.
-You will need Java 8+.
-
-More examples are [here](https://github.com/objectionary/sandbox).
-
 ## Tutorial
 
-Let's start with a simple EO program:
+First, install [eoc](https://github.com/objectionary/eoc).
+
+Then, start with a simple EO program in `app.eo` file:
 
 ```
-[] > app
+[args...] > app
   QQ.io.stdout > @
-    "Hello, world!"
+    "Hello, world!\n"
 ```
+
+Run it like this:
+
+```
+$ eoc dataize app
+```
+
+You should see "Hello, world!" printed.
 
 Here we create a new [abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
 named `app`, which has got a single attribute named `@`. The object attached to the attribute
@@ -235,6 +170,8 @@ This code will print this:
 ```
 
 Got the idea?
+
+More examples are [here](https://github.com/objectionary/sandbox).
 
 ## How it Works?
 
