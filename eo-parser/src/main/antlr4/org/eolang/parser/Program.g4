@@ -269,7 +269,11 @@ fragment ESCAPE_SEQUENCE
     | '\\' ([0-3]? [0-7])? [0-7]
     | '\\' 'u'+ BYTE BYTE
     ;
-INT: (PLUS | MINUS)? [0-9]+;
+
+fragment ZERO:
+    '0';
+
+INT: (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*);
 
 fragment EXPONENT: ('e'|'E') (PLUS | MINUS)? ('0'..'9')+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?;
