@@ -204,61 +204,6 @@
     $.equal-to
       "Division by zero is undefined"
 
-# Checks mathematical equality
-# A = ((A div B) * B) + (A mod B)
-[] > div-mod-compatibility
-  -13 > dividend
-  5 > divisor
-  dividend.mod divisor > remainder
-  dividend.div divisor > quotient
-  assert-that > @
-    plus.
-      remainder
-      times.
-        divisor
-        quotient
-    $.equal-to
-      dividend
-
-# Checks Euclid's division lemma
-# A = B * Q + R
-# and 0 <= R <= |B|
-[] > euclids-mod-lemma
-  * -201 -201 201 201 > dividends
-  * -25 25 -25 25 > divisors
-  [x y] > remainder
-    x.mod y > @
-  [x y] > quotient
-    x.div y > @
-  [dividend divisor] > euclids-lemma
-    eq. > @
-      dividend
-      plus.
-        divisor.times
-          quotient dividend divisor
-        remainder dividend divisor
-  reducei. > @
-    dividends
-    TRUE
-    [a i el]
-      and. > @
-        euclids-lemma
-          el
-          divisors.get i
-        a
-
-# Checks modulo: dividend < divisor
-[] > mod-dividend-less-than-divisor
-  assert-that > @
-    -1.mod 5
-    $.equal-to -1
-
-# Checks modulo by 1
-[] > mod-dividend-by-one
-  assert-that > @
-    133.mod 1
-    $.equal-to 0
-
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend
@@ -284,21 +229,6 @@
   assert-that > @
     17.neg.as-float
     $.equal-to -17.0
-
-[] > abs-positive
-  assert-that > @
-    3.abs
-    $.equal-to 3
-
-[] > abs-negative
-  assert-that > @
-    -3.abs
-    $.equal-to 3
-
-[] > abs-zero
-  assert-that > @
-    0.abs
-    $.equal-to 0
 
 [] > to-bytes-and-backwards
   assert-that > @
@@ -342,31 +272,6 @@
       $.equal-to
         42.as-hash
 
-[] > mod-1-2
-  assert-that > @
-    1.mod 2
-    $.equal-to 1
-
-[] > mod-0-5
-  assert-that > @
-    0.mod 5
-    $.equal-to 0
-
-[] > mod-0-15-neg
-  assert-that > @
-    0.mod -15
-    $.equal-to 0
-
-[] > mod-1-neg-7
-  assert-that > @
-    -1.mod 7
-    $.equal-to -1
-
-[] > mod-16-200-neg
-  assert-that > @
-    16.mod -200
-    $.equal-to 16
-
 [] > pow-test
   assert-that > @
     2.pow 4
@@ -406,22 +311,3 @@
   assert-that > @
     (0.pow -567).msg
     $.equal-to "0 cannot be raised to a negative power"
-
-[] > mod-into-while-and-seq-objects
-  [condition body] > while-loop
-    while. > @
-      condition
-      [i]
-        body > @
-
-  memory > n
-
-  assert-that > @
-    seq
-      n.write 0
-      while-loop
-        n.lt 5
-        seq
-          n.write (n.plus 1)
-          (n.mod 2).eq 0
-    $.equal-to 5

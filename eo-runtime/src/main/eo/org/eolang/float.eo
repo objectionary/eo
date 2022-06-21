@@ -84,13 +84,6 @@
   [x] > div
     ^.times (x.pow -1.0) > @
 
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    if. > @
-      ^.gte 0.0
-      ^
-      ^.neg
-
   # Sine of $
   [] > sin /float
 
