@@ -32,10 +32,6 @@
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
-
   # Tests that $ < x
   [x] > lt
     and. > @

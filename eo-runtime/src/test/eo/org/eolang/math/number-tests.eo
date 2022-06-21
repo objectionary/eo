@@ -1,0 +1,154 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2022 Yegor Bugayenko
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++package org.eolang.math
++home https://github.com/objectionary/eo
++version 0.0.0
++alias org.eolang.math.number
++alias org.eolang.hamcrest.assert-that
++junit
+
+[] > check-type-positive-int
+  assert-that > @
+    (number 3).type
+    $.equal-to 1
+    "check type of positive int"
+
+[] > check-type-negative-int
+  assert-that > @
+    (number -4623).type
+    $.equal-to 1
+    "check type of negative int"
+
+[] > check-type-positive-float
+  assert-that > @
+    (number 123.35).type
+    $.equal-to 1.0
+    "check type of positive float"
+
+[] > check-type-negative-float
+  assert-that > @
+    (number -88.3).type
+    $.equal-to 1.0
+    "check type of negative float"
+
+[] > xor-int-3-6
+  assert-that > @
+    number 3
+    .xor 6
+    $.equal-to 5
+
+[] > xor-float-3-6
+  assert-that > @
+    number 3.0
+    .xor 6.0
+    .msg
+    $.equal-to
+      "xor cannot be applied to float"
+
+[] > or-int-1-2
+  assert-that > @
+    number 1
+    .or 2
+    $.equal-to 3
+
+[] > or-float-1-2
+  assert-that > @
+    number 1.0
+    .or 2.0
+    .msg
+    $.equal-to
+      "or cannot be applied to float"
+
+[] > and-int-3-6
+  assert-that > @
+    number 3
+    .and 6
+    $.equal-to 2
+
+[] > and-float-3-6
+  assert-that > @
+    number 3.0
+    .and 6.0
+    .msg
+    $.equal-to
+      "and cannot be applied to float"
+
+[] > left-int-1-2
+  assert-that > @
+    number 1
+    .left 2
+    $.equal-to 4
+
+[] > left-float-1-2
+  assert-that > @
+    number 1.0
+    .left 2
+    .msg
+    $.equal-to
+      "left cannot be applied to float"
+
+[] > right-int-8-2
+  assert-that > @
+    number 8
+    .right 2
+    $.equal-to 2
+
+[] > right-float-8-2
+  assert-that > @
+    number 8.0
+    .right 2
+    .msg
+    $.equal-to
+      "right cannot be applied to float"
+
+[] > neq-float-true
+  assert-that > @
+    neq.
+      number 123.5
+      125.2
+    $.equal-to TRUE
+
+[] > neq-float-false
+  assert-that > @
+    neq.
+      number -133.9
+      -133.9
+    $.not
+      $.equal-to TRUE
+
+[] > neq-int-true
+  assert-that > @
+    neq.
+      number 123
+      125
+    $.equal-to TRUE
+    "check number.neq"
+
+[] > neq-int-false
+  assert-that > @
+    not.
+      neq.
+        number -133
+        -133
+    $.equal-to TRUE
+    "check number.neq.not negative"

@@ -124,21 +124,6 @@
     $.not
       $.equal-to "Hello"
 
-[] > neq-true
-  assert-that > @
-    neq.
-      123.5
-      125.2
-    $.equal-to TRUE
-
-[] > neq-false
-  assert-that > @
-    neq.
-      -133.9
-      -133.9
-    $.not
-      $.equal-to TRUE
-
 [] > times-by-zero
   assert-that > @
     times.

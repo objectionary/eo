@@ -27,47 +27,11 @@
 
 [] > int
 
-  [x] > xor
-    as-int. > @
-      xor.
-        ^.as-bytes
-        x.as-bytes
-
-  [x] > or
-    as-int. > @
-      or.
-        ^.as-bytes
-        x.as-bytes
-
-  [x] > and
-    as-int. > @
-      and.
-        ^.as-bytes
-        x.as-bytes
-
-  # Calculate bitwise left shift
-  [x] > left
-    as-int. > @
-      left.
-        ^.as-bytes
-        x
-
-  # Calculate bitwise right shift
-  [x] > right
-    as-int. > @
-      right.
-        ^.as-bytes
-        x
-
   # Tests that $ = x
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
-
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
 
   # Tests that $ < x
   [x] > lt
