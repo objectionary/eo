@@ -125,6 +125,12 @@ public final class Param {
                 while (posy-- > 0 && posx-- > 0) {
                     cpy[posx] = ret[posy];
                 }
+
+                if (ret[0] < 0) {
+                    while (posx-- > 0) {
+                        cpy[posx] = -1;
+                    }
+                }
                 res = ByteBuffer.wrap(cpy).getLong();
             }
         }
