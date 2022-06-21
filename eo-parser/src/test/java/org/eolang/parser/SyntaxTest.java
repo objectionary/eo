@@ -173,28 +173,6 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void intLeadingZerosAreInvalid() {
-        final Syntax syntax = new Syntax(
-            "leading-zeros",
-            new InputOf(
-                String.join(
-                    "\n",
-                    "[] > app",
-                    "  stdout",
-                    "    sprintf",
-                    "      \"I am %d years old\"",
-                    "      000000025"
-                    )
-                ),
-            new DeadOutput()
-        );
-        Assertions.assertThrows(
-            ParsingException.class,
-            syntax::parse
-        );
-    }
-
-    @Test
     public void prasesNested() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
