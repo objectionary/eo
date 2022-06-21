@@ -26,6 +26,8 @@ package EOorg.EOeolang.EOtxt;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Locale;
+
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.AtVararg;
@@ -55,7 +57,7 @@ public class EOsprintf extends PhDefault {
             for (final Phi arg : args) {
                 items.add(new Dataized(arg).take());
             }
-            return new Data.ToPhi(String.format(format, items.toArray()));
+            return new Data.ToPhi(String.format(Locale.US, format, items.toArray()));
         }));
     }
 
