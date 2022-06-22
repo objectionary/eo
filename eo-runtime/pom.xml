@@ -63,10 +63,10 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <argLine>@{argLine} -Duser.language=ru -Duser.region=RU</argLine>
-          </configuration>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>@{argLine} -Duser.language=ru -Duser.region=RU</argLine>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.eolang</groupId>
