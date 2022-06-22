@@ -91,7 +91,8 @@
       numbers
       [current]
         pow. > @
-          (parsed current).as-int
+          number
+            (parsed current).as-int
           2
   (squares "1" "2" "3") > sq
   assert-that > @
