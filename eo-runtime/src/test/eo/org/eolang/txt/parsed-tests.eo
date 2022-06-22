@@ -20,26 +20,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.txt
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+rt jvm org.eolang:eo-runtime:0.0.0
++alias org.eolang.hamcrest.assert-that
++alias org.eolang.txt.parsed
++junit
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+[] > trims-string
+  assert-that > @
+    parsed "Hello, dude  "
+    .trim
+    $.equal-to "Hello, dude"
 
-  # Get the length of it
-  [] > length /int
+[] > turns-string-into-int
+  assert-that > @
+    parsed "42"
+    .as-int
+    $.equal-to 42
 
-  # Turn it into bytes.
-  [] > as-bytes /bytes
+[] > turns-string-into-float
+  assert-that > @
+    parsed "3.1415926"
+    .as-float
+    $.equal-to 3.1415926
 
-  # Converts this to hash
-  [] > as-hash /int
-
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+[] > joins-array
+  assert-that > @
+    joined.
+      parsed ".."
+      * "foo" "друг" "bar"
+    $.equal-to "foo..друг..bar"

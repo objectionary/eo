@@ -20,26 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.txt
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+[s] > parsed
 
-  # Get the length of it
-  [] > length /int
+  # Trim it from both sides
+  [] > trim /string
 
-  # Turn it into bytes.
-  [] > as-bytes /bytes
+  # Make an integer out of this string
+  [] > as-int /int
 
-  # Converts this to hash
-  [] > as-hash /int
+  # Make a float out of this string
+  [] > as-float /float
 
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+  # Joins an array of strings, using current string
+  # as a delimiter
+  [items] > joined /string

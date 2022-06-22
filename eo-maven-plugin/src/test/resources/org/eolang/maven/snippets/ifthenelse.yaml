@@ -6,6 +6,7 @@ args: ["main", "17"]
 eo: |
   +alias org.eolang.io.stdout
   +alias org.eolang.txt.sprintf
+  +alias org.eolang.txt.parsed
 
   [args...] > main
     [n] > f
@@ -16,5 +17,5 @@ eo: |
     stdout > @
       sprintf
         "%d is %s than zero\n"
-        (args.get 0).as-int > num
+        (parsed (args.get 0)).as-int > num
         f num

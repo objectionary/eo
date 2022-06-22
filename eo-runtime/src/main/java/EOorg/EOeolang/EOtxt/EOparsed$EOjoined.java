@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
@@ -38,14 +38,15 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "string.joined")
-public class EOstring$EOjoined extends PhDefault {
+@XmirObject(oname = "parsed.joined")
+public class EOparsed$EOjoined extends PhDefault {
 
-    public EOstring$EOjoined(final Phi sigma) {
+    public EOparsed$EOjoined(final Phi sigma) {
         super(sigma);
         this.add("items", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final String delim = new Param(rho).strong(String.class);
+            final Phi parsed = rho.attr("ρ").get();
+            final String delim = new Param(parsed, "s").strong(String.class);
             final Phi[] items = new Param(rho, "items").strong(Phi[].class);
             final String[] texts = new String[items.length];
             for (int idx = 0; idx < texts.length; ++idx) {

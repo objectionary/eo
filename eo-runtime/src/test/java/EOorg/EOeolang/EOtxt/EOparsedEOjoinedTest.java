@@ -21,31 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package EOorg.EOeolang.EOtxt;
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
+import org.eolang.Dataized;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * AS-INT.
+ * Test case for {@link EOparsed$EOjoined}.
  *
- * @since 1.0
+ * @since 0.1
  */
-@XmirObject(oname = "string.as-int")
-public class EOstring$EOas_int extends PhDefault {
+public final class EOparsedEOjoinedTest {
 
-    public EOstring$EOas_int(final Phi sigma) {
-        super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Long.parseLong(
-                new Param(rho).strong(String.class)
+    @Test
+    public void joinString() {
+        final Phi delim = new Data.ToPhi("..");
+        final Phi parsed = new EOparsed(Phi.Φ);
+        parsed.attr("s").put(delim);
+        final Phi phi = new PhWith(
+            new EOparsed$EOjoined(parsed),
+            "items",
+            new Data.ToPhi(
+                new Phi[] {
+                    new Data.ToPhi("first"),
+                    new Data.ToPhi("second")
+                }
             )
-        )));
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("first..second")
+        );
     }
 
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
 import org.eolang.AtComposite;
 import org.eolang.Data;
@@ -32,20 +32,20 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * AS-FLOAT.
+ * TRIM.
  *
  * @since 1.0
  */
-@XmirObject(oname = "string.as-float")
-public class EOstring$EOas_float extends PhDefault {
+@XmirObject(oname = "parsed.trim")
+public class EOparsed$EOtrim extends PhDefault {
 
-    public EOstring$EOas_float(final Phi sigma) {
+    public EOparsed$EOtrim(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Double.parseDouble(
-                new Param(rho).strong(String.class)
-            )
-        )));
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi parsed = rho.attr("ρ").get();
+            final String s = new Param(parsed, "s").strong(String.class);
+            return new Data.ToPhi(s.trim());
+        }));
     }
 
 }

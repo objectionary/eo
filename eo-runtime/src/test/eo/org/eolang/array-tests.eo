@@ -24,6 +24,7 @@
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +alias org.eolang.txt.sprintf
++alias org.eolang.txt.parsed
 +alias org.eolang.io.stdout
 +alias org.eolang.hamcrest.assert-that
 +junit
@@ -57,7 +58,7 @@
 
 [] > using-map-as-object
   assert-that > @
-    " ".joined
+    (parsed " ").joined
       map.
         * 1 2
         [i]
@@ -88,7 +89,7 @@
       numbers
       [current]
         pow. > @
-          current.as-int
+          (parsed current).as-int
           2
   (squares "1" "2" "3") > sq
   assert-that > @
@@ -103,7 +104,7 @@
       numbers
       [current index]
         times. > @
-          current.as-int
+          (parsed current).as-int
           index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @

@@ -21,39 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * Test case for {@link EOparsed$EOtrim}.
  *
  * @since 0.1
  */
-public final class EOstringEOjoinedTest {
+public final class EOparsedEOtrimTest {
 
     @Test
-    public void joinString() {
-        final Phi delim = new Data.ToPhi("..");
-        final Phi phi = new PhWith(
-            new EOstring$EOjoined(delim),
-            "items",
-            new Data.ToPhi(
-                new Phi[] {
-                    new Data.ToPhi("first"),
-                    new Data.ToPhi("second")
-                }
-            )
-        );
+    public void trimsString() {
+        final String s = "Hello, world!  ";
+        final Phi parsed = new EOparsed(Phi.Φ);
+        parsed.attr("s").put(new Data.ToPhi(s));
+        final Phi phi = new EOparsed$EOtrim(parsed);
         MatcherAssert.assertThat(
             new Dataized(phi).take(String.class),
-            Matchers.equalTo("first..second")
+            Matchers.equalTo("Hello, world!")
         );
     }
 
