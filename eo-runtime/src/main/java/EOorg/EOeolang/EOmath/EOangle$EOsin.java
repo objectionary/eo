@@ -10,13 +10,13 @@ import org.eolang.XmirObject;
 /**
  * Sin.
  */
-@XmirObject(oname = "number.sin")
-public class EOnumber$EOsin extends PhDefault {
+@XmirObject(oname = "angle.sin")
+public class EOangle$EOsin extends PhDefault {
 
-    public EOnumber$EOsin(final Phi sigma) {
+    public EOangle$EOsin(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Math.sin(new Param(rho.attr("ρ").get(), "n").strong(Double.class))
+            Math.sin(new Param(rho.attr("ρ").get(), "f").strong(Double.class))
         )));
     }
 }
