@@ -71,37 +71,9 @@
   # Divide this one by another int
   [x] > div /int
 
-  # Make it power x
-  [x] > pow
-    if. > @
-      and.
-        ^.eq 0
-        x.lt 0
-      []
-        "0 cannot be raised to a negative power" > msg
-      as-int.
-        pow.
-          ^.as-float
-          x.as-float
-
-  # Converts this to float
-  [] > as-float /float
-
-  # Converts this to string
-  [] > as-string /string
-
   # Converts this to bytes
   [] > as-bytes /bytes
 
   # Converts this to hash
   [] > as-hash /int
 
-  # Sign of $ (-1, 0, or 1)
-  [] > signum
-    if. > @
-      ^.lt 0
-      -1
-      if.
-        ^.eq 0
-        0
-        1

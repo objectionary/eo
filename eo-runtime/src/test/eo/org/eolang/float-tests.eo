@@ -26,11 +26,6 @@
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > converts-to-string
-  assert-that > @
-    3.1415926.as-string
-    $.equal-to "3.1415926"
-
 [] > less-true
   assert-that > @
     -10.5
@@ -170,21 +165,6 @@
   assert-that > @
     886.485.neg
     $.equal-to -886.485
-
-[] > signum-negative
-  assert-that > @
-    -345.17.signum
-    $.equal-to -1.0
-
-[] > signum-positive
-  assert-that > @
-    145.18.signum
-    $.equal-to 1.0
-
-[] > signum-zero
-  assert-that > @
-    0.0.signum
-    $.equal-to 0.0
 
 [] > sub-test
   assert-that > @

@@ -63,26 +63,12 @@
   [] > neg
     ^.times -1.0 > @
 
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    if. > @
-      ^.lt 0.0
-      -1.0
-      if.
-        ^.eq 0.0
-        0.0
-        1.0
-
   # Difference between $ and x
   [x] > minus
     ^.plus (x.neg) > @
 
-  # x'th power of $
-  [x] > pow /float
-
   # Quotient of the division of $ by x
-  [x] > div
-    ^.times (x.pow -1.0) > @
+  [x] > div /float
 
   # Sine of $
   [] > sin /float
@@ -95,9 +81,6 @@
 
   # Converts this to int
   [] > as-int /int
-
-  # Converts this to string
-  [] > as-string /string
 
   # Converts this to hash
   [] > as-hash /int

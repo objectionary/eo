@@ -28,14 +28,6 @@
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > converts-to-string
-  assert-that > @
-    eq.
-      "42"
-      42.as-string
-    $.equal-to TRUE
-    "converts int to string"
-
 [] > less-true
   assert-that > @
     lt.
@@ -224,12 +216,6 @@
     13.div -5
     $.equal-to -2
 
-# Checks that int.as-float works properly
-[] > as-float-works
-  assert-that > @
-    17.neg.as-float
-    $.equal-to -17.0
-
 [] > to-bytes-and-backwards
   assert-that > @
     as-int.
@@ -271,43 +257,3 @@
     $.not
       $.equal-to
         42.as-hash
-
-[] > pow-test
-  assert-that > @
-    2.pow 4
-    $.equal-to 16
-
-[] > power-is-zero
-  assert-that > @
-    2.pow 0
-    $.equal-to 1
-
-[] > power-is-negative-zero
-  assert-that > @
-    2.pow -0
-    $.equal-to 1
-
-[] > power-is-negative
-  assert-that > @
-    984782.pow -12341
-    $.equal-to 0
-
-[] > power-of-two
-  assert-that > @
-    3.pow 2
-    $.equal-to 9
-
-[] > power-of-big-number
-  assert-that > @
-    999999999.pow 5
-    $.equal-to 9223372036854775807
-
-[] > power-of-zero
-  assert-that > @
-    0.pow 145
-    $.equal-to 0
-
-[] > negative-power-of-zero
-  assert-that > @
-    (0.pow -567).msg
-    $.equal-to "0 cannot be raised to a negative power"

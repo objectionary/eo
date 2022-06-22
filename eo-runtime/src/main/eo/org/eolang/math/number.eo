@@ -148,6 +148,32 @@
         value
         value.neg
 
+  # Make ^.n power x
+  [x] > pow /?
 
+  # Converts ^.n to float
+  [] > as-float /float
 
+  # Converts ^.n to string
+  [] > as-string /string
+
+  # Sign of $ (-1, 0, or 1) if $ is int
+  # or (-1.0, 0.0, or 1.0) if $ is float
+  [] > signum
+    if. > @
+      is-int
+      if.
+        ^.n.lt 0
+        -1
+        if.
+          ^.n.eq 0
+          0
+          1
+      if.
+        ^.n.lt 0.0
+        -1.0
+        if.
+          ^.n.eq 0.0
+          0.0
+          1.0
 

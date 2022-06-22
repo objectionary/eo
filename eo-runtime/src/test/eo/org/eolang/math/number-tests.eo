@@ -295,7 +295,7 @@
       [i]
         body > @
 
-  memory > n
+  memory 0 > n
 
   assert-that > @
     seq
@@ -307,3 +307,100 @@
           ((number n).mod 2).eq 0
     $.equal-to 5
 
+[] > pow-test
+  assert-that > @
+    number 2
+    .pow 4
+    $.equal-to 16
+
+[] > power-is-zero
+  assert-that > @
+    number 2
+    .pow 0
+    $.equal-to 1
+
+[] > power-is-negative
+  assert-that > @
+    number 984782
+    .pow -12341
+    $.equal-to 0
+
+[] > power-of-two
+  assert-that > @
+    number 3
+    .pow 2
+    $.equal-to 9
+
+[] > power-of-big-number
+  assert-that > @
+    number 999999999
+    .pow 5
+    $.equal-to 9223372036854775807
+
+[] > power-of-zero
+  assert-that > @
+    number 0
+    .pow 145
+    $.equal-to 0
+
+[] > negative-power-of-zero
+  assert-that > @
+    ((number 0).pow -567).msg
+    $.equal-to "0 cannot be raised to a negative power"
+
+# Checks that number.as-float works properly
+[] > as-float-works
+  assert-that > @
+    as-float.
+      number
+        17.neg
+    $.equal-to -17.0
+
+[] > converts-int-to-string
+  assert-that > @
+    number 42
+    .as-string
+    $.equal-to "42"
+    "converts int number to string"
+
+[] > converts-float-to-string
+  assert-that > @
+    number 3.1415926
+    .as-string
+    $.equal-to "3.1415926"
+
+[] > signum-float-negative
+  assert-that > @
+    number -345.17
+    .signum
+    $.equal-to -1.0
+
+[] > signum-float-positive
+  assert-that > @
+    number 145.18
+    .signum
+    $.equal-to 1.0
+
+[] > signum-float-zero
+  assert-that > @
+    number 0.0
+    .signum
+    $.equal-to 0.0
+
+[] > signum-int-negative
+  assert-that > @
+    number -345
+    .signum
+    $.equal-to -1
+
+[] > signum-int-positive
+  assert-that > @
+    number 145
+    .signum
+    $.equal-to 1
+
+[] > signum-int-zero
+  assert-that > @
+    number 0
+    .signum
+    $.equal-to 0
