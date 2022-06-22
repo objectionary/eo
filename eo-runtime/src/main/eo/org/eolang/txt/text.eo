@@ -25,10 +25,11 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[s] > parsed
+[s] > text
 
-  # Make an integer out of this string
-  [] > as-int /int
+  # Trim it from both sides
+  [] > trim /string
 
-  # Make a float out of this string
-  [] > as-float /float
+  # Joins an array of strings, using current string
+  # as a delimiter
+  [items] > joined /string

@@ -25,26 +25,34 @@
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * TRIM.
+ * JOINED.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "parsed.trim")
-public class EOparsed$EOtrim extends PhDefault {
+@XmirObject(oname = "text.joined")
+public class EOtext$EOjoined extends PhDefault {
 
-    public EOparsed$EOtrim(final Phi sigma) {
+    public EOtext$EOjoined(final Phi sigma) {
         super(sigma);
+        this.add("items", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
             final Phi parsed = rho.attr("ρ").get();
-            final String s = new Param(parsed, "s").strong(String.class);
-            return new Data.ToPhi(s.trim());
+            final String delim = new Param(parsed, "s").strong(String.class);
+            final Phi[] items = new Param(rho, "items").strong(Phi[].class);
+            final String[] texts = new String[items.length];
+            for (int idx = 0; idx < texts.length; ++idx) {
+                texts[idx] = new Dataized(items[idx]).take(String.class);
+            }
+            return new Data.ToPhi(String.join(delim, texts));
         }));
     }
 

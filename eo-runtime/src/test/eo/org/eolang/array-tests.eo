@@ -25,6 +25,7 @@
 +version 0.0.0
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.parsed
++alias org.eolang.txt.text
 +alias org.eolang.io.stdout
 +alias org.eolang.hamcrest.assert-that
 +junit
@@ -58,7 +59,7 @@
 
 [] > using-map-as-object
   assert-that > @
-    (parsed " ").joined
+    (text " ").joined
       map.
         * 1 2
         [i]

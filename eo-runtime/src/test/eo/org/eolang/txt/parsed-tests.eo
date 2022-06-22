@@ -27,12 +27,6 @@
 +alias org.eolang.txt.parsed
 +junit
 
-[] > trims-string
-  assert-that > @
-    parsed "Hello, dude  "
-    .trim
-    $.equal-to "Hello, dude"
-
 [] > turns-string-into-int
   assert-that > @
     parsed "42"
@@ -44,10 +38,3 @@
     parsed "3.1415926"
     .as-float
     $.equal-to 3.1415926
-
-[] > joins-array
-  assert-that > @
-    joined.
-      parsed ".."
-      * "foo" "друг" "bar"
-    $.equal-to "foo..друг..bar"

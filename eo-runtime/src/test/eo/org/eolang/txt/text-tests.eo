@@ -23,12 +23,19 @@
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+rt jvm org.eolang:eo-runtime:0.0.0
++alias org.eolang.hamcrest.assert-that
++alias org.eolang.txt.text
++junit
 
-[s] > parsed
+[] > trims-string
+  assert-that > @
+    text "Hello, dude  "
+    .trim
+    $.equal-to "Hello, dude"
 
-  # Make an integer out of this string
-  [] > as-int /int
-
-  # Make a float out of this string
-  [] > as-float /float
+[] > joins-array
+  assert-that > @
+    joined.
+      text ".."
+      * "foo" "друг" "bar"
+    $.equal-to "foo..друг..bar"

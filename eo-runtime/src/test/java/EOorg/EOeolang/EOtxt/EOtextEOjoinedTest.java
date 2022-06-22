@@ -21,39 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang.EOtxt;
 
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Param;
-import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * JOIN.
+ * Test case for {@link EOtext$EOjoined}.
  *
- * @since 1.0
+ * @since 0.1
  */
-@XmirObject(oname = "parsed.joined")
-public class EOparsed$EOjoined extends PhDefault {
+public final class EOtextEOjoinedTest {
 
-    public EOparsed$EOjoined(final Phi sigma) {
-        super(sigma);
-        this.add("items", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi parsed = rho.attr("ρ").get();
-            final String delim = new Param(parsed, "s").strong(String.class);
-            final Phi[] items = new Param(rho, "items").strong(Phi[].class);
-            final String[] texts = new String[items.length];
-            for (int idx = 0; idx < texts.length; ++idx) {
-                texts[idx] = new Dataized(items[idx]).take(String.class);
-            }
-            return new Data.ToPhi(String.join(delim, texts));
-        }));
+    @Test
+    public void joinString() {
+        final Phi delim = new Data.ToPhi("..");
+        final Phi text = new EOtext(Phi.Φ);
+        text.attr("s").put(delim);
+        final Phi phi = new PhWith(
+            new EOtext$EOjoined(text),
+            "items",
+            new Data.ToPhi(
+                new Phi[] {
+                    new Data.ToPhi("first"),
+                    new Data.ToPhi("second")
+                }
+            )
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("first..second")
+        );
     }
 
 }

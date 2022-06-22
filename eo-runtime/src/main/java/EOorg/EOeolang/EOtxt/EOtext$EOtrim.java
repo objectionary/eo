@@ -21,32 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package EOorg.EOeolang.EOtxt;
 
+import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Param;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOparsed$EOtrim}.
+ * TRIM.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOparsedEOtrimTest {
+@XmirObject(oname = "text.trim")
+public class EOtext$EOtrim extends PhDefault {
 
-    @Test
-    public void trimsString() {
-        final String s = "Hello, world!  ";
-        final Phi parsed = new EOparsed(Phi.Φ);
-        parsed.attr("s").put(new Data.ToPhi(s));
-        final Phi phi = new EOparsed$EOtrim(parsed);
-        MatcherAssert.assertThat(
-            new Dataized(phi).take(String.class),
-            Matchers.equalTo("Hello, world!")
-        );
+    public EOtext$EOtrim(final Phi sigma) {
+        super(sigma);
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi text = rho.attr("ρ").get();
+            final String s = new Param(text, "s").strong(String.class);
+            return new Data.ToPhi(s.trim());
+        }));
     }
 
 }

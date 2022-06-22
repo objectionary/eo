@@ -25,37 +25,27 @@ package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOparsed$EOjoined}.
+ * Test case for {@link EOtext$EOtrim}.
  *
- * @since 0.1
+ * @since 0.23
  */
-public final class EOparsedEOjoinedTest {
+public final class EOtextEOtrimTest {
 
     @Test
-    public void joinString() {
-        final Phi delim = new Data.ToPhi("..");
-        final Phi parsed = new EOparsed(Phi.Φ);
-        parsed.attr("s").put(delim);
-        final Phi phi = new PhWith(
-            new EOparsed$EOjoined(parsed),
-            "items",
-            new Data.ToPhi(
-                new Phi[] {
-                    new Data.ToPhi("first"),
-                    new Data.ToPhi("second")
-                }
-            )
-        );
+    public void trimsString() {
+        final String s = "Hello, world!  ";
+        final Phi text = new EOtext(Phi.Φ);
+        text.attr("s").put(new Data.ToPhi(s));
+        final Phi phi = new EOtext$EOtrim(text);
         MatcherAssert.assertThat(
             new Dataized(phi).take(String.class),
-            Matchers.equalTo("first..second")
+            Matchers.equalTo("Hello, world!")
         );
     }
 
