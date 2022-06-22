@@ -356,6 +356,12 @@
         17.neg
     $.equal-to -17.0
 
+[] > as-int-works
+  assert-that > @
+    number 3.57
+    .as-int
+    $.equal-to 3
+
 [] > converts-int-to-string
   assert-that > @
     number 42
@@ -419,8 +425,9 @@
 
 [] > sin-pi-as-int
   assert-that > @
-    number 3.141592653589793
-    .sin
+    number
+      number 3.141592653589793
+      .sin
     .as-int
     $.equal-to 0
 
@@ -432,8 +439,9 @@
 
 [] > cos-pi-div-2-as-int
   assert-that > @
-    number 1.5707963267948966
-    .cos
+    number
+      number 1.5707963267948966
+      .cos
     .as-int
     $.equal-to 0
 

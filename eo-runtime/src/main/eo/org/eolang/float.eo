@@ -73,8 +73,5 @@
   # Converts this to bytes
   [] > as-bytes /bytes
 
-  # Converts this to int
-  [] > as-int /int
-
   # Converts this to hash
   [] > as-hash /int

@@ -154,6 +154,9 @@
   # Converts ^.n to float
   [] > as-float /float
 
+  # Converts this to int
+  [] > as-int /int
+
   # Converts ^.n to string
   [] > as-string /string
 

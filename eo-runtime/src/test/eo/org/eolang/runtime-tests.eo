@@ -24,6 +24,7 @@
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +alias org.eolang.txt.sprintf
++alias org.eolang.math.number
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -46,9 +47,10 @@
 [] > makes-object-a-constant
   [] > foo
     as-int. > @
-      times.
-        random
-        100.0
+      number
+        times.
+          random
+          100.0
   foo.@ > f!
   assert-that > @
     f

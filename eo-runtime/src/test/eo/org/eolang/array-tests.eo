@@ -155,7 +155,7 @@
 # arrays of objects
 [] > should-not-be-empty-with-3-objects
   [x] > a-1
-    (x.as-int > @)
+    ((number x).as-int > @)
   [x] > a-2
     (x.as-byte > @)
   [x] > a-3
@@ -172,7 +172,7 @@
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
-      f.as-int > @
+      (number f).as-int > @
   assert-that > @
     xs.is-empty.not
     $.equal-to TRUE
@@ -180,7 +180,7 @@
 # arrays with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
-    [f] (f.as-int > @)
+    [f] ((number f).as-int > @)
   assert-that > @
     xs.is-empty.not
     $.equal-to TRUE
