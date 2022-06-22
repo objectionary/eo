@@ -34,26 +34,27 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * POW.
+ * DIV.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "float.pow")
-public class EOfloat$EOpow extends PhDefault {
+@XmirObject(oname = "float.div")
+public class EOfloat$EOdiv extends PhDefault {
 
-    public EOfloat$EOpow(final Phi sigma) {
+    public EOfloat$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final double self = new Param(rho).strong(Double.class);
-            final double pow = new Param(rho, "x").strong(Double.class);
-            if (self == 0.0d && pow < 0.0d) {
+            final double div = new Param(rho, "x").strong(Double.class);
+            if (div == 0.0) {
                 return new PhWith(
                     new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("0 cannot be raised to a negative power")
+                    new Data.ToPhi("Division by zero is infinity")
                 );
             }
-            return new Data.ToPhi(Math.pow(self, pow));
+            return new Data.ToPhi(
+                new Param(rho).strong(Double.class) / div
+            );
         }));
     }
 

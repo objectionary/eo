@@ -33,6 +33,10 @@ SOFTWARE.
   <packaging>jar</packaging>
   <name>eo-runtime</name>
   <description>EO runtime library</description>
+  <properties>
+    <!--  This is required for later correct replacement of argline  -->
+    <argLine/>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -58,6 +62,12 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>@{argLine} -Duser.language=ru -Duser.region=RU</argLine>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>

@@ -24,6 +24,7 @@
 +alias org.eolang.examples.fibonacci
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.math.number
 +alias org.eolang.txt.parsed
 
 [args...] > app
@@ -31,12 +32,12 @@
     stdout
       sprintf
         "%dth Fibonacci number is %d\n"
-        (parsed (args.get 0)).as-int > n!
+        (number (args.get 0)).as-int > n!
         fibonacci n > f
     if.
       not.
         eq.
-          (parsed (args.get 1)).as-int > e
+          (number (args.get 1)).as-int > e
           f
       []
         sprintf > msg

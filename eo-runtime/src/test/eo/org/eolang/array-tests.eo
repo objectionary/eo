@@ -27,6 +27,7 @@
 +alias org.eolang.txt.parsed
 +alias org.eolang.txt.text
 +alias org.eolang.io.stdout
++alias org.eolang.math.number
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -54,7 +55,7 @@
       map.
         * 1 2 3
         [i]
-          i.as-string > @
+          (number i).as-string > @
     $.equal-to 3
 
 [] > using-map-as-object
@@ -63,7 +64,7 @@
       map.
         * 1 2
         [i]
-          i.as-string > @
+          (number i).as-string > @
     $.equal-to "1 2"
 
 # check that an empty array's .length equals to zero
@@ -155,11 +156,11 @@
 # arrays of objects
 [] > should-not-be-empty-with-3-objects
   [x] > a-1
-    (x.as-int > @)
+    ((number x).as-int > @)
   [x] > a-2
     (x.as-byte > @)
   [x] > a-3
-    (x.as-string > @)
+    ((number x).as-string > @)
   * > xs
     a-1
     a-2
@@ -172,7 +173,7 @@
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
-      f.as-int > @
+      (number f).as-int > @
   assert-that > @
     xs.is-empty.not
     $.equal-to TRUE
@@ -180,7 +181,7 @@
 # arrays with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
-    [f] (f.as-int > @)
+    [f] ((number f).as-int > @)
   assert-that > @
     xs.is-empty.not
     $.equal-to TRUE
@@ -201,7 +202,7 @@
           1
           "str"
           "\n"
-          (11.times 2).as-float
+          (number (11.times 2)).as-float
           D0-B4-D1-80-D1-83-D0-B3
           FALSE.not
 
@@ -221,20 +222,20 @@
   assert-that > @
     args.
       a
-        13.as-float
+        (number 13).as-float
         "\t"
         "bbt"
     $.equal-to
       args.
         b
-          13.as-float
+          (number 13).as-float
           "\t"
           "bbt"
 
 # nested array equal object should works
 [] > nested-array-eq-should-works
   * 1 "2" 3.0 > a
-  * 1 "2" (3.as-float) > b
+  * 1 "2" ((number 3).as-float) > b
   assert-that > @
     * "w" a
     $.equal-to
@@ -251,7 +252,7 @@
 #two different nested arrays not eq
 [] > nested-array-not-eq-should-works
   * 5 "\07" "18" > a
-  * 5 "neq" (18.as-string) > b
+  * 5 "neq" ((number 18).as-string) > b
   assert-that > @
     * "not eq" a
     $.not

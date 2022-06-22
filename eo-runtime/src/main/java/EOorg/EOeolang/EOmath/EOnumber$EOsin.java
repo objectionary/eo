@@ -1,4 +1,4 @@
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
 import org.eolang.AtComposite;
 import org.eolang.Data;
@@ -10,13 +10,13 @@ import org.eolang.XmirObject;
 /**
  * Sin.
  */
-@XmirObject(oname = "float.sin")
-public class EOfloat$EOsin extends PhDefault {
+@XmirObject(oname = "number.sin")
+public class EOnumber$EOsin extends PhDefault {
 
-    public EOfloat$EOsin(final Phi sigma) {
+    public EOnumber$EOsin(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Math.sin(new Param(rho).strong(Double.class))
+            Math.sin(new Param(rho.attr("ρ").get(), "n").strong(Double.class))
         )));
     }
 }

@@ -32,10 +32,6 @@
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
-
   # Tests that $ < x
   [x] > lt
     and. > @
@@ -67,48 +63,15 @@
   [] > neg
     ^.times -1.0 > @
 
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    if. > @
-      ^.lt 0.0
-      -1.0
-      if.
-        ^.eq 0.0
-        0.0
-        1.0
-
   # Difference between $ and x
   [x] > minus
     ^.plus (x.neg) > @
 
-  # x'th power of $
-  [x] > pow /float
-
   # Quotient of the division of $ by x
-  [x] > div
-    ^.times (x.pow -1.0) > @
-
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    if. > @
-      ^.gte 0.0
-      ^
-      ^.neg
-
-  # Sine of $
-  [] > sin /float
-
-  # Cosine of $
-  [] > cos /float
+  [x] > div /float
 
   # Converts this to bytes
   [] > as-bytes /bytes
-
-  # Converts this to int
-  [] > as-int /int
-
-  # Converts this to string
-  [] > as-string /string
 
   # Converts this to hash
   [] > as-hash /int
