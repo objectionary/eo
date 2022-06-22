@@ -70,12 +70,6 @@
   # Quotient of the division of $ by x
   [x] > div /float
 
-  # Sine of $
-  [] > sin /float
-
-  # Cosine of $
-  [] > cos /float
-
   # Converts this to bytes
   [] > as-bytes /bytes
 

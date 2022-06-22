@@ -185,36 +185,6 @@
     3.57.as-int
     $.equal-to 3
 
-[] > sin-zero
-  assert-that > @
-    0.0.sin
-    $.equal-to 0.0
-
-[] > sin-pi-div-2
-  assert-that > @
-    1.5707963267948966.sin
-    $.equal-to 1.0
-
-[] > sin-pi-as-int
-  assert-that > @
-    (3.141592653589793.sin).as-int
-    $.equal-to 0
-
-[] > cos-zero
-  assert-that > @
-    0.0.cos
-    $.equal-to 1.0
-
-[] > cos-pi-div-2-as-int
-  assert-that > @
-    (1.5707963267948966.cos).as-int
-    $.equal-to 0
-
-[] > cos-pi
-  assert-that > @
-    3.141592653589793.cos
-    $.equal-to -1.0
-
 [] > to-bytes-and-backwards
   assert-that > @
     as-float.
