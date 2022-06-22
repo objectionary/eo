@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
 import org.eolang.Dataized;
 import org.eolang.Phi;

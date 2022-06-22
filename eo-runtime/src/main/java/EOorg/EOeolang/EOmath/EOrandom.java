@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
 import java.security.SecureRandom;
 import java.util.Random;
