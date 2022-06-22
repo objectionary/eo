@@ -20,41 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.math
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.hamcrest.assert-that
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > two-random-numbers-without-const
-  random > r
-  assert-that > @
-    r
-    $.not
-      $.equal-to r
-
-[] > two-random-numbers-with-const
-  random > r!
-  assert-that > @
-    r
-    $.equal-to r
-
-[] > two-random-numbers-with-phi
-  random.@ > r
-  assert-that > @
-    r
-    $.equal-to r
-
-[] > two-random-numbers-with-increment-with-const
-  random.plus 3.1416 > r!
-  assert-that > @
-    r
-    $.equal-to r
-
-[] > two-random-numbers-with-increment
-  random.plus 3.1416 > r
-  assert-that > @
-    r
-    $.not
-      $.equal-to r
-
+[] > random /float
