@@ -22,30 +22,9 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
-
 /**
- * as-string.
+ * EO math.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "float.as-string")
-public class EOfloat$EOas_string extends PhDefault {
-
-    public EOfloat$EOas_string(final Phi sigma) {
-        super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Double.toString(
-                new Param(rho).strong(Double.class)
-            )
-        )));
-    }
-
-}
+package EOorg.EOeolang.EOmath;
