@@ -170,8 +170,17 @@ public final class AssembleMojo extends SafeMojo {
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
     private boolean trackOptimizationSteps;
 
+    /**
+     * Shall we fail when error occurred?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.21.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.failOnError", required = false, defaultValue = "true")
+    private boolean failOnError = true;
+
     @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    @SuppressWarnings({"PMD.AvoidDuplicateLiterals"})
     public void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
