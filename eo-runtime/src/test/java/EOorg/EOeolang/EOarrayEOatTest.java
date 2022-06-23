@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class EOarrayEOgetTest {
+public final class EOarrayEOatTest {
 
     @Test
     public void pushesAndGetsBack() {
@@ -43,7 +43,7 @@ public final class EOarrayEOgetTest {
         final Phi str = new Data.ToPhi(txt);
         final Phi array = new Data.ToPhi(new Phi[] {str});
         final Phi idx = new Data.ToPhi(0L);
-        final Phi get = array.attr("get").get();
+        final Phi get = array.attr("at").get();
         get.attr(0).put(idx);
         MatcherAssert.assertThat(
             new Dataized(get).take(String.class),
