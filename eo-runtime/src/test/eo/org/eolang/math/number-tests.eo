@@ -271,7 +271,7 @@
       and. > @
         euclids-lemma
           el
-          divisors.get i
+          divisors.at i
         a
 
 # Checks modulo: dividend < divisor

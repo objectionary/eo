@@ -94,7 +94,7 @@
           2
   (squares "1" "2" "3") > sq
   assert-that > @
-    sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2)
+    sprintf "%d %d %d" (sq.at 0) (sq.at 1) (sq.at 2)
     $.equal-to
       sprintf "%d %d %d" 1 4 9
 
@@ -109,7 +109,7 @@
           index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @
-    sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2)
+    sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
     $.equal-to
       sprintf "%d %d %d" 1 4 9
 
@@ -123,7 +123,7 @@
   * > anArray
     100
   assert-that > @
-    anArray.get 0
+    anArray.at 0
     $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
@@ -131,10 +131,12 @@
     1
     2
   assert-that > @
-    anArray
-    $.array-each
-      $.equal-to 1
-      $.equal-to 2
+    assert-that
+      anArray
+      $.array-each
+        $.equal-to 1
+        $.equal-to 2
+    $.anything
 
 # check that array.is-empty works properly
 [] > should-not-be-empty
@@ -281,7 +283,7 @@
         plus. > @
           x
           a.plus
-            src.get i
+            src.at i
     $.equal-to 6
 
 [] > reducei-long-int-array
@@ -394,12 +396,12 @@
     $.equal-to
       * 2 4 6 8
 
-[] > array-get-with-error
+[] > array-at-with-error
   assert-that > @
     msg.
-      get.
+      at.
         * 1 2 3 4
         20
     $.is
       $.equal-to
-        "Can't get() the 20th element of the array, there are just 4 of them"
+        "Can't at() the 20th element of the array, there are just 4 of them"
