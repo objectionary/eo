@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +alias org.eolang.txt.sprintf
-+alias org.eolang.txt.parsed
++alias org.eolang.txt.sscanf
 +alias org.eolang.txt.text
 +alias org.eolang.io.stdout
 +alias org.eolang.math.number
@@ -92,7 +92,7 @@
       [current]
         pow. > @
           number
-            (parsed current).as-int
+            (sscanf "%d" current).get 0
           2
   (squares "1" "2" "3") > sq
   assert-that > @
@@ -107,7 +107,7 @@
       numbers
       [current index]
         times. > @
-          (parsed current).as-int
+          (sscanf "%d" current).get 0
           index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @

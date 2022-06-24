@@ -55,13 +55,17 @@ public class EOsscanf extends PhDefault {
             Phi phi;
             final List<Phi> buffer = new ArrayList<>();
             try (Scanner fsc = new Scanner(format);
-            Scanner rsc = new Scanner(read)) {
+                Scanner rsc = new Scanner(read)
+            ) {
                 while (fsc.hasNext() && rsc.hasNext()) {
                     String pattern = fsc.next();
                     String val = rsc.next();
                     if (pattern.startsWith(String.valueOf(Conversion.PERCENT_SIGN))) {
                         final char c = pattern.charAt(1);
                         if (Conversion.isValid(c)) {
+                            if (pattern.length() > 2) {
+                                val = val.substring(val.length() - (pattern.length() - 2));
+                            }
                             if (Conversion.isString(c) || Conversion.isCharacter(c)) {
                                 buffer.add(new Data.ToPhi(val));
                             } else if (Conversion.isInteger(c)) {
@@ -176,7 +180,7 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is applicable to all objects.
+        // Returns true iff the Conversion is applicable to string.
         static boolean isString(char c) {
             switch (c) {
                 case STRING:
@@ -185,7 +189,7 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is applicable to all objects.
+        // Returns true iff the Conversion is applicable to boolean.
         static boolean isBoolean(char c) {
             switch (c) {
                 case BOOLEAN:
