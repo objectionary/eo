@@ -1,7 +1,7 @@
 xsls:
   - /org/eolang/parser/errors/unknown-names.xsl
 tests:
-  - /program/errors[count(error)=1]
+  - /program/errors[count(error[@severity='error'])=1]
   - /program/errors/error[@line='3']
   - //o[@base='test' and @line='3']
 eo: |

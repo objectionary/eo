@@ -1,7 +1,7 @@
 xsls:
   - /org/eolang/parser/errors/broken-aliases.xsl
 tests:
-  - /program/errors[count(error)=20]
+  - /program/errors[count(error[@severity='error'])=20]
   - /program/errors/error[@line='5']
   - /program/errors/error[@line='6']
   - /program/errors/error[@line='7']

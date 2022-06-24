@@ -29,10 +29,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.parser.ErrorSeverity;
 
 /**
  * Compile.
@@ -70,6 +74,13 @@ public final class TranspileMojo extends SafeMojo {
     )
     private File generatedDir;
 
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
     /**
      * Add to source root.
      *
@@ -91,7 +102,8 @@ public final class TranspileMojo extends SafeMojo {
     public void exec() throws IOException {
         final Transpiler cmp = new Transpiler(
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            this.targetDir.toPath().resolve(TranspileMojo.PRE)
+            this.targetDir.toPath().resolve(TranspileMojo.PRE),
+            failOnSeverities(this.failOnWarning)
         );
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
@@ -128,5 +140,12 @@ public final class TranspileMojo extends SafeMojo {
             );
         }
     }
+
+    private Set<ErrorSeverity> failOnSeverities(boolean failOnWarning) {
+        Set<ErrorSeverity> failOn = EnumSet.noneOf(ErrorSeverity.class);
+        if(failOnWarning) failOn.add(ErrorSeverity.WARNING);
+        return failOn;
+    }
+
 
 }

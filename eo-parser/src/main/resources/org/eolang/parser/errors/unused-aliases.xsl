@@ -38,6 +38,9 @@ SOFTWARE.
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
             </xsl:attribute>
+            <xsl:attribute name="severity">
+              <xsl:text>error</xsl:text>
+            </xsl:attribute>
             <xsl:text>The alias "</xsl:text>
             <xsl:value-of select="$name"/>
             <xsl:text>" is not used</xsl:text>

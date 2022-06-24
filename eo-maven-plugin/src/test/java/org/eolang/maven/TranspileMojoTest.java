@@ -24,11 +24,15 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StXSL;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -40,6 +44,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Test case for {@link TranspileMojo}.
@@ -103,6 +111,68 @@ public final class TranspileMojoTest {
             java.toFile().lastModified(),
             Matchers.greaterThan(0L)
         );
+    }
+
+    @Test
+    public void testFailOnWarning(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo.src.eo");
+        new Save(new ResourceOf("org/eolang/maven/withwarning.eo"), src).save();
+        final Path target = temp.resolve("target");
+        final Path generated = temp.resolve("generated");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+                .add("foo.src")
+                .set(AssembleMojo.ATTR_SCOPE, "compile")
+                .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+                .with("targetDir", target.toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .execute();
+        new Moja<>(OptimizeMojo.class)
+                .with("targetDir", target.toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .execute();
+
+        applyXSL(
+                "org/eolang/maven/set-warning-severity.xsl",
+                target.resolve("03-optimize/foo/src.xmir")
+        );
+
+        try {
+            new Moja<>(TranspileMojo.class)
+                    .with("project", new MavenProjectStub())
+                    .with("targetDir", target.toFile())
+                    .with("generatedDir", generated.toFile())
+                    .with("foreign", foreign.toFile())
+                    .with("foreignFormat", "csv")
+                    .with("failOnWarning", true)
+                    .execute();
+        } catch (IllegalStateException e) {
+            MatcherAssert.assertThat(
+                    e.getMessage(),
+                    Matchers.equalTo("There are 1 warning(s) in foo.src, see log above")
+            );
+            return;
+        }
+
+        Assertions.fail();
+    }
+
+    /**
+     * Apply XSL transformation
+     * @param xsl - path to XSL within classpath
+     * @param xml - path to XML to be tranformed
+     */
+    private void applyXSL(String xsl, Path xml) throws Exception {
+        XML output = new Xsline(
+                new TrDefault<Shift>()
+                        .with(new StXSL(new XSLDocument(
+                                new ResourceOf(xsl).stream()
+                        )))
+        ).pass(new XMLDocument(xml));
+        new Save(output.toString(), xml).save();
     }
 
     @Test

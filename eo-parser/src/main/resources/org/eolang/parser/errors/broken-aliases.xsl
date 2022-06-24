@@ -36,6 +36,9 @@ SOFTWARE.
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
             </xsl:attribute>
+            <xsl:attribute name="severity">
+              <xsl:text>error</xsl:text>
+            </xsl:attribute>
             <xsl:text>The alias is invalid: "</xsl:text>
             <xsl:value-of select="tail"/>
             <xsl:text>"</xsl:text>

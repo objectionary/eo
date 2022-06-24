@@ -2,7 +2,7 @@ xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/errors/data-objects.xsl
 tests:
-  - /program/errors[count(error)=1]
+  - /program/errors[count(error[@severity='error'])=1]
 eo: |
   [x] > first
     string 1

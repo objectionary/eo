@@ -35,6 +35,9 @@ SOFTWARE.
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>error</xsl:text>
+          </xsl:attribute>
           <xsl:text>The ref at "</xsl:text>
           <xsl:value-of select="@base"/>
           <xsl:text>" is wrongly formatted: "</xsl:text>
@@ -50,6 +53,9 @@ SOFTWARE.
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>error</xsl:text>
+          </xsl:attribute>
           <xsl:text>The ref at "</xsl:text>
           <xsl:value-of select="@base"/>
           <xsl:text>" is empty</xsl:text>
@@ -61,6 +67,9 @@ SOFTWARE.
           <xsl:element name="error">
             <xsl:attribute name="check">
               <xsl:text>broken-refs</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="severity">
+              <xsl:text>error</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>

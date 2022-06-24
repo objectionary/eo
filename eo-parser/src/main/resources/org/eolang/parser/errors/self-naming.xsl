@@ -35,6 +35,9 @@ SOFTWARE.
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>error</xsl:text>
+          </xsl:attribute>
           <xsl:text>The object "</xsl:text>
           <xsl:value-of select="@base"/>
           <xsl:text>" can't copy itself</xsl:text>

@@ -36,6 +36,9 @@ SOFTWARE.
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
           </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>error</xsl:text>
+          </xsl:attribute>
           <xsl:text>Data objects can't be used directly: "</xsl:text>
           <xsl:value-of select="@base"/>
           <xsl:text>"</xsl:text>

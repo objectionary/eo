@@ -57,6 +57,7 @@ SOFTWARE.
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="line" use="required"/>
+                    <xs:attribute name="severity" use="required"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
