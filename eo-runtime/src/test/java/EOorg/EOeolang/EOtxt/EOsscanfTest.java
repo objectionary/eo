@@ -25,6 +25,7 @@ package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -120,6 +121,46 @@ public final class EOsscanfTest {
                 )[0])
                 .take(Boolean.class),
             Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    public void parseException() {
+        final Phi format = new Data.ToPhi("is %l");
+        final Phi read = new Data.ToPhi("is true");
+        final Phi phi = new PhMethod(
+            new PhWith(
+            new PhWith(
+                new EOsscanf(Phi.Φ),
+                "format",
+                format
+            ),
+            "read",
+            read
+        ), "msg") ;
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("Can't recognize format pattern: %l")
+        );
+    }
+
+    @Test
+    public void argumentException() {
+        final Phi format = new Data.ToPhi("%123");
+        final Phi read = new Data.ToPhi("1");
+        final Phi phi = new PhMethod(
+            new PhWith(
+            new PhWith(
+                new EOsscanf(Phi.Φ),
+                "format",
+                format
+            ),
+            "read",
+            read
+        ), "msg") ;
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("Can't recognize format pattern: %123")
         );
     }
 

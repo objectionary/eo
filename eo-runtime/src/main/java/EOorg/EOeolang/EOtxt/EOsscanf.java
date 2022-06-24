@@ -35,6 +35,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -52,19 +53,20 @@ public class EOsscanf extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             final String format = new Param(rho, "format").strong(String.class);
             final String read = new Param(rho, "read").strong(String.class);
-            Phi phi;
             final List<Phi> buffer = new ArrayList<>();
             try (Scanner fsc = new Scanner(format);
-                Scanner rsc = new Scanner(read)
+                 Scanner rsc = new Scanner(read)
             ) {
                 while (fsc.hasNext() && rsc.hasNext()) {
                     String pattern = fsc.next();
                     String val = rsc.next();
-                    if (pattern.startsWith(String.valueOf(Conversion.PERCENT_SIGN))) {
-                        final char c = pattern.charAt(1);
+                    if (pattern.contains(String.valueOf(Conversion.PERCENT_SIGN)) && pattern.length() > 1) {
+                        int start = pattern.indexOf(Conversion.PERCENT_SIGN);
+                        final char c = pattern.charAt(start + 1);
                         if (Conversion.isValid(c)) {
                             if (pattern.length() > 2) {
-                                val = val.substring(val.length() - (pattern.length() - 2));
+                                int end = start + 1 == pattern.length() - 1 ? 0 : pattern.length() - (start + 2);
+                                val = val.substring(start, val.length() - end);
                             }
                             if (Conversion.isString(c) || Conversion.isCharacter(c)) {
                                 buffer.add(new Data.ToPhi(val));
@@ -92,9 +94,13 @@ public class EOsscanf extends PhDefault {
                         }
                     }
                 }
+            } catch (IllegalArgumentException | NullPointerException | NoSuchElementException ex) {
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi(ex.getMessage())
+                );
             }
-            phi = new Data.ToPhi(buffer.toArray(new Phi[0]));
-            return phi;
+            return new Data.ToPhi(buffer.toArray(new Phi[0]));
         }));
     }
 

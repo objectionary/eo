@@ -25,6 +25,7 @@
 +version 0.0.0
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.sscanf
++alias org.eolang.txt.sprintf
 +junit
 
 [] > sscanf-with-string
@@ -78,3 +79,76 @@
       "hello 33 0.24"
     $.equal-to
       * "hello" 33 0.24
+
+[] > sscanf-with-string-with-ending
+  assert-that > @
+    at.
+      sscanf
+        "%s!"
+        "hello!"
+      0
+    $.equal-to "hello"
+
+[] > sscanf-with-complex-string
+  assert-that > @
+    at.
+      sscanf
+        "some%sstring"
+        "someteststring"
+      0
+    $.equal-to "test"
+
+[] > sscanf-with-complex-int
+  assert-that > @
+    at.
+      sscanf
+        "!%d!"
+        "!734987259!"
+      0
+    $.equal-to 734987259
+
+[] > sscanf-with-complex-float
+  assert-that > @
+    at.
+      sscanf
+        "this will be=%f"
+        "this will be=1991.01"
+      0
+    $.equal-to 1991.01
+
+[] > sscanf-with-complex-bool
+  assert-that > @
+    sscanf
+      "%b or maybe %b!"
+      "true or maybe false!"
+    $.equal-to
+      *
+        TRUE
+        FALSE
+
+[] > sscanf-with-sprintf
+  assert-that > @
+    sscanf
+      "%s is about %d?"
+      sprintf
+        "%s is about %d?"
+        "This"
+        8
+    $.equal-to
+      *
+        "This"
+        8
+
+[] > sscanf-complex-case
+  assert-that > @
+    sscanf
+      "Im%d %s old and this is%b! Let's calculate %f + %f= %f"
+      "Im18 years old and this istrue! Let's calculate 99999999.99 + 0.01= 100000000.0"
+    $.equal-to
+      *
+        18
+        "years"
+        TRUE
+        99999999.99
+        0.01
+        100000000.0
