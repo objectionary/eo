@@ -23,44 +23,70 @@
  */
 package org.eolang.parser;
 
+import java.util.Objects;
+
 /**
  * Parsing errors severity.
+ * @since 1.0
  */
-public enum ErrorSeverity {
-
+public interface ErrorSeverity {
     /**
-     * Severity 'error'.
+     * Warning instance.
      */
-    ERROR("error"),
-
+    ErrorSeverity WARNING = new EsBase("warning");
     /**
-     * Severity 'warning'.
+     * Error instance.
      */
-    WARNING("warning"),
-
+    ErrorSeverity ERROR = new EsBase("error");
     /**
-     * Severity 'advice'.
+     * Advice instance.
      */
-    ADVICE("advice");
-
-    /**
-     * Text representation of severity.
-     */
-    private final String text;
-
-    /**
-     * Text for severity.
-     * @param text String representation of severity value
-     */
-    ErrorSeverity(final String text) {
-        this.text = text;
-    }
+    ErrorSeverity ADVICE = new EsBase("advice");
 
     /**
      * Severity text.
      * @return String representation of severity value
      */
-    public String asText() {
-        return this.text;
+    String asText();
+
+    /**
+     * Base implementation of {@link ErrorSeverity}.
+     * @since 1.0
+     */
+    class EsBase implements ErrorSeverity {
+        /**
+         * Severity text.
+         */
+        private final String text;
+
+        /**
+         * Ctor.
+         * @param text Severity text
+         */
+        public EsBase(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String asText() {
+            return this.text;
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
+            final EsBase base = (EsBase) other;
+            return Objects.equals(this.text, base.text);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.text);
+        }
     }
 }

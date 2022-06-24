@@ -137,23 +137,21 @@ public final class TranspileMojoTest {
             "org/eolang/maven/set-warning-severity.xsl",
             target.resolve("03-optimize/foo/src.xmir")
         );
-        try {
-            new Moja<>(TranspileMojo.class)
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Moja<>(TranspileMojo.class)
                 .with("project", new MavenProjectStub())
                 .with("targetDir", target.toFile())
                 .with("generatedDir", generated.toFile())
                 .with("foreign", foreign.toFile())
                 .with("foreignFormat", "csv")
                 .with("failOnWarning", true)
-                .execute();
-        } catch (final IllegalStateException ex) {
-            MatcherAssert.assertThat(
-                ex.getMessage(),
-                Matchers.equalTo("There are 1 warning(s) in foo.src, see log above")
-            );
-            return;
-        }
-        Assertions.fail();
+                .execute()
+        );
+        MatcherAssert.assertThat(
+            exception.getMessage(),
+            Matchers.equalTo("There are 1 warning(s) in foo.src, see log above")
+        );
     }
 
     @Test

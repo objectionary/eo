@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -106,7 +106,7 @@ public final class TranspileMojo extends SafeMojo {
         final Transpiler cmp = new Transpiler(
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             this.targetDir.toPath().resolve(TranspileMojo.PRE),
-            failOnSeverities(this.failOnWarning)
+            failures(this.failOnWarning)
         );
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
@@ -146,14 +146,14 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Construct severities to fail on.
-     * @param failonwarn Fail on warning flag
+     * @param warnfail Fail on warning flag
      * @return Constructed set
      */
-    private static Set<ErrorSeverity> failOnSeverities(final boolean failonwarn) {
-        final Set<ErrorSeverity> failon = EnumSet.noneOf(ErrorSeverity.class);
-        if (failonwarn) {
-            failon.add(ErrorSeverity.WARNING);
+    private static Set<ErrorSeverity> failures(final boolean warnfail) {
+        final Set<ErrorSeverity> failures = new HashSet<>(3);
+        if (warnfail) {
+            failures.add(ErrorSeverity.WARNING);
         }
-        return failon;
+        return failures;
     }
 }

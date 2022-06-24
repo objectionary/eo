@@ -35,14 +35,15 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.cactoos.text.Joined;
 import org.eolang.parser.ErrorSeverity;
+import org.eolang.parser.ErrorSeverity.EsBase;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -91,7 +92,11 @@ final class Transpiler {
      * @param ppre The pre
      */
     Transpiler(final Path tmp, final Path ppre) {
-        this(tmp, ppre, EnumSet.of(ErrorSeverity.ERROR));
+        this(
+            tmp,
+            ppre,
+            new HashSet<>(Collections.singletonList(ErrorSeverity.ERROR))
+        );
     }
 
     /**
@@ -196,18 +201,18 @@ final class Transpiler {
         /**
          * Severities to fail on.
          */
-        private final Set<ErrorSeverity> failsvts;
+        private final Set<ErrorSeverity> failures;
 
         /**
          * Ctor.
          * @param xml XML to validate
          * @param program Program name to assign with errors
-         * @param svts Set of severities to fail on
+         * @param failures Set of severities to fail on
          */
-        EnsureNoErrors(final XML xml, final String program, final Set<ErrorSeverity> svts) {
+        EnsureNoErrors(final XML xml, final String program, final Set<ErrorSeverity> failures) {
             this.xml = xml;
             this.program = program;
-            this.failsvts = EnumSet.copyOf(svts);
+            this.failures = failures;
         }
 
         /**
@@ -217,18 +222,16 @@ final class Transpiler {
         public XML validate() {
             final List<XML> errors = this.xml.nodes("/program/errors/error");
             for (final XML error : errors) {
-                final ErrorSeverity errsvty = severity(error);
-                if (errsvty == ErrorSeverity.ERROR) {
+                final ErrorSeverity svty = severity(error);
+                if (svty.equals(ErrorSeverity.ERROR)) {
                     this.log(error, Logger::error);
                 } else if (
-                    EnumSet.of(
-                        ErrorSeverity.WARNING,
-                        ErrorSeverity.ADVICE
-                    ).contains(errsvty)) {
+                    ErrorSeverity.WARNING.equals(svty)
+                    || ErrorSeverity.ADVICE.equals(svty)) {
                     this.log(error, Logger::warn);
                 }
             }
-            this.failOnErrors(
+            this.fail(
                 errors.stream()
                     .collect(Collectors.groupingBy(EnsureNoErrors::severity))
             );
@@ -241,21 +244,22 @@ final class Transpiler {
          * @return Extracted severity
          */
         private static ErrorSeverity severity(final XML error) {
-            String severity;
-            try {
-                severity = error.xpath("@severity").get(0);
-            } catch (final IndexOutOfBoundsException ex) {
-                severity = "error";
+            final List<String> svts = error.xpath("@severity");
+            final ErrorSeverity svty;
+            if (svts.isEmpty()) {
+                svty = ErrorSeverity.ERROR;
+            } else {
+                svty = new EsBase(svts.get(0));
             }
-            return ErrorSeverity.valueOf(severity.toUpperCase(Locale.US));
+            return svty;
         }
 
         /**
          * Fail if needed for provided errors.
          * @param errors Severity to errors map
          */
-        private void failOnErrors(final Map<ErrorSeverity, List<XML>> errors) {
-            for (final ErrorSeverity severity: this.failsvts) {
+        private void fail(final Map<ErrorSeverity, List<XML>> errors) {
+            for (final ErrorSeverity severity: this.failures) {
                 if (errors.containsKey(severity)
                     && !errors.get(severity).isEmpty()) {
                     throw new IllegalStateException(
