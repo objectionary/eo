@@ -21,32 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
-
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOrandom}.
+ * EO math.
  *
- * @since 0.1
+ * @since 0.23
  */
-public final class EOrandomTest {
-
-    @Test
-    public void readsTwice() {
-        final Phi rnd = new EOrandom(Phi.Φ);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(
-                Matchers.equalTo(
-                    new Dataized(rnd).take(Double.class)
-                )
-            )
-        );
-    }
-
-}
+package EOorg.EOeolang.EOmath;

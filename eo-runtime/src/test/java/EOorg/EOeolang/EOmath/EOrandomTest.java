@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -31,27 +30,23 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOarray}.
+ * Test case for {@link EOrandom}.
  *
  * @since 0.1
  */
-public final class EOarrayEOgetTest {
+public final class EOrandomTest {
 
     @Test
-    public void pushesAndGetsBack() {
-        final String txt = "Hello, world!";
-        final Phi str = new Data.ToPhi(txt);
-        final Phi array = new Data.ToPhi(new Phi[] {str});
-        final Phi idx = new Data.ToPhi(0L);
-        final Phi get = array.attr("get").get();
-        get.attr(0).put(idx);
+    public void readsTwice() {
+        final Phi rnd = new EOrandom(Phi.Φ);
         MatcherAssert.assertThat(
-            new Dataized(get).take(String.class),
-            Matchers.equalTo(txt)
-        );
-        MatcherAssert.assertThat(
-            new Dataized(get).take(),
-            Matchers.equalTo(txt)
+            new Dataized(rnd).take(Double.class),
+            Matchers.not(
+                Matchers.equalTo(
+                    new Dataized(rnd).take(Double.class)
+                )
+            )
         );
     }
+
 }

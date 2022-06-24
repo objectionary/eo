@@ -22,29 +22,30 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
+import java.security.SecureRandom;
+import java.util.Random;
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * as-string.
+ * RANDOM.
  *
- * @since 1.0
+ * @since 0.1
  */
-@XmirObject(oname = "int.as-string")
-public class EOint$EOas_string extends PhDefault {
+@XmirObject(oname = "random")
+public class EOrandom extends PhDefault {
 
-    public EOint$EOas_string(final Phi sigma) {
+    private static final Random RND = new SecureRandom();
+
+    public EOrandom(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Long.toString(
-                new Param(rho).strong(Long.class)
-            )
+        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
+            EOrandom.RND.nextDouble()
         )));
     }
 

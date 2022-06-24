@@ -38,7 +38,7 @@
 
   # Take one element from the array, at the
   # given position.
-  [i] > get /?
+  [i] > at /?
 
   # Create a new array with this element added to
   # the end of it.
@@ -80,7 +80,7 @@
                 fn
                   acc
                   i
-                  arr.get i
+                  arr.at i
         acc
 
   # Reduce from start "a" using the function "f"
@@ -128,5 +128,5 @@
             a
             eq.
               item
-              x.get idx
+              x.at idx
       FALSE

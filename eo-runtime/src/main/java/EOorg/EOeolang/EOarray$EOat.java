@@ -34,14 +34,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * GET.
+ * AT.
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.get")
-public class EOarray$EOget extends PhDefault {
+@XmirObject(oname = "array.at")
+public class EOarray$EOat extends PhDefault {
 
-    public EOarray$EOget(final Phi sigma) {
+    public EOarray$EOat(final Phi sigma) {
         super(sigma);
         this.add("i", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
@@ -52,7 +52,7 @@ public class EOarray$EOget extends PhDefault {
                     new EOerror(Phi.Φ), "msg",
                     new Data.ToPhi(
                         String.format(
-                            "Can't get() the %dth element of the array, there are just %d of them",
+                            "Can't at() the %dth element of the array, there are just %d of them",
                             idx, array.length
                         )
                     )

@@ -20,41 +20,51 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.math
 +home https://github.com/objectionary/eo
 +version 0.0.0
++alias org.eolang.math.angle
++alias org.eolang.math.number
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > two-random-numbers-without-const
-  random > r
+[] > sin-zero
   assert-that > @
-    r
-    $.not
-      $.equal-to r
+    angle 0.0
+    .sin
+    $.equal-to 0.0
 
-[] > two-random-numbers-with-const
-  random > r!
+[] > sin-pi-div-2
   assert-that > @
-    r
-    $.equal-to r
+    angle 1.5707963267948966
+    .sin
+    $.equal-to 1.0
 
-[] > two-random-numbers-with-phi
-  random.@ > r
+[] > sin-pi-as-int
   assert-that > @
-    r
-    $.equal-to r
+    number
+      angle 3.141592653589793
+      .sin
+    .as-int
+    $.equal-to 0
 
-[] > two-random-numbers-with-increment-with-const
-  random.plus 3.1416 > r!
+[] > cos-zero
   assert-that > @
-    r
-    $.equal-to r
+    angle 0.0
+    .cos
+    $.equal-to 1.0
 
-[] > two-random-numbers-with-increment
-  random.plus 3.1416 > r
+[] > cos-pi-div-2-as-int
   assert-that > @
-    r
-    $.not
-      $.equal-to r
+    number
+      angle 1.5707963267948966
+      .cos
+    .as-int
+    $.equal-to 0
+
+[] > cos-pi
+  assert-that > @
+    angle 3.141592653589793
+    .cos
+    $.equal-to -1.0
 

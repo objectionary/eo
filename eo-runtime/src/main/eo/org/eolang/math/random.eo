@@ -20,58 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.math
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > float
-  # Tests that $ = x
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
-
-  # Tests that $ < x
-  [x] > lt
-    and. > @
-      (^.eq x).not
-      (^.gt x).not
-
-  # Tests that $ ≤ x
-  [x] > lte
-    or. > @
-      ^.eq x
-      ^.lt x
-
-  # Tests that $ > x
-  [x] > gt /bool
-
-  # Tests that $ ≥ x
-  [x] > gte
-    or. > @
-      ^.eq x
-      ^.gt x
-
-  # Multiplication of $ and x
-  [x] > times /float
-
-  # Sum of $ and x
-  [x] > plus /float
-
-  # Negation of $
-  [] > neg
-    ^.times -1.0 > @
-
-  # Difference between $ and x
-  [x] > minus
-    ^.plus (x.neg) > @
-
-  # Quotient of the division of $ by x
-  [x] > div /float
-
-  # Converts this to bytes
-  [] > as-bytes /bytes
-
-  # Converts this to hash
-  [] > as-hash /int
+[] > random /float
