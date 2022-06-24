@@ -66,6 +66,24 @@
         "TRUE2"
     $.equal-to "TRUE1"
 
+[] > switch-with-all-false-cases
+  assert-that > @
+    switch
+      *
+        FALSE
+        "FALSE"
+      *
+        FALSE
+        "FALSE"
+    $.equal-to TRUE
+
+[] > switch-case-with-error
+  assert-that > @
+    msg.
+      switch
+        *
+    $.equal-to "switch cases are empty"
+
 [] > switch-complex-case
   [] > c1
     FALSE > @

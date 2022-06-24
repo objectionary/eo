@@ -41,17 +41,23 @@
 # This object returns value of only first truly statement.
 [cases...] > switch
   if. > @
-    gt.
-      length.
-        [] > arr
-          reduce. > @
-            cases
-            *
-            [acc case]
-              if. > @
-                case.at 0
-                acc.with (case.at 1)
-                acc
-      0
-    arr.at 0
-    TRUE
+    not.
+      eq.
+        cases.length
+        0
+    if.
+      gt.
+        length.
+          [] > arr
+            reduce. > @
+              cases
+              *
+              [acc case]
+                if. > @
+                  case.at 0
+                  acc.with (case.at 1)
+                  acc
+        0
+      arr.at 0
+      TRUE
+    "switch cases are empty" > msg
