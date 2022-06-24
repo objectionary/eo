@@ -52,6 +52,20 @@
         "password is wrong"
     $.equal-to "password is correct!"
 
+[] > switch-with-several-true-cases
+  assert-that > @
+    switch
+      *
+        TRUE
+        "TRUE1"
+      *
+        FALSE
+        "FALSE"
+      *
+        TRUE
+        "TRUE2"
+    $.equal-to "TRUE1"
+
 [] > switch-complex-case
   [] > c1
     FALSE > @

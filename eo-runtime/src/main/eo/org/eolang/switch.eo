@@ -25,20 +25,33 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
+# Allow to choose right options according to cases conditions.
+# Parameter cases is the array of two dimensional array, which
+# consist of condition bool value and expected value, if this
+# condition is TRUE.
+# e.g.
+# switch
+#   *
+#     TRUE
+#     "this value will be returned"
+#   *
+#     FALSE
+#     "this value will be skipped"
+#
+# This object returns value of only first truly statement.
 [cases...] > switch
-  memory TRUE > condition
-  memory 0 > res
-
-  seq > @
-    while.
-      condition
-      [i]
-        if. > @
-          and.
-            (cases.at i).at 0
-            i.lt (cases.length)
-          seq
-            res.write ((cases.at i).at 1)
-            condition.write FALSE
-          FALSE
-    res
+  if. > @
+    gt.
+      length.
+        [] > arr
+          reduce. > @
+            cases
+            *
+            [acc case]
+              if. > @
+                case.at 0
+                acc.with (case.at 1)
+                acc
+      0
+    arr.at 0
+    TRUE
