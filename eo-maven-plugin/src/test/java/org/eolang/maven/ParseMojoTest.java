@@ -118,4 +118,34 @@ public final class ParseMojoTest {
         Assertions.assertEquals(exception.getMessage(), String.format("Failed to parse %s", src));
     }
 
+    @Test
+    public void testDoNotCrashesWithFailOnError(@TempDir final Path temp)
+        throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
+        final Path target = temp.resolve("target");
+        new Save(
+            "something < is wrong here",
+            src
+        ).save();
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .execute();
+        MatcherAssert.assertThat(
+            Files.notExists(
+                target.resolve(
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, Transpiler.EXT)
+                )
+            ),
+            Matchers.is(true)
+        );
+    }
+
 }
