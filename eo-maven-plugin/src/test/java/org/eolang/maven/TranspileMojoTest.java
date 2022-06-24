@@ -33,6 +33,9 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -44,10 +47,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Test case for {@link TranspileMojo}.
@@ -121,58 +120,40 @@ public final class TranspileMojoTest {
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(new Csv(foreign))
-                .add("foo.src")
-                .set(AssembleMojo.ATTR_SCOPE, "compile")
-                .set(AssembleMojo.ATTR_EO, src.toString());
+            .add("foo.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
         new Moja<>(ParseMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .execute();
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
         new Moja<>(OptimizeMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .execute();
-
-        applyXSL(
-                "org/eolang/maven/set-warning-severity.xsl",
-                target.resolve("03-optimize/foo/src.xmir")
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        this.applyXsl(
+            "org/eolang/maven/set-warning-severity.xsl",
+            target.resolve("03-optimize/foo/src.xmir")
         );
-
         try {
             new Moja<>(TranspileMojo.class)
-                    .with("project", new MavenProjectStub())
-                    .with("targetDir", target.toFile())
-                    .with("generatedDir", generated.toFile())
-                    .with("foreign", foreign.toFile())
-                    .with("foreignFormat", "csv")
-                    .with("failOnWarning", true)
-                    .execute();
-        } catch (IllegalStateException e) {
+                .with("project", new MavenProjectStub())
+                .with("targetDir", target.toFile())
+                .with("generatedDir", generated.toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .with("failOnWarning", true)
+                .execute();
+        } catch (final IllegalStateException ex) {
             MatcherAssert.assertThat(
-                    e.getMessage(),
-                    Matchers.equalTo("There are 1 warning(s) in foo.src, see log above")
+                ex.getMessage(),
+                Matchers.equalTo("There are 1 warning(s) in foo.src, see log above")
             );
             return;
         }
-
         Assertions.fail();
-    }
-
-    /**
-     * Apply XSL transformation
-     * @param xsl - path to XSL within classpath
-     * @param xml - path to XML to be tranformed
-     */
-    private void applyXSL(String xsl, Path xml) throws Exception {
-        XML output = new Xsline(
-                new TrDefault<Shift>()
-                        .with(new StXSL(new XSLDocument(
-                                new ResourceOf(xsl).stream()
-                        )))
-        ).pass(new XMLDocument(xml));
-        new Save(output.toString(), xml).save();
     }
 
     @Test
@@ -268,4 +249,20 @@ public final class TranspileMojoTest {
         return out;
     }
 
+    /**
+     * Apply XSL transformation.
+     * @param xsl Path to XSL within classpath
+     * @param xml Path to XML to be tranformed
+     */
+    private void applyXsl(final String xsl, final Path xml) throws Exception {
+        final XML output = new Xsline(
+            new TrDefault<Shift>()
+                .with(
+                    new StXSL(
+                        new XSLDocument(
+                            new ResourceOf(xsl).stream()
+                )))
+        ).pass(new XMLDocument(xml));
+        new Save(output.toString(), xml).save();
+    }
 }

@@ -37,10 +37,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.cactoos.text.Joined;
 import org.eolang.parser.ErrorSeverity;
 import org.eolang.parser.ParsingTrain;
@@ -69,20 +69,20 @@ final class Transpiler {
     private final Path pre;
 
     /**
-     * For what severities transpiling must fail
+     * For what severities transpiling must fail.
      */
-    private final Set<ErrorSeverity> failOnSeverities;
+    private final Set<ErrorSeverity> sevtofail;
 
     /**
      * Ctor.
      * @param tmp The temp
      * @param ppre The pre
-     * @param failOnSeverities For what severities to fail
+     * @param sevtofail For what sevtofail to fail
      */
-    Transpiler(final Path tmp, final Path ppre, final Set<ErrorSeverity> failOnSeverities) {
+    Transpiler(final Path tmp, final Path ppre, final Set<ErrorSeverity> sevtofail) {
         this.temp = tmp;
         this.pre = ppre;
-        this.failOnSeverities = failOnSeverities;
+        this.sevtofail = sevtofail;
     }
 
     /**
@@ -132,11 +132,11 @@ final class Transpiler {
             final XML out = new Xsline(train).pass(input);
             new Save(out.toString(), target).saveQuietly();
             final XML after =
-                    new EnsureNoErrors(
-                        out,
-                        name,
-                        failOnSeverities
-                    ).validate();
+                new EnsureNoErrors(
+                    out,
+                    name,
+                    this.sevtofail
+                ).validate();
             final Collection<XML> nodes = after.nodes("//class[java and not(@atom)]");
             if (nodes.isEmpty()) {
                 Logger.info(
@@ -178,92 +178,129 @@ final class Transpiler {
     }
 
     /**
-     * XML validated for errors
+     * XML validated for errors.
+     * @since 1.0
      */
     private static class EnsureNoErrors {
 
+        /**
+         * XML to validate.
+         */
         private final XML xml;
+
+        /**
+         * Program name.
+         */
         private final String program;
 
-        private final Set<ErrorSeverity> failForSeverities;
+        /**
+         * Severities to fail on.
+         */
+        private final Set<ErrorSeverity> failsvts;
 
-        public EnsureNoErrors(XML xml, String program, Set<ErrorSeverity> failForSeverities) {
+        /**
+         * Ctor.
+         * @param xml XML to validate
+         * @param program Program name to assign with errors
+         * @param svts Set of severities to fail on
+         */
+        EnsureNoErrors(final XML xml, final String program, final Set<ErrorSeverity> svts) {
             this.xml = xml;
             this.program = program;
-            this.failForSeverities = EnumSet.copyOf(failForSeverities);
+            this.failsvts = EnumSet.copyOf(svts);
         }
 
         /**
-         * Validate XML. Raise exceptions if needed
-         * @return origin XML
+         * Validate XML. Raise exceptions if needed.
+         * @return Original XML
          */
         public XML validate() {
-            final List<XML> errors = xml.nodes("/program/errors/error");
-
+            final List<XML> errors = this.xml.nodes("/program/errors/error");
             for (final XML error : errors) {
-                final ErrorSeverity errorSeverity = severity(error);
-
-                if(errorSeverity == ErrorSeverity.ERROR) {
-                    log(error, Logger::error);
-                } else if(EnumSet.of(
-                            ErrorSeverity.WARNING,
-                            ErrorSeverity.ADVICE
-                         ).contains(errorSeverity)) {
-                    log(error, Logger::warn);
+                final ErrorSeverity errsvty = severity(error);
+                if (errsvty == ErrorSeverity.ERROR) {
+                    this.log(error, Logger::error);
+                } else if (
+                    EnumSet.of(
+                        ErrorSeverity.WARNING,
+                        ErrorSeverity.ADVICE
+                    ).contains(errsvty)) {
+                    this.log(error, Logger::warn);
                 }
             }
-
-            failOnErrors(
-                    errors.stream()
-                            .collect(Collectors.groupingBy(this::severity))
+            this.failOnErrors(
+                errors.stream()
+                    .collect(Collectors.groupingBy(EnsureNoErrors::severity))
             );
-
-            return xml;
+            return this.xml;
         }
 
-        private ErrorSeverity severity(XML error) {
+        /**
+         * Extract severity from error node.
+         * @param error Error node XML
+         * @return Extracted severity
+         */
+        private static ErrorSeverity severity(final XML error) {
             String severity;
             try {
                 severity = error.xpath("@severity").get(0);
-            } catch (Exception e) {
+            } catch (final IndexOutOfBoundsException ex) {
                 severity = "error";
             }
-            return ErrorSeverity.valueOf(severity.toUpperCase());
+            return ErrorSeverity.valueOf(severity.toUpperCase(Locale.US));
         }
 
-        private void failOnErrors(Map<ErrorSeverity, List<XML>> severityToErrors) {
-            for(ErrorSeverity failFor: failForSeverities) {
-                if(severityToErrors.containsKey(failFor)
-                        && !severityToErrors.get(failFor).isEmpty()) {
+        /**
+         * Fail if needed for provided errors.
+         * @param errors Severity to errors map
+         */
+        private void failOnErrors(final Map<ErrorSeverity, List<XML>> errors) {
+            for (final ErrorSeverity severity: this.failsvts) {
+                if (errors.containsKey(severity)
+                    && !errors.get(severity).isEmpty()) {
                     throw new IllegalStateException(
-                            String.format(
-                                    "There are %d %s(s) in %s, see log above",
-                                    severityToErrors.get(failFor).size(),
-                                    failFor.asText(),
-                                    program
-                            )
+                        String.format(
+                            "There are %d %s(s) in %s, see log above",
+                            errors.get(severity).size(),
+                            severity.asText(),
+                            this.program
+                        )
                     );
                 }
             }
         }
 
-        private void log(XML error, LogFunction logFunction) {
-            logFunction.log(
-                    this,
-                    "[%s:%s] %s (%s:%s)",
-                    program,
-                    error.xpath("@line").get(0),
-                    error.xpath("text()").get(0),
-                    error.xpath("@check").get(0),
-                    error.xpath("@step").get(0)
+        /**
+         * Log error with given log function.
+         * @param error Error to log
+         * @param logfunc Log function
+         */
+        private void log(final XML error, final LogFunction logfunc) {
+            logfunc.log(
+                this,
+                "[%s:%s] %s (%s:%s)",
+                this.program,
+                error.xpath("@line").get(0),
+                error.xpath("text()").get(0),
+                error.xpath("@check").get(0),
+                error.xpath("@step").get(0)
             );
         }
 
         /**
-         * Functional interface for logging function
-         * {@link Logger#warn(Object, String, Object...)}, {@link Logger#error(Object, String, Object...)}, etc
+         * Functional interface for logging function.
+         * {@link Logger#warn(Object, String, Object...)},
+         * {@link Logger#error(Object, String, Object...)}, etc
+         * @since 1.0
          */
         private interface LogFunction {
+
+            /**
+             * Write log message.
+             * @param source Producer of the log message
+             * @param msg Log message
+             * @param args Log message params
+             */
             void log(Object source, String msg, Object... args);
         }
     }

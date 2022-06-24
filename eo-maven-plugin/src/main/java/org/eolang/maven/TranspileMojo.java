@@ -31,7 +31,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -74,6 +73,10 @@ public final class TranspileMojo extends SafeMojo {
     )
     private File generatedDir;
 
+    /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
     @Parameter(
         property = "eo.failOnWarning",
         required = true,
@@ -141,11 +144,16 @@ public final class TranspileMojo extends SafeMojo {
         }
     }
 
-    private Set<ErrorSeverity> failOnSeverities(boolean failOnWarning) {
-        Set<ErrorSeverity> failOn = EnumSet.noneOf(ErrorSeverity.class);
-        if(failOnWarning) failOn.add(ErrorSeverity.WARNING);
-        return failOn;
+    /**
+     * Construct severities to fail on.
+     * @param failonwarn Fail on warning flag
+     * @return Constructed set
+     */
+    private static Set<ErrorSeverity> failOnSeverities(final boolean failonwarn) {
+        final Set<ErrorSeverity> failon = EnumSet.noneOf(ErrorSeverity.class);
+        if (failonwarn) {
+            failon.add(ErrorSeverity.WARNING);
+        }
+        return failon;
     }
-
-
 }
