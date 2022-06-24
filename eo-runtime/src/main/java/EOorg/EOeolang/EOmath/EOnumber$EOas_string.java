@@ -22,30 +22,45 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOmath;
 
+import EOorg.EOeolang.EOerror;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
  * as-string.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "float.as-string")
-public class EOfloat$EOas_string extends PhDefault {
+@XmirObject(oname = "number.as-string")
+public class EOnumber$EOas_string extends PhDefault {
 
-    public EOfloat$EOas_string(final Phi sigma) {
+    public EOnumber$EOas_string(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Double.toString(
-                new Param(rho).strong(Double.class)
-            )
-        )));
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi number = rho.attr("ρ").get();
+            final Object obj = new Param(number, "n").weak();
+            Phi phi;
+            if (obj instanceof Double) {
+                phi = new Data.ToPhi(Double.toString((Double) obj));
+            } else if (obj instanceof Long) {
+                phi = new Data.ToPhi(Long.toString((Long) obj));
+            } else {
+                phi = new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi(
+                        String.format("Wrong number's %s argument in number.as-string operation", obj)
+                    )
+                );
+            }
+            return phi;
+        }));
     }
 
 }

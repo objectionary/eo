@@ -21,40 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import org.eolang.Dataized;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * POW.
+ * Test case for {@link EOarray}.
  *
- * @since 1.0
+ * @since 0.1
  */
-@XmirObject(oname = "float.pow")
-public class EOfloat$EOpow extends PhDefault {
+public final class EOarrayEOatTest {
 
-    public EOfloat$EOpow(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final double self = new Param(rho).strong(Double.class);
-            final double pow = new Param(rho, "x").strong(Double.class);
-            if (self == 0.0d && pow < 0.0d) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("0 cannot be raised to a negative power")
-                );
-            }
-            return new Data.ToPhi(Math.pow(self, pow));
-        }));
+    @Test
+    public void pushesAndGetsBack() {
+        final String txt = "Hello, world!";
+        final Phi str = new Data.ToPhi(txt);
+        final Phi array = new Data.ToPhi(new Phi[] {str});
+        final Phi idx = new Data.ToPhi(0L);
+        final Phi get = array.attr("at").get();
+        get.attr(0).put(idx);
+        MatcherAssert.assertThat(
+            new Dataized(get).take(String.class),
+            Matchers.equalTo(txt)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(get).take(),
+            Matchers.equalTo(txt)
+        );
     }
-
 }

@@ -24,29 +24,38 @@
 
 package EOorg.EOeolang;
 
-import java.security.SecureRandom;
-import java.util.Random;
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * RANDOM.
+ * DIV.
  *
- * @since 0.1
+ * @since 0.23
  */
-@XmirObject(oname = "random")
-public class EOrandom extends PhDefault {
+@XmirObject(oname = "float.div")
+public class EOfloat$EOdiv extends PhDefault {
 
-    private static final Random RND = new SecureRandom();
-
-    public EOrandom(final Phi sigma) {
+    public EOfloat$EOdiv(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            EOrandom.RND.nextDouble()
-        )));
+        this.add("x", new AtFree());
+        this.add("φ", new AtComposite(this, rho -> {
+            final double div = new Param(rho, "x").strong(Double.class);
+            if (div == 0.0) {
+                return new PhWith(
+                    new EOerror(Phi.Φ), "msg",
+                    new Data.ToPhi("Division by zero is infinity")
+                );
+            }
+            return new Data.ToPhi(
+                new Param(rho).strong(Double.class) / div
+            );
+        }));
     }
 
 }

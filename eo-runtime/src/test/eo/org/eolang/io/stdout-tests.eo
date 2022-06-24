@@ -25,6 +25,7 @@
 +version 0.0.0
 +alias sprintf org.eolang.txt.sprintf
 +alias stdout org.eolang.io.stdout
++alias org.eolang.math.random
 +junit
 
 [] > prints-string-to-console

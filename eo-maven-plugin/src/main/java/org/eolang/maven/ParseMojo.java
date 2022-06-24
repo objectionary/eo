@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
@@ -64,6 +65,15 @@ public final class ParseMojo extends SafeMojo {
      * The directory where to parse to.
      */
     public static final String DIR = "01-parse";
+
+    /**
+     * Shall we fail when error occurred?
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.21.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.failOnError", required = false, defaultValue = "true")
+    private boolean failOnError = true;
 
     @Override
     public void exec() throws IOException {
@@ -112,10 +122,18 @@ public final class ParseMojo extends SafeMojo {
             ).parse();
         // @checkstyle IllegalCatchCheck (1 line)
         } catch (final RuntimeException ex) {
-            throw new IllegalArgumentException(
-                String.format("Failed to parse %s", source),
-                ex
+            if (this.failOnError) {
+                throw new IllegalArgumentException(
+                    String.format("Failed to parse %s", source),
+                    ex
+                );
+            }
+            Logger.error(
+                this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
+                source.toString(),
+                ex.getMessage()
             );
+            return;
         }
         final Path target = new Place(name).make(
             this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT
