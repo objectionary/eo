@@ -12,6 +12,6 @@ public enum ErrorSeverity {
     }
 
     public String asText() {
-        return text;
+        return this.text;
     }
 }
