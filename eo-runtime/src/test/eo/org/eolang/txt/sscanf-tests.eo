@@ -36,6 +36,41 @@
       0
     $.equal-to "hello"
 
+[] > sscanf-with-int
+  assert-that > @
+    get.
+      sscanf
+        "%d"
+        "33"
+      0
+    $.equal-to 33
+
+[] > sscanf-with-float
+  assert-that > @
+    get.
+      sscanf
+        "%f"
+        "0.24"
+      0
+    $.equal-to 0.24
+
+[] > sscanf-with-bool
+  assert-that > @
+    get.
+      sscanf
+        "%b"
+        "true"
+      0
+    $.equal-to TRUE
+
+[] > sscanf-with-error
+  assert-that > @
+    msg.
+      sscanf
+        "%l"
+        "error"
+    $.equal-to "Can't recognize format pattern: %l"
+
 [] > sscanf-with-string-int-float
   assert-that > @
     sscanf
