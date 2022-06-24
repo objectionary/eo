@@ -7,7 +7,7 @@ public enum ErrorSeverity {
 
     private final String text;
 
-    ErrorSeverity(String text) {
+    ErrorSeverity(final String text) {
         this.text = text;
     }
 
