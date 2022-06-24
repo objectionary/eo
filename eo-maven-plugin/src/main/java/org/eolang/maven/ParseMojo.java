@@ -128,7 +128,7 @@ public final class ParseMojo extends SafeMojo {
                     ex
                 );
             }
-            Logger.error(
+            Logger.warn(
                 this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
                 source.toString(),
                 ex.getMessage()
