@@ -21,32 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package EOorg.EOeolang;
 
-import java.security.SecureRandom;
-import java.util.Random;
-import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.PhDefault;
+import org.eolang.Dataized;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * RANDOM.
+ * Test case for {@link EOarray}.
  *
  * @since 0.1
  */
-@XmirObject(oname = "random")
-public class EOrandom extends PhDefault {
+public final class EOarrayEOatTest {
 
-    private static final Random RND = new SecureRandom();
-
-    public EOrandom(final Phi sigma) {
-        super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            EOrandom.RND.nextDouble()
-        )));
+    @Test
+    public void pushesAndGetsBack() {
+        final String txt = "Hello, world!";
+        final Phi str = new Data.ToPhi(txt);
+        final Phi array = new Data.ToPhi(new Phi[] {str});
+        final Phi idx = new Data.ToPhi(0L);
+        final Phi get = array.attr("at").get();
+        get.attr(0).put(idx);
+        MatcherAssert.assertThat(
+            new Dataized(get).take(String.class),
+            Matchers.equalTo(txt)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(get).take(),
+            Matchers.equalTo(txt)
+        );
     }
-
 }

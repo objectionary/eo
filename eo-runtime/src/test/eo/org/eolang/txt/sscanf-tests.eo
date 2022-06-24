@@ -29,7 +29,7 @@
 
 [] > sscanf-with-string
   assert-that > @
-    get.
+    at.
       sscanf
         "%s"
         "hello"
@@ -38,7 +38,7 @@
 
 [] > sscanf-with-int
   assert-that > @
-    get.
+    at.
       sscanf
         "%d"
         "33"
@@ -47,7 +47,7 @@
 
 [] > sscanf-with-float
   assert-that > @
-    get.
+    at.
       sscanf
         "%f"
         "0.24"
@@ -56,7 +56,7 @@
 
 [] > sscanf-with-bool
   assert-that > @
-    get.
+    at.
       sscanf
         "%b"
         "true"

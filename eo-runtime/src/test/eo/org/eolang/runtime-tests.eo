@@ -25,6 +25,7 @@
 +version 0.0.0
 +alias org.eolang.txt.sprintf
 +alias org.eolang.math.number
++alias org.eolang.math.random
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -299,12 +300,14 @@
 
 [] > compares-two-foreign-objects
   assert-that > @
-    sprintf.<
-    $.all-of
-      $.equal-to
-        QQ.txt.sprintf.<
-      $.equal-to
-        Q.org.eolang.txt.sprintf.<
+    assert-that
+      sprintf.<
+      $.all-of
+        $.equal-to
+          QQ.txt.sprintf.<
+        $.equal-to
+          Q.org.eolang.txt.sprintf.<
+    $.anything
 
 [] > compares-two-local-objects
   assert-that > @
