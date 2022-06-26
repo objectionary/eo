@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
++version 0.23.15
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -372,4 +372,44 @@
         as-bytes.
           1284294810240192840
     $.equal-to 620662338699844654
+
+[] > or-neg-bytes-as-int-with-leading-zeroes
+  assert-that > @
+    (2397719729.as-bytes.or (-4294967296).as-bytes).as-int
+    $.equal-to -1897247567
+
+[] > and-neg-bytes-as-int-with-leading-zeroes
+  assert-that > @
+    (2397719729.as-bytes.and (-4294967296).as-bytes).as-int
+    $.equal-to 0
+
+[] > xor-neg-bytes-as-int-with-leading-zeroes
+  assert-that > @
+    (2397719729.as-bytes.xor (-4294967296).as-bytes).as-int
+    $.equal-to -1897247567
+
+[] > or-neg-bytes-as-int-without-leading--zeroes
+  assert-that > @
+    (4294967295.as-bytes.or (-4294967296).as-bytes).as-int
+    $.equal-to -1
+
+[] > and-neg-bytes-as-int-without-leading--zeroes
+  assert-that > @
+    (4294967295.as-bytes.and (-4294967296).as-bytes).as-int
+    $.equal-to 0
+
+[] > xor-neg-bytes-as-int-without-leading--zeroes
+  assert-that > @
+    (4294967295.as-bytes.xor (-4294967296).as-bytes).as-int
+    $.equal-to -1
+
+[] > or-neg-bytes-as-int-with-zero
+  assert-that > @
+    ((-4294967296).as-bytes.or (0.as-bytes)).as-int
+    $.equal-to -4294967296
+
+[] > or-neg-bytes-as-int-with-one
+  assert-that > @
+    ((-4294967296).as-bytes.or (1.as-bytes)).as-int
+    $.equal-to -4294967295
 

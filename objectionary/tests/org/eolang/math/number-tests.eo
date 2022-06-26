@@ -1,0 +1,413 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2022 Yegor Bugayenko
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++package org.eolang.math
++home https://github.com/objectionary/eo
++version 0.23.15
++alias org.eolang.math.number
++alias org.eolang.hamcrest.assert-that
++junit
+
+[] > check-is-int-positive-int
+  assert-that > @
+    (number 3).is-int
+    $.equal-to TRUE
+    "check is-int of positive int"
+
+[] > check-is-int-negative-int
+  assert-that > @
+    (number -4623).is-int
+    $.equal-to TRUE
+    "check is-int of negative int"
+
+[] > check-is-int-with-zero
+  assert-that > @
+    (number 0).is-int
+    $.equal-to FALSE
+    "check is-int of zero"
+
+[] > check-is-float-with-zero
+  assert-that > @
+    (number 0.0).is-float
+    $.equal-to TRUE
+    "check is-int of zero"
+
+[] > check-is-int-positive-float
+  assert-that > @
+    (number 123.35).is-int
+    $.equal-to FALSE
+    "check is-int of positive float"
+
+[] > check-is-int-negative-float
+  assert-that > @
+    (number -88.3).is-int
+    $.equal-to FALSE
+    "check is-int of negative float"
+
+[] > xor-int-3-6
+  assert-that > @
+    number 3
+    .xor 6
+    $.equal-to 5
+
+[] > xor-float-3-6
+  assert-that > @
+    number 3.0
+    .xor 6.0
+    .msg
+    $.equal-to
+      "xor cannot be applied to float"
+
+[] > or-int-1-2
+  assert-that > @
+    number 1
+    .or 2
+    $.equal-to 3
+
+[] > or-float-1-2
+  assert-that > @
+    number 1.0
+    .or 2.0
+    .msg
+    $.equal-to
+      "or cannot be applied to float"
+
+[] > and-int-3-6
+  assert-that > @
+    number 3
+    .and 6
+    $.equal-to 2
+
+[] > and-float-3-6
+  assert-that > @
+    number 3.0
+    .and 6.0
+    .msg
+    $.equal-to
+      "and cannot be applied to float"
+
+[] > left-int-1-2
+  assert-that > @
+    number 1
+    .left 2
+    $.equal-to 4
+
+[] > left-float-1-2
+  assert-that > @
+    number 1.0
+    .left 2
+    .msg
+    $.equal-to
+      "left cannot be applied to float"
+
+[] > right-int-8-2
+  assert-that > @
+    number 8
+    .right 2
+    $.equal-to 2
+
+[] > right-float-8-2
+  assert-that > @
+    number 8.0
+    .right 2
+    .msg
+    $.equal-to
+      "right cannot be applied to float"
+
+[] > neq-float-true
+  assert-that > @
+    neq.
+      number 123.5
+      125.2
+    $.equal-to TRUE
+
+[] > neq-float-false
+  assert-that > @
+    neq.
+      number -133.9
+      -133.9
+    $.not
+      $.equal-to TRUE
+
+[] > neq-int-true
+  assert-that > @
+    neq.
+      number 123
+      125
+    $.equal-to TRUE
+    "check number.neq"
+
+[] > neq-int-false
+  assert-that > @
+    not.
+      neq.
+        number -133
+        -133
+    $.equal-to TRUE
+    "check number.neq.not negative"
+
+[] > abs-int-positive
+  assert-that > @
+    number 3
+    .abs
+    $.equal-to 3
+
+[] > abs-int-negative
+  assert-that > @
+    number -3
+    .abs
+    $.equal-to 3
+
+[] > abs-int-zero
+  assert-that > @
+    number 0
+    .abs
+    $.equal-to 0
+
+[] > abs-float-positive
+  assert-that > @
+    number 13.5
+    .abs
+    $.equal-to 13.5
+
+[] > abs-float-negative
+  assert-that > @
+    number -17.9
+    .abs
+    $.equal-to 17.9
+
+[] > abs-float-zero
+  assert-that > @
+    number 0.0
+    .abs
+    $.equal-to 0.0
+
+[] > mod-1-2
+  assert-that > @
+    number 1
+    .mod 2
+    $.equal-to 1
+
+[] > mod-0-5
+  assert-that > @
+    number 0
+    .mod 5
+    $.equal-to 0
+
+[] > mod-0-15-neg
+  assert-that > @
+    number 0
+    .mod -15
+    $.equal-to 0
+
+[] > mod-1-neg-7
+  assert-that > @
+    number -1
+    .mod 7
+    $.equal-to -1
+
+[] > mod-16-200-neg
+  assert-that > @
+    number 16
+    .mod -200
+    $.equal-to 16
+
+# Checks mathematical equality
+# A = ((A div B) * B) + (A mod B)
+[] > div-mod-compatibility
+  -13 > dividend
+  5 > divisor
+  (number dividend).mod divisor > remainder
+  dividend.div divisor > quotient
+  assert-that > @
+    plus.
+      remainder
+      times.
+        divisor
+        quotient
+    $.equal-to
+      dividend
+
+# Checks Euclid's division lemma
+# A = B * Q + R
+# and 0 <= R <= |B|
+[] > euclids-mod-lemma
+  * -201 -201 201 201 > dividends
+  * -25 25 -25 25 > divisors
+  [x y] > remainder
+    (number x).mod y > @
+  [x y] > quotient
+    x.div y > @
+  [dividend divisor] > euclids-lemma
+    eq. > @
+      dividend
+      plus.
+        divisor.times
+          quotient dividend divisor
+        remainder dividend divisor
+  reducei. > @
+    dividends
+    TRUE
+    [a i el]
+      and. > @
+        euclids-lemma
+          el
+          divisors.at i
+        a
+
+# Checks modulo: dividend < divisor
+[] > mod-dividend-less-than-divisor
+  assert-that > @
+    number -1
+    .mod 5
+    $.equal-to -1
+
+# Checks modulo by 1
+[] > mod-dividend-by-one
+  assert-that > @
+    number 133
+    .mod 1
+    $.equal-to 0
+
+[] > mod-into-while-and-seq-objects
+  [condition body] > while-loop
+    while. > @
+      condition
+      [i]
+        body > @
+
+  memory 0 > n
+
+  assert-that > @
+    seq
+      n.write 0
+      while-loop
+        n.lt 5
+        seq
+          n.write (n.plus 1)
+          ((number n).mod 2).eq 0
+    $.equal-to 5
+
+[] > pow-test
+  assert-that > @
+    number 2
+    .pow 4
+    $.equal-to 16
+
+[] > power-is-zero
+  assert-that > @
+    number 2
+    .pow 0
+    $.equal-to 1
+
+[] > power-is-negative
+  assert-that > @
+    number 984782
+    .pow -12341
+    $.equal-to 0
+
+[] > power-of-two
+  assert-that > @
+    number 3
+    .pow 2
+    $.equal-to 9
+
+[] > power-of-big-number
+  assert-that > @
+    number 999999999
+    .pow 5
+    $.equal-to 9223372036854775807
+
+[] > power-of-zero
+  assert-that > @
+    number 0
+    .pow 145
+    $.equal-to 0
+
+[] > negative-power-of-zero
+  assert-that > @
+    ((number 0).pow -567).msg
+    $.equal-to "0 cannot be raised to a negative power"
+
+# Checks that number.as-float works properly
+[] > as-float-works
+  assert-that > @
+    as-float.
+      number
+        17.neg
+    $.equal-to -17.0
+
+[] > as-int-works
+  assert-that > @
+    number 3.57
+    .as-int
+    $.equal-to 3
+
+[] > converts-int-to-string
+  assert-that > @
+    number 42
+    .as-string
+    $.equal-to "42"
+    "converts int number to string"
+
+[] > converts-float-to-string
+  assert-that > @
+    number 3.1415926
+    .as-string
+    $.equal-to "3.1415926"
+
+[] > signum-float-negative
+  assert-that > @
+    number -345.17
+    .signum
+    $.equal-to -1.0
+
+[] > signum-float-positive
+  assert-that > @
+    number 145.18
+    .signum
+    $.equal-to 1.0
+
+[] > signum-float-zero
+  assert-that > @
+    number 0.0
+    .signum
+    $.equal-to 0.0
+
+[] > signum-int-negative
+  assert-that > @
+    number -345
+    .signum
+    $.equal-to -1
+
+[] > signum-int-positive
+  assert-that > @
+    number 145
+    .signum
+    $.equal-to 1
+
+[] > signum-int-zero
+  assert-that > @
+    number 0
+    .signum
+    $.equal-to 0
+

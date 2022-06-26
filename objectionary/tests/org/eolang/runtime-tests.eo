@@ -22,8 +22,10 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
++version 0.23.15
 +alias org.eolang.txt.sprintf
++alias org.eolang.math.number
++alias org.eolang.math.random
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -46,9 +48,10 @@
 [] > makes-object-a-constant
   [] > foo
     as-int. > @
-      times.
-        random
-        100.0
+      number
+        times.
+          random
+          100.0
   foo.@ > f!
   assert-that > @
     f
@@ -295,10 +298,6 @@
       foo.y.<
     $.equal-to TRUE
 
-# @todo #755:15min We need to remove
-#  the anything matcher. We can do it only
-#  after fixing the eo-hamcrest library
-#  when new EO version will be released.
 [] > compares-two-foreign-objects
   assert-that > @
     assert-that

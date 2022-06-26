@@ -22,9 +22,12 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
++version 0.23.15
 +alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
++alias org.eolang.txt.text
 +alias org.eolang.io.stdout
++alias org.eolang.math.number
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -52,16 +55,16 @@
       map.
         * 1 2 3
         [i]
-          i.as-string > @
+          (number i).as-string > @
     $.equal-to 3
 
 [] > using-map-as-object
   assert-that > @
-    " ".joined
+    (text " ").joined
       map.
         * 1 2
         [i]
-          i.as-string > @
+          (number i).as-string > @
     $.equal-to "1 2"
 
 # check that an empty array's .length equals to zero
@@ -88,11 +91,12 @@
       numbers
       [current]
         pow. > @
-          current.as-int
+          number
+            (sscanf "%d" current).at 0
           2
   (squares "1" "2" "3") > sq
   assert-that > @
-    sprintf "%d %d %d" (sq.get 0) (sq.get 1) (sq.get 2)
+    sprintf "%d %d %d" (sq.at 0) (sq.at 1) (sq.at 2)
     $.equal-to
       sprintf "%d %d %d" 1 4 9
 
@@ -103,11 +107,11 @@
       numbers
       [current index]
         times. > @
-          current.as-int
+          (sscanf "%d" current).at 0
           index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @
-    sprintf "%d %d %d" (mulSeq.get 0) (mulSeq.get 1) (mulSeq.get 2)
+    sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
     $.equal-to
       sprintf "%d %d %d" 1 4 9
 
@@ -121,7 +125,7 @@
   * > anArray
     100
   assert-that > @
-    anArray.get 0
+    anArray.at 0
     $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
@@ -129,10 +133,12 @@
     1
     2
   assert-that > @
-    anArray
-    $.array-each
-      $.equal-to 1
-      $.equal-to 2
+    assert-that
+      anArray
+      $.array-each
+        $.equal-to 1
+        $.equal-to 2
+    $.anything
 
 # check that array.is-empty works properly
 [] > should-not-be-empty
@@ -153,11 +159,11 @@
 # arrays of objects
 [] > should-not-be-empty-with-3-objects
   [x] > a-1
-    (x.as-int > @)
+    ((number x).as-int > @)
   [x] > a-2
     (x.as-byte > @)
   [x] > a-3
-    (x.as-string > @)
+    ((number x).as-string > @)
   * > xs
     a-1
     a-2
@@ -170,7 +176,7 @@
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
-      f.as-int > @
+      (number f).as-int > @
   assert-that > @
     xs.is-empty.not
     $.equal-to TRUE
@@ -178,7 +184,7 @@
 # arrays with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
-    [f] (f.as-int > @)
+    [f] ((number f).as-int > @)
   assert-that > @
     xs.is-empty.not
     $.equal-to TRUE
@@ -199,7 +205,7 @@
           1
           "str"
           "\n"
-          (11.times 2).as-float
+          (number (11.times 2)).as-float
           D0-B4-D1-80-D1-83-D0-B3
           FALSE.not
 
@@ -219,20 +225,20 @@
   assert-that > @
     args.
       a
-        13.as-float
+        (number 13).as-float
         "\t"
         "bbt"
     $.equal-to
       args.
         b
-          13.as-float
+          (number 13).as-float
           "\t"
           "bbt"
 
 # nested array equal object should works
 [] > nested-array-eq-should-works
   * 1 "2" 3.0 > a
-  * 1 "2" (3.as-float) > b
+  * 1 "2" ((number 3).as-float) > b
   assert-that > @
     * "w" a
     $.equal-to
@@ -249,7 +255,7 @@
 #two different nested arrays not eq
 [] > nested-array-not-eq-should-works
   * 5 "\07" "18" > a
-  * 5 "neq" (18.as-string) > b
+  * 5 "neq" ((number 18).as-string) > b
   assert-that > @
     * "not eq" a
     $.not
@@ -279,7 +285,7 @@
         plus. > @
           x
           a.plus
-            src.get i
+            src.at i
     $.equal-to 6
 
 [] > reducei-long-int-array
@@ -392,12 +398,12 @@
     $.equal-to
       * 2 4 6 8
 
-[] > array-get-with-error
+[] > array-at-with-error
   assert-that > @
     msg.
-      get.
+      at.
         * 1 2 3 4
         20
     $.is
       $.equal-to
-        "Can't get() the 20th element of the array, there are just 4 of them"
+        "Can't at() the 20th element of the array, there are just 4 of them"

@@ -22,19 +22,11 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
++version 0.23.15
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
 +junit
-
-[] > converts-to-string
-  assert-that > @
-    eq.
-      "42"
-      42.as-string
-    $.equal-to TRUE
-    "converts int to string"
 
 [] > less-true
   assert-that > @
@@ -164,23 +156,6 @@
     $.equal-to TRUE
     "check int.eq.not string"
 
-[] > neq-true
-  assert-that > @
-    neq.
-      123
-      125
-    $.equal-to TRUE
-    "check int.neq"
-
-[] > neq-false
-  assert-that > @
-    not.
-      neq.
-        -133
-        -133
-    $.equal-to TRUE
-    "check int.neq.not negative"
-
 [] > calculates-fibonacci-number-with-recursion
   [n] > fibo
     if. > @
@@ -221,61 +196,6 @@
     $.equal-to
       "Division by zero is undefined"
 
-# Checks mathematical equality
-# A = ((A div B) * B) + (A mod B)
-[] > div-mod-compatibility
-  -13 > dividend
-  5 > divisor
-  dividend.mod divisor > remainder
-  dividend.div divisor > quotient
-  assert-that > @
-    plus.
-      remainder
-      times.
-        divisor
-        quotient
-    $.equal-to
-      dividend
-
-# Checks Euclid's division lemma
-# A = B * Q + R
-# and 0 <= R <= |B|
-[] > euclids-mod-lemma
-  * -201 -201 201 201 > dividends
-  * -25 25 -25 25 > divisors
-  [x y] > remainder
-    x.mod y > @
-  [x y] > quotient
-    x.div y > @
-  [dividend divisor] > euclids-lemma
-    eq. > @
-      dividend
-      plus.
-        divisor.times
-          quotient dividend divisor
-        remainder dividend divisor
-  reducei. > @
-    dividends
-    TRUE
-    [a i el]
-      and. > @
-        euclids-lemma
-          el
-          divisors.get i
-        a
-
-# Checks modulo: dividend < divisor
-[] > mod-dividend-less-than-divisor
-  assert-that > @
-    -1.mod 5
-    $.equal-to -1
-
-# Checks modulo by 1
-[] > mod-dividend-by-one
-  assert-that > @
-    133.mod 1
-    $.equal-to 0
-
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend
@@ -296,27 +216,6 @@
     13.div -5
     $.equal-to -2
 
-# Checks that int.as-float works properly
-[] > as-float-works
-  assert-that > @
-    17.neg.as-float
-    $.equal-to -17.0
-
-[] > abs-positive
-  assert-that > @
-    3.abs
-    $.equal-to 3
-
-[] > abs-negative
-  assert-that > @
-    -3.abs
-    $.equal-to 3
-
-[] > abs-zero
-  assert-that > @
-    0.abs
-    $.equal-to 0
-
 [] > to-bytes-and-backwards
   assert-that > @
     as-int.
@@ -334,21 +233,6 @@
   assert-that > @
     42.as-bytes
     $.equal-to 42
-
-[] > xor-3-6
-  assert-that > @
-    3.xor 6
-    $.equal-to 5
-
-[] > left-1-2
-  assert-that > @
-    1.left 2
-    $.equal-to 4
-
-[] > right-8-2
-  assert-that > @
-    8.right 2
-    $.equal-to 2
 
 [] > as-hash-equals-to-similar-values
   assert-that > @
@@ -373,97 +257,3 @@
     $.not
       $.equal-to
         42.as-hash
-
-[] > or-1-2
-  assert-that > @
-    1.or 2
-    $.equal-to 3
-
-[] > and-3-6
-  assert-that > @
-    3.and 6
-    $.equal-to 2
-
-[] > mod-1-2
-  assert-that > @
-    1.mod 2
-    $.equal-to 1
-
-[] > mod-0-5
-  assert-that > @
-    0.mod 5
-    $.equal-to 0
-
-[] > mod-0-15-neg
-  assert-that > @
-    0.mod -15
-    $.equal-to 0
-
-[] > mod-1-neg-7
-  assert-that > @
-    -1.mod 7
-    $.equal-to -1
-
-[] > mod-16-200-neg
-  assert-that > @
-    16.mod -200
-    $.equal-to 16
-
-[] > pow-test
-  assert-that > @
-    2.pow 4
-    $.equal-to 16
-
-[] > power-is-zero
-  assert-that > @
-    2.pow 0
-    $.equal-to 1
-
-[] > power-is-negative-zero
-  assert-that > @
-    2.pow -0
-    $.equal-to 1
-
-[] > power-is-negative
-  assert-that > @
-    984782.pow -12341
-    $.equal-to 0
-
-[] > power-of-two
-  assert-that > @
-    3.pow 2
-    $.equal-to 9
-
-[] > power-of-big-number
-  assert-that > @
-    999999999.pow 5
-    $.equal-to 9223372036854775807
-
-[] > power-of-zero
-  assert-that > @
-    0.pow 145
-    $.equal-to 0
-
-[] > negative-power-of-zero
-  assert-that > @
-    (0.pow -567).msg
-    $.equal-to "0 cannot be raised to a negative power"
-
-[] > mod-into-while-and-seq-objects
-  [condition body] > while-loop
-    while. > @
-      condition
-      [i]
-        body > @
-
-  memory > n
-
-  assert-that > @
-    seq
-      n.write 0
-      while-loop
-        n.lt 5
-        seq
-          n.write (n.plus 1)
-          (n.mod 2).eq 0
-    $.equal-to 5

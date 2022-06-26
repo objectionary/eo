@@ -22,14 +22,9 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
++version 0.23.15
 +alias org.eolang.hamcrest.assert-that
 +junit
-
-[] > converts-to-string
-  assert-that > @
-    3.1415926.as-string
-    $.equal-to "3.1415926"
 
 [] > less-true
   assert-that > @
@@ -50,26 +45,20 @@
 
 [] > greater-true
   assert-that > @
-    assert-that
-      -200.1
-      $.greater-than -1000.0
-    $.anything
+    -200.1
+    $.greater-than -1000.0
 
 [] > greater-false
   assert-that > @
-    assert-that
-      0.5
-      $.not
-        $.greater-than 100.1
-    $.anything
+    0.5
+    $.not
+      $.greater-than 100.1
 
 [] > greater-equal
   assert-that > @
-    assert-that
-      0.7
-      $.not
-        $.greater-than 0.7
-    $.anything
+    0.7
+    $.not
+      $.greater-than 0.7
 
 [] > leq-true
   assert-that > @
@@ -130,21 +119,6 @@
     $.not
       $.equal-to "Hello"
 
-[] > neq-true
-  assert-that > @
-    neq.
-      123.5
-      125.2
-    $.equal-to TRUE
-
-[] > neq-false
-  assert-that > @
-    neq.
-      -133.9
-      -133.9
-    $.not
-      $.equal-to TRUE
-
 [] > times-by-zero
   assert-that > @
     times.
@@ -192,21 +166,6 @@
     886.485.neg
     $.equal-to -886.485
 
-[] > signum-negative
-  assert-that > @
-    -345.17.signum
-    $.equal-to -1.0
-
-[] > signum-positive
-  assert-that > @
-    145.18.signum
-    $.equal-to 1.0
-
-[] > signum-zero
-  assert-that > @
-    0.0.signum
-    $.equal-to 0.0
-
 [] > sub-test
   assert-that > @
     minus.
@@ -220,56 +179,6 @@
       15.5
       0.5
     $.equal-to 31.0
-
-[] > abs-positive
-  assert-that > @
-    13.5.abs
-    $.equal-to 13.5
-
-[] > abs-negative
-  assert-that > @
-    -17.9.abs
-    $.equal-to 17.9
-
-[] > abs-zero
-  assert-that > @
-    0.0.abs
-    $.equal-to 0.0
-
-[] > as-int-works
-  assert-that > @
-    3.57.as-int
-    $.equal-to 3
-
-[] > sin-zero
-  assert-that > @
-    0.0.sin
-    $.equal-to 0.0
-
-[] > sin-pi-div-2
-  assert-that > @
-    1.5707963267948966.sin
-    $.equal-to 1.0
-
-[] > sin-pi-as-int
-  assert-that > @
-    (3.141592653589793.sin).as-int
-    $.equal-to 0
-
-[] > cos-zero
-  assert-that > @
-    0.0.cos
-    $.equal-to 1.0
-
-[] > cos-pi-div-2-as-int
-  assert-that > @
-    (1.5707963267948966.cos).as-int
-    $.equal-to 0
-
-[] > cos-pi
-  assert-that > @
-    3.141592653589793.cos
-    $.equal-to -1.0
 
 [] > to-bytes-and-backwards
   assert-that > @

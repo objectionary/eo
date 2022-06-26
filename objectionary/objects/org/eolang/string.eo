@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
-+rt jvm org.eolang:eo-runtime:0.23.14
++version 0.23.15
++rt jvm org.eolang:eo-runtime:0.23.15
 
 [] > string
   # Is true if both objects are equal
@@ -35,21 +35,8 @@
   # Get the length of it
   [] > length /int
 
-  # Trim it from both sides
-  [] > trim /string
-
-  # Make an integer out of this string
-  [] > as-int /int
-
-  # Make a float out of this string
-  [] > as-float /float
-
   # Turn it into bytes.
   [] > as-bytes /bytes
-
-  # Joins an array of strings, using current string
-  # as a delimiter
-  [items] > joined /string
 
   # Converts this to hash
   [] > as-hash /int

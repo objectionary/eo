@@ -20,17 +20,51 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.io
++package org.eolang.math
 +home https://github.com/objectionary/eo
 +version 0.23.15
-+alias sprintf org.eolang.txt.sprintf
-+alias stdout org.eolang.io.stdout
-+alias org.eolang.math.random
++alias org.eolang.math.angle
++alias org.eolang.math.number
++alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > prints-string-to-console
-  stdout > @
-    sprintf
-      "This is the random number %f, %s!\n"
-      random
-      "Jeff"
+[] > sin-zero
+  assert-that > @
+    angle 0.0
+    .sin
+    $.equal-to 0.0
+
+[] > sin-pi-div-2
+  assert-that > @
+    angle 1.5707963267948966
+    .sin
+    $.equal-to 1.0
+
+[] > sin-pi-as-int
+  assert-that > @
+    number
+      angle 3.141592653589793
+      .sin
+    .as-int
+    $.equal-to 0
+
+[] > cos-zero
+  assert-that > @
+    angle 0.0
+    .cos
+    $.equal-to 1.0
+
+[] > cos-pi-div-2-as-int
+  assert-that > @
+    number
+      angle 1.5707963267948966
+      .cos
+    .as-int
+    $.equal-to 0
+
+[] > cos-pi
+  assert-that > @
+    angle 3.141592653589793
+    .cos
+    $.equal-to -1.0
+

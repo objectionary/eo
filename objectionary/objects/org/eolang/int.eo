@@ -22,52 +22,16 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.14
-+rt jvm org.eolang:eo-runtime:0.23.14
++version 0.23.15
++rt jvm org.eolang:eo-runtime:0.23.15
 
 [] > int
-
-  [x] > xor
-    as-int. > @
-      xor.
-        ^.as-bytes
-        x.as-bytes
-
-  [x] > or
-    as-int. > @
-      or.
-        ^.as-bytes
-        x.as-bytes
-
-  [x] > and
-    as-int. > @
-      and.
-        ^.as-bytes
-        x.as-bytes
-
-  # Calculate bitwise left shift
-  [x] > left
-    as-int. > @
-      left.
-        ^.as-bytes
-        x
-
-  # Calculate bitwise right shift
-  [x] > right
-    as-int. > @
-      right.
-        ^.as-bytes
-        x
 
   # Tests that $ = x
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
-
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
 
   # Tests that $ < x
   [x] > lt
@@ -107,57 +71,9 @@
   # Divide this one by another int
   [x] > div /int
 
-  # Calculate MOD
-  [x] > mod
-    ^ > dividend
-    x > divisor
-
-    if. > @
-      divisor.eq 0
-      []
-        "mod by zero" > msg
-      if.
-        dividend.gt 0
-        abs-mod
-        neg.
-          abs-mod
-
-    [] > abs-mod
-      dividend.abs > int-abs
-      divisor.abs > x-abs
-      minus. > @
-        int-abs
-        x-abs.times
-          int-abs.div x-abs
-
-  # Make it power x
-  [x] > pow
-    if. > @
-      and.
-        ^.eq 0
-        x.lt 0
-      []
-        "0 cannot be raised to a negative power" > msg
-      as-int.
-        pow.
-          ^.as-float
-          x.as-float
-
-  # Converts this to float
-  [] > as-float /float
-
-  # Converts this to string
-  [] > as-string /string
-
   # Converts this to bytes
   [] > as-bytes /bytes
 
   # Converts this to hash
   [] > as-hash /int
 
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    if. > @
-      ^.gte 0
-      ^
-      ^.neg
