@@ -68,6 +68,7 @@ public final class DiscoverMojo extends SafeMojo {
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
                     ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 }
+                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
                 discovered.add(name);
             }
             tojo.set(AssembleMojo.ATTR_DISCOVERED, Integer.toString(names.size()));

@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -88,7 +89,7 @@ public final class ParseMojo extends SafeMojo {
                 if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
                     Logger.debug(
                         this, "Already parsed %s to %s (it's newer than the source)",
-                        tojo.get("id"), Save.rel(xmir)
+                        tojo.get(Tojos.KEY), Save.rel(xmir)
                     );
                     continue;
                 }
@@ -112,7 +113,7 @@ public final class ParseMojo extends SafeMojo {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-        final String name = tojo.get("id");
+        final String name = tojo.get(Tojos.KEY);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             new Syntax(

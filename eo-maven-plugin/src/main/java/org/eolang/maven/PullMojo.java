@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -111,7 +112,7 @@ public final class PullMojo extends SafeMojo {
             for (final Tojo tojo : tojos) {
                 tojo.set(
                     AssembleMojo.ATTR_EO,
-                    this.pull(tojo.get("id")).toAbsolutePath().toString()
+                    this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
                 );
             }
             Logger.info(

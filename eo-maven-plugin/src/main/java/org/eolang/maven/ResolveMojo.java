@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -147,7 +148,7 @@ public final class ResolveMojo extends SafeMojo {
                 && !this.discoverSelf) {
                 Logger.debug(
                     this, "Program %s/%s skipped due to its zero version",
-                    tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION)
+                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
                 );
                 continue;
             }
@@ -157,7 +158,7 @@ public final class ResolveMojo extends SafeMojo {
             if (!dep.isPresent()) {
                 Logger.debug(
                     this, "No dependencies for %s/%s",
-                    tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION)
+                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
                 );
                 continue;
             }
@@ -166,14 +167,14 @@ public final class ResolveMojo extends SafeMojo {
             if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s/%s skipped: %s",
-                    tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION),
+                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
                     coords
                 );
                 continue;
             }
             Logger.info(
                 this, "Dependency found for %s/%s: %s",
-                tojo.get("id"), tojo.get(AssembleMojo.ATTR_VERSION), coords
+                tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION), coords
             );
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
