@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -109,7 +110,7 @@ public final class RegisterMojo extends SafeMojo {
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
             final String name = unplace.make(file);
-            if (!this.scopedTojos().select(t -> t.get("id").equals(name)).isEmpty()) {
+            if (!this.scopedTojos().select(t -> t.get(Tojos.KEY).equals(name)).isEmpty()) {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }

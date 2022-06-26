@@ -20,26 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.txt
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > string
-  # Is true if both objects are equal
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
-
-  # Get the length of it
-  [] > length /int
-
-  # Turn it into bytes.
-  [] > as-bytes /bytes
-
-  # Converts this to hash
-  [] > as-hash /int
-
-  # Takes a piece of a string as another string
-  [start len] > slice /string
+# Reads formatted input from a string.
+# This object with two free attributes:
+# 1. format - is a formatter string (e.g. "Hello, %s!")
+# 2. read - is a string where data exists (e.g. "Hello, John!")
+# returns an array of formatted values (e.g. * "John").
+[format read] > sscanf /array

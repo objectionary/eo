@@ -31,27 +31,6 @@
     " ".length
     $.equal-to 1
 
-[] > joins-array
-  assert-that > @
-    "..".joined
-      * "foo" "друг" "bar"
-    $.equal-to "foo..друг..bar"
-
-[] > trims-string
-  assert-that > @
-    "Hello, dude  ".trim
-    $.equal-to "Hello, dude"
-
-[] > turns-string-into-int
-  assert-that > @
-    "42".as-int
-    $.equal-to 42
-
-[] > turns-string-into-float
-  assert-that > @
-    "3.1415926".as-float
-    $.equal-to 3.1415926
-
 [] > turns-string-into-bytes
   assert-that > @
     "€ друг".as-bytes

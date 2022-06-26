@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOtxt;
 
 import org.eolang.AtComposite;
 import org.eolang.Data;
@@ -36,14 +36,16 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "string.trim")
-public class EOstring$EOtrim extends PhDefault {
+@XmirObject(oname = "text.trim")
+public class EOtext$EOtrim extends PhDefault {
 
-    public EOstring$EOtrim(final Phi sigma) {
+    public EOtext$EOtrim(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(String.class).trim()
-        )));
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi text = rho.attr("ρ").get();
+            final String s = new Param(text, "s").strong(String.class);
+            return new Data.ToPhi(s.trim());
+        }));
     }
 
 }

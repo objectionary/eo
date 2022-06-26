@@ -80,6 +80,12 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_DISCOVERED = "discovered";
 
     /**
+     * Where this object was discovered.
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    public static final String ATTR_DISCOVERED_AT = "discovered-at";
+
+    /**
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";

@@ -21,38 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package EOorg.EOeolang.EOtxt;
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Param;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * JOIN.
+ * Test case for {@link EOtext$EOtrim}.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "string.joined")
-public class EOstring$EOjoined extends PhDefault {
+public final class EOtextEOtrimTest {
 
-    public EOstring$EOjoined(final Phi sigma) {
-        super(sigma);
-        this.add("items", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final String delim = new Param(rho).strong(String.class);
-            final Phi[] items = new Param(rho, "items").strong(Phi[].class);
-            final String[] texts = new String[items.length];
-            for (int idx = 0; idx < texts.length; ++idx) {
-                texts[idx] = new Dataized(items[idx]).take(String.class);
-            }
-            return new Data.ToPhi(String.join(delim, texts));
-        }));
+    @Test
+    public void trimsString() {
+        final String s = "Hello, world!  ";
+        final Phi text = new EOtext(Phi.Φ);
+        text.attr("s").put(new Data.ToPhi(s));
+        final Phi phi = new EOtext$EOtrim(text);
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("Hello, world!")
+        );
     }
 
 }

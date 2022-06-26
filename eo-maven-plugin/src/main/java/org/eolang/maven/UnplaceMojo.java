@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -77,7 +78,7 @@ public final class UnplaceMojo extends SafeMojo {
                 this.placed.toPath(), this.placedFormat
             ).make().select(t -> true);
             for (final Tojo tojo : tojos) {
-                Files.delete(Paths.get(tojo.get("id")));
+                Files.delete(Paths.get(tojo.get(Tojos.KEY)));
             }
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",
