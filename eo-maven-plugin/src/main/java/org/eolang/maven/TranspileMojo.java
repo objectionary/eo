@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.parser.ErrorSeverity;
 
 /**
  * Compile.
@@ -118,9 +117,10 @@ public final class TranspileMojo extends SafeMojo {
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
             new Sanitized(
-                transpiled,
+                transpiled
+            ).sanitize(
                 failures(this.failOnWarning)
-            ).sanitize();
+            );
             saved += new JavaFiles(
                 transpiled,
                 this.generatedDir.toPath()
@@ -155,10 +155,10 @@ public final class TranspileMojo extends SafeMojo {
      * @param warnfail Fail on warning flag
      * @return Constructed set
      */
-    private static Set<ErrorSeverity> failures(final boolean warnfail) {
-        final Set<ErrorSeverity> failures = new HashSet<>(3);
+    private static Set<String> failures(final boolean warnfail) {
+        final Set<String> failures = new HashSet<>(3);
         if (warnfail) {
-            failures.add(ErrorSeverity.WARNING);
+            failures.add(Sanitized.WARNING);
         }
         return failures;
     }

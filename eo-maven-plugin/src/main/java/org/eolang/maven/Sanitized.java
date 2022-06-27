@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.eolang.parser.ErrorSeverity;
 
 /**
  * Sanitized XMIR files.
@@ -40,47 +39,57 @@ import org.eolang.parser.ErrorSeverity;
  */
 public class Sanitized {
     /**
+     * Error severity.
+     */
+    public static final String ERROR = "error";
+
+    /**
+     * Warning severity.
+     */
+    public static final String WARNING = "warning";
+
+    /**
+     * Advice severity.
+     */
+    public static final String ADVICE = "advice";
+
+    /**
      * XML to validate.
      */
     private final Path source;
 
     /**
-     * Severities to fail on.
-     */
-    private final Set<ErrorSeverity> failures;
-
-    /**
      * Ctor.
      * @param source Path to XMIR to validate
-     * @param failures Set of severities to fail on
      */
-    public Sanitized(final Path source, final Set<ErrorSeverity> failures) {
+    public Sanitized(final Path source) {
         this.source = source;
-        this.failures = failures;
     }
 
     /**
      * Check for errors.
+     * @param failures Severities to fail on
      * @throws FileNotFoundException If source file is missing
      */
-    public void sanitize() throws FileNotFoundException {
+    public void sanitize(final Set<String> failures) throws FileNotFoundException {
         final XML xml = new XMLDocument(this.source);
         final List<XML> errors = xml.nodes("/program/errors/error");
         final String program = xml.xpath("/program/@name").get(0);
         for (final XML error : errors) {
-            final ErrorSeverity svty = severity(error);
-            if (svty.equals(ErrorSeverity.ERROR)) {
+            final String svty = severity(error);
+            if (svty.equals(Sanitized.ERROR)) {
                 this.log(error, program, Logger::error);
             } else if (
-                ErrorSeverity.WARNING.equals(svty)
-                    || ErrorSeverity.ADVICE.equals(svty)) {
+                Sanitized.WARNING.equals(svty)
+                    || Sanitized.ADVICE.equals(svty)) {
                 this.log(error, program, Logger::warn);
             }
         }
         this.fail(
             errors.stream()
                 .collect(Collectors.groupingBy(Sanitized::severity)),
-            program
+            program,
+            failures
         );
     }
 
@@ -89,31 +98,35 @@ public class Sanitized {
      * @param error Error node XML
      * @return Extracted severity
      */
-    private static ErrorSeverity severity(final XML error) {
+    private static String severity(final XML error) {
         final List<String> svts = error.xpath("@severity");
-        final ErrorSeverity svty;
+        final String svty;
         if (svts.isEmpty()) {
-            svty = ErrorSeverity.ERROR;
+            svty = Sanitized.ERROR;
         } else {
-            svty = new ErrorSeverity.EsBase(svts.get(0));
+            svty = svts.get(0);
         }
         return svty;
     }
 
     /**
      * Fail if needed for provided errors.
+     *
      * @param errors Severity to errors map
      * @param program Program being sanitized
+     * @param failures Severities to fail on
      */
-    private void fail(final Map<ErrorSeverity, List<XML>> errors, final String program) {
-        for (final ErrorSeverity severity: this.failures) {
+    private void fail(final Map<String, List<XML>> errors,
+        final String program,
+        final Set<String> failures) {
+        for (final String severity: failures) {
             if (errors.containsKey(severity)
                 && !errors.get(severity).isEmpty()) {
                 throw new IllegalStateException(
                     String.format(
                         "There are %d %s(s) in %s, see log above",
                         errors.get(severity).size(),
-                        severity.asText(),
+                        severity,
                         program
                     )
                 );
