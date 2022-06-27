@@ -71,10 +71,10 @@
     switch
       *
         FALSE
-        "FALSE"
+        "FALSE1"
       *
         FALSE
-        "FALSE"
+        "FALSE2"
     $.equal-to TRUE
 
 [] > switch-case-with-error
