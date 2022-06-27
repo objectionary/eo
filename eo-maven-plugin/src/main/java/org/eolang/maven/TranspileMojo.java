@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
@@ -105,24 +106,29 @@ public final class TranspileMojo extends SafeMojo {
     public void exec() throws IOException {
         final Transpiler cmp = new Transpiler(
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            this.targetDir.toPath().resolve(TranspileMojo.PRE),
-            failures(this.failOnWarning)
+            this.targetDir.toPath().resolve(TranspileMojo.PRE)
         );
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
-        int total = 0;
+        int saved = 0;
         for (final Tojo tojo : sources) {
-            final int done = cmp.transpile(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2)),
-                this.generatedDir.toPath()
+            final Path transpiled = cmp.transpile(
+                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
-            total += done;
+            new Sanitized(
+                transpiled,
+                failures(this.failOnWarning)
+            ).sanitize();
+            saved += new JavaFiles(
+                transpiled,
+                this.generatedDir.toPath()
+            ).save();
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
-            sources.size(), total, Save.rel(this.generatedDir.toPath())
+            sources.size(), saved, Save.rel(this.generatedDir.toPath())
         );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(
