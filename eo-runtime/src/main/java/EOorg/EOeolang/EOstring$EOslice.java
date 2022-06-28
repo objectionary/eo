@@ -50,19 +50,44 @@ public class EOstring$EOslice extends PhDefault {
             final int start = new Param(rho, "start").strong(Long.class).intValue();
             final int length = new Param(rho, "len").strong(Long.class).intValue();
             final int end = length + start;
-            if (start < 0 || start > end || end > str.length()) {
+            final String error = validate(start, end, str.length());
+            if (!error.isEmpty()) {
                 return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Parameters are out of bound: start %d, len: %d, string length: %d",
-                            start, length, str.length()
-                        )
-                    )
+                    new EOerror(Phi.Φ), "msg", new Data.ToPhi(error)
                 );
             }
             return new Data.ToPhi(str.substring(start, end));
         }));
+    }
+
+    /**
+     * Validate parameters.
+     * @param start Requested start
+     * @param end Requested end
+     * @param actual Actual length
+     * @return Message with error or empty string
+     */
+    private String validate(final int start, final int end, final int actual) {
+        String msg = "";
+        if (start < 0) {
+            msg = String.format(
+                "Start index must be greater than 0 but was %d",
+                start
+            );
+        }
+        if (start > end) {
+            msg = String.format(
+                "End index must be greater or equal to start but was %d<%d",
+                end, start
+            );
+        }
+        if (end > actual) {
+            msg = String.format(
+                "Start index + length must not exceed string length but was %d>%d",
+                end, actual
+            );
+        }
+        return msg;
     }
 
 }
