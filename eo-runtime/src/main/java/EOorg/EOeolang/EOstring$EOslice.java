@@ -77,13 +77,13 @@ public class EOstring$EOslice extends PhDefault {
         }
         if (start > end) {
             msg = String.format(
-                "End index must be greater or equal to start but was %d<%d",
+                "End index must be greater or equal to start but was %d < %d",
                 end, start
             );
         }
         if (end > actual) {
             msg = String.format(
-                "Start index + length must not exceed string length but was %d>%d",
+                "Start index + length must not exceed string length but was %d > %d",
                 end, actual
             );
         }
