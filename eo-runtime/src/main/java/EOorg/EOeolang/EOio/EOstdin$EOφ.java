@@ -34,16 +34,15 @@ import org.eolang.Phi;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * Standard Input. Consumes all data.
  *
  * @since 0.1
  */
-public class EOstdin$EOnext extends PhDefault {
+public class EOstdin$EOφ extends PhDefault {
 
-    public EOstdin$EOnext(final Phi parent) {
+    public EOstdin$EOφ(final Phi parent) {
         super(parent);
         this.add("φ", new AtComposite(this, rho -> {
             try (BufferedInputStream bis = new BufferedInputStream(System.in);
