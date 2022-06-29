@@ -25,7 +25,6 @@ package EOorg.EOeolang.EOio;
 
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
-
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
 import org.eolang.PhMethod;
@@ -52,82 +51,82 @@ public final class EOstdinTest {
 
     @Test
     public void nextLineOneLineTest() {
-        String expectedResult = "this is a test input!";
-        mockSystemIn(expectedResult + "\n");
+        String expected = "this is a test input!";
+        mockSystemIn(expected + "\n");
 
-        final Phi nextLineCopy = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "nextLine");
-        final String gatheredInput = new Dataized(nextLineCopy).take(String.class);
+        final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
-            gatheredInput,
-            Matchers.equalTo(expectedResult)
+            actual,
+            Matchers.equalTo(expected)
         );
     }
 
     @Test
     public void nextLineMultiLineTest() {
-        String expectedResult = "this is a test input!";
-        String input = expectedResult + "\nanother line\nyet another line";
+        String expected = "this is a test input!";
+        String input = expected + "\nanother line\nyet another line";
         mockSystemIn(input);
 
-        final Phi nextLineCopy = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "nextLine");
-        final String gatheredInput = new Dataized(nextLineCopy).take(String.class);
+        final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
-            gatheredInput,
-            Matchers.equalTo(expectedResult)
+            actual,
+            Matchers.equalTo(expected)
         );
     }
 
     @Test
     public void nextLineEmptyTest() {
-        String input = "";
-        mockSystemIn(input);
-        final Phi result = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "nextLine");
+        String expected = "";
+        mockSystemIn(expected);
+        final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         MatcherAssert.assertThat(
             new Dataized(
-                result.attr("msg").get()
+                phi.attr("msg").get()
             ).take(String.class),
             Matchers.equalTo("There is no line in the standard input stream to consume")
         );
         Assertions.assertThrows(Exception.class, () -> {
-            new Dataized(result).take(String.class);
+            new Dataized(phi).take(String.class);
         });
     }
 
     @Test
     public void stdinOneLineTest() {
-        String input = "this is a test input!\n";
-        mockSystemIn(input);
+        String expected = "this is a test input!\n";
+        mockSystemIn(expected);
 
-        final Phi stdinCopy = new PhCopy(new EOstdin(Phi.Φ));
-        final String gatheredInput = new Dataized(stdinCopy).take(String.class);
+        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
+        final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
-            gatheredInput,
-            Matchers.equalTo(input)
+            actual,
+            Matchers.equalTo(expected)
         );
     }
 
     @Test
     public void stdinMultiLineTest() {
-        String input = "this is a test input!\nanother line\nyet another line";
-        mockSystemIn(input);
+        String expected = "this is a test input!\nanother line\nyet another line";
+        mockSystemIn(expected);
 
-        final Phi stdinCopy = new PhCopy(new EOstdin(Phi.Φ));
-        final String gatheredInput = new Dataized(stdinCopy).take(String.class);
+        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
+        final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
-            gatheredInput,
-            Matchers.equalTo(input)
+            actual,
+            Matchers.equalTo(expected)
         );
     }
 
     @Test
     public void stdinEmptyTest() {
-        String input = "";
-        mockSystemIn(input);
-        final Phi stdinCopy = new PhCopy(new EOstdin(Phi.Φ));
-        final String gatheredInput = new Dataized(stdinCopy).take(String.class);
+        String expected = "";
+        mockSystemIn(expected);
+        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
+        final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
-            gatheredInput,
-            Matchers.equalTo(input)
+            actual,
+            Matchers.equalTo(expected)
         );
     }
 

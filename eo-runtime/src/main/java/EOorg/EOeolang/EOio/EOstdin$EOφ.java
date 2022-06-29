@@ -25,20 +25,19 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 /**
  * Standard Input. Consumes all data.
  *
- * @since 0.1
+ * @since 0.23
  */
 public class EOstdin$EOφ extends PhDefault {
 

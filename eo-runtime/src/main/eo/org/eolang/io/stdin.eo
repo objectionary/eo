@@ -28,7 +28,7 @@
 [] > stdin
   # Consumes only one line from the standard input stream
   # Datarizes to an error object if there is no line to consume
-  [] > nextLine /string
+  [] > next-line /string
 
   # Consumes all data from the standard input stream
   [] > @ /string

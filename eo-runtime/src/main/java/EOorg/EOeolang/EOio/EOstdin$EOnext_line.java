@@ -25,22 +25,21 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
+import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 
-import java.util.Scanner;
-
 /**
  * Standard Input. Consumes only one line.
  *
- * @since 0.1
+ * @since 0.23
  */
-public class EOstdin$EOnextLine extends PhDefault {
+public class EOstdin$EOnext_line extends PhDefault {
 
-    public EOstdin$EOnextLine(final Phi parent) {
+    public EOstdin$EOnext_line(final Phi parent) {
         super(parent);
         this.add("φ", new AtComposite(this, rho -> {
             try (Scanner sc = new Scanner(System.in)) {
