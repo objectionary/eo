@@ -127,11 +127,14 @@ public final class TranspileMojo extends SafeMojo {
             final Path transpiled = cmp.transpile(
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
-            new Sanitized(
-                transpiled
-            ).sanitize(
-                failures(this.failOnWarning, this.failOnError)
-            );
+            final Set<String> failures = new HashSet<>(3);
+            if (this.failOnWarning) {
+                failures.add(Sanitized.WARNING);
+            }
+            if (this.failOnError) {
+                failures.add(Sanitized.ERROR);
+            }
+            new Sanitized(transpiled).sanitize(failures);
             saved += new JavaFiles(
                 transpiled,
                 this.generatedDir.toPath()
@@ -159,22 +162,5 @@ public final class TranspileMojo extends SafeMojo {
                 Save.rel(this.generatedDir.toPath())
             );
         }
-    }
-
-    /**
-     * Construct severities to fail on.
-     * @param warnfail Fail on warning flag
-     * @param errfail Fail on error flag
-     * @return Constructed set
-     */
-    private static Set<String> failures(final boolean warnfail, final boolean errfail) {
-        final Set<String> failures = new HashSet<>(3);
-        if (warnfail) {
-            failures.add(Sanitized.WARNING);
-        }
-        if (errfail) {
-            failures.add(Sanitized.ERROR);
-        }
-        return failures;
     }
 }
