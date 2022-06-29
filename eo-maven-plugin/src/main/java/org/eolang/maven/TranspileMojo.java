@@ -85,6 +85,17 @@ public final class TranspileMojo extends SafeMojo {
     private boolean failOnWarning;
 
     /**
+     * Whether we should fail on error.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.23.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnError",
+        defaultValue = "true")
+    private boolean failOnError = true;
+
+    /**
      * Add to source root.
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -119,7 +130,7 @@ public final class TranspileMojo extends SafeMojo {
             new Sanitized(
                 transpiled
             ).sanitize(
-                failures(this.failOnWarning)
+                failures(this.failOnWarning, this.failOnError)
             );
             saved += new JavaFiles(
                 transpiled,
@@ -153,12 +164,16 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Construct severities to fail on.
      * @param warnfail Fail on warning flag
+     * @param errfail Fail on error flag
      * @return Constructed set
      */
-    private static Set<String> failures(final boolean warnfail) {
+    private static Set<String> failures(final boolean warnfail, final boolean errfail) {
         final Set<String> failures = new HashSet<>(3);
         if (warnfail) {
             failures.add(Sanitized.WARNING);
+        }
+        if (errfail) {
+            failures.add(Sanitized.ERROR);
         }
         return failures;
     }
