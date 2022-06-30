@@ -133,12 +133,10 @@
     1
     2
   assert-that > @
-    assert-that
-      anArray
-      $.array-each
-        $.equal-to 1
-        $.equal-to 2
-    $.anything
+    anArray
+    $.array-each
+      $.equal-to 1
+      $.equal-to 2
 
 # check that array.is-empty works properly
 [] > should-not-be-empty
