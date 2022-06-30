@@ -50,44 +50,44 @@ public class EOstring$EOslice extends PhDefault {
             final int start = new Param(rho, "start").strong(Long.class).intValue();
             final int length = new Param(rho, "len").strong(Long.class).intValue();
             final int end = length + start;
-            final String error = validate(start, end, str.length());
-            if (!error.isEmpty()) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg", new Data.ToPhi(error)
+            Phi result;
+            if (start < 0) {
+                result = createError(
+                    "Start index must be greater than 0 but was %d",
+                    start
                 );
+            } else if (start > end) {
+                result = createError(
+                    "End index must be greater or equal to start but was %d < %d",
+                    end, start
+                );
+            } else if (end > str.length()) {
+                result = createError(
+                    "Start index + length must not exceed string length but was %d > %d",
+                    end, str.length()
+                );
+            } else {
+                result = new Data.ToPhi(str.substring(start, end));
             }
-            return new Data.ToPhi(str.substring(start, end));
+            return result;
         }));
     }
 
     /**
-     * Validate parameters.
-     * @param start Requested start
-     * @param end Requested end
-     * @param actual Actual length
-     * @return Message with error or empty string
+     * Building error.
+     * @param msg Formatted string for error message
+     * @param args Arguments for the formatted string
+     * @return Phi containing error
      */
-    private String validate(final int start, final int end, final int actual) {
-        String msg = "";
-        if (start < 0) {
-            msg = String.format(
-                "Start index must be greater than 0 but was %d",
-                start
-            );
-        }
-        if (start > end) {
-            msg = String.format(
-                "End index must be greater or equal to start but was %d < %d",
-                end, start
-            );
-        }
-        if (end > actual) {
-            msg = String.format(
-                "Start index + length must not exceed string length but was %d > %d",
-                end, actual
-            );
-        }
-        return msg;
+    private static Phi createError(String msg, Object... args) {
+        return new PhWith(
+            new EOerror(Phi.Φ),
+            "msg",
+            new Data.ToPhi(
+                String.format(msg,
+                    args
+                )
+            )
+        );
     }
-
 }
