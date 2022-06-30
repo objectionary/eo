@@ -46,16 +46,23 @@ public class EOstdin$EOφ extends PhDefault {
         this.add("φ", new AtComposite(this, rho -> {
             try (BufferedInputStream bis = new BufferedInputStream(System.in);
                  ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
-                int result = bis.read();
-                while (result != -1) {
-                    buf.write((byte) result);
-                    result = bis.read();
+                while (true) {
+                    int b = bis.read();
+                    if (b == -1) {
+                        break;
+                    }
+                    buf.write((byte) b);
                 }
                 return new Data.ToPhi(buf.toString());
             } catch (IOException e) {
                 return new PhWith(
                     new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("Cannot read from the standard input stream: " + e.getMessage())
+                    new Data.ToPhi(
+                        String.format(
+                            "Cannot read from the standard input stream: %s",
+                            e.getMessage()
+                        )
+                    )
                 );
             }
         }));

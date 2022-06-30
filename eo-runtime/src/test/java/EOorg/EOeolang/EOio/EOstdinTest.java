@@ -53,7 +53,6 @@ public final class EOstdinTest {
     public void nextLineOneLineTest() {
         String expected = "this is a test input!";
         mockSystemIn(expected + "\n");
-
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -67,7 +66,6 @@ public final class EOstdinTest {
         String expected = "this is a test input!";
         String input = expected + "\nanother line\nyet another line";
         mockSystemIn(input);
-
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -96,7 +94,6 @@ public final class EOstdinTest {
     public void stdinOneLineTest() {
         String expected = "this is a test input!\n";
         mockSystemIn(expected);
-
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -109,7 +106,6 @@ public final class EOstdinTest {
     public void stdinMultiLineTest() {
         String expected = "this is a test input!\nanother line\nyet another line";
         mockSystemIn(expected);
-
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
