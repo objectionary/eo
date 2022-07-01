@@ -50,7 +50,7 @@
     as-int. > @
       number
         times.
-          random
+          random.pseudo
           100.0
   foo.@ > f!
   assert-that > @

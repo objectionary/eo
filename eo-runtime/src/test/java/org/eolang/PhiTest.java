@@ -42,12 +42,15 @@ public final class PhiTest {
                     new PhMethod(
                         new PhMethod(
                             new PhMethod(
-                                Phi.Φ.attr("org").get(),
-                                "eolang"
+                                new PhMethod(
+                                    Phi.Φ.attr("org").get(),
+                                    "eolang"
+                                ),
+                            "math"
                             ),
-                        "math"
+                            "random"
                         ),
-                        "random"
+                        "pseudo"
                     )
                 )
             ).take(Double.class),
@@ -61,7 +64,7 @@ public final class PhiTest {
             new Dataized(
                 new PhCopy(
                     new PhMethod(
-                        Phi.Φ.attr("org.eolang.math").get(), "random"
+                        Phi.Φ.attr("org.eolang.math.random").get(), "pseudo"
                     )
                 )
             ).take(Double.class),
@@ -73,7 +76,8 @@ public final class PhiTest {
     public void takesDirectly() {
         MatcherAssert.assertThat(
             new Dataized(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("math").get().attr("random").get()
+                Phi.Φ.attr("org").get().attr("eolang").get().attr("math")
+                        .get().attr("random").get().attr("pseudo").get()
             ).take(Double.class),
             Matchers.greaterThan(-1.0d)
         );

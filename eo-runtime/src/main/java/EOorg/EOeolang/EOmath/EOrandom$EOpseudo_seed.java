@@ -24,8 +24,6 @@
 
 package EOorg.EOeolang.EOmath;
 
-import java.security.SecureRandom;
-import java.util.Random;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
@@ -33,19 +31,17 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * RANDOM.
+ * pseudo-seed.
  *
- * @since 0.1
+ * @since 1.0
  */
-@XmirObject(oname = "random")
-public class EOrandom extends PhDefault {
+@XmirObject(oname = "random.pseudo-seed")
+public class EOrandom$EOpseudo_seed extends PhDefault {
 
-    private static final Random RND = new SecureRandom();
-
-    public EOrandom(final Phi sigma) {
+    public EOrandom$EOpseudo_seed(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            EOrandom.RND.nextDouble()
+                System.currentTimeMillis()
         )));
     }
 
