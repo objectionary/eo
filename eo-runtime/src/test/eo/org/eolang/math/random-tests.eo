@@ -38,19 +38,15 @@
   random 123 > r
   assert-that > @
     and.
-      and.
-        and.
-          r.lt 1.0
-          not.
-            r.lt 0.0
-        and.
-          r.next.lt 1.0
-          not.
-            r.next.lt 0.0
-      and.
-        r.next.next.lt 1.0
-        not.
-          r.next.next.lt 0.0
+      r.lt 1.0
+      not.
+        r.lt 0.0
+      r.next.lt 1.0
+      not.
+        r.next.lt 0.0
+      r.next.next.lt 1.0
+      not.
+        r.next.next.lt 0.0
     $.is
       $.equal-to TRUE
 
