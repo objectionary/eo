@@ -155,6 +155,61 @@ public final class TranspileMojoTest {
     }
 
     @Test
+    public void testFailOnError(@TempDir final Path temp) throws Exception {
+        final Path wrong = temp.resolve("foo.wrong.eo");
+        final Path right = temp.resolve("foo.right.eo");
+        new Save(new ResourceOf("org/eolang/maven/witherror.eo"), wrong).save();
+        new Save(new ResourceOf("org/eolang/maven/mess.eo"), right).save();
+        final Path target = temp.resolve("target");
+        final Path generated = temp.resolve("generated");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+            .add("foo.wrong")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, wrong.toString());
+        new MonoTojos(new Csv(foreign))
+            .add("foo.right")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, right.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        new Moja<>(TranspileMojo.class)
+            .with("project", new MavenProjectStub())
+            .with("targetDir", target.toFile())
+            .with("generatedDir", generated.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .execute();
+        final Path mess = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
+        final Path main = generated.resolve("EOorg/EOeolang/EOexamples/EOmainTest.java");
+        MatcherAssert.assertThat(
+            String.format("The file \"%s\" wasn't created", mess),
+            Files.exists(mess),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format("The file \"%s\" was created", main),
+            Files.notExists(main),
+            Matchers.is(true)
+        );
+        Assertions.assertTrue(mess.toFile().setLastModified(0L));
+        final Path xmir = target.resolve("06-transpile")
+            .resolve("foo")
+            .resolve("right.xmir");
+        Assertions.assertTrue(Files.exists(xmir));
+    }
+
+    @Test
     public void testSimpleCompilation(@TempDir final Path temp)
         throws Exception {
         final String java = this.compile(
