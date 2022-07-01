@@ -77,7 +77,7 @@ public class EOstring$EOslice extends PhDefault {
      * Building error.
      * @param msg Formatted string for error message
      * @param args Arguments for the formatted string
-     * @return Phi containing error
+     * @return φ containing error
      */
     private static Phi createError(String msg, Object... args) {
         return new PhWith(
