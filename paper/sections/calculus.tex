@@ -149,6 +149,18 @@ and may further be simplified since the order of parameters is obvious:
 \end{split}
 \end{equation}
 
+An application without arguments is a copy of an object. For example,
+in these expressions the attribute \ff{p1} is bound to the same object
+as the attribute \ff{p}, while the attribute \ff{p2} is bound to a new
+object, a copy of \ff{p}:
+\begin{equation*}
+\begin{split}
+& \ff{p} \mapsto \ff{point}(\ff{5}, \ff{-3}),\\
+& \ff{p1} \mapsto \ff{p},\\
+& \ff{p2} \mapsto \ff{p}().\\
+\end{split}
+\end{equation*}
+
 \subsection{Parent and Home}
 
 \begin{eodefinition}\label{def:parent}

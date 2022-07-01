@@ -328,3 +328,18 @@
       n
       n
     $.equal-to 64
+
+[] > makes-shallow-copy
+  [] > a
+    memory' > v
+  [] > b
+    a > @
+  b' > b1
+  b' > b2
+  seq > @
+    b1.v.write 0
+    b2.v.write 1
+    assert-that
+      b1.v
+      $.equal-to 1
+
