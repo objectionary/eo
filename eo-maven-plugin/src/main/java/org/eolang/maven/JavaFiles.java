@@ -69,7 +69,8 @@ public class JavaFiles {
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
             Logger.info(
-                this, "No .java files created"
+                this, "No .java files created from %s",
+                Save.rel(this.source)
             );
         } else {
             for (final XML java : nodes) {
@@ -77,8 +78,8 @@ public class JavaFiles {
                 ++total;
             }
             Logger.info(
-                this, "Java generated to %s, created %d .java file(s)",
-                Save.rel(this.dest), nodes.size()
+                this, "Java generated from %s to %s, created %d .java file(s)",
+                Save.rel(this.source), Save.rel(this.dest), nodes.size()
             );
         }
         return total;
