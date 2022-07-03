@@ -47,6 +47,9 @@ eo: |
   +alias the/ symbol.is.not.allowed
   +alias the  symbol.is.not.allowed
   +alias
+  +alias with-dash
+  +alias with-dash org.eolang.with-dash
+  +alias org.eolang.with-dash
 
   [] > main
     (stdout "Hello, world!").print
