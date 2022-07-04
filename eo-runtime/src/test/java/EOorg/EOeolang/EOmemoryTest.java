@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,17 @@ public final class EOmemoryTest {
     private static final String WRITE = "write";
 
     @Test
+    public void writeAfterCopy() {
+        final Phi first = new EOmemory(Phi.Φ);
+        final Phi second = first.copy();
+        second.attr(0).put(new Data.ToPhi(1L));
+        MatcherAssert.assertThat(
+            new Dataized(second).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
     public void readsAndWrites() {
         final Phi mem = new EOmemory(Phi.Φ);
         final Phi text = new Data.ToPhi("Hello, world!");
@@ -88,6 +99,10 @@ public final class EOmemoryTest {
                 0, new Data.ToPhi(1L)
             )
         ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            new Dataized(mem).take(Long.class),
+            Matchers.equalTo(1L)
+        );
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -114,6 +129,27 @@ public final class EOmemoryTest {
     }
 
     @Test
+    public void makesTrueCopy() {
+        final Phi first = new EOmemory(Phi.Φ);
+        first.attr(0).put(new Data.ToPhi(1L));
+        final Phi second = first.copy();
+        new Dataized(
+            new PhWith(
+                second.attr("write").get(),
+                "x", new Data.ToPhi(2L)
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            new Dataized(first).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(second).take(Long.class),
+            Matchers.equalTo(2L)
+        );
+    }
+
+    @Test
     public void comparesOnFly() {
         final Phi mem = new EOmemory(Phi.Φ);
         new Dataized(
@@ -123,7 +159,7 @@ public final class EOmemoryTest {
             )
         ).take(Boolean.class);
         final Phi less = new PhWith(
-            new PhCopy(new PhMethod(mem, "less")),
+            new PhCopy(new PhMethod(mem, "lt")),
             0, new Data.ToPhi(10L)
         );
         MatcherAssert.assertThat(
@@ -157,7 +193,7 @@ public final class EOmemoryTest {
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0,
                 new PhWith(
-                    new PhCopy(new PhMethod(mem, "add")),
+                    new PhCopy(new PhMethod(mem, "plus")),
                     0, new Data.ToPhi(42L)
                 )
             )
@@ -167,4 +203,5 @@ public final class EOmemoryTest {
             Matchers.equalTo(43L)
         );
     }
+
 }

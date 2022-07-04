@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +35,10 @@ import java.util.Collection;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -101,14 +102,18 @@ public final class XMIRTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> samples() throws IOException {
+    private static Collection<String> samples() {
         final String dir = "org/eolang/parser/xmir-samples/";
-        return new Mapped<>(
-            file -> String.format("%s%s", dir, file),
-            new ListOf<>(
-                new TextOf(
-                    new ResourceOf(dir)
-                ).asString().split("\n")
+        return new ListOf<>(
+            new Mapped<>(
+                file -> String.format("%s%s", dir, file),
+                new ListOf<>(
+                    new UncheckedText(
+                        new TextOf(
+                            new ResourceOf(dir)
+                        )
+                    ).asString().split("\n")
+                )
             )
         );
     }

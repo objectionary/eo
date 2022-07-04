@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,9 @@ SOFTWARE.
     <!-- Not important -->
   </xsl:template>
   <xsl:template match="@line">
+    <!-- Not important -->
+  </xsl:template>
+  <xsl:template match="@pos">
     <!-- Not important -->
   </xsl:template>
   <xsl:template match="node()|@*">

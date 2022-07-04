@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,8 +45,10 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -77,6 +78,7 @@ public final class SnippetTest {
     @TempDir
     public Path temp;
 
+    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -110,9 +112,11 @@ public final class SnippetTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static String[] yamlSnippets() throws IOException {
-        return new TextOf(
-            new ResourceOf("org/eolang/maven/snippets/")
+    private static String[] yamlSnippets() {
+        return new UncheckedText(
+            new TextOf(
+                new ResourceOf("org/eolang/maven/snippets/")
+            )
         ).asString().split("\n");
     }
 
@@ -171,7 +175,6 @@ public final class SnippetTest {
             .execute();
         final Path generated = target.resolve("generated");
         new Moja<>(TranspileMojo.class)
-            .with("compiler", "canonical")
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
@@ -208,7 +211,7 @@ public final class SnippetTest {
         SnippetTest.exec(
             String.join(
                 " ",
-                new Joined<>(
+                new Joined<String>(
                     new ListOf<>(
                         "java",
                         "-Dfile.encoding=utf-8",

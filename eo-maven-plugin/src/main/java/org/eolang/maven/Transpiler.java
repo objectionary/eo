@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,28 +23,89 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
+import org.eolang.parser.ParsingTrain;
 
 /**
  * An abstract transpiler.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-interface Transpiler {
+final class Transpiler {
 
     /**
      * Extension for compiled sources in XMIR format (XML).
      */
-    String EXT = "xmir";
+    public static final String EXT = "xmir";
 
     /**
-     * Transform a single .xmir file to .java.
+     * Temp dir.
+     */
+    private final Path temp;
+
+    /**
+     * Dir with pre-files.
+     */
+    private final Path pre;
+
+    /**
+     * Ctor.
+     * @param tmp The temp
+     * @param ppre The pre
+     */
+    Transpiler(final Path tmp, final Path ppre) {
+        this.temp = tmp;
+        this.pre = ppre;
+    }
+
+    /**
+     * Transpile.
      *
      * @param file The path to the .xmir file
-     * @param generated The path to the directory, where .java files to be saved
-     * @return How many .java files generated
+     * @return Path to transpiled .xmir file
      * @throws IOException If any issues with I/O
      */
-    int transpile(Path file, Path generated) throws IOException;
+    public Path transpile(final Path file) throws IOException {
+        final XML input = new XMLDocument(file);
+        final String name = input.xpath("/program/@name").get(0);
+        final Place place = new Place(name);
+        final Path target = place.make(this.temp, Transpiler.EXT);
+        if (
+            target.toFile().exists()
+                && target.toFile().lastModified() >= file.toFile().lastModified()
+        ) {
+            Logger.info(
+                this, "XMIR %s (%s) already transpiled to %s",
+                Save.rel(file), name, Save.rel(target)
+            );
+        } else {
+            Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain().empty())).with(
+                Arrays.asList(
+                    "/org/eolang/maven/pre/classes.xsl",
+                    "/org/eolang/maven/pre/package.xsl",
+                    "/org/eolang/maven/pre/junit.xsl",
+                    "/org/eolang/maven/pre/rename-junit-inners.xsl",
+                    "/org/eolang/maven/pre/attrs.xsl",
+                    "/org/eolang/maven/pre/varargs.xsl",
+                    "/org/eolang/maven/pre/data.xsl",
+                    "/org/eolang/maven/pre/to-java.xsl"
+                )
+            ).back().back();
+            train = new SpyTrain(train, place.make(this.pre, ""));
+            final XML out = new Xsline(train).pass(input);
+            new Save(out.toString(), target).saveQuietly();
+        }
+        return target;
+    }
 }

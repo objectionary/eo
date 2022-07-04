@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > bool
@@ -31,10 +33,13 @@
       x.as-bytes
 
   # If true, return "t", otherwise "f"
-  [t f] > if /?
+  [t f] > if /t
 
   # NOT
-  [] > not /bool
+  [] > not
+    eq. > @
+      ^
+      FALSE
 
   # AND
   [x...] > and /bool
@@ -55,3 +60,5 @@
       01-
       00-
 
+  # Converts this to hash
+  [] > as-hash /int

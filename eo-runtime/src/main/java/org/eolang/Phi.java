@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,8 @@ public interface Phi extends Term {
      * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
+        private final Phi pkg = new PhPackage("");
+
         @Override
         public boolean equals(final Object obj) {
             return obj == this;
@@ -69,17 +71,19 @@ public interface Phi extends Term {
 
         @Override
         public void move(final Phi rho) {
-            //
+            throw new ExFailure("Can't #move() root object");
         }
 
         @Override
         public Attr attr(final int pos) {
-            return this.attr(String.format("#%d", pos));
+            throw new ExFailure(
+                String.format("Can't #attr(%d) in Φ", pos)
+            );
         }
 
         @Override
         public Attr attr(final String name) {
-            return new AtAbsent(name, " in Φ");
+            return this.pkg.attr(name);
         }
     };
 

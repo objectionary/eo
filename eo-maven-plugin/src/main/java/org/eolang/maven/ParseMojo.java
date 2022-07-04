@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,10 +34,10 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -66,6 +67,17 @@ public final class ParseMojo extends SafeMojo {
      */
     public static final String DIR = "01-parse";
 
+    /**
+     * Whether we should fail on error.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.23.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnError",
+        defaultValue = "true")
+    private boolean failOnError = true;
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
@@ -79,7 +91,7 @@ public final class ParseMojo extends SafeMojo {
                 if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
                     Logger.debug(
                         this, "Already parsed %s to %s (it's newer than the source)",
-                        tojo.get("id"), Save.rel(xmir)
+                        tojo.get(Tojos.KEY), Save.rel(xmir)
                     );
                     continue;
                 }
@@ -87,7 +99,11 @@ public final class ParseMojo extends SafeMojo {
             this.parse(tojo);
             ++total;
         }
-        Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
+        if (total == 0) {
+            Logger.warn(this, "No .EO sources parsed to XMIRs");
+        } else {
+            Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
+        }
     }
 
     /**
@@ -96,9 +112,10 @@ public final class ParseMojo extends SafeMojo {
      * @param tojo The tojo
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-        final String name = tojo.get("id");
+        final String name = tojo.get(Tojos.KEY);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             new Syntax(
@@ -106,11 +123,20 @@ public final class ParseMojo extends SafeMojo {
                 new InputOf(source),
                 new OutputTo(baos)
             ).parse();
-        } catch (final ParsingException ex) {
-            throw new IllegalArgumentException(
-                String.format("Failed to parse %s", source),
-                ex
+        // @checkstyle IllegalCatchCheck (1 line)
+        } catch (final RuntimeException ex) {
+            if (this.failOnError) {
+                throw new IllegalArgumentException(
+                    String.format("Failed to parse %s", source),
+                    ex
+                );
+            }
+            Logger.warn(
+                this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
+                source.toString(),
+                ex.getMessage()
             );
+            return;
         }
         final Path target = new Place(name).make(
             this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT

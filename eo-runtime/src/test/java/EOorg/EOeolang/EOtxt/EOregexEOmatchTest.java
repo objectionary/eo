@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package EOorg.EOeolang.EOtxt;
 
-import java.util.regex.Pattern;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -43,7 +42,7 @@ public final class EOregexEOmatchTest {
     /**
      * Method name.
      */
-    public static final String MATCH = "match";
+    private static final String MATCH = "match";
     /**
      * Attribute name.
      */
@@ -51,12 +50,15 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void matchesString() {
-        final Phi regex = new Data.ToPhi(Pattern.compile("([a-z]+)"));
+        final String r = "/([a-z]+)/";
+        final Phi regex = new EOregex(Phi.Φ);
+        regex.attr("r").put(new Data.ToPhi(r));
+        final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(regex, EOregexEOmatchTest.MATCH),
-                    EOregexEOmatchTest.TXT,
+                    new PhMethod(compiled, MATCH),
+                    TXT,
                     new Data.ToPhi("hello")
                 )
             ).take(Phi[].class).length,
@@ -65,13 +67,34 @@ public final class EOregexEOmatchTest {
     }
 
     @Test
-    public void doesntMatchString() {
-        final Phi regex = new Data.ToPhi(Pattern.compile("([A-Z]{2})"));
+    public void matchesStringWithEntirePattern() {
+        final String r = "/([a-z]+)/";
+        final Phi regex = new EOregex(Phi.Φ);
+        regex.attr(0).put(new Data.ToPhi(r));
+        final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhMethod(regex, EOregexEOmatchTest.MATCH),
-                    EOregexEOmatchTest.TXT,
+                    new PhMethod(compiled, MATCH),
+                    TXT,
+                    new Data.ToPhi("welcome")
+                )
+            ).take(Phi[].class).length,
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void doesntMatchString() {
+        final String r = "/([A-Z]{2})/";
+        final Phi regex = new EOregex(Phi.Φ);
+        regex.attr(0).put(new Data.ToPhi(r));
+        final Phi compiled = new EOregex$EOcompile(regex);
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(compiled, MATCH),
+                    TXT,
                     new Data.ToPhi("Hello, World!")
                 )
             ).take(Phi[].class).length,

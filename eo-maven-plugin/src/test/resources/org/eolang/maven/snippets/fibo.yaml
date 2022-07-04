@@ -6,11 +6,12 @@ args: ["main", "14"]
 eo: |
   +alias org.eolang.io.stdout
   +alias org.eolang.txt.sprintf
+  +alias org.eolang.math.number
 
   [args...] > main
     [n] > f
       if. > @
-        n.less 2
+        n.lt 2
         n
         add.
           f (n.sub 1)
@@ -18,5 +19,5 @@ eo: |
     stdout > @
       sprintf
         "The %dth fibo is %d"
-        (args.get 0).as-int > num
+        (number (args.get 0)).as-int > num
         f num

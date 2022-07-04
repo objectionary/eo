@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,13 +27,16 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@base and @base!='@' and @base!='&amp;' and @base!='^' and @base!='$' and not(@ref) and not(contains(@base, '.'))]">
+      <xsl:for-each select="//o[@base and @base!='@' and @base!='&amp;' and @base!='Q' and @base!='QQ' and @base!='^' and @base!='$' and not(@ref) and not(contains(@base, '.')) and not(@base = //meta[head='alias']/part[1])]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>unknown-names</xsl:text>
           </xsl:attribute>
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>error</xsl:text>
           </xsl:attribute>
           <xsl:text>The object "</xsl:text>
           <xsl:value-of select="@base"/>

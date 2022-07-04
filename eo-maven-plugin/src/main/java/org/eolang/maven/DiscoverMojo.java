@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.TreeSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
@@ -67,11 +68,14 @@ public final class DiscoverMojo extends SafeMojo {
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
                     ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 }
+                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
                 discovered.add(name);
             }
             tojo.set(AssembleMojo.ATTR_DISCOVERED, Integer.toString(names.size()));
         }
-        if (discovered.isEmpty()) {
+        if (tojos.isEmpty()) {
+            Logger.warn(this, "Nothing to discover, since there are no programs");
+        } else if (discovered.isEmpty()) {
             Logger.info(
                 this, "No foreign objects discovered in %d programs",
                 tojos.size()
@@ -94,7 +98,7 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = new HashSet<>(
+        final Collection<String> names = new TreeSet<>(
             new ListOf<>(
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
@@ -103,6 +107,8 @@ public final class DiscoverMojo extends SafeMojo {
                             " ",
                             "//o[",
                             "not(starts-with(@base,'.'))",
+                            " and @base != 'Q'",
+                            " and @base != 'QQ'",
                             " and @base != '^'",
                             " and @base != '$'",
                             " and @base != '&'",

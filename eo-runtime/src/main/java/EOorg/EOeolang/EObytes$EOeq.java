@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ package EOorg.EOeolang;
 import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
@@ -47,21 +46,17 @@ public class EObytes$EOeq extends PhDefault {
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtOnce(
-            new AtComposite(this, rho -> {
-                return new Data.ToPhi(
-                    Arrays.equals(
-                        new Dataized(
-                            new PhMethod(
-                                rho.attr("b").get(),
-                                "as-bytes"
-                            )
-                        ).take(byte[].class),
-                        new Param(rho).strong(byte[].class)
+        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
+            Arrays.equals(
+                new Dataized(
+                    new PhMethod(
+                        rho.attr("b").get(),
+                        "as-bytes"
                     )
-                );
-            }))
-        );
+                ).take(byte[].class),
+                new Param(rho).strong(byte[].class)
+            )
+        )));
     }
 
 }

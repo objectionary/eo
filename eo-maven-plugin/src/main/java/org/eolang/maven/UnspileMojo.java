@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,7 @@ public final class UnspileMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.classesDir",
         required = true,
         defaultValue = "${project.build.directory}/classes"
     )
@@ -66,6 +67,7 @@ public final class UnspileMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.generatedDir",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources"
     )
@@ -74,11 +76,14 @@ public final class UnspileMojo extends SafeMojo {
     /**
      * List of inclusion GLOB filters for finding .class files.
      */
-    @Parameter
-    private Set<String> includes = new SetOf<>("**/*.class");
+    @Parameter(property = "eo.includes")
+    private Set<String> includes;
 
     @Override
     public void exec() throws IOException {
+        if (this.includes == null) {
+            this.includes = new SetOf<>("**/*.class");
+        }
         new Walk(this.classesDir.toPath()).stream()
             .filter(
                 file -> this.includes.stream().anyMatch(

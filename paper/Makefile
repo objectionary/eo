@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2020-2021 Yegor Bugayenko
+# Copyright (c) 2020-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 
 TLROOT=$$(kpsewhich -var-value TEXMFDIST)
 PACKAGES=ffcode to-be-determined href-ul
-REPO=cqfn/eo
+REPO=objectionary/eo
 
 zip: *.tex sections/*.tex
 	rm -rf package
@@ -33,15 +33,14 @@ zip: *.tex sections/*.tex
 	cd package
 	cp ../eolang-paper.tex .
 	cp ../main.bib .
-	cp ../eo.sty .
 	for p in $(PACKAGES); do cp $(TLROOT)/tex/latex/$${p}/$${p}.sty .; done
 	cp -r ../sections .
 	version=$$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$(REPO)/releases/latest | jq -r '.tag_name')
 	echo "Version is: $${version}"
-	gsed -i "s|0\.0\.0|$${version}|" eolang-paper.tex
-	gsed -i "s|REPOSITORY|$(REPO)|" eolang-paper.tex
+	gsed -i "s|0\.0\.0|$${version}|g" eolang-paper.tex
+	gsed -i "s|REPOSITORY|$(REPO)|g" eolang-paper.tex
 	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
-	bibtex eolang-paper
+	biber eolang-paper
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	rm -rf *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc

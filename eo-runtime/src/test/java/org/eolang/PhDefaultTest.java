@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ public final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Foo(Phi.Φ);
         phi.attr(0).put(num);
         Assertions.assertThrows(
-            Attr.ReadOnlyException.class,
+            ExReadOnly.class,
             () -> phi.attr(0).put(num)
         );
     }
@@ -152,13 +152,41 @@ public final class PhDefaultTest {
     @Test
     public void resetsCacheOnCopy() {
         final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
-        phi.attr("add").get();
+        phi.attr("plus").get();
         final Phi copy = phi.copy();
-        copy.attr("add").get();
-        phi.attr("add").get();
+        copy.attr("plus").get();
+        phi.attr("plus").get();
         MatcherAssert.assertThat(
             PhDefaultTest.Dummy.count,
             Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    public void readsMultipleTimes() {
+        final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
+        final long total = 2L;
+        for (long idx = 0L; idx < total; ++idx) {
+            new Dataized(phi).take();
+        }
+        MatcherAssert.assertThat(
+            new Dataized(new PhMethod(phi, "count")).take(Long.class),
+            Matchers.equalTo(total)
+        );
+    }
+
+    @Test
+    public void readsMultipleTimesThroughAttribute() {
+        final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
+        final Phi eql = phi.attr("eq").get().copy();
+        eql.attr(0).put(new Data.ToPhi(true));
+        final long total = 3L;
+        for (long idx = 0L; idx < total; ++idx) {
+            eql.attr("Δ").get();
+        }
+        MatcherAssert.assertThat(
+            new Dataized(new PhMethod(phi, "count")).take(Long.class),
+            Matchers.equalTo(total)
         );
     }
 
@@ -187,6 +215,22 @@ public final class PhDefaultTest {
                     ++PhDefaultTest.Dummy.count;
                     return new Data.ToPhi(1L);
                 }
+            ));
+        }
+    }
+
+    public static class Counter extends PhDefault {
+        private long count;
+        public Counter(final Phi sigma) {
+            super(sigma);
+            this.add("φ", new AtComposite(
+                this, self -> {
+                    ++this.count;
+                    return new Data.ToPhi(new byte[] { (byte) 0x01 });
+                }
+            ));
+            this.add("count", new AtComposite(
+                this, self -> new Data.ToPhi(this.count)
             ));
         }
     }

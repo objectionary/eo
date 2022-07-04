@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,14 +44,15 @@ public class EObytes$EOright extends PhDefault {
     public EObytes$EOright(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            return new Data.ToPhi(
-                new BigInteger(array).shiftRight(
-                    new Param(rho, "x").strong(Long.class).intValue()
-                ).toByteArray()
-            );
-        }));
+        this.add("φ", new AtComposite(this, rho ->
+            new Data.ToPhi(
+                new Param(rho)
+                    .fromBytes(BigInteger.class)
+                    .shiftRight(
+                       new Param(rho, "x").strong(Long.class).intValue()
+                    ).toByteArray()
+            )
+        ));
     }
 
 }

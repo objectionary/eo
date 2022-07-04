@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ public final class AtVararg implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtVararg(this.array);
+        return new AtVararg();
     }
 
     @Override

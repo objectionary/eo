@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,8 @@ import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.cactoos.list.Mapped;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * Mutable mojo builder.
@@ -83,9 +84,11 @@ final class Moja<T extends AbstractMojo> {
      * @return Itself
      */
     public Moja<T> copy(final Object mojo) {
-        final Collection<String> mine = new Mapped<>(
-            Field::getName,
-            Moja.fields(this.type)
+        final Collection<String> mine = new ListOf<>(
+            new Mapped<>(
+                Field::getName,
+                Moja.fields(this.type)
+            )
         );
         for (final Field field : Moja.fields(mojo.getClass())) {
             if (!mine.contains(field.getName())) {

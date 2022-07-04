@@ -12,20 +12,20 @@ denoting grammar constructs:
   \ff{!} for turning objects into constants,
   \ff{:} for naming arguments,
   \ff{"} (double quotes) for string literals,
-  \ff{'} (single quotes) for one-character literals,
   \ff{@} for the \nospell{decoratee},
+  \ff{'} (apostroph) for explicit copying,
   \ff{\^{}} for referring to the parent object,
   and
   \ff{\$} for referring to the current object.
 Attributes, which are the only identifiers that exist in \eo{}, may have
 any Unicode symbols in their names, as long as they start with a small English letter
-and don't contain spaces or line breaks:
+and don't contain spaces, line breaks, or special symbols mentioned above:
 \ff{test-File} and
 \begin{CJK}{UTF8}{gbsn}
 \ff{i文件}
 \end{CJK}
  are valid identifiers.
-Java-notation is used for numbers, strings, and character literals.
+Java-notation is used for numbers and strings.
 
 \newcommand\sntx[1]{{\sffamily #1}}
 \begin{figure*}
@@ -70,15 +70,14 @@ Java-notation is used for numbers, strings, and character literals.
   \> \alt \T{application} \T{suffix} \\
   \> \alt \T{application} \V{␣} \T{application} \\
 \T{head} \df \opt{\V{...}} \grp{ \T{name} \opt{\V{'}} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
-  \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} } \\
+  \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \alt \V{Q} \alt \V{QQ} } \\
 \T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
-  \> \alt \T{char} \alt \T{float} \alt \T{regex} \\
+  \> \alt \T{float} \alt \T{regex} \\
 \T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \alt \V{-{}-} \\
 \T{bool} \df \V{TRUE} \alt \V{FALSE} \\
 \T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
 \T{string} \df \RE{"[\^{}"]*"} \\
 \T{integer} \df \RE{[+-]?\textbackslash{}d+|0x[a-f\textbackslash{}d]+} \\
-\T{char} \df \RE{'([\^{}']|\textbackslash{}\textbackslash{}\textbackslash{}d+)'} \\
 \T{regex} \df \RE{/.+/[a-z]*} \\
 \T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{\T{exp}} \\
 \T{exp} \df \RE{e(+|-)?\textbackslash{}d+} \\
@@ -109,7 +108,7 @@ which has a single \emph{identity} attribute \ff{isbn}:
 \end{ffcode}
 
 To make a new object with a specific ISBN, the \ff{book}
-has to \emph{copied}, with the \emph{data} as an argument:
+has to be \emph{copied}, with the \emph{data} as an argument:
 
 \begin{ffcode}
 book "978-1519166913" > b1
@@ -124,7 +123,7 @@ look like:
 \begin{ffcode}
 [isbn] > book2  |$\label{ln:book2}$|
   "Object Thinking" > title
-  memory > price |$\label{ln:book2-end}$|
+  memory 0 > price |$\label{ln:book2-end}$|
 \end{ffcode}
 
 The attribute \ff{title} is a constant, while the \ff{price}
@@ -141,7 +140,7 @@ abstract object \ff{set-price}:
 \begin{ffcode}
 [isbn] > book3 |$\label{ln:book3}$|
   "Object Thinking" > title
-  memory > price
+  memory 0 > price
   [p] > set-price
     ^.price.write p > @ |$\label{ln:book3-end}$|
 \end{ffcode}
@@ -155,19 +154,19 @@ book3.set-price 19.99
 \subsection{Indentation}
 
 This is an example of an abstract object \ff{vector}, where
-spaces are replaced with the ``␣'' symbol in order to demonstrate
+spaces are replaced with the ``\textvisiblespace'' symbol in order to demonstrate
 the importance of their presence in specific quantity
 (for example, there has to be exactly one space after the closing square bracket at the
 second line and the \ff{>} symbol, while two spaces will break the syntax):
 
-\begin{ffcode}
-#␣This is a vector in 2D space |$\label{ln:comment}$|
-[dx␣dy]␣>␣vector |$\label{ln:vector}$|
-␣␣sqrt.␣>␣length |$\label{ln:length}$|
-␣␣␣␣add.
-␣␣␣␣␣␣dx.pow 2
-␣␣␣␣␣␣dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
-\end{ffcode}
+\begin{ffcode*}{showspaces=true}
+# This is a vector in 2D space |$\label{ln:comment}$|
+[dx dy] > vector |$\label{ln:vector}$|
+  sqrt. > length |$\label{ln:length}$|
+    plus.
+      dx.pow 2
+      dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
+\end{ffcode*}
 
 The code at \lref{comment} is a \emph{comment}.
 Two \emph{free attributes} \ff{dx} and \ff{dy}
@@ -181,7 +180,7 @@ The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
 can be written in one line, using \emph{dot notation}:
 
 \begin{ffcode}
-((dx.pow 2).add (dy.pow 2)).sqrt > length
+((dx.pow 2).plus (dy.pow 2)).sqrt > length
 \end{ffcode}
 
 An \emph{inverse} dot notation is used in order to simplify
@@ -193,15 +192,15 @@ inverse notation, but it will look less readable:
 
 \begin{ffcode}
 dx.pow 2 |$\label{ln:dx-pow}$|
-.add
+.plus
   dy.pow 2 |$\label{ln:dx-pow-2}$|
 .sqrt > length |$\label{ln:dx-pow-3}$|
 \end{ffcode}
 
 Here, \lref{dx-pow} is the application of the object \ff{dx.pow} with
-a new argument \ff{2}. Then, the next line is the object \ff{add} taken
+a new argument \ff{2}. Then, the next line is the object \ff{plus} taken
 from the object created at the first line, using the dot notation. Then,
-\lref{dx-pow-2} is the argument passed to the object \ff{add}.
+\lref{dx-pow-2} is the argument passed to the object \ff{plus}.
 The code at \lref{dx-pow-3} takes the object \ff{sqrt} from the object constructed
 at the previous line, and gives it the name \ff{length}.
 
@@ -216,19 +215,19 @@ with one free attribute \ff{x} and two bound attributes \ff{succ} and \ff{prev}:
 
 \begin{ffcode}
 [x]
-  x.add 1 > succ
-  x.sub 1 > prev
+  x.plus 1 > succ
+  x.minus 1 > prev
 \end{ffcode}
 
-The arguments of \ff{add} and \ff{sub} are provided in a \emph{horizontal}
+The arguments of \ff{plus} and \ff{minus} are provided in a \emph{horizontal}
 mode, without the use of indentation. It is possible to rewrite this code
 in a \emph{vertical} mode, where indentation will be required:
 
 \begin{ffcode}
 [x] |$\label{ln:succ}$|
-  x.add > succ
+  x.plus > succ
     1
-  x.sub > prev
+  x.minus > prev
     1 |$\label{ln:succ-end}$|
 \end{ffcode}
 
@@ -236,7 +235,7 @@ This abstract object can also be written in a horizontal mode,
 because it is anonymous:
 
 \begin{ffcode}
-[x] (x.add 1 > succ) (x.sub 1 > prev)
+[x] (x.plus 1 > succ) (x.minus 1 > prev)
 \end{ffcode}
 
 \subsection{\eo{} to XML}\label{sec:xml}
@@ -250,7 +249,7 @@ this XML tree of elements and attributes:
   <o name="dx"/>
   <o name="dy"/>
   <o name="length" base=".sqrt">
-    <o base=".add">
+    <o base=".plus">
       <o base=".pow">
         <o base="dx"/>
         <o base="int" data="int">2</>
@@ -278,7 +277,7 @@ a special syntax for data, for example:
 
 \begin{ffcode}
 [r] > circle
-  r.mul 2 3.14 > circumference
+  r.times 3.14 > circumference
 \end{ffcode}
 
 This syntax would be translated to XMIR (XML based
@@ -287,9 +286,8 @@ data format explained in Sec.~\ref{sec:xmir}):
 \begin{ffcode}
 <o name="circle"> |$\label{ln:xml-circle}$|
   <o name="r"/>
-  <o base=".mul" name="circumference">
+  <o base=".times" name="circumference">
     <o base="r"/>  |$\label{ln:xml-circle-r}$|
-    <o base="int" data="int">2</o>
     <o base="float" data="float">3.14</o>
   </o>
 </o> |$\label{ln:xml-circle-end}$|
@@ -297,33 +295,32 @@ data format explained in Sec.~\ref{sec:xmir}):
 
 Each object, if it is not abstract, has a ``base'' attribute in XML,
 which contains that name of an abstract object to be copied. The
-objects \ff{int} and \ff{float} are abstracts, but their names
-can't be used directly in a program, similar to how \ff{r} or \ff{mul}
-are used. The only way to make a copy of the abstract object \ff{int}
-is to use a numeric literal like \ff{2}. The literal \ff{3.14}
-is turned into a copy of the object \ff{float}.
+object \ff{float} is abstract, but its name
+can't be used directly in a program, similar to how \ff{r} or \ff{times}
+are used. The only way to make a copy of the abstract object \ff{float}
+is to use a numeric literal like \ff{3.14}.
 
 The abstract objects which can't be used directly and can only be
 created by the compiler through \sntx{data}---are called \emph{data}.
 The examples of some possible data are in the Tab.~\ref{tab:types}.
 
-\begin{table}[H]
-\begin{tabular}{|l|l|l|}
-\hline
+\begin{table}
+\begin{tabularx}{\columnwidth}{l|X|l}
+\toprule
 Data & Example & Size \\
-\hline
+\midrule
 \ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
 \ff{string} & \ff{"Hello, \foreignlanguage{russian}{друг}!"} & 16 \\
-\ff{char} & \begin{CJK}{UTF8}{gbsn}\ff{'家'}\end{CJK} or \ff{'\textbackslash{}u5BB6'} & 2 \\
+  & \ff{"\textbackslash{}u5BB6"} or \begin{CJK}{UTF8}{gbsn}\ff{"家"}\end{CJK} & 2 \\
 \ff{int} & \ff{-42} & 8 \\
 \ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 8 \\
 \ff{bool} & \ff{TRUE} or \ff{FALSE} & 1 \\
 \ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
-\hline
-\end{tabular}
+\bottomrule
+\end{tabularx}
 \figcap{The syntax of all data with examples. The ``Size'' column
 denotes the number of bytes to be used by the value in the column
-``Example''. UTF-8 is the encoding used in \ff{string}, \ff{char},
+``Example''. UTF-8 is the encoding used in \ff{string}
 and \ff{regex} objects.}
 \label{tab:types}
 \end{table}
@@ -335,7 +332,7 @@ which looks similar to object copying:
 \begin{ffcode}
 * "Lucy" "Jeff" 3.14 |$\label{ln:array-1}$|
 * > a |$\label{ln:array-2a}$|
-  (* 'a')
+  (* "a")
   TRUE |$\label{ln:array-2b}$|
 * > b |$\label{ln:array-3}$|
 \end{ffcode}
@@ -401,8 +398,8 @@ for example:
   [to] > distance
     length. > len |$\label{ln:vector-length}$|
       vector
-        to.x.sub (^.x)
-        to.y.sub (^.y)
+        to.x.minus (^.x)
+        to.y.minus (^.y)
 \end{ffcode}
 
 The object \ff{point} has two free attributes \ff{x} and \ff{y}
@@ -436,7 +433,7 @@ An object may extend another object by \emph{decorating} it:
 [center radius] > circle |$\label{ln:circle}$|
   center > @ |$\label{ln:circle-phi}$|
   [p] > is-inside
-    leq. > @
+    lte. > @
       ^.@.distance $.p  |$\label{ln:circle-phi-2}$|
       ^.radius |$\label{ln:circle-end}$|
 \end{ffcode}
@@ -462,7 +459,7 @@ and omitting the reference to \ff{\$} because the default scope of visibility of
 \end{ffcode}
 
 The inner object \ff{is-inside} also has the \ff{@} attribute: it
-decorates the object \ff{leq} (stands for ``less than equal'').
+decorates the object \ff{lte} (stands for ``less than equal'').
 The expression at \lref{circle-phi-2} means:
 take the parent object of \ff{is-inside},
 take the attribute \ff{@} from it, then take the inner object \ff{distance}
@@ -478,7 +475,7 @@ c.is-inside (point 0 0) > i
 \end{ffcode}
 
 Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{TRUE}
-because \ff{leq} decorates \ff{bool}.
+because \ff{lte} decorates \ff{bool}.
 
 It is also possible to make decoratee free, similar to other free
 attributes, specifying it in the list of free attributes in
@@ -515,7 +512,7 @@ The syntax may be simplified and the abstract object may be inlined
 An anonymous abstract object may have multiple attributes:
 
 \begin{ffcode}
-[x] (x.add 1 > succ) (x.sub 1 > prev)
+[x] (x.plus 1 > succ) (x.minus 1 > prev)
 \end{ffcode}
 
 This object has two attributes \ff{succ} and \ff{prev}, and doesn't
@@ -588,7 +585,7 @@ All of the following expressions are false:
 
 \begin{ffcode}
 42.<.eq (7.<)
-(2.add 2).<.eq (4.<)
+(2.plus 2).<.eq (4.<)
 (point 3 5).<.eq ((point 3 5).<)
 (* 1 2).<.eq ((* 1 2).<)
 \end{ffcode}

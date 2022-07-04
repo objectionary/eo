@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.outputDir",
         required = true,
         defaultValue = "${project.build.outputDirectory}"
     )
@@ -69,6 +70,7 @@ public final class PlaceMojo extends SafeMojo {
      * @since 0.11.0
      */
     @Parameter(
+        property = "eo.placed",
         required = true,
         defaultValue = "${project.build.directory}/eo-placed.csv"
     )
@@ -80,7 +82,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    @Parameter(required = true, defaultValue = "csv")
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
     private String placedFormat = "csv";
 
     /**
@@ -108,10 +110,17 @@ public final class PlaceMojo extends SafeMojo {
             for (final String dep : deps) {
                 copied += this.place(home, dep);
             }
-            Logger.info(
-                this, "Placed %d binary files found in %d dependencies",
-                copied, deps.size()
-            );
+            if (copied == 0) {
+                Logger.info(
+                    this, "No binary files placed from %d dependencies",
+                    deps.size()
+                );
+            } else {
+                Logger.info(
+                    this, "Placed %d binary files found in %d dependencies",
+                    copied, deps.size()
+                );
+            }
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",

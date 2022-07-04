@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -94,6 +94,57 @@ public final class ParseMojoTest {
                 .with("foreign", foreign.toFile())
                 .with("foreignFormat", "csv")
                 .execute()
+        );
+    }
+
+    @Test
+    public void testCrashesWithFileName(@TempDir final Path temp)
+        throws Exception {
+        final Path src = temp.resolve("bar/src.eo");
+        new Save("something < is wrong here", src).save();
+        final Path foreign = temp.resolve("foreign-1.json");
+        new MonoTojos(new Csv(foreign))
+            .add("bar.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        final IllegalArgumentException exception = Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Moja<>(ParseMojo.class)
+                .with("targetDir", temp.resolve("target").toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .execute()
+        );
+        Assertions.assertEquals(exception.getMessage(), String.format("Failed to parse %s", src));
+    }
+
+    @Test
+    public void testDoNotCrashesWithFailOnError(@TempDir final Path temp)
+        throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
+        final Path target = temp.resolve("target");
+        new Save(
+            "something < is wrong here",
+            src
+        ).save();
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .execute();
+        MatcherAssert.assertThat(
+            Files.notExists(
+                target.resolve(
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, Transpiler.EXT)
+                )
+            ),
+            Matchers.is(true)
         );
     }
 

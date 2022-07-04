@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Copy all .eo files from src/main/eo to target/classes/EO-SOURCES
@@ -68,6 +69,7 @@ public final class CopyMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.sourcesDir",
         required = true,
         defaultValue = "${project.basedir}/src/main/eo"
     )
@@ -78,6 +80,7 @@ public final class CopyMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.outputDir",
         required = true,
         defaultValue = "${project.build.outputDirectory}"
     )
@@ -87,7 +90,7 @@ public final class CopyMojo extends SafeMojo {
      * The version to use for 0.0.0 replacements.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(required = true, defaultValue = "${project.version}")
+    @Parameter(property = "eo.version", required = true, defaultValue = "${project.version}")
     private String version;
 
     @Override
@@ -97,7 +100,7 @@ public final class CopyMojo extends SafeMojo {
         for (final Path src : sources) {
             new Save(
                 CopyMojo.REPLACE
-                    .matcher(new TextOf(new InputOf(src)).asString())
+                    .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),
                 target.resolve(
                     src.toAbsolutePath().toString().substring(

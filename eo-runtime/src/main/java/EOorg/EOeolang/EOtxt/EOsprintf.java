@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,8 @@ package EOorg.EOeolang.EOtxt;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Locale;
+
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.AtVararg;
@@ -55,7 +57,7 @@ public class EOsprintf extends PhDefault {
             for (final Phi arg : args) {
                 items.add(new Dataized(arg).take());
             }
-            return new Data.ToPhi(String.format(format, items.toArray()));
+            return new Data.ToPhi(String.format(Locale.US, format, items.toArray()));
         }));
     }
 

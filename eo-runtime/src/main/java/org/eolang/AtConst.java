@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,20 +29,42 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Const attribute.
  *
+ * <p>This class is thread-safe.</p>
+ *
  * @since 0.16
  */
 final class AtConst implements Attr {
 
+    /**
+     * The original attribute to make const.
+     */
     private final Attr origin;
 
+    /**
+     * Its \rho.
+     */
     private final Phi rho;
 
+    /**
+     * Cached value of the attribute.
+     */
     private final AtomicReference<Phi> cache;
 
+    /**
+     * Ctor.
+     * @param attr The attr
+     * @param phi Its \rho
+     */
     AtConst(final Attr attr, final Phi phi) {
         this(attr, phi, null);
     }
 
+    /**
+     * Ctor.
+     * @param attr The original
+     * @param phi Its \rho
+     * @param cached The value to be cached
+     */
     private AtConst(final Attr attr, final Phi phi, final Phi cached) {
         this.origin = attr;
         this.rho = phi;
@@ -61,14 +83,16 @@ final class AtConst implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtConst(this.origin.copy(self), this.rho, this.cache.get());
+        throw new IllegalStateException(
+            "This should never happen"
+        );
     }
 
     @Override
     public Phi get() {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
-                final Phi phi = this.origin.copy(this.rho).get().copy();
+                final Phi phi = this.origin.get();
                 phi.move(this.rho);
                 this.cache.set(phi);
             }
@@ -78,7 +102,10 @@ final class AtConst implements Attr {
 
     @Override
     public void put(final Phi src) {
-        this.origin.put(src);
+        synchronized (this.cache) {
+            this.origin.put(src);
+            this.cache.set(null);
+        }
     }
 
 }

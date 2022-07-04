@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,11 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -64,17 +67,40 @@ public final class TranspileMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.generatedDir",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
 
     /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
+    /**
+     * Whether we should fail on error.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.23.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnError",
+        defaultValue = "true")
+    private boolean failOnError = true;
+
+    /**
      * Add to source root.
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter
+    @Parameter(property = "eo.addSourcesRoot")
     @SuppressWarnings("PMD.ImmutableField")
     private boolean addSourcesRoot = true;
 
@@ -83,49 +109,47 @@ public final class TranspileMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter
+    @Parameter(property = "eo.addTestSourcesRoot")
     private boolean addTestSourcesRoot;
-
-    /**
-     * Which compiler to use: original or HSE.
-     */
-    @Parameter(property = "compiler", defaultValue = "canonical")
-    @SuppressWarnings("PMD.ImmutableField")
-    private String compiler;
 
     @Override
     public void exec() throws IOException {
-        final Transpiler cmp;
-        if ("canonical".equals(this.compiler)) {
-            cmp = new TranspilerCanonical(
-                this.targetDir.toPath().resolve(TranspileMojo.DIR),
-                this.targetDir.toPath().resolve(TranspileMojo.PRE)
-            );
-        } else {
-            cmp = new TranspilerAlternative(this.compiler);
-        }
+        final Transpiler cmp = new Transpiler(
+            this.targetDir.toPath().resolve(TranspileMojo.DIR),
+            this.targetDir.toPath().resolve(TranspileMojo.PRE)
+        );
         final Collection<Tojo> sources = this.tojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
-        int total = 0;
+        int saved = 0;
         for (final Tojo tojo : sources) {
-            final int done = cmp.transpile(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2)),
-                this.generatedDir.toPath()
+            final Path transpiled = cmp.transpile(
+                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
-            total += done;
+            final Set<String> failures = new HashSet<>(3);
+            if (this.failOnWarning) {
+                failures.add(Sanitized.WARNING);
+            }
+            if (this.failOnError) {
+                failures.add(Sanitized.ERROR);
+            }
+            new Sanitized(transpiled).sanitize(failures);
+            saved += new JavaFiles(
+                transpiled,
+                this.generatedDir.toPath()
+            ).save();
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
-            total, sources.size(), Save.rel(this.generatedDir.toPath())
+            sources.size(), saved, Save.rel(this.generatedDir.toPath())
         );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(
                 this.generatedDir.getAbsolutePath()
             );
             Logger.info(
-                this, "The directory added to compile-source-root: %s",
+                this, "The directory added to Maven 'compile-source-root': %s",
                 Save.rel(this.generatedDir.toPath())
             );
         }
@@ -134,10 +158,9 @@ public final class TranspileMojo extends SafeMojo {
                 this.generatedDir.getAbsolutePath()
             );
             Logger.info(
-                this, "The directory added to test-compile-source-root: %s",
+                this, "The directory added to Maven 'test-compile-source-root': %s",
                 Save.rel(this.generatedDir.toPath())
             );
         }
     }
-
 }

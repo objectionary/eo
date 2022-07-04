@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,11 @@
 # SOFTWARE.
 
 +package org.eolang.io
++home https://github.com/objectionary/eo
++version 0.0.0
 +alias sprintf org.eolang.txt.sprintf
 +alias stdout org.eolang.io.stdout
++alias org.eolang.math.random
 +junit
 
 [] > prints-string-to-console

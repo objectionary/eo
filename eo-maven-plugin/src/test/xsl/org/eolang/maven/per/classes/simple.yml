@@ -1,0 +1,9 @@
+xsl: org/eolang/maven/pre/classes.xsl
+input:
+  <xmir>
+    <listing>[] &gt; foo</listing>
+  </xmir>
+output:
+  <xmir>
+    <listing>[] &gt; foo</listing>
+  </xmir>

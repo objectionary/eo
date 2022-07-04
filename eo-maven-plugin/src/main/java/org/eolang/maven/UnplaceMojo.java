@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,6 +56,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @since 0.11.0
      */
     @Parameter(
+        property = "eo.placed",
         required = true,
         defaultValue = "${project.build.directory}/eo-placed.csv"
     )
@@ -66,7 +68,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    @Parameter(required = true, defaultValue = "csv")
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
     private String placedFormat = "csv";
 
     @Override
@@ -76,7 +78,7 @@ public final class UnplaceMojo extends SafeMojo {
                 this.placed.toPath(), this.placedFormat
             ).make().select(t -> true);
             for (final Tojo tojo : tojos) {
-                Files.delete(Paths.get(tojo.get("id")));
+                Files.delete(Paths.get(tojo.get(Tojos.KEY)));
             }
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",

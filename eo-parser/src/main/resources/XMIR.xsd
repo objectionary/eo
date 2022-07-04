@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,12 +33,14 @@ SOFTWARE.
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="line" type="xs:decimal"/>
+    <xs:attribute name="pos" type="xs:decimal"/>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
     <xs:attribute name="data"/>
     <xs:attribute name="as"/>
     <xs:attribute name="atom"/>
     <xs:attribute name="flags"/>
+    <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="vararg" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
@@ -55,6 +57,7 @@ SOFTWARE.
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="line" use="required"/>
+                    <xs:attribute name="severity" use="required"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>

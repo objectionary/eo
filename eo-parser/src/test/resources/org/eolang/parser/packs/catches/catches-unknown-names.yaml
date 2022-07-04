@@ -1,12 +1,15 @@
 xsls:
-  - org/eolang/parser/errors/unknown-names.xsl
+  - /org/eolang/parser/errors/unknown-names.xsl
 tests:
-  - /program/errors[count(error)=1]
-  - /program/errors/error[@line='2']
-  - //o[@base='test' and @line='2']
+  - /program/errors[count(error[@severity='error'])=1]
+  - /program/errors/error[@line='3']
+  - //o[@base='test' and @line='3']
 eo: |
+  +alias foo
   [] > fff
     test > @
     $ > t
+    @.org.eolang.random
     @.t > zz
+    foo > y1
     ^.ff > pp

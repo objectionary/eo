@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +33,11 @@ SOFTWARE.
   <packaging>jar</packaging>
   <name>eo-runtime</name>
   <description>EO runtime library</description>
+  <properties>
+    <!--  This is required for later correct replacement of argline  -->
+    <argLine/>
+  </properties>
   <dependencies>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.1</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -77,13 +75,11 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <argLine>@{argLine} -Duser.language=ru -Duser.region=RU</argLine>
           <systemProperties>
-            <java.util.logging.config.file>
-              ${project.basedir}/src/test/resources/jul.properties
-            </java.util.logging.config.file>
+            <java.util.logging.config.file>${project.basedir}/src/test/resources/jul.properties</java.util.logging.config.file>
           </systemProperties>
         </configuration>
       </plugin>

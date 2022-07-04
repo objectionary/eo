@@ -29,11 +29,11 @@ The same functionality would look in \eo{} like the following:
 \begin{ffcode}
 [n] > fibo
   if. > @
-    n.less 2
+    n.lt 2
     n
-    add.
-      fibo (n.sub 1)
-      fibo (n.sub 2)
+    plus.
+      fibo (n.minus 1)
+      fibo (n.minus 2)
 \end{ffcode}
 
 \subsection{Determining Leap Year}
@@ -135,7 +135,7 @@ is happening in Java with exceptions.
 Creating a date/time object is a common task for most programs, which
 is resolved in JDK8~\citep{jdk8} through the \ff{Calendar.Builder} class,
 which suggests method cascading~\citep{beck1997smalltalk},
-also known as fluent interface~\cite{fluentinterface}, for its users
+also known as fluent interface~\citep{fluentinterface}, for its users
 (an innacurate and simplified example):
 
 \begin{ffcode}

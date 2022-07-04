@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,126 +21,161 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++version 0.0.0
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > converts-to-string
-  eq. > @
-    "42"
-    42.as-string
-
 [] > less-true
-  less. > @
-    10
-    50
+  assert-that > @
+    lt.
+      10
+      50
+    $.equal-to TRUE
+    "check int.lt"
 
 [] > less-equal
-  not. > @
-    less.
-      10
-      10
+  assert-that > @
+    not.
+      lt.
+        10
+        10
+    $.equal-to TRUE
+    "check int.less.not equal"
 
 [] > less-false
-  not. > @
-    less.
-      10
-      -5
+  assert-that > @
+    not.
+      lt.
+        10
+        -5
+    $.equal-to TRUE
+    "check int.lt.not lt"
 
 [] > greater-true
-  greater. > @
-    -200
-    -1000
+  assert-that > @
+    gt.
+      -200
+      -1000
+    $.equal-to TRUE
+    "check int.gt"
 
 [] > greater-false
-  not. > @
-    greater.
-      0
-      100
+  assert-that > @
+    not.
+      gt.
+        0
+        100
+    $.equal-to TRUE
+    "check int.gt.not"
 
 [] > greater-equal
-  not. > @
-    greater.
-      0
-      0
+  assert-that > @
+    not.
+      gt.
+        0
+        0
+    $.equal-to TRUE
+    "check int.gt.not zero"
 
 [] > leq-true
-  leq. > @
-    -200
-    -100
+  assert-that > @
+    lte.
+      -200
+      -100
+    $.equal-to TRUE
+    "check int.lte"
 
 [] > leq-equal
-  leq. > @
-    50
-    50
+  assert-that > @
+    lte.
+      50
+      50
+    $.equal-to TRUE
+    "check int.lte equal"
 
 [] > leq-false
-  not. > @
-    leq.
-      0
-      -10
+  assert-that > @
+    not.
+      lte.
+        0
+        -10
+    $.equal-to TRUE
+    "check int.lte.not"
 
-[] > geq-true
-  geq. > @
-    -1000
-    -1100
+[] > gte-true
+  assert-that > @
+    gte.
+      -1000
+      -1100
+    $.equal-to TRUE
+    "check int.gte negative int"
 
-[] > geq-equal
-  geq. > @
-    113
-    113
+[] > gte-equal
+  assert-that > @
+    gte.
+      113
+      113
+    $.equal-to TRUE
+    "check int.gte positive int"
 
-[] > geq-false
-  not. > @
-    geq.
-      0
-      10
+[] > gte-false
+  assert-that > @
+    not.
+      gte.
+        0
+        10
+    $.equal-to TRUE
+    "check int.gte.not"
 
 [] > eq-true
-  eq. > @
-    123
-    123
-
-[] > eq-false
-  not. > @
+  assert-that > @
     eq.
       123
-      42
+      123
+    $.equal-to TRUE
+    "check int.eq"
+
+[] > eq-false
+  assert-that > @
+    not.
+      eq.
+        123
+        42
+    $.equal-to TRUE
+    "check int.eq.not"
 
 [] > compares-two-different-types
-  not. > @
-    eq.
-      42
-      "Hello!"
-
-[] > neq-true
-  neq. > @
-    123
-    125
-
-[] > neq-false
-  not. > @
-    neq.
-      -133
-      -133
+  assert-that > @
+    not.
+      eq.
+        42
+        "Hello!"
+    $.equal-to TRUE
+    "check int.eq.not string"
 
 [] > calculates-fibonacci-number-with-recursion
-  eq. > @
-    3
-    fibo 4
   [n] > fibo
     if. > @
-      n.less 3
+      n.lt 3
       1
-      add.
-        fibo (n.sub 1)
-        fibo (n.sub 2)
+      plus.
+        fibo (n.minus 1)
+        fibo (n.minus 2)
+  assert-that > @
+    fibo 4
+    $.equal-to 3
 
 [] > calculates-fibonacci-number-with-tail
-  eq. > @
-    3
+  assert-that > @
     fibonacci 4
+    $.equal-to 3
+    "calculates fibonacci number with tail "
   [n] > fibonacci
     if. > @
-      n.less 3
+      n.lt 3
       small n
       rec n 1 1
     [n] > small
@@ -151,74 +186,74 @@
     [n minus1 minus2] > rec
       if. > @
         n.eq 3
-        minus1.add minus2
-        rec (n.sub 1) (minus1.add minus2) minus1
+        minus1.plus minus2
+        rec (n.minus 1) (minus1.plus minus2) minus1
 
 # Checks that division by zero returns an error object
 [] > zero-division
-  eq. > @
+  assert-that > @
     (2.div 0).msg
-    "Division by zero is undefined"
-
-# Checks mathematical equality
-# A = ((A div B) * B) + (A mod B)
-[] > div-mod-compatibility
-  -13 > dividend
-  5 > divisor
-  dividend.mod divisor > remainder
-  dividend.div divisor > quotient
-  eq. > @
-    dividend
-    add.
-      remainder
-      mul.
-        divisor
-        quotient
+    $.equal-to
+      "Division by zero is undefined"
 
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend
-  eq. > @
+  assert-that > @
     dividend.div 1
-    dividend
+    $.equal-to
+      dividend
 
 # Checks that div works properly with dividends greater than zero
 [] > div-for-dividend-greater-than-zero
-  256.div 16 > quotient
-  quotient.eq 16 > @
+  assert-that > @
+    256.div 16
+    $.equal-to 16
 
 # Checks div with remainder
 [] > div-with-remainder
-  (13.div -5).eq -2 > @
-
-# Checks that int.as-float works properly
-[] > as-float-works
-  eq. > @
-    -17.0
-    17.neg.as-float
-
-[] > abs-positive
-  3.abs.eq 3 > @
-
-[] > abs-negative
-  -3.abs.eq 3 > @
-
-[] > abs-zero
-  0.abs.eq 0 > @
+  assert-that > @
+    13.div -5
+    $.equal-to -2
 
 [] > to-bytes-and-backwards
-  eq. > @
-    42
+  assert-that > @
     as-int.
       as-bytes.
         42
+    $.equal-to 42
 
 [] > as-bytes-equals-to-int
-  eq. > @
+  assert-that > @
     42
-    42.as-bytes
+    $.equal-to
+      42.as-bytes
 
 [] > as-bytes-equals-to-int-backwards
-  eq. > @
+  assert-that > @
     42.as-bytes
-    42
+    $.equal-to 42
+
+[] > as-hash-equals-to-similar-values
+  assert-that > @
+    42.as-hash
+    $.equal-to
+      42.as-hash
+
+# We can have collisions, so in this test just check if values not similar
+[] > as-hash-have-different-hashes
+  seq > @
+    stdout
+      sprintf
+        "%d %d %d\n"
+        41.as-hash
+        42.as-hash
+        43.as-hash
+    TRUE
+
+[] > as-hash-not-equal
+  assert-that > @
+    41.as-hash
+    $.not
+      $.equal-to
+        42.as-hash

@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,6 @@ SOFTWARE.
   and try to find their references in aliases. If we find them,
   we change their @base attributes. If not, we decide that they
   are in org.eolang package and also change the @base attribute.
-
-  At the end of this transformation all aliases are deleted.
 
   If some alias is badly formatted, a runtime error is issued.
   -->

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -88,7 +88,25 @@ public final class Main {
                 "A name of EO object is expected as a command line argument"
             );
         }
-        Main.run(opts);
+        try {
+            Main.run(opts);
+        } catch (final ExAbstract ex) {
+            Main.print(ex);
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Print exception line.
+     *
+     * @param thr The cause
+     */
+    private static void print(final Throwable thr) {
+        Main.LOGGER.log(Level.SEVERE, thr.getMessage());
+        final Throwable cause = thr.getCause();
+        if (cause != null) {
+            Main.print(cause);
+        }
     }
 
     /**

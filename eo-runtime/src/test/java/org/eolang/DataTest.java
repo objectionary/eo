@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -136,12 +136,12 @@ public final class DataTest {
             Matchers.not(Matchers.equalTo(new Data.Value<>(1.0d)))
         );
         MatcherAssert.assertThat(
-            new Data.Value<>('x'),
-            Matchers.equalTo(new Data.Value<>('x'))
+            new Data.Value<>("\n"),
+            Matchers.equalTo(new Data.Value<>("\n"))
         );
         MatcherAssert.assertThat(
-            new Data.Value<>('f'),
-            Matchers.not(Matchers.equalTo(new Data.Value<>('a')))
+            new Data.Value<>("\t"),
+            Matchers.not(Matchers.equalTo(new Data.Value<>("a")))
         );
         MatcherAssert.assertThat(
             new Data.Value<>(Pattern.compile("abc")),

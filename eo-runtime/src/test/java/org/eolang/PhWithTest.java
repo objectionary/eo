@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ public final class PhWithTest {
     @Test
     public void comparesTwoObjects() {
         final Phi dummy = new PhWith(
-            new PhMethod(new PhWithTest.Dummy(Phi.Φ), "add"),
+            new PhMethod(new PhWithTest.Dummy(Phi.Φ), "plus"),
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
@@ -65,7 +65,7 @@ public final class PhWithTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(dummy, "add")),
+                    new PhCopy(new PhMethod(dummy, "plus")),
                     0, new Data.ToPhi(1L)
                 )
             ).take(Long.class),
@@ -78,7 +78,7 @@ public final class PhWithTest {
         final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
         MatcherAssert.assertThat(
             new PhWith(
-                new PhCopy(new PhMethod(dummy, "add")),
+                new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
             ).copy().toString(),
             Matchers.containsString("ρ=Φ")

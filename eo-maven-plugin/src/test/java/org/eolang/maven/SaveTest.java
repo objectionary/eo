@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -47,10 +48,10 @@ final class SaveTest {
     @ParameterizedTest
     void saves(final int size, @TempDir final Path temp) throws IOException {
         final Path resolve = temp.resolve("1.txt");
-        final String content = new Randomized(size).asString();
+        final String content = new UncheckedText(new Randomized(size)).asString();
         new Save(content, resolve).save();
         MatcherAssert.assertThat(
-            new TextOf(resolve).asString(),
+            new UncheckedText(new TextOf(resolve)).asString(),
             Matchers.is(content)
         );
     }

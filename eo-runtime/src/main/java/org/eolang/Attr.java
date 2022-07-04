@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,75 +52,5 @@ public interface Attr extends Term {
      * @param phi The object to put
      */
     void put(Phi phi);
-
-    /**
-     * The exception raised when something is not right inside
-     * attributes.
-     *
-     * @since 0.1
-     */
-    final class IllegalAttrException extends RuntimeException {
-
-        private static final long serialVersionUID = 597749420437007615L;
-
-        public IllegalAttrException(final String cause) {
-            super(cause);
-        }
-
-        public IllegalAttrException(final String cause, final Throwable root) {
-            super(cause, root);
-        }
-    }
-
-    /**
-     * Control flow exception (see {@link EOorg.EOeolang.EOgray.EOgoto}
-     * for a good example of its usage).
-     *
-     * @since 0.17
-     */
-    class FlowException extends RuntimeException {
-        private static final long serialVersionUID = 597749420437007615L;
-        public FlowException() {
-            super();
-        }
-    }
-
-    /**
-     * The exception raised when trying to get() an attribute,
-     * which is still abstract.
-     *
-     * @since 0.13
-     */
-    final class StillAbstractException extends RuntimeException {
-
-        private static final long serialVersionUID = 597748420437017615L;
-
-        public StillAbstractException(final String cause) {
-            super(cause);
-        }
-
-        public StillAbstractException(final String cause, final Throwable root) {
-            super(cause, root);
-        }
-    }
-
-    /**
-     * The exception raised when trying to put() an attribute,
-     * which is read-only.
-     *
-     * @since 0.13
-     */
-    final class ReadOnlyException extends RuntimeException {
-
-        private static final long serialVersionUID = 697748420437017615L;
-
-        public ReadOnlyException(final String cause) {
-            super(cause);
-        }
-
-        public ReadOnlyException(final String cause, final Throwable root) {
-            super(cause, root);
-        }
-    }
 
 }

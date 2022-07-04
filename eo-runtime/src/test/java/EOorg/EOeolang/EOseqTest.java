@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,4 +74,21 @@ public final class EOseqTest {
             Matchers.startsWith("Hello")
         );
     }
+
+    @Test
+    public void makesTrueCopy() {
+        final Phi first = new EOseq(Phi.Φ);
+        first.attr(0).put(new Data.ToPhi(1L));
+        final Phi second = first.copy();
+        second.attr(0).put(new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            new Dataized(first).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(second).take(Long.class),
+            Matchers.equalTo(2L)
+        );
+    }
+
 }

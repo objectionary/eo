@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -286,9 +286,9 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhWith(new PhCopy(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
+    <xsl:text>), "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>_a));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -309,6 +309,16 @@ SOFTWARE.
     <xsl:text>* anonymous abstract object without attributes */ };</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <xsl:function name="eo:fetch">
+    <xsl:param name="object"/>
+    <xsl:variable name="parts" select="tokenize($object, '\.')"/>
+    <xsl:text>Phi.Φ</xsl:text>
+    <xsl:for-each select="$parts">
+      <xsl:text>.attr("</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>").get()</xsl:text>
+    </xsl:for-each>
+  </xsl:function>
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
@@ -339,8 +349,19 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
+      <xsl:when test="@primitive and @base">
+        <xsl:text>new </xsl:text>
+        <xsl:value-of select="eo:class-name(@base)"/>
+        <xsl:text>(Phi.Φ)</xsl:text>
+      </xsl:when>
       <xsl:when test="@base='$'">
         <xsl:text>rho</xsl:text>
+      </xsl:when>
+      <xsl:when test="@base='Q'">
+        <xsl:text>Phi.Φ</xsl:text>
+      </xsl:when>
+      <xsl:when test="@base='QQ'">
+        <xsl:text>Phi.Φ.attr("org").get().attr("eolang").get()</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
         <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
@@ -348,10 +369,13 @@ SOFTWARE.
       <xsl:when test="@base='&amp;'">
         <xsl:text>new PhMethod(rho, "σ")</xsl:text>
       </xsl:when>
-      <xsl:when test="$b and name($b)='class'">
+      <xsl:when test="$b/@ancestors">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(rho)</xsl:text>
+      </xsl:when>
+      <xsl:when test="$b and name($b)='class'">
+        <xsl:value-of select="eo:fetch(concat($b/@package, '.', $b/@name))"/>
       </xsl:when>
       <xsl:when test="$b/@level">
         <xsl:for-each select="0 to $b/@level">
@@ -371,13 +395,15 @@ SOFTWARE.
         <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name(@base)"/>
-        <xsl:text>(rho)</xsl:text>
+        <xsl:value-of select="eo:fetch(@base)"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="located">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -427,6 +453,10 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="located">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -447,6 +477,23 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <xsl:template match="*" mode="located">
+    <xsl:param name="indent"/>
+    <xsl:param name="name" select="'o'"/>
+    <xsl:if test="@line and @pos">
+      <xsl:value-of select="$indent"/>
+      <xsl:value-of select="eo:tabs(1)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhLocated(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>, </xsl:text>
+      <xsl:value-of select="@line"/>
+      <xsl:text>, </xsl:text>
+      <xsl:value-of select="@pos"/>
+      <xsl:text>);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
@@ -555,13 +602,19 @@ SOFTWARE.
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Assertions.assertTrue(</xsl:text>
-    <xsl:value-of select="eo:eol(3 + $indent)"/>
-    <xsl:text>new Dataized(new </xsl:text>
+    <xsl:text>Object obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name)"/>
-    <xsl:text>()).take(Boolean.class)</xsl:text>
+    <xsl:text>()).take();</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>);</xsl:text>
+    <xsl:text>if (obj instanceof String) {</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>  Assertions.fail(obj.toString());</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>} else {</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>  Assertions.assertTrue((Boolean) obj);</xsl:text>
+    <xsl:value-of select="eo:eol(2 + $indent)"/>
+    <xsl:text>}</xsl:text>
   </xsl:template>
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>

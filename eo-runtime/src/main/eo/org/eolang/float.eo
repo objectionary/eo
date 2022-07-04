@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > float
@@ -30,74 +32,46 @@
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
-
   # Tests that $ < x
-  [x] > less
+  [x] > lt
     and. > @
       (^.eq x).not
-      (^.greater x).not
+      (^.gt x).not
 
   # Tests that $ ≤ x
-  [x] > leq
+  [x] > lte
     or. > @
       ^.eq x
-      ^.less x
+      ^.lt x
 
   # Tests that $ > x
-  [x] > greater /bool
+  [x] > gt /bool
 
   # Tests that $ ≥ x
-  [x] > geq
+  [x] > gte
     or. > @
       ^.eq x
-      ^.greater x
+      ^.gt x
 
   # Multiplication of $ and x
-  [x] > mul /float
+  [x] > times /float
 
   # Sum of $ and x
-  [x] > add /float
+  [x] > plus /float
 
   # Negation of $
   [] > neg
-    ^.mul -1.0 > @
-
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    if. > @
-      ^.less 0.0
-      -1.0
-      if.
-        ^.eq 0.0
-        0.0
-        1.0
+    ^.times -1.0 > @
 
   # Difference between $ and x
-  [x] > sub
-    ^.add (x.neg) > @
-
-  # x'th power of $
-  [x] > pow /float
+  [x] > minus
+    ^.plus (x.neg) > @
 
   # Quotient of the division of $ by x
-  [x] > div
-    ^.mul (x.pow -1.0) > @
-
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    if. > @
-      ^.geq 0.0
-      ^
-      ^.neg
+  [x] > div /float
 
   # Converts this to bytes
   [] > as-bytes /bytes
 
-  # Converts this to int
-  [] > as-int /int
-
-  # Converts this to string
-  [] > as-string /string
+  # Converts this to hash
+  [] > as-hash /int

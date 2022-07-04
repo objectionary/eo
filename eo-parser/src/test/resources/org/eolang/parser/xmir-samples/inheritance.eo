@@ -3,7 +3,7 @@
 +alias sprintf org.eolang.txt.sprintf
 
 [] > base
-  memory > x
+  memory 0 > x
   [self v] > f
     x.write > @
       v

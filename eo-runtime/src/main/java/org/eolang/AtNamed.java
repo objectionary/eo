@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,10 +61,10 @@ final class AtNamed implements Attr {
     public Attr copy(final Phi self) {
         try {
             return new AtNamed(this.name, this.oname, this.phi, this.origin.copy(self));
-        } catch (final Attr.FlowException ex) {
+        } catch (final ExFlow ex) {
             throw ex;
-        } catch (final Attr.IllegalAttrException ex) {
-            throw new Attr.IllegalAttrException(this.label(), ex);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
         }
     }
 
@@ -73,12 +73,12 @@ final class AtNamed implements Attr {
         Phi obj;
         try {
             obj = this.origin.get();
-        } catch (final Attr.FlowException ex) {
+        } catch (final ExFlow ex) {
             throw ex;
-        } catch (final Attr.StillAbstractException ex) {
-            throw new Attr.StillAbstractException(this.label(), ex);
-        } catch (final Attr.IllegalAttrException ex) {
-            throw new Attr.IllegalAttrException(this.label(), ex);
+        } catch (final ExUnset ex) {
+            throw new ExUnset(this.label(), ex);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
         }
         if (!(obj instanceof Data)) {
             obj = new PhNamed(obj, this.oname);
@@ -90,12 +90,12 @@ final class AtNamed implements Attr {
     public void put(final Phi src) {
         try {
             this.origin.put(src);
-        } catch (final Attr.FlowException ex) {
+        } catch (final ExFlow ex) {
             throw ex;
-        } catch (final Attr.ReadOnlyException ex) {
-            throw new Attr.ReadOnlyException(this.label(), ex);
-        } catch (final Attr.IllegalAttrException ex) {
-            throw new Attr.IllegalAttrException(this.label(), ex);
+        } catch (final ExReadOnly ex) {
+            throw new ExReadOnly(this.label(), ex);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
         }
     }
 

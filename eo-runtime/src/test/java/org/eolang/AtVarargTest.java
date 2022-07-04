@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,95 @@ public final class AtVarargTest {
             new Dataized(attr.get()).take(Phi[].class)[1],
             Matchers.equalTo(phi)
         );
+    }
+
+    @Test
+    public void injectsVarargs() {
+        final Phi bar = new AtVarargTest.Bar(Phi.Φ);
+        bar.attr(0).put(new Data.ToPhi(1L));
+        bar.attr(1).put(new Data.ToPhi(1L));
+        MatcherAssert.assertThat(
+            new Dataized(
+                bar.attr("a").get()
+            ).take(Long.class),
+            Matchers.is(1L)
+        );
+    }
+
+    @Test
+    public void datarizesEOappCallingVarargsFunc() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new AtVarargTest.Foo(Phi.Φ)
+            ).take(Boolean.class),
+            Matchers.is(true)
+        );
+    }
+
+    /**
+     * Main program sample.
+     *
+     * {@code
+     *  [] > foo
+     *    (bar 1 2 3).eq 2 > @
+     * }
+     *
+     * @since 0.22
+     */
+    private static class Foo extends PhDefault {
+        Foo(final Phi sigma) {
+            super(sigma);
+            this.add(
+                "φ",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> {
+                            Phi phi = new PhWith(
+                                new PhCopy(new AtVarargTest.Bar(rho)),
+                                0, new Data.ToPhi(1L)
+                            );
+                            phi = new PhWith(phi, 1, new Data.ToPhi(2L));
+                            phi = new PhWith(phi, 2, new Data.ToPhi(3L));
+                            return new PhWith(
+                                new PhCopy(new PhMethod(phi, "eq")),
+                                0, new Data.ToPhi(2L)
+                            );
+                        }
+                    )
+                )
+            );
+        }
+    }
+
+    /**
+     * Varargs function sample.
+     *
+     * {@code
+     *  [args...] > bar
+     *    1 > a
+     *    2 > @
+     * }
+     *
+     * @since 0.22
+     */
+    private static class Bar extends PhDefault {
+        Bar(final Phi sigma) {
+            super(sigma);
+            this.add("args", new AtVararg());
+            this.add(
+                "a",
+                new AtOnce(
+                    new AtComposite(this, rho -> new Data.ToPhi(1L))
+                )
+            );
+            this.add(
+                "φ",
+                new AtOnce(
+                    new AtComposite(this, rho -> new Data.ToPhi(2L))
+                )
+            );
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.list.ListEnvelope;
 
 /**
@@ -77,7 +78,7 @@ final class Walk extends ListEnvelope<Path> {
             this.home,
             this.stream()
                 .filter(
-                    file -> globs.stream().anyMatch(
+                    file -> Walk.stream(globs).anyMatch(
                         glob -> this.matches(glob, file)
                     )
                 )
@@ -95,12 +96,21 @@ final class Walk extends ListEnvelope<Path> {
             this.home,
             this.stream()
                 .filter(
-                    file -> globs.stream().noneMatch(
+                    file -> Walk.stream(globs).noneMatch(
                         glob -> this.matches(glob, file)
                     )
                 )
                 .collect(Collectors.toList())
         );
+    }
+
+    /**
+     * Get stream.
+     * @param globs The globs
+     * @return Stream
+     */
+    private static Stream<String> stream(final Collection<String> globs) {
+        return globs.stream();
     }
 
     /**

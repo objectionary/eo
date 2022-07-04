@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,10 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -37,10 +39,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #490:30min Enable Objectionary caching in PullMojo.
- *  Replace usages of RemoteObjectionary with a
- *  combination of Local and Caching and Remote.
- *  Add a parameter to bypass/overwrite cache.
+ * @todo #561:30min Add a parameter to bypass/overwrite cache
+ *  for combination of Local and Caching and Remote.
+ *  It was suggested by @yegor256 to rely on -U parameter of Maven
+ *  (https://github.com/objectionary/eo/issues/561#issuecomment-1007128430).
+ *  If it is possible to access it from the plugin.
  */
 @Mojo(
     name = "pull",
@@ -60,7 +63,7 @@ public final class PullMojo extends SafeMojo {
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(required = true, defaultValue = "master")
+    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
     private String hash = "master";
 
     /**
@@ -68,14 +71,23 @@ public final class PullMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
 
     /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new RemoteObjectionary();
+    private Objectionary objectionary;
+
+    /**
+     * Target directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path outputPath = Paths.get(
+        System.getProperty("user.home")
+    ).resolve(".eo");
 
     @Override
     public void exec() throws IOException {
@@ -83,17 +95,30 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        if (!"master".equals(this.hash)) {
-            this.objectionary = new RemoteObjectionary(this.hash);
+        if (this.objectionary == null) {
+            this.objectionary = new OyFallback(
+                new OyLocal(
+                    this.hash,
+                    this.outputPath
+                ),
+                new OyCaching(
+                    this.hash,
+                    this.outputPath,
+                    new OyRemote(this.hash)
+                )
+            );
         }
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
                 tojo.set(
                     AssembleMojo.ATTR_EO,
-                    this.pull(tojo.get("id")).toAbsolutePath().toString()
+                    this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
                 );
             }
-            Logger.info(this, "%d program(s) pulled", tojos.size());
+            Logger.info(
+                this, "%d program(s) pulled from %s",
+                tojos.size(), this.objectionary
+            );
         }
     }
 

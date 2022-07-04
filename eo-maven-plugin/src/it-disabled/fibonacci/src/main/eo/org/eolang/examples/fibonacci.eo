@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,11 @@
 # represents n-th Fibonacci number
 [n] > fibonacci
   if. > @
-    less. n 2
+    lt.
+      n
+      2
     n
-    add.
+    plus.
       fibonacci
         n.sub 1
       fibonacci

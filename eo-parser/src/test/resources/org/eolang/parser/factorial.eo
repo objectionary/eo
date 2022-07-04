@@ -1,0 +1,7 @@
+[n] > f
+  if. > @
+    n.lt 1
+    n
+    times.
+      n
+      f (minus. n 1)

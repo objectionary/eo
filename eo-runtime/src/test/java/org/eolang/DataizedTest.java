@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -77,84 +76,4 @@ public final class DataizedTest {
         );
     }
 
-    /**
-     * Try to datarize an EO app that calls a varargs func.
-     * @todo #414:30min Fix bug execute an EO program calling a varargs func.
-     *  We reproduced by a test bug during execution with exception `You can't overwrite X`
-     *  when EO app try to call a function that uses varargs as parameter. Now, we must fix it
-     *  and disable the test (test below).
-     */
-    @Test
-    @Disabled
-    public void datarizesEOappCallingVarargsFunc() {
-        MatcherAssert.assertThat(
-            new Dataized(
-                new EOappCallingVarargsFunc(Phi.Φ)
-            ).take(Long.class),
-            Matchers.is(2L)
-        );
-    }
-
-    /**
-     * Main program sample.
-     * {@code
-     *  [] > app
-     *    (f 1 2 3).eq 2 > @
-     * }
-     * @since 0.22
-     */
-    private static class EOappCallingVarargsFunc extends PhDefault {
-        public EOappCallingVarargsFunc(Phi sigma) {
-            super(sigma);
-            this.add(
-                "φ",
-                new AtOnce(
-                    new AtComposite(
-                        this,
-                        (rho) -> {
-                            Phi fvar = new PhCopy(new DataizedTest.Fvarargs(rho));
-                            Phi var1 = new Data.ToPhi(1L);
-                            Phi var2 = new Data.ToPhi(2L);
-                            Phi var3 = new Data.ToPhi(3L);
-                            Phi fvard = new PhWith(fvar, 0, var1);
-                            fvard = new PhWith(fvard, 1, var2);
-                            fvard = new PhWith(fvard, 2, var3);
-                            return new PhWith(
-                                new PhCopy(new PhMethod(fvard, "eq")), 0, new Data.ToPhi(2L)
-                            );
-                        }
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Varargs function sample.
-     * {@code
-     *  [args] > f
-     *    1 > a
-     *    2 > @
-     * }
-     * @since 0.22
-     */
-    @SuppressWarnings("unchecked")
-    private static class Fvarargs extends PhDefault {
-        public Fvarargs(final Phi sigma) {
-            super(sigma);
-            this.add("args", new AtVararg());
-            this.add(
-                "a",
-                new AtOnce(
-                    new AtComposite(this, (rho) -> new Data.ToPhi(1L))
-                )
-            );
-            this.add(
-                "φ",
-                new AtOnce(
-                    new AtComposite(this, (rho) -> new Data.ToPhi(2L))
-                )
-            );
-        }
-    }
 }

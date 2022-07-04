@@ -1,35 +1,10 @@
 ---
-name: linters
+name: pdd
 on:
   push:
-    branches:
-      - master
-    paths-ignore: ['paper/**', 'sandbox/**']
   pull_request:
-    branches:
-      - master
-    paths-ignore: ['paper/**', 'sandbox/**']
 jobs:
-  qulice:
-    name: Qulice
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Ruby 2.7
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-      - name: Install xcop
-        run: |
-          gem install xcop
-      - name: Java 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Qulice
-        run: mvn -P qulice clean install -DskipTests=true -DskipITs=true --errors --batch-mode
-
-  pdd-lint:
+  pdd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

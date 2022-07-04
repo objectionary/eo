@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +24,27 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cactoos.list.Mapped;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
+import org.xembly.Directive;
 import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * The listener for ANTLR4 walker.
  *
  * @since 0.1
+ * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
-public final class XeListener implements ProgramListener {
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
      * The name of it.
@@ -54,6 +55,11 @@ public final class XeListener implements ProgramListener {
      * Xembly directives we are building (mutable).
      */
     private final Directives dirs;
+
+    /**
+     * Xembly directives for objects (mutable).
+     */
+    private final Objects objects;
 
     /**
      * When we start.
@@ -67,15 +73,8 @@ public final class XeListener implements ProgramListener {
     public XeListener(final String nme) {
         this.name = nme;
         this.dirs = new Directives();
+        this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
-    }
-
-    /**
-     * To get the XML ready to be used.
-     * @return XML
-     */
-    public XML xml() {
-        return new XMLDocument(new Xembler(this.dirs).domQuietly());
     }
 
     @Override
@@ -89,7 +88,7 @@ public final class XeListener implements ProgramListener {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .add("listing").set(ctx.getText()).up()
+            .add("listing").set(XeListener.sourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up();
     }
@@ -154,6 +153,7 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void exitObjects(final ProgramParser.ObjectsContext ctx) {
+        this.dirs.append(this.objects);
         this.dirs.up();
     }
 
@@ -168,29 +168,20 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    public void enterAnonymous(final ProgramParser.AnonymousContext ctx) {
-        this.dirs.add("o")
-            .attr("line", ctx.getStart().getLine())
-            .up();
-    }
-
-    @Override
-    public void exitAnonymous(final ProgramParser.AnonymousContext ctx) {
-        this.enter();
-        this.dirs.xpath("o[@base][1]").up().up();
-    }
-
-    @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
-        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        this.objects.start(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine()
+        );
+        this.objects.prop("abstract", "");
         if (ctx.SLASH() != null) {
             if (ctx.QUESTION() == null) {
-                this.dirs.attr("atom", ctx.NAME());
+                this.objects.prop("atom", ctx.NAME());
             } else {
-                this.dirs.attr("atom", "?");
+                this.objects.prop("atom", "?");
             }
         }
-        this.dirs.up();
+        this.objects.leave();
     }
 
     @Override
@@ -210,25 +201,29 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterAttribute(final ProgramParser.AttributeContext ctx) {
-        this.enter();
-        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        this.objects.enter();
+        this.objects.start(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine()
+        );
     }
 
     @Override
     public void exitAttribute(final ProgramParser.AttributeContext ctx) {
-        this.dirs.up().up();
+        this.objects.leave();
+        this.objects.leave();
     }
 
     @Override
     public void enterLabel(final ProgramParser.LabelContext ctx) {
         if (ctx.AT() != null) {
-            this.dirs.attr("name", ctx.AT().getText());
+            this.objects.prop("name", ctx.AT().getText());
         }
         if (ctx.NAME() != null) {
-            this.dirs.attr("name", ctx.NAME().getText());
+            this.objects.prop("name", ctx.NAME().getText());
         }
         if (ctx.DOTS() != null) {
-            this.dirs.attr("vararg", "");
+            this.objects.prop("vararg", "");
         }
     }
 
@@ -239,33 +234,36 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterTail(final ProgramParser.TailContext ctx) {
-        this.enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitTail(final ProgramParser.TailContext ctx) {
-        this.dirs.up();
+        this.objects.leave();
     }
 
     @Override
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
-        this.enter();
+        this.objects.enter();
         if (ctx.CONST() != null) {
-            this.dirs.attr("const", "");
+            this.objects.prop("const", "");
         }
     }
 
     @Override
     public void exitSuffix(final ProgramParser.SuffixContext ctx) {
-        this.dirs.up();
+        this.objects.leave();
     }
 
     @Override
     public void enterMethod(final ProgramParser.MethodContext ctx) {
-        this.dirs.add("o")
-            .attr("method", "")
-            .attr("line", ctx.getStart().getLine())
-            .attr("base", String.format(".%s", ctx.mtd.getText())).up();
+        this.objects.start(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine()
+        );
+        this.objects.prop("method", "");
+        this.objects.prop("base", String.format(".%s", ctx.mtd.getText()));
+        this.objects.leave();
     }
 
     @Override
@@ -274,11 +272,14 @@ public final class XeListener implements ProgramListener {
     }
 
     @Override
-    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ConfusingTernary"})
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.ConfusingTernary" })
     public void enterHead(final ProgramParser.HeadContext ctx) {
-        this.dirs.add("o").attr("line", ctx.getStart().getLine());
+        this.objects.start(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine()
+        );
         if (ctx.COPY() != null) {
-            this.dirs.attr("copy", "");
+            this.objects.prop("copy", "");
         }
         String base = "";
         if (ctx.NAME() != null) {
@@ -292,34 +293,38 @@ public final class XeListener implements ProgramListener {
             base = "$";
         } else if (ctx.STAR() != null) {
             base = "array";
-            this.dirs.attr("data", "array");
+            this.objects.prop("data", "array");
         } else if (ctx.RHO() != null) {
             base = "^";
+        } else if (ctx.ROOT() != null) {
+            base = "Q";
+        } else if (ctx.HOME() != null) {
+            base = "QQ";
         } else if (ctx.SIGMA() != null) {
             base = "&";
         }
         if (!base.isEmpty()) {
-            this.dirs.attr("base", base);
+            this.objects.prop("base", base);
         }
     }
 
     @Override
     public void exitHead(final ProgramParser.HeadContext ctx) {
         if (ctx.DOTS() != null) {
-            this.dirs.attr("unvar", "");
+            this.objects.prop("unvar", "");
         }
-        this.dirs.up();
+        this.objects.leave();
     }
 
     @Override
     public void enterHas(final ProgramParser.HasContext ctx) {
-        this.enter();
-        this.dirs.attr("as", ctx.NAME().getText());
+        this.objects.enter();
+        this.objects.prop("as", ctx.NAME().getText());
     }
 
     @Override
     public void exitHas(final ProgramParser.HasContext ctx) {
-        this.dirs.up();
+        this.objects.leave();
     }
 
     @Override
@@ -334,12 +339,12 @@ public final class XeListener implements ProgramListener {
 
     @Override
     public void enterHtail(final ProgramParser.HtailContext ctx) {
-        this.enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitHtail(final ProgramParser.HtailContext ctx) {
-        this.dirs.up();
+        this.objects.leave();
     }
 
     // @checkstyle ExecutableStatementCountCheck (100 lines)
@@ -355,19 +360,12 @@ public final class XeListener implements ProgramListener {
         } else if (ctx.BOOL() != null) {
             type = "bool";
             data = Boolean.toString(Boolean.parseBoolean(text));
-        } else if (ctx.CHAR() != null) {
-            type = "char";
-            data = text.substring(1, text.length() - 1);
         } else if (ctx.FLOAT() != null) {
             type = "float";
             data = Double.toString(Double.parseDouble(text));
         } else if (ctx.INT() != null) {
             type = "int";
             data = Long.toString(Long.parseLong(text));
-        } else if (ctx.REGEX() != null) {
-            type = "regex";
-            data = text.substring(1, text.lastIndexOf('/'));
-            this.dirs.attr("flags", text.substring(text.lastIndexOf('/') + 1));
         } else if (ctx.HEX() != null) {
             type = "int";
             data = Long.toString(
@@ -391,9 +389,9 @@ public final class XeListener implements ProgramListener {
                 ctx.getStart().getLine()
             );
         }
-        this.dirs.attr("data", type);
-        this.dirs.attr("base", type);
-        this.dirs.set(
+        this.objects.prop("data", type);
+        this.objects.prop("base", type);
+        this.objects.data(
             data
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
@@ -429,11 +427,30 @@ public final class XeListener implements ProgramListener {
         // This method is created by ANTLR and can't be removed
     }
 
+    @Override
+    public Iterator<Directive> iterator() {
+        return this.dirs.iterator();
+    }
+
     /**
      * Help method.
      */
     private void enter() {
         this.dirs.xpath("o[last()]").strict(1);
+    }
+
+    /**
+     * Text source code.
+     * @param ctx Program context.
+     * @return Original code.
+     */
+    private static String sourceText(final ProgramParser.ProgramContext ctx) {
+        return ctx.getStart().getInputStream().getText(
+            new Interval(
+                ctx.getStart().getStartIndex(),
+                ctx.getStop().getStopIndex()
+            )
+        );
     }
 
     /**
@@ -456,5 +473,4 @@ public final class XeListener implements ProgramListener {
         }
         return res;
     }
-
 }

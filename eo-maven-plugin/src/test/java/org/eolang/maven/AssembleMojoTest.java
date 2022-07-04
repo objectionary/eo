@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,7 @@ public final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
+            .with("includeSources", new SetOf<>("**.eo"))
             .execute();
         new Moja<>(AssembleMojo.class)
             .with("outputDir", temp.resolve("out").toFile())
@@ -77,6 +79,73 @@ public final class AssembleMojoTest {
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
+                        ParseMojo.DIR, Transpiler.EXT
+                    )
+                )
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("src");
+        new Save(
+            String.join(
+                "\n",
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
+            ),
+            src.resolve("wrong.eo")
+        ).save();
+        new Save(
+            String.join(
+                "\n",
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[x] > main\n  (stdout \"Hello!\" x).print\n"
+            ),
+            src.resolve("main.eo")
+        ).save();
+        final Path target = temp.resolve("target");
+        new Moja<>(RegisterMojo.class)
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
+            .with("sourcesDir", src.toFile())
+            .with("includeSources", new SetOf<>("**.eo"))
+            .execute();
+        new Moja<>(AssembleMojo.class)
+            .with("outputDir", temp.resolve("out").toFile())
+            .with("targetDir", target.toFile())
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
+            .with("placed", temp.resolve("list").toFile())
+            .with("skipZeroVersions", true)
+            .with("failOnError", false)
+            .with(
+                "objectionary",
+                (Objectionary) input -> new InputOf(
+                    "[] > sprintf\n"
+                )
+            )
+            .execute();
+        MatcherAssert.assertThat(
+            Files.exists(
+                target.resolve(
+                    String.format(
+                        "%s/org/eolang/io/stdout.%s",
+                        ParseMojo.DIR, Transpiler.EXT
+                    )
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(
+                target.resolve(
+                    String.format(
+                        "%s/main.%s",
                         ParseMojo.DIR, Transpiler.EXT
                     )
                 )

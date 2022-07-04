@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ public final class AtFree implements Attr {
     public Phi get() {
         final Phi phi = this.origin.get();
         if (phi.equals(Phi.Φ)) {
-            throw new Attr.StillAbstractException(
+            throw new ExUnset(
                 "The attribute is not initialized, can't read"
             );
         }
@@ -90,7 +90,7 @@ public final class AtFree implements Attr {
     @Override
     public void put(final Phi phi) {
         if (this.set) {
-            throw new Attr.ReadOnlyException(
+            throw new ExReadOnly(
                 "This free attribute is already set, can't reset"
             );
         }

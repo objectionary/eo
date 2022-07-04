@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,31 @@ public final class EOboolEOwhileTest {
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(toggle, "while")),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ)
+                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
+            )
+        ).take();
+    }
+
+    @Test
+    public void complexBooleanToggle() {
+        final Phi parent = new Parent(Phi.Φ);
+        final Phi toggle = new PhMethod(parent, "toggle");
+        new Dataized(
+            new PhWith(
+                new PhMethod(toggle, "write"),
+                0, new Data.ToPhi(true)
+            )
+        ).take();
+        new Dataized(
+            new PhWith(
+                new PhMethod(
+                    new PhWith(
+                        new PhCopy(new PhMethod(toggle, "eq")),
+                        0, new Data.ToPhi(true)
+                    ),
+                    "while"
+                ),
+                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
             )
         ).take();
     }
@@ -75,16 +99,16 @@ public final class EOboolEOwhileTest {
     }
 
     public static class Kid extends PhDefault {
-        public Kid(final Phi sigma) {
+        private final Phi toggle;
+        public Kid(final Phi sigma, final Phi tgl) {
             super(sigma);
+            this.toggle = tgl;
             this.add("x", new AtFree());
             this.add("φ", new AtComposite(
                 this, rho -> {
                     new Dataized(
                         new PhWith(
-                            rho.attr("ρ").get()
-                                .attr("ρ").get()
-                                .attr("write").get(),
+                            new PhMethod(this.toggle, "write"),
                             0, new Data.ToPhi(false)
                         )
                     ).take();

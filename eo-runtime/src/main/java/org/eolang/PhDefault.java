@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -179,7 +179,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public final Attr attr(final int pos) {
         if (pos < 0) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
                     "Attribute position can't be negative (%d)",
                     pos
@@ -187,18 +187,27 @@ public abstract class PhDefault implements Phi, Cloneable {
             );
         }
         if (this.order.isEmpty()) {
-            throw new Attr.IllegalAttrException(
+            throw new ExFailure(
                 String.format(
-                    "There are no attributes here, can't strong the %d-th one",
+                    "There are no attributes here, can't read the %d-th one",
                     pos
                 )
             );
         }
-        final int idx;
-        if (pos >= this.order.size()) {
-            idx = this.order.size() - 1;
-        } else {
-            idx = pos;
+        int idx;
+        for (idx = 0; idx < pos; ++idx) {
+            if (idx >= this.order.size()) {
+                throw new ExFailure(
+                    String.format(
+                        "There are just %d attributes here, can't read the %d-th one",
+                        this.order.size(), pos
+                    )
+                );
+            }
+            final String name = this.order.get(idx);
+            if (this.attrs.get(name) instanceof AtVararg) {
+                break;
+            }
         }
         return this.attr(this.order.get(idx));
     }
@@ -212,8 +221,8 @@ public abstract class PhDefault implements Phi, Cloneable {
             attr = this.attrs.get(name);
         }
         if (attr == null) {
-            final Attr phi = this.attrs.get("φ");
-            if (phi == null) {
+            final Attr aphi = this.attrs.get("φ");
+            if (aphi == null) {
                 attr = new AtAbsent(
                     name,
                     String.format(
@@ -223,7 +232,8 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             } else {
-                final Phi found = this.cached.get(name, phi::get).attr(name).get();
+                final Phi phi = this.cached.get(name, aphi::get);
+                final Phi found = phi.attr(name).get();
                 found.move(this);
                 return new AtSimple(found);
             }
@@ -232,6 +242,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
+        if (this.getClass().isAnnotationPresent(Volatile.class)) {
+            this.cached.reset();
+        }
         return attr;
     }
 
@@ -239,7 +252,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Add new attribute.
      *
      * This method can only be called from child classes, in their
-     * constructors, when the declare their attributes. This is why it's
+     * constructors, when they declare their attributes. This is why it's
      * protected. Not the brightest design, I admit.
      *
      * @param name The name

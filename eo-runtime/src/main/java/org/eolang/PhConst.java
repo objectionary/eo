@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A const origin.
+ * A constant object.
+ *
+ * <p>This class is thread-safe.</p>
  *
  * @since 0.16
  */
@@ -42,12 +44,7 @@ public final class PhConst implements Phi {
     /**
      * Cached attributes.
      */
-    private final Map<String, Attr> named;
-
-    /**
-     * Cached attributes.
-     */
-    private final Map<Integer, Attr> numbered;
+    private final Map<String, Attr> cached = new ConcurrentHashMap<>(0);
 
     /**
      * Ctor.
@@ -55,21 +52,7 @@ public final class PhConst implements Phi {
      * @param phi The origin
      */
     public PhConst(final Phi phi) {
-        this(phi, new ConcurrentHashMap<>(0), new ConcurrentHashMap<>(0));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param phi The origin
-     * @param names Attrs-by-names pre-cached
-     * @param nums Attrs-by-positions pre-cached
-     */
-    public PhConst(final Phi phi, final Map<String, Attr> names,
-        final Map<Integer, Attr> nums) {
         this.origin = phi;
-        this.named = names;
-        this.numbered = nums;
     }
 
     @Override
@@ -84,7 +67,7 @@ public final class PhConst implements Phi {
 
     @Override
     public String toString() {
-        return String.format("!%s%s", this.named.keySet(), this.origin);
+        return String.format("!%s%s", this.cached.keySet(), this.origin);
     }
 
     @Override
@@ -94,27 +77,27 @@ public final class PhConst implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhConst(this.origin.copy(), this.named, this.numbered);
+        return new PhConst(this.origin.copy());
     }
 
     @Override
     public void move(final Phi rho) {
-        this.origin.move(rho);
+        synchronized (this.cached) {
+            this.origin.move(rho);
+            this.cached.clear();
+        }
     }
 
     @Override
     public Attr attr(final int pos) {
-        this.numbered.computeIfAbsent(
-            pos, x -> new AtConst(this.origin.attr(pos), this)
-        );
-        return this.numbered.get(pos);
+        return this.origin.attr(pos);
     }
 
     @Override
     public Attr attr(final String name) {
-        this.named.computeIfAbsent(
+        return this.cached.computeIfAbsent(
             name, x -> new AtConst(this.origin.attr(name), this)
         );
-        return this.named.get(name);
     }
+
 }

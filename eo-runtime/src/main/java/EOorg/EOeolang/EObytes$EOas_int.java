@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 package EOorg.EOeolang;
 
-import java.nio.ByteBuffer;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -42,10 +41,9 @@ public class EObytes$EOas_int extends PhDefault {
 
     public EObytes$EOas_int(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            return new Data.ToPhi(ByteBuffer.wrap(array).getLong());
-        }));
+        this.add("φ", new AtComposite(this, rho ->
+	        new Data.ToPhi(new Param(rho).fromBytes(Long.class))
+        ));
     }
 
 }

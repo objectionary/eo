@@ -11,13 +11,16 @@
   5 > iTest_me
   [] > rr /int
   if. > @
-    add.
+    plus.
       $
-        sub.
+        minus.
           n:hello
-          '?'
+          "家"
           4.55 > x...!
+          *
+            "Hello, друг"
+            2.18
       bar
-        add.
+        plus.
           n
           "hello, 大家!"

@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2021 Yegor Bugayenko
+Copyright (c) 2016-2022 Yegor Bugayenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
   <xsl:function name="eo:abstract" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="not(exists($o/@base)) and (exists($o/o) or $o/@atom)"/>
+    <xsl:sequence select="not(exists($o/@base)) and (exists($o/o) or $o/@atom or $o/@abstract)"/>
   </xsl:function>
   <xsl:function name="eo:attr" as="xs:boolean">
     <xsl:param name="o" as="element()"/>

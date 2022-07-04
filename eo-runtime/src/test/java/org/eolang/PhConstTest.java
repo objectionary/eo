@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -121,7 +121,7 @@ public final class PhConstTest {
     public void doesntAllowAttributesOfDecorateeToBeSet() {
         final Phi phi = new Boom();
         Assertions.assertThrows(
-            Attr.StillAbstractException.class,
+            ExUnset.class,
             () -> phi.attr("x").put(new Data.ToPhi(1L))
         );
     }
@@ -155,11 +155,78 @@ public final class PhConstTest {
         MatcherAssert.assertThat(boom.count, Matchers.equalTo(1));
     }
 
+    @Test
+    public void keepConstMultiLayers() {
+        final Phi phi = new PhWith(
+            new Envelope(Phi.Φ),
+            0,
+            new PhWith(
+               new Envelope(Phi.Φ),
+                0, new PhConst(new Rnd(Phi.Φ))
+            )
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Double.class),
+            Matchers.equalTo(new Dataized(phi).take(Double.class))
+        );
+    }
+
+    @Test
+    public void dataizesOnlyOnceViaEnvelopes() {
+        final Dummy dummy = new Dummy("x");
+        final Phi phi = new PhConst(
+            new PhWith(
+                new Envelope(Phi.Φ),
+                0,
+                new PhWith(
+                    new Envelope(Phi.Φ),
+                    0,
+                    new PhWith(
+                        new Envelope(Phi.Φ),
+                        0, dummy
+                    )
+                )
+            )
+        );
+        phi.attr("eq").get();
+        new Dataized(phi).take(Long.class);
+        MatcherAssert.assertThat(
+            dummy.count,
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void dataizesOnlyOnceViaMethods() {
+        final Dummy dummy = new Dummy("x");
+        final Phi phi = new PhConst(
+            new PhWith(
+                new Envelope(Phi.Φ),
+                0,
+                new PhWith(
+                    new Envelope(Phi.Φ),
+                    0,
+                    new PhWith(
+                        new Envelope(Phi.Φ),
+                        0, dummy
+                    )
+                )
+            )
+        );
+        new Dataized(phi).take();
+        new Dataized(phi).take();
+        MatcherAssert.assertThat(
+            dummy.count,
+            Matchers.equalTo(1)
+        );
+    }
+
     private static class Rnd extends PhDefault {
         Rnd(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(this, rho ->
-                new Data.ToPhi(new SecureRandom().nextDouble())));
+                new Data.ToPhi(new SecureRandom().nextDouble())
+            ));
         }
     }
 
@@ -182,6 +249,14 @@ public final class PhConstTest {
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
                 new Dataized(self.attr("ρ").get()).take(Long.class)
             )));
+        }
+    }
+
+    private static class Envelope extends PhDefault {
+        Envelope(final Phi sigma) {
+            super(sigma);
+            this.add("x", new AtFree());
+            this.add("φ", new AtOnce(new AtComposite(this, rho -> rho.attr("x").get())));
         }
     }
 

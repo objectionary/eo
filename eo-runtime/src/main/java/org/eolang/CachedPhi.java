@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,8 @@
  */
 package org.eolang;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -40,7 +39,7 @@ final class CachedPhi {
     /**
      * Cached \phi.
      */
-    private final ConcurrentMap<Integer, Phi> cached = new ConcurrentHashMap<>(1);
+    private final AtomicReference<Phi> cached = new AtomicReference<>();
 
     /**
      * Calculation is running now?
@@ -49,21 +48,21 @@ final class CachedPhi {
 
     @Override
     public String toString() {
-        final Phi phi = this.cached.get(0);
+        final Phi phi = this.cached.get();
         final String txt;
         if (phi == null) {
             txt = "NULL";
         } else {
             txt = phi.toString();
         }
-        return String.format("%d->%s", this.hashCode(), txt);
+        return String.format("%s (hash=%d)", txt, this.hashCode());
     }
 
     /**
      * Reset it to NULL.
      */
     public void reset() {
-        this.cached.clear();
+        this.cached.set(null);
     }
 
     /**
@@ -74,15 +73,15 @@ final class CachedPhi {
     public Phi get(final String name, final Supplier<Phi> supplier) {
         synchronized (this.cached) {
             if (this.running.get()) {
-                this.cached.remove(0);
+                this.reset();
             }
             this.running.set(true);
-            if (!this.cached.containsKey(0)) {
-                this.cached.put(0, supplier.get());
+            if (this.cached.get() == null) {
+                this.cached.set(supplier.get());
             }
-            final Phi ret = this.cached.get(0);
+            final Phi ret = this.cached.get();
             if ("Δ".equals(name)) {
-                this.cached.remove(0);
+                this.reset();
             }
             this.running.set(false);
             return ret;

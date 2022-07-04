@@ -1,6 +1,6 @@
 % The MIT License (MIT)
 %
-% Copyright (c) 2020-2021 Yegor Bugayenko
+% Copyright (c) 2020-2022 Yegor Bugayenko
 %
 % Permission is hereby granted, free of charge, to any person obtaining a copy
 % of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,9 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-\documentclass[sigplan,nonacm=true]{acmart}
+\documentclass[sigplan,nonacm,natbib=false]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
+\usepackage[maxnames=1,minnames=1,maxbibnames=100,natbib=true,citestyle=authoryear,bibstyle=authoryear,doi=false,url=false,isbn=false,isbn=false,backend=biber]{biblatex}
 
 \ifnum\pdfshellescape=1
   \usepackage[finalizecache]{minted}
@@ -29,22 +30,126 @@
   \usepackage[frozencache]{minted}
 \fi
 
-\usepackage{eo}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian,english]{babel}
+  \renewcommand\ttdefault{cmtt}
+\usepackage{csquotes}
+\usepackage{ffcode}
+\usepackage{CJKutf8}
+\usepackage{paralist}
+\usepackage{cancel} % to enable \cancel command
+\usepackage{anyfontsize} % To get rid of font not found warnings
+\usepackage{tabularx} % for special tables
+\usepackage{amsmath}
+\usepackage{to-be-determined}
+\usepackage{href-ul}
+\usepackage{amsthm}
+\usepackage{tcolorbox} % for algorithm
+  \tcbuselibrary{skins}
+\usepackage{fdsymbol} % for \mathbb
+\usepackage{algpseudocode} % for algorithms
+\usepackage{multicol} % for two cols in BNF
+\usepackage{pgffor} % to enable \foreach
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\newtheoremstyle{theorems}
+  {} % Space above
+  {} % Space below
+  {} % Theorem body font % (default is "\upshape")
+  {} % Indent amount
+  {\scshape} % Theorem head font % (default is \mdseries)
+  {.} % Punctuation after theorem head % default: no punctuation
+  { } % Space after theorem head
+  {} % Theorem head spec
+\theoremstyle{theorems}
+\newtheorem{eodefinition}{Definition}
+\newtheorem{eotheorem}{Theorem}
+
+\tolerance=1500
+\raggedbottom
+\setlength\headheight{21pt}
+
+\newcommand\nospell[1]{#1}
+\newcommand\br{\\[-4pt]}
+\newcommand\figcap[1]{\caption{#1}\Description{#1}}
+\newcommand\phic{$\varphi$-calculus}
+\newcommand\eo{{\sffamily EO}}
+\newcommand\XMIR{{\sffamily XMIR}}
+\newcommand\lref[1]{the line no.~\ref{ln:#1}}
+\newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
+
+\newenvironment{twocols}{}{}
+
+\usepackage{tikz}
+  \usetikzlibrary{arrows}
+  \usetikzlibrary{decorations}
+  \usetikzlibrary{decorations.pathmorphing}
+  \usetikzlibrary{intersections}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{backgrounds}
+  \usetikzlibrary{calc}
+  \usetikzlibrary{shapes.arrows}
+\newenvironment{ingraph}%
+  {\noindent\begin{tikzpicture}[om,pics/parallel arrow/.style={code={\draw[-latex,rho] (##1) -- (-##1);}}]}%
+  {\end{tikzpicture}}
+\tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
+\tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
+\tikzstyle{object} = [thing,circle]
+\tikzstyle{dup} = [thing,rectangle,draw=none,minimum height=1.5em,inner sep=3pt]
+\tikzstyle{empty} = [object]
+\tikzstyle{transforms} = [fill=white!80!black, single arrow, minimum height=0.5cm, minimum width=0.5cm,single arrow head extend=2mm]
+\tikzstyle{rho} = [draw,decorate,decoration={snake,amplitude=.4mm,segment length=2mm,post length=1mm}]
+\tikzstyle{ref} = []
+\tikzstyle{edge-name} = [circle,font=\scriptsize,near start,sloped,fill=white,inner sep=0pt,sloped/.append style={transform shape}]
+\tikzstyle{parent} = [draw,dotted]
+\tikzstyle{atom} = [object,double]
+\tikzstyle{lambda} = [xshift=-5pt,yshift=3pt,draw,fill=white,rectangle,thin,minimum width=1.2em,anchor=north west,font={\scriptsize}]
+\tikzstyle{attr} = [midway,sloped,inner sep=0pt,above=2pt,sloped/.append style={transform shape},font={\scriptsize},color=black]
+\tikzstyle{locator} = [attr,below=2pt]
+\tikzstyle{Phi} = [font={\scriptsize}]
+
+\newcounter{rule}
+\renewcommand\therule{R\arabic{rule}}
+\newcommand\rr{\smalltriangleright{}}
+\newcommand\rrule[1]{{\scshape\sffamily\ref{rule:#1}}}
+\newcommand{\jrule}[1]{%
+  \refstepcounter{rule}\label{rule:#1}%
+  \text{\textbf{\rrule{#1}}}}
+\newcommand*{\ohat}[2]{%
+  \stackrel{\textcolor{gray}{#1}}{%
+    \textcolor{gray}{%
+      \overlinesegment{\textcolor{black}{%
+        \vrule height 8pt depth 1pt width 0pt%
+        #2%
+      }}%
+    }%
+  }%
+}
+\newenvironment{algo}
+  {\newcommand\kw[1]{{\bfseries\sffamily ##1}}
+  \newcommand\tab{{\hspace*{1em}}}
+  \noindent}
+  {}
+
+\addbibresource{main.bib}
+
+\setlength{\footskip}{13.0pt}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{$\varphi$}{phi}-calculus}
-\subtitle{\anon{}{%
+\subtitle{%
   Ver:
   \texorpdfstring{
     \href{https://github.com/REPOSITORY/releases/tag/0.0.0}
       {\ff{0.0.0}}
   }{0.0.0}
-}}
+}
 \author{Yegor Bugayenko}
 \orcid{0000-0001-6370-0678}
 \email{yegor256@gmail.com}
 \affiliation{
-  \institution{}
+  \institution{Huawei}
   \city{Moscow}
   \country{Russia}
 }
@@ -55,7 +160,11 @@
 
 \begin{abstract}
 Object-oriented programming (OOP) is one of the most popular
-paradigms used for building software systems. However, despite
+paradigms used for building software systems\footnote{%
+  \LaTeX{} sources of this paper are maintained in
+  \href{https://github.com/REPOSITORY}{REPOSITORY} GitHub repository,
+  the rendered version is \href{https://github.com/REPOSITORY/releases/tag/0.0.0}{\ff{0.0.0}}.}.
+However, despite
 its industrial and academic popularity, OOP is still missing
 a formal apparatus similar to $\lambda$-calculus, which functional
 programming is based on. There were a number of attempts to formalize
@@ -125,16 +234,15 @@ formalization of OOP.
 \label{sec:complexity}
 \input{sections/complexity}
 
-\section{Related Works}
+\section{Related Work}
 \label{sec:related}
 \input{sections/related}
 
 \section{Acknowledgments}
 \input{sections/acks}
 
-\bibliographystyle{ACM-Reference-Format}
-\raggedright
-\bibliography{main}
+\printbibliography
+
 \clearpage
 
 \end{document}

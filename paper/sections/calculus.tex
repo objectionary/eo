@@ -149,6 +149,18 @@ and may further be simplified since the order of parameters is obvious:
 \end{split}
 \end{equation}
 
+An application without arguments is a copy of an object. For example,
+in these expressions the attribute \ff{p1} is bound to the same object
+as the attribute \ff{p}, while the attribute \ff{p2} is bound to a new
+object, a copy of \ff{p}:
+\begin{equation*}
+\begin{split}
+& \ff{p} \mapsto \ff{point}(\ff{5}, \ff{-3}),\\
+& \ff{p1} \mapsto \ff{p},\\
+& \ff{p2} \mapsto \ff{p}().\\
+\end{split}
+\end{equation*}
+
 \subsection{Parent and Home}
 
 \begin{eodefinition}\label{def:parent}
@@ -162,7 +174,7 @@ is created by another abstract object, for example:
   \begin{equation}
   \begin{split}
   & x \mapsto \llbracket y \mapsto \llbracket z \mapsto t \rrbracket \rrbracket \br
-  & x.y.z = x \br
+  & x.y.\rho = x \br
   & x.y.z.\rho = y.
   \end{split}
   \end{equation}
@@ -211,7 +223,7 @@ be denoted by this formula:
 & \ff{circle}(\ff{center}, \ff{radius}) \mapsto \llbracket \br
 & \quad \varphi \mapsto \ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\varphi.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
+& \quad \quad \varphi \mapsto \rho.\varphi.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket,
 \end{split}
@@ -230,18 +242,18 @@ producing:
 & \quad \ff{radius} \mapsto \ff{40}, \br
 & \quad \varphi \mapsto \ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket.
 \end{split}
 \end{equation}
 
 Because of decoration, the expression
-$\rho$.$\varphi$.\ff{distance} in Eq.~\ref{eq:c-empty} is semantically equivalent to the expression
+$\rho$.$\varphi$.\ff{distance} in Eq.~\ref{eq:c-empty} is semantically equivalent to a shorter expression
 $\rho$.\ff{distance} in Eq.~\ref{eq:c-fin}.
 
 The following expression makes a new object \ff{is}, which represents
-a sequence of object applications ending with a copy of \ff{leq}:
+a sequence of object applications ending with a copy of \ff{lte}:
 \begin{equation}\label{eq:is}
 \begin{split}
 & \ff{is} \mapsto \ff{c}.\ff{is-inside}(\ff{point}(\ff{1}, \ff{7})),
@@ -256,7 +268,7 @@ producing:
 & \quad \varphi \mapsto \ff{center}, \br
 & \quad \ff{is-inside} \mapsto \llbracket \br
 & \quad \quad \ff{p} \mapsto \ff{point}(\ff{1}, \ff{7}), \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{leq}(\ff{radius}) \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
 & \quad \rrbracket \br
 & \rrbracket.
 \end{split}
@@ -314,7 +326,7 @@ For example, Eq.~\ref{eq:c-fin} may be refined as
 & \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
 & \quad \varphi \mapsto \xi.\ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\xi.\ff{p}).\ff{leq}( \br
+& \quad \quad \varphi \mapsto \rho.\ff{distance}(\xi.\ff{p}).\ff{lte}( \br
 & \quad \quad \quad \rho.\ff{radius} \br
 & \quad \quad ) \br
 & \quad \rrbracket \br
@@ -340,7 +352,7 @@ the object application:
 & \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
 & \quad \varphi \mapsto \xi.\ff{center}, \br
 & \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \xi.\rho.\ff{distance}(\ff{to} \mapsto \xi.\ff{p}).\ff{leq}( \br
+& \quad \quad \varphi \mapsto \xi.\rho.\ff{distance}(\ff{to} \mapsto \xi.\ff{p}).\ff{lte}( \br
 & \quad \quad \quad \ff{other} \mapsto \xi.\rho.\ff{radius} \br
 & \quad \quad ) \br
 & \quad \rrbracket \br
@@ -350,7 +362,7 @@ the object application:
 
 \subsection{Identity}
 
-\begin{eodefinition}\label{def:attribute}
+\begin{eodefinition}\label{def:identity}
 If $x$ is an object then $x.\nu$ is a positive integer data object
 with a unique identify of $x$ in the entire runtime scope.
 \end{eodefinition}

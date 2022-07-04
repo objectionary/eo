@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2021 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -66,6 +66,7 @@ public final class RegisterMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        property = "eo.sourcesDir",
         required = true,
         defaultValue = "${project.basedir}/src/main/eo"
     )
@@ -76,7 +77,13 @@ public final class RegisterMojo extends SafeMojo {
      * in the {@code &lt;includeSources&gt;} directory, which can be
      * pretty global (or even a root one).
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (15 lines)
+     * @todo #636:30min Here, the "property" attribute of the @Parameter
+     *  annotation is not set. If we set it, in order to enable configuration
+     *  through command line arguments, the default value won't be set.
+     *  I don't know how to fix this. Let's investigate what is the right
+     *  way according to Maven traditions. If we fix this, let's also
+     *  fix "excludeSources" here and "include/excludeBinaries" in PlaceMojo.
      */
     @Parameter
     private Set<String> includeSources = new SetOf<>("**.eo");
@@ -89,17 +96,21 @@ public final class RegisterMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> excludeSources = new HashSet<>(0);
+    private Set<String> excludeSources = new SetOf<>();
 
     @Override
     public void exec() throws IOException {
+        final int before = this.tojos().select(t -> true).size();
+        if (before > 0) {
+            Logger.info(this, "There are %d EO sources registered already", before);
+        }
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
             .includes(this.includeSources)
             .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
             final String name = unplace.make(file);
-            if (!this.scopedTojos().select(t -> t.get("id").equals(name)).isEmpty()) {
+            if (!this.scopedTojos().select(t -> t.get(Tojos.KEY).equals(name)).isEmpty()) {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }
@@ -110,9 +121,10 @@ public final class RegisterMojo extends SafeMojo {
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(
-            this, "Registered %d EO sources from %s to %s",
+            this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
             sources.size(), Save.rel(this.sourcesDir.toPath()),
-            Save.rel(this.foreign.toPath())
+            Save.rel(this.foreign.toPath()),
+            this.includeSources, this.excludeSources
         );
     }
 

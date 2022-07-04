@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > bytes
@@ -31,8 +33,8 @@
   # Total number of bytes
   [] > size /int
 
-  # Take a part of the line
-  [start len] > part /bytes
+  # Represents a sub-sequence inside the current one
+  [start len] > slice /bytes
 
   # Turn this chain of bytes into a string in UTF-8
   [] > as-string /string
@@ -46,11 +48,6 @@
   # If there are less or more than eight bytes, there will
   # be an error returned.
   [] > as-float /float
-
-  # Turn this chain of one byte into a char.
-  # If there are less or more than one byte, there will
-  # be an error returned.
-  [] > as-char /char
 
   # Calculate bitwise and
   [b] > and /bytes
@@ -70,6 +67,18 @@
   # Calculate bitwise right shift
   [x] > right /bytes
 
+  # Converts to bool
+  [] > as-bool
+    ^.eq 01- > @
+
   # Return itself
   [] > as-bytes
     ^ > @
+
+  # Converts this to hash
+  [] > as-hash /int
+
+  # Concatenation of two byte sequences:
+  # the current and the provided one,
+  # as a new sequence
+  [b] > concat /bytes

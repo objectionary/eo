@@ -1,7 +1,7 @@
 assets:
-  settings.xml: cqfn/secrets#settings.xml
-  pubring.gpg: cqfn/secrets#pubring.gpg
-  secring.gpg: cqfn/secrets#secring.gpg
+  settings.xml: yegor256/objectionary-secrets#settings.xml
+  pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
+  secring.gpg: yegor256/objectionary-secrets#secring.gpg
 install: |
   javac -version
   pdd --file=/dev/null
@@ -10,10 +10,12 @@ merge:
     mvn clean install -Pqulice --errors -Dstyle.color=never
 release:
   script: |-
+    [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
+
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
     mvn clean install -Dinvoker.skip
-    mvn clean deploy -Pcqfn -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
+    mvn clean deploy -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
 
     mkdir /tmp/objectionary
     cp -R eo-runtime/src/main/eo /tmp/objectionary/objects
@@ -22,6 +24,7 @@ release:
     branch=$(git rev-parse --abbrev-ref HEAD)
     git checkout gh-pages
     git reset --hard
+    sudo git config --global --add safe.directory "$(pwd)"
     sudo /bin/bash -c "cd '$(pwd)'; git clean -fd"
     cp /tmp/XMIR.xsd .
     sed -i "s|SNAPSHOT|${tag}|" XMIR.xsd

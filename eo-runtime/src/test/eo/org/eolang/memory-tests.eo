@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,42 @@
 # SOFTWARE.
 
 +package org.eolang
++home https://github.com/objectionary/eo
++version 0.0.0
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > writes-into-memory
-  memory > x
-  and. > @
-    x.write 10
-    x.eq 10
+  memory 0 > x
+  assert-that > @
+    seq
+      x.write 10
+      x
+    $.equal-to 10
 
 [] > double-writes
-  memory > m
-  and. > @
-    m.write "Hello, world!"
-    m.write 42
-    m.eq 42
+  memory 0 > m
+  assert-that > @
+    seq
+      m.write "Hello, world!"
+      m.write 42
+      m
+    $.equal-to 42
 
 [] > rewrites-and-increments-itself
-  memory > m
-  and. > @
-    m.write 1
-    m.write (m.add 5)
-    m.eq 6
+  memory 0 > m
+  assert-that > @
+    seq
+      m.write 1
+      m.write (m.plus 5)
+      m
+    $.equal-to 6
 
 [] > memory-in-outer-scope
   [] > outer
-    memory > x
+    memory 0 > x
   outer > a
   seq > @
     a.x.write 1
@@ -56,16 +65,23 @@
         "%d"
         a.x
 
-[] > checks-for-emptiness
-  memory > x
-  x.is-empty > @
-
 [] > writes-into-two-memory-objects
-  memory > a
-  memory > b
-  and. > @
+  memory 0 > a
+  memory 0 > b
+  assert-that > @
+    and.
+      seq
+        a.write 10
+        b.write 20
+      a.eq 10
+    $.equal-to TRUE
+
+[] > writes-into-two-memory-objects-and-check-first
+  memory 0 > a
+  memory 0 > b
+  assert-that > @
     seq
       a.write 10
       b.write 20
-    a.eq 10
-
+      a
+    $.equal-to 10
