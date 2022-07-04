@@ -92,7 +92,7 @@ public final class EOstdinTest {
 
     @Test
     public void stdinOneLineTest() {
-        String expected = "this is a test input!\n";
+        String expected = "this is a testing input!\n";
         mockSystemIn(expected);
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
