@@ -44,7 +44,11 @@ public class EOrandom$EOpseudo extends PhDefault {
         this.add("φ", new AtComposite(this, self -> new PhWith(
             new EOrandom(self),
             "seed",
-            new Data.ToPhi(System.currentTimeMillis())
+            new Data.ToPhi(
+                ((System.nanoTime() << 35) & ((1L << 53) - 1))
+                + ((System.nanoTime() << 17) & ((1L << 35) - 1))
+                + (System.nanoTime() & ((1L << 17) - 1))
+            )
         )));
     }
 }
