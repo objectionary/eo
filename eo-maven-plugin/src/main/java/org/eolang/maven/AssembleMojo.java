@@ -177,12 +177,14 @@ public final class AssembleMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     /**
-     * Shall we fail when error occurred?
+     * Whether we should fail on error.
      * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.21.0
+     * @since 0.23.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.failOnError", required = false, defaultValue = "true")
+    @Parameter(
+        property = "eo.failOnError",
+        defaultValue = "true")
     private boolean failOnError = true;
 
     @Override

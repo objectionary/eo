@@ -163,4 +163,44 @@ public final class OptimizeMojoTest {
         );
     }
 
+    @Test
+    public void testOptimizeWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Save(
+            String.join(
+                "\n",
+                "+package f",
+                "\n+alias THIS-IS-WRONG org.eolang.io.stdout",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @\n"
+            ),
+            src
+        ).save();
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .execute();
+        MatcherAssert.assertThat(
+            Files.notExists(
+                target.resolve(
+                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+                )
+            ),
+            Matchers.is(true)
+        );
+    }
+
 }
