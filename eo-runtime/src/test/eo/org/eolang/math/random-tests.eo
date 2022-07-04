@@ -34,6 +34,12 @@
     $.not
       $.equal-to (r.next.next)
 
+[] > seeded-randoms-are-equal
+  assert-that > @
+    (random 1654).next.next.next
+    $.equal-to
+      (random 1654).next.next.next
+
 [] > random-is-in-range
   random 123 > r
   assert-that > @
