@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -74,6 +75,17 @@ public final class OptimizeMojo extends SafeMojo {
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
     private boolean trackOptimizationSteps;
 
+    /**
+     * Whether we should fail on error.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.23.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnError",
+        defaultValue = "true")
+    private boolean failOnError = true;
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
@@ -93,10 +105,13 @@ public final class OptimizeMojo extends SafeMojo {
                 }
             }
             ++done;
-            tojo.set(
-                AssembleMojo.ATTR_XMIR2,
-                this.optimize(src).toAbsolutePath().toString()
-            );
+            final XML optimized = this.optimize(src);
+            if (this.shouldPass(optimized)) {
+                tojo.set(
+                    AssembleMojo.ATTR_XMIR2,
+                    this.make(optimized, src).toAbsolutePath().toString()
+                );
+            }
         }
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
@@ -113,12 +128,9 @@ public final class OptimizeMojo extends SafeMojo {
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    private Path optimize(final Path file) throws IOException {
+    private XML optimize(final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path target = place.make(
-            this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
-        );
         Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain())).with(
             Arrays.asList(
                 "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
@@ -141,13 +153,40 @@ public final class OptimizeMojo extends SafeMojo {
                 Save.rel(dir)
             );
         }
-        final XML out = new Xsline(train).pass(new XMLDocument(file));
-        new Save(out.toString(), target).save();
+        return new Xsline(train).pass(new XMLDocument(file));
+    }
+
+    /**
+     * Make path with optimized XML file after parsing.
+     *
+     * @param xml Optimized xml
+     * @param file EO file
+     * @return The file with optimized XMIR
+     * @throws IOException If fails
+     */
+    private Path make(final XML xml, final Path file) throws IOException {
+        final String name = new XMLDocument(file).xpath("/program/@name").get(0);
+        final Place place = new Place(name);
+        final Path target = place.make(
+            this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
+        );
+        new Save(xml.toString(), target).save();
         Logger.debug(
             this, "Optimized %s (program:%s) to %s",
             Save.rel(file), name, Save.rel(target)
         );
         return target;
+    }
+
+    /**
+     * Should optimization steps pass without errors.
+     *
+     * @param xml Optimized xml
+     * @return Should fail
+     */
+    private boolean shouldPass(final XML xml) {
+        final List<XML> errors = xml.nodes("/program/errors/error");
+        return errors.isEmpty() || this.failOnError;
     }
 
 }
