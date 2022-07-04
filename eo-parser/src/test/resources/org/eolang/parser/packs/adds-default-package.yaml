@@ -21,7 +21,7 @@ eo: |
 
   [args] > main
     and
-      (scanner stdin).nextLine > line!
+      (scanner stdin).next-line > line!
       (stdout "You entered" line).print
       $
       ^.i
