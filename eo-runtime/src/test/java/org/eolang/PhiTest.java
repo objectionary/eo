@@ -46,7 +46,7 @@ public final class PhiTest {
                                     Phi.Φ.attr("org").get(),
                                     "eolang"
                                 ),
-                            "math"
+                                "math"
                             ),
                             "random"
                         ),
@@ -77,7 +77,7 @@ public final class PhiTest {
         MatcherAssert.assertThat(
             new Dataized(
                 Phi.Φ.attr("org").get().attr("eolang").get().attr("math")
-                        .get().attr("random").get().attr("pseudo").get()
+                    .get().attr("random").get().attr("pseudo").get()
             ).take(Double.class),
             Matchers.greaterThan(-1.0d)
         );

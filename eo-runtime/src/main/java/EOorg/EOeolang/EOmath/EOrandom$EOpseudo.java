@@ -27,6 +27,7 @@ package EOorg.EOeolang.EOmath;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -35,14 +36,15 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "random.pseudo-seed")
-public class EOrandom$EOpseudo_seed extends PhDefault {
+@XmirObject(oname = "random.pseudo")
+public class EOrandom$EOpseudo extends PhDefault {
 
-    public EOrandom$EOpseudo_seed(final Phi sigma) {
+    public EOrandom$EOpseudo(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-                System.currentTimeMillis()
+        this.add("φ", new AtComposite(this, self -> new PhWith(
+            new EOrandom(self),
+            "seed",
+            new Data.ToPhi(System.currentTimeMillis())
         )));
     }
-
 }
