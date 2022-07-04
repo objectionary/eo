@@ -42,6 +42,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "array.each")
 public class EOarray$EOeach extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOarray$EOeach(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());

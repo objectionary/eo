@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.as-float")
 public class EObytes$EOas_float extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOas_float(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->

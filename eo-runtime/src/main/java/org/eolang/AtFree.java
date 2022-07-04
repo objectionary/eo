@@ -33,23 +33,44 @@ package org.eolang;
  * @since 0.1
  */
 public final class AtFree implements Attr {
-
+    /**
+     * Origin.
+     */
     private final Attr origin;
 
+    /**
+     * If this is set.
+     */
     private Boolean set;
 
+    /**
+     * Ctor.
+     */
     public AtFree() {
         this(new AtSimple());
     }
 
+    /**
+     * Ctor.
+     * @param phi Enclosing phi
+     */
     public AtFree(final Phi phi) {
         this(new AtSimple(phi));
     }
 
+    /**
+     * Ctor.
+     * @param attr Attribute
+     */
     public AtFree(final Attr attr) {
         this(attr, false);
     }
 
+    /**
+     * Ctor.
+     * @param attr Attribute
+     * @param used If the attribute is set
+     */
     public AtFree(final Attr attr, final boolean used) {
         this.origin = attr;
         this.set = used;

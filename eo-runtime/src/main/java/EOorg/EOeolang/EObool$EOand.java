@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bool.and")
 public class EObool$EOand extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObool$EOand(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());

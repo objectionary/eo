@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "number.as-int")
 public class EOnumber$EOas_int extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOnumber$EOas_int(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {

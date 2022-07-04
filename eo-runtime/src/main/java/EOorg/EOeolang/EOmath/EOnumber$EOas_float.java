@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "number.as-float")
 public class EOnumber$EOas_float extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOnumber$EOas_float(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {

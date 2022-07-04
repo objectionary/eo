@@ -34,12 +34,16 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bool.as-hash")
 public class EObool$EOas_hash extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObool$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->
-                new Data.ToPhi(
-                        (long) new Param(rho).strong(Boolean.class).hashCode()
-                )
+            new Data.ToPhi(
+                (long) new Param(rho).strong(Boolean.class).hashCode()
+            )
         ));
     }
 

@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
  * The class is thread-safe.
  *
  * @since 0.1
+ * @checkstyle DesignForExtensionCheck (500 lines)
  */
 public abstract class PhDefault implements Phi, Cloneable {
 

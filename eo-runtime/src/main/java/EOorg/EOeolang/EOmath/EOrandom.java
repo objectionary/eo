@@ -40,8 +40,15 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "random")
 public class EOrandom extends PhDefault {
 
+    /**
+     * Random.
+     */
     private static final Random RND = new SecureRandom();
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOrandom(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, self -> new Data.ToPhi(

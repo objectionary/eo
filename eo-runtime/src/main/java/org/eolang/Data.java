@@ -57,12 +57,26 @@ public interface Data<T> {
      */
     final class Once<T> implements Data<T> {
 
+        /**
+         * Data.
+         */
         private final Data<T> src;
 
+        /**
+         * Reference.
+         */
         private final AtomicReference<T> ref;
 
+        /**
+         * Blank supplier.
+         */
         private final Supplier<String> blank;
 
+        /**
+         * Ctor.
+         * @param data Data to return
+         * @param txt Missing data text
+         */
         public Once(final Data<T> data, final Supplier<String> txt) {
             this.src = data;
             this.ref = new AtomicReference<>();
@@ -108,10 +122,20 @@ public interface Data<T> {
      */
     final class ToPhi implements Phi {
 
+        /**
+         * Data.
+         */
         private final Phi value;
 
+        /**
+         * Phi object.
+         */
         private final Phi object;
 
+        /**
+         * Ctor.
+         * @param obj Data
+         */
         public ToPhi(final Object obj) {
             this.value = new Data.Value<>(obj);
             this.object = Data.ToPhi.toPhi(obj);
@@ -158,6 +182,11 @@ public interface Data<T> {
             return this.object.toString();
         }
 
+        /**
+         * Convert to Phi object
+         * @param obj Object to convert
+         * @return Constructed Phi
+         */
         private static Phi toPhi(final Object obj) {
             final Phi phi;
             if (obj instanceof Boolean) {
@@ -192,8 +221,15 @@ public interface Data<T> {
      */
     final class Value<T> extends PhDefault implements Data<T> {
 
+        /**
+         * Value.
+         */
         private final T val;
 
+        /**
+         * Ctor.
+         * @param value Value
+         */
         public Value(final T value) {
             super(Phi.Φ);
             this.val = value;

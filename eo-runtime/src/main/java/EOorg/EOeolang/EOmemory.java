@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "memory")
 public class EOmemory extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOmemory(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtMemoized());

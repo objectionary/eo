@@ -43,6 +43,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "heap.malloc")
 public class EOheap$EOmalloc extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOheap$EOmalloc(final Phi sigma) {
         super(sigma);
         this.add("s", new AtFree());

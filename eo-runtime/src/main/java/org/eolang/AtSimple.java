@@ -33,12 +33,22 @@ package org.eolang;
  */
 public final class AtSimple implements Attr {
 
+    /**
+     * Parent φ
+     */
     private Phi phi;
 
+    /**
+     * Ctor.
+     */
     public AtSimple() {
         this(Phi.Φ);
     }
 
+    /**
+     * Ctor.
+     * @param src source φ
+     */
     public AtSimple(final Phi src) {
         this.phi = src;
     }

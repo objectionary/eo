@@ -31,14 +31,33 @@ package org.eolang;
  */
 final class AtNamed implements Attr {
 
+    /**
+     * Origin.
+     */
     private final Attr origin;
 
+    /**
+     * Enclosing φ.
+     */
     private final Phi phi;
 
+    /**
+     * Attribute name.
+     */
     private final String name;
 
+    /**
+     * Attribute Oname.
+     */
     private final String oname;
 
+    /**
+     * Ctor.
+     * @param nme Name
+     * @param onme Oname
+     * @param src source φ
+     * @param attr attribute
+     */
     AtNamed(final String nme, final String onme,
         final Phi src, final Attr attr) {
         this.name = nme;

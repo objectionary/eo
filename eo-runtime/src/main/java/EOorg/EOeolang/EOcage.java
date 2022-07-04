@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "cage")
 public class EOcage extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOcage(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtMemoized());

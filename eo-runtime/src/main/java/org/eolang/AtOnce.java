@@ -33,10 +33,20 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public final class AtOnce implements Attr {
 
+    /**
+     * Origin attribute.
+     */
     private final Attr origin;
 
+    /**
+     * Cache.
+     */
     private final AtomicReference<Phi> cached;
 
+    /**
+     * Ctor.
+     * @param attr Origin attribute
+     */
     public AtOnce(final Attr attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>();
