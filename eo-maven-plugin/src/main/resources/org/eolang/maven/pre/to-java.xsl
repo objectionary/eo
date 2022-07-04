@@ -309,6 +309,16 @@ SOFTWARE.
     <xsl:text>* anonymous abstract object without attributes */ };</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <xsl:function name="eo:fetch">
+    <xsl:param name="object"/>
+    <xsl:variable name="parts" select="tokenize($object, '\.')"/>
+    <xsl:text>Phi.Φ</xsl:text>
+    <xsl:for-each select="$parts">
+      <xsl:text>.attr("</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>").get()</xsl:text>
+    </xsl:for-each>
+  </xsl:function>
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
@@ -359,10 +369,13 @@ SOFTWARE.
       <xsl:when test="@base='&amp;'">
         <xsl:text>new PhMethod(rho, "σ")</xsl:text>
       </xsl:when>
-      <xsl:when test="$b and name($b)='class'">
+      <xsl:when test="$b/@ancestors">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($b/@name)"/>
         <xsl:text>(rho)</xsl:text>
+      </xsl:when>
+      <xsl:when test="$b and name($b)='class'">
+        <xsl:value-of select="eo:fetch(concat($b/@package, '.', $b/@name))"/>
       </xsl:when>
       <xsl:when test="$b/@level">
         <xsl:for-each select="0 to $b/@level">
@@ -382,13 +395,7 @@ SOFTWARE.
         <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
-        <xsl:text>Phi.Φ</xsl:text>
-        <xsl:for-each select="$parts">
-          <xsl:text>.attr("</xsl:text>
-          <xsl:value-of select="."/>
-          <xsl:text>").get()</xsl:text>
-        </xsl:for-each>
+        <xsl:value-of select="eo:fetch(@base)"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;</xsl:text>

@@ -44,4 +44,14 @@ public final class PhPackageTest {
         );
     }
 
+    @Test
+    public void findsLongClass() {
+        MatcherAssert.assertThat(
+            Phi.Φ.attr("org").get()
+                .attr("eolang").get()
+                .attr("bytes$eq").get().copy(),
+            Matchers.instanceOf(Phi.class)
+        );
+    }
+
 }
