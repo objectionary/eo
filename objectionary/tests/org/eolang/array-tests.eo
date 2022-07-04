@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.15
++version 0.23.16
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
 +alias org.eolang.txt.text
@@ -133,12 +133,10 @@
     1
     2
   assert-that > @
-    assert-that
-      anArray
-      $.array-each
-        $.equal-to 1
-        $.equal-to 2
-    $.anything
+    anArray
+    $.array-each
+      $.equal-to 1
+      $.equal-to 2
 
 # check that array.is-empty works properly
 [] > should-not-be-empty

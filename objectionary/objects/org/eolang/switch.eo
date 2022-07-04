@@ -23,60 +23,42 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.23.16
-+alias org.eolang.heap
-+alias org.eolang.hamcrest.assert-that
-+junit
++rt jvm org.eolang:eo-runtime:0.23.16
 
-[] > allocates-and-uses
-  "Hello, друг!" > txt
-  txt.as-bytes > bytes
-  heap 1024 > h
-  h.pointer 0 1 > p
-  p.block > data
-    bytes.size
-    [b] (b.as-string > @)
-  assert-that > @
-    seq
-      data.write bytes
-      data
-    $.equal-to txt
-
-[] > malloc-and-free
-  heap 1024 > h
-  h.malloc 64 > p1
-  h.malloc 32 > p2
-  assert-that > @
-    and.
-      p1.lt p2
-      h.free p1
-      h.free p2
-    $.equal-to TRUE
-
-[] > write-and-read-without-error
-  heap 1024 > h
-  h.pointer 0 8 > p
-  [] > mem
-    p.block 8 > @
-  assert-that > @
-    mem.write 01-02-03
-    $.equal-to TRUE
-
-[] > increments-pointer
-  heap 1024 > h
-  h.pointer 0 2 > p1
-  p1.add 2 > p2
-  p2.sub 1 > p3
-  assert-that > @
-    and.
-      (p1.block 6).write ("HELLO!".as-bytes)
+# Allow to choose right options according to cases conditions.
+# Parameter cases is the array of two dimensional array, which
+# consist of condition bool value and expected value, if this
+# condition is TRUE.
+# e.g.
+# switch
+#   *
+#     TRUE
+#     "this value will be returned"
+#   *
+#     FALSE
+#     "this value will be skipped"
+#
+# This object returns value of only first truly statement.
+[cases...] > switch
+  if. > @
+    not.
       eq.
-        p2.block
-          2
-          [b] (b.as-string > @)
-        "O!"
-      eq.
-        p3.block
-          2
-          [b] (b.as-string > @)
-        "LL"
-    $.equal-to TRUE
+        cases.length
+        0
+    if.
+      gt.
+        length.
+          [] > arr
+            reduce. > @
+              cases
+              *
+              [acc case]
+                if. > @
+                  case.at 0
+                  acc.with (case.at 1)
+                  acc
+        0
+      arr.at 0
+      TRUE
+    []
+      "switch cases are empty" > msg

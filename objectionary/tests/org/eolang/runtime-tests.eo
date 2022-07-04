@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.15
++version 0.23.16
 +alias org.eolang.txt.sprintf
 +alias org.eolang.math.number
 +alias org.eolang.math.random
@@ -300,14 +300,12 @@
 
 [] > compares-two-foreign-objects
   assert-that > @
-    assert-that
-      sprintf.<
-      $.all-of
-        $.equal-to
-          QQ.txt.sprintf.<
-        $.equal-to
-          Q.org.eolang.txt.sprintf.<
-    $.anything
+    sprintf.<
+    $.all-of
+      $.equal-to
+        QQ.txt.sprintf.<
+      $.equal-to
+        Q.org.eolang.txt.sprintf.<
 
 [] > compares-two-local-objects
   assert-that > @
@@ -330,3 +328,17 @@
       n
       n
     $.equal-to 64
+
+[] > makes-shallow-copy
+  [] > a
+    memory' > v
+  [] > b
+    a > @
+  b' > b1
+  b' > b2
+  seq > @
+    b1.v.write 0
+    b2.v.write 1
+    assert-that
+      b1.v
+      $.equal-to 1

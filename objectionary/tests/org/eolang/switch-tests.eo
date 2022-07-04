@@ -23,60 +23,86 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.23.16
-+alias org.eolang.heap
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > allocates-and-uses
-  "Hello, друг!" > txt
-  txt.as-bytes > bytes
-  heap 1024 > h
-  h.pointer 0 1 > p
-  p.block > data
-    bytes.size
-    [b] (b.as-string > @)
+[] > switch-simple-case
   assert-that > @
-    seq
-      data.write bytes
-      data
-    $.equal-to txt
+    switch
+      *
+        FALSE
+        "1"
+      *
+        TRUE
+        "2"
+    $.equal-to "2"
 
-[] > malloc-and-free
-  heap 1024 > h
-  h.malloc 64 > p1
-  h.malloc 32 > p2
+[] > switch-strings-case
+  memory "swordfish" > password
   assert-that > @
-    and.
-      p1.lt p2
-      h.free p1
-      h.free p2
+    switch
+      *
+        password.eq "swordfish"
+        "password is correct!"
+      *
+        password.eq ""
+        "empty password is not allowed"
+      *
+        FALSE
+        "password is wrong"
+    $.equal-to "password is correct!"
+
+[] > switch-with-several-true-cases
+  assert-that > @
+    switch
+      *
+        TRUE
+        "TRUE1"
+      *
+        FALSE
+        "FALSE"
+      *
+        TRUE
+        "TRUE2"
+    $.equal-to "TRUE1"
+
+[] > switch-with-all-false-cases
+  assert-that > @
+    switch
+      *
+        FALSE
+        "FALSE1"
+      *
+        FALSE
+        "FALSE2"
     $.equal-to TRUE
 
-[] > write-and-read-without-error
-  heap 1024 > h
-  h.pointer 0 8 > p
-  [] > mem
-    p.block 8 > @
+[] > switch-case-with-error
   assert-that > @
-    mem.write 01-02-03
-    $.equal-to TRUE
+    msg.
+      switch
+    $.equal-to "switch cases are empty"
 
-[] > increments-pointer
-  heap 1024 > h
-  h.pointer 0 2 > p1
-  p1.add 2 > p2
-  p2.sub 1 > p3
+[] > switch-complex-case
+  [] > c1
+    FALSE > @
+  [] > c2
+    "1".eq "2" > @
+  [] > c3
+    TRUE > @
   assert-that > @
-    and.
-      (p1.block 6).write ("HELLO!".as-bytes)
-      eq.
-        p2.block
-          2
-          [b] (b.as-string > @)
-        "O!"
-      eq.
-        p3.block
-          2
-          [b] (b.as-string > @)
-        "LL"
-    $.equal-to TRUE
+    switch
+      *
+        []
+          c1 > @
+        22.0
+      *
+        []
+          c2 > @
+        0.0
+      *
+        []
+          c3 > @
+        []
+          "true case" > @
+    $.equal-to "true case"
