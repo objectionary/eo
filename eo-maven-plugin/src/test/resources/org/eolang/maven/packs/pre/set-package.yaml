@@ -1,0 +1,11 @@
+xsls:
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/package.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //class[@name='bar' and @package='foo.long-name']
+eo: |
+  +package foo.long-name
+  
+  [] > bar
+    "hello"

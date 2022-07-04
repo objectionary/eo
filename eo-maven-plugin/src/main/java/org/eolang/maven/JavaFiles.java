@@ -35,7 +35,7 @@ import org.cactoos.text.Joined;
  * Java files from XMIR.
  * @since 1.0
  */
-public class JavaFiles {
+public final class JavaFiles {
 
     /**
      * Path to XMIR file.
@@ -50,12 +50,12 @@ public class JavaFiles {
     /**
      * Ctor.
      *
-     * @param source XML with java code
-     * @param dest Base destination path
+     * @param src XML with java code
+     * @param target Base destination path
      */
-    public JavaFiles(final Path source, final Path dest) {
-        this.source = source;
-        this.dest = dest;
+    public JavaFiles(final Path src, final Path target) {
+        this.source = src;
+        this.dest = target;
     }
 
     /**
@@ -69,17 +69,17 @@ public class JavaFiles {
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
             Logger.info(
-                this, "No .java files created from %s",
+                this, "No .java files generated from %s",
                 Save.rel(this.source)
             );
         } else {
             for (final XML java : nodes) {
-                saveJava(java, this.dest);
+                JavaFiles.saveJava(java, this.dest);
                 ++total;
             }
             Logger.info(
-                this, "Java generated from %s to %s, created %d .java file(s)",
-                Save.rel(this.source), Save.rel(this.dest), nodes.size()
+                this, "Generated %d .java file(s) from %s to %s",
+                nodes.size(), Save.rel(this.source), Save.rel(this.dest)
             );
         }
         return total;

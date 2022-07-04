@@ -63,6 +63,7 @@ final class PhPackage implements Phi {
         abs.append(name);
         final String target = abs.toString()
             .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
+            .replace("$", "$EO")
             .replace("-", "_");
         return new AtSimple(
             this.objects.computeIfAbsent(
@@ -78,10 +79,13 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public String toString() {
+        return String.format("Φ.%s", this.pkg);
+    }
+
+    @Override
     public String φTerm() {
-        throw new UnsupportedOperationException(
-            String.format("Φ.%s", this.pkg)
-        );
+        return String.format("Φ.%s", this.pkg);
     }
 
     @Override
@@ -113,9 +117,11 @@ final class PhPackage implements Phi {
      */
     private Phi sub(final String target) throws ClassNotFoundException {
         try {
-            return Phi.class.cast(
+            final Phi kid = Phi.class.cast(
                 Class.forName(target).getConstructor(Phi.class).newInstance(Phi.Φ)
             );
+            kid.move(this);
+            return kid;
         } catch (final NoSuchMethodException
             | InvocationTargetException | InstantiationException
             | IllegalAccessException ex) {

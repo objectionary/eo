@@ -22,29 +22,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="broken-aliases" version="2.0">
-  <xsl:output encoding="UTF-8"/>
-  <xsl:template match="/program/errors">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="set-package" version="2.0">
+  <!--
+  This stylesheet will set the package name for each
+  <class> element, using the information from the +package meta.
+  -->
+  <xsl:template match="class[not(@package)]">
     <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:attribute name="package">
+        <xsl:value-of select="//meta[head='package'][1]/tail"/>
+      </xsl:attribute>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="/program/metas/meta[head='alias']">
-        <xsl:if test="not(matches(tail, '^([a-z]+[^&gt;&lt;.\[\]()!:&quot;@^$#&amp;/\s]* ?)?[\w\d]+(\.[\w][\w\d_-]*)*$'))">
-          <xsl:element name="error">
-            <xsl:attribute name="check">
-              <xsl:text>broken-aliases</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:attribute name="severity">
-              <xsl:text>error</xsl:text>
-            </xsl:attribute>
-            <xsl:text>The alias is invalid: "</xsl:text>
-            <xsl:value-of select="tail"/>
-            <xsl:text>"</xsl:text>
-          </xsl:element>
-        </xsl:if>
-      </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

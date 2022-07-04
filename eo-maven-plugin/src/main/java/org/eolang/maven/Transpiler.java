@@ -93,6 +93,7 @@ final class Transpiler {
             Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain().empty())).with(
                 Arrays.asList(
                     "/org/eolang/maven/pre/classes.xsl",
+                    "/org/eolang/maven/pre/package.xsl",
                     "/org/eolang/maven/pre/junit.xsl",
                     "/org/eolang/maven/pre/rename-junit-inners.xsl",
                     "/org/eolang/maven/pre/attrs.xsl",

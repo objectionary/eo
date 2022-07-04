@@ -2,9 +2,6 @@ xsls:
   - /org/eolang/parser/errors/broken-aliases.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=20]
-  - /program/errors/error[@line='5']
-  - /program/errors/error[@line='6']
-  - /program/errors/error[@line='7']
   - /program/errors/error[@line='8']
   - /program/errors/error[@line='9']
   - /program/errors/error[@line='10']
@@ -22,11 +19,17 @@ tests:
   - /program/errors/error[@line='22']
   - /program/errors/error[@line='23']
   - /program/errors/error[@line='24']
+  - /program/errors/error[@line='25']
+  - /program/errors/error[@line='26']
+  - /program/errors/error[@line='27']
 eo: |
   +alias org.eolang.io.stdout
   +alias caseInsensitive thiS.IS.2
   +alias with-Dash-and-number-999 0.1.2
   +alias i文件 this.is.legal2
+  +alias with-dash
+  +alias with-dash org.eolang.with-dash
+  +alias org.eolang.with-dash
   +alias this is some mistake
   +alias FirstLetter Should.Be.Small
   +alias the> symbol.is.not.allowed
