@@ -268,3 +268,14 @@
   assert-that > @
     (100.plus 1 2 3.0).msg
     $.equal-to "The 3th argument of 'plus' is not an int: 3.0"
+
+[] > multiply-several-arguments
+  assert-that > @
+    10000
+    $.equal-to
+      1000.times 2 5
+
+[] > multiply-wrong-args
+  assert-that > @
+    (100.times 1 2 3.0).msg
+    $.equal-to "The 3th argument of 'times' is not an int: 3.0"

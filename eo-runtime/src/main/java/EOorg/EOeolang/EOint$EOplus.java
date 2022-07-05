@@ -50,27 +50,33 @@ public class EOint$EOplus extends PhDefault {
         super(sigma);
         this.add("x", new AtVararg());
         this.add("φ", new AtComposite(this, rho -> {
+            Phi phi = null;
+            boolean error = false;
             Long sum = new Param(rho).strong(Long.class);
-            final Phi[] addends = new Param(rho, "x").strong(Phi[].class);
-            for (int idx = 0; idx < addends.length; ++idx) {
-                Long addend;
-                try {
-                    addend = new Dataized(addends[idx]).take(Long.class);
-                    sum += addend;
-                } catch (ClassCastException exception) {
-                    return new PhWith(
-                        new EOerror(Phi.Φ), "msg",
+            final Phi[] args = new Param(rho, "x").strong(Phi[].class);
+            for (int idx = 0; idx < args.length; ++idx) {
+                final Object val = new Dataized(args[idx]).take();
+                if (!(val instanceof Long)) {
+                    phi = new PhWith(
+                        new EOerror(Phi.Φ),
+                        "msg",
                         new Data.ToPhi(
                             String.format(
                                 "The %dth argument of 'plus' is not an int: %s",
-                                idx + 1, new Dataized(addends[idx]).take()
+                                idx + 1, val
                             )
                         )
                     );
+                    error = true;
+                    break;
+                } else {
+                    sum += (Long) val;
                 }
             }
-            return new Data.ToPhi(sum);
+            if (!error) {
+                phi = new Data.ToPhi(sum);
+            }
+            return phi;
         }));
     }
-
 }
