@@ -25,10 +25,12 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVararg;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -46,13 +48,29 @@ public class EOint$EOplus extends PhDefault {
      */
     public EOint$EOplus(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Long.sum(
-                new Param(rho).strong(Long.class),
-                new Param(rho, "x").strong(Long.class)
-            )
-        )));
+        this.add("x", new AtVararg());
+        this.add("φ", new AtComposite(this, rho -> {
+            Long sum = new Param(rho).strong(Long.class);
+            final Phi[] addends = new Param(rho, "x").strong(Phi[].class);
+            for (int idx = 0; idx < addends.length; ++idx) {
+                Long addend;
+                try {
+                    addend = new Dataized(addends[idx]).take(Long.class);
+                    sum += addend;
+                } catch (ClassCastException exception) {
+                    return new PhWith(
+                        new EOerror(Phi.Φ), "msg",
+                        new Data.ToPhi(
+                            String.format(
+                                "The %dth argument of 'plus' is not an int: %s",
+                                idx + 1, new Dataized(addends[idx]).take()
+                            )
+                        )
+                    );
+                }
+            }
+            return new Data.ToPhi(sum);
+        }));
     }
 
 }

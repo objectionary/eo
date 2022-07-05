@@ -59,7 +59,7 @@
     ^.times -1 > @
 
   # Add to the current one
-  [x] > plus /int
+  [x...] > plus /int
 
   # Subtract from the current one
   [x] > minus

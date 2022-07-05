@@ -257,3 +257,14 @@
     $.not
       $.equal-to
         42.as-hash
+
+[] > sum-up-several-arguments
+  assert-that > @
+    1982
+    $.equal-to
+      1000.plus 900 80 2
+
+[] > sum-up-wrong-args
+  assert-that > @
+    (100.plus 1 2 3.0).msg
+    $.equal-to "The 3th argument of 'plus' is not an int: 3.0"
