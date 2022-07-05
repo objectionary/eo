@@ -24,13 +24,18 @@
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +alias org.eolang.nop
++alias org.eolang.hamcrest.assert-that
 +junit
 
 [] > nop-is-true
-  nop > @
+  assert-that > @
+    nop
+    $.equal-to TRUE
 
 [] > nop-is-true-despite-arguments
-  nop > @
-    "abc"
-    1
-    1.0
+  assert-that > @
+    nop
+      "abc"
+      1
+      1.0
+    $.equal-to TRUE
