@@ -130,3 +130,6 @@
               item
               x.at idx
       FALSE
+
+  # Returns the combined current and passed arrays
+  [arr] > concat /array
