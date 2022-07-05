@@ -194,7 +194,7 @@
   assert-that > @
     (2.div 0).msg
     $.equal-to
-      "Division by zero is undefined"
+      "Division by 0 at 1th argument of 'div'"
 
 # Checks that division by one returns the dividend
 [] > division-by-one
@@ -215,6 +215,16 @@
   assert-that > @
     13.div -5
     $.equal-to -2
+
+[] > div-with-multiple
+  assert-that > @
+    100.div 5 2 -5
+    $.equal-to -2
+
+[] > div-wrong-args
+  assert-that > @
+    (100.div 1 2 3.0).msg
+    $.equal-to "The 3th argument of 'div' is not an int: 3.0"
 
 [] > to-bytes-and-backwards
   assert-that > @

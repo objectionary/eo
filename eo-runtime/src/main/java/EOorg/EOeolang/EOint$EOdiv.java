@@ -26,7 +26,9 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtVararg;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -47,18 +49,50 @@ public class EOint$EOdiv extends PhDefault {
      */
     public EOint$EOdiv(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("x", new AtVararg());
         this.add("φ", new AtComposite(this, rho -> {
-            final long div = new Param(rho, "x").strong(Long.class);
-            if (div == 0L) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("Division by zero is undefined")
-                );
+            Phi phi = null;
+            boolean error = false;
+            Long div = new Param(rho).strong(Long.class);
+            final Phi[] args = new Param(rho, "x").strong(Phi[].class);
+            for (int idx = 0; idx < args.length; ++idx) {
+                final Object val = new Dataized(args[idx]).take();
+                if (!(val instanceof Long)) {
+                    phi = new PhWith(
+                        new EOerror(Phi.Φ),
+                        "msg",
+                        new Data.ToPhi(
+                            String.format(
+                                "The %dth argument of 'div' is not an int: %s",
+                                idx + 1, val
+                            )
+                        )
+                    );
+                    error = true;
+                    break;
+                } else {
+                    long typed = (Long) val;
+                    if (typed == 0L) {
+                        phi = new PhWith(
+                            new EOerror(Phi.Φ),
+                            "msg",
+                            new Data.ToPhi(
+                                String.format(
+                                    "Division by 0 at %dth argument of 'div'",
+                                    idx + 1
+                                )
+                            )
+                        );
+                        error = true;
+                        break;
+                    }
+                    div /= (Long) val;
+                }
             }
-            return new Data.ToPhi(
-                new Param(rho).strong(Long.class) / div
-            );
+            if (!error) {
+                phi = new Data.ToPhi(div);
+            }
+            return phi;
         }));
     }
 
