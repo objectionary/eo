@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "array.at")
 public class EOarray$EOat extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOarray$EOat(final Phi sigma) {
         super(sigma);
         this.add("i", new AtFree());

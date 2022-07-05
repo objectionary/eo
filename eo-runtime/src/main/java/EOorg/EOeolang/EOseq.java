@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "seq")
 public class EOseq extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOseq(final Phi sigma) {
         super(sigma);
         this.add("steps", new AtVararg());

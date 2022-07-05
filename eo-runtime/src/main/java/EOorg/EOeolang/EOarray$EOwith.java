@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "array.with")
 public class EOarray$EOwith extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOarray$EOwith(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());

@@ -10,6 +10,10 @@ import org.eolang.XmirObject;
 
 @XmirObject(oname = "ram.read")
 public class EOram$EOread extends PhDefault {
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOram$EOread(Phi sigma) {
         super(sigma);
         this.add("p", new AtFree());

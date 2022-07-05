@@ -10,6 +10,10 @@ import org.eolang.XmirObject;
 
 @XmirObject(oname = "ram.write")
 public class EOram$EOwrite extends PhDefault {
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOram$EOwrite(Phi sigma) {
         super(sigma);
         this.add("p", new AtFree());

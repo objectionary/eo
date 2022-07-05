@@ -32,12 +32,24 @@ package org.eolang;
  */
 public final class ExUnset extends ExAbstract {
 
+    /**
+     * Serialization identifier
+     */
     private static final long serialVersionUID = 597748420437017615L;
 
+    /**
+     * Ctor.
+     * @param cause Cause description
+     */
     public ExUnset(final String cause) {
         super(cause);
     }
 
+    /**
+     * Ctor.
+     * @param cause Cause description
+     * @param root Caused exception
+     */
     public ExUnset(final String cause, final Throwable root) {
         super(cause, root);
     }

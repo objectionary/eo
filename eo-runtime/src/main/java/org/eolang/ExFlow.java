@@ -34,8 +34,14 @@ import EOorg.EOeolang.EOgoto;
  */
 public final class ExFlow extends ExAbstract {
 
+    /**
+     * Serialization identifier.
+     */
     private static final long serialVersionUID = 597746420437007615L;
 
+    /**
+     * Ctor.
+     */
     public ExFlow() {
         super(null);
     }

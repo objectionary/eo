@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "heap.free")
 public class EOheap$EOfree extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOheap$EOfree(final Phi sigma) {
         super(sigma);
         this.add("p", new AtFree());

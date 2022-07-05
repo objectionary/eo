@@ -39,6 +39,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.size")
 public class EObytes$EOsize extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOsize(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {

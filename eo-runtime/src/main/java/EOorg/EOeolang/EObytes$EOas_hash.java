@@ -41,6 +41,10 @@ import java.util.Arrays;
 @XmirObject(oname = "bytes.as-hash")
 public class EObytes$EOas_hash extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->

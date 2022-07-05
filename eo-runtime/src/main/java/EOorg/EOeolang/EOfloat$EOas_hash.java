@@ -34,6 +34,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "float.as-hash")
 public class EOfloat$EOas_hash extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOfloat$EOas_hash(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->

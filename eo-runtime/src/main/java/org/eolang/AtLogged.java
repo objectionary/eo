@@ -32,10 +32,21 @@ package org.eolang;
  */
 final class AtLogged implements Attr {
 
+    /**
+     * Origin.
+     */
     private final Attr origin;
 
+    /**
+     * Owner.
+     */
     private final String owner;
 
+    /**
+     * Ctor.
+     * @param attr Attribute
+     * @param label Label
+     */
     AtLogged(final Attr attr, final String label) {
         this.origin = attr;
         this.owner = label;

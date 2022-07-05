@@ -35,6 +35,10 @@ import java.math.BigInteger;
 @XmirObject(oname = "bytes.or")
 public class EObytes$EOor extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOor(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());

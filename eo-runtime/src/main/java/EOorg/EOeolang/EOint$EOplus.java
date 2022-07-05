@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "int.plus")
 public class EOint$EOplus extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOint$EOplus(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());

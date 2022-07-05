@@ -39,6 +39,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "string.length")
 public class EOstring$EOlength extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOstring$EOlength(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(

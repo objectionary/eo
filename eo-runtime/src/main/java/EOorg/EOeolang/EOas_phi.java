@@ -39,6 +39,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "as-phi")
 public class EOas_phi extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOas_phi(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());

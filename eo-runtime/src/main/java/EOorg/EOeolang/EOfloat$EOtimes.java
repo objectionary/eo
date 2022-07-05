@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "float.times")
 public class EOfloat$EOtimes extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOfloat$EOtimes(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());

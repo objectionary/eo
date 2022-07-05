@@ -22,44 +22,49 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOio;
 
+import EOorg.EOeolang.EOerror;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
- * DIV.
+ * Standard Input. Consumes all data.
  *
- * @since 1.0
+ * @since 0.23
  */
-@XmirObject(oname = "int.div")
-public class EOint$EOdiv extends PhDefault {
+public class EOstdin$EOφ extends PhDefault {
 
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOint$EOdiv(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
+    public EOstdin$EOφ(final Phi parent) {
+        super(parent);
         this.add("φ", new AtComposite(this, rho -> {
-            final long div = new Param(rho, "x").strong(Long.class);
-            if (div == 0L) {
+            try (BufferedInputStream bis = new BufferedInputStream(System.in);
+                 ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
+                while (true) {
+                    int b = bis.read();
+                    if (b == -1) {
+                        break;
+                    }
+                    buf.write((byte) b);
+                }
+                return new Data.ToPhi(buf.toString());
+            } catch (IOException e) {
                 return new PhWith(
                     new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("Division by zero is undefined")
+                    new Data.ToPhi(
+                        String.format(
+                            "Cannot read from the standard input stream: %s",
+                            e.getMessage()
+                        )
+                    )
                 );
             }
-            return new Data.ToPhi(
-                new Param(rho).strong(Long.class) / div
-            );
         }));
     }
-
 }

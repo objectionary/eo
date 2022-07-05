@@ -43,6 +43,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.eq")
 public class EObytes$EOeq extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());

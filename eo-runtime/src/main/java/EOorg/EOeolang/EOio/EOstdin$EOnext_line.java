@@ -22,31 +22,35 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOmath;
+package EOorg.EOeolang.EOio;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import EOorg.EOeolang.EOerror;
+import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
- * RANDOM.
+ * Standard Input. Consumes only one line.
  *
- * @since 0.1
+ * @since 0.23
  */
-@XmirObject(oname = "random")
-public class EOrandom extends PhDefault {
+public class EOstdin$EOnext_line extends PhDefault {
 
-    private static final Random RND = new SecureRandom();
-
-    public EOrandom(final Phi sigma) {
-        super(sigma);
-        this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-            EOrandom.RND.nextDouble()
-        )));
+    public EOstdin$EOnext_line(final Phi parent) {
+        super(parent);
+        this.add("φ", new AtComposite(this, rho -> {
+            try (Scanner sc = new Scanner(System.in)) {
+                if (!sc.hasNextLine()) {
+                    return new PhWith(
+                        new EOerror(Phi.Φ), "msg",
+                        new Data.ToPhi("There is no line in the standard input stream to consume")
+                    );
+                }
+                return new Data.ToPhi(sc.nextLine());
+            }
+        }));
     }
-
 }

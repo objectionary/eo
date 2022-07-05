@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "int.gt")
 public class EOint$EOgt extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOint$EOgt(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
