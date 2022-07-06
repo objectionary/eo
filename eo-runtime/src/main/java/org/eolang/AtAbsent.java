@@ -35,10 +35,21 @@ package org.eolang;
  */
 final class AtAbsent implements Attr {
 
+    /**
+     * Name.
+     */
     private final String name;
 
+    /**
+     * Suffix.
+     */
     private final String suffix;
 
+    /**
+     * Ctor.
+     * @param attr Attribute name
+     * @param sfx Suffix
+     */
     AtAbsent(final String attr, final String sfx) {
         this.name = attr;
         this.suffix = sfx;
@@ -83,5 +94,4 @@ final class AtAbsent implements Attr {
             )
         );
     }
-
 }

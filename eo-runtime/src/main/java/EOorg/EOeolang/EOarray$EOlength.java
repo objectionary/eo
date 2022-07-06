@@ -39,6 +39,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "array.length")
 public class EOarray$EOlength extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOarray$EOlength(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {

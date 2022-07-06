@@ -35,18 +35,35 @@ import org.eolang.Phi;
  */
 final class Heaps {
 
+    /**
+     * Heaps.
+     */
     public static final Heaps INSTANCE = new Heaps();
 
+    /**
+     * All.
+     */
     private final ConcurrentHashMap<Phi, byte[]> all =
         new ConcurrentHashMap<>(0);
 
+    /**
+     * Heads.
+     */
     private final ConcurrentHashMap<Phi, Integer> heads =
         new ConcurrentHashMap<>(0);
 
+    /**
+     * Ctor.
+     */
     private Heaps() {
         // intentionally empty, it's a singleton :(
     }
 
+    /**
+     * Data.
+     * @param pointer Pointer
+     * @return Bytes comprising data
+     */
     public byte[] data(final Phi pointer) {
         final Phi heap = pointer.attr("ρ").get();
         return this.all.computeIfAbsent(

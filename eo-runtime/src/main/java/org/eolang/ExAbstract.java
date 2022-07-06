@@ -34,16 +34,31 @@ package org.eolang;
  */
 public abstract class ExAbstract extends RuntimeException {
 
+    /**
+     * Serialization identifier.
+     */
     private static final long serialVersionUID = 597749420437007615L;
 
+    /**
+     * Ctor.
+     */
     public ExAbstract() {
         this(null);
     }
 
+    /**
+     * Ctor.
+     * @param cause Exception cause
+     */
     ExAbstract(final String cause) {
         super(cause);
     }
 
+    /**
+     * Ctor.
+     * @param cause Exception cause
+     * @param root Root cause exception
+     */
     ExAbstract(final String cause, final Throwable root) {
         super(cause, root);
     }

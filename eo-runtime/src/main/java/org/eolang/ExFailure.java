@@ -31,12 +31,24 @@ package org.eolang;
  */
 public final class ExFailure extends ExAbstract {
 
+    /**
+     * Serialization identifier.
+     */
     private static final long serialVersionUID = 597748425437017615L;
 
+    /**
+     * Ctor.
+     * @param cause Exception cause
+     */
     public ExFailure(final String cause) {
         super(cause);
     }
 
+    /**
+     * Ctor.
+     * @param cause Exception cause
+     * @param root Cause exception
+     */
     public ExFailure(final String cause, final Throwable root) {
         super(cause, root);
     }

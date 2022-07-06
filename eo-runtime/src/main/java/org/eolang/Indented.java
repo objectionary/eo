@@ -49,6 +49,7 @@ final class Indented {
 
     /**
      * Ctor.
+     * @param txt Text to indent
      */
     Indented(final Object txt) {
         this.text = txt;

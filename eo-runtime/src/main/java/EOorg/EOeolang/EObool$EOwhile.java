@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bool.while")
 public class EObool$EOwhile extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObool$EOwhile(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());

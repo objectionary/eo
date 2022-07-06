@@ -32,5 +32,5 @@
   stdout > @
     sprintf
       "This is the random number %f, %s!\n"
-      random
+      random.pseudo
       "Jeff"

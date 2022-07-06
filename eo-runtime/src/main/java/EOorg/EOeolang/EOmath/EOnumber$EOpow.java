@@ -42,6 +42,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "number.pow")
 public class EOnumber$EOpow extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOnumber$EOpow(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());

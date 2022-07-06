@@ -37,6 +37,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "error")
 public class EOerror extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOerror(final Phi sigma) {
         super(sigma);
         this.add("msg", new AtFree());

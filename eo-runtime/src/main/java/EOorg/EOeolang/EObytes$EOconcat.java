@@ -40,6 +40,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.concat")
 public class EObytes$EOconcat extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOconcat(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());

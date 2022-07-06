@@ -13,6 +13,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "angle.sin")
 public class EOangle$EOsin extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOangle$EOsin(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(

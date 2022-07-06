@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.slice")
 public class EObytes$EOslice extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOslice(final Phi sigma) {
         super(sigma);
         this.add("start", new AtFree());

@@ -35,6 +35,10 @@ import java.math.BigInteger;
 @XmirObject(oname = "bytes.not")
 public class EObytes$EOnot extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOnot(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho ->

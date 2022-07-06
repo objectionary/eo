@@ -42,6 +42,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "heap.pointer.block")
 public class EOheap$EOpointer$EOblock extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOheap$EOpointer$EOblock(final Phi sigma) {
         super(sigma);
         this.add("len", new AtFree());

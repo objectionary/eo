@@ -21,32 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package EOorg.EOeolang.EOmath;
 
-import org.eolang.Dataized;
+import org.eolang.AtComposite;
+import org.eolang.Data;
+import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOrandom}.
+ * pseudo-seed.
  *
- * @since 0.1
+ * @since 1.0
  */
-public final class EOrandomTest {
+@XmirObject(oname = "random.pseudo")
+public class EOrandom$EOpseudo extends PhDefault {
 
-    @Test
-    public void readsTwice() {
-        final Phi rnd = new EOrandom(Phi.Φ);
-        MatcherAssert.assertThat(
-            new Dataized(rnd).take(Double.class),
-            Matchers.not(
-                Matchers.equalTo(
-                    new Dataized(rnd).take(Double.class)
-                )
+    public EOrandom$EOpseudo(final Phi sigma) {
+        super(sigma);
+        this.add("φ", new AtComposite(this, self -> new PhWith(
+            new EOrandom(self),
+            "seed",
+            new Data.ToPhi(
+                ((System.nanoTime() << 35) & ((1L << 53) - 1))
+                + ((System.nanoTime() << 17) & ((1L << 35) - 1))
+                + (System.nanoTime() & ((1L << 17) - 1))
             )
-        );
+        )));
     }
-
 }

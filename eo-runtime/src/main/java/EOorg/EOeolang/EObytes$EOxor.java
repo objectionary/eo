@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bytes.xor")
 public class EObytes$EOxor extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObytes$EOxor(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());

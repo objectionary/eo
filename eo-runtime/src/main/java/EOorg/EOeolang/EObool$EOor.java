@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "bool.or")
 public class EObool$EOor extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EObool$EOor(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());

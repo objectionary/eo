@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "float.div")
 public class EOfloat$EOdiv extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOfloat$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
