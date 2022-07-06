@@ -23,7 +23,6 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.io.stdout
 +alias org.eolang.math.number
 +alias org.eolang.hamcrest.assert-that
 +junit
@@ -37,14 +36,6 @@
   assert-that > @
     *.length
     $.equal-to 0
-
-[] > iterates-with-each
-  *
-    "one"
-    "two"
-    "three"
-  .each > @
-    [i] (stdout i > @)
 
 # check that an empty array's .length equals to zero
 [] > empty-array-length

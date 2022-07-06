@@ -28,6 +28,7 @@
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
 +alias org.eolang.txt.text
++alias org.eolang.io.stdout
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -222,3 +223,12 @@
     sprintf "%d %d %d" (sq.at 0) (sq.at 1) (sq.at 2)
     $.equal-to
       sprintf "%d %d %d" 1 4 9
+
+[] > iterates-with-each
+  list
+    *
+      "one"
+      "two"
+      "three"
+  .each > @
+    [i] (stdout i > @)
