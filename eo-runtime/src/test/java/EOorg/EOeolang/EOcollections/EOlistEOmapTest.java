@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOcollections;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -35,31 +36,33 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOarray}.
+ * Test case for {@link EOorg.EOeolang.EOcollections.EOlist$EOmap}.
  *
  * @since 0.17
  */
-public final class EOarrayEOmapTest {
+public final class EOlistEOmapTest {
 
     @Test
     public void mapsSimpleArray() {
-        final Phi[] items = new Dataized(
-            new PhWith(
-                new EOarray$EOmap(
-                    new Data.ToPhi(
-                        new Phi[] {
-                            new Data.ToPhi(5L),
-                            new Data.ToPhi(1L)
-                        }
-                    )
-                ),
-                0, new EOarrayEOmapTest.Kid(Phi.Φ)
-            )
-        ).take(Phi[].class);
+        final Phi list = new EOlist(Phi.Φ);
+        final Phi array = new Data.ToPhi(
+            new Phi[]{
+                new Data.ToPhi(5L),
+                new Data.ToPhi(1L)
+            }
+        );
+        list.attr("arr").put(array);
         MatcherAssert.assertThat(
-            items.length,
+            new Dataized(array).take(Phi[].class).length,
             Matchers.equalTo(2)
         );
+
+        final Phi[] items = new Dataized(
+            new PhWith(
+                new PhMethod(list, "map"),
+                0, new EOlistEOmapTest.Kid(Phi.Φ)
+            )
+        ).take(Phi[].class);
         MatcherAssert.assertThat(
             new Dataized(items[0]).take(String.class),
             Matchers.equalTo("5")

@@ -82,3 +82,11 @@
         with. > @
           a
           &.f item idx
+
+  # Map without index. Here "f" must be an abstract
+  # object with one free attribute, for the element
+  # of the array.
+  [f] > map
+    ^.mapi > @
+      [x idx]
+        &.f x > @

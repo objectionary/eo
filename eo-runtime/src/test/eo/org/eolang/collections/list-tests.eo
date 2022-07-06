@@ -27,6 +27,7 @@
 +alias org.eolang.collections.list
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
++alias org.eolang.txt.text
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -175,5 +176,44 @@
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @
     sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
+
+[] > simple-mapping-int-to-string
+  assert-that > @
+    length.
+      map.
+        list
+          * 1 2 3
+        [i]
+          (number i).as-string > @
+    $.equal-to 3
+
+[] > using-map-as-object
+  assert-that > @
+    (text " ").joined
+      map.
+        list
+          * 1 2
+        [i]
+          (number i).as-string > @
+    $.equal-to "1 2"
+
+# if map does mutate lists, then this test would fail
+# because of the absence of the as-int attribute
+# that is caused by mutation of the original string list
+# to an int list
+[] > map-does-dot-mutate-array
+  [numbers...] > squares
+    map. > @
+      list numbers
+      [current]
+        pow. > @
+          number
+            (sscanf "%d" current).at 0
+          2
+  (squares "1" "2" "3") > sq
+  assert-that > @
+    sprintf "%d %d %d" (sq.at 0) (sq.at 1) (sq.at 2)
     $.equal-to
       sprintf "%d %d %d" 1 4 9
