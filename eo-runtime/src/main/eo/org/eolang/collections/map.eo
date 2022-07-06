@@ -26,8 +26,6 @@
 
 [m] > map
 
-  m > @
-
   # Returns amount of elements in map
   [] > length
     multimap * > mmp!

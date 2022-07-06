@@ -26,8 +26,6 @@
 
 [m] > multimap
 
-  m > @
-
   # Returns amount of elements in multimap
   [] > length
     ^.concat-all-arrays m > arr!
