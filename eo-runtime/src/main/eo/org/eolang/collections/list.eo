@@ -61,3 +61,33 @@
 
   [] > as-array
     arr > @
+
+  # Reduce from start "a" using the function "f"
+  [a f] > reduce
+    ^.reducei > @
+      a
+      [a idx item]
+        &.f > @
+          a
+          item
+
+  # Map with index. Here "f" must be an abstract
+  # object with two free attributes. The first
+  # one for the element of the array, the second one
+  # for the index.
+  [f] > mapi
+    list > @
+      ^.reducei
+        *
+        [a idx item]
+          with. > @
+            a
+            &.f item idx
+
+  # Map without index. Here "f" must be an abstract
+  # object with one free attribute, for the element
+  # of the array.
+  [f] > map
+    ^.mapi > @
+      [x idx]
+        &.f x > @
