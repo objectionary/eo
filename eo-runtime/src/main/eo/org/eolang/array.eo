@@ -50,39 +50,8 @@
           a
           a.with item
 
-  # Reduce from start "a" using the function "f"
-  [a f] > reduce
-    reducei. > @
-      list ^
-      a
-      [a idx item]
-        &.f > @
-          a
-          item
-
   # For each array element dataize the object
   [f] > each /bool
-
-  # Map with index. Here "f" must be an abstract
-  # object with two free attributes. The first
-  # one for the element of the array, the second one
-  # for the index.
-  [f] > mapi
-    reducei. > @
-      list ^
-      *
-      [a idx item]
-        with. > @
-          a
-          &.f item idx
-
-  # Map without index. Here "f" must be an abstract
-  # object with one free attribute, for the element
-  # of the array.
-  [f] > map
-    ^.mapi > @
-      [x idx]
-        &.f x > @
 
   # Equal to another object?
   [x] > eq

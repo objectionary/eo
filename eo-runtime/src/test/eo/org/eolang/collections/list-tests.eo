@@ -25,6 +25,9 @@
 +version 0.0.0
 +alias org.eolang.math.number
 +alias org.eolang.collections.list
++alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
++alias org.eolang.txt.text
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -44,7 +47,7 @@
     (list xs).is-empty
     $.equal-to TRUE
 
-# arrays of objects
+# list of objects
 [] > should-not-be-empty-with-3-objects
   [x] > a-1
     ((number x).as-int > @)
@@ -60,7 +63,7 @@
     (list xs).is-empty.not
     $.equal-to TRUE
 
-# arrays with anonymous object
+# list with anonymous object
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
@@ -69,7 +72,7 @@
     (list xs).is-empty.not
     $.equal-to TRUE
 
-# arrays with anonymous one-line-object
+# list with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
     [f] ((number f).as-int > @)
@@ -137,3 +140,85 @@
       plus.
         0.minus 500
         10
+
+# reduce without index test
+[] > reduce-without-index-test
+  assert-that > @
+    reduce.
+      list
+        * 1 2 3 4
+      -1
+      [a x]
+        times. > @
+          a
+          x
+    $.equal-to -24
+
+[] > mapi-should-works
+  assert-that > @
+    as-array.
+      mapi.
+        list
+          * 1 2 3 4
+        [x i]
+          x.times 2 > @
+    $.equal-to
+      * 2 4 6 8
+
+# this test performs mapping of list using the index for it
+[] > mapi-index-can-be-accessed
+  [numbers...] > multipliedByNaturalSequence
+    as-array. > @
+      mapi.
+        list numbers
+        [current index]
+          times. > @
+            (sscanf "%d" current).at 0
+            index.plus 1
+  (multipliedByNaturalSequence "1" "2" "3") > mulSeq
+  assert-that > @
+    sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
+
+[] > simple-mapping-int-to-string
+  assert-that > @
+    length.
+      as-array.
+        map.
+          list
+            * 1 2 3
+          [i]
+            (number i).as-string > @
+    $.equal-to 3
+
+[] > using-map-as-object
+  assert-that > @
+    (text " ").joined
+      as-array.
+        map.
+          list
+            * 1 2
+          [i]
+            (number i).as-string > @
+    $.equal-to "1 2"
+
+# if map does mutate lists, then this test would fail
+# because of the absence of the as-int attribute
+# that is caused by mutation of the original string list
+# to an int list
+[] > map-does-dot-mutate-array
+  [numbers...] > squares
+    as-array. > @
+      map.
+        list numbers
+        [current]
+          pow. > @
+            number
+              (sscanf "%d" current).at 0
+            2
+  (squares "1" "2" "3") > sq
+  assert-that > @
+    sprintf "%d %d %d" (sq.at 0) (sq.at 1) (sq.at 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
