@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 +package org.eolang.collections
++alias org.eolang.collections.list
 +alias org.eolang.math.number
 
 [m] > multimap
@@ -34,7 +35,8 @@
 
   [arr] > concat-all-arrays
     reduce. > @
-      arr
+      list
+        arr
       *
       [a x]
         concat. > @
@@ -43,7 +45,8 @@
 
   [arr] > pairs-to-hash
     reduce. > @
-      arr
+      list
+        arr
       *
       [a x]
         (a.with ((x.at 0).as-hash)) > @
@@ -59,7 +62,8 @@
 
   [key arr] > find-in-list
     reduce. > @
-      arr
+      list
+        arr
       *
       [a x]
         if. > @
@@ -71,7 +75,7 @@
 
   # Returns an array with the found value
   # If no element was found, it returns an empty array
-  [key] > find
+  [key] > found
     number (key.as-hash) > num!
     if. > @
       eq.
@@ -82,7 +86,8 @@
 
   [key arr] > without-in-list
     reduce. > @
-      arr
+      list
+        arr
       *
       [a x]
         if. > @

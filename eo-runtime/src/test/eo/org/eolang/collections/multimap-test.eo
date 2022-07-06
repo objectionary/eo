@@ -119,17 +119,17 @@
 
 [] > multimap-find-do-not-crashed
   multimap * > mp!
-  mp.find 1 > res!
+  mp.found 1 > res!
   assert-that > @
     res.length
     $.equal-to 0
 
 [] > multimap-find-works
   multimap (* (*) (* (* 4 "a")) (* (* 2 "c") (* 8 "c"))) > mp!
-  mp.find 2 > r2!
-  mp.find 3 > r3!
-  mp.find 4 > r4!
-  mp.find 8 > r8!
+  mp.found 2 > r2!
+  mp.found 3 > r3!
+  mp.found 4 > r4!
+  mp.found 8 > r8!
   assert-that > @
     * (r2.at 0) (r3.length) (r4.at 0) (r8.at 0)
     $.equal-to
@@ -138,11 +138,11 @@
 [] > multimap-find-and-with
   multimap * > fmp!
   ((((fmp.with 1 "a").with "abc" "cba").with 4 5).with 3 5) > mp!
-  mp.find 1 > r1!
-  mp.find 2 > r2!
-  mp.find 3 > r3!
-  mp.find 4 > r4!
-  mp.find "abc" > rabc!
+  mp.found 1 > r1!
+  mp.found 2 > r2!
+  mp.found 3 > r3!
+  mp.found 4 > r4!
+  mp.found "abc" > rabc!
   assert-that > @
     * (r1.at 0) (r2.length) (r3.at 0) (r4.at 0) (rabc.at 0)
     $.equal-to
@@ -155,7 +155,7 @@
   init-mp.with TRUE FALSE > mp3!
   ((init-mp.with 0 mp1).with 1 mp2).with 2 mp3 > mp-res!
   assert-that > @
-    * ((mp-res.find -1).length) ((((mp-res.find 1).at 0).find "c").at 0)
+    * ((mp-res.found -1).length) ((((mp-res.found 1).at 0).found "c").at 0)
     $.equal-to
       * 0 "d"
 
@@ -164,7 +164,7 @@
   (((init-mp.with 1 "a").with 3 "c").with 2 "b").with 4 "d" > mp!
   (mp.without 2).without 3 > mp2!
   assert-that > @
-    * ((mp.find 1).length) ((mp.find 2).length) ((mp2.find 3).length) ((mp2.find 4).length)
+    * ((mp.found 1).length) ((mp.found 2).length) ((mp2.found 3).length) ((mp2.found 4).length)
     $.equal-to
       * 1 1 0 1
 

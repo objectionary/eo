@@ -48,7 +48,7 @@
 
   # Returns an array with the found value
   # If no element was found, it returns an empty array
-  [key] > find
+  [key] > found
     multimap * > mmp!
     number (key.as-hash) > num!
     if. > @
