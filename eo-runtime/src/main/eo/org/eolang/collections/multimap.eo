@@ -20,50 +20,85 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+alias org.eolang.multimap
++package org.eolang.collections
 +alias org.eolang.math.number
 
-[m] > map
+[m] > multimap
 
   m > @
 
-  # Returns amount of elements in map
+  # Returns amount of elements in multimap
   [] > length
-    multimap * > mmp!
-    mmp.concat-all-arrays m > arr!
+    ^.concat-all-arrays m > arr!
     arr.length > @
 
+  [arr] > concat-all-arrays
+    reduce. > @
+      arr
+      *
+      [a x]
+        concat. > @
+          a
+          x
+
+  [arr] > pairs-to-hash
+    reduce. > @
+      arr
+      *
+      [a x]
+        (a.with ((x.at 0).as-hash)) > @
+
   # Returns the new map with added object
-  # Replaces if there was one before
   [key value] > with
-    multimap * > mmp!
     * key value > new-pair!
-    mmp.concat-all-arrays m > caa!
-    mmp.without-in-list key caa > wcaa!
-    wcaa.with new-pair > arr!
-    mmp.pairs-to-hash arr > harr!
-    mmp.rebuild harr arr > table!
-    map table > @
+    ^.concat-all-arrays m > caa!
+    caa.with new-pair > arr!
+    ^.pairs-to-hash arr > harr!
+    ^.rebuild harr arr > table!
+    multimap table > @
+
+  [key arr] > find-in-list
+    reduce. > @
+      arr
+      *
+      [a x]
+        if. > @
+          eq.
+            key
+            (x.at 0)
+          a.with (x.at 1)
+          a
 
   # Returns an array with the found value
   # If no element was found, it returns an empty array
   [key] > find
-    multimap * > mmp!
     number (key.as-hash) > num!
     if. > @
       eq.
         m.length
         0
       *
-      mmp.find-in-list key (m.at (num.mod (m.length)))
+      ^.find-in-list key (m.at (num.mod (m.length)))
 
-  # Returns a new map, without element with the given key
+  [key arr] > without-in-list
+    reduce. > @
+      arr
+      *
+      [a x]
+        if. > @
+          eq.
+            key
+            (x.at 0)
+          a
+          a.with x
+
+  [harr arr] > rebuild /array
+
+  # Returns a new map, without elements with the given key
   # Returns the map itself, if there was no item with this key
   [key] > without
-    multimap * > mmp!
-    mmp.concat-all-arrays m > caa!
-    mmp.without-in-list key caa > arr!
-    mmp.pairs-to-hash arr > harr!
-    mmp.rebuild harr arr > table!
-    map table > @
+    ^.concat-all-arrays m > caa!
+    ^.without-in-list key caa > arr!
+    ^.pairs-to-hash arr > harr!
+    ^.rebuild harr arr > table!
+    multimap table > @
