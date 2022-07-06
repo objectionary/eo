@@ -32,13 +32,17 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * pseudo-seed.
+ * Pseudo-seed.
  *
  * @since 1.0
  */
 @XmirObject(oname = "random.pseudo")
 public class EOrandom$EOpseudo extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOrandom$EOpseudo(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, self -> new PhWith(

@@ -16,6 +16,9 @@ import org.eolang.Phi;
  * @since 0.19
  */
 public enum Ram {
+    /**
+     * Ram instance.
+     */
     INSTANCE;
 
     /**

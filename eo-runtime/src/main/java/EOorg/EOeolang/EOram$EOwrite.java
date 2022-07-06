@@ -8,6 +8,9 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
+/**
+ * Write into memory.
+ */
 @XmirObject(oname = "ram.write")
 public class EOram$EOwrite extends PhDefault {
     /**

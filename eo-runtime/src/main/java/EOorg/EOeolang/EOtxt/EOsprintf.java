@@ -46,6 +46,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "sprintf")
 public class EOsprintf extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOsprintf(final Phi sigma) {
         super(sigma);
         this.add("format", new AtFree());

@@ -31,6 +31,9 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
+/**
+ * Bool as hash.
+ */
 @XmirObject(oname = "bool.as-hash")
 public class EObool$EOas_hash extends PhDefault {
 

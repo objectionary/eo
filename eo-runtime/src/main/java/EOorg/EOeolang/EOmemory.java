@@ -51,8 +51,15 @@ public class EOmemory extends PhDefault {
         this.add("write", new AtComposite(this, EOmemory.Write::new));
     }
 
+    /**
+     * Memory write.
+     */
     @XmirObject(oname = "memory.write")
     private final class Write extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());

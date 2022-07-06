@@ -31,6 +31,9 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
+/**
+ * Float as hash.
+ */
 @XmirObject(oname = "float.as-hash")
 public class EOfloat$EOas_hash extends PhDefault {
 

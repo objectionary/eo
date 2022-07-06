@@ -43,6 +43,10 @@ import java.util.regex.Pattern;
 @XmirObject(oname = "regex.compile")
 public class EOregex$EOcompile extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOregex$EOcompile(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {

@@ -52,8 +52,15 @@ public class EOcage extends PhDefault {
         this.add("write", new AtComposite(this, EOcage.Write::new));
     }
 
+    /**
+     * Cage write.
+     */
     @XmirObject(oname = "cage.write")
     private final class Write extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());

@@ -30,6 +30,9 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
+/**
+ * String as hash.
+ */
 @XmirObject(oname = "string.as-hash")
 public class EOstring$EOas_hash extends PhDefault {
 

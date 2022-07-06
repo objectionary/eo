@@ -46,6 +46,10 @@ import java.util.Scanner;
 @XmirObject(oname = "sscanf")
 public class EOsscanf extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOsscanf(final Phi sigma) {
         super(sigma);
         this.add("format", new AtFree());
@@ -104,48 +108,125 @@ public class EOsscanf extends PhDefault {
         }));
     }
 
+    /**
+     * Format conversion.
+     */
     private static class Conversion {
         // Byte, Short, Integer, Long, BigInteger
         // (and associated primitives due to autoboxing)
+        /**
+         * 'd'
+         */
         static final char DECIMAL_INTEGER     = 'd';
+        /**
+         * 'o'
+         */
         static final char OCTAL_INTEGER       = 'o';
+        /**
+         * 'x'
+         */
         static final char HEXADECIMAL_INTEGER = 'x';
+        /**
+         * 'X'
+         */
         static final char HEXADECIMAL_INTEGER_UPPER = 'X';
 
         // Float, Double, BigDecimal
         // (and associated primitives due to autoboxing)
+        /**
+         * 'e'
+         */
         static final char SCIENTIFIC          = 'e';
+        /**
+         * 'E'
+         */
         static final char SCIENTIFIC_UPPER    = 'E';
+        /**
+         * 'g'
+         */
         static final char GENERAL             = 'g';
+        /**
+         * 'G'
+         */
         static final char GENERAL_UPPER       = 'G';
+        /**
+         * 'f'
+         */
         static final char DECIMAL_FLOAT       = 'f';
+        /**
+         * 'a'
+         */
         static final char HEXADECIMAL_FLOAT   = 'a';
+        /**
+         * 'A'
+         */
         static final char HEXADECIMAL_FLOAT_UPPER = 'A';
 
         // Character, Byte, Short, Integer
         // (and associated primitives due to autoboxing)
+        /**
+         * 'c'
+         */
         static final char CHARACTER           = 'c';
+        /**
+         * 'C'
+         */
         static final char CHARACTER_UPPER     = 'C';
 
         // java.util.Date, java.util.Calendar, long
+        /**
+         * 't'
+         */
         static final char DATE_TIME           = 't';
+        /**
+         * 'T'
+         */
         static final char DATE_TIME_UPPER     = 'T';
 
         // if (arg.TYPE != boolean) return boolean
         // if (arg != null) return true; else return false;
+        /**
+         * 'b'
+         */
         static final char BOOLEAN             = 'b';
+        /**
+         * 'B'
+         */
         static final char BOOLEAN_UPPER       = 'B';
         // if (arg instanceof Formattable) arg.formatTo()
         // else arg.toString();
+        /**
+         * 's'
+         */
         static final char STRING              = 's';
+        /**
+         * 'S'
+         */
         static final char STRING_UPPER        = 'S';
+        /**
+         * 'h'
+         */
         // arg.hashCode()
         static final char HASHCODE            = 'h';
+        /**
+         * 'H'
+         */
         static final char HASHCODE_UPPER      = 'H';
 
+        /**
+         * 'n'
+         */
         static final char LINE_SEPARATOR      = 'n';
+        /**
+         * '%'
+         */
         static final char PERCENT_SIGN        = '%';
 
+        /**
+         * Valiate char.
+         * @param c Char to validate
+         * @return True if valid char, otherwise false
+         */
         static boolean isValid(char c) {
             switch (c) {
                 case BOOLEAN:
@@ -173,7 +254,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is applicable to all objects.
+        /**
+         * Check for object.
+         * @param c Char to check
+         * @return true iff the Conversion is applicable to all objects
+         */
         static boolean isGeneral(char c) {
             switch (c) {
                 case BOOLEAN:
@@ -186,7 +271,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is applicable to string.
+        /**
+         * Check for string.
+         * @param c Char to check
+         * @return true iff the Conversion is applicable to string
+         */
         static boolean isString(char c) {
             switch (c) {
                 case STRING:
@@ -195,7 +284,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is applicable to boolean.
+        /**
+         * Check for boolean.
+         * @param c Char to check
+         * @return true iff the Conversion is applicable to boolean
+         */
         static boolean isBoolean(char c) {
             switch (c) {
                 case BOOLEAN:
@@ -204,7 +297,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is applicable to character.
+        /**
+         * Check for character.
+         * @param c Char to check
+         * @return true iff the Conversion is applicable to character
+         */
         static boolean isCharacter(char c) {
             switch (c) {
                 case CHARACTER:
@@ -213,7 +310,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is an integer type.
+        /**
+         * Check for integer.
+         * @param c Char to check
+         * @return true iff the Conversion is applicable to integer
+         */
         static boolean isInteger(char c) {
             switch (c) {
                 case DECIMAL_INTEGER:
@@ -224,7 +325,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion is a floating-point type.
+        /**
+         * Check for floating-point.
+         * @param c Char to check
+         * @return true iff the Conversion is applicable to floating-point
+         */
         static boolean isFloat(char c) {
             switch (c) {
                 case SCIENTIFIC:
@@ -238,7 +343,11 @@ public class EOsscanf extends PhDefault {
             }
         }
 
-        // Returns true iff the Conversion does not require an argument
+        /**
+         * Check for text.
+         * @param c Char to check
+         * @return true iff the Conversion does not require an argument
+         */
         static boolean isText(char c) {
             switch (c) {
                 case LINE_SEPARATOR:

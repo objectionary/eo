@@ -41,6 +41,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "text.joined")
 public class EOtext$EOjoined extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOtext$EOjoined(final Phi sigma) {
         super(sigma);
         this.add("items", new AtFree());
