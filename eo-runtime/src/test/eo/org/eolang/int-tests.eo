@@ -216,6 +216,11 @@
     13.div -5
     $.equal-to -2
 
+[] > div-less-than-one
+  assert-that > @
+    1.div 5
+    $.equal-to 0
+
 [] > div-with-multiple
   assert-that > @
     100.div 5 2 -5
@@ -281,11 +286,20 @@
 
 [] > multiply-several-arguments
   assert-that > @
-    10000
-    $.equal-to
-      1000.times 2 5
+    1000.times 2 5
+    $.equal-to 10000
 
 [] > multiply-wrong-args
   assert-that > @
     (100.times 1 2 3.0).msg
     $.equal-to "The 3th argument of 'times' is not an int: 3.0"
+
+[] > multiply-by-zero
+  assert-that > @
+    1000.times 0
+    $.equal-to 0
+
+[] > minus-multiple-args
+  assert-that > @
+    123.minus -12 135 235 0
+    $.equal-to -235

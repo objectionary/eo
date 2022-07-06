@@ -62,8 +62,14 @@
   [x...] > plus /int
 
   # Subtract from the current one
-  [x] > minus
-    ^.plus (x.neg) > @
+  [x...] > minus
+    map. > x-neg
+      x
+      [element]
+        neg. > @
+          element
+    ^.plus > @
+      ...x-neg
 
   # Multiplication this one by another int
   [x...] > times /int
