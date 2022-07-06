@@ -61,3 +61,12 @@
 
   [] > as-array
     arr > @
+
+  # Reduce from start "a" using the function "f"
+  [a f] > reduce
+    ^.reducei > @
+      a
+      [a idx item]
+        &.f > @
+          a
+          item

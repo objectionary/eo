@@ -224,18 +224,6 @@
         args.
           b 1 2 "fail"
 
-# reduce without index test
-[] > reduce-without-index-test
-  assert-that > @
-    reduce.
-      * 1 2 3 4
-      -1
-      [a x]
-        times. > @
-          a
-          x
-    $.equal-to -24
-
 [] > array-with-in-seq
   [a] > foo
     seq > @
