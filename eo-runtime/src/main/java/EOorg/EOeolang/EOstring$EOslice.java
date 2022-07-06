@@ -56,17 +56,17 @@ public class EOstring$EOslice extends PhDefault {
             final int end = length + start;
             Phi result;
             if (start < 0) {
-                result = createError(
+                result = error(
                     "Start index must be greater than 0 but was %d",
                     start
                 );
             } else if (start > end) {
-                result = createError(
+                result = error(
                     "End index must be greater or equal to start but was %d < %d",
                     end, start
                 );
             } else if (end > str.length()) {
-                result = createError(
+                result = error(
                     "Start index + length must not exceed string length but was %d > %d",
                     end, str.length()
                 );
@@ -83,14 +83,12 @@ public class EOstring$EOslice extends PhDefault {
      * @param args Arguments for the formatted string
      * @return φ containing error
      */
-    private static Phi createError(String msg, Object... args) {
+    private static Phi error(final String msg, final Object... args) {
         return new PhWith(
             new EOerror(Phi.Φ),
             "msg",
             new Data.ToPhi(
-                String.format(msg,
-                    args
-                )
+                String.format(msg, args)
             )
         );
     }
