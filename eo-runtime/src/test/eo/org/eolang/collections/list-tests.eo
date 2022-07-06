@@ -232,3 +232,35 @@
       "three"
   .each > @
     [i] (stdout i > @)
+
+[] > array-without
+  assert-that > @
+    without.
+      list
+        * 1 2 3
+      1
+    $.equal-to
+      * 1 3
+
+[] > list-without-complex-case
+  [a] > foo
+    seq > @
+      without. > t
+        list a
+        0
+      t
+  assert-that > @
+    foo
+      * 1 "text" "f"
+    $.equal-to
+      * "text" "f"
+
+[] > list-without-nested-array
+  * 3 2 1 > nested
+  assert-that > @
+    without.
+      list
+        * "smthg" 27 nested
+      2
+    $.equal-to
+      * "smthg" 27

@@ -39,17 +39,6 @@
   # the end of it.
   [x] > with /array
 
-  # Create a new array without the i-th element
-  [i] > without
-    reducei. > @
-      list ^
-      *
-      [a idx item]
-        if. > @
-          idx.eq i
-          a
-          a.with item
-
   # Equal to another object?
   [x] > eq
     if. > @

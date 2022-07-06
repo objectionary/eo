@@ -178,34 +178,6 @@
     $.equal-to
       * 1 2 3 "with"
 
-[] > array-without
-  assert-that > @
-    without.
-      * 1 2 3
-      1
-    $.equal-to
-      * 1 3
-
-[] > array-without-complex-case
-  [a] > foo
-    seq > @
-      a.without 0 > t
-      t
-  assert-that > @
-    foo
-      * 1 "text" "f"
-    $.equal-to
-      * "text" "f"
-
-[] > array-without-nested-array
-  * 3 2 1 > nested
-  assert-that > @
-    without.
-      * "smthg" 27 nested
-      2
-    $.equal-to
-      * "smthg" 27
-
 [] > array-at-with-error
   assert-that > @
     msg.

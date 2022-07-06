@@ -94,3 +94,13 @@
 
   # For each array element dataize the object
   [f] > each /bool
+
+  # Create a new list without the i-th element
+  [i] > without
+    ^.reducei > @
+      *
+      [a idx item]
+        if. > @
+          idx.eq i
+          a
+          a.with item
