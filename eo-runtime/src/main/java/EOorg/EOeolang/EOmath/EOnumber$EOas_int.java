@@ -34,7 +34,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * as-int.
+ * As-int.
  *
  * @since 0.23
  */

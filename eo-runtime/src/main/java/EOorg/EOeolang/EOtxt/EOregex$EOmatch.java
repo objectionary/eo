@@ -42,6 +42,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "regex.match")
 public class EOregex$EOmatch extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOregex$EOmatch(final Phi sigma) {
         super(sigma);
         this.add("txt", new AtFree());

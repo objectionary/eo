@@ -102,7 +102,11 @@ final class AtLocated implements Attr {
      * @return Label
      */
     private String label() {
-        return String.format("The object is at the line #%d, position #%d", this.line, this.position);
+        return String.format(
+            "The object is at the line #%d, position #%d",
+            this.line,
+            this.position
+        );
     }
 
 }

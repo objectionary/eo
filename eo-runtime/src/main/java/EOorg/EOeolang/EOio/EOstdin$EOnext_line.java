@@ -39,6 +39,10 @@ import org.eolang.Phi;
  */
 public class EOstdin$EOnext_line extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param parent Sigma
+     */
     public EOstdin$EOnext_line(final Phi parent) {
         super(parent);
         this.add("φ", new AtComposite(this, rho -> {

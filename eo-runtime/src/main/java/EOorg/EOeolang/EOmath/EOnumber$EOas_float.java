@@ -34,7 +34,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * as-float.
+ * As-float.
  *
  * @since 0.23
  */
@@ -59,7 +59,10 @@ public class EOnumber$EOas_float extends PhDefault {
                 phi = new PhWith(
                     new EOerror(Phi.Φ), "msg",
                     new Data.ToPhi(
-                        String.format("Wrong number's %s argument in number.as-float operation", obj)
+                        String.format(
+                            "Wrong number's %s argument in number.as-float operation",
+                            obj
+                        )
                     )
                 );
             }

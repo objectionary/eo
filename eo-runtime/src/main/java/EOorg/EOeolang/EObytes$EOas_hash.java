@@ -24,14 +24,13 @@
 
 package EOorg.EOeolang;
 
+import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
-
-import java.util.Arrays;
 
 /**
  * BYTES.AS-HASH.

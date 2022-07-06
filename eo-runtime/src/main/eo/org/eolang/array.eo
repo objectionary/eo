@@ -22,16 +22,11 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++alias org.eolang.collections.list
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > array
-
-  # Is it empty?
-  [] > is-empty
-    eq. > @
-      ^.length
-      0
 
   # Obtain the length of the array.
   [] > length /int
@@ -46,7 +41,8 @@
 
   # Create a new array without the i-th element
   [i] > without
-    ^.reducei > @
+    reducei. > @
+      list ^
       *
       [a idx item]
         if. > @
@@ -54,38 +50,10 @@
           a
           a.with item
 
-  # Reduce with index from start "a" using the function "f".
-  # Here "f" must be an abstract
-  # object with three free attributes. The first
-  # one for the accumulator, the second one
-  # for the index and the third one for the element
-  # of the array.
-  [a f] > reducei
-    func a f ^ > @
-
-    [ac fn arr] > func
-      memory 0 > idx
-      memory 0 > acc
-      seq > @
-        idx.write 0
-        acc.write ac
-        while.
-          lt.
-            idx
-            arr.length
-          [i]
-            seq > @
-              idx.write (i.plus 1)
-              acc.write
-                fn
-                  acc
-                  i
-                  arr.at i
-        acc
-
   # Reduce from start "a" using the function "f"
   [a f] > reduce
-    ^.reducei > @
+    reducei. > @
+      list ^
       a
       [a idx item]
         &.f > @
@@ -100,7 +68,8 @@
   # one for the element of the array, the second one
   # for the index.
   [f] > mapi
-    ^.reducei > @
+    reducei. > @
+      list ^
       *
       [a idx item]
         with. > @
@@ -121,7 +90,8 @@
       eq.
         ^.length
         x.length
-      ^.reducei
+      reducei.
+        list ^
         TRUE
         [a idx item]
           and. > @
