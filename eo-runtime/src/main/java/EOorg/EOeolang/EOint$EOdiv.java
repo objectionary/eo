@@ -29,6 +29,7 @@ import org.eolang.AtFree;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExprReduce;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -50,48 +51,15 @@ public class EOint$EOdiv extends PhDefault {
     public EOint$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(this, rho -> {
-            Phi phi = null;
-            boolean error = false;
-            Long div = new Param(rho).strong(Long.class);
-            final Phi[] args = new Param(rho, "x").strong(Phi[].class);
-            for (int idx = 0; idx < args.length; ++idx) {
-                final Object val = new Dataized(args[idx]).take();
-                if (!(val instanceof Long)) {
-                    phi = new PhWith(
-                        new EOerror(Phi.Φ),
-                        "msg",
-                        new Data.ToPhi(
-                            String.format(
-                                "The %dth argument of 'div' is not an int: %s",
-                                idx + 1, val
-                            )
-                        )
-                    );
-                    error = true;
-                    break;
-                }
-                long typed = (Long) val;
-                if (typed == 0L) {
-                    phi = new PhWith(
-                        new EOerror(Phi.Φ),
-                        "msg",
-                        new Data.ToPhi(
-                            String.format(
-                                "Division by 0 at %dth argument of 'div'",
-                                idx + 1
-                            )
-                        )
-                    );
-                    error = true;
-                    break;
-                }
-                div /= (Long) val;
-            }
-            if (!error) {
-                phi = new Data.ToPhi(div);
-            }
-            return phi;
-        }));
+        this.add("φ", new AtComposite(
+            this,
+            new ExprReduce<>(
+                "int.div",
+                "x",
+                Long.class,
+                (acc, x) -> acc / x,
+                x -> x.equals(0L) ? "division by zero is infinity" : ""
+            )
+        ));
     }
 }

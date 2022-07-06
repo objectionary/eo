@@ -194,7 +194,7 @@
   assert-that > @
     (2.div 0).msg
     $.equal-to
-      "Division by 0 at 1th argument of 'div'"
+      "The 1th argument of 'int.div' is invalid: division by zero is infinity"
 
 # Checks that division by one returns the dividend
 [] > division-by-one
@@ -229,7 +229,7 @@
 [] > div-wrong-args
   assert-that > @
     (100.div 1 2 3.0).msg
-    $.equal-to "The 3th argument of 'div' is not an int: 3.0"
+    $.equal-to "The 3th argument of 'int.div' is not a(n) Long: 3.0"
 
 [] > to-bytes-and-backwards
   assert-that > @
@@ -282,7 +282,7 @@
 [] > sum-up-wrong-args
   assert-that > @
     (100.plus 1 2 3.0).msg
-    $.equal-to "The 3th argument of 'plus' is not an int: 3.0"
+    $.equal-to "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
 
 [] > multiply-several-arguments
   assert-that > @
@@ -292,7 +292,7 @@
 [] > multiply-wrong-args
   assert-that > @
     (100.times 1 2 3.0).msg
-    $.equal-to "The 3th argument of 'times' is not an int: 3.0"
+    $.equal-to "The 3th argument of 'int.times' is not a(n) Long: 3.0"
 
 [] > multiply-by-zero
   assert-that > @

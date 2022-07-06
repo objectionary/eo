@@ -29,6 +29,7 @@ import org.eolang.AtFree;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExprReduce;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -50,33 +51,14 @@ public class EOint$EOtimes extends PhDefault {
     public EOint$EOtimes(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(this, rho -> {
-            Phi phi = null;
-            boolean error = false;
-            Long mul = new Param(rho).strong(Long.class);
-            final Phi[] args = new Param(rho, "x").strong(Phi[].class);
-            for (int idx = 0; idx < args.length; ++idx) {
-                final Object val = new Dataized(args[idx]).take();
-                if (!(val instanceof Long)) {
-                    phi = new PhWith(
-                        new EOerror(Phi.Φ),
-                        "msg",
-                        new Data.ToPhi(
-                            String.format(
-                                "The %dth argument of 'times' is not an int: %s",
-                                idx + 1, val
-                            )
-                        )
-                    );
-                    error = true;
-                    break;
-                }
-                mul *= (Long) val;
-            }
-            if (!error) {
-                phi = new Data.ToPhi(mul);
-            }
-            return phi;
-        }));
+        this.add("φ", new AtComposite(
+            this,
+            new ExprReduce<>(
+                "int.times",
+                "x",
+                Long.class,
+                (acc, x) -> acc * x
+            )
+        ));
     }
 }
