@@ -25,9 +25,8 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.AtVararg;
+import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -46,12 +45,16 @@ public class EOfloat$EOtimes extends PhDefault {
      */
     public EOfloat$EOtimes(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            new Param(rho).strong(Double.class)
-            *
-            new Param(rho, "x").strong(Double.class)
-        )));
+        this.add("x", new AtVararg());
+        this.add("φ", new AtComposite(
+            this,
+            new ExprReduce<>(
+                "float.times",
+                "x",
+                Double.class,
+                (acc, x) -> acc * x
+            )
+        ));
     }
 
 }
