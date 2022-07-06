@@ -10,6 +10,7 @@ import org.eolang.XmirObject;
 
 /**
  * Write into memory.
+ * @since 0.1
  */
 @XmirObject(oname = "ram.write")
 public class EOram$EOwrite extends PhDefault {

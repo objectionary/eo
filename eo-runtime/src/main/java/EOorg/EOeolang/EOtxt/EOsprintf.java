@@ -27,7 +27,6 @@ package EOorg.EOeolang.EOtxt;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Locale;
-
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.AtVararg;

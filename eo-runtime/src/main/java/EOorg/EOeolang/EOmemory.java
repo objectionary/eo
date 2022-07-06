@@ -53,6 +53,7 @@ public class EOmemory extends PhDefault {
 
     /**
      * Memory write.
+     * @since 1.0
      */
     @XmirObject(oname = "memory.write")
     private final class Write extends PhDefault {

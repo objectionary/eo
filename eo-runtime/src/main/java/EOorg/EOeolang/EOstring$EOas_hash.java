@@ -32,6 +32,7 @@ import org.eolang.XmirObject;
 
 /**
  * String as hash.
+ * @since 0.1
  */
 @XmirObject(oname = "string.as-hash")
 public class EOstring$EOas_hash extends PhDefault {

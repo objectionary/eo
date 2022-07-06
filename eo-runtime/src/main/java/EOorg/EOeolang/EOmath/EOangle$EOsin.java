@@ -9,6 +9,7 @@ import org.eolang.XmirObject;
 
 /**
  * Sin.
+ * @since 1.0
  */
 @XmirObject(oname = "angle.sin")
 public class EOangle$EOsin extends PhDefault {

@@ -25,6 +25,10 @@
 package EOorg.EOeolang.EOtxt;
 
 import EOorg.EOeolang.EOerror;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -33,13 +37,9 @@ import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 /**
- * sscanf.
+ * Sscanf.
  *
  * @since 0.23
  */
@@ -64,12 +64,16 @@ public class EOsscanf extends PhDefault {
                 while (fsc.hasNext() && rsc.hasNext()) {
                     String pattern = fsc.next();
                     String val = rsc.next();
-                    if (pattern.contains(String.valueOf(Conversion.PERCENT_SIGN)) && pattern.length() > 1) {
+                    boolean valid = pattern.contains(String.valueOf(Conversion.PERCENT_SIGN))
+                        && pattern.length() > 1;
+                    if (valid) {
                         int start = pattern.indexOf(Conversion.PERCENT_SIGN);
                         final char c = pattern.charAt(start + 1);
                         if (Conversion.isValid(c)) {
                             if (pattern.length() > 2) {
-                                int end = start + 1 == pattern.length() - 1 ? 0 : pattern.length() - (start + 2);
+                                int end = start + 1 == pattern.length() - 1
+                                    ? 0
+                                    : pattern.length() - (start + 2);
                                 val = val.substring(start, val.length() - end);
                             }
                             if (Conversion.isString(c) || Conversion.isCharacter(c)) {
@@ -84,7 +88,10 @@ public class EOsscanf extends PhDefault {
                                 return new PhWith(
                                     new EOerror(Phi.Φ), "msg",
                                     new Data.ToPhi(
-                                        String.format("Format pattern not supported yet: %s", pattern)
+                                        String.format(
+                                            "Format pattern not supported yet: %s",
+                                            pattern
+                                        )
                                     )
                                 );
                             }
@@ -110,116 +117,71 @@ public class EOsscanf extends PhDefault {
 
     /**
      * Format conversion.
+     * @since 0.23
+     * @checkstyle JavadocVariableCheck (40 lines)
      */
     private static class Conversion {
         // Byte, Short, Integer, Long, BigInteger
         // (and associated primitives due to autoboxing)
-        /**
-         * 'd'
-         */
+
         static final char DECIMAL_INTEGER     = 'd';
-        /**
-         * 'o'
-         */
+
         static final char OCTAL_INTEGER       = 'o';
-        /**
-         * 'x'
-         */
+
         static final char HEXADECIMAL_INTEGER = 'x';
-        /**
-         * 'X'
-         */
+
         static final char HEXADECIMAL_INTEGER_UPPER = 'X';
 
         // Float, Double, BigDecimal
         // (and associated primitives due to autoboxing)
-        /**
-         * 'e'
-         */
+
         static final char SCIENTIFIC          = 'e';
-        /**
-         * 'E'
-         */
+
         static final char SCIENTIFIC_UPPER    = 'E';
-        /**
-         * 'g'
-         */
+
         static final char GENERAL             = 'g';
-        /**
-         * 'G'
-         */
+
         static final char GENERAL_UPPER       = 'G';
-        /**
-         * 'f'
-         */
+
         static final char DECIMAL_FLOAT       = 'f';
-        /**
-         * 'a'
-         */
+
         static final char HEXADECIMAL_FLOAT   = 'a';
-        /**
-         * 'A'
-         */
+
         static final char HEXADECIMAL_FLOAT_UPPER = 'A';
 
         // Character, Byte, Short, Integer
         // (and associated primitives due to autoboxing)
-        /**
-         * 'c'
-         */
+
         static final char CHARACTER           = 'c';
-        /**
-         * 'C'
-         */
+
         static final char CHARACTER_UPPER     = 'C';
 
         // java.util.Date, java.util.Calendar, long
-        /**
-         * 't'
-         */
+
         static final char DATE_TIME           = 't';
-        /**
-         * 'T'
-         */
+
         static final char DATE_TIME_UPPER     = 'T';
 
         // if (arg.TYPE != boolean) return boolean
         // if (arg != null) return true; else return false;
-        /**
-         * 'b'
-         */
+
         static final char BOOLEAN             = 'b';
-        /**
-         * 'B'
-         */
+
         static final char BOOLEAN_UPPER       = 'B';
+
         // if (arg instanceof Formattable) arg.formatTo()
         // else arg.toString();
-        /**
-         * 's'
-         */
         static final char STRING              = 's';
-        /**
-         * 'S'
-         */
+
         static final char STRING_UPPER        = 'S';
-        /**
-         * 'h'
-         */
+
         // arg.hashCode()
         static final char HASHCODE            = 'h';
-        /**
-         * 'H'
-         */
+
         static final char HASHCODE_UPPER      = 'H';
 
-        /**
-         * 'n'
-         */
         static final char LINE_SEPARATOR      = 'n';
-        /**
-         * '%'
-         */
+
         static final char PERCENT_SIGN        = '%';
 
         /**
@@ -257,7 +219,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for object.
          * @param c Char to check
-         * @return true iff the Conversion is applicable to all objects
+         * @return True iff the Conversion is applicable to all objects
          */
         static boolean isGeneral(char c) {
             switch (c) {
@@ -274,7 +236,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for string.
          * @param c Char to check
-         * @return true iff the Conversion is applicable to string
+         * @return True iff the Conversion is applicable to string
          */
         static boolean isString(char c) {
             switch (c) {
@@ -287,7 +249,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for boolean.
          * @param c Char to check
-         * @return true iff the Conversion is applicable to boolean
+         * @return True iff the Conversion is applicable to boolean
          */
         static boolean isBoolean(char c) {
             switch (c) {
@@ -300,7 +262,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for character.
          * @param c Char to check
-         * @return true iff the Conversion is applicable to character
+         * @return True iff the Conversion is applicable to character
          */
         static boolean isCharacter(char c) {
             switch (c) {
@@ -313,7 +275,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for integer.
          * @param c Char to check
-         * @return true iff the Conversion is applicable to integer
+         * @return True iff the Conversion is applicable to integer
          */
         static boolean isInteger(char c) {
             switch (c) {
@@ -328,7 +290,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for floating-point.
          * @param c Char to check
-         * @return true iff the Conversion is applicable to floating-point
+         * @return True iff the Conversion is applicable to floating-point
          */
         static boolean isFloat(char c) {
             switch (c) {
@@ -346,7 +308,7 @@ public class EOsscanf extends PhDefault {
         /**
          * Check for text.
          * @param c Char to check
-         * @return true iff the Conversion does not require an argument
+         * @return True iff the Conversion does not require an argument
          */
         static boolean isText(char c) {
             switch (c) {

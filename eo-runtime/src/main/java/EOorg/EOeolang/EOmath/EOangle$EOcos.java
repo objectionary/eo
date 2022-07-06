@@ -9,6 +9,7 @@ import org.eolang.XmirObject;
 
 /**
  * Cos.
+ * @since 1.0
  */
 @XmirObject(oname = "angle.cos")
 public class EOangle$EOcos extends PhDefault {

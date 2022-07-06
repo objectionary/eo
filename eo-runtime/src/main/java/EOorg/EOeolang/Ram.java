@@ -49,7 +49,7 @@ public enum Ram {
     /**
      * Initialize storage.
      * @param phi Owner.
-     * @return
+     * @return Storage file
      */
     private RandomAccessFile init(final Phi phi) {
         final long size = new Dataized(phi.attr("size").get()).take(Long.class);

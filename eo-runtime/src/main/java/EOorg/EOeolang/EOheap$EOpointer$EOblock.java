@@ -67,6 +67,7 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
 
     /**
      * Write block.
+     * @since 0.19
      */
     @XmirObject(oname = "heap.pointer.block.write")
     private final class Write extends PhDefault {
