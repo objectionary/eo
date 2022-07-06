@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EOorg.EOeolang.EOcollections.EOlist$EOmap}.
  *
- * @since 0.17
+ * @since 0.23
  */
 public final class EOlistEOmapTest {
 
@@ -58,9 +58,11 @@ public final class EOlistEOmapTest {
         );
 
         final Phi[] items = new Dataized(
-            new PhWith(
-                new PhMethod(list, "map"),
-                0, new EOlistEOmapTest.Kid(Phi.Φ)
+            new PhMethod(
+                new PhWith(
+                    new PhMethod(list, "map"),
+                    0, new EOlistEOmapTest.Kid(Phi.Φ)
+                ), "as-array"
             )
         ).take(Phi[].class);
         MatcherAssert.assertThat(

@@ -76,12 +76,13 @@
   # one for the element of the array, the second one
   # for the index.
   [f] > mapi
-    ^.reducei > @
-      *
-      [a idx item]
-        with. > @
-          a
-          &.f item idx
+    list > @
+      ^.reducei
+        *
+        [a idx item]
+          with. > @
+            a
+            &.f item idx
 
   # Map without index. Here "f" must be an abstract
   # object with one free attribute, for the element
