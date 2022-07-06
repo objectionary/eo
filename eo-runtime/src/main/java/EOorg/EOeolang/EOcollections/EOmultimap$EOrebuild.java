@@ -27,6 +27,7 @@ package EOorg.EOeolang.EOcollections;
 import org.eolang.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public class EOmultimap$EOrebuild extends PhDefault {
@@ -40,7 +41,7 @@ public class EOmultimap$EOrebuild extends PhDefault {
             final Phi[] harr = new Dataized(rho.attr("harr").get()).take(Phi[].class);
             final Phi[] arr = new Dataized(rho.attr("arr").get()).take(Phi[].class);
 
-            ArrayList<Integer> hashes = new ArrayList<>();
+            final List<Integer> hashes = new ArrayList<>();
 
             for (final Phi item : harr) {
                 final Long x = new Dataized(item).take(Long.class);
@@ -48,21 +49,21 @@ public class EOmultimap$EOrebuild extends PhDefault {
             }
 
             // This value can be changed for memory or speed optimization
-            int TABLE_SIZE = hashes.size();
+            final int tableSize = hashes.size();
 
-            ArrayList<ArrayList<Phi>> table = new ArrayList<>();
+            final List<List<Phi>> table = new ArrayList<>();
 
-            for (int i = 0; i < TABLE_SIZE; ++i) {
+            for (int i = 0; i < tableSize; ++i) {
                 table.add(new ArrayList<>());
             }
 
             for (int i = 0; i < arr.length; ++i) {
-                table.get(hashes.get(i) % TABLE_SIZE).add(arr[i]);
+                table.get(hashes.get(i) % tableSize).add(arr[i]);
             }
 
-            Phi[] result = new Phi[TABLE_SIZE];
+            final Phi[] result = new Phi[tableSize];
 
-            for (int i = 0; i < TABLE_SIZE; ++i) {
+            for (int i = 0; i < tableSize; ++i) {
                 Phi[] array = new Phi[table.get(i).size()];
                 for (int j = 0; j < table.get(i).size(); ++j) {
                     array[j] = table.get(i).get(j);
