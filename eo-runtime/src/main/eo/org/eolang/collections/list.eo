@@ -20,35 +20,44 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
++package org.eolang.collections
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.collections.list
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-# Regular expression in Perl format.
-# Free attribute "r" is a string represenation of regex object.
-# It starts and ends with slash (e.g. "/(your-pattern)/s"),
-# Also it can be specified by the flag option,
-# e.g. (QQ.txt.regex "/(word)/i").compile.matches "WORD".
-# other flags:
-# /d - Enables Unix lines mode.
-# /i - Enables case-insensitive matching.
-# /x - Permits whitespace and comments in pattern.
-# /m - Enables multiline mode.
-# /s - Enables dotall mode.
-# /u - Enables Unicode-aware case folding.
-#
-[r] > regex
+[arr] > list
 
-  [] > compile /regex
+  # Is it empty?
+  [] > is-empty
+    eq. > @
+      arr.length
+      0
 
-  # Match the text and return the array of matched groups
-  [txt] > match /array
+  # Reduce with index from start "a" using the function "f".
+  # Here "f" must be an abstract
+  # object with three free attributes. The first
+  # one for the accumulator, the second one
+  # for the index and the third one for the element
+  # of the array.
+  [a f] > reducei
+    memory 0 > idx
+    memory 0 > acc
+    seq > @
+      idx.write 0
+      acc.write a
+      while.
+        lt.
+          idx
+          arr.length
+        [i]
+          seq > @
+            idx.write (i.plus 1)
+            acc.write
+              f
+                acc
+                i
+                arr.at i
+      acc
 
-  # Matches
-  [txt] > matches
-    not. > @
-      is-empty.
-        list (^.match txt)
-
+  [] > as-array
+    arr > @
