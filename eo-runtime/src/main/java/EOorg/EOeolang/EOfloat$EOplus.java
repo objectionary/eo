@@ -33,7 +33,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * plus.
+ * Plus.
  *
  * @since 0.23
  */

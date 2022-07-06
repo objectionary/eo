@@ -68,7 +68,8 @@ final class CachedPhi {
     /**
      * Get it and clean if necessary.
      * @param name Attribute name
-     * @param supplier of Phi
+     * @param supplier Of Phi
+     * @return Phi
      */
     public Phi get(final String name, final Supplier<Phi> supplier) {
         synchronized (this.cached) {

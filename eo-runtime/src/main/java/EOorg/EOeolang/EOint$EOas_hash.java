@@ -30,6 +30,10 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
+/**
+ * Int as hash.
+ * @since 0.1
+ */
 @XmirObject(oname = "int.as-hash")
 public class EOint$EOas_hash extends PhDefault {
 

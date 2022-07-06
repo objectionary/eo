@@ -183,7 +183,7 @@ public interface Data<T> {
         }
 
         /**
-         * Convert to Phi object
+         * Convert to Phi object.
          * @param obj Object to convert
          * @return Constructed Phi
          */

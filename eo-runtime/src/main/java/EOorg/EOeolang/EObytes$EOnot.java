@@ -24,8 +24,13 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.*;
 import java.math.BigInteger;
+import org.eolang.AtComposite;
+import org.eolang.Data;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * BYTES.NOT.

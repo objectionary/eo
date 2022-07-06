@@ -187,3 +187,47 @@
     $.is
       $.equal-to
         "Can't at() the 20th element of the array, there are just 4 of them"
+
+[] > concat-array-with-empty-array-1
+  * 1 2 3 > a
+  * > b
+  a.concat b > res
+  assert-that > @
+    res.length
+    $.equal-to 3
+
+[] > concat-array-with-empty-array-2
+  * > a
+  * 1 2 3 > b
+  a.concat b > res
+  assert-that > @
+    res.length
+    $.equal-to 3
+
+[] > concat-array-with-empty-array-3
+  * > a
+  * > b
+  a.concat b > res
+  assert-that > @
+    res.length
+    $.equal-to 0
+
+[] > concat-arrays
+  * 1 2 3 > a
+  * 100 200 > b
+  a.concat b > res
+  assert-that > @
+    plus.
+      res.at 2
+      res.at 4
+    $.equal-to 203
+
+[] > concat-three-arrays
+  * 0 1 2 > a
+  * 3 4 > b
+  * (* "five" "six") (* "siven") > c
+  a.concat (b.concat c) > res
+  assert-that > @
+    * (res.length) ((res.at 5).at 1)
+    $.equal-to
+      * 7 "six"
