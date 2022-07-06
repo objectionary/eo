@@ -100,21 +100,6 @@
     $.equal-to
       sprintf "%d %d %d" 1 4 9
 
-# this test performs mapping of array using the index for it
-[] > mapi-index-can-be-accessed
-  [numbers...] > multipliedByNaturalSequence
-    mapi. > @
-      numbers
-      [current index]
-        times. > @
-          (sscanf "%d" current).at 0
-          index.plus 1
-  (multipliedByNaturalSequence "1" "2" "3") > mulSeq
-  assert-that > @
-    sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
-    $.equal-to
-      sprintf "%d %d %d" 1 4 9
-
 [] > array-as-a-bound-attribute-size-0
   * > anArray
   assert-that > @
@@ -269,15 +254,6 @@
       2
     $.equal-to
       * "smthg" 27
-
-[] > mapi-should-works
-  assert-that > @
-    mapi.
-      * 1 2 3 4
-      [x i]
-        x.times 2 > @
-    $.equal-to
-      * 2 4 6 8
 
 [] > array-at-with-error
   assert-that > @

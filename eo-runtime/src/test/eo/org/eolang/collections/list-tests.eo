@@ -25,6 +25,8 @@
 +version 0.0.0
 +alias org.eolang.math.number
 +alias org.eolang.collections.list
++alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -44,7 +46,7 @@
     (list xs).is-empty
     $.equal-to TRUE
 
-# arrays of objects
+# list of objects
 [] > should-not-be-empty-with-3-objects
   [x] > a-1
     ((number x).as-int > @)
@@ -60,7 +62,7 @@
     (list xs).is-empty.not
     $.equal-to TRUE
 
-# arrays with anonymous object
+# list with anonymous object
 [] > should-not-be-empty-with-1-anon-object
   * > xs
     [f]
@@ -69,7 +71,7 @@
     (list xs).is-empty.not
     $.equal-to TRUE
 
-# arrays with anonymous one-line-object
+# list with anonymous one-line-object
 [] > should-not-be-empty-with-1-anon-object-one-liner
   * > xs
     [f] ((number f).as-int > @)
@@ -150,3 +152,28 @@
           a
           x
     $.equal-to -24
+
+[] > mapi-should-works
+  assert-that > @
+    mapi.
+      list
+        * 1 2 3 4
+      [x i]
+        x.times 2 > @
+    $.equal-to
+      * 2 4 6 8
+
+# this test performs mapping of list using the index for it
+[] > mapi-index-can-be-accessed
+  [numbers...] > multipliedByNaturalSequence
+    mapi. > @
+      list numbers
+      [current index]
+        times. > @
+          (sscanf "%d" current).at 0
+          index.plus 1
+  (multipliedByNaturalSequence "1" "2" "3") > mulSeq
+  assert-that > @
+    sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
+    $.equal-to
+      sprintf "%d %d %d" 1 4 9
