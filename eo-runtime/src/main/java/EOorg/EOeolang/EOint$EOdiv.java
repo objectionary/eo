@@ -70,24 +70,23 @@ public class EOint$EOdiv extends PhDefault {
                     );
                     error = true;
                     break;
-                } else {
-                    long typed = (Long) val;
-                    if (typed == 0L) {
-                        phi = new PhWith(
-                            new EOerror(Phi.Φ),
-                            "msg",
-                            new Data.ToPhi(
-                                String.format(
-                                    "Division by 0 at %dth argument of 'div'",
-                                    idx + 1
-                                )
-                            )
-                        );
-                        error = true;
-                        break;
-                    }
-                    div /= (Long) val;
                 }
+                long typed = (Long) val;
+                if (typed == 0L) {
+                    phi = new PhWith(
+                        new EOerror(Phi.Φ),
+                        "msg",
+                        new Data.ToPhi(
+                            String.format(
+                                "Division by 0 at %dth argument of 'div'",
+                                idx + 1
+                            )
+                        )
+                    );
+                    error = true;
+                    break;
+                }
+                div /= (Long) val;
             }
             if (!error) {
                 phi = new Data.ToPhi(div);
@@ -95,5 +94,4 @@ public class EOint$EOdiv extends PhDefault {
             return phi;
         }));
     }
-
 }

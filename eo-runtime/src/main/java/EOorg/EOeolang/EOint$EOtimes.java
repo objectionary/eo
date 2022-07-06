@@ -70,9 +70,8 @@ public class EOint$EOtimes extends PhDefault {
                     );
                     error = true;
                     break;
-                } else {
-                    mul *= (Long) val;
                 }
+                mul *= (Long) val;
             }
             if (!error) {
                 phi = new Data.ToPhi(mul);

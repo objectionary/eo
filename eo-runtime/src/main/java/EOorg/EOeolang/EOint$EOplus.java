@@ -69,9 +69,8 @@ public class EOint$EOplus extends PhDefault {
                     );
                     error = true;
                     break;
-                } else {
-                    sum += (Long) val;
                 }
+                sum += (Long) val;
             }
             if (!error) {
                 phi = new Data.ToPhi(sum);
