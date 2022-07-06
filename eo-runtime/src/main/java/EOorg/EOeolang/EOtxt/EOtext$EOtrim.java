@@ -39,6 +39,10 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "text.trim")
 public class EOtext$EOtrim extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOtext$EOtrim(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {

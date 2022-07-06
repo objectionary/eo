@@ -25,6 +25,7 @@
 package EOorg.EOeolang.EOtxt;
 
 import EOorg.EOeolang.EOerror;
+import java.util.regex.Pattern;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -32,8 +33,6 @@ import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
-
-import java.util.regex.Pattern;
 
 /**
  * REGEX.COMPILE.
@@ -43,6 +42,10 @@ import java.util.regex.Pattern;
 @XmirObject(oname = "regex.compile")
 public class EOregex$EOcompile extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOregex$EOcompile(final Phi sigma) {
         super(sigma);
         this.add("φ", new AtComposite(this, rho -> {
