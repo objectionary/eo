@@ -8,6 +8,10 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
+/**
+ * Read from memory.
+ * @since 0.1
+ */
 @XmirObject(oname = "ram.read")
 public class EOram$EOread extends PhDefault {
     /**

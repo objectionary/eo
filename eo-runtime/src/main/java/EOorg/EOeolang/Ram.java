@@ -16,6 +16,9 @@ import org.eolang.Phi;
  * @since 0.19
  */
 public enum Ram {
+    /**
+     * Ram instance.
+     */
     INSTANCE;
 
     /**
@@ -46,7 +49,7 @@ public enum Ram {
     /**
      * Initialize storage.
      * @param phi Owner.
-     * @return
+     * @return Storage file
      */
     private RandomAccessFile init(final Phi phi) {
         final long size = new Dataized(phi.attr("size").get()).take(Long.class);

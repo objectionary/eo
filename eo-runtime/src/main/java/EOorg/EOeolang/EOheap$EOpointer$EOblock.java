@@ -65,8 +65,16 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         }));
     }
 
+    /**
+     * Write block.
+     * @since 0.19
+     */
     @XmirObject(oname = "heap.pointer.block.write")
     private final class Write extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());

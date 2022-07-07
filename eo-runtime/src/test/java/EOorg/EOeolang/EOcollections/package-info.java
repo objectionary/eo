@@ -22,42 +22,9 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOtxt;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
-
 /**
- * JOINED.
+ * EO runtime, tests.
  *
- * @since 0.23
+ * @since 0.1
  */
-@XmirObject(oname = "text.joined")
-public class EOtext$EOjoined extends PhDefault {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOtext$EOjoined(final Phi sigma) {
-        super(sigma);
-        this.add("items", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi text = rho.attr("ρ").get();
-            final String delim = new Param(text, "s").strong(String.class);
-            final Phi[] items = new Param(rho, "items").strong(Phi[].class);
-            final String[] texts = new String[items.length];
-            for (int idx = 0; idx < texts.length; ++idx) {
-                texts[idx] = new Dataized(items[idx]).take(String.class);
-            }
-            return new Data.ToPhi(String.join(delim, texts));
-        }));
-    }
-
-}
+package EOorg.EOeolang.EOcollections;
