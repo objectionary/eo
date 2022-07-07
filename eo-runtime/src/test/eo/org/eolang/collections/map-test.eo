@@ -24,6 +24,7 @@
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +alias org.eolang.collections.map
++alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -43,7 +44,8 @@
   assert-that > @
     * (r2.at 0) (r3.length) (r4.at 0) (r8.at 0)
     $.equal-to
-      * "c" 0 "a" "c"
+      list
+        * "c" 0 "a" "c"
 
 [] > map-find-and-with
   map * > fmp!
@@ -56,7 +58,8 @@
   assert-that > @
     * (r1.at 0) (r2.length) (r3.at 0) (r4.at 0) (rabc.at 0)
     $.equal-to
-      * "a" 0 5 5 "cba"
+      list
+        * "a" 0 5 5 "cba"
 
 [] > map-of-maps
   map * > init-mp!
@@ -67,7 +70,8 @@
   assert-that > @
     * ((mp-res.found -1).length) ((((mp-res.found 1).at 0).found "c").at 0)
     $.equal-to
-      * 0 "d"
+      list
+        * 0 "d"
 
 [] > map-without-works
   map * > init-mp!
@@ -76,7 +80,8 @@
   assert-that > @
     * ((mp.found 1).length) ((mp.found 2).length) ((mp2.found 3).length) ((mp2.found 4).length)
     $.equal-to
-      * 1 1 0 1
+      list
+        * 1 1 0 1
 
 [] > map-without-many-elements
   map * > init-mp!
@@ -85,4 +90,5 @@
   assert-that > @
     * (mp.size) (mp2.size) ((mp.found 1).at 0)
     $.equal-to
-      * 2 1 "c"
+      list
+        * 2 1 "c"

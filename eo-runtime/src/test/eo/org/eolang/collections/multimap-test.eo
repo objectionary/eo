@@ -24,6 +24,7 @@
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +alias org.eolang.collections.multimap
++alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -44,7 +45,8 @@
   assert-that > @
     * ((res.at 0).length) ((res.at 1).length) ((res.at 2).length) ((res.at 3).length) (((res.at 0).at 0).at 0) (((res.at 3).at 0).at 1)
     $.equal-to
-      * 2 1 0 1 4 5
+      list
+        * 2 1 0 1 4 5
 
 [] > multimap-pairs-to-hash-test
   multimap * > mp!
@@ -53,7 +55,8 @@
   assert-that > @
     * (tarr.length) (tarr.at 0) (tarr.at 1) (tarr.at 2)
     $.equal-to
-      * 3 106079 2 3
+      list
+        * 3 106079 2 3
 
 [] > multimap-concat-all-arrays-test
   multimap * > mp!
@@ -62,7 +65,8 @@
   assert-that > @
     * (res.length) (res.at 3)
     $.equal-to
-      * 9 4
+      list
+        * 9 4
 
 [] > multimap-with-do-not-crashed
   multimap * > mp!
@@ -111,13 +115,14 @@
 
 [] > multimap-find-in-list-works
   multimap * > mp!
-  * (* 1 2) (* "abc" "bca") (* "a" 42) > list!
-  mp.find-in-list "abc" list > res!
-  mp.find-in-list "c" list > res2!
+  * (* 1 2) (* "abc" "bca") (* "a" 42) > lst!
+  mp.find-in-list "abc" lst > res!
+  mp.find-in-list "c" lst > res2!
   assert-that > @
     * (res.length) (res2.length)
     $.equal-to
-      * 1 0
+      list
+        * 1 0
 
 [] > multimap-find-do-not-crashed
   multimap * > mp!
@@ -135,7 +140,8 @@
   assert-that > @
     * (r2.at 0) (r3.length) (r4.at 0) (r8.at 0)
     $.equal-to
-      * "c" 0 "a" "c"
+      list
+        * "c" 0 "a" "c"
 
 [] > multimap-find-and-with
   multimap * > fmp!
@@ -148,7 +154,8 @@
   assert-that > @
     * (r1.at 0) (r2.length) (r3.at 0) (r4.at 0) (rabc.at 0)
     $.equal-to
-      * "a" 0 5 5 "cba"
+      list
+        * "a" 0 5 5 "cba"
 
 [] > multimap-of-multimaps
   multimap * > init-mp!
@@ -159,7 +166,8 @@
   assert-that > @
     * ((mp-res.found -1).length) ((((mp-res.found 1).at 0).found "c").at 0)
     $.equal-to
-      * 0 "d"
+      list
+        * 0 "d"
 
 [] > multimap-without-works
   multimap * > init-mp!
@@ -168,7 +176,8 @@
   assert-that > @
     * ((mp.found 1).length) ((mp.found 2).length) ((mp2.found 3).length) ((mp2.found 4).length)
     $.equal-to
-      * 1 1 0 1
+      list
+        * 1 1 0 1
 
 [] > multimap-without-many-elements
   multimap * > init-mp!
@@ -177,4 +186,5 @@
   assert-that > @
     * (mp.size) (mp2.size)
     $.equal-to
-      * 3 1
+      list
+        * 3 1
