@@ -49,32 +49,38 @@ public class EOstring$EOslice extends PhDefault {
         super(sigma);
         this.add("start", new AtFree());
         this.add("len", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final String str = new Param(rho).strong(String.class);
-            final int start = new Param(rho, "start").strong(Long.class).intValue();
-            final int length = new Param(rho, "len").strong(Long.class).intValue();
-            final int end = length + start;
-            Phi result;
-            if (start < 0) {
-                result = error(
-                    "Start index must be greater than 0 but was %d",
-                    start
-                );
-            } else if (start > end) {
-                result = error(
-                    "End index must be greater or equal to start but was %d < %d",
-                    end, start
-                );
-            } else if (end > str.length()) {
-                result = error(
-                    "Start index + length must not exceed string length but was %d > %d",
-                    end, str.length()
-                );
-            } else {
-                result = new Data.ToPhi(str.substring(start, end));
-            }
-            return result;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final String str = new Param(rho).strong(String.class);
+                    final int start = new Param(rho, "start").strong(Long.class).intValue();
+                    final int length = new Param(rho, "len").strong(Long.class).intValue();
+                    final int end = length + start;
+                    Phi result;
+                    if (start < 0) {
+                        result = error(
+                            "Start index must be greater than 0 but was %d",
+                            start
+                        );
+                    } else if (start > end) {
+                        result = error(
+                            "End index must be greater or equal to start but was %d < %d",
+                            end, start
+                        );
+                    } else if (end > str.length()) {
+                        result = error(
+                            "Start index + length must not exceed string length but was %d > %d",
+                            end, str.length()
+                        );
+                    } else {
+                        result = new Data.ToPhi(str.substring(start, end));
+                    }
+                    return result;
+                }
+            )
+        );
     }
 
     /**
