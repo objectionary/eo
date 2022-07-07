@@ -13,11 +13,11 @@ tests:
   - //o[@base='Q']
   - //o[@base='QQ']
 eo: |
-  +alias stdout org.eolang.io.stdout
-  +alias stdin org.eolang.io.stdin
-  +alias scanner org.eolang.txt.scanner
-  +foo Some other meta
   +alias foo
+  +alias scanner org.eolang.txt.scanner
+  +alias stdin org.eolang.io.stdin
+  +alias stdout org.eolang.io.stdout
+  +foo Some other meta
 
   [args] > main
     and

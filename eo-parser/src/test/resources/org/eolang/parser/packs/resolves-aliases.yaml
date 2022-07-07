@@ -13,9 +13,9 @@ tests:
   - //o[@base='$']
   - //o[@base='^']
 eo: |
-  +alias stdout org.eolang.io.stdout
-  +alias stdin org.eolang.io.stdin
   +alias org.eolang.txt.scanner
+  +alias stdin org.eolang.io.stdin
+  +alias stdout org.eolang.io.stdout
   +foo Some other meta
 
   [args] > main
