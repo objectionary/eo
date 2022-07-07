@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOcollections;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
@@ -39,27 +39,33 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  */
-@XmirObject(oname = "array.each")
-public class EOarray$EOeach extends PhDefault {
+@XmirObject(oname = "list.each")
+public class EOlist$EOeach extends PhDefault {
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOarray$EOeach(final Phi sigma) {
+    public EOlist$EOeach(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            for (final Phi item : array) {
-                final Phi body = rho.attr("f").get().copy();
-                body.move(rho);
-                new Dataized(
-                    new PhWith(body, 0, item)
-                ).take();
-            }
-            return new Data.ToPhi(true);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] array = new Param(rho.attr("ρ").get(), "arr").strong(Phi[].class);
+                    for (final Phi item : array) {
+                        final Phi body = rho.attr("f").get().copy();
+                        body.move(rho);
+                        new Dataized(
+                            new PhWith(body, 0, item)
+                        ).take();
+                    }
+                    return new Data.ToPhi(true);
+                }
+            )
+        );
     }
 
 }

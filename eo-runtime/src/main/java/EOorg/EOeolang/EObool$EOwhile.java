@@ -48,21 +48,27 @@ public class EObool$EOwhile extends PhDefault {
     public EObool$EOwhile(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            long count = 0L;
-            while (true) {
-                final Boolean term = new Param(rho).strong(Boolean.class);
-                if (!term) {
-                    break;
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    long count = 0L;
+                    while (true) {
+                        final Boolean term = new Param(rho).strong(Boolean.class);
+                        if (!term) {
+                            break;
+                        }
+                        final Phi body = rho.attr("f").get().copy();
+                        body.move(rho);
+                        body.attr(0).put(new Data.ToPhi(count));
+                        new Dataized(body).take();
+                        ++count;
+                    }
+                    return new Data.ToPhi(count);
                 }
-                final Phi body = rho.attr("f").get().copy();
-                body.move(rho);
-                body.attr(0).put(new Data.ToPhi(count));
-                new Dataized(body).take();
-                ++count;
-            }
-            return new Data.ToPhi(count);
-        }));
+            )
+        );
     }
 
 }

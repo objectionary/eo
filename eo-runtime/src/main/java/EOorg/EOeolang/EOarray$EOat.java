@@ -48,22 +48,28 @@ public class EOarray$EOat extends PhDefault {
     public EOarray$EOat(final Phi sigma) {
         super(sigma);
         this.add("i", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final int idx = new Param(rho, "i").strong(Long.class).intValue();
-            if (array.length <= idx) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Can't at() the %dth element of the array, there are just %d of them",
-                            idx, array.length
-                        )
-                    )
-                );
-            }
-            return array[idx];
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] array = new Param(rho).strong(Phi[].class);
+                    final int idx = new Param(rho, "i").strong(Long.class).intValue();
+                    if (array.length <= idx) {
+                        return new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(
+                                String.format(
+                                    "Can't at() the %dth element of the array, there are just %d of them",
+                                    idx, array.length
+                                )
+                            )
+                        );
+                    }
+                    return array[idx];
+                }
+            )
+        );
     }
 
 }

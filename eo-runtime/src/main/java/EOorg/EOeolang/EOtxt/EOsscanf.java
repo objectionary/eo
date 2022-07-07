@@ -54,71 +54,77 @@ public class EOsscanf extends PhDefault {
         super(sigma);
         this.add("format", new AtFree());
         this.add("read", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final String format = new Param(rho, "format").strong(String.class);
-            final String read = new Param(rho, "read").strong(String.class);
-            final List<Phi> buffer = new ArrayList<>();
-            try (Scanner fsc = new Scanner(format);
-                 Scanner rsc = new Scanner(read)
-            ) {
-                while (fsc.hasNext() && rsc.hasNext()) {
-                    String pattern = fsc.next();
-                    String val = rsc.next();
-                    boolean valid = pattern.contains(String.valueOf(Conversion.PERCENT_SIGN))
-                        && pattern.length() > 1;
-                    if (valid) {
-                        int start = pattern.indexOf(Conversion.PERCENT_SIGN);
-                        final char c = pattern.charAt(start + 1);
-                        if (Conversion.isValid(c)) {
-                            if (pattern.length() > 2) {
-                                int end = start + 1 == pattern.length() - 1
-                                    ? 0
-                                    : pattern.length() - (start + 2);
-                                val = val.substring(start, val.length() - end);
-                            }
-                            if (Conversion.isString(c) || Conversion.isCharacter(c)) {
-                                buffer.add(new Data.ToPhi(val));
-                            } else if (Conversion.isInteger(c)) {
-                                buffer.add(new Data.ToPhi(Long.parseLong(val)));
-                            } else if (Conversion.isFloat(c)) {
-                                buffer.add(new Data.ToPhi(Double.parseDouble(val)));
-                            } else if (Conversion.isBoolean(c)) {
-                                buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
-                            } else {
-                                return new PhWith(
-                                    new EOerror(Phi.Φ), "msg",
-                                    new Data.ToPhi(
-                                        String.format(
-                                            "Format pattern not supported yet: %s",
-                                            pattern
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final String format = new Param(rho, "format").strong(String.class);
+                    final String read = new Param(rho, "read").strong(String.class);
+                    final List<Phi> buffer = new ArrayList<>();
+                    try (Scanner fsc = new Scanner(format);
+                         Scanner rsc = new Scanner(read)
+                    ) {
+                        while (fsc.hasNext() && rsc.hasNext()) {
+                            String pattern = fsc.next();
+                            String val = rsc.next();
+                            boolean valid = pattern.contains(String.valueOf(Conversion.PERCENT_SIGN))
+                                && pattern.length() > 1;
+                            if (valid) {
+                                int start = pattern.indexOf(Conversion.PERCENT_SIGN);
+                                final char c = pattern.charAt(start + 1);
+                                if (Conversion.isValid(c)) {
+                                    if (pattern.length() > 2) {
+                                        int end = start + 1 == pattern.length() - 1
+                                            ? 0
+                                            : pattern.length() - (start + 2);
+                                        val = val.substring(start, val.length() - end);
+                                    }
+                                    if (Conversion.isString(c) || Conversion.isCharacter(c)) {
+                                        buffer.add(new Data.ToPhi(val));
+                                    } else if (Conversion.isInteger(c)) {
+                                        buffer.add(new Data.ToPhi(Long.parseLong(val)));
+                                    } else if (Conversion.isFloat(c)) {
+                                        buffer.add(new Data.ToPhi(Double.parseDouble(val)));
+                                    } else if (Conversion.isBoolean(c)) {
+                                        buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
+                                    } else {
+                                        return new PhWith(
+                                            new EOerror(Phi.Φ), "msg",
+                                            new Data.ToPhi(
+                                                String.format(
+                                                    "Format pattern not supported yet: %s",
+                                                    pattern
+                                                )
+                                            )
+                                        );
+                                    }
+                                } else {
+                                    return new PhWith(
+                                        new EOerror(Phi.Φ), "msg",
+                                        new Data.ToPhi(
+                                            String.format("Can't recognize format pattern: %s", pattern)
                                         )
-                                    )
-                                );
+                                    );
+                                }
                             }
-                        } else {
-                            return new PhWith(
-                                new EOerror(Phi.Φ), "msg",
-                                new Data.ToPhi(
-                                    String.format("Can't recognize format pattern: %s", pattern)
-                                )
-                            );
                         }
+                    } catch (IllegalArgumentException | NullPointerException | NoSuchElementException ex) {
+                        return new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(ex.getMessage())
+                        );
                     }
+                    return new Data.ToPhi(buffer.toArray(new Phi[0]));
                 }
-            } catch (IllegalArgumentException | NullPointerException | NoSuchElementException ex) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(ex.getMessage())
-                );
-            }
-            return new Data.ToPhi(buffer.toArray(new Phi[0]));
-        }));
+            )
+        );
     }
 
     /**
      * Format conversion.
      * @since 0.23
-     * @checkstyle JavadocVariableCheck (40 lines)
+     * @checkstyle JavadocVariableCheck (70 lines)
      */
     private static class Conversion {
         // Byte, Short, Integer, Long, BigInteger

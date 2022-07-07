@@ -48,39 +48,45 @@ public class EOregex$EOcompile extends PhDefault {
      */
     public EOregex$EOcompile(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi regex = rho.attr("ρ").get();
-            final String pattern = new Param(regex, "r").strong(String.class);
-            StringBuilder builder = new StringBuilder();
-            if (!pattern.startsWith("/")) {
-                return new PhWith(
-                    new EOerror(Phi.Φ),
-                    "msg",
-                    new Data.ToPhi("Wrong regex syntax: \"/\" is missing")
-                );
-            }
-            final int lastIndex = pattern.lastIndexOf("/");
-            if (!pattern.endsWith("/")) {
-                builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
-            }
-            builder.append(pattern, 1, lastIndex);
-            Phi phi;
-            try {
-                String compiled = Pattern.compile(builder.toString()).pattern();
-                phi = new PhWith(
-                    new EOregex(rho),
-                    "r",
-                    new Data.ToPhi(compiled)
-                );
-            } catch (IllegalArgumentException e) {
-                phi = new PhWith(
-                    new EOerror(Phi.Φ),
-                    "msg",
-                    new Data.ToPhi(e.getMessage())
-                );
-            }
-            return phi;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi regex = rho.attr("ρ").get();
+                    final String pattern = new Param(regex, "r").strong(String.class);
+                    StringBuilder builder = new StringBuilder();
+                    if (!pattern.startsWith("/")) {
+                        return new PhWith(
+                            new EOerror(Phi.Φ),
+                            "msg",
+                            new Data.ToPhi("Wrong regex syntax: \"/\" is missing")
+                        );
+                    }
+                    final int lastIndex = pattern.lastIndexOf("/");
+                    if (!pattern.endsWith("/")) {
+                        builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
+                    }
+                    builder.append(pattern, 1, lastIndex);
+                    Phi phi;
+                    try {
+                        String compiled = Pattern.compile(builder.toString()).pattern();
+                        phi = new PhWith(
+                            new EOregex(rho),
+                            "r",
+                            new Data.ToPhi(compiled)
+                        );
+                    } catch (IllegalArgumentException e) {
+                        phi = new PhWith(
+                            new EOerror(Phi.Φ),
+                            "msg",
+                            new Data.ToPhi(e.getMessage())
+                        );
+                    }
+                    return phi;
+                }
+            )
+        );
     }
 
 }

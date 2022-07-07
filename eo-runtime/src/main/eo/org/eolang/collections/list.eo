@@ -91,3 +91,32 @@
     ^.mapi > @
       [x idx]
         &.f x > @
+
+  # For each array element dataize the object
+  [f] > each /bool
+
+  # Create a new list without the i-th element
+  [i] > without
+    ^.reducei > @
+      *
+      [a idx item]
+        if. > @
+          idx.eq i
+          a
+          a.with item
+
+  # Equal to another object?
+  [x] > eq
+    if. > @
+      eq.
+        arr.length
+        x.length
+      ^.reducei
+        TRUE
+        [a idx item]
+          and. > @
+            a
+            eq.
+              item
+              x.at idx
+      FALSE

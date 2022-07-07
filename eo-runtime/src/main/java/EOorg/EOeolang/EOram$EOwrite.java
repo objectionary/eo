@@ -22,11 +22,17 @@ public class EOram$EOwrite extends PhDefault {
         super(sigma);
         this.add("p", new AtFree());
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final int pos = new Param(rho, "p").strong(Long.class).intValue();
-            final byte[] bytes = new Param(rho, "b").strong(byte[].class);
-            Ram.INSTANCE.write(rho.attr("ρ").get(), pos, bytes);
-            return new Data.ToPhi(true);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final int pos = new Param(rho, "p").strong(Long.class).intValue();
+                    final byte[] bytes = new Param(rho, "b").strong(byte[].class);
+                    Ram.INSTANCE.write(rho.attr("ρ").get(), pos, bytes);
+                    return new Data.ToPhi(true);
+                }
+            )
+        );
     }
 }

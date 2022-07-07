@@ -45,10 +45,16 @@ public class EObytes$EOsize extends PhDefault {
      */
     public EObytes$EOsize(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            return new Data.ToPhi((long) array.length);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final byte[] array = new Param(rho).strong(byte[].class);
+                    return new Data.ToPhi((long) array.length);
+                }
+            )
+        );
     }
 
 }

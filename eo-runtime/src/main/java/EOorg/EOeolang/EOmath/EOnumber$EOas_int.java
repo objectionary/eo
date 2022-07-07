@@ -47,24 +47,30 @@ public class EOnumber$EOas_int extends PhDefault {
      */
     public EOnumber$EOas_int(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi number = rho.attr("ρ").get();
-            final Object obj = new Param(number, "n").weak();
-            Phi phi;
-            if (obj instanceof Double) {
-                phi = new Data.ToPhi(((Double)obj).longValue());
-            } else if (obj instanceof Long) {
-                phi = new Data.ToPhi(obj);
-            } else {
-                phi = new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format("Wrong number's %s argument in number.as-int operation", obj)
-                    )
-                );
-            }
-            return phi;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi number = rho.attr("ρ").get();
+                    final Object obj = new Param(number, "n").weak();
+                    Phi phi;
+                    if (obj instanceof Double) {
+                        phi = new Data.ToPhi(((Double)obj).longValue());
+                    } else if (obj instanceof Long) {
+                        phi = new Data.ToPhi(obj);
+                    } else {
+                        phi = new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(
+                                String.format("Wrong number's %s argument in number.as-int operation", obj)
+                            )
+                        );
+                    }
+                    return phi;
+                }
+            )
+        );
     }
 
 }

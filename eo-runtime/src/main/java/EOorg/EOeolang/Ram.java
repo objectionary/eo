@@ -53,8 +53,9 @@ public enum Ram {
      */
     private RandomAccessFile init(final Phi phi) {
         final long size = new Dataized(phi.attr("size").get()).take(Long.class);
-        return this.addresses
-            .computeIfAbsent(phi, o -> {
+        return this.addresses.computeIfAbsent(
+            phi,
+            o -> {
                 try {
                     final RandomAccessFile file = new RandomAccessFile(
                         Files.createTempFile(
@@ -70,7 +71,8 @@ public enum Ram {
                 } catch (final IOException e) {
                     throw new UncheckedIOException(e);
                 }
-            });
+            }
+        );
     }
 
 

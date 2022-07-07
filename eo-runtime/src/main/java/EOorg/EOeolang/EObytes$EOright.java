@@ -48,15 +48,19 @@ public class EObytes$EOright extends PhDefault {
     public EObytes$EOright(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho ->
-            new Data.ToPhi(
-                new Param(rho)
-                    .fromBytes(BigInteger.class)
-                    .shiftRight(
-                       new Param(rho, "x").strong(Long.class).intValue()
-                    ).toByteArray()
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    new Param(rho)
+                        .fromBytes(BigInteger.class)
+                        .shiftRight(
+                           new Param(rho, "x").strong(Long.class).intValue()
+                        ).toByteArray()
+                )
             )
-        ));
+        );
     }
 
 }

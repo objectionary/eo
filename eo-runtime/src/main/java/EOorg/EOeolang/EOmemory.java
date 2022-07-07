@@ -64,16 +64,22 @@ public class EOmemory extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                rho.attr("σ").get().attr("enclosure").put(
-                    new Data.ToPhi(
-                        new Dataized(
-                            rho.attr("x").get()
-                        ).take()
-                    )
-                );
-                return new Data.ToPhi(true);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        rho.attr("σ").get().attr("enclosure").put(
+                            new Data.ToPhi(
+                                new Dataized(
+                                    rho.attr("x").get()
+                                ).take()
+                            )
+                        );
+                        return new Data.ToPhi(true);
+                    }
+                )
+            );
         }
     }
 

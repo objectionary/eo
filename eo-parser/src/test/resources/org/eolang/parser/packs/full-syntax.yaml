@@ -23,10 +23,10 @@ eo: |
   # sure all possible syntax scenarios can
   # be parsed by the ANTLR
 
-  +alias Test Test
   +alias org.example.foo
-  +foo
+  +alias Test Test
   +bar Some text
+  +foo
 
   500.43.@ > one
 

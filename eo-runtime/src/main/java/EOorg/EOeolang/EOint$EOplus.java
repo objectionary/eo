@@ -50,14 +50,17 @@ public class EOint$EOplus extends PhDefault {
     public EOint$EOplus(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(
-            this,
-            new ExprReduce<>(
-                "int.plus",
-                "x",
-                Long.class,
-                Long::sum
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                new ExprReduce<>(
+                    "int.plus",
+                    "x",
+                    Long.class,
+                    Long::sum
+                )
             )
-        ));
+        );
     }
 }

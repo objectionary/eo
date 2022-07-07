@@ -46,15 +46,18 @@ public class EOfloat$EOtimes extends PhDefault {
     public EOfloat$EOtimes(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(
-            this,
-            new ExprReduce<>(
-                "float.times",
-                "x",
-                Double.class,
-                (acc, x) -> acc * x
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                new ExprReduce<>(
+                    "float.times",
+                    "x",
+                    Double.class,
+                    (acc, x) -> acc * x
+                )
             )
-        ));
+        );
     }
 
 }

@@ -49,42 +49,48 @@ public class EOnumber$EOpow extends PhDefault {
     public EOnumber$EOpow(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi number = rho.attr("ρ").get();
-            final Object base = new Param(number, "n").weak();
-            Phi phi;
-            if (base instanceof Double) {
-                final double self = (Double) base;
-                final double pow = new Param(rho, "x").strong(Double.class);
-                if (self == 0.0d && pow < 0.0d) {
-                    phi = new PhWith(
-                        new EOerror(Phi.Φ), "msg",
-                        new Data.ToPhi("0.0 cannot be raised to a negative power")
-                    );
-                } else {
-                    phi = new Data.ToPhi(Math.pow(self, pow));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi number = rho.attr("ρ").get();
+                    final Object base = new Param(number, "n").weak();
+                    Phi phi;
+                    if (base instanceof Double) {
+                        final double self = (Double) base;
+                        final double pow = new Param(rho, "x").strong(Double.class);
+                        if (self == 0.0d && pow < 0.0d) {
+                            phi = new PhWith(
+                                new EOerror(Phi.Φ), "msg",
+                                new Data.ToPhi("0.0 cannot be raised to a negative power")
+                            );
+                        } else {
+                            phi = new Data.ToPhi(Math.pow(self, pow));
+                        }
+                    } else if (base instanceof Long) {
+                        final long self = (Long) base;
+                        final long pow = new Param(rho, "x").strong(Long.class);
+                        if (self == 0L && pow < 0L) {
+                            phi = new PhWith(
+                                new EOerror(Phi.Φ), "msg",
+                                new Data.ToPhi("0 cannot be raised to a negative power")
+                            );
+                        } else {
+                            phi = new Data.ToPhi(((Double) Math.pow(self, pow)).longValue());
+                        }
+                    } else {
+                        phi = new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(
+                                String.format("Wrong number's %s argument in number.div operation", base)
+                            )
+                        );
+                    }
+                    return phi;
                 }
-            } else if (base instanceof Long) {
-                final long self = (Long) base;
-                final long pow = new Param(rho, "x").strong(Long.class);
-                if (self == 0L && pow < 0L) {
-                    phi = new PhWith(
-                        new EOerror(Phi.Φ), "msg",
-                        new Data.ToPhi("0 cannot be raised to a negative power")
-                    );
-                } else {
-                    phi = new Data.ToPhi(((Double) Math.pow(self, pow)).longValue());
-                }
-            } else {
-                phi = new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format("Wrong number's %s argument in number.div operation", base)
-                    )
-                );
-            }
-            return phi;
-        }));
+            )
+        );
     }
 
 }

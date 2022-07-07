@@ -46,16 +46,19 @@ public class EOfloat$EOdiv extends PhDefault {
     public EOfloat$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(
-            this,
-            new ExprReduce<>(
-                "float.div",
-                "x",
-                Double.class,
-                (acc, x) -> acc / x,
-                x -> x.equals(0.0) ? "division by zero is infinity" : ""
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                new ExprReduce<>(
+                    "float.div",
+                    "x",
+                    Double.class,
+                    (acc, x) -> acc / x,
+                    x -> x.equals(0.0) ? "division by zero is infinity" : ""
+                )
             )
-        ));
+        );
     }
 
 }

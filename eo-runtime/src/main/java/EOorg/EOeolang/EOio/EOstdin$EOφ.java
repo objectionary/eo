@@ -47,28 +47,34 @@ public class EOstdin$EOφ extends PhDefault {
      */
     public EOstdin$EOφ(final Phi parent) {
         super(parent);
-        this.add("φ", new AtComposite(this, rho -> {
-            try (BufferedInputStream bis = new BufferedInputStream(System.in);
-                 ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
-                while (true) {
-                    int b = bis.read();
-                    if (b == -1) {
-                        break;
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    try (BufferedInputStream bis = new BufferedInputStream(System.in);
+                         ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
+                        while (true) {
+                            int b = bis.read();
+                            if (b == -1) {
+                                break;
+                            }
+                            buf.write((byte) b);
+                        }
+                        return new Data.ToPhi(buf.toString());
+                    } catch (IOException e) {
+                        return new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(
+                                String.format(
+                                    "Cannot read from the standard input stream: %s",
+                                    e.getMessage()
+                                )
+                            )
+                        );
                     }
-                    buf.write((byte) b);
                 }
-                return new Data.ToPhi(buf.toString());
-            } catch (IOException e) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Cannot read from the standard input stream: %s",
-                            e.getMessage()
-                        )
-                    )
-                );
-            }
-        }));
+            )
+        );
     }
 }
