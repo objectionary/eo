@@ -22,6 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++alias org.eolang.collections.list
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
@@ -65,11 +66,13 @@
 
   # Difference between $ and x
   [x...] > minus
-    map. > x-neg
-      x
-      [element]
-        neg. > @
-          element
+    as-array. > x-neg
+      map.
+        list
+          x
+        [element]
+          neg. > @
+            element
     ^.plus > @
       ...x-neg
 
