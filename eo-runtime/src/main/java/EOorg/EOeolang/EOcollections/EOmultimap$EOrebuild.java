@@ -64,7 +64,7 @@ public class EOmultimap$EOrebuild extends PhDefault {
             final Phi[] result = new Phi[tableSize];
 
             for (int i = 0; i < tableSize; ++i) {
-                Phi[] array = new Phi[table.get(i).size()];
+                final Phi[] array = new Phi[table.get(i).size()];
                 for (int j = 0; j < table.get(i).size(); ++j) {
                     array[j] = table.get(i).get(j);
                 }
