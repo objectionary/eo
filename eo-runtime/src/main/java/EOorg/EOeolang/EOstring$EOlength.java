@@ -45,9 +45,15 @@ public class EOstring$EOlength extends PhDefault {
      */
     public EOstring$EOlength(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            (long) new Param(rho).strong(String.class).length()
-        )));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    (long) new Param(rho).strong(String.class).length()
+                )
+            )
+        );
     }
 
 }

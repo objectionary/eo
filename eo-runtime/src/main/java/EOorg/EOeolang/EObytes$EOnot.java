@@ -46,14 +46,18 @@ public class EObytes$EOnot extends PhDefault {
      */
     public EObytes$EOnot(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho ->
-            new Data.ToPhi(
-                new Param(rho)
-                  .fromBytes(BigInteger.class)
-                  .not()
-                  .toByteArray()
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    new Param(rho)
+                      .fromBytes(BigInteger.class)
+                      .not()
+                      .toByteArray()
+                )
             )
-        ));
+        );
     }
 
 }

@@ -47,21 +47,27 @@ public class EOseq extends PhDefault {
     public EOseq(final Phi sigma) {
         super(sigma);
         this.add("steps", new AtVararg());
-        this.add("φ", new AtComposite(this, self -> {
-            final Phi[] args = new Dataized(
-                self.attr("steps").get()
-            ).take(Phi[].class);
-            for (int idx = 0; idx < args.length - 1; ++idx) {
-                new Dataized(args[idx]).take();
-            }
-            final Phi ret;
-            if (args.length > 0) {
-                ret = args[args.length - 1];
-            } else {
-                ret = new Data.ToPhi(false);
-            }
-            return ret;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                self -> {
+                    final Phi[] args = new Dataized(
+                        self.attr("steps").get()
+                    ).take(Phi[].class);
+                    for (int idx = 0; idx < args.length - 1; ++idx) {
+                        new Dataized(args[idx]).take();
+                    }
+                    final Phi ret;
+                    if (args.length > 0) {
+                        ret = args[args.length - 1];
+                    } else {
+                        ret = new Data.ToPhi(false);
+                    }
+                    return ret;
+                }
+            )
+        );
     }
 
 }

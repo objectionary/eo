@@ -47,16 +47,22 @@ public class EObool$EOif extends PhDefault {
         super(sigma);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final boolean term = new Param(rho).strong(Boolean.class);
-            final Phi out;
-            if (term) {
-                out = rho.attr("t").get();
-            } else {
-                out = rho.attr("f").get();
-            }
-            return out;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final boolean term = new Param(rho).strong(Boolean.class);
+                    final Phi out;
+                    if (term) {
+                        out = rho.attr("t").get();
+                    } else {
+                        out = rho.attr("f").get();
+                    }
+                    return out;
+                }
+            )
+        );
     }
 
 }

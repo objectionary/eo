@@ -47,14 +47,20 @@ public class EObytes$EOconcat extends PhDefault {
     public EObytes$EOconcat(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] current = new Param(rho).strong(byte[].class);
-            final byte[] provided = new Param(rho, "b").strong(byte[].class);
-            final byte[] dest = new byte[current.length + provided.length];
-            System.arraycopy(current, 0, dest, 0, current.length);
-            System.arraycopy(provided, 0, dest, current.length, provided.length);
-            return new Data.ToPhi(dest);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final byte[] current = new Param(rho).strong(byte[].class);
+                    final byte[] provided = new Param(rho, "b").strong(byte[].class);
+                    final byte[] dest = new byte[current.length + provided.length];
+                    System.arraycopy(current, 0, dest, 0, current.length);
+                    System.arraycopy(provided, 0, dest, current.length, provided.length);
+                    return new Data.ToPhi(dest);
+                }
+            )
+        );
     }
 
 }

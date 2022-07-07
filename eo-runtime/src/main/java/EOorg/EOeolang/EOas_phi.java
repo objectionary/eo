@@ -46,11 +46,17 @@ public class EOas_phi extends PhDefault {
     public EOas_phi(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi obj = rho.attr("x").get();
-            obj.attr("ν").get();
-            return new Data.ToPhi(obj.φTerm());
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi obj = rho.attr("x").get();
+                    obj.attr("ν").get();
+                    return new Data.ToPhi(obj.φTerm());
+                }
+            )
+        );
     }
 
 }

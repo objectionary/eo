@@ -48,18 +48,24 @@ public class EOint$EOdiv extends PhDefault {
     public EOint$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final long div = new Param(rho, "x").strong(Long.class);
-            if (div == 0L) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("Division by zero is undefined")
-                );
-            }
-            return new Data.ToPhi(
-                new Param(rho).strong(Long.class) / div
-            );
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final long div = new Param(rho, "x").strong(Long.class);
+                    if (div == 0L) {
+                        return new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi("Division by zero is undefined")
+                        );
+                    }
+                    return new Data.ToPhi(
+                        new Param(rho).strong(Long.class) / div
+                    );
+                }
+            )
+        );
     }
 
 }

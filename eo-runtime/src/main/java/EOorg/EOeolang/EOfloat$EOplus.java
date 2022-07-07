@@ -47,12 +47,18 @@ public class EOfloat$EOplus extends PhDefault {
     public EOfloat$EOplus(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Double.sum(
-                new Param(rho).strong(Double.class),
-                new Param(rho, "x").strong(Double.class)
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    Double.sum(
+                        new Param(rho).strong(Double.class),
+                        new Param(rho, "x").strong(Double.class)
+                    )
+                )
             )
-        )));
+        );
     }
 
 }

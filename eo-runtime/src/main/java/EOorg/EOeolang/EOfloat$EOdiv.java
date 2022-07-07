@@ -48,18 +48,24 @@ public class EOfloat$EOdiv extends PhDefault {
     public EOfloat$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final double div = new Param(rho, "x").strong(Double.class);
-            if (div == 0.0) {
-                return new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi("Division by zero is infinity")
-                );
-            }
-            return new Data.ToPhi(
-                new Param(rho).strong(Double.class) / div
-            );
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final double div = new Param(rho, "x").strong(Double.class);
+                    if (div == 0.0) {
+                        return new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi("Division by zero is infinity")
+                        );
+                    }
+                    return new Data.ToPhi(
+                        new Param(rho).strong(Double.class) / div
+                    );
+                }
+            )
+        );
     }
 
 }

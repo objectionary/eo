@@ -45,16 +45,22 @@ public class EOstdin$EOnext_line extends PhDefault {
      */
     public EOstdin$EOnext_line(final Phi parent) {
         super(parent);
-        this.add("φ", new AtComposite(this, rho -> {
-            try (Scanner sc = new Scanner(System.in)) {
-                if (!sc.hasNextLine()) {
-                    return new PhWith(
-                        new EOerror(Phi.Φ), "msg",
-                        new Data.ToPhi("There is no line in the standard input stream to consume")
-                    );
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    try (Scanner sc = new Scanner(System.in)) {
+                        if (!sc.hasNextLine()) {
+                            return new PhWith(
+                                new EOerror(Phi.Φ), "msg",
+                                new Data.ToPhi("There is no line in the standard input stream to consume")
+                            );
+                        }
+                        return new Data.ToPhi(sc.nextLine());
+                    }
                 }
-                return new Data.ToPhi(sc.nextLine());
-            }
-        }));
+            )
+        );
     }
 }

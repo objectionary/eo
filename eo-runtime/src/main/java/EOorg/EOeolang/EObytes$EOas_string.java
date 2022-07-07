@@ -46,10 +46,16 @@ public class EObytes$EOas_string extends PhDefault {
      */
     public EObytes$EOas_string(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final byte[] array = new Param(rho).strong(byte[].class);
-            return new Data.ToPhi(new String(array, StandardCharsets.UTF_8));
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final byte[] array = new Param(rho).strong(byte[].class);
+                    return new Data.ToPhi(new String(array, StandardCharsets.UTF_8));
+                }
+            )
+        );
     }
 
 }

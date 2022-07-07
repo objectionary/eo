@@ -50,15 +50,22 @@ public class EOheap$EOmalloc extends PhDefault {
     public EOheap$EOmalloc(final Phi sigma) {
         super(sigma);
         this.add("s", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi heap = rho.attr("ρ").get();
-            final int size = new Param(rho, "s").strong(Long.class).intValue();
-            final int ptr = Heaps.INSTANCE.malloc(heap, size);
-            return new PhWith(
-                new PhCopy(new PhMethod(heap, "pointer")),
-                0, new Data.ToPhi((long) ptr)
-            );
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi heap = rho.attr("ρ").get();
+                    final int size = new Param(rho, "s").strong(Long.class).intValue();
+                    final int ptr = Heaps.INSTANCE.malloc(heap, size);
+                    return new PhWith(
+                        new PhCopy(new PhMethod(heap, "pointer")),
+                        0,
+                        new Data.ToPhi((long) ptr)
+                    );
+                }
+            )
+        );
     }
 
 }

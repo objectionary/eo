@@ -156,24 +156,24 @@ public final class Param {
      * @return The bytes.
      */
     public byte[] asBytes() {
-	    final Object ret = this.weak();
-	    final byte[] res;
-	    if (Long.class.isInstance(ret)) {
-	        res = ByteBuffer.allocate(Long.BYTES).putLong((long) ret).array();
-	    }
-	    else if (Character.class.isInstance(ret)) {
-	        res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
-	    }
-	    else if (Double.class.isInstance(ret)) {
-	        res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
-	    } else {
-	        throw new ExFailure(
-	            String.format(
-	                "Unsupported type: %s", ret.getClass()
-	            )
+        final Object ret = this.weak();
+        final byte[] res;
+        if (Long.class.isInstance(ret)) {
+            res = ByteBuffer.allocate(Long.BYTES).putLong((long) ret).array();
+        }
+        else if (Character.class.isInstance(ret)) {
+            res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
+        }
+        else if (Double.class.isInstance(ret)) {
+            res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
+        } else {
+            throw new ExFailure(
+                String.format(
+                    "Unsupported type: %s", ret.getClass()
+                )
             );
-	    }
-	    return res;
+        }
+        return res;
     }
 
 }

@@ -46,11 +46,15 @@ public class EObytes$EOas_hash extends PhDefault {
      */
     public EObytes$EOas_hash(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho ->
-            new Data.ToPhi(
-                (long) Arrays.hashCode(new Param(rho).strong(byte[].class))
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    (long) Arrays.hashCode(new Param(rho).strong(byte[].class))
+                )
             )
-        ));
+        );
     }
 
 }

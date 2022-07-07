@@ -53,12 +53,18 @@ public class EOstdout extends PhDefault {
     public EOstdout(final Phi sigma) {
         super(sigma);
         this.add("text", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            EOstdout.OUT.print(
-                new Param(rho, "text").strong(String.class)
-            );
-            return new Data.ToPhi(true);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    EOstdout.OUT.print(
+                        new Param(rho, "text").strong(String.class)
+                    );
+                    return new Data.ToPhi(true);
+                }
+            )
+        );
     }
 
 }

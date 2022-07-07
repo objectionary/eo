@@ -47,12 +47,18 @@ public class EOheap$EOfree extends PhDefault {
     public EOheap$EOfree(final Phi sigma) {
         super(sigma);
         this.add("p", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi heap = rho.attr("ρ").get();
-            final int ptr = new Param(rho, "p").strong(Long.class).intValue();
-            Heaps.INSTANCE.free(heap, ptr);
-            return new Data.ToPhi(true);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi heap = rho.attr("ρ").get();
+                    final int ptr = new Param(rho, "p").strong(Long.class).intValue();
+                    Heaps.INSTANCE.free(heap, ptr);
+                    return new Data.ToPhi(true);
+                }
+            )
+        );
     }
 
 }
