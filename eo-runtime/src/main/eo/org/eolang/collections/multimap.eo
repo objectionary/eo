@@ -28,10 +28,11 @@
 
 [m] > multimap
 
+  memory 0 > elements-amount
+
   # Returns amount of elements in multimap
-  [] > length
-    ^.concat-all-arrays m > arr!
-    arr.length > @
+  [] > size
+    elements-amount > @
 
   [arr] > concat-all-arrays
     reduce. > @
@@ -58,7 +59,10 @@
     caa.with new-pair > arr!
     ^.pairs-to-hash arr > harr!
     ^.rebuild harr arr > table!
-    multimap table > @
+    multimap table > mmp
+    seq > @
+      (mmp.elements-amount).write (arr.length)
+      mmp
 
   [key arr] > find-in-list
     reduce. > @
@@ -106,4 +110,7 @@
     ^.without-in-list key caa > arr!
     ^.pairs-to-hash arr > harr!
     ^.rebuild harr arr > table!
-    multimap table > @
+    multimap table > mmp
+    seq > @
+      (mmp.elements-amount).write (arr.length)
+      mmp

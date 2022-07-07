@@ -68,7 +68,7 @@
   multimap * > mp!
   (mp.with 1 2).with 3 4 > mp2!
   assert-that > @
-    mp2.length
+    mp2.size
     $.equal-to 2
 
 # Speed test
@@ -106,7 +106,7 @@
     10
     "j"
   assert-that > @
-    mp2.length
+    mp2.size
     $.equal-to 10
 
 [] > multimap-find-in-list-works
@@ -175,6 +175,6 @@
   ((init-mp.with 1 "a").with 2 "b").with 1 "c" > mp!
   mp.without 1 > mp2!
   assert-that > @
-    * (mp.length) (mp2.length)
+    * (mp.size) (mp2.size)
     $.equal-to
       * 3 1

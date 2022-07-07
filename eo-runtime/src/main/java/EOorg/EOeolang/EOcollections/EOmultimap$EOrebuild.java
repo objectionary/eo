@@ -41,7 +41,7 @@ public class EOmultimap$EOrebuild extends PhDefault {
             final Phi[] harr = new Dataized(rho.attr("harr").get()).take(Phi[].class);
             final Phi[] arr = new Dataized(rho.attr("arr").get()).take(Phi[].class);
 
-            final List<Integer> hashes = new ArrayList<>();
+            final List<Integer> hashes = new ArrayList<>(harr.length);
 
             for (final Phi item : harr) {
                 final Long x = new Dataized(item).take(Long.class);

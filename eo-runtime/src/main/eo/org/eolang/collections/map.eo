@@ -28,11 +28,11 @@
 
 [m] > map
 
-  # Returns amount of elements in map
-  [] > length
-    multimap * > mmp!
-    mmp.concat-all-arrays m > arr!
-    arr.length > @
+  memory 0 > elements-amount
+
+  # Returns amount of elements in multimap
+  [] > size
+    elements-amount > @
 
   # Returns the new map with added object
   # Replaces if there was one before
@@ -44,7 +44,10 @@
     wcaa.with new-pair > arr!
     mmp.pairs-to-hash arr > harr!
     mmp.rebuild harr arr > table!
-    map table > @
+    map table > mp
+    seq > @
+      (mp.elements-amount).write (arr.length)
+      mp
 
   # Returns an array with the found value
   # If no element was found, it returns an empty array
@@ -66,4 +69,7 @@
     mmp.without-in-list key caa > arr!
     mmp.pairs-to-hash arr > harr!
     mmp.rebuild harr arr > table!
-    map table > @
+    map table > mp
+    seq > @
+      (mp.elements-amount).write (arr.length)
+      mp

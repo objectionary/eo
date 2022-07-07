@@ -83,6 +83,6 @@
   ((init-mp.with 1 "a").with 2 "b").with 1 "c" > mp!
   mp.without 1 > mp2!
   assert-that > @
-    * (mp.length) (mp2.length) ((mp.found 1).at 0)
+    * (mp.size) (mp2.size) ((mp.found 1).at 0)
     $.equal-to
       * 2 1 "c"
