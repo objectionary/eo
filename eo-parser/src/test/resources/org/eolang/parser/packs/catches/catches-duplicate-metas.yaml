@@ -2,6 +2,7 @@ xsls:
   - /org/eolang/parser/warnings/duplicate-metas.xsl
 tests:
   - /program/errors[count(error[@severity='warning'])=1]
+  - /program/errors[count(error[@severity='error'])=0]
   - /program/errors/error[@line='4']
 eo: |
   +alias stding org.eolang.io.stdin
