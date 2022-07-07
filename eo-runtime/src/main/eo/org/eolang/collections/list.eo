@@ -104,3 +104,19 @@
           idx.eq i
           a
           a.with item
+
+  # Equal to another object?
+  [x] > eq
+    if. > @
+      eq.
+        arr.length
+        x.length
+      ^.reducei
+        TRUE
+        [a idx item]
+          and. > @
+            a
+            eq.
+              item
+              x.at idx
+      FALSE

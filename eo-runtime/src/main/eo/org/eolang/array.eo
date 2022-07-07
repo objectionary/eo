@@ -22,7 +22,6 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+alias org.eolang.collections.list
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
@@ -38,23 +37,6 @@
   # Create a new array with this element added to
   # the end of it.
   [x] > with /array
-
-  # Equal to another object?
-  [x] > eq
-    if. > @
-      eq.
-        ^.length
-        x.length
-      reducei.
-        list ^
-        TRUE
-        [a idx item]
-          and. > @
-            a
-            eq.
-              item
-              x.at idx
-      FALSE
 
   # Returns the combined current and passed arrays
   [arr] > concat /array
