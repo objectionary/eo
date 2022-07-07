@@ -25,11 +25,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.AtVararg;
+import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -47,23 +45,18 @@ public class EOfloat$EOdiv extends PhDefault {
      */
     public EOfloat$EOdiv(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("x", new AtVararg());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                rho -> {
-                    final double div = new Param(rho, "x").strong(Double.class);
-                    if (div == 0.0) {
-                        return new PhWith(
-                            new EOerror(Phi.Φ), "msg",
-                            new Data.ToPhi("Division by zero is infinity")
-                        );
-                    }
-                    return new Data.ToPhi(
-                        new Param(rho).strong(Double.class) / div
-                    );
-                }
+                new ExprReduce<>(
+                    "float.div",
+                    "x",
+                    Double.class,
+                    (acc, x) -> acc / x,
+                    x -> x.equals(0.0) ? "division by zero is infinity" : ""
+                )
             )
         );
     }

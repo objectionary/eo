@@ -25,7 +25,10 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
+import org.eolang.Attr;
+import org.eolang.Data;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -44,6 +47,71 @@ public class EOerror extends PhDefault {
     public EOerror(final Phi sigma) {
         super(sigma);
         this.add("msg", new AtFree());
+    }
+
+    /**
+     * Phi constructed with error.
+     * @since 1.0
+     */
+    public static class PhWithError implements Phi {
+
+        /**
+         * Constructed phi.
+         */
+        private final Phi phi;
+
+        /**
+         * Ctor.
+         * @param msg Error message
+         */
+        public PhWithError(String msg) {
+            this.phi = new PhWith(
+                new EOerror(Phi.Φ),
+                "msg",
+                new Data.ToPhi(
+                    msg
+                )
+            );
+        }
+
+        /**
+         * Ctor.
+         * @param format Message format string
+         * @param params Parameters
+         */
+        public PhWithError(String format, Object... params) {
+            this(
+                String.format(
+                    format,
+                    params
+                )
+            );
+        }
+
+        @Override
+        public Phi copy() {
+            return phi.copy();
+        }
+
+        @Override
+        public void move(Phi rho) {
+            phi.move(rho);
+        }
+
+        @Override
+        public Attr attr(int pos) {
+            return phi.attr(pos);
+        }
+
+        @Override
+        public Attr attr(String name) {
+            return phi.attr(name);
+        }
+
+        @Override
+        public String φTerm() {
+            return phi.φTerm();
+        }
     }
 
 }

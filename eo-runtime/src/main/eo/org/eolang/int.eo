@@ -22,6 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++alias org.eolang.collections.list
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
@@ -59,17 +60,25 @@
     ^.times -1 > @
 
   # Add to the current one
-  [x] > plus /int
+  [x...] > plus /int
 
   # Subtract from the current one
-  [x] > minus
-    ^.plus (x.neg) > @
+  [x...] > minus
+    as-array. > x-neg
+      map.
+        list
+          x
+        [element]
+          neg. > @
+            element
+    ^.plus > @
+      ...x-neg
 
   # Multiplication this one by another int
-  [x] > times /int
+  [x...] > times /int
 
   # Divide this one by another int
-  [x] > div /int
+  [x...] > div /int
 
   # Converts this to bytes
   [] > as-bytes /bytes
