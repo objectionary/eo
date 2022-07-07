@@ -318,7 +318,11 @@
             "\t"
             "bbt"
 
-# nested array equal object should works
+# @todo #841:30m Remove all nop objects from tests.
+#  Including list-tests and array-tests.
+#  We need to fix tests with nop objects and remove
+#  it from them. This can be done only after eo-hamcrest
+#  release with a new fixes of a list.equal object.
 [] > nested-array-eq-should-works
   nop > @
     * 1 "2" 3.0 > a
