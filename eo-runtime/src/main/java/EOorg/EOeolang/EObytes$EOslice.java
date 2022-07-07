@@ -49,15 +49,21 @@ public class EObytes$EOslice extends PhDefault {
         super(sigma);
         this.add("start", new AtFree());
         this.add("len", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final long start = new Param(rho, "start").strong(Long.class);
-            final long length = new Param(rho, "len").strong(Long.class);
-            final byte[] array = new Param(rho).strong(byte[].class);
-            final byte[] target = Arrays.copyOfRange(
-                array, (int) start, (int) (start + length)
-            );
-            return new Data.ToPhi(target);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final long start = new Param(rho, "start").strong(Long.class);
+                    final long length = new Param(rho, "len").strong(Long.class);
+                    final byte[] array = new Param(rho).strong(byte[].class);
+                    final byte[] target = Arrays.copyOfRange(
+                        array, (int) start, (int) (start + length)
+                    );
+                    return new Data.ToPhi(target);
+                }
+            )
+        );
     }
 
 }

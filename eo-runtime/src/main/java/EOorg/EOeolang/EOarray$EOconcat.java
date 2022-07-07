@@ -49,13 +49,19 @@ public class EOarray$EOconcat extends PhDefault {
     public EOarray$EOconcat(final Phi sigma) {
         super(sigma);
         this.add("arr", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] first = new Param(rho).strong(Phi[].class);
-            final Phi[] second = new Dataized(rho.attr("arr").get()).take(Phi[].class);
-            final Phi[] result = Arrays.copyOf(first, first.length + second.length);
-            System.arraycopy(second, 0, result, first.length, second.length);
-            return new Data.ToPhi(result);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] first = new Param(rho).strong(Phi[].class);
+                    final Phi[] second = new Dataized(rho.attr("arr").get()).take(Phi[].class);
+                    final Phi[] result = Arrays.copyOf(first, first.length + second.length);
+                    System.arraycopy(second, 0, result, first.length, second.length);
+                    return new Data.ToPhi(result);
+                }
+            )
+        );
     }
 
 }

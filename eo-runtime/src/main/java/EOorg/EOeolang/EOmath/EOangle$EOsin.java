@@ -20,8 +20,14 @@ public class EOangle$EOsin extends PhDefault {
      */
     public EOangle$EOsin(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Math.sin(new Param(rho.attr("ρ").get(), "f").strong(Double.class))
-        )));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    Math.sin(new Param(rho.attr("ρ").get(), "f").strong(Double.class))
+                )
+            )
+        );
     }
 }

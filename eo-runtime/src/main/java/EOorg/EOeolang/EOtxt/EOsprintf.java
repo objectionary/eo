@@ -53,15 +53,21 @@ public class EOsprintf extends PhDefault {
         super(sigma);
         this.add("format", new AtFree());
         this.add("args", new AtVararg());
-        this.add("φ", new AtComposite(this, rho -> {
-            final String format = new Param(rho, "format").strong(String.class);
-            final Phi[] args = new Param(rho, "args").strong(Phi[].class);
-            final Collection<Object> items = new LinkedList<>();
-            for (final Phi arg : args) {
-                items.add(new Dataized(arg).take());
-            }
-            return new Data.ToPhi(String.format(Locale.US, format, items.toArray()));
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final String format = new Param(rho, "format").strong(String.class);
+                    final Phi[] args = new Param(rho, "args").strong(Phi[].class);
+                    final Collection<Object> items = new LinkedList<>();
+                    for (final Phi arg : args) {
+                        items.add(new Dataized(arg).take());
+                    }
+                    return new Data.ToPhi(String.format(Locale.US, format, items.toArray()));
+                }
+            )
+        );
     }
 
 }

@@ -51,34 +51,40 @@ public class EOtry extends PhDefault {
         this.add("main", new AtFree());
         this.add("catch", new AtFree());
         this.add("finally", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi main = rho.attr("main").get().copy();
-            main.move(rho);
-            main.attr(0).put(new EOtry.Throw(rho));
-            Phi ret;
-            try {
-                ret = new Data.ToPhi(new Dataized(main).take());
-            } catch (final EOtry.ThrowException ex) {
-                if (!ex.sigma.equals(rho)) {
-                    throw ex;
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi main = rho.attr("main").get().copy();
+                    main.move(rho);
+                    main.attr(0).put(new EOtry.Throw(rho));
+                    Phi ret;
+                    try {
+                        ret = new Data.ToPhi(new Dataized(main).take());
+                    } catch (final EOtry.ThrowException ex) {
+                        if (!ex.sigma.equals(rho)) {
+                            throw ex;
+                        }
+                        final Phi ctch = rho.attr("catch").get().copy();
+                        ctch.move(rho);
+                        ret = new Data.ToPhi(
+                            new Dataized(
+                                new PhWith(
+                                    ctch,
+                                    0, ex.exception
+                                )
+                            ).take()
+                        );
+                    } finally {
+                        final Phi fin = rho.attr("finally").get().copy();
+                        fin.move(rho);
+                        new Dataized(fin).take();
+                    }
+                    return ret;
                 }
-                final Phi ctch = rho.attr("catch").get().copy();
-                ctch.move(rho);
-                ret = new Data.ToPhi(
-                    new Dataized(
-                        new PhWith(
-                            ctch,
-                            0, ex.exception
-                        )
-                    ).take()
-                );
-            } finally {
-                final Phi fin = rho.attr("finally").get().copy();
-                fin.move(rho);
-                new Dataized(fin).take();
-            }
-            return ret;
-        }));
+            )
+        );
     }
 
     /**
@@ -95,12 +101,18 @@ public class EOtry extends PhDefault {
         Throw(final Phi sigma) {
             super(sigma);
             this.add("ex", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                throw new EOtry.ThrowException(
-                    rho.attr("σ").get(),
-                    rho.attr("ex").get()
-                );
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        throw new EOtry.ThrowException(
+                            rho.attr("σ").get(),
+                            rho.attr("ex").get()
+                        );
+                    }
+                )
+            );
         }
     }
 

@@ -22,14 +22,20 @@ public class EOram$EOread extends PhDefault {
         super(sigma);
         this.add("p", new AtFree());
         this.add("l", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final int pos = new Param(rho, "p").strong(Long.class).intValue();
-            final int len = new Param(rho, "l").strong(Long.class).intValue();
-            return new Data.ToPhi(
-                Ram.INSTANCE.read(
-                    rho.attr("ρ").get(), pos, len)
-            );
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final int pos = new Param(rho, "p").strong(Long.class).intValue();
+                    final int len = new Param(rho, "l").strong(Long.class).intValue();
+                    return new Data.ToPhi(
+                        Ram.INSTANCE.read(
+                            rho.attr("ρ").get(), pos, len)
+                    );
+                }
+            )
+        );
     }
 
 

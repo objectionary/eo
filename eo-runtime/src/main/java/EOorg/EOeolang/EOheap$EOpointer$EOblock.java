@@ -51,18 +51,24 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         this.add("len", new AtFree());
         this.add("inverse", new AtFree());
         this.add("write", new AtComposite(this, EOheap$EOpointer$EOblock.Write::new));
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi pointer = rho.attr("σ").get();
-            final int address = new Param(pointer, "address").strong(Long.class).intValue();
-            final int len = new Param(rho, "len").strong(Long.class).intValue();
-            final byte[] chunk = Arrays.copyOfRange(
-                Heaps.INSTANCE.data(pointer),
-                address, address + len
-            );
-            final Phi inverse = rho.attr("inverse").get().copy();
-            inverse.move(rho);
-            return new PhWith(inverse, 0, new Data.ToPhi(chunk));
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi pointer = rho.attr("σ").get();
+                    final int address = new Param(pointer, "address").strong(Long.class).intValue();
+                    final int len = new Param(rho, "len").strong(Long.class).intValue();
+                    final byte[] chunk = Arrays.copyOfRange(
+                        Heaps.INSTANCE.data(pointer),
+                        address, address + len
+                    );
+                    final Phi inverse = rho.attr("inverse").get().copy();
+                    inverse.move(rho);
+                    return new PhWith(inverse, 0, new Data.ToPhi(chunk));
+                }
+            )
+        );
     }
 
     /**
@@ -78,15 +84,21 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                final Phi block = rho.attr("σ").get();
-                final Phi pointer = block.attr("σ").get();
-                final int address = new Param(pointer, "address").strong(Long.class).intValue();
-                final byte[] source = new Param(rho, "x").strong(byte[].class);
-                final byte[] data = Heaps.INSTANCE.data(pointer);
-                System.arraycopy(source, 0, data, address, source.length);
-                return new Data.ToPhi(true);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        final Phi block = rho.attr("σ").get();
+                        final Phi pointer = block.attr("σ").get();
+                        final int address = new Param(pointer, "address").strong(Long.class).intValue();
+                        final byte[] source = new Param(rho, "x").strong(byte[].class);
+                        final byte[] data = Heaps.INSTANCE.data(pointer);
+                        System.arraycopy(source, 0, data, address, source.length);
+                        return new Data.ToPhi(true);
+                    }
+                )
+            );
         }
     }
 

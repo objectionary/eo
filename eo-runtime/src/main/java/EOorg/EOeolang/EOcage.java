@@ -65,12 +65,18 @@ public class EOcage extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                rho.attr("σ").get().attr("enclosure").put(
-                    rho.attr("x").get()
-                );
-                return new Data.ToPhi(true);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        rho.attr("σ").get().attr("enclosure").put(
+                            rho.attr("x").get()
+                        );
+                        return new Data.ToPhi(true);
+                    }
+                )
+            );
         }
     }
 
