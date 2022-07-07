@@ -55,8 +55,8 @@ final class AtNamed implements Attr {
      * Ctor.
      * @param nme Name
      * @param onme Oname
-     * @param src source φ
-     * @param attr attribute
+     * @param src Source φ
+     * @param attr Attribute
      */
     AtNamed(final String nme, final String onme,
         final Phi src, final Attr attr) {

@@ -33,7 +33,7 @@ package org.eolang;
 public final class ExUnset extends ExAbstract {
 
     /**
-     * Serialization identifier
+     * Serialization identifier.
      */
     private static final long serialVersionUID = 597748420437017615L;
 

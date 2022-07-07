@@ -34,7 +34,7 @@ package org.eolang;
 public final class AtSimple implements Attr {
 
     /**
-     * Parent φ
+     * Parent φ.
      */
     private Phi phi;
 
@@ -47,7 +47,7 @@ public final class AtSimple implements Attr {
 
     /**
      * Ctor.
-     * @param src source φ
+     * @param src Source φ
      */
     public AtSimple(final Phi src) {
         this.phi = src;

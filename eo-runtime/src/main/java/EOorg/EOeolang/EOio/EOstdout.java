@@ -46,6 +46,10 @@ public class EOstdout extends PhDefault {
      */
     private static final PrintStream OUT = System.out;
 
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
     public EOstdout(final Phi sigma) {
         super(sigma);
         this.add("text", new AtFree());

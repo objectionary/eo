@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2022 Eugene Darashkevich
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package EOorg.EOeolang.EOtxt;
+package EOorg.EOeolang;
 
+import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -34,30 +35,28 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * JOINED.
+ * CONCAT.
  *
- * @since 0.23
+ * @since 1.0
  */
-@XmirObject(oname = "text.joined")
-public class EOtext$EOjoined extends PhDefault {
+@XmirObject(oname = "array.concat")
+public class EOarray$EOconcat extends PhDefault {
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOtext$EOjoined(final Phi sigma) {
+    public EOarray$EOconcat(final Phi sigma) {
         super(sigma);
-        this.add("items", new AtFree());
+        this.add("arr", new AtFree());
         this.add("φ", new AtComposite(this, rho -> {
-            final Phi text = rho.attr("ρ").get();
-            final String delim = new Param(text, "s").strong(String.class);
-            final Phi[] items = new Param(rho, "items").strong(Phi[].class);
-            final String[] texts = new String[items.length];
-            for (int idx = 0; idx < texts.length; ++idx) {
-                texts[idx] = new Dataized(items[idx]).take(String.class);
-            }
-            return new Data.ToPhi(String.join(delim, texts));
+            final Phi[] first = new Param(rho).strong(Phi[].class);
+            final Phi[] second = new Dataized(rho.attr("arr").get()).take(Phi[].class);
+            final Phi[] result = Arrays.copyOf(first, first.length + second.length);
+            System.arraycopy(second, 0, result, first.length, second.length);
+            return new Data.ToPhi(result);
         }));
     }
 
 }
+

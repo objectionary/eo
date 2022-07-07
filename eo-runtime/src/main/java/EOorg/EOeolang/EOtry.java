@@ -87,6 +87,11 @@ public class EOtry extends PhDefault {
      */
     @XmirObject(oname = "goto.throw")
     private final class Throw extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Throw(final Phi sigma) {
             super(sigma);
             this.add("ex", new AtFree());
@@ -104,9 +109,24 @@ public class EOtry extends PhDefault {
      * @since 0.19
      */
     private static class ThrowException extends ExAbstract {
+        /**
+         * Serialization identifier.
+         */
         private static final long serialVersionUID = 1735493012609760997L;
+        /**
+         * Sigma.
+         */
         public final Phi sigma;
+        /**
+         * Exception.
+         */
         public final Phi exception;
+
+        /**
+         * Ctor.
+         * @param sgm Sigma
+         * @param exp Exception
+         */
         ThrowException(final Phi sgm, final Phi exp) {
             super();
             this.sigma = sgm;

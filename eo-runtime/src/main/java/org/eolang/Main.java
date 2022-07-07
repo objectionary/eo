@@ -131,6 +131,7 @@ public final class Main {
      * @param opt The option
      * @return TRUE if it's time to exit
      * @throws IOException If fails
+     * @checkstyle LineLengthCheck 30
      */
     private static boolean parse(final String opt) throws IOException {
         if ("--verbose".equals(opt)) {
@@ -190,6 +191,7 @@ public final class Main {
 
     /**
      * Read the version from resources and prints it.
+     * @return Version string
      * @throws IOException If fails
      */
     private static String version() throws IOException {

@@ -80,6 +80,10 @@ public class EOgoto extends PhDefault {
      */
     @XmirObject(oname = "goto.token")
     private final class Token extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Token(final Phi sigma) {
             super(sigma);
             this.add("backward", new AtComposite(this, EOgoto.Backward::new));
@@ -93,6 +97,10 @@ public class EOgoto extends PhDefault {
      */
     @XmirObject(oname = "goto.token.backward")
     private final class Backward extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Backward(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(this, rho -> {
@@ -109,6 +117,10 @@ public class EOgoto extends PhDefault {
      */
     @XmirObject(oname = "goto.token.forward")
     private final class Forward extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Forward(final Phi sigma) {
             super(sigma);
             this.add("ret", new AtFree());
@@ -126,8 +138,19 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     private static class BackwardException extends ExAbstract {
+        /**
+         * Serialization identifier.
+         */
         private static final long serialVersionUID = 1735493012609760997L;
+        /**
+         * Sigma.
+         */
         public final Phi sigma;
+
+        /**
+         * Ctor.
+         * @param sgm Sigma
+         */
         BackwardException(final Phi sgm) {
             super();
             this.sigma = sgm;
@@ -139,9 +162,24 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     private static class ForwardException extends ExAbstract {
+        /**
+         * Serialization identifier.
+         */
         private static final long serialVersionUID = 1501718836588849754L;
+        /**
+         * Sigma.
+         */
         public final Phi sigma;
+        /**
+         * Return.
+         */
         public final Phi ret;
+
+        /**
+         * Ctor.
+         * @param sgm Sigma
+         * @param phi Return
+         */
         ForwardException(final Phi sgm, final Phi phi) {
             super();
             this.sigma = sgm;

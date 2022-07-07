@@ -651,16 +651,16 @@ object where the abstract was defined, for example this is
 how object \ff{array.map} is implemented in Objectionary:
 
 \begin{ffcode}
-[] > array |$\label{ln:array-parent}$|
-  [f] > mapi /array |$\label{ln:array-map}$|
+[] > list |$\label{ln:list-parent}$|
+  [f] > mapi /list |$\label{ln:list-map}$|
   [f] > map
     ^.mapi > @
       [x i] |$\label{ln:map-inner}$|
         &.f x > @
 \end{ffcode}
 
-The object \ff{mapi} at \lref{array-map} is an atom:
-it iterates through array items and makes
+The object \ff{mapi} at \lref{list-map} is an atom:
+it iterates through list of items and makes
 a copy of the provided two-arguments abstract object \ff{f} applying the next
 item to it and the index in the array (that's why the name with the ``i'' suffix).
 
@@ -669,13 +669,13 @@ index of each element to the inner abstract object.
 The anonymous inner abstract object at \lref{map-inner}
 has to get access to the attribute \ff{f} of \ff{map}.
 However, \ff{\^{}.f} won't work, because the parent of it is a copy of \ff{mapi}, and the
-parent of \ff{mapi} is the object \ff{array}.
+parent of \ff{mapi} is the object \ff{list}.
 Thus, there is no way to get access
 to \ff{map.f} using parent attributes.
 
 The \emph{home} attribute \ff{\&} helps here.
 Once an abstract object at \lref{map-inner} is created, its
-home attribute is set to the abstract object \ff{array} at \lref{array-parent}.
-Its parent attribute \ff{\^{}} is also set to the object \ff{array},
+home attribute is set to the abstract object \ff{list} at \lref{list-parent}.
+Its parent attribute \ff{\^{}} is also set to the object \ff{list},
 but is later changed by the atom \ff{mapi} when a copy of it is being made.
 However, the home attribute remains the same.
