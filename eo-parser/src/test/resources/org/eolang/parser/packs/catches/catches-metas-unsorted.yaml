@@ -1,5 +1,5 @@
 xsls:
-  - /org/eolang/parser/warnings/metas-unsorted.xsl
+  - /org/eolang/parser/warnings/unsorted-metas.xsl
 tests:
   - /program/errors[count(error[@severity='warning'])=1]
   - /program/errors/error[@line='2']

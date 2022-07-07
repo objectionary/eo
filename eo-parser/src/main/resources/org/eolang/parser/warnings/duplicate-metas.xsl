@@ -22,19 +22,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="metas-sorted" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="duplicate-metas" version="2.0">
   <xsl:output encoding="UTF-8"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select="/program/metas/meta">
-        <xsl:variable name="meta-text" select="concat(head, ' ', tail)"/>
-        <xsl:variable name="previous" select="(preceding-sibling::meta)[1]"/>
-        <xsl:variable name="sibling-text" select="concat($previous/head/text(), ' ', $previous/tail/text())"/>
-        <xsl:if test="$meta-text &lt; $sibling-text">
+        <xsl:variable name="head" select="head"/>
+        <xsl:variable name="tail" select="tail"/>
+        <xsl:if test="preceding-sibling::meta[head=$head and tail=$tail]">
           <xsl:element name="error">
             <xsl:attribute name="check">
-              <xsl:text>metas-sorted</xsl:text>
+              <xsl:text>duplicate-metas</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
@@ -42,8 +41,8 @@ SOFTWARE.
             <xsl:attribute name="severity">
               <xsl:text>warning</xsl:text>
             </xsl:attribute>
-            <xsl:text>Meta is out of order: "</xsl:text>
-            <xsl:value-of select="$meta-text"/>
+            <xsl:text>Duplicate meta: "</xsl:text>
+            <xsl:value-of select="concat(head, ' ', tail)"/>
             <xsl:text>"</xsl:text>
           </xsl:element>
         </xsl:if>
