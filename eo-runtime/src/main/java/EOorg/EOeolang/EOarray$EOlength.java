@@ -45,10 +45,16 @@ public class EOarray$EOlength extends PhDefault {
      */
     public EOarray$EOlength(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            return new Data.ToPhi((long) array.length);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] array = new Param(rho).strong(Phi[].class);
+                    return new Data.ToPhi((long) array.length);
+                }
+            )
+        );
     }
 
 }

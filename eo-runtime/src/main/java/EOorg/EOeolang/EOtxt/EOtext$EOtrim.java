@@ -45,11 +45,17 @@ public class EOtext$EOtrim extends PhDefault {
      */
     public EOtext$EOtrim(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi text = rho.attr("ρ").get();
-            final String s = new Param(text, "s").strong(String.class);
-            return new Data.ToPhi(s.trim());
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi text = rho.attr("ρ").get();
+                    final String s = new Param(text, "s").strong(String.class);
+                    return new Data.ToPhi(s.trim());
+                }
+            )
+        );
     }
 
 }

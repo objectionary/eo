@@ -1,0 +1,11 @@
+xsls:
+  - /org/eolang/parser/warnings/metas-unsorted.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=1]
+  - /program/errors/error[@line='2']
+eo: |
+  +alias stdout org.eolang.io.stdout
+  +alias stding org.eolang.io.stdin
+
+  [] > main
+    (stdout "Hello, world!").print

@@ -48,30 +48,36 @@ public class EOgoto extends PhDefault {
     public EOgoto(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi body = rho.attr("f").get().copy();
-            body.move(rho);
-            body.attr(0).put(new EOgoto.Token(rho));
-            Phi ret;
-            while (true) {
-                try {
-                    ret = new Data.ToPhi(new Dataized(body).take());
-                    break;
-                } catch (final EOgoto.BackwardException ex) {
-                    if (!ex.sigma.attr("σ").get().equals(rho)) {
-                        throw ex;
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi body = rho.attr("f").get().copy();
+                    body.move(rho);
+                    body.attr(0).put(new EOgoto.Token(rho));
+                    Phi ret;
+                    while (true) {
+                        try {
+                            ret = new Data.ToPhi(new Dataized(body).take());
+                            break;
+                        } catch (final EOgoto.BackwardException ex) {
+                            if (!ex.sigma.attr("σ").get().equals(rho)) {
+                                throw ex;
+                            }
+                            ret = new Data.ToPhi(true);
+                        } catch (final EOgoto.ForwardException ex) {
+                            if (!ex.sigma.attr("σ").get().equals(rho)) {
+                                throw ex;
+                            }
+                            ret = ex.ret;
+                            break;
+                        }
                     }
-                    ret = new Data.ToPhi(true);
-                } catch (final EOgoto.ForwardException ex) {
-                    if (!ex.sigma.attr("σ").get().equals(rho)) {
-                        throw ex;
-                    }
-                    ret = ex.ret;
-                    break;
+                    return ret;
                 }
-            }
-            return ret;
-        }));
+            )
+        );
     }
 
     /**
@@ -103,11 +109,17 @@ public class EOgoto extends PhDefault {
          */
         Backward(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, rho -> {
-                throw new EOgoto.BackwardException(
-                    rho.attr("σ").get()
-                );
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        throw new EOgoto.BackwardException(
+                            rho.attr("σ").get()
+                        );
+                    }
+                )
+            );
         }
     }
 
@@ -124,12 +136,18 @@ public class EOgoto extends PhDefault {
         Forward(final Phi sigma) {
             super(sigma);
             this.add("ret", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> {
-                throw new EOgoto.ForwardException(
-                    rho.attr("σ").get(),
-                    rho.attr("ret").get()
-                );
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        throw new EOgoto.ForwardException(
+                            rho.attr("σ").get(),
+                            rho.attr("ret").get()
+                        );
+                    }
+                )
+            );
         }
     }
 

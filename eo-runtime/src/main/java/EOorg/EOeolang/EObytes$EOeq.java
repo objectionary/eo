@@ -50,17 +50,23 @@ public class EObytes$EOeq extends PhDefault {
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Arrays.equals(
-                new Dataized(
-                    new PhMethod(
-                        rho.attr("b").get(),
-                        "as-bytes"
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    Arrays.equals(
+                        new Dataized(
+                            new PhMethod(
+                                rho.attr("b").get(),
+                                "as-bytes"
+                            )
+                        ).take(byte[].class),
+                        new Param(rho).strong(byte[].class)
                     )
-                ).take(byte[].class),
-                new Param(rho).strong(byte[].class)
+                )
             )
-        )));
+        );
     }
 
 }

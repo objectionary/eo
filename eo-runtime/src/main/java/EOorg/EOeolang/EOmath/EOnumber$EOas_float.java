@@ -47,27 +47,33 @@ public class EOnumber$EOas_float extends PhDefault {
      */
     public EOnumber$EOas_float(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi number = rho.attr("ρ").get();
-            final Object obj = new Param(number, "n").weak();
-            Phi phi;
-            if (obj instanceof Double) {
-                phi = new Data.ToPhi(obj);
-            } else if (obj instanceof Long) {
-                phi = new Data.ToPhi(((Long) obj).doubleValue());
-            } else {
-                phi = new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Wrong number's %s argument in number.as-float operation",
-                            obj
-                        )
-                    )
-                );
-            }
-            return phi;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi number = rho.attr("ρ").get();
+                    final Object obj = new Param(number, "n").weak();
+                    Phi phi;
+                    if (obj instanceof Double) {
+                        phi = new Data.ToPhi(obj);
+                    } else if (obj instanceof Long) {
+                        phi = new Data.ToPhi(((Long) obj).doubleValue());
+                    } else {
+                        phi = new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(
+                                String.format(
+                                    "Wrong number's %s argument in number.as-float operation",
+                                    obj
+                                )
+                            )
+                        );
+                    }
+                    return phi;
+                }
+            )
+        );
     }
 
 }

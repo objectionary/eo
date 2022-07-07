@@ -49,17 +49,23 @@ public class EOlist$EOeach extends PhDefault {
     public EOlist$EOeach(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho.attr("ρ").get(), "arr").strong(Phi[].class);
-            for (final Phi item : array) {
-                final Phi body = rho.attr("f").get().copy();
-                body.move(rho);
-                new Dataized(
-                    new PhWith(body, 0, item)
-                ).take();
-            }
-            return new Data.ToPhi(true);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] array = new Param(rho.attr("ρ").get(), "arr").strong(Phi[].class);
+                    for (final Phi item : array) {
+                        final Phi body = rho.attr("f").get().copy();
+                        body.move(rho);
+                        new Dataized(
+                            new PhWith(body, 0, item)
+                        ).take();
+                    }
+                    return new Data.ToPhi(true);
+                }
+            )
+        );
     }
 
 }

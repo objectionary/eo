@@ -8,9 +8,9 @@ tests:
   - /program/errors/error[@line='3']
   - //o[@name='foo']
 eo: |
-  +alias org.eolang.io.stdout
-  +alias in org.eolang.io.stdin
   +alias err org.eolang.io.stderr
+  +alias in org.eolang.io.stdin
+  +alias org.eolang.io.stdout
 
   [x] > foo
     x.div in.nextInt > @

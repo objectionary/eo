@@ -47,27 +47,33 @@ public class EOnumber$EOas_string extends PhDefault {
      */
     public EOnumber$EOas_string(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi number = rho.attr("ρ").get();
-            final Object obj = new Param(number, "n").weak();
-            Phi phi;
-            if (obj instanceof Double) {
-                phi = new Data.ToPhi(Double.toString((Double) obj));
-            } else if (obj instanceof Long) {
-                phi = new Data.ToPhi(Long.toString((Long) obj));
-            } else {
-                phi = new PhWith(
-                    new EOerror(Phi.Φ), "msg",
-                    new Data.ToPhi(
-                        String.format(
-                            "Wrong number's %s argument in number.as-string operation"
-                            , obj
-                        )
-                    )
-                );
-            }
-            return phi;
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi number = rho.attr("ρ").get();
+                    final Object obj = new Param(number, "n").weak();
+                    Phi phi;
+                    if (obj instanceof Double) {
+                        phi = new Data.ToPhi(Double.toString((Double) obj));
+                    } else if (obj instanceof Long) {
+                        phi = new Data.ToPhi(Long.toString((Long) obj));
+                    } else {
+                        phi = new PhWith(
+                            new EOerror(Phi.Φ), "msg",
+                            new Data.ToPhi(
+                                String.format(
+                                    "Wrong number's %s argument in number.as-string operation"
+                                    , obj
+                                )
+                            )
+                        );
+                    }
+                    return phi;
+                }
+            )
+        );
     }
 
 }

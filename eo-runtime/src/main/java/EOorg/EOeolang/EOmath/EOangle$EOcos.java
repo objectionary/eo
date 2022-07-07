@@ -20,8 +20,14 @@ public class EOangle$EOcos extends PhDefault {
      */
     public EOangle$EOcos(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(
-            Math.cos(new Param(rho.attr("ρ").get(), "f").strong(Double.class))
-        )));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    Math.cos(new Param(rho.attr("ρ").get(), "f").strong(Double.class))
+                )
+            )
+        );
     }
 }

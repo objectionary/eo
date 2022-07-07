@@ -48,26 +48,32 @@ public class EObool$EOand extends PhDefault {
     public EObool$EOand(final Phi sigma) {
         super(sigma);
         this.add("x", new AtVararg());
-        this.add("φ", new AtComposite(this, rho -> {
-            Boolean term = new Param(rho).strong(Boolean.class);
-            final Phi[] args = new Param(rho, "x").strong(Phi[].class);
-            for (int idx = 0; idx < args.length; ++idx) {
-                if (!term) {
-                    break;
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    Boolean term = new Param(rho).strong(Boolean.class);
+                    final Phi[] args = new Param(rho, "x").strong(Phi[].class);
+                    for (int idx = 0; idx < args.length; ++idx) {
+                        if (!term) {
+                            break;
+                        }
+                        final Object val = new Dataized(args[idx]).take();
+                        if (!(val instanceof Boolean)) {
+                            throw new IllegalArgumentException(
+                                String.format(
+                                    "The %dth argument of 'and' is of type %s, not Boolean",
+                                    idx, val.getClass().getCanonicalName()
+                                )
+                            );
+                        }
+                        term &= Boolean.class.cast(val);
+                    }
+                    return new Data.ToPhi(term);
                 }
-                final Object val = new Dataized(args[idx]).take();
-                if (!(val instanceof Boolean)) {
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "The %dth argument of 'and' is of type %s, not Boolean",
-                            idx, val.getClass().getCanonicalName()
-                        )
-                    );
-                }
-                term &= Boolean.class.cast(val);
-            }
-            return new Data.ToPhi(term);
-        }));
+            )
+        );
     }
 
 }

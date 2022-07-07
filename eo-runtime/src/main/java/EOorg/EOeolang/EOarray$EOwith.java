@@ -47,13 +47,19 @@ public class EOarray$EOwith extends PhDefault {
     public EOarray$EOwith(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] array = new Param(rho).strong(Phi[].class);
-            final Phi[] dest = new Phi[array.length + 1];
-            System.arraycopy(array, 0, dest, 0, array.length);
-            dest[array.length] = rho.attr("x").get();
-            return new Data.ToPhi(dest);
-        }));
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] array = new Param(rho).strong(Phi[].class);
+                    final Phi[] dest = new Phi[array.length + 1];
+                    System.arraycopy(array, 0, dest, 0, array.length);
+                    dest[array.length] = rho.attr("x").get();
+                    return new Data.ToPhi(dest);
+                }
+            )
+        );
     }
 
 }
