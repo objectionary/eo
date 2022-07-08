@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.16
++version 0.23.17
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -194,7 +194,7 @@
   assert-that > @
     (2.div 0).msg
     $.equal-to
-      "Division by zero is undefined"
+      "The 1th argument of 'int.div' is invalid: division by zero is infinity"
 
 # Checks that division by one returns the dividend
 [] > division-by-one
@@ -215,6 +215,21 @@
   assert-that > @
     13.div -5
     $.equal-to -2
+
+[] > div-less-than-one
+  assert-that > @
+    1.div 5
+    $.equal-to 0
+
+[] > div-with-multiple
+  assert-that > @
+    100.div 5 2 -5
+    $.equal-to -2
+
+[] > div-wrong-args
+  assert-that > @
+    (100.div 1 2 3.0).msg
+    $.equal-to "The 3th argument of 'int.div' is not a(n) Long: 3.0"
 
 [] > to-bytes-and-backwards
   assert-that > @
@@ -257,3 +272,34 @@
     $.not
       $.equal-to
         42.as-hash
+
+[] > sum-up-several-arguments
+  assert-that > @
+    1982
+    $.equal-to
+      1000.plus 900 80 2
+
+[] > sum-up-wrong-args
+  assert-that > @
+    (100.plus 1 2 3.0).msg
+    $.equal-to "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
+
+[] > multiply-several-arguments
+  assert-that > @
+    1000.times 2 5
+    $.equal-to 10000
+
+[] > multiply-wrong-args
+  assert-that > @
+    (100.times 1 2 3.0).msg
+    $.equal-to "The 3th argument of 'int.times' is not a(n) Long: 3.0"
+
+[] > multiply-by-zero
+  assert-that > @
+    1000.times 0
+    $.equal-to 0
+
+[] > minus-multiple-args
+  assert-that > @
+    123.minus -12 135 235 0
+    $.equal-to -235

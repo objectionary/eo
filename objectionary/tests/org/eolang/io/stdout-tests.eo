@@ -22,7 +22,7 @@
 
 +package org.eolang.io
 +home https://github.com/objectionary/eo
-+version 0.23.16
++version 0.23.17
 +alias sprintf org.eolang.txt.sprintf
 +alias stdout org.eolang.io.stdout
 +alias org.eolang.math.random
@@ -32,5 +32,5 @@
   stdout > @
     sprintf
       "This is the random number %f, %s!\n"
-      random
+      random.pseudo
       "Jeff"

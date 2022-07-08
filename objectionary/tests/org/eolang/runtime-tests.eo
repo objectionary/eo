@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.16
++version 0.23.17
 +alias org.eolang.txt.sprintf
 +alias org.eolang.math.number
 +alias org.eolang.math.random
@@ -50,7 +50,7 @@
     as-int. > @
       number
         times.
-          random
+          random.pseudo
           100.0
   foo.@ > f!
   assert-that > @

@@ -22,40 +22,61 @@
 
 +package org.eolang.math
 +home https://github.com/objectionary/eo
-+version 0.23.16
++version 0.23.17
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.math.random
 +junit
 
-[] > two-random-numbers-without-const
-  random > r
+[] > random-with-seed
+  random 51 > r
   assert-that > @
-    r
+    r.next
     $.not
-      $.equal-to r
+      $.equal-to (r.next.next)
+
+[] > seeded-randoms-are-equal
+  assert-that > @
+    (random 1654).next.next.next
+    $.equal-to
+      (random 1654).next.next.next
+
+[] > random-is-in-range
+  random 123 > r
+  assert-that > @
+    and.
+      r.lt 1.0
+      not.
+        r.lt 0.0
+      r.next.lt 1.0
+      not.
+        r.next.lt 0.0
+      r.next.next.lt 1.0
+      not.
+        r.next.next.lt 0.0
+    $.is
+      $.equal-to TRUE
 
 [] > two-random-numbers-with-const
-  random > r!
+  random.pseudo > r!
   assert-that > @
     r
     $.equal-to r
 
 [] > two-random-numbers-with-phi
-  random.@ > r
+  (random 123).@ > r
   assert-that > @
     r
     $.equal-to r
 
 [] > two-random-numbers-with-increment-with-const
-  random.plus 3.1416 > r!
+  random.pseudo.plus 3.1416 > r!
   assert-that > @
     r
     $.equal-to r
 
 [] > two-random-numbers-with-increment
-  random.plus 3.1416 > r
+  random.pseudo.plus 3.1416 > r
   assert-that > @
     r
     $.not
       $.equal-to r
-

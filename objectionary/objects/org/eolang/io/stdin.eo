@@ -20,14 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
++package org.eolang.io
 +home https://github.com/objectionary/eo
 +version 0.23.17
 +rt jvm org.eolang:eo-runtime:0.23.17
 
-# Reads formatted input from a string.
-# This object with two free attributes:
-# 1. format - is a formatter string (e.g. "Hello, %s!")
-# 2. read - is a string where data exists (e.g. "Hello, John!")
-# returns an array of formatted values (e.g. * "John").
-[format read] > sscanf /array
+[] > stdin
+  # Consumes only one line from the standard input stream
+  # Datarizes to an error object if there is no line to consume
+  [] > next-line /string
+
+  # Consumes all data from the standard input stream
+  [] > @ /string

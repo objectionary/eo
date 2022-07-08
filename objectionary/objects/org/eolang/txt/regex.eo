@@ -22,8 +22,9 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.23.16
-+rt jvm org.eolang:eo-runtime:0.23.16
++version 0.23.17
++alias org.eolang.collections.list
++rt jvm org.eolang:eo-runtime:0.23.17
 
 # Regular expression in Perl format.
 # Free attribute "r" is a string represenation of regex object.
@@ -47,5 +48,7 @@
 
   # Matches
   [txt] > matches
-    (^.match txt).is-empty.not > @
+    not. > @
+      is-empty.
+        list (^.match txt)
 

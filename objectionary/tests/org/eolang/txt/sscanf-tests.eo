@@ -22,7 +22,8 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.23.16
++version 0.23.17
++alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.sscanf
 +alias org.eolang.txt.sprintf
@@ -78,7 +79,8 @@
       "%s %d %f"
       "hello 33 0.24"
     $.equal-to
-      * "hello" 33 0.24
+      list
+        * "hello" 33 0.24
 
 [] > sscanf-with-string-with-ending
   assert-that > @
@@ -122,9 +124,10 @@
       "%b or maybe %b!"
       "true or maybe false!"
     $.equal-to
-      *
-        TRUE
-        FALSE
+      list
+        *
+          TRUE
+          FALSE
 
 [] > sscanf-with-sprintf
   assert-that > @
@@ -135,9 +138,10 @@
         "This"
         8
     $.equal-to
-      *
-        "This"
-        8
+      list
+        *
+          "This"
+          8
 
 [] > sscanf-complex-case
   assert-that > @
@@ -145,10 +149,11 @@
       "Im%d %s old and this is%b! Let's calculate %f + %f= %f"
       "Im18 years old and this istrue! Let's calculate 99999999.99 + 0.01= 100000000.0"
     $.equal-to
-      *
-        18
-        "years"
-        TRUE
-        99999999.99
-        0.01
-        100000000.0
+      list
+        *
+          18
+          "years"
+          TRUE
+          99999999.99
+          0.01
+          100000000.0

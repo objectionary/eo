@@ -22,16 +22,10 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.16
-+rt jvm org.eolang:eo-runtime:0.23.16
++version 0.23.17
++rt jvm org.eolang:eo-runtime:0.23.17
 
 [] > array
-
-  # Is it empty?
-  [] > is-empty
-    eq. > @
-      ^.length
-      0
 
   # Obtain the length of the array.
   [] > length /int
@@ -44,89 +38,5 @@
   # the end of it.
   [x] > with /array
 
-  # Create a new array without the i-th element
-  [i] > without
-    ^.reducei > @
-      *
-      [a idx item]
-        if. > @
-          idx.eq i
-          a
-          a.with item
-
-  # Reduce with index from start "a" using the function "f".
-  # Here "f" must be an abstract
-  # object with three free attributes. The first
-  # one for the accumulator, the second one
-  # for the index and the third one for the element
-  # of the array.
-  [a f] > reducei
-    func a f ^ > @
-
-    [ac fn arr] > func
-      memory 0 > idx
-      memory 0 > acc
-      seq > @
-        idx.write 0
-        acc.write ac
-        while.
-          lt.
-            idx
-            arr.length
-          [i]
-            seq > @
-              idx.write (i.plus 1)
-              acc.write
-                fn
-                  acc
-                  i
-                  arr.at i
-        acc
-
-  # Reduce from start "a" using the function "f"
-  [a f] > reduce
-    ^.reducei > @
-      a
-      [a idx item]
-        &.f > @
-          a
-          item
-
-  # For each array element dataize the object
-  [f] > each /bool
-
-  # Map with index. Here "f" must be an abstract
-  # object with two free attributes. The first
-  # one for the element of the array, the second one
-  # for the index.
-  [f] > mapi
-    ^.reducei > @
-      *
-      [a idx item]
-        with. > @
-          a
-          &.f item idx
-
-  # Map without index. Here "f" must be an abstract
-  # object with one free attribute, for the element
-  # of the array.
-  [f] > map
-    ^.mapi > @
-      [x idx]
-        &.f x > @
-
-  # Equal to another object?
-  [x] > eq
-    if. > @
-      eq.
-        ^.length
-        x.length
-      ^.reducei
-        TRUE
-        [a idx item]
-          and. > @
-            a
-            eq.
-              item
-              x.at idx
-      FALSE
+  # Returns the combined current and passed arrays
+  [arr] > concat /array

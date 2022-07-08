@@ -20,14 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
++package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.23.17
-+rt jvm org.eolang:eo-runtime:0.23.17
++alias org.eolang.nop
++alias org.eolang.hamcrest.assert-that
++junit
 
-# Reads formatted input from a string.
-# This object with two free attributes:
-# 1. format - is a formatter string (e.g. "Hello, %s!")
-# 2. read - is a string where data exists (e.g. "Hello, John!")
-# returns an array of formatted values (e.g. * "John").
-[format read] > sscanf /array
+[] > nop-is-true
+  assert-that > @
+    nop
+    $.equal-to TRUE
+
+[] > nop-is-true-despite-arguments
+  assert-that > @
+    nop
+      "abc"
+      1
+      1.0
+    $.equal-to TRUE

@@ -22,8 +22,9 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.16
-+rt jvm org.eolang:eo-runtime:0.23.16
++alias org.eolang.collections.list
++version 0.23.17
++rt jvm org.eolang:eo-runtime:0.23.17
 
 [] > float
   # Tests that $ = x
@@ -54,24 +55,37 @@
       ^.gt x
 
   # Multiplication of $ and x
-  [x] > times /float
+  [x...] > times /float
 
   # Sum of $ and x
-  [x] > plus /float
+  [x...] > plus /float
 
   # Negation of $
   [] > neg
     ^.times -1.0 > @
 
   # Difference between $ and x
-  [x] > minus
-    ^.plus (x.neg) > @
+  [x...] > minus
+    as-array. > x-neg
+      map.
+        list
+          x
+        [element]
+          neg. > @
+            element
+    ^.plus > @
+      ...x-neg
 
   # Quotient of the division of $ by x
-  [x] > div /float
+  [x...] > div /float
 
   # Converts this to bytes
   [] > as-bytes /bytes
 
   # Converts this to hash
-  [] > as-hash /int
+  as-int. > as-hash
+    xor.
+      as-bytes
+      right.
+        as-bytes
+        32

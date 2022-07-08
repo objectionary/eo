@@ -22,18 +22,20 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.23.16
++version 0.23.17
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.regex
++alias org.eolang.collections.list
 +junit
 
 [] > matches-string-against-pattern
   assert-that > @
     is-empty.
-      match.
-        compile.
-          regex "/([a-z]+)/i"
-        "hello"
+      list
+        match.
+          compile.
+            regex "/([a-z]+)/i"
+          "hello"
     $.is
       $.not
         $.equal-to TRUE
