@@ -72,9 +72,13 @@
 
 [] > xor-float-3-6
   assert-that > @
-    number 3.0
-    .xor 6.0
-    .msg
+    try
+      []
+        (number 3.0).xor 6.0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to
       "xor cannot be applied to float"
 
@@ -86,9 +90,13 @@
 
 [] > or-float-1-2
   assert-that > @
-    number 1.0
-    .or 2.0
-    .msg
+    try
+      []
+        (number 1.0).or 2.0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to
       "or cannot be applied to float"
 
@@ -100,9 +108,13 @@
 
 [] > and-float-3-6
   assert-that > @
-    number 3.0
-    .and 6.0
-    .msg
+    try
+      []
+        (number 3.0).and 6.0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to
       "and cannot be applied to float"
 
@@ -114,9 +126,13 @@
 
 [] > left-float-1-2
   assert-that > @
-    number 1.0
-    .left 2
-    .msg
+    try
+      []
+        (number 1.0).left 2 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to
       "left cannot be applied to float"
 
@@ -128,9 +144,13 @@
 
 [] > right-float-8-2
   assert-that > @
-    number 8.0
-    .right 2
-    .msg
+    try
+      []
+        (number 8.0).right 2 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to
       "right cannot be applied to float"
 
@@ -346,7 +366,13 @@
 
 [] > negative-power-of-zero
   assert-that > @
-    ((number 0).pow -567).msg
+    try
+      []
+        (number 0).pow -567 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "0 cannot be raised to a negative power"
 
 # Checks that number.as-float works properly

@@ -129,8 +129,12 @@
 
 [] > check-regex-compile-error-msg-missing-slash
   assert-that > @
-    regex "(.)+"
-    .compile
-    .msg
+    try
+      []
+        (regex "(.)+").compile > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.is
       $.equal-to "Wrong regex syntax: \"/\" is missing"

@@ -58,23 +58,15 @@ public class EOtry extends PhDefault {
                 rho -> {
                     final Phi main = rho.attr("main").get().copy();
                     main.move(rho);
-                    main.attr(0).put(new EOtry.Throw(rho));
                     Phi ret;
                     try {
                         ret = new Data.ToPhi(new Dataized(main).take());
-                    } catch (final EOtry.ThrowException ex) {
-                        if (!ex.sigma.equals(rho)) {
-                            throw ex;
-                        }
+                    } catch (final EOerror.ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
+                        ctch.attr(0).put(ex.exception.copy().attr("msg").get());
                         ctch.move(rho);
                         ret = new Data.ToPhi(
-                            new Dataized(
-                                new PhWith(
-                                    ctch,
-                                    0, ex.exception
-                                )
-                            ).take()
+                            new Dataized(ctch).take()
                         );
                     } finally {
                         final Phi fin = rho.attr("finally").get().copy();
@@ -85,65 +77,6 @@ public class EOtry extends PhDefault {
                 }
             )
         );
-    }
-
-    /**
-     * The token.
-     * @since 0.19
-     */
-    @XmirObject(oname = "goto.throw")
-    private final class Throw extends PhDefault {
-
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Throw(final Phi sigma) {
-            super(sigma);
-            this.add("ex", new AtFree());
-            this.add(
-                "φ",
-                new AtComposite(
-                    this,
-                    rho -> {
-                        throw new EOtry.ThrowException(
-                            rho.attr("σ").get(),
-                            rho.attr("ex").get()
-                        );
-                    }
-                )
-            );
-        }
-    }
-
-    /**
-     * When exception happens.
-     * @since 0.19
-     */
-    private static class ThrowException extends ExAbstract {
-        /**
-         * Serialization identifier.
-         */
-        private static final long serialVersionUID = 1735493012609760997L;
-        /**
-         * Sigma.
-         */
-        public final Phi sigma;
-        /**
-         * Exception.
-         */
-        public final Phi exception;
-
-        /**
-         * Ctor.
-         * @param sgm Sigma
-         * @param exp Exception
-         */
-        ThrowException(final Phi sgm, final Phi exp) {
-            super();
-            this.sigma = sgm;
-            this.exception = exp;
-        }
     }
 
 }

@@ -23,17 +23,6 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.try
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > graur
-  try > @
-    []
-      42.div 0 > @
-    [e]
-      QQ.io.stdout > @
-        e
-    []
-      QQ.io.stdout > @
-        "\nfinally"
-
+[msg] > error /?
