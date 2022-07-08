@@ -1,0 +1,47 @@
++package org.eolang.collections
++alias org.eolang.collections.list
++rt jvm org.eolang:eo-runtime:0.0.0
+
+[] > array-list
+
+  memory 0 > size
+  cage * > arr
+
+  [] > get-size
+    size > @
+
+  [i] > get
+    (arr.at i) > @
+
+  [v i] > set
+    seq > @
+      (arr.at i).write v
+      TRUE
+
+  [v] > add
+    if. > @
+      size.lt (arr.length)
+      seq
+        (arr.at size).write v
+        size.write (size.plus 1)
+        TRUE
+      seq
+        arr.write (^.double-capacity arr)
+        (arr.at size).write v
+        size.write (size.plus 1)
+        TRUE
+
+  [sz v] > create-array
+
+  [curr-arr] > double-capacity
+    if. > @
+      eq.
+        (curr-arr.length)
+        0
+      (cage (* (cage 0)))
+      reduce.
+        list
+          curr-arr
+        curr-arr
+        [a x]
+          a.with (cage 0) > @
