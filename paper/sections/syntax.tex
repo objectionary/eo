@@ -53,7 +53,7 @@ Java-notation is used for numbers and strings.
 \T{meta} \df \V{+} \T{name} \opt{\V{␣} \lex{any} \few{\lex{any}}} \lex{eol} \\
 \T{name} \df \RE{[a-z]} \few{\lex{any}} \\
 \T{object} \df \grp{ \T{foreign} \alt \T{local} } \\
-\T{foreign} \df \T{abstraction} \V{␣ /} \T{name} \\
+\T{foreign} \df \T{abstraction} \V{␣/} \T{name} \alt \V{?} \\
 \T{local} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
 \T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
 \T{tail} \df \lex{eol} \lex{tab} \few{\T{object} \lex{eol}} \lex{untab} \\
@@ -619,7 +619,7 @@ to the file:
 Some objects in \eo{} programs may need to be platform specific
 and can't be composed from other existing objects---they are called
 \emph{atoms}.
-The object \ff{app} uses the object \ff{stdout},
+For example, the object \ff{app} uses the object \ff{stdout},
 which is an atom. Its implementation would be provided by the
 runtime. This is how the object may be defined:
 
@@ -639,10 +639,10 @@ In the example above, there are two libraries specified: for JVM and
 for Ruby.
 
 The \ff{bool} part after the \ff{/} is the name of
-object, which \ff{stdout} decorates.
+object, which \ff{stdout} decorates. The name may be replaced by
+a question mark, if uncertain about the object being decorated.
 
-Atoms in \eo{} are similar to ``native'' methods in Java and ``\nospell{extern}'' methods
-in C\#.
+Atoms in \eo{} are similar to ``native'' methods in Java and ``\nospell{extern}'' methods in C\#: this mechanism is also known as foreign function interface (FFI).
 
 \subsection{Home Object}
 
