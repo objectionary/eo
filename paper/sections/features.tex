@@ -129,10 +129,10 @@ Java, C\#, and C++, have modifiers like
 don't mean constants though. While the latter will
 always expose the same functionality, the former may represent mutable
 entities, being known as read-only references~\citep{birka2004practical}.
-E.g., an attribute \ff{r} may have an object \ff{random.pseudo}
+For example, an attribute \ff{r} may have an object \ff{random.pseudo}
 assigned to it, which is a random number generator. \eo{} won't allow
-assigning another object to the attribute \ff{r}, but every time
-the attribute is read its value will be different.
+assigning another object to the attribute \ff{r}. However, every time
+the attribute is dataized, its value will be different.
 %
 There are number of OOP languages that also prioritize immutability of objects.
 In Rust~\citep{matsakis2014rust}, for example, all variables are immutable by
