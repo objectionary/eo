@@ -312,16 +312,14 @@ Data & Example & Size \\
 \ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
 \ff{string} & \ff{"Hello, \foreignlanguage{russian}{друг}!"} & 16 \\
   & \ff{"\textbackslash{}u5BB6"} or \begin{CJK}{UTF8}{gbsn}\ff{"家"}\end{CJK} & 2 \\
-\ff{int} & \ff{-42} & 8 \\
+\ff{int} & \ff{1024}, \ff{0x1A7E}, or \ff{-42} & 8 \\
 \ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 8 \\
 \ff{bool} & \ff{TRUE} or \ff{FALSE} & 1 \\
-\ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
 \bottomrule
 \end{tabularx}
 \figcap{The syntax of all data with examples. The ``Size'' column
-denotes the number of bytes to be used by the value in the column
-``Example''. UTF-8 is the encoding used in \ff{string}
-and \ff{regex} objects.}
+denotes the number of bytes in the \ff{as-bytes} attribute.
+UTF-8 is the encoding used in \ff{string} object.}
 \label{tab:types}
 \end{table}
 
