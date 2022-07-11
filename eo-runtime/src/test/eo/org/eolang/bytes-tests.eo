@@ -177,6 +177,15 @@
       $.equal-to
         -2.as-bytes
 
+[] > and-with-vararg
+  assert-that > @
+    as-int.
+      and.
+        0.as-bytes
+        5.as-bytes
+        10.as-bytes
+    $.equal-to 0
+
 [] > or-with-zero
   assert-that > @
     -11.as-bytes.or (0.as-bytes)
