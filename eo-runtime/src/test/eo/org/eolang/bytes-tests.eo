@@ -214,6 +214,17 @@
       $.equal-to
         0.as-bytes
 
+[] > or-with-vararg
+  assert-that > @
+    as-int.
+      or.
+        256.as-bytes
+        5.as-bytes
+        10.as-bytes
+    $.not
+      $.equal-to
+        -1
+
 [] > xor-with-zero
   assert-that > @
     0.as-bytes.xor (29.as-bytes)
