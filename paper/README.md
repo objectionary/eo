@@ -11,8 +11,9 @@ $ make
 ```
 
 You need to have
+[LaTeX](https://www.latex-project.org/get/),
 [`aspell`](http://aspell.net/),
-LaTeX,
+[`jq`](https://stedolan.github.io/jq/),
 [`biblint`](https://github.com/Kingsford-Group/biblint),
 [`texsc`](https://rubygems.org/gems/texsc),
 and
