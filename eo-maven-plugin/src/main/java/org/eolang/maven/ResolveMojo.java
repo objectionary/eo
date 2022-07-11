@@ -33,7 +33,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
@@ -79,6 +81,14 @@ public final class ResolveMojo extends SafeMojo {
      */
     @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
+
+    /**
+     * Fail resolution process on conflicting dependencies.
+     * @since 1.0
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignVerConflicts", required = true, defaultValue = "false")
+    private boolean ignVerConflicts;
 
     /**
      * The central.
@@ -179,6 +189,7 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
+        new Conflicted(deps).check(!this.ignVerConflicts);
         return deps.stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
@@ -291,6 +302,56 @@ public final class ResolveMojo extends SafeMojo {
                 "%s:%s",
                 dep.getGroupId(), dep.getArtifactId()
             );
+        }
+    }
+
+    /**
+     * Check dependencies for conflicts.
+     * @since 1.0
+     */
+    private static final class Conflicted {
+
+        /**
+         * Dependencies to check.
+         */
+        private final Collection<Dependency> deps;
+
+        /**
+         * Ctor.
+         * @param deps Dependencies to check
+         */
+        private Conflicted(final Collection<Dependency> deps) {
+            this.deps = deps;
+        }
+
+        /**
+         * Validate dependencies for conflicts.
+         * @param fail Should it fail on conflicts?
+         * @throws IllegalStateException in case of conflicts when fail is set to true
+         */
+        public void check(final boolean fail) {
+            final Map<String, Set<String>> grouped = this.deps.stream()
+                .collect(
+                    Collectors.groupingBy(
+                        Dependency::getManagementKey,
+                        Collectors.mapping(
+                            Dependency::getVersion,
+                            Collectors.toSet()
+                        )
+                    )
+                );
+            for (final Map.Entry<String, Set<String>> vers : grouped.entrySet()) {
+                if (vers.getValue().size() > 1) {
+                    final String msg = String.format(
+                        "Conflicting dependencies are found for %s: %s",
+                        vers.getKey(), vers.getValue()
+                    );
+                    if (fail) {
+                        throw new IllegalStateException(msg);
+                    }
+                    Logger.warn(this, msg);
+                }
+            }
         }
     }
 }
