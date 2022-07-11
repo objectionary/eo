@@ -61,4 +61,7 @@
       00-
 
   # Converts this to hash
-  [] > as-hash /int
+  if. > as-hash
+    $
+    1231
+    1237
