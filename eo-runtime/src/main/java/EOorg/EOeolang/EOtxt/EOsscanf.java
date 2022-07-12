@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import EOorg.EOeolang.EOerror;
@@ -42,6 +45,7 @@ import org.eolang.XmirObject;
  * Sscanf.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sscanf")
 public class EOsscanf extends PhDefault {

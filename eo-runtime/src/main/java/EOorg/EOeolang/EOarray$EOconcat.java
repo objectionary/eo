@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.util.Arrays;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * CONCAT.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "array.concat")
 public class EOarray$EOconcat extends PhDefault {

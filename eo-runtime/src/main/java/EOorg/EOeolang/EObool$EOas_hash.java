@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -34,6 +37,7 @@ import org.eolang.XmirObject;
 /**
  * Bool as hash.
  * @since 0.1
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bool.as-hash")
 public class EObool$EOas_hash extends PhDefault {

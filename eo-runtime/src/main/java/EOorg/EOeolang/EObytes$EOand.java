@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.math.BigInteger;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * BYTES.AND.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.and")
 public class EObytes$EOand extends PhDefault {

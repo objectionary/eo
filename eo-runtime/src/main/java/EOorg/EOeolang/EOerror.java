@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
@@ -36,6 +39,7 @@ import org.eolang.XmirObject;
  * ERROR.
  *
  * @since 0.22
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "error")
 public class EOerror extends PhDefault {

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * SLICE.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "string.slice")
 public class EOstring$EOslice extends PhDefault {

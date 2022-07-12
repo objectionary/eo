@@ -44,24 +44,24 @@ import java.util.regex.Pattern;
 public abstract class PhDefault implements Phi, Cloneable {
 
     /**
-     * Attribute name matcher.
-     */
-    private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
-
-    /**
      * Vertices.
      */
     protected static final Vertices VTX = new Vertices();
 
     /**
-     * Order of their names.
+     * Attribute name matcher.
      */
-    private final List<String> order;
+    private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
 
     /**
      * Identity of it (the ID of the vertex).
      */
     protected int vertex;
+
+    /**
+     * Order of their names.
+     */
+    private final List<String> order;
 
     /**
      * Attributes.
@@ -267,43 +267,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     /**
-     * Make named attribute.
-     * @param attr The original attr
-     * @param name The name of it
-     * @return Named one
-     */
-    private Attr named(final Attr attr, final String name) {
-        return new AtNamed(
-            String.format(
-                "%s#%s",
-                this.getClass().getCanonicalName(), name
-            ),
-            String.format(
-                "%s.%s",
-                this.oname(), name
-            ),
-            this,
-            attr
-        );
-    }
-
-    /**
-     * Get its object name, as in source code.
-     * @return The name
-     */
-    private String oname() {
-        String txt = this.getClass().getSimpleName();
-        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
-        if (xmir != null) {
-            txt = xmir.oname();
-            if ("@".equals(txt)) {
-                txt = "φ";
-            }
-        }
-        return txt;
-    }
-
-    /**
      * Make a string with this additional list of lines.
      * @param lines Lines to show in addition
      * @return The string
@@ -345,4 +308,40 @@ public abstract class PhDefault implements Phi, Cloneable {
         );
     }
 
+    /**
+     * Make named attribute.
+     * @param attr The original attr
+     * @param name The name of it
+     * @return Named one
+     */
+    private Attr named(final Attr attr, final String name) {
+        return new AtNamed(
+            String.format(
+                "%s#%s",
+                this.getClass().getCanonicalName(), name
+            ),
+            String.format(
+                "%s.%s",
+                this.oname(), name
+            ),
+            this,
+            attr
+        );
+    }
+
+    /**
+     * Get its object name, as in source code.
+     * @return The name
+     */
+    private String oname() {
+        String txt = this.getClass().getSimpleName();
+        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
+        if (xmir != null) {
+            txt = xmir.oname();
+            if ("@".equals(txt)) {
+                txt = "φ";
+            }
+        }
+        return txt;
+    }
 }

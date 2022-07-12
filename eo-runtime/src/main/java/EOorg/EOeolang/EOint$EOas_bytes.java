@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.math.BigInteger;
@@ -36,6 +39,7 @@ import org.eolang.XmirObject;
  * INT.AS-BYTES.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "int.as-bytes")
 public class EOint$EOas_bytes extends PhDefault {
