@@ -26,8 +26,9 @@ package EOorg.EOeolang;
 
 import java.math.BigInteger;
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVararg;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -47,18 +48,28 @@ public class EObytes$EOand extends PhDefault {
      */
     public EObytes$EOand(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
+        this.add("b", new AtVararg());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                rho -> new Data.ToPhi(
-                    new Param(rho)
-                       .fromBytes(BigInteger.class)
-                       .and(
-                            new Param(rho, "b").fromBytes(BigInteger.class)
-                       ).toByteArray()
-                )
+                rho -> {
+                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
+                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
+                    for (int index = 0; index < args.length; ++index) {
+                        final Object val = new Dataized(args[index]).take();
+                        if (!(val instanceof byte[])) {
+                            throw new IllegalArgumentException(
+                                String.format(
+                                    "The %dth argument of 'and' is of type %s, not bytes",
+                                    index, val.getClass().getCanonicalName()
+                                )
+                            );
+                        }
+                        base = base.and(new BigInteger(byte[].class.cast(val)));
+                    }
+                    return new Data.ToPhi(base.toByteArray());
+                }
             )
         );
     }

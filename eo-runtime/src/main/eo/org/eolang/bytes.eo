@@ -50,10 +50,10 @@
   [] > as-float /float
 
   # Calculate bitwise and
-  [b] > and /bytes
+  [b...] > and /bytes
 
   # Calculate bitwise or
-  [b] > or /bytes
+  [b...] > or /bytes
 
   # Calculate bitwise xor
   [b] > xor /bytes
