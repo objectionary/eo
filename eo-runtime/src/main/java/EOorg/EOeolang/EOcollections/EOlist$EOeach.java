@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOcollections;
 
 import org.eolang.AtComposite;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * EACH.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "list.each")
 public class EOlist$EOeach extends PhDefault {

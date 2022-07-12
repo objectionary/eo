@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -39,6 +42,7 @@ import org.eolang.XmirObject;
  * HEAP.MALLOC.
  *
  * @since 0.19
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "heap.malloc")
 public class EOheap$EOmalloc extends PhDefault {

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
@@ -38,6 +41,7 @@ import org.eolang.Phi;
  * Standard Input. Consumes all data.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 public class EOstdin$EOφ extends PhDefault {
 

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import EOorg.EOeolang.EOerror;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * REGEX.COMPILE.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.compile")
 public class EOregex$EOcompile extends PhDefault {

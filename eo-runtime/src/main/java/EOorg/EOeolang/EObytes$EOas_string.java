@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
@@ -36,6 +39,7 @@ import org.eolang.XmirObject;
  * BYTES.AS-STRING.
  *
  * @since 0.16
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.as-string")
 public class EObytes$EOas_string extends PhDefault {

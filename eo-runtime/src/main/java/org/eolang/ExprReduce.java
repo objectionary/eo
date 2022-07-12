@@ -23,9 +23,9 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import EOorg.EOeolang.EOerror;
 
 /**
  * Builds a phi performing reduction operation on varargs parameter.

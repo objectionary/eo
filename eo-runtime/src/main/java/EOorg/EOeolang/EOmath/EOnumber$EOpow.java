@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOmath;
 
 import EOorg.EOeolang.EOerror;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * POW.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "number.pow")
 public class EOnumber$EOpow extends PhDefault {

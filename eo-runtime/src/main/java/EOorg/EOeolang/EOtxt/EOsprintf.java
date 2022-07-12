@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import java.util.Collection;
@@ -41,6 +44,7 @@ import org.eolang.XmirObject;
  * Sprintf.
  *
  * @since 0.2
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sprintf")
 public class EOsprintf extends PhDefault {

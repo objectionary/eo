@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.util.Arrays;
@@ -39,6 +42,7 @@ import org.eolang.XmirObject;
  * BYTES.EQ.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.eq")
 public class EObytes$EOeq extends PhDefault {

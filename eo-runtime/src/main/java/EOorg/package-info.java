@@ -26,5 +26,6 @@
  * EO org package.
  *
  * @since 0.1
+ * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg;

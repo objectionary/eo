@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * Stdout.
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "stdout")
 public class EOstdout extends PhDefault {
