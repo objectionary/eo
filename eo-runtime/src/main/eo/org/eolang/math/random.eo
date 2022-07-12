@@ -30,14 +30,15 @@
 
   # Get float value for current seed
   # Divide seed to maximum possible value of the seed
-  div. > @
-    as-float.
-      number seed
-    as-float.
-      number
-        left.
-          number 1
-          53
+  [] > @
+    div. > @
+      as-float.
+        number seed
+      as-float.
+        number
+          left.
+            number 1
+            53
 
   # Next random.
   # Formula is based on linear congruential pseudorandom number generator, as defined by
@@ -45,9 +46,9 @@
   # Third edition: Seminumerical Algorithms, section 3.2.1.
   # Magic numbers are taken from Java implementation. 48 lower bits are considered.
   # next = (seed * 25214903917 + 11) AND ((1 <LEFT SHIFT> 48) - 1)
-  random > next
-    []
-      and. > @
+  [] > next
+    random > @
+      and.
         number
           plus.
             11
