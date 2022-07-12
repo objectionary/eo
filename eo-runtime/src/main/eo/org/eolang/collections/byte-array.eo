@@ -20,18 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
++package org.eolang.collections
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.byte-array
-+alias org.eolang.collections.list
-+alias org.eolang.hamcrest.assert-that
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > bytes-to-array
-  assert-that > @
-    byte-array
-      20-1F-EE-B5-FF
-    $.equal-to
-      list
-        (* 32 31 -18 -75 -1)
+[b] > byte-array /array

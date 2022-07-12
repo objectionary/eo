@@ -25,7 +25,7 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOcollections;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
