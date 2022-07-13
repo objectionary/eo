@@ -33,7 +33,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
@@ -79,6 +81,15 @@ public final class ResolveMojo extends SafeMojo {
      */
     @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
+
+    /**
+     * Fail resolution process on conflicting dependencies.
+     * @since 1.0
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean ignoreVersionConflicts;
 
     /**
      * The central.
@@ -179,12 +190,48 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
+        this.checkConflicts(deps);
         return deps.stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Check dependencies for conflicts.
+     * @param deps Dependencies
+     */
+    private void checkConflicts(final Collection<Dependency> deps) {
+        final Map<String, Set<String>> conflicts = deps.stream()
+            .collect(
+                Collectors.groupingBy(
+                    Dependency::getManagementKey,
+                    Collectors.mapping(
+                        Dependency::getVersion,
+                        Collectors.toSet()
+                    )
+                )
+            ).entrySet().stream()
+            .filter(e -> e.getValue().size() > 1)
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue
+                )
+            );
+        if (!conflicts.isEmpty()) {
+            final String msg = String.format(
+                "%d conflicting dependencies are found: %s",
+                conflicts.size(),
+                conflicts
+            );
+            Logger.warn(ResolveMojo.class, msg);
+            if (!this.ignoreVersionConflicts) {
+                throw new IllegalStateException(msg);
+            }
+        }
     }
 
     /**
