@@ -202,10 +202,9 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Check dependencies for conflicts.
      * @param deps Dependencies
-     * @param fail Fail on conflicts or just warn
      */
     private void checkConflicts(final Collection<Dependency> deps) {
-        final Map<String, Set<String>> grouped = deps.stream()
+        final Map<String, Set<String>> conflicts = deps.stream()
             .collect(
                 Collectors.groupingBy(
                     Dependency::getManagementKey,
@@ -214,17 +213,23 @@ public final class ResolveMojo extends SafeMojo {
                         Collectors.toSet()
                     )
                 )
+            ).entrySet().stream()
+            .filter(e -> e.getValue().size() > 1)
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue
+                )
             );
-        for (final Map.Entry<String, Set<String>> vers : grouped.entrySet()) {
-            if (vers.getValue().size() > 1) {
-                final String msg = String.format(
-                    "Conflicting dependencies are found for %s: %s",
-                    vers.getKey(), vers.getValue()
-                );
-                if (!this.ignoreVersionConflicts) {
-                    throw new IllegalStateException(msg);
-                }
-                Logger.warn(ResolveMojo.class, msg);
+        if (!conflicts.isEmpty()) {
+            final String msg = String.format(
+                "%d conflicting dependencies are found: %s",
+                conflicts.size(),
+                conflicts
+            );
+            Logger.warn(ResolveMojo.class, msg);
+            if (!this.ignoreVersionConflicts) {
+                throw new IllegalStateException(msg);
             }
         }
     }

@@ -130,7 +130,7 @@ public final class ResolveMojoTest {
             excpt.getMessage(),
             Matchers.equalTo(
                 // @checkstyle LineLengthCheck (1 line)
-                "Conflicting dependencies are found for org.eolang:eo-runtime:jar:: [0.22.0, 0.22.1]"
+                "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )
         );
     }
