@@ -70,41 +70,73 @@ public final class ResolveMojoTest {
         );
     }
 
+    /**
+     * Test conflicts.
+     * @param temp Temp folder
+     * @throws IOException In case of I/O issues.
+     */
     @Test
-    public void testConflictingDependencies(@TempDir final Path temp) {
+    public void testConflictingDependencies(@TempDir final Path temp) throws IOException {
+        final Path first = temp.resolve("src/foo1.src");
+        new Save(
+            String.format(
+                "%s\n\n%s",
+                "+rt jvm org.eolang:eo-runtime:0.22.1",
+                "[] > foo /int"
+            ),
+            first
+        ).save();
+        final Path second = temp.resolve("src/foo2.src");
+        new Save(
+            String.format(
+                "%s\n\n%s",
+                "+rt jvm org.eolang:eo-runtime:0.22.0",
+                "[] > foo /int"
+            ),
+            second
+        ).save();
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+            .add("foo1.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, first.toString())
+            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
+        new MonoTojos(new Csv(foreign))
+            .add("foo2.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, second.toString())
+            .set(AssembleMojo.ATTR_VERSION, "0.22.0");
+        new Moja<>(ParseMojo.class)
+            .with("foreign", foreign.toFile())
+            .with("targetDir", target.toFile())
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .execute();
         final Exception excpt = Assertions.assertThrows(
             IllegalStateException.class,
-            () -> simulateConflicts(temp, false)
+            () -> new Moja<>(ResolveMojo.class)
+                .with("foreign", foreign.toFile())
+                .with("targetDir", target.toFile())
+                .with("central", Central.EMPTY)
+                .with("skipZeroVersions", true)
+                .with("discoverSelf", false)
+                .with("ignoreVersionConflicts", false)
+                .execute()
         );
         MatcherAssert.assertThat(
             excpt.getMessage(),
             Matchers.equalTo(
-                String.format(
-                    "%s%s",
-                    "Conflicting dependencies are found for org.eolang:eo-runtime:jar",
-                    ":: [0.22.0, 0.22.1]"
-                )
+                // @checkstyle LineLengthCheck (1 line)
+                "Conflicting dependencies are found for org.eolang:eo-runtime:jar:: [0.22.0, 0.22.1]"
             )
         );
     }
 
     @Test
     public void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
-        simulateConflicts(temp, true);
-        MatcherAssert.assertThat(
-            true,
-            Matchers.equalTo(true)
-        );
-    }
-
-    /**
-     * Run simulation for dependencies conflicts. Supposed to be called once per temp.
-     * @param temp Temp dir
-     * @param ignore Plugin parameter <code>ignVerConflicts</code>
-     */
-    private static void simulateConflicts(
-        final Path temp,
-        final boolean ignore) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Save(
             String.format(
@@ -149,7 +181,11 @@ public final class ResolveMojoTest {
             .with("central", Central.EMPTY)
             .with("skipZeroVersions", true)
             .with("discoverSelf", false)
-            .with("ignVerConflicts", ignore)
+            .with("ignoreVersionConflicts", true)
             .execute();
+        MatcherAssert.assertThat(
+            true,
+            Matchers.equalTo(true)
+        );
     }
 }
