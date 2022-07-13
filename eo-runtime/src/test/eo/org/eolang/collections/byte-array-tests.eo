@@ -34,4 +34,20 @@
       20-1F-EE-B5-FF
     $.equal-to
       list
-        (* 32 31 -18 -75 -1)
+        * 20- 1F- EE- B5- FF-
+
+[] > sinble-byte-to-array
+  assert-that > @
+    byte-array
+      1F-
+    $.equal-to
+      list
+        * 1F-
+
+[] > zero-bytes-to-array
+  assert-that > @
+    byte-array
+      --
+    $.equal-to
+      list
+        *

@@ -25,4 +25,16 @@
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
-[b] > byte-array /array
+[b] > byte-array
+  [] > @
+    slice-byte > @
+      *
+      0
+    [a i] > slice-byte
+      if. > @
+        i.lt
+          ^.^.b.size
+        ^.slice-byte
+          a.with (^.^.b.slice i 1)
+          i.plus 1
+        a
