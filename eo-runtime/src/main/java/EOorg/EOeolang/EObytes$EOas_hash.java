@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.util.Arrays;
@@ -36,6 +39,7 @@ import org.eolang.XmirObject;
  * BYTES.AS-HASH.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.as-hash")
 public class EObytes$EOas_hash extends PhDefault {

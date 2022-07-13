@@ -65,6 +65,7 @@ public final class OyFallback implements Objectionary {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Input get(final String name) throws IOException {
         return new IoCheckedFunc<>(
             new FuncWithFallback<>(

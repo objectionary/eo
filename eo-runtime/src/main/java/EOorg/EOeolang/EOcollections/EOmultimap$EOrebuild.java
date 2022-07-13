@@ -24,10 +24,14 @@
 
 package EOorg.EOeolang.EOcollections;
 
-import org.eolang.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public class EOmultimap$EOrebuild extends PhDefault {

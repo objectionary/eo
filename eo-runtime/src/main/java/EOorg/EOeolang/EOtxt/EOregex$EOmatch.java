@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import java.util.regex.Matcher;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * REGEX.MATCH.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.match")
 public class EOregex$EOmatch extends PhDefault {

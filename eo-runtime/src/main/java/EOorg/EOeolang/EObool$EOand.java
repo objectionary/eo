@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * AND.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bool.and")
 public class EObool$EOand extends PhDefault {

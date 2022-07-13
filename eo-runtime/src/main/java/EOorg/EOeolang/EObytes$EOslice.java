@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.util.Arrays;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * BYTES.SLICE.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.slice")
 public class EObytes$EOslice extends PhDefault {

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOmath;
 
 import org.eolang.AtComposite;
@@ -35,6 +38,7 @@ import org.eolang.XmirObject;
  * Pseudo-seed.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "random.pseudo")
 public class EOrandom$EOpseudo extends PhDefault {

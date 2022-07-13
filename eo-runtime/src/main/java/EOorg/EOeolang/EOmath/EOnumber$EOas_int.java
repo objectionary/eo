@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOmath;
 
 import EOorg.EOeolang.EOerror;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * As-int.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "number.as-int")
 public class EOnumber$EOas_int extends PhDefault {

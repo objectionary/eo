@@ -26,5 +26,6 @@
  * EO math.
  *
  * @since 0.23
+ * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang.EOmath;

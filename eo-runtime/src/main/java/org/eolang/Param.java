@@ -113,19 +113,16 @@ public final class Param {
         final Object res;
         if (BigInteger.class.equals(type)) {
             res = new BigInteger(ret);
-        }
-        else if (Long.class.equals(type)) {
+        } else if (Long.class.equals(type)) {
             if (ret.length == 1) {
                 res = (long) ret[0];
-            }
-            else {
+            } else {
                 final byte[] cpy = new byte[Long.BYTES];
                 int posx = cpy.length;
                 int posy = ret.length;
                 while (posy-- > 0 && posx-- > 0) {
                     cpy[posx] = ret[posy];
                 }
-
                 if (ret[0] < 0) {
                     while (posx-- > 0) {
                         cpy[posx] = -1;
@@ -133,14 +130,11 @@ public final class Param {
                 }
                 res = ByteBuffer.wrap(cpy).getLong();
             }
-        }
-        else if (Character.class.equals(type)) {
+        } else if (Character.class.equals(type)) {
             res = ByteBuffer.wrap(ret).getChar();
-        }
-        else if (Double.class.equals(type)) {
+        } else if (Double.class.equals(type)) {
             res = ByteBuffer.wrap(ret).getDouble();
-        }
-        else {
+        } else {
             throw new ExFailure(
                 String.format(
                     "Unsupported type: '%s'",

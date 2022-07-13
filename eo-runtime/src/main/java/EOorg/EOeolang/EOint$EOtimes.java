@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -35,6 +38,7 @@ import org.eolang.XmirObject;
  * TIMES.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "int.times")
 public class EOint$EOtimes extends PhDefault {

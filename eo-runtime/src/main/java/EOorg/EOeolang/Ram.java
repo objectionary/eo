@@ -1,3 +1,6 @@
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.io.IOException;
@@ -47,6 +50,23 @@ public enum Ram {
     }
 
     /**
+     * Write.
+     * @param object Owner.
+     * @param position Position to write.
+     * @param bytes Bytes to wite.
+     * @throws IOException If fails.
+     */
+    public void write(
+        final Phi object,
+        final int position,
+        final byte[] bytes
+    ) throws IOException {
+        final RandomAccessFile buffer = this.init(object);
+        buffer.seek(position);
+        buffer.write(bytes);
+    }
+
+    /**
      * Initialize storage.
      * @param phi Owner.
      * @return Storage file
@@ -74,23 +94,4 @@ public enum Ram {
             }
         );
     }
-
-
-    /**
-     * Write.
-     * @param object Owner.
-     * @param position Position to write.
-     * @param bytes Bytes to wite.
-     * @throws IOException If fails.
-     */
-    public void write(
-        final Phi object,
-        final int position,
-        final byte[] bytes
-    ) throws IOException {
-        final RandomAccessFile buffer = this.init(object);
-        buffer.seek(position);
-        buffer.write(bytes);
-    }
-
 }

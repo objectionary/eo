@@ -1,3 +1,6 @@
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -11,6 +14,7 @@ import org.eolang.XmirObject;
 /**
  * Write into memory.
  * @since 0.1
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "ram.write")
 public class EOram$EOwrite extends PhDefault {

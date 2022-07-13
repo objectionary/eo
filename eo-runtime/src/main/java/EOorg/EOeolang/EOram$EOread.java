@@ -1,3 +1,6 @@
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -11,6 +14,7 @@ import org.eolang.XmirObject;
 /**
  * Read from memory.
  * @since 0.1
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "ram.read")
 public class EOram$EOread extends PhDefault {
