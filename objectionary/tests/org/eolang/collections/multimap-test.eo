@@ -22,7 +22,7 @@
 
 +package org.eolang.collections
 +home https://github.com/objectionary/eo
-+version 0.23.17
++version 0.23.18
 +alias org.eolang.collections.multimap
 +alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
@@ -56,7 +56,7 @@
     * (tarr.length) (tarr.at 0) (tarr.at 1) (tarr.at 2)
     $.equal-to
       list
-        * 3 106079 2 3
+        * 3 135870 2 3
 
 [] > multimap-concat-all-arrays-test
   multimap * > mp!

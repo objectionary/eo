@@ -23,8 +23,8 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +alias org.eolang.collections.list
-+version 0.23.17
-+rt jvm org.eolang:eo-runtime:0.23.17
++version 0.23.18
++rt jvm org.eolang:eo-runtime:0.23.18
 
 [] > int
 
@@ -84,9 +84,10 @@
   [] > as-bytes /bytes
 
   # Converts this to hash
-  as-int. > as-hash
-    xor.
-      as-bytes
-      right.
+  [] > as-hash
+    as-int. > @
+      xor.
         as-bytes
-        32
+        right.
+          as-bytes
+          32

@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.17
-+rt jvm org.eolang:eo-runtime:0.23.17
++version 0.23.18
++rt jvm org.eolang:eo-runtime:0.23.18
 
 [] > bool
   # Equal to another object?
@@ -61,4 +61,8 @@
       00-
 
   # Converts this to hash
-  [] > as-hash /int
+  [] > as-hash
+    if. > @
+      ^
+      1231
+      1237

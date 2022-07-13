@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.17
-+rt jvm org.eolang:eo-runtime:0.23.17
++version 0.23.18
++rt jvm org.eolang:eo-runtime:0.23.18
 
 [] > string
   # Is true if both objects are equal
@@ -39,7 +39,9 @@
   [] > as-bytes /bytes
 
   # Converts this to hash
-  [] > as-hash /int
+  [] > as-hash
+    as-hash. > @
+      ^.as-bytes
 
   # Takes a piece of a string as another string
   [start len] > slice /string

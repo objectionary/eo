@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.17
-+rt jvm org.eolang:eo-runtime:0.23.17
++version 0.23.18
++rt jvm org.eolang:eo-runtime:0.23.18
 
 [] > bytes
 
@@ -50,10 +50,10 @@
   [] > as-float /float
 
   # Calculate bitwise and
-  [b] > and /bytes
+  [b...] > and /bytes
 
   # Calculate bitwise or
-  [b] > or /bytes
+  [b...] > or /bytes
 
   # Calculate bitwise xor
   [b] > xor /bytes
