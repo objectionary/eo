@@ -190,7 +190,7 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
-        checkConflicts(deps, !this.ignoreVersionConflicts);
+        this.checkConflicts(deps);
         return deps.stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
@@ -204,10 +204,7 @@ public final class ResolveMojo extends SafeMojo {
      * @param deps Dependencies
      * @param fail Fail on conflicts or just warn
      */
-    private static void checkConflicts(
-        final Collection<Dependency> deps,
-        final boolean fail
-    ) {
+    private void checkConflicts(final Collection<Dependency> deps) {
         final Map<String, Set<String>> grouped = deps.stream()
             .collect(
                 Collectors.groupingBy(
@@ -224,7 +221,7 @@ public final class ResolveMojo extends SafeMojo {
                     "Conflicting dependencies are found for %s: %s",
                     vers.getKey(), vers.getValue()
                 );
-                if (fail) {
+                if (!this.ignoreVersionConflicts) {
                     throw new IllegalStateException(msg);
                 }
                 Logger.warn(ResolveMojo.class, msg);
