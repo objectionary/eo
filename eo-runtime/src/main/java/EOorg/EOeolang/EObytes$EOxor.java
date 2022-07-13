@@ -61,7 +61,7 @@ public class EObytes$EOxor extends PhDefault {
                     BigInteger base = new Param(rho).fromBytes(BigInteger.class);
                     final Phi[] args = new Param(rho, "b").strong(Phi[].class);
                     for (int index = 0; index < args.length; ++index) {
-                        final byte[] arg = new Param(args[index]).strong(byte[].class);
+                        final byte[] arg = new Dataized(args[index]).take(byte[].class);
                         base = base.xor(new BigInteger(arg));
                     }
                     return new Data.ToPhi(base.toByteArray());
