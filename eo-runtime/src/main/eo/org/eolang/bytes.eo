@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+alias org.eolang.collections.byte-array
++alias org.eolang.collections.bytes-as-array
 +alias org.eolang.collections.list
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
@@ -81,7 +81,7 @@
   [] > as-hash
     reduce. > @
       list
-        byte-array ^
+        bytes-as-array ^
       1
       [a b]
         plus. > @
