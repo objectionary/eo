@@ -117,9 +117,7 @@ public final class UnplaceMojo extends SafeMojo {
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(tojos);
         }
-        if (!this.removeBinaries.isEmpty()) {
-            deleted += this.killThem(tojos);
-        }
+        deleted += this.killThem(tojos);
         if (tojos.isEmpty()) {
             Logger.info(
                 this, "No binaries were placed into %s, nothing to uplace",
