@@ -42,7 +42,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "error")
-public class EOerror extends PhDefault {
+public final class EOerror extends PhDefault {
 
     /**
      * Ctor.
@@ -57,7 +57,7 @@ public class EOerror extends PhDefault {
      * Phi constructed with error.
      * @since 1.0
      */
-    public static class PhWithError implements Phi {
+    public static final class PhWithError implements Phi {
 
         /**
          * Constructed phi.
@@ -68,7 +68,7 @@ public class EOerror extends PhDefault {
          * Ctor.
          * @param msg Error message
          */
-        public PhWithError(String msg) {
+        public PhWithError(final String msg) {
             this.phi = new PhWith(
                 new EOerror(Phi.Φ),
                 "msg",
@@ -83,7 +83,7 @@ public class EOerror extends PhDefault {
          * @param format Message format string
          * @param params Parameters
          */
-        public PhWithError(String format, Object... params) {
+        public PhWithError(final String format, final Object... params) {
             this(
                 String.format(
                     format,
@@ -94,27 +94,27 @@ public class EOerror extends PhDefault {
 
         @Override
         public Phi copy() {
-            return phi.copy();
+            return this.phi.copy();
         }
 
         @Override
-        public void move(Phi rho) {
-            phi.move(rho);
+        public void move(final Phi rho) {
+            this.phi.move(rho);
         }
 
         @Override
-        public Attr attr(int pos) {
-            return phi.attr(pos);
+        public Attr attr(final int pos) {
+            return this.phi.attr(pos);
         }
 
         @Override
-        public Attr attr(String name) {
-            return phi.attr(name);
+        public Attr attr(final String name) {
+            return this.phi.attr(name);
         }
 
         @Override
         public String φTerm() {
-            return phi.φTerm();
+            return this.phi.φTerm();
         }
     }
 

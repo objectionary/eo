@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (20 lines)
+ */
 /**
  * EO runtime.
  *
  * @since 0.1
  * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
- */
-/*
- * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang;

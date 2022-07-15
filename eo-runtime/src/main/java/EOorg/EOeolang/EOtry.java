@@ -125,14 +125,17 @@ public class EOtry extends PhDefault {
      * @since 0.19
      */
     private static class ThrowException extends ExAbstract {
+
         /**
          * Serialization identifier.
          */
         private static final long serialVersionUID = 1735493012609760997L;
+
         /**
          * Sigma.
          */
         public final Phi sigma;
+
         /**
          * Exception.
          */

@@ -58,7 +58,9 @@ public class EOstdin$EOnext_line extends PhDefault {
                         if (!sc.hasNextLine()) {
                             return new PhWith(
                                 new EOerror(Phi.Φ), "msg",
-                                new Data.ToPhi("There is no line in the standard input stream to consume")
+                                new Data.ToPhi(
+                                    "There is no line in the standard input stream to consume"
+                                )
                             );
                         }
                         return new Data.ToPhi(sc.nextLine());

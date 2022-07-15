@@ -57,9 +57,9 @@ public class EOstdin$EOφ extends PhDefault {
                 this,
                 rho -> {
                     try (BufferedInputStream bis = new BufferedInputStream(System.in);
-                         ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
+                        ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
                         while (true) {
-                            int b = bis.read();
+                            final int b = bis.read();
                             if (b == -1) {
                                 break;
                             }

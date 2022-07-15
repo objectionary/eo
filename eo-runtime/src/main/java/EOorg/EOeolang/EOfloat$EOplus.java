@@ -29,9 +29,9 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
+import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.ExprReduce;
 import org.eolang.XmirObject;
 
 /**

@@ -146,6 +146,7 @@ public final class Main {
             exit = true;
         }
         if ("--help".equals(opt)) {
+            // @checkstyle LineLengthCheck (11 lines)
             Main.LOGGER.info(
                 String.join(
                     "\n",

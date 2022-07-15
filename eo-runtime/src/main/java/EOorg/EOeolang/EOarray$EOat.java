@@ -64,6 +64,7 @@ public class EOarray$EOat extends PhDefault {
                             new EOerror(Phi.Φ), "msg",
                             new Data.ToPhi(
                                 String.format(
+                                    // @checkstyle LineLengthCheck (1 line)
                                     "Can't at() the %dth element of the array, there are just %d of them",
                                     idx, array.length
                                 )

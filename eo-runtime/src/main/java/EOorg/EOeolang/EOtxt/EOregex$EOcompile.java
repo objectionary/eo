@@ -59,7 +59,7 @@ public class EOregex$EOcompile extends PhDefault {
                 rho -> {
                     final Phi regex = rho.attr("ρ").get();
                     final String pattern = new Param(regex, "r").strong(String.class);
-                    StringBuilder builder = new StringBuilder();
+                    final StringBuilder builder = new StringBuilder();
                     if (!pattern.startsWith("/")) {
                         return new PhWith(
                             new EOerror(Phi.Φ),
@@ -67,14 +67,14 @@ public class EOregex$EOcompile extends PhDefault {
                             new Data.ToPhi("Wrong regex syntax: \"/\" is missing")
                         );
                     }
-                    final int lastIndex = pattern.lastIndexOf("/");
+                    final int last = pattern.lastIndexOf("/");
                     if (!pattern.endsWith("/")) {
-                        builder.append("(?").append(pattern.substring(lastIndex + 1)).append(")");
+                        builder.append("(?").append(pattern.substring(last + 1)).append(")");
                     }
-                    builder.append(pattern, 1, lastIndex);
+                    builder.append(pattern, 1, last);
                     Phi phi;
                     try {
-                        String compiled = Pattern.compile(builder.toString()).pattern();
+                        final String compiled = Pattern.compile(builder.toString()).pattern();
                         phi = new PhWith(
                             new EOregex(rho),
                             "r",

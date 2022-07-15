@@ -63,7 +63,8 @@ public class EOregex$EOmatch extends PhDefault {
                     final String txt = new Param(rho, "txt").strong(String.class);
                     final Matcher matcher = Pattern.compile(r).matcher(txt);
                     if (matcher.matches()) {
-                        final Phi[] dest = new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
+                        final Phi[] dest =
+                            new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
                         return new Data.ToPhi(dest);
                     } else {
                         return new Data.ToPhi(new Phi[]{});

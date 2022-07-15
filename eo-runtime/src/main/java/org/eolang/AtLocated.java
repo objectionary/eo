@@ -75,7 +75,7 @@ final class AtLocated implements Attr {
 
     @Override
     public Phi get() {
-        Phi obj;
+        final Phi obj;
         try {
             obj = this.origin.get();
         } catch (final ExFlow ex) {

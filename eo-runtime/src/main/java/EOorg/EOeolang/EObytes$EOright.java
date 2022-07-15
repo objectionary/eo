@@ -60,7 +60,7 @@ public class EObytes$EOright extends PhDefault {
                     new Param(rho)
                         .fromBytes(BigInteger.class)
                         .shiftRight(
-                           new Param(rho, "x").strong(Long.class).intValue()
+                            new Param(rho, "x").strong(Long.class).intValue()
                         ).toByteArray()
                 )
             )
