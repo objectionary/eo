@@ -82,7 +82,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> mandatoryUnplace = new SetOf<>();
+    private Set<String> removeBinaries = new SetOf<>();
 
     /**
      * List of inclusion GLOB filters for placing (ONLY these files will stay).
@@ -90,7 +90,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> selectivelyPlace = new SetOf<>();
+    private Set<String> keepBinaries = new SetOf<>();
 
     @Override
     public void exec() throws IOException {
@@ -114,7 +114,7 @@ public final class UnplaceMojo extends SafeMojo {
             this.placed.toPath(), this.placedFormat
         ).make().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
         final int deleted;
-        if (this.selectivelyPlace.isEmpty()) {
+        if (this.keepBinaries.isEmpty()) {
             deleted = this.killThem(tojos);
         } else {
             deleted = this.keepThem(tojos);
@@ -154,7 +154,7 @@ public final class UnplaceMojo extends SafeMojo {
             final String related = tojo.get(PlaceMojo.ATTR_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             if (!tojo.get(PlaceMojo.ATTR_HASH).equals(new FileHash(path).toString())) {
-                if (!UnplaceMojo.inside(related, this.mandatoryUnplace)) {
+                if (!UnplaceMojo.inside(related, this.removeBinaries)) {
                     Logger.warn(this, "The binary %s looks different, won't unplace", related);
                     continue;
                 }
@@ -184,8 +184,8 @@ public final class UnplaceMojo extends SafeMojo {
         for (final Tojo tojo : tojos) {
             final String related = tojo.get(PlaceMojo.ATTR_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
-            if (!this.selectivelyPlace.isEmpty()
-                && UnplaceMojo.inside(related, this.selectivelyPlace)) {
+            if (!this.keepBinaries.isEmpty()
+                && UnplaceMojo.inside(related, this.keepBinaries)) {
                 remained += 1;
                 continue;
             }
@@ -244,7 +244,7 @@ public final class UnplaceMojo extends SafeMojo {
     private static void delete(final Path file) throws IOException {
         Files.delete(file);
         final Path dir = file.getParent();
-        if (dir.toFile().list().length == 0) {
+        if (new File(dir.toString()).list().length == 0) {
             Files.delete(dir);
             Logger.debug(UnplaceMojo.class, "Directory %s deleted too", Save.rel(dir));
         }

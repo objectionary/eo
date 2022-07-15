@@ -89,9 +89,9 @@ SOFTWARE.
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <mandatoryUnplace>
-                <path>EOorg/EOeolang/EOhamcrest/**</path>
-              </mandatoryUnplace>
+              <removeBinaries>
+                <glob>EOorg/EOeolang/EOhamcrest/**</glob>
+              </removeBinaries>
             </configuration>
           </execution>
           <execution>
