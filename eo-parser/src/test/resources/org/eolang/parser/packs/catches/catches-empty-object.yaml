@@ -6,25 +6,25 @@ eo: |
   [arg] > first
     [] > second
       [] > wrong1
-  
+
   [] > wrong2
 
   [] > correct
     [] > wrong3
-  
+
   # it is wrong too
   []
-  
+
   # correct
   [] > forth
     []
       "bebra" > msg
-  
+
   #correct
   []
     []
       []
         "abcabc" > smth
-  
+
   #correct
   [a] > app
