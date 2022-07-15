@@ -113,11 +113,12 @@ public final class UnplaceMojo extends SafeMojo {
         final Collection<Tojo> tojos = new Catalog(
             this.placed.toPath(), this.placedFormat
         ).make().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
-        final int deleted;
-        if (this.keepBinaries.isEmpty()) {
-            deleted = this.killThem(tojos);
-        } else {
-            deleted = this.keepThem(tojos);
+        int deleted = 0;
+        if (!this.keepBinaries.isEmpty()) {
+            deleted += this.keepThem(tojos);
+        }
+        if (!this.removeBinaries.isEmpty()) {
+            deleted += this.killThem(tojos);
         }
         if (tojos.isEmpty()) {
             Logger.info(
