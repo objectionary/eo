@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -34,7 +33,7 @@ import org.cactoos.io.InputOf;
  *
  * @since 1.0
  */
-public final class OyLocal implements Objectionary {
+public final class OyHome implements Objectionary {
     /**
      * Local storage.
      */
@@ -50,7 +49,7 @@ public final class OyLocal implements Objectionary {
      * @param ver Version.
      * @param path Root.
      */
-    public OyLocal(final String ver, final Path path) {
+    public OyHome(final String ver, final Path path) {
         this.version = ver;
         this.home = path;
     }
@@ -59,12 +58,12 @@ public final class OyLocal implements Objectionary {
     public String toString() {
         return String.format(
             "%s (%s)",
-            this.home, this.version
+            Save.rel(this.home), this.version
         );
     }
 
     @Override
-    public Input get(final String name) throws IOException {
+    public Input get(final String name) throws FileNotFoundException {
         final Path file = new Place(name).make(
             this.home
                 .resolve("sources")

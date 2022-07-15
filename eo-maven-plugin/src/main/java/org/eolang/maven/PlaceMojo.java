@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +50,7 @@ import org.cactoos.set.SetOf;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
+@SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidDuplicateLiterals"})
 public final class PlaceMojo extends SafeMojo {
 
     /**
@@ -108,7 +109,19 @@ public final class PlaceMojo extends SafeMojo {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
+                final Collection<Tojo> before = this.catalog().select(
+                    row -> row.get(Tojos.KEY).equals(dep)
+                        && "jar".equals(row.get("kind"))
+                );
+                if (!before.isEmpty()) {
+                    Logger.info(
+                        this, "Binaries from %s have already been placed",
+                        deps.size()
+                    );
+                    continue;
+                }
                 copied += this.place(home, dep);
+                this.catalog().add(dep).set("kind", "jar");
             }
             if (copied == 0) {
                 Logger.info(
@@ -135,6 +148,7 @@ public final class PlaceMojo extends SafeMojo {
      * @param dep The name of dep
      * @return How many binaries placed
      * @throws IOException If fails
+     * @checkstyle ExecutableStatementCountCheck (200 lines)
      */
     private int place(final Path home, final String dep) throws IOException {
         final Path dir = home.resolve(dep);
@@ -142,7 +156,6 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
-        final Tojos tojos = new Catalog(this.placed.toPath(), this.placedFormat).make();
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
@@ -153,6 +166,16 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
+            final Collection<Tojo> before = this.catalog().select(
+                row -> row.get(Tojos.KEY).equals(target.toString())
+                    && "class".equals(row.get("kind"))
+            );
+            if (!before.isEmpty()) {
+                Logger.warn(
+                    this, "File %s is already placed to %s maybe by another JAR",
+                    Save.rel(file), Save.rel(target)
+                );
+            }
             if (Files.exists(target)) {
                 if (target.toFile().length() == file.toFile().length()) {
                     Logger.debug(
@@ -169,7 +192,10 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             new Save(new InputOf(file), target).save();
-            tojos.add(target.toString());
+            this.catalog().add(target.toString())
+                .set("kind", "class")
+                .set("length", target.toFile().length())
+                .set("dep", dep);
             ++copied;
         }
         if (copied > 0) {
@@ -184,6 +210,14 @@ public final class PlaceMojo extends SafeMojo {
             );
         }
         return copied;
+    }
+
+    /**
+     * Get catalog.
+     * @return Tojos
+     */
+    private Tojos catalog() {
+        return new Catalog(this.placed.toPath(), this.placedFormat).make();
     }
 
 }

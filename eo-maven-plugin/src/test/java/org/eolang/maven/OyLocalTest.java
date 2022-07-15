@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link OyLocal}.
+ * Test for {@link OyHome}.
  *
  * @since 1.0
  */
@@ -54,7 +54,7 @@ final class OyLocalTest {
         ).value();
         MatcherAssert.assertThat(
             new TextOf(
-                new OyLocal("master", path)
+                new OyHome("master", path)
                     .get("org.example.main")
             ).asString(),
             Matchers.is(content)

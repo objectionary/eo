@@ -75,19 +75,18 @@ public final class PullMojo extends SafeMojo {
     private boolean overWrite;
 
     /**
+     * Target directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.home")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path outputPath = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
+    /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
-
-    /**
-     * Target directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path outputPath = Paths.get(
-        System.getProperty("user.home")
-    ).resolve(".eo");
 
     @Override
     public void exec() throws IOException {
@@ -97,7 +96,7 @@ public final class PullMojo extends SafeMojo {
         );
         if (this.objectionary == null) {
             this.objectionary = new OyFallback(
-                new OyLocal(
+                new OyHome(
                     this.hash,
                     this.outputPath
                 ),

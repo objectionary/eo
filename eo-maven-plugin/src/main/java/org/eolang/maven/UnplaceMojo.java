@@ -77,9 +77,16 @@ public final class UnplaceMojo extends SafeMojo {
         if (this.placed.exists()) {
             final Collection<Tojo> tojos = new Catalog(
                 this.placed.toPath(), this.placedFormat
-            ).make().select(t -> true);
+            ).make().select(t -> "class".equals(t.get("kind")));
             for (final Tojo tojo : tojos) {
                 final Path path = Paths.get(tojo.get(Tojos.KEY));
+                if (Long.parseLong(tojo.get("length")) != path.toFile().length()) {
+                    Logger.warn(
+                        this, "The binary %s looks different, won't unplace",
+                        Save.rel(path)
+                    );
+                    continue;
+                }
                 Files.delete(path);
                 Logger.debug(this, "Binary %s deleted", Save.rel(path));
                 final Path dir = path.getParent();
