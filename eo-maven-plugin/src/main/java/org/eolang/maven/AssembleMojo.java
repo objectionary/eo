@@ -138,7 +138,7 @@ public final class AssembleMojo extends SafeMojo {
     @Parameter(
         property = "eo.placed",
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.csv"
+        defaultValue = "${project.build.directory}/eo/placed.csv"
     )
     private File placed;
 

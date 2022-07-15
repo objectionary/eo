@@ -73,7 +73,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.foreign",
         required = true,
-        defaultValue = "${project.build.directory}/eo-foreign.csv"
+        defaultValue = "${project.build.directory}/eo/foreign.csv"
     )
     protected File foreign;
 
