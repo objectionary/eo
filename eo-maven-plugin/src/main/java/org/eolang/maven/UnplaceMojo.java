@@ -78,6 +78,7 @@ public final class UnplaceMojo extends SafeMojo {
             final Collection<Tojo> tojos = new Catalog(
                 this.placed.toPath(), this.placedFormat
             ).make().select(t -> "class".equals(t.get("kind")));
+            int unplaced = 0;
             for (final Tojo tojo : tojos) {
                 final Path path = Paths.get(tojo.get(Tojos.KEY));
                 if (Long.parseLong(tojo.get("length")) != path.toFile().length()) {
@@ -89,16 +90,34 @@ public final class UnplaceMojo extends SafeMojo {
                 }
                 Files.delete(path);
                 Logger.debug(this, "Binary %s deleted", Save.rel(path));
+                unplaced += 1;
                 final Path dir = path.getParent();
                 if (dir.toFile().list().length == 0) {
                     Files.delete(dir);
                     Logger.debug(this, "Directory %s deleted", Save.rel(dir));
                 }
             }
-            Logger.info(
-                this, "All %d binari(es) deleted, which were found in %s",
-                tojos.size(), Save.rel(this.placed.toPath())
-            );
+            if (tojos.isEmpty()) {
+                Logger.info(
+                    this, "No binaries were placed into %s, nothing to uplace",
+                    Save.rel(this.placed.toPath())
+                );
+            } else if (unplaced == 0) {
+                Logger.info(
+                    this, "No binaries out of %d deleted in %s",
+                    tojos.size(), Save.rel(this.placed.toPath())
+                );
+            } else if (unplaced == tojos.size()) {
+                Logger.info(
+                    this, "All %d binari(es) deleted, which were found in %s",
+                    tojos.size(), Save.rel(this.placed.toPath())
+                );
+            } else {
+                Logger.info(
+                    this, "Just %d binari(es) out of %d deleted in %s",
+                    tojos.size(), tojos.size(), Save.rel(this.placed.toPath())
+                );
+            }
         } else {
             Logger.info(
                 this, "The list of placed binaries is absent: %s",
