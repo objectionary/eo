@@ -77,12 +77,20 @@ public final class UnplaceMojo extends SafeMojo {
     private String placedFormat = "csv";
 
     /**
-     * List of inclusion GLOB filters for unplacing.
+     * List of inclusion GLOB filters for unplacing (these files will be removed for sure).
      * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
     private Set<String> mandatoryUnplace = new SetOf<>();
+
+    /**
+     * List of inclusion GLOB filters for placing (ONLY these files will stay).
+     * @since 0.24
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private Set<String> selectivelyPlace = new SetOf<>();
 
     @Override
     public void exec() throws IOException {
@@ -100,16 +108,27 @@ public final class UnplaceMojo extends SafeMojo {
      * Place what's necessary.
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public void placeThem() throws IOException {
         final Collection<Tojo> tojos = new Catalog(
             this.placed.toPath(), this.placedFormat
         ).make().select(t -> "class".equals(t.get("kind")));
         int unplaced = 0;
         for (final Tojo tojo : tojos) {
+            final String related = tojo.get("related");
+            if (!this.selectivelyPlace.isEmpty()
+                && UnplaceMojo.inside(related, this.selectivelyPlace)) {
+                Logger.warn(
+                    this,
+                    // @checkstyle LineLength (1 line)
+                    "The binary %s is removed since it doesn't match 'selectivelyPlace' list of globs",
+                    related
+                );
+                continue;
+            }
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             if (!tojo.get("hash").equals(new FileHash(path).toString())) {
-                final String related = tojo.get("related");
-                if (!this.mandatory(related)) {
+                if (!UnplaceMojo.inside(related, this.mandatoryUnplace)) {
                     Logger.warn(this, "The binary %s looks different, won't unplace", related);
                     continue;
                 }
@@ -153,20 +172,32 @@ public final class UnplaceMojo extends SafeMojo {
     }
 
     /**
-     * This unplacing is mandatory?
+     * This file is matched by one of the globs?
      * @param related The related name of the file
-     * @return TRUE if mandatory
+     * @param globs The globs
+     * @return TRUE if inside this list of globx
      */
-    private boolean mandatory(final String related) {
-        boolean mandatory = false;
-        for (final String glob : this.mandatoryUnplace) {
-            mandatory = FileSystems.getDefault().getPathMatcher(
-                String.format("glob:%s", glob)
-            ).matches(Paths.get(related));
-            if (mandatory) {
+    private static boolean inside(final String related, final Iterable<String> globs) {
+        boolean found = false;
+        for (final String glob : globs) {
+            found = UnplaceMojo.matches(related, glob);
+            if (found) {
                 break;
             }
         }
-        return mandatory;
+        return found;
     }
+
+    /**
+     * The file matches the glob?
+     * @param related The related name of the file
+     * @param glob The glob
+     * @return TRUE if matches
+     */
+    private static boolean matches(final String related, final String glob) {
+        return FileSystems.getDefault().getPathMatcher(
+            String.format("glob:%s", glob)
+        ).matches(Paths.get(related));
+    }
+
 }

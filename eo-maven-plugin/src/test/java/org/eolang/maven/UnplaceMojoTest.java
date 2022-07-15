@@ -46,6 +46,7 @@ public final class UnplaceMojoTest {
         final Path list = temp.resolve("placed.json");
         new MonoTojos(new Csv(list)).add(foo.toString())
             .set("kind", "class")
+            .set("related", "---")
             .set("hash", new FileHash(foo));
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
