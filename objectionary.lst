@@ -4,9 +4,10 @@ objectionary/tests/org/eolang/runtime-tests.eo
 objectionary/tests/org/eolang/switch-tests.eo
 objectionary/tests/org/eolang/io/stdout-tests.eo
 objectionary/tests/org/eolang/junit-tests.eo
+objectionary/tests/org/eolang/collections/bytes-as-array-tests.eo
 objectionary/tests/org/eolang/collections/list-tests.eo
-objectionary/tests/org/eolang/collections/map-test.eo
-objectionary/tests/org/eolang/collections/multimap-test.eo
+objectionary/tests/org/eolang/collections/multimap-tests.eo
+objectionary/tests/org/eolang/collections/map-tests.eo
 objectionary/tests/org/eolang/txt/regex-tests.eo
 objectionary/tests/org/eolang/txt/sscanf-tests.eo
 objectionary/tests/org/eolang/txt/text-tests.eo
@@ -33,6 +34,7 @@ objectionary/objects/org/eolang/nop.eo
 objectionary/objects/org/eolang/io/stdin.eo
 objectionary/objects/org/eolang/io/stdout.eo
 objectionary/objects/org/eolang/collections/multimap.eo
+objectionary/objects/org/eolang/collections/bytes-as-array.eo
 objectionary/objects/org/eolang/collections/map.eo
 objectionary/objects/org/eolang/collections/list.eo
 objectionary/objects/org/eolang/txt/sprintf.eo

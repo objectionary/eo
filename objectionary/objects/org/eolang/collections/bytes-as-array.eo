@@ -20,35 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
++package org.eolang.collections
 +home https://github.com/objectionary/eo
 +version 0.23.19
-+alias org.eolang.collections.list
 +rt jvm org.eolang:eo-runtime:0.23.19
 
-# Regular expression in Perl format.
-# Free attribute "r" is a string represenation of regex object.
-# It starts and ends with slash (e.g. "/(your-pattern)/s"),
-# Also it can be specified by the flag option,
-# e.g. (QQ.txt.regex "/(word)/i").compile.matches "WORD".
-# other flags:
-# /d - Enables Unix lines mode.
-# /i - Enables case-insensitive matching.
-# /x - Permits whitespace and comments in pattern.
-# /m - Enables multiline mode.
-# /s - Enables dotall mode.
-# /u - Enables Unicode-aware case folding.
-#
-[r] > regex
-
-  [] > compile /regex
-
-  # Match the text and return the array of matched groups
-  [txt] > match /array
-
-  # Matches
-  [txt] > matches
-    not. > @
-      is-empty.
-        list (^.match txt)
-
+[b] > bytes-as-array
+  slice-byte > @
+    *
+    0
+  [a i] > slice-byte
+    if. > @
+      i.lt
+        b.size
+      ^.slice-byte
+        a.with (b.slice i 1)
+        i.plus 1
+      a

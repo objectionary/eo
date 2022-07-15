@@ -22,8 +22,10 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.18
-+rt jvm org.eolang:eo-runtime:0.23.18
++alias org.eolang.collections.bytes-as-array
++alias org.eolang.collections.list
++version 0.23.19
++rt jvm org.eolang:eo-runtime:0.23.19
 
 [] > bytes
 
@@ -76,7 +78,17 @@
     ^ > @
 
   # Converts this to hash
-  [] > as-hash /int
+  [] > as-hash
+    reduce. > @
+      list
+        bytes-as-array ^
+      1
+      [a b]
+        plus. > @
+          times.
+            31
+            a
+          b.as-int
 
   # Concatenation of two byte sequences:
   # the current and the provided one,

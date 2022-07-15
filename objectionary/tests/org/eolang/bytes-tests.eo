@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.23.18
++version 0.23.19
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -371,7 +371,7 @@
 [] > bytes-as-hash-value
   assert-that > @
     02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55.as-hash
-    $.equal-to -1535034036
+    $.equal-to -1932520235722523316
 
 [] > xor-as-int
   assert-that > @
