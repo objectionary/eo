@@ -137,7 +137,7 @@ public final class UnplaceMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "Just %d binari(es) out of %d deleted in %s",
-                tojos.size(), tojos.size(), Save.rel(this.placed.toPath())
+                deleted, tojos.size(), Save.rel(this.placed.toPath())
             );
         }
     }
@@ -165,14 +165,9 @@ public final class UnplaceMojo extends SafeMojo {
                     related
                 );
             }
-            Files.delete(path);
-            Logger.debug(this, "Binary %s deleted", Save.rel(path));
+            UnplaceMojo.delete(path);
             unplaced += 1;
-            final Path dir = path.getParent();
-            if (dir.toFile().list().length == 0) {
-                Files.delete(dir);
-                Logger.debug(this, "Directory %s deleted", Save.rel(dir));
-            }
+            Logger.debug(this, "Binary %s deleted", Save.rel(path));
         }
         return unplaced;
     }
@@ -184,16 +179,18 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private int keepThem(final Iterable<Tojo> tojos) throws IOException {
-        int unplaced = 0;
+        int deleted = 0;
+        int remained = 0;
         for (final Tojo tojo : tojos) {
             final String related = tojo.get(PlaceMojo.ATTR_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             if (!this.selectivelyPlace.isEmpty()
                 && UnplaceMojo.inside(related, this.selectivelyPlace)) {
+                remained += 1;
                 continue;
             }
-            Files.delete(path);
-            unplaced += 1;
+            UnplaceMojo.delete(path);
+            deleted += 1;
             Logger.debug(
                 this,
                 // @checkstyle LineLength (1 line)
@@ -201,7 +198,13 @@ public final class UnplaceMojo extends SafeMojo {
                 related
             );
         }
-        return unplaced;
+        Logger.info(
+            this,
+            // @checkstyle LineLength (1 line)
+            "Because of 'selectivelyPlace' list of globs: %d files remained and %d deleted",
+            remained, deleted
+        );
+        return deleted;
     }
 
     /**
@@ -231,6 +234,20 @@ public final class UnplaceMojo extends SafeMojo {
         return FileSystems.getDefault().getPathMatcher(
             String.format("glob:%s", glob)
         ).matches(Paths.get(related));
+    }
+
+    /**
+     * Delete file and its parent if it's empty.
+     * @param file The file
+     * @throws IOException If fails
+     */
+    private static void delete(final Path file) throws IOException {
+        Files.delete(file);
+        final Path dir = file.getParent();
+        if (dir.toFile().list().length == 0) {
+            Files.delete(dir);
+            Logger.debug(UnplaceMojo.class, "Directory %s deleted too", Save.rel(dir));
+        }
     }
 
 }
