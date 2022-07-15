@@ -23,37 +23,39 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.Md5DigestOf;
+import org.cactoos.bytes.UncheckedBytes;
+import org.cactoos.io.InputOf;
 
 /**
- * Test case for {@link UnplaceMojo}.
+ * MD5 hash of a file (its content).
  *
- * @since 0.1
+ * @since 0.24
  */
-public final class UnplaceMojoTest {
+final class FileHash {
 
-    @Test
-    public void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo.class");
-        new Save("abc", foo).save();
-        final Path list = temp.resolve("placed.json");
-        new MonoTojos(new Csv(list)).add(foo.toString())
-            .set("kind", "class")
-            .set("hash", new FileHash(foo));
-        new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .execute();
-        MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(false)
+    /**
+     * The file.
+     */
+    private final Path file;
+
+    /**
+     * Ctor.
+     * @param path The name of the file
+     */
+    FileHash(final Path path) {
+        this.file = path;
+    }
+
+    @Override
+    public String toString() {
+        return new String(
+            new UncheckedBytes(
+                new Md5DigestOf(new InputOf(new BytesOf(this.file)))
+            ).asBytes()
         );
     }
+
 }

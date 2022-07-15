@@ -81,7 +81,7 @@ public final class UnplaceMojo extends SafeMojo {
             int unplaced = 0;
             for (final Tojo tojo : tojos) {
                 final Path path = Paths.get(tojo.get(Tojos.KEY));
-                if (Long.parseLong(tojo.get("length")) != path.toFile().length()) {
+                if (!tojo.get("hash").equals(new FileHash(path).toString())) {
                     Logger.warn(
                         this, "The binary %s looks different, won't unplace",
                         Save.rel(path)

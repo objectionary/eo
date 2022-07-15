@@ -114,10 +114,7 @@ public final class PlaceMojo extends SafeMojo {
                         && "jar".equals(row.get("kind"))
                 );
                 if (!before.isEmpty()) {
-                    Logger.info(
-                        this, "Binaries from %s have already been placed",
-                        deps.size()
-                    );
+                    Logger.info(this, "Binaries from %s have already been placed", dep);
                     continue;
                 }
                 copied += this.place(home, dep);
@@ -194,7 +191,7 @@ public final class PlaceMojo extends SafeMojo {
             new Save(new InputOf(file), target).save();
             this.catalog().add(target.toString())
                 .set("kind", "class")
-                .set("length", target.toFile().length())
+                .set("hash", new FileHash(target))
                 .set("dep", dep);
             ++copied;
         }
