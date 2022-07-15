@@ -54,6 +54,21 @@ import org.cactoos.set.SetOf;
 public final class PlaceMojo extends SafeMojo {
 
     /**
+     * Attr in CSV.
+     */
+    public static final String ATTR_RELATED = "related";
+
+    /**
+     * Attr in CSV.
+     */
+    public static final String ATTR_KIND = "kind";
+
+    /**
+     * Attr in CSV.
+     */
+    public static final String ATTR_HASH = "hash";
+
+    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -190,10 +205,10 @@ public final class PlaceMojo extends SafeMojo {
             }
             new Save(new InputOf(file), target).save();
             this.catalog().add(target.toString())
-                .set("kind", "class")
-                .set("hash", new FileHash(target))
+                .set(PlaceMojo.ATTR_KIND, "class")
+                .set(PlaceMojo.ATTR_HASH, new FileHash(target))
                 .set(
-                    "related",
+                    PlaceMojo.ATTR_RELATED,
                     target.toString().substring(
                         this.outputDir.toString().length() + 1
                     )

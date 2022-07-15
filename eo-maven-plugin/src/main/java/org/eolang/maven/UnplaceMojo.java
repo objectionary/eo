@@ -112,22 +112,48 @@ public final class UnplaceMojo extends SafeMojo {
     public void placeThem() throws IOException {
         final Collection<Tojo> tojos = new Catalog(
             this.placed.toPath(), this.placedFormat
-        ).make().select(t -> "class".equals(t.get("kind")));
+        ).make().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
+        final int deleted;
+        if (this.selectivelyPlace.isEmpty()) {
+            deleted = this.killThem(tojos);
+        } else {
+            deleted = this.keepThem(tojos);
+        }
+        if (tojos.isEmpty()) {
+            Logger.info(
+                this, "No binaries were placed into %s, nothing to uplace",
+                Save.rel(this.placed.toPath())
+            );
+        } else if (deleted == 0) {
+            Logger.info(
+                this, "No binaries out of %d deleted in %s",
+                tojos.size(), Save.rel(this.placed.toPath())
+            );
+        } else if (deleted == tojos.size()) {
+            Logger.info(
+                this, "All %d binari(es) deleted, which were found in %s",
+                tojos.size(), Save.rel(this.placed.toPath())
+            );
+        } else {
+            Logger.info(
+                this, "Just %d binari(es) out of %d deleted in %s",
+                tojos.size(), tojos.size(), Save.rel(this.placed.toPath())
+            );
+        }
+    }
+
+    /**
+     * Keep those we must keep selectively.
+     * @param tojos All binaries found
+     * @return Number of files deleted
+     * @throws IOException If fails
+     */
+    private int killThem(final Iterable<Tojo> tojos) throws IOException {
         int unplaced = 0;
         for (final Tojo tojo : tojos) {
-            final String related = tojo.get("related");
-            if (!this.selectivelyPlace.isEmpty()
-                && UnplaceMojo.inside(related, this.selectivelyPlace)) {
-                Logger.warn(
-                    this,
-                    // @checkstyle LineLength (1 line)
-                    "The binary %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                    related
-                );
-                continue;
-            }
+            final String related = tojo.get(PlaceMojo.ATTR_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
-            if (!tojo.get("hash").equals(new FileHash(path).toString())) {
+            if (!tojo.get(PlaceMojo.ATTR_HASH).equals(new FileHash(path).toString())) {
                 if (!UnplaceMojo.inside(related, this.mandatoryUnplace)) {
                     Logger.warn(this, "The binary %s looks different, won't unplace", related);
                     continue;
@@ -148,27 +174,34 @@ public final class UnplaceMojo extends SafeMojo {
                 Logger.debug(this, "Directory %s deleted", Save.rel(dir));
             }
         }
-        if (tojos.isEmpty()) {
-            Logger.info(
-                this, "No binaries were placed into %s, nothing to uplace",
-                Save.rel(this.placed.toPath())
-            );
-        } else if (unplaced == 0) {
-            Logger.info(
-                this, "No binaries out of %d deleted in %s",
-                tojos.size(), Save.rel(this.placed.toPath())
-            );
-        } else if (unplaced == tojos.size()) {
-            Logger.info(
-                this, "All %d binari(es) deleted, which were found in %s",
-                tojos.size(), Save.rel(this.placed.toPath())
-            );
-        } else {
-            Logger.info(
-                this, "Just %d binari(es) out of %d deleted in %s",
-                tojos.size(), tojos.size(), Save.rel(this.placed.toPath())
+        return unplaced;
+    }
+
+    /**
+     * Keep those we must keep selectively.
+     * @param tojos All binaries found
+     * @return Number of files deleted
+     * @throws IOException If fails
+     */
+    private int keepThem(final Iterable<Tojo> tojos) throws IOException {
+        int unplaced = 0;
+        for (final Tojo tojo : tojos) {
+            final String related = tojo.get(PlaceMojo.ATTR_RELATED);
+            final Path path = Paths.get(tojo.get(Tojos.KEY));
+            if (!this.selectivelyPlace.isEmpty()
+                && UnplaceMojo.inside(related, this.selectivelyPlace)) {
+                continue;
+            }
+            Files.delete(path);
+            unplaced += 1;
+            Logger.debug(
+                this,
+                // @checkstyle LineLength (1 line)
+                "The binary %s is removed since it doesn't match 'selectivelyPlace' list of globs",
+                related
             );
         }
+        return unplaced;
     }
 
     /**
