@@ -192,6 +192,12 @@ public final class PlaceMojo extends SafeMojo {
             this.catalog().add(target.toString())
                 .set("kind", "class")
                 .set("hash", new FileHash(target))
+                .set(
+                    "related",
+                    target.toString().substring(
+                        this.outputDir.toString().length() + 1
+                    )
+                )
                 .set("dep", dep);
             ++copied;
         }

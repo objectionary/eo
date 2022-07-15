@@ -28,19 +28,23 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.set.SetOf;
 
 /**
  * It deletes binary files, which were previously copied by "place" mojo.
  *
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 @Mojo(
     name = "unplace",
@@ -72,52 +76,18 @@ public final class UnplaceMojo extends SafeMojo {
     @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
     private String placedFormat = "csv";
 
+    /**
+     * List of inclusion GLOB filters for unplacing.
+     * @since 0.24
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private Set<String> mandatoryUnplace = new SetOf<>();
+
     @Override
     public void exec() throws IOException {
         if (this.placed.exists()) {
-            final Collection<Tojo> tojos = new Catalog(
-                this.placed.toPath(), this.placedFormat
-            ).make().select(t -> "class".equals(t.get("kind")));
-            int unplaced = 0;
-            for (final Tojo tojo : tojos) {
-                final Path path = Paths.get(tojo.get(Tojos.KEY));
-                if (!tojo.get("hash").equals(new FileHash(path).toString())) {
-                    Logger.warn(
-                        this, "The binary %s looks different, won't unplace",
-                        Save.rel(path)
-                    );
-                    continue;
-                }
-                Files.delete(path);
-                Logger.debug(this, "Binary %s deleted", Save.rel(path));
-                unplaced += 1;
-                final Path dir = path.getParent();
-                if (dir.toFile().list().length == 0) {
-                    Files.delete(dir);
-                    Logger.debug(this, "Directory %s deleted", Save.rel(dir));
-                }
-            }
-            if (tojos.isEmpty()) {
-                Logger.info(
-                    this, "No binaries were placed into %s, nothing to uplace",
-                    Save.rel(this.placed.toPath())
-                );
-            } else if (unplaced == 0) {
-                Logger.info(
-                    this, "No binaries out of %d deleted in %s",
-                    tojos.size(), Save.rel(this.placed.toPath())
-                );
-            } else if (unplaced == tojos.size()) {
-                Logger.info(
-                    this, "All %d binari(es) deleted, which were found in %s",
-                    tojos.size(), Save.rel(this.placed.toPath())
-                );
-            } else {
-                Logger.info(
-                    this, "Just %d binari(es) out of %d deleted in %s",
-                    tojos.size(), tojos.size(), Save.rel(this.placed.toPath())
-                );
-            }
+            this.placeThem();
         } else {
             Logger.info(
                 this, "The list of placed binaries is absent: %s",
@@ -126,4 +96,77 @@ public final class UnplaceMojo extends SafeMojo {
         }
     }
 
+    /**
+     * Place what's necessary.
+     * @throws IOException If fails
+     */
+    public void placeThem() throws IOException {
+        final Collection<Tojo> tojos = new Catalog(
+            this.placed.toPath(), this.placedFormat
+        ).make().select(t -> "class".equals(t.get("kind")));
+        int unplaced = 0;
+        for (final Tojo tojo : tojos) {
+            final Path path = Paths.get(tojo.get(Tojos.KEY));
+            if (!tojo.get("hash").equals(new FileHash(path).toString())) {
+                final String related = tojo.get("related");
+                if (!this.mandatory(related)) {
+                    Logger.warn(this, "The binary %s looks different, won't unplace", related);
+                    continue;
+                }
+                Logger.info(
+                    this,
+                    // @checkstyle LineLength (1 line)
+                    "The binary %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
+                    related
+                );
+            }
+            Files.delete(path);
+            Logger.debug(this, "Binary %s deleted", Save.rel(path));
+            unplaced += 1;
+            final Path dir = path.getParent();
+            if (dir.toFile().list().length == 0) {
+                Files.delete(dir);
+                Logger.debug(this, "Directory %s deleted", Save.rel(dir));
+            }
+        }
+        if (tojos.isEmpty()) {
+            Logger.info(
+                this, "No binaries were placed into %s, nothing to uplace",
+                Save.rel(this.placed.toPath())
+            );
+        } else if (unplaced == 0) {
+            Logger.info(
+                this, "No binaries out of %d deleted in %s",
+                tojos.size(), Save.rel(this.placed.toPath())
+            );
+        } else if (unplaced == tojos.size()) {
+            Logger.info(
+                this, "All %d binari(es) deleted, which were found in %s",
+                tojos.size(), Save.rel(this.placed.toPath())
+            );
+        } else {
+            Logger.info(
+                this, "Just %d binari(es) out of %d deleted in %s",
+                tojos.size(), tojos.size(), Save.rel(this.placed.toPath())
+            );
+        }
+    }
+
+    /**
+     * This unplacing is mandatory?
+     * @param related The related name of the file
+     * @return TRUE if mandatory
+     */
+    private boolean mandatory(final String related) {
+        boolean mandatory = false;
+        for (final String glob : this.mandatoryUnplace) {
+            mandatory = FileSystems.getDefault().getPathMatcher(
+                String.format("glob:%s", glob)
+            ).matches(Paths.get(related));
+            if (mandatory) {
+                break;
+            }
+        }
+        return mandatory;
+    }
 }

@@ -88,6 +88,11 @@ SOFTWARE.
               <goal>unplace</goal>
               <goal>unspile</goal>
             </goals>
+            <configuration>
+              <mandatoryUnplace>
+                <path>EOorg/EOeolang/EOhamcrest/**</path>
+              </mandatoryUnplace>
+            </configuration>
           </execution>
           <execution>
             <id>test-compile</id>
