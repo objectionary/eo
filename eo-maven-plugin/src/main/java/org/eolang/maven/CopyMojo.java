@@ -109,7 +109,17 @@ public final class CopyMojo extends SafeMojo {
                 )
             ).save();
         }
-        Logger.info(this, "%d sources copied", sources.size());
+        if (sources.isEmpty()) {
+            Logger.warn(
+                this, "No sources copied from %s to %s",
+                Save.rel(this.sourcesDir.toPath()), Save.rel(target)
+            );
+        } else {
+            Logger.info(
+                this, "%d sources copied from %s to %s",
+                sources.size(), Save.rel(this.sourcesDir.toPath()), Save.rel(target)
+            );
+        }
     }
 
 }

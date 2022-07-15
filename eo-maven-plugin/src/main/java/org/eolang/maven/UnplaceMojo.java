@@ -29,6 +29,7 @@ import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -78,7 +79,14 @@ public final class UnplaceMojo extends SafeMojo {
                 this.placed.toPath(), this.placedFormat
             ).make().select(t -> true);
             for (final Tojo tojo : tojos) {
-                Files.delete(Paths.get(tojo.get(Tojos.KEY)));
+                final Path path = Paths.get(tojo.get(Tojos.KEY));
+                Files.delete(path);
+                Logger.debug(this, "Binary %s deleted", Save.rel(path));
+                final Path dir = path.getParent();
+                if (dir.toFile().list().length == 0) {
+                    Files.delete(dir);
+                    Logger.debug(this, "Directory %s deleted", Save.rel(dir));
+                }
             }
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",

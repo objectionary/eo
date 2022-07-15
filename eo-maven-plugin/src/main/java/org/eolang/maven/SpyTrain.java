@@ -62,10 +62,12 @@ final class SpyTrain extends TrEnvelope {
                                     String.format("%02d-%s.xml", pos, log)
                                 )
                             ).saveQuietly();
-                            Logger.debug(
-                                SpyTrain.class, "Step #%d by %s:\n%s",
-                                pos, log, xml
-                            );
+                            if (Logger.isDebugEnabled(SpyTrain.class)) {
+                                Logger.debug(
+                                    SpyTrain.class, "Step #%d by %s:\n%s",
+                                    pos, log, xml
+                                );
+                            }
                             return xml;
                         }
                     )

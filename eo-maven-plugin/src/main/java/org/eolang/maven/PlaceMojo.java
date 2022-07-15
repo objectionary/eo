@@ -146,6 +146,10 @@ public final class PlaceMojo extends SafeMojo {
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
+                Logger.debug(
+                    this, "File %s is not a binary, but a source, won't place it",
+                    Save.rel(file)
+                );
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
