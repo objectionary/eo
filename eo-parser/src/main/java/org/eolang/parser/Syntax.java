@@ -122,9 +122,6 @@ public final class Syntax {
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
         new Schema(dom).check();
-        if (Logger.isDebugEnabled(this)) {
-            Logger.debug(this, "Raw XML:\n%s", dom.toString());
-        }
         new Unchecked<>(
             new LengthOf(
                 new TeeInput(
