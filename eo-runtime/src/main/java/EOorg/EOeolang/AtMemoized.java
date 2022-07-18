@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.Attr;
@@ -32,6 +35,7 @@ import org.eolang.Phi;
  * An attribute that knows how to memoize an object.
  *
  * @since 0.24
+ * @checkstyle TypeNameCheck (5 lines)
  */
 public final class AtMemoized implements Attr {
 

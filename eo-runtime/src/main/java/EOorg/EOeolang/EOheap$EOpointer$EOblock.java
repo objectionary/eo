@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.util.Arrays;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * HEAP.POINTER.BLOCK.
  *
  * @since 0.19
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "heap.pointer.block")
 public class EOheap$EOpointer$EOblock extends PhDefault {
@@ -57,7 +61,8 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                 this,
                 rho -> {
                     final Phi pointer = rho.attr("σ").get();
-                    final int address = new Param(pointer, "address").strong(Long.class).intValue();
+                    final int address =
+                        new Param(pointer, "address").strong(Long.class).intValue();
                     final int len = new Param(rho, "len").strong(Long.class).intValue();
                     final byte[] chunk = Arrays.copyOfRange(
                         Heaps.INSTANCE.data(pointer),

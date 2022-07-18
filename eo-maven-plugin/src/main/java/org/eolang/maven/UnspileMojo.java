@@ -30,7 +30,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -76,21 +78,40 @@ public final class UnspileMojo extends SafeMojo {
     /**
      * List of inclusion GLOB filters for finding .class files.
      */
-    @Parameter(property = "eo.includes")
-    private Set<String> includes;
+    @Parameter
+    private Set<String> includes = new SetOf<>("**/*.class");
 
     @Override
     public void exec() throws IOException {
-        if (this.includes == null) {
-            this.includes = new SetOf<>("**/*.class");
-        }
-        new Walk(this.classesDir.toPath()).stream()
+        final List<Path> all = new Walk(this.classesDir.toPath()).stream()
             .filter(
                 file -> this.includes.stream().anyMatch(
                     glob -> UnspileMojo.matcher(glob).matches(file)
                 )
             )
-            .forEach(this::delete);
+            .collect(Collectors.toList());
+        int unspiled = 0;
+        for (final Path path : all) {
+            if (this.delete(path)) {
+                unspiled += 1;
+            }
+        }
+        if (all.isEmpty()) {
+            Logger.warn(
+                this, "No .class files in %s including %s, nothing to unspile",
+                Save.rel(this.classesDir.toPath()), this.includes
+            );
+        } else if (unspiled == 0) {
+            Logger.info(
+                this, "No .class files out of %d deleted in %s including %s",
+                all.size(), Save.rel(this.classesDir.toPath()), this.includes
+            );
+        } else {
+            Logger.info(
+                this, "Deleted %d .class files out of %d in %s",
+                unspiled, all.size(), Save.rel(this.classesDir.toPath())
+            );
+        }
     }
 
     /**
@@ -106,25 +127,31 @@ public final class UnspileMojo extends SafeMojo {
     /**
      * Delete .class file if .java file is present.
      * @param file EO file
+     * @return TRUE if deleted
+     * @throws IOException If fails
      */
-    private void delete(final Path file) {
+    private boolean delete(final Path file) throws IOException {
         final String name = file.toString().substring(
             this.classesDir.toString().length() + 1
         );
         final Path java = this.generatedDir.toPath().resolve(
             name.replaceAll("\\.class$", ".java")
         );
+        boolean deleted = false;
         if (Files.exists(java)) {
-            try {
-                Files.delete(file);
-            } catch (final IOException ex) {
-                throw new IllegalStateException(ex);
-            }
-            Logger.info(
+            Files.delete(file);
+            Logger.debug(
                 this, "Deleted %s since %s is present",
                 Save.rel(file), Save.rel(java)
             );
+            deleted = true;
+        } else {
+            Logger.debug(
+                this, "Not deleted %s since %s is absent",
+                Save.rel(file), Save.rel(java)
+            );
         }
+        return deleted;
     }
 
 }

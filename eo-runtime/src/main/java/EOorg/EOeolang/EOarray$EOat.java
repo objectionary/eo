@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * AT.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "array.at")
 public class EOarray$EOat extends PhDefault {
@@ -60,6 +64,7 @@ public class EOarray$EOat extends PhDefault {
                             new EOerror(Phi.Φ), "msg",
                             new Data.ToPhi(
                                 String.format(
+                                    // @checkstyle LineLengthCheck (1 line)
                                     "Can't at() the %dth element of the array, there are just %d of them",
                                     idx, array.length
                                 )

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Eugene Darashkevich
+ * Copyright (c) 2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,57 +22,69 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOcollections;
-
-import org.eolang.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 
+/**
+ * Rebuild of multimap.
+ * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
+ */
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public class EOmultimap$EOrebuild extends PhDefault {
 
+    /**
+     * Ctor.
+     * @param sigma Sigma.
+     */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOmultimap$EOrebuild(final Phi sigma) {
         super(sigma);
         this.add("harr", new AtFree());
         this.add("arr", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi[] harr = new Dataized(rho.attr("harr").get()).take(Phi[].class);
-            final Phi[] arr = new Dataized(rho.attr("arr").get()).take(Phi[].class);
-
-            final List<Integer> hashes = new ArrayList<>(harr.length);
-
-            for (final Phi item : harr) {
-                final Long x = new Dataized(item).take(Long.class);
-                hashes.add(Math.toIntExact(x));
-            }
-
-            // This value can be changed for memory or speed optimization
-            final int tableSize = hashes.size();
-
-            final List<List<Phi>> table = new ArrayList<>();
-
-            for (int i = 0; i < tableSize; ++i) {
-                table.add(new ArrayList<>());
-            }
-
-            for (int i = 0; i < arr.length; ++i) {
-                table.get(hashes.get(i) % tableSize).add(arr[i]);
-            }
-
-            final Phi[] result = new Phi[tableSize];
-
-            for (int i = 0; i < tableSize; ++i) {
-                final Phi[] array = new Phi[table.get(i).size()];
-                for (int j = 0; j < table.get(i).size(); ++j) {
-                    array[j] = table.get(i).get(j);
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] harr = new Dataized(rho.attr("harr").get()).take(Phi[].class);
+                    final Phi[] arr = new Dataized(rho.attr("arr").get()).take(Phi[].class);
+                    final List<Integer> hashes = new ArrayList<>(harr.length);
+                    for (final Phi item : harr) {
+                        final Long x = new Dataized(item).take(Long.class);
+                        hashes.add(Math.toIntExact(x));
+                    }
+                    final int size = hashes.size();
+                    final List<List<Phi>> table = new ArrayList<>(0);
+                    for (int index = 0; index < size; ++index) {
+                        table.add(new ArrayList<>(0));
+                    }
+                    for (int index = 0; index < arr.length; ++index) {
+                        table.get(hashes.get(index) % size).add(arr[index]);
+                    }
+                    final Phi[] result = new Phi[size];
+                    for (int index = 0; index < size; ++index) {
+                        final Phi[] array = new Phi[table.get(index).size()];
+                        for (int j = 0; j < table.get(index).size(); ++j) {
+                            array[j] = table.get(index).get(j);
+                        }
+                        result[index] = new Data.ToPhi(array);
+                    }
+                    return new Data.ToPhi(result);
                 }
-                result[i] = new Data.ToPhi(array);
-            }
-
-            return new Data.ToPhi(result);
-        }));
+            )
+        );
     }
 
 }

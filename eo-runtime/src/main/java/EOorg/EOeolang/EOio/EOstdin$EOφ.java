@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
@@ -38,6 +41,7 @@ import org.eolang.Phi;
  * Standard Input. Consumes all data.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 public class EOstdin$EOφ extends PhDefault {
 
@@ -53,9 +57,9 @@ public class EOstdin$EOφ extends PhDefault {
                 this,
                 rho -> {
                     try (BufferedInputStream bis = new BufferedInputStream(System.in);
-                         ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
+                        ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
                         while (true) {
-                            int b = bis.read();
+                            final int b = bis.read();
                             if (b == -1) {
                                 break;
                             }

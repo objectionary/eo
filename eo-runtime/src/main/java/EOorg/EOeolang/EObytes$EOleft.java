@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.math.BigInteger;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * BYTES.LEFT.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.left")
 public class EObytes$EOleft extends PhDefault {
@@ -56,7 +60,7 @@ public class EObytes$EOleft extends PhDefault {
                     new Param(rho)
                         .fromBytes(BigInteger.class)
                         .shiftLeft(
-                           new Param(rho, "x").strong(Long.class).intValue()
+                            new Param(rho, "x").strong(Long.class).intValue()
                         ).toByteArray()
                 )
             )

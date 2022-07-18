@@ -113,19 +113,16 @@ public final class Param {
         final Object res;
         if (BigInteger.class.equals(type)) {
             res = new BigInteger(ret);
-        }
-        else if (Long.class.equals(type)) {
+        } else if (Long.class.equals(type)) {
             if (ret.length == 1) {
                 res = (long) ret[0];
-            }
-            else {
+            } else {
                 final byte[] cpy = new byte[Long.BYTES];
                 int posx = cpy.length;
                 int posy = ret.length;
                 while (posy-- > 0 && posx-- > 0) {
                     cpy[posx] = ret[posy];
                 }
-
                 if (ret[0] < 0) {
                     while (posx-- > 0) {
                         cpy[posx] = -1;
@@ -133,14 +130,11 @@ public final class Param {
                 }
                 res = ByteBuffer.wrap(cpy).getLong();
             }
-        }
-        else if (Character.class.equals(type)) {
+        } else if (Character.class.equals(type)) {
             res = ByteBuffer.wrap(ret).getChar();
-        }
-        else if (Double.class.equals(type)) {
+        } else if (Double.class.equals(type)) {
             res = ByteBuffer.wrap(ret).getDouble();
-        }
-        else {
+        } else {
             throw new ExFailure(
                 String.format(
                     "Unsupported type: '%s'",
@@ -160,11 +154,9 @@ public final class Param {
         final byte[] res;
         if (Long.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Long.BYTES).putLong((long) ret).array();
-        }
-        else if (Character.class.isInstance(ret)) {
+        } else if (Character.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
-        }
-        else if (Double.class.isInstance(ret)) {
+        } else if (Double.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
         } else {
             throw new ExFailure(

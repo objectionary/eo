@@ -31,7 +31,6 @@ objects
 
 object
   :
-  (COMMENT EOL)*
   (
     abstraction
     |
@@ -49,6 +48,7 @@ object
 
 abstraction
   :
+  (COMMENT EOL)*
   attributes
   (
     (suffix (SPACE SLASH (NAME | QUESTION))?)

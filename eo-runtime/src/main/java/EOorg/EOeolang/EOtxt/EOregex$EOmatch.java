@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import java.util.regex.Matcher;
@@ -38,6 +41,7 @@ import org.eolang.XmirObject;
  * REGEX.MATCH.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.match")
 public class EOregex$EOmatch extends PhDefault {
@@ -59,7 +63,8 @@ public class EOregex$EOmatch extends PhDefault {
                     final String txt = new Param(rho, "txt").strong(String.class);
                     final Matcher matcher = Pattern.compile(r).matcher(txt);
                     if (matcher.matches()) {
-                        final Phi[] dest = new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
+                        final Phi[] dest =
+                            new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
                         return new Data.ToPhi(dest);
                     } else {
                         return new Data.ToPhi(new Phi[]{});

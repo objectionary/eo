@@ -23,17 +23,18 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import EOorg.EOeolang.EOerror;
 
 /**
  * Builds a phi performing reduction operation on varargs parameter.
- * <br/>The expression iterates over varargs (including rho) one by one performing provided reduction operation.
+ * <br/>The expression iterates over varargs (including rho)
+ * one by one performing provided reduction operation.
  * Type checking is done for each vararg.
  * <p/>Definition example:
  * <code><pre>
- *     final VarargExpr<Long> expr = new VarargExpr<>(
+ *     final VarargExpr&lt;Long&gt; expr = new VarargExpr<>(
  *         "plus",
  *         "x",
  *         Long.class,
@@ -43,7 +44,7 @@ import EOorg.EOeolang.EOerror;
  * @param <T> Type of arguments
  * @since 1.0
  */
-public class ExprReduce<T> implements Expr {
+public final class ExprReduce<T> implements Expr {
 
     /**
      * Param name with varargs.
@@ -73,17 +74,19 @@ public class ExprReduce<T> implements Expr {
     /**
      * Ctor.
      *
-     * @param oper       Operation name
-     * @param param      Name of parameter with varargs
-     * @param type       Type of varargs
-     * @param reduction  Reduction operation on consecutive varags
+     * @param oper Operation name
+     * @param param Name of parameter with varargs
+     * @param type Type of varargs
+     * @param reduction Reduction operation on consecutive varags
      * @param validation Validation function
      */
-    public ExprReduce(final String oper,
-                      final String param,
-                      final Class<T> type,
-                      final BiFunction<T, T, T> reduction,
-                      final Function<T, String> validation) {
+    public ExprReduce(
+        final String oper,
+        final String param,
+        final Class<T> type,
+        final BiFunction<T, T, T> reduction,
+        final Function<T, String> validation
+    ) {
         this.param = param;
         this.type = type;
         this.reduction = reduction;
@@ -93,15 +96,17 @@ public class ExprReduce<T> implements Expr {
 
     /**
      * Ctor.
-     * @param oper
-     * @param param
-     * @param type
-     * @param reduction
+     * @param oper Peration name
+     * @param param Name of parameter with varargs
+     * @param type Type of varargs
+     * @param reduction Reduction operation on consecutive varargs
      */
-    public ExprReduce(final String oper,
-                      final String param,
-                      final Class<T> type,
-                      final BiFunction<T, T, T> reduction) {
+    public ExprReduce(
+        final String oper,
+        final String param,
+        final Class<T> type,
+        final BiFunction<T, T, T> reduction
+    ) {
         this(
             oper,
             param,
@@ -112,7 +117,7 @@ public class ExprReduce<T> implements Expr {
     }
 
     @Override
-    public Phi get(Phi rho) throws Exception {
+    public Phi get(final Phi rho) throws Exception {
         Phi phi = null;
         boolean error = false;
         T acc = new Param(rho).strong(this.type);
@@ -127,7 +132,7 @@ public class ExprReduce<T> implements Expr {
                 error = true;
                 break;
             }
-            T typed = type.cast(val);
+            final T typed = this.type.cast(val);
             final String msg = this.validation.apply(typed);
             if (!msg.isEmpty()) {
                 phi = new EOerror.PhWithError(
@@ -137,7 +142,7 @@ public class ExprReduce<T> implements Expr {
                 error = true;
                 break;
             }
-            acc = reduction.apply(acc, typed);
+            acc = this.reduction.apply(acc, typed);
         }
         if (!error) {
             phi = new Data.ToPhi(acc);

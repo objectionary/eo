@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Eugene Darashkevich
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import java.nio.file.Path;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.Md5DigestOf;
+import org.cactoos.bytes.UncheckedBytes;
+import org.cactoos.io.InputOf;
 
 /**
- * Bool as hash.
- * @since 0.1
+ * MD5 hash of a file (its content).
+ *
+ * @since 0.24
  */
-@XmirObject(oname = "bool.as-hash")
-public class EObool$EOas_hash extends PhDefault {
+final class FileHash {
+
+    /**
+     * The file.
+     */
+    private final Path file;
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param path The name of the file
      */
-    public EObool$EOas_hash(final Phi sigma) {
-        super(sigma);
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> new Data.ToPhi(
-                        (long) new Param(rho).strong(Boolean.class).hashCode()
-                )
-            )
+    FileHash(final Path path) {
+        this.file = path;
+    }
+
+    @Override
+    public String toString() {
+        return new String(
+            new UncheckedBytes(
+                new Md5DigestOf(new InputOf(new BytesOf(this.file)))
+            ).asBytes()
         );
     }
+
 }

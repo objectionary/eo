@@ -83,4 +83,10 @@
   [] > as-bytes /bytes
 
   # Converts this to hash
-  [] > as-hash /int
+  [] > as-hash
+    as-int. > @
+      xor.
+        as-bytes
+        right.
+          as-bytes
+          32

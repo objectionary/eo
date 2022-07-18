@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.nio.ByteBuffer;
@@ -36,6 +39,7 @@ import org.eolang.XmirObject;
  * FLOAT.AS-BYTES.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "float.as-bytes")
 public class EOfloat$EOas_bytes extends PhDefault {

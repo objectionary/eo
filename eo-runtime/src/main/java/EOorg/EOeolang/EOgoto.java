@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * GOTO.
  *
  * @since 0.17
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "goto")
 public class EOgoto extends PhDefault {
@@ -160,6 +164,7 @@ public class EOgoto extends PhDefault {
          * Serialization identifier.
          */
         private static final long serialVersionUID = 1735493012609760997L;
+
         /**
          * Sigma.
          */
@@ -184,10 +189,12 @@ public class EOgoto extends PhDefault {
          * Serialization identifier.
          */
         private static final long serialVersionUID = 1501718836588849754L;
+
         /**
          * Sigma.
          */
         public final Phi sigma;
+
         /**
          * Return.
          */

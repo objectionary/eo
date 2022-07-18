@@ -20,63 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.math
++package org.eolang.collections
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.math.random
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > random-with-seed
-  random 51 > r
-  assert-that > @
-    r.next
-    $.not
-      $.equal-to (r.next.next)
-
-[] > seeded-randoms-are-equal
-  assert-that > @
-    (random 1654).next.next.next
-    $.equal-to
-      (random 1654).next.next.next
-
-[] > random-is-in-range
-  random 123 > r
-  assert-that > @
-    and.
-      r.lt 1.0
-      not.
-        r.lt 0.0
-      r.next.lt 1.0
-      not.
-        r.next.lt 0.0
-      r.next.next.lt 1.0
-      not.
-        r.next.next.lt 0.0
-    $.is
-      $.equal-to TRUE
-
-[] > two-random-numbers-with-const
-  random.pseudo > r!
-  assert-that > @
-    r
-    $.equal-to r
-
-[] > two-random-numbers-with-phi
-  (random 123).@ > r
-  assert-that > @
-    r
-    $.equal-to r
-
-[] > two-random-numbers-with-increment-with-const
-  random.pseudo.plus 3.1416 > r!
-  assert-that > @
-    r
-    $.equal-to r
-
-[] > two-random-numbers-with-increment
-  random.pseudo.plus 3.1416 > r
-  assert-that > @
-    r
-    $.not
-      $.equal-to r
+[b] > bytes-as-array
+  slice-byte > @
+    *
+    0
+  [a i] > slice-byte
+    if. > @
+      i.lt
+        b.size
+      ^.slice-byte
+        a.with (b.slice i 1)
+        i.plus 1
+      a

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.AtComposite;
@@ -37,6 +40,7 @@ import org.eolang.XmirObject;
  * JOINED.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "text.joined")
 public class EOtext$EOjoined extends PhDefault {

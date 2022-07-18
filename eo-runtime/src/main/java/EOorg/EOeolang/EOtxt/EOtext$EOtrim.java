@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.AtComposite;
@@ -35,6 +38,7 @@ import org.eolang.XmirObject;
  * TRIM.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "text.trim")
 public class EOtext$EOtrim extends PhDefault {

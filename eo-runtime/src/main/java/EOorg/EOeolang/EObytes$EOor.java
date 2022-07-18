@@ -22,12 +22,16 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import java.math.BigInteger;
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVararg;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -37,6 +41,7 @@ import org.eolang.XmirObject;
  * BYTES.OR.
  *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.or")
 public class EObytes$EOor extends PhDefault {
@@ -47,17 +52,27 @@ public class EObytes$EOor extends PhDefault {
      */
     public EObytes$EOor(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
+        this.add("b", new AtVararg());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> {
-                    final BigInteger fst = new Param(rho).fromBytes(BigInteger.class);
-                    final BigInteger snd = new Param(rho, "b").fromBytes(BigInteger.class);
-                    return new Data.ToPhi(
-                        fst.or(snd).toByteArray()
-                    );
+                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
+                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
+                    for (int index = 0; index < args.length; ++index) {
+                        final Object val = new Dataized(args[index]).take();
+                        if (!(val instanceof byte[])) {
+                            throw new IllegalArgumentException(
+                                String.format(
+                                    "The %dth argument of 'and' is of type %s, not bytes",
+                                    index, val.getClass().getCanonicalName()
+                                )
+                            );
+                        }
+                        base = base.or(new BigInteger(byte[].class.cast(val)));
+                    }
+                    return new Data.ToPhi(base.toByteArray());
                 }
             )
         );

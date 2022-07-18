@@ -22,6 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
++alias org.eolang.collections.bytes-as-array
++alias org.eolang.collections.list
 +version 0.0.0
 +rt jvm org.eolang:eo-runtime:0.0.0
 
@@ -50,10 +52,10 @@
   [] > as-float /float
 
   # Calculate bitwise and
-  [b] > and /bytes
+  [b...] > and /bytes
 
   # Calculate bitwise or
-  [b] > or /bytes
+  [b...] > or /bytes
 
   # Calculate bitwise xor
   [b] > xor /bytes
@@ -76,7 +78,17 @@
     ^ > @
 
   # Converts this to hash
-  [] > as-hash /int
+  [] > as-hash
+    reduce. > @
+      list
+        bytes-as-array ^
+      1
+      [a b]
+        plus. > @
+          times.
+            31
+            a
+          b.as-int
 
   # Concatenation of two byte sequences:
   # the current and the provided one,

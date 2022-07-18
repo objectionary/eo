@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Eugene Darashkevich
+ * Copyright (c) 2016-2022 Yegor Bugayenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 
 /**
- * Float as hash.
- * @since 0.1
+ * Objectionary stored locally.
+ *
+ * @since 1.0
  */
-@XmirObject(oname = "float.as-hash")
-public class EOfloat$EOas_hash extends PhDefault {
+public final class OyHome implements Objectionary {
+    /**
+     * Local storage.
+     */
+    private final Path home;
+
+    /**
+     * Version.
+     */
+    private final String version;
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param ver Version.
+     * @param path Root.
      */
-    public EOfloat$EOas_hash(final Phi sigma) {
-        super(sigma);
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> new Data.ToPhi(
-                    (long) new Param(rho).strong(Double.class).hashCode()
-                )
-            )
+    public OyHome(final String ver, final Path path) {
+        this.version = ver;
+        this.home = path;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "%s (%s)",
+            Save.rel(this.home), this.version
         );
     }
 
+    @Override
+    public Input get(final String name) throws FileNotFoundException {
+        final Path file = new Place(name).make(
+            this.home
+                .resolve("sources")
+                .resolve(this.version),
+            "eo"
+        );
+        if (!file.toFile().exists()) {
+            throw new FileNotFoundException(name);
+        }
+        return new InputOf(file);
+    }
 }

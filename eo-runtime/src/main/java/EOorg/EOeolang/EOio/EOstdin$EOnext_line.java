@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
@@ -36,6 +39,7 @@ import org.eolang.Phi;
  * Standard Input. Consumes only one line.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 public class EOstdin$EOnext_line extends PhDefault {
 
@@ -54,7 +58,9 @@ public class EOstdin$EOnext_line extends PhDefault {
                         if (!sc.hasNextLine()) {
                             return new PhWith(
                                 new EOerror(Phi.Φ), "msg",
-                                new Data.ToPhi("There is no line in the standard input stream to consume")
+                                new Data.ToPhi(
+                                    "There is no line in the standard input stream to consume"
+                                )
                             );
                         }
                         return new Data.ToPhi(sc.nextLine());

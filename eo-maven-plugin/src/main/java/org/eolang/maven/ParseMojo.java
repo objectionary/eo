@@ -100,9 +100,13 @@ public final class ParseMojo extends SafeMojo {
             ++total;
         }
         if (total == 0) {
-            Logger.warn(this, "No .EO sources parsed to XMIRs");
+            if (tojos.isEmpty()) {
+                Logger.info(this, "No .eo sources need to be parsed to XMIRs");
+            } else {
+                Logger.info(this, "No .eo sources parsed to XMIRs");
+            }
         } else {
-            Logger.info(this, "Parsed %d .EO sources to XMIRs", total);
+            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
         }
     }
 

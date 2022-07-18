@@ -25,7 +25,7 @@ in \eo{} such object alteration is not allowed.
 \feature{no-types}{No Types}
 %
 Even though there are no types in \eo{}, compatibility
-between objects is inferred in compile-time and validated strictly, which other
+between objects may be inferred in compile-time and validated strictly, which other
 \nospell{typeless} languages such as Python,
 Julia~\citep{bezanson2012julia},
 Lua~\citep{ierusalimschy2016lua},
@@ -35,8 +35,8 @@ Also, there is no type casting or reflection on types in \eo{}.
 \feature{no-inheritance}{No Inheritance}
 %
 It is impossible to inherit attributes from another object in \eo{}.
-The only two possible ways to re-use functionality is via object
-composition and decorators.
+The only two possible ways to re-use functionality are either via object
+composition or decorators.
 There are OO languages without implementation inheritance, for example Go~\citep{donovankernighan2015go},
 but only Kotlin~\citep{jemerov2017kotlin} has decorators
 as a language feature. In all other languages, the Decorator pattern~\citep{gamma1994design}
@@ -116,7 +116,7 @@ and less readable, as explained by~\citet{holub2004more}.
 %
 All objects in \eo{} are assigned to some attributes. Objects constructed
 in the global scope of visibility are assigned to attributes of the
-\ff{system} object of the highest level of abstraction.
+$\Phi$ object of the highest level of abstraction.
 Newspeak and Eiffel are two programming languages that does not have global scope as well.
 
 \feature{no-mutability}{No Mutability}
@@ -129,10 +129,10 @@ Java, C\#, and C++, have modifiers like
 don't mean constants though. While the latter will
 always expose the same functionality, the former may represent mutable
 entities, being known as read-only references~\citep{birka2004practical}.
-E.g., an attribute \ff{r} may have an object \ff{random.pseudo}
+For example, an attribute \ff{r} may have an object \ff{random.pseudo}
 assigned to it, which is a random number generator. \eo{} won't allow
-assigning another object to the attribute \ff{r}, but every time
-the attribute is read its value will be different.
+assigning another object to the attribute \ff{r}. However, every time
+the attribute is dataized, its value will be different.
 %
 There are number of OOP languages that also prioritize immutability of objects.
 In Rust~\citep{matsakis2014rust}, for example, all variables are immutable by

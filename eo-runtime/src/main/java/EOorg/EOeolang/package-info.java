@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (20 lines)
+ */
 /**
  * EO runtime.
  *

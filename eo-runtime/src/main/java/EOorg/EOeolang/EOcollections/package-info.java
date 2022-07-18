@@ -21,44 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EObytes}.
+ * EO runtime, Collections.
  *
- * @since 0.23
+ * @since 0.1
+ * @checkstyle PackageNameCheck (4 lines)
  */
-public final class EObytesEOas_hashTest {
-
-    @Test
-    public void bytesAsHashEquals() {
-        final Phi str = new Data.ToPhi("check bytes.as-hash");
-        final Phi bytes = new EOstring$EOas_bytes(str);
-        final Phi phi = new EObytes$EOas_hash(bytes);
-        MatcherAssert.assertThat(
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(
-                new Dataized(phi).take(Long.class)
-            )
-        );
-    }
-
-    @Test
-    public void bytesAsHash() {
-        final Phi str = new Data.ToPhi("check bytes.as-hash value");
-        final Phi bytes = new EOstring$EOas_bytes(str);
-        final Phi phi = new EObytes$EOas_hash(bytes);
-        MatcherAssert.assertThat(
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(-115760098L)
-        );
-    }
-
-}
+package EOorg.EOeolang.EOcollections;

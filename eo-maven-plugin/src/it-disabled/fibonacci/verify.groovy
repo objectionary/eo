@@ -23,8 +23,8 @@
  */
 
 [
-  'target/eo-foreign.json',
-  'target/eo-placed.json',
+  'target/eo/foreign.json',
+  'target/eo/placed.json',
   'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
   'target/eo/01-parse/org/eolang/examples/app.xmir',
   'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',

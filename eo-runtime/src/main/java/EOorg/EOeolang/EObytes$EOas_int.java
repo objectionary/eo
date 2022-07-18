@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
@@ -35,6 +38,7 @@ import org.eolang.XmirObject;
  * BYTES.AS-INT.
  *
  * @since 0.18
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.as-int")
 public class EObytes$EOas_int extends PhDefault {

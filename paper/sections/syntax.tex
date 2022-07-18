@@ -25,6 +25,7 @@ and don't contain spaces, line breaks, or special symbols mentioned above:
 \ff{i文件}
 \end{CJK}
  are valid identifiers.
+Identifiers are case-sentitive: \ff{car} and \ff{Car} are two different identifiers.
 Java-notation is used for numbers and strings.
 
 \newcommand\sntx[1]{{\sffamily #1}}
@@ -305,23 +306,21 @@ created by the compiler through \sntx{data}---are called \emph{data}.
 The examples of some possible data are in the Tab.~\ref{tab:types}.
 
 \begin{table}
-\begin{tabularx}{\columnwidth}{l|X|l}
+\begin{tabularx}{\columnwidth}{l|X|r}
 \toprule
 Data & Example & Size \\
 \midrule
 \ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
 \ff{string} & \ff{"Hello, \foreignlanguage{russian}{друг}!"} & 16 \\
   & \ff{"\textbackslash{}u5BB6"} or \begin{CJK}{UTF8}{gbsn}\ff{"家"}\end{CJK} & 2 \\
-\ff{int} & \ff{-42} & 8 \\
+\ff{int} & \ff{1024}, \ff{0x1A7E}, or \ff{-42} & 8 \\
 \ff{float} & \ff{3.1415926} or \ff{2.4e-34} & 8 \\
 \ff{bool} & \ff{TRUE} or \ff{FALSE} & 1 \\
-\ff{regex} & \ff{/[a-z]+.+/m} & 9 \\
 \bottomrule
 \end{tabularx}
 \figcap{The syntax of all data with examples. The ``Size'' column
-denotes the number of bytes to be used by the value in the column
-``Example''. UTF-8 is the encoding used in \ff{string}
-and \ff{regex} objects.}
+denotes the number of bytes in the \ff{as-bytes} attribute.
+UTF-8 is the encoding used in \ff{string} object.}
 \label{tab:types}
 \end{table}
 
@@ -359,7 +358,7 @@ abstract object is made with three arguments. The internals of
 the \ff{sum} will see \ff{x} as an \ff{array} with three
 elements inside.
 
-It's possible to provide an array as a parameter for vararg attribute
+It is possible to provide an array as a parameter for vararg attribute
 (both variants are semantically equivalent):
 
 \begin{ffcode}
@@ -662,7 +661,7 @@ how object \ff{array.map} is implemented in Objectionary:
 The object \ff{mapi} at \lref{list-map} is an atom:
 it iterates through list of items and makes
 a copy of the provided two-arguments abstract object \ff{f} applying the next
-item to it and the index in the array (that's why the name with the ``i'' suffix).
+item to it and the index in the array (that is why the name with the ``i'' suffix).
 
 The object \ff{map} does exactly the same, but doesn't provide the
 index of each element to the inner abstract object.

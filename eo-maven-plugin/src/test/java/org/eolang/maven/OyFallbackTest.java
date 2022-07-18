@@ -45,7 +45,7 @@ final class OyFallbackTest {
         final AtomicInteger counter = new AtomicInteger();
         final String branch = "master";
         final Objectionary objectionary = new OyFallback(
-            new OyLocal(branch, path),
+            new OyHome(branch, path),
             new OyCaching(
                 branch,
                 path,

@@ -22,15 +22,16 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExAbstract;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -38,6 +39,7 @@ import org.eolang.XmirObject;
  * TRY.
  *
  * @since 0.19
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "try")
 public class EOtry extends PhDefault {

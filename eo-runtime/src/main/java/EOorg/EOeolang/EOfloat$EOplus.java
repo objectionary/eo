@@ -22,19 +22,23 @@
  * SOFTWARE.
  */
 
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
+import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.ExprReduce;
 import org.eolang.XmirObject;
 
 /**
  * Plus.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "float.plus")
 public class EOfloat$EOplus extends PhDefault {
