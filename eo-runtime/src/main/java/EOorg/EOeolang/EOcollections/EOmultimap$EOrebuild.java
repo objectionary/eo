@@ -60,10 +60,10 @@ public class EOmultimap$EOrebuild extends PhDefault {
                 rho -> {
                     final Phi[] harr = new Dataized(rho.attr("harr").get()).take(Phi[].class);
                     final Phi[] arr = new Dataized(rho.attr("arr").get()).take(Phi[].class);
-                    final List<Integer> hashes = new ArrayList<>(harr.length);
+                    final List<Long> hashes = new ArrayList<>(harr.length);
                     for (final Phi item : harr) {
                         final Long x = new Dataized(item).take(Long.class);
-                        hashes.add(Math.toIntExact(x));
+                        hashes.add(x);
                     }
                     final int size = hashes.size();
                     final List<List<Phi>> table = new ArrayList<>(0);
@@ -71,7 +71,7 @@ public class EOmultimap$EOrebuild extends PhDefault {
                         table.add(new ArrayList<>(0));
                     }
                     for (int index = 0; index < arr.length; ++index) {
-                        table.get(hashes.get(index) % size).add(arr[index]);
+                        table.get((int) (hashes.get(index) % size)).add(arr[index]);
                     }
                     final Phi[] result = new Phi[size];
                     for (int index = 0; index < size; ++index) {

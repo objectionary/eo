@@ -188,3 +188,22 @@
     $.equal-to
       list
         * 3 1
+
+[] > map-key-does-not-found
+  (multimap *) > mp!
+  assert-that > @
+    (mp.found "key123").length
+    $.equal-to 0
+
+[] > multimap-large-key-test
+  (multimap *).with "key123" 42 > mp!
+  assert-that > @
+    (mp.found "key123").length
+    $.equal-to 1
+
+[] > collision-test
+  TRUE > a!
+  1231 > b!
+  assert-that > @
+    a.as-hash
+    $.equal-to (b.as-hash)
