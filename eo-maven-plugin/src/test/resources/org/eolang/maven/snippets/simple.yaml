@@ -5,11 +5,9 @@ out:
 args: ["class.main", "Jeff"]
 eo: |
   +package class
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
 
   [args...] > main
-    stdout > @
-      sprintf
+    QQ.io.stdout > @
+      QQ.txt.sprintf
         "Hello, дорогой %s!"
         args.get 0

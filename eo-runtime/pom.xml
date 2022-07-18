@@ -91,6 +91,8 @@ SOFTWARE.
             <configuration>
               <removeBinaries>
                 <glob>EOorg/EOeolang/EOhamcrest/**</glob>
+                <glob>EOorg/EOeolang/EOmath/**</glob>
+                <glob>EOorg/EOeolang/EOfs/**</glob>
               </removeBinaries>
             </configuration>
           </execution>
