@@ -96,10 +96,15 @@
 
 [] > array-at-with-error
   assert-that > @
-    msg.
-      at.
-        * 1 2 3 4
-        20
+    try
+      []
+        at. > @
+          * 1 2 3 4
+          20
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.is
       $.equal-to
         "Can't at() the 20th element of the array, there are just 4 of them"

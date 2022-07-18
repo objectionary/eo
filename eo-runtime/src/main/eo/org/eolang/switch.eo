@@ -62,5 +62,4 @@
         0
       arr.at 0
       TRUE
-    []
-      "switch cases are empty" > msg
+    error "switch cases are empty"

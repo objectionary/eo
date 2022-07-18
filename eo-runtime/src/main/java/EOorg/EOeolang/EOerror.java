@@ -27,9 +27,11 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.ExError;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -51,6 +53,15 @@ public final class EOerror extends PhDefault {
     public EOerror(final Phi sigma) {
         super(sigma);
         this.add("msg", new AtFree());
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    throw new ExError(sigma, rho);
+                }
+            )
+        );
     }
 
     /**
@@ -117,5 +128,4 @@ public final class EOerror extends PhDefault {
             return this.phi.φTerm();
         }
     }
-
 }

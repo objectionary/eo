@@ -63,18 +63,10 @@ public final class EOtryTest {
     public static class Main extends PhDefault {
         public Main(final Phi sigma) {
             super(sigma);
-            this.add("throw", new AtFree());
             this.add("φ", new AtComposite(
-                this, self -> {
-                    new Dataized(
-                        new PhWith(
-                            self.attr("throw").get(),
-                            0, new Data.ToPhi(42L)
-                        )
-                    ).take();
-                    return new Data.ToPhi(true);
-                }
-            ));
+                this, self -> new Data.ToPhi(
+                    new Dataized(new Data.ToPhi(42L)).take()
+            )));
         }
     }
 

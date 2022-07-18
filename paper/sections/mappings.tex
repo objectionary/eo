@@ -177,8 +177,8 @@ Java to \eo{}, such as information about attributes, decoratee, etc.
 
 \subsection{Exception Handling}
 
-There are no exceptions in \eo{}, but there are objects that
-can't be dataized. A traditional Java \ff{try/catch/finally} statements
+There are no exceptions in \eo{}, but there are objects whose dataization causes program termination.
+A traditional Java \ff{try/catch/finally} statements
 may be represented by an object \ff{try} provided by \eo{} runtime.
 For example, consider this Java code:
 
@@ -186,7 +186,7 @@ For example, consider this Java code:
 try {
   Files.write(file, data);
 } catch (IOException e) {
-  System.out.println("Can't write to file");
+  System.out.println(e.getMessage());
 } finally {
   System.out.println("This happens anyway");
 }
@@ -201,18 +201,17 @@ try
     files.write > @
       file
       data
-  []
+  [e]
     stdout > @
-      "Can't write to file"
+      e
   []
     stdout > @
       "This happens anyway"
 \end{ffcode}
 \end{twocols}
 
-Now, throwing an exception is returning an object that can't be
-dataized and handling the exception is checking for whether the
-object has $\varphi$ attribute or not. All of this is done
+Now, throwing an exception is returning an object whose dataization causes program termination
+and encapsulates any other object, which can play the role of an exception message. All of this is done
 by the object \ff{try}.
 
 \subsection{Control Flow Statements}
