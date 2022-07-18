@@ -200,3 +200,10 @@
   assert-that > @
     (mp.found "key123").length
     $.equal-to 1
+
+[] > collision-test
+  TRUE > a!
+  1231 > b!
+  assert-that > @
+    a.as-hash
+    $.equal-to (b.as-hash)
