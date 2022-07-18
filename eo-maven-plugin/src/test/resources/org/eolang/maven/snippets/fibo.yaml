@@ -4,10 +4,6 @@ out:
   - ".*The 14th fibo is 377.*"
 args: ["main", "14"]
 eo: |
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
-  +alias org.eolang.math.number
-
   [args...] > main
     [n] > f
       if. > @
@@ -16,8 +12,8 @@ eo: |
         add.
           f (n.sub 1)
           f (n.sub 2)
-    stdout > @
-      sprintf
+    QQ.io.stdout > @
+      QQ.txt.sprintf
         "The %dth fibo is %d"
-        (number (args.get 0)).as-int > num
+        (QQ.math.number (args.get 0)).as-int > num
         f num

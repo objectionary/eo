@@ -5,7 +5,6 @@ out:
 args: ["foo.main"]
 eo: |
   +package foo
-  +alias org.eolang.io.stdout
 
   [args...] > main
     seq > a
@@ -16,5 +15,5 @@ eo: |
         []
         []
     seq > @
-      stdout
+      QQ.io.stdout
         "works!"

@@ -4,18 +4,14 @@ out:
   - ".*17 is greater than zero.*"
 args: ["main", "17"]
 eo: |
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
-  +alias org.eolang.math.number
-
   [args...] > main
     [n] > f
       if. > @
         n.lt 0
         "smaller"
         "greater"
-    stdout > @
-      sprintf
+    QQ.io.stdout > @
+      QQ.txt.sprintf
         "%d is %s than zero\n"
-        (number (args.get 0)).as-int > num
+        (QQ.math.number (args.get 0)).as-int > num
         f num
