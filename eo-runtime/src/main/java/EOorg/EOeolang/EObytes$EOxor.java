@@ -29,8 +29,9 @@ package EOorg.EOeolang;
 
 import java.math.BigInteger;
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVararg;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -51,16 +52,20 @@ public class EObytes$EOxor extends PhDefault {
      */
     public EObytes$EOxor(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
+        this.add("b", new AtVararg());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                rho -> new Data.ToPhi(
-                    new Param(rho).fromBytes(BigInteger.class)
-                        .xor(new Param(rho, "b").fromBytes(BigInteger.class))
-                        .toByteArray()
-                )
+                rho -> {
+                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
+                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
+                    for (int index = 0; index < args.length; ++index) {
+                        final byte[] arg = new Dataized(args[index]).take(byte[].class);
+                        base = base.xor(new BigInteger(arg));
+                    }
+                    return new Data.ToPhi(base.toByteArray());
+                }
             )
         );
     }
