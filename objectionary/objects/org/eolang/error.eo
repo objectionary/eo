@@ -20,51 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.math
++package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.24.0
-+alias org.eolang.math.angle
-+alias org.eolang.math.number
-+alias org.eolang.hamcrest.assert-that
-+junit
++version 0.25.0
++rt jvm org.eolang:eo-runtime:0.25.0
 
-[] > sin-zero
-  assert-that > @
-    angle 0.0
-    .sin
-    $.equal-to 0.0
-
-[] > sin-pi-div-2
-  assert-that > @
-    angle 1.5707963267948966
-    .sin
-    $.equal-to 1.0
-
-[] > sin-pi-as-int
-  assert-that > @
-    number
-      angle 3.141592653589793
-      .sin
-    .as-int
-    $.equal-to 0
-
-[] > cos-zero
-  assert-that > @
-    angle 0.0
-    .cos
-    $.equal-to 1.0
-
-[] > cos-pi-div-2-as-int
-  assert-that > @
-    number
-      angle 1.5707963267948966
-      .cos
-    .as-int
-    $.equal-to 0
-
-[] > cos-pi
-  assert-that > @
-    angle 3.141592653589793
-    .cos
-    $.equal-to -1.0
-
+[msg] > error /?

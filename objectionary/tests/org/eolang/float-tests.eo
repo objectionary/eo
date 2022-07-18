@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -181,12 +181,17 @@
 
 [] > add-wrong-args
   assert-that > @
-    msg.
-      plus.
-        574.5
-        311
-        -101.1
-        1.001
+    try
+      []
+        plus. > @
+          574.5
+          311
+          -101.1
+          1.001
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "The 1th argument of 'float.plus' is not a(n) Double: 311"
 
 [] > neg-test
@@ -227,11 +232,16 @@
 
 [] > div-by-zero-test
   assert-that > @
-    msg.
-      div.
-        15.5
-        0.5
-        0.0
+    try
+      []
+        div. > @
+          15.5
+          0.5
+          0.0
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "The 2th argument of 'float.div' is invalid: division by zero is infinity"
 
 [] > to-bytes-and-backwards

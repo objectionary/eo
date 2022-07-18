@@ -22,7 +22,7 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.regex
 +alias org.eolang.collections.list
@@ -129,8 +129,12 @@
 
 [] > check-regex-compile-error-msg-missing-slash
   assert-that > @
-    regex "(.)+"
-    .compile
-    .msg
+    try
+      []
+        (regex "(.)+").compile > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.is
       $.equal-to "Wrong regex syntax: \"/\" is missing"

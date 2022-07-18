@@ -21,9 +21,9 @@
 # SOFTWARE.
 
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.24.0
++rt jvm org.eolang:eo-runtime:0.25.0
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 
 # Object that always is TRUE
 [args...] > nop

@@ -22,48 +22,66 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 +alias org.eolang.try
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > catches-simple-exception
-  [x throw] > main
-    if. > @
-      x.eq 0
-      throw "div by zero"
-      42.div x
-  assert-that > @
-    and.
-      eq.
-        6
-        try
-          [throw]
-            main 7 throw > @
-          [ex] (TRUE > @)
-          TRUE
-      eq.
-        FALSE
-        try
-          [throw]
-            main 0 throw > @
-          [ex] (FALSE > @)
-          TRUE
-    $.equal-to TRUE
+[] > graur
+  try > @
+    []
+      42.div 0 > @
+    [e]
+      QQ.io.stdout > @
+        e
+    []
+      QQ.io.stdout > @
+        "\nfinally"
 
-[] > two-nested-try-blocks
-  [throw] > failure
-    throw "Hello!" > @
+[] > catches-simple-exception
   assert-that > @
     try
-      [t1]
+      []
+        slice. > @
+          "some string"
+          7
+          5
+      [e]
+        e > @
+      [finally]
+        FALSE > @
+    $.equal-to
+      "Start index + length must not exceed string length but was 12 > 11"
+
+[] > two-nested-try-blocks
+  assert-that > @
+    try
+      []
         try > @
-          [t2]
-            failure t1 > @
-          [ex]
-            2 > @
-          TRUE
-      [ex]
-        1 > @
-      TRUE
-    $.equal-to 1
+          []
+            slice. > @
+              "some string"
+              7
+              5
+          [e]
+            e > @
+          [finally]
+            TRUE > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
+    $.equal-to
+      "Start index + length must not exceed string length but was 12 > 11"
+
+[] > try-without-error-block
+  assert-that > @
+    try
+      []
+        30.plus 2 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
+    $.equal-to 32
+

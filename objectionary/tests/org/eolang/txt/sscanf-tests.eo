@@ -22,7 +22,7 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 +alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.sscanf
@@ -67,10 +67,15 @@
 
 [] > sscanf-with-error
   assert-that > @
-    msg.
-      sscanf
-        "%l"
-        "error"
+    try
+      []
+        sscanf > @
+          "%l"
+          "error"
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "Can't recognize format pattern: %l"
 
 [] > sscanf-with-string-int-float

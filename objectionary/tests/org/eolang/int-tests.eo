@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -192,7 +192,13 @@
 # Checks that division by zero returns an error object
 [] > zero-division
   assert-that > @
-    (2.div 0).msg
+    try
+      []
+        2.div 0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to
       "The 1th argument of 'int.div' is invalid: division by zero is infinity"
 
@@ -228,7 +234,13 @@
 
 [] > div-wrong-args
   assert-that > @
-    (100.div 1 2 3.0).msg
+    try
+      []
+        100.div 1 2 3.0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "The 3th argument of 'int.div' is not a(n) Long: 3.0"
 
 [] > to-bytes-and-backwards
@@ -281,7 +293,13 @@
 
 [] > sum-up-wrong-args
   assert-that > @
-    (100.plus 1 2 3.0).msg
+    try
+      []
+        100.plus 1 2 3.0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
 
 [] > multiply-several-arguments
@@ -291,7 +309,13 @@
 
 [] > multiply-wrong-args
   assert-that > @
-    (100.times 1 2 3.0).msg
+    try
+      []
+        100.times 1 2 3.0 > @
+      [e]
+        e > @
+      [finally]
+        FALSE > @
     $.equal-to "The 3th argument of 'int.times' is not a(n) Long: 3.0"
 
 [] > multiply-by-zero

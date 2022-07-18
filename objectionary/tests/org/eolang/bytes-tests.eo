@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.24.0
++version 0.25.0
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -252,6 +252,17 @@
     $.not
       $.equal-to
         8.as-bytes
+
+[] > xor-with-vararg
+  assert-that > @
+    as-int.
+      xor.
+        256.as-bytes
+        5.as-bytes
+        10.as-bytes
+    $.not
+      $.equal-to
+        -1
 
 [] > not-with-zero
   assert-that > @
