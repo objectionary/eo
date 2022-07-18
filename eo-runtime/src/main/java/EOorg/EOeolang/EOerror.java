@@ -31,14 +31,11 @@ import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.ExAbstract;
-import org.eolang.Param;
+import org.eolang.ExError;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
-
-import java.math.BigInteger;
 
 /**
  * ERROR.
@@ -131,35 +128,4 @@ public final class EOerror extends PhDefault {
             return this.phi.φTerm();
         }
     }
-
-    /**
-     * When exception happens.
-     * @since 0.19
-     */
-    public static class ExError extends ExAbstract {
-        /**
-         * Serialization identifier.
-         */
-        private static final long serialVersionUID = 1735493012609760997L;
-        /**
-         * Sigma.
-         */
-        public final Phi sigma;
-        /**
-         * Exception.
-         */
-        public final Phi exception;
-
-        /**
-         * Ctor.
-         * @param sgm Sigma
-         * @param exp Exception
-         */
-        ExError(final Phi sgm, final Phi exp) {
-            super();
-            this.sigma = sgm;
-            this.exception = exp;
-        }
-    }
-
 }
