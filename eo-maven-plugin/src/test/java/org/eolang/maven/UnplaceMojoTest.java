@@ -45,45 +45,68 @@ public final class UnplaceMojoTest {
 
     @Test
     public void testCleaning(@TempDir final Path temp) throws Exception {
-        // final Path dir = temp.resolve("aa/bb/cb/dir");  // it does not create folder
         final Path foo = temp.resolve("a/b/c/foo.class");
-        new File(temp + "/a/b/c/dir").mkdirs();
-        new File(temp + "/aa/b/c/d/e/dir").mkdirs();
-        new File(temp + "/aaa/b/c/dir/subdir").mkdirs();
+        new Save("...", foo).save();
+        Path pparent = foo.getParent().getParent();  // a/b
 
-        new Save("abc", foo).save();
+        final Path foo2 = temp.resolve("a/b/c/foo2.class");
+        new Save("...", foo2).save();
+
+        final Path foo3 = temp.resolve("a/b/c/d/foo3.class");
+        new Save("...", foo3).save();
+
+        final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
+        new Save("...", foo4).save();
+
+
         final Path list = temp.resolve("placed.json");
-<<<<<<< HEAD
         new MonoTojos(new Csv(list)).add(foo.toString())
-            .set("kind", "class")
-            .set(PlaceMojo.ATTR_RELATED, "---")
-            .set("hash", new FileHash(foo));
-=======
-        new MonoTojos(new Csv(list)).add(foo.toString());
-        new MonoTojos(new Csv(list)).add(temp + "/a/b/c/dir");
-        new MonoTojos(new Csv(list)).add(temp + "/aa/b/c/d/e/dir");
-        new MonoTojos(new Csv(list)).add(temp + "/aaa/b/c/dir/subdir");
->>>>>>> 2c3f253f52e6fe64245a056e6c1671426bdbb275
+                .set("kind", "class")
+                .set(PlaceMojo.ATTR_RELATED, "---")
+                .set("hash", new FileHash(foo));
+
+        new MonoTojos(new Csv(list)).add(foo2.toString())
+                .set("kind", "class")
+                .set(PlaceMojo.ATTR_RELATED, "---")
+                .set("hash", new FileHash(foo2));
+
+        new MonoTojos(new Csv(list)).add(foo3.toString())
+                .set("kind", "class")
+                .set(PlaceMojo.ATTR_RELATED, "---")
+                .set("hash", new FileHash(foo3));
+
+        new MonoTojos(new Csv(list)).add(foo4.toString())
+                .set("kind", "class")
+                .set(PlaceMojo.ATTR_RELATED, "---")
+                .set("hash", new FileHash(foo4));
+
         new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .execute();
+                .with("placed", list.toFile())
+                .with("placedFormat", "csv")
+                .execute();
+
         MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(false)
+                Files.exists(foo),
+                Matchers.is(false)
+        );
+
+        MatcherAssert.assertThat(
+                Files.exists(foo2),
+                Matchers.is(false)
+        );
+
+        MatcherAssert.assertThat(
+                Files.exists(foo3),
+                Matchers.is(false)
+        );
+
+        MatcherAssert.assertThat(
+                Files.exists(foo4),
+                Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            Files.exists(Paths.get(temp + "/a/b/c/dir")),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(Paths.get(temp + "/aa/b/c/d/e/dir")),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(Paths.get(temp + "/aaa/b/c/dir")),  // It fails (should it?)
-            Matchers.is(false)
+                Files.exists(Paths.get(String.valueOf(pparent))),
+                Matchers.is(false)
         );
     }
-
 }
