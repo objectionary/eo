@@ -68,11 +68,13 @@ final class PhPackage implements Phi {
         return new AtSimple(
             this.objects.computeIfAbsent(
                 target, t -> {
+                    Phi phi;
                     try {
-                        return this.sub(t);
+                        phi = this.sub(t);
                     } catch (final ClassNotFoundException ex) {
-                        return new PhPackage(abs.toString());
+                        phi = new PhPackage(abs.toString());
                     }
+                    return phi;
                 }
             )
         );

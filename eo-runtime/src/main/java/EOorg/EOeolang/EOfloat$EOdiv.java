@@ -59,7 +59,13 @@ public class EOfloat$EOdiv extends PhDefault {
                     "x",
                     Double.class,
                     (acc, x) -> acc / x,
-                    x -> x.equals(0.0) ? "division by zero is infinity" : ""
+                    x -> {
+                        String msg = "";
+                        if (x.equals(0.0)) {
+                            msg = "division by zero is infinity";
+                        }
+                        return msg;
+                    }
                 )
             )
         );

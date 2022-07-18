@@ -57,6 +57,7 @@ final class AtNamed implements Attr {
      * @param onme Oname
      * @param src Source φ
      * @param attr Attribute
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     AtNamed(final String nme, final String onme,
         final Phi src, final Attr attr) {

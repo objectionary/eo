@@ -55,8 +55,8 @@ public class EOtext$EOtrim extends PhDefault {
                 this,
                 rho -> {
                     final Phi text = rho.attr("ρ").get();
-                    final String s = new Param(text, "s").strong(String.class);
-                    return new Data.ToPhi(s.trim());
+                    final String content = new Param(text, "s").strong(String.class);
+                    return new Data.ToPhi(content.trim());
                 }
             )
         );

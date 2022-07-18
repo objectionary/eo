@@ -62,7 +62,7 @@ public class EOstring$EOslice extends PhDefault {
                     final int start = new Param(rho, "start").strong(Long.class).intValue();
                     final int length = new Param(rho, "len").strong(Long.class).intValue();
                     final int end = length + start;
-                    Phi result;
+                    final Phi result;
                     if (start < 0) {
                         result = error(
                             "Start index must be greater than 0 but was %d",
@@ -91,7 +91,7 @@ public class EOstring$EOslice extends PhDefault {
      * Building error.
      * @param msg Formatted string for error message
      * @param args Arguments for the formatted string
-     * @return φ containing error
+     * @return A φ containing error
      */
     private static Phi error(final String msg, final Object... args) {
         return new PhWith(

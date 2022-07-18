@@ -66,7 +66,7 @@ public enum Ram {
         final int position,
         final int length
     ) throws IOException {
-        final RandomAccessFile ram = init(object);
+        final RandomAccessFile ram = this.init(object);
         ram.seek(position);
         final byte[] buffer = new byte[length];
         ram.readFully(buffer, 0, length);
@@ -112,8 +112,8 @@ public enum Ram {
                     );
                     file.setLength(size);
                     return file;
-                } catch (final IOException e) {
-                    throw new UncheckedIOException(e);
+                } catch (final IOException ex) {
+                    throw new UncheckedIOException(ex);
                 }
             }
         );

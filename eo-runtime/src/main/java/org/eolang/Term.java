@@ -35,6 +35,7 @@ public interface Term {
      * To φ-calculus term, as text.
      *
      * @return The expression in φ-calculus
+     * @checkstyle MethodNameCheck (5 lines)
      */
     String φTerm();
 

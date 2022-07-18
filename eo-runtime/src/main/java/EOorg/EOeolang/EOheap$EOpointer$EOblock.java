@@ -96,7 +96,8 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                     rho -> {
                         final Phi block = rho.attr("σ").get();
                         final Phi pointer = block.attr("σ").get();
-                        final int address = new Param(pointer, "address").strong(Long.class).intValue();
+                        final int address =
+                            new Param(pointer, "address").strong(Long.class).intValue();
                         final byte[] source = new Param(rho, "x").strong(byte[].class);
                         final byte[] data = Heaps.INSTANCE.data(pointer);
                         System.arraycopy(source, 0, data, address, source.length);

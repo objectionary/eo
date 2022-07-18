@@ -64,7 +64,13 @@ public class EOint$EOdiv extends PhDefault {
                     "x",
                     Long.class,
                     (acc, x) -> acc / x,
-                    x -> x.equals(0L) ? "division by zero is infinity" : ""
+                    x -> {
+                        String msg = "";
+                        if (x.equals(0L)) {
+                            msg = "division by zero is infinity";
+                        }
+                        return msg;
+                    }
                 )
             )
         );
