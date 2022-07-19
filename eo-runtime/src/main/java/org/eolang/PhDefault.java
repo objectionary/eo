@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * A simple object.
@@ -123,7 +124,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         }
         this.terms.get().add(this.vertex);
         final List<String> list = new ArrayList<>(this.attrs.size());
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
+            e -> List.of("σ", "ρ").contains(e.getKey())
+        ).collect(Collectors.toList())) {
             final String attr = String.format(
                 "%s ↦ %s",
                 ent.getKey(),

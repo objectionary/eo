@@ -65,7 +65,12 @@ final class AtLocated implements Attr {
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        return String.format(
+            "<%d:%d>%s",
+            this.line,
+            this.position,
+            this.origin.φTerm()
+        );
     }
 
     @Override
