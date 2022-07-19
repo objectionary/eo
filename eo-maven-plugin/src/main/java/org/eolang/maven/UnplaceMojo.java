@@ -241,10 +241,12 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private static void delete(final Path file) throws IOException {
-        final Path dir = file.getParent();
+        Path dir = file.getParent();
         Files.delete(file);
-        if (!Files.newDirectoryStream(dir).iterator().hasNext()) {
-            Files.delete(dir);
+        while (!Files.newDirectoryStream(dir).iterator().hasNext()) {
+            final Path curdir = dir;
+            dir = curdir.getParent();
+            Files.delete(curdir);
             Logger.debug(
                 UnplaceMojo.class,
                 "Empty directory deleted too: %s",
