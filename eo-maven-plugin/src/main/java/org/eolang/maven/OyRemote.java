@@ -24,16 +24,26 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import jdk.jpackage.internal.Log;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * The simple HTTP Objectionary server.
  *
  * @since 0.1
  */
+@SuppressWarnings({"PMD.AssignmentInOperand", "PMD.AvoidDuplicateLiterals"})
 public final class OyRemote implements Objectionary {
 
     /**
@@ -51,16 +61,12 @@ public final class OyRemote implements Objectionary {
     /**
      * Ctor.
      * @param hash The GitHub hash
-     * @todo #490:30m Resolve abbreviated hash to a proper hash.
-     *  In order to avoid collisions resolve hash
-     *  (or branch) to a complete sha-256 hash of the commit.
-     *  Use only sha-256 hashes as a caching criteria.
      */
     public OyRemote(final String hash) {
         this.template = String.format(
             // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            hash
+            getSha(hash)
         );
     }
 
@@ -79,6 +85,63 @@ public final class OyRemote implements Objectionary {
             name, url
         );
         return new InputOf(url);
+    }
+
+    /**
+     * Hash of head master.
+     * @param hash String "master"
+     * @return SHA of commit
+     * @checkstyle NonStaticMethodCheck (20 lines)
+     */
+    static String getSha(final String hash) {
+        String sha = "master";
+        try {
+            final String query = String.format(
+                // @checkstyle LineLength (1 line)
+                "https://api.github.com/repos/objectionary/home/git/refs/heads/%s",
+                hash
+            );
+            final JSONObject obj = readJsonFromUrl(query);
+            sha = obj.getJSONObject("object").getString("sha");
+        } catch (final IOException | JSONException exception) {
+            Log.info("Couldn't get hash of commit. SHA will set as \"master\"");
+        }
+        return sha;
+    }
+
+    /**
+     * Reader.
+     * @param reader Reader
+     * @return String
+     * @throws IOException if something went wrong
+     */
+    private static String readAll(final Reader reader) throws IOException {
+        final StringBuilder sbuilder = new StringBuilder();
+        int cur;
+        while ((cur = reader.read()) != -1) {
+            sbuilder.append((char) cur);
+        }
+        return sbuilder.toString();
+    }
+
+    /**
+     * Function from reading by url.
+     * @param url URL
+     * @return JSONobject
+     * @throws IOException exception
+     * @throws JSONException exception
+     */
+    private static JSONObject readJsonFromUrl(final String url) throws IOException, JSONException {
+        final InputStream istream = new URL(url).openStream();
+        try {
+            final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(istream, Charset.forName("UTF-8"))
+            );
+            final String jsontext = readAll(reader);
+            return new JSONObject(jsontext);
+        } finally {
+            istream.close();
+        }
     }
 
 }
