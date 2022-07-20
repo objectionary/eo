@@ -180,6 +180,11 @@ public interface Data<T> {
         }
 
         @Override
+        public String location() {
+            return this.object.location();
+        }
+
+        @Override
         public String φTerm() {
             return this.object.φTerm();
         }

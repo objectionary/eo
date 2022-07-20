@@ -124,6 +124,11 @@ public final class EOerror extends PhDefault {
         }
 
         @Override
+        public String location() {
+            return this.phi.location();
+        }
+
+        @Override
         public String φTerm() {
             return this.phi.φTerm();
         }

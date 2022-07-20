@@ -76,12 +76,7 @@ public final class PhLocated implements Phi {
 
     @Override
     public String φTerm() {
-        return String.format(
-            "<%d:%d>%s",
-            this.line,
-            this.position,
-            this.origin.φTerm()
-        );
+        return this.origin.φTerm();
     }
 
     @Override
@@ -102,6 +97,11 @@ public final class PhLocated implements Phi {
     @Override
     public Attr attr(final String attr) {
         return new AtLocated(this.origin.attr(attr), this.line, this.position);
+    }
+
+    @Override
+    public String location() {
+        return String.format("%d:%d", this.line, this.position);
     }
 
 }

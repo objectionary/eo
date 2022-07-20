@@ -81,6 +81,11 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public String location() {
+        return "?:?";
+    }
+
+    @Override
     public String toString() {
         return String.format("Φ.%s", this.pkg);
     }

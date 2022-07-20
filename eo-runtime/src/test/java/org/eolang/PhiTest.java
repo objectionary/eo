@@ -83,4 +83,22 @@ public final class PhiTest {
         );
     }
 
+    @Test
+    public void locationTest() {
+        MatcherAssert.assertThat(
+            new PhWith(
+                new PhLocated(
+                    new PhMethod(
+                        Phi.Φ,
+                        "x"
+                    ),
+                    123,
+                    56
+                ),
+                "Δ",
+                new Data.Value<>("aaa")
+            ).location(),
+            Matchers.equalTo("123:56")
+        );
+    }
 }

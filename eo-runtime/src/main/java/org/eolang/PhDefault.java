@@ -252,6 +252,11 @@ public abstract class PhDefault implements Phi, Cloneable {
         return attr;
     }
 
+    @Override
+    public String location() {
+        return "?:?";
+    }
+
     /**
      * Add new attribute.
      *
