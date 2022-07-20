@@ -32,7 +32,6 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import jdk.jpackage.internal.Log;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.json.JSONException;
@@ -66,7 +65,7 @@ public final class OyRemote implements Objectionary {
         this.template = String.format(
             // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            getSha(hash)
+            this.getSha(hash)
         );
     }
 
@@ -93,7 +92,7 @@ public final class OyRemote implements Objectionary {
      * @return SHA of commit
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    static String getSha(final String hash) {
+    String getSha(final String hash) {
         String sha = "master";
         try {
             final String query = String.format(
@@ -104,7 +103,7 @@ public final class OyRemote implements Objectionary {
             final JSONObject obj = readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
-            Log.info("Couldn't get hash of commit. SHA will set as \"master\"");
+            Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
         }
         return sha;
     }
