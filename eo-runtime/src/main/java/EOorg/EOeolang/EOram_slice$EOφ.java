@@ -32,34 +32,37 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Write into memory.
- * @since 0.1
+ * Read from memory.
+ * @since 0.25
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "ram.write")
-public class EOram$EOwrite extends PhDefault {
+public class EOram_slice$EOφ extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOwrite(final Phi sigma) {
+    public EOram_slice$EOφ(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtFree());
-        this.add("data", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                rho -> {
-                    final int pos = new Param(rho, "position").strong(Long.class).intValue();
-                    final byte[] bytes = new Param(rho, "data").strong(byte[].class);
-                    Ram.INSTANCE.write(rho.attr("ρ").get(), pos, bytes);
-                    return new Data.ToPhi(true);
-                }
+                rho -> new Data.ToPhi(
+                    Ram.INSTANCE.read(
+                        rho.attr("ρ").get().attr("rho").get(),
+                        new Param(
+                            rho.attr("ρ").get(), "position"
+                        ).strong(Long.class).intValue(),
+                        new Param(
+                            rho.attr("ρ").get(), "size"
+                        ).strong(Long.class).intValue()
+                    )
+                )
             )
         );
     }

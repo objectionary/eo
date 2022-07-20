@@ -32,33 +32,47 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Write into memory.
+ * Read from memory.
  * @since 0.1
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "ram.write")
-public class EOram$EOwrite extends PhDefault {
+@XmirObject(oname = "ram.slice")
+public class EOram$EOslice extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOwrite(final Phi sigma) {
+    public EOram$EOslice(final Phi sigma) {
         super(sigma);
         this.add("position", new AtFree());
-        this.add("data", new AtFree());
+        this.add("size", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> {
-                    final int pos = new Param(rho, "position").strong(Long.class).intValue();
-                    final byte[] bytes = new Param(rho, "data").strong(byte[].class);
-                    Ram.INSTANCE.write(rho.attr("ρ").get(), pos, bytes);
-                    return new Data.ToPhi(true);
+                    final long pos = new Param(rho, "position").strong(Long.class);
+                    final long len = new Param(rho, "size").strong(Long.class);
+                    final Phi ram = rho.attr("ρ").get();
+
+                    return new PhWith(
+                        new PhWith(
+                            new PhWith(
+                                new EOram_slice(rho),
+                                "rho",
+                                ram
+                            ),
+                            "position",
+                            new Data.ToPhi(pos)
+                        ),
+                        "size",
+                        new Data.ToPhi(len)
+                    );
                 }
             )
         );

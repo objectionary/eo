@@ -23,55 +23,14 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
-+alias org.eolang.ram
-+alias org.eolang.hamcrest.assert-that
-+junit
++rt jvm org.eolang:eo-runtime:0.0.0
 
-[] > writes-and-slice-ram
-  ram 1024 > r
-  assert-that > @
-    seq
-      write.
-        r.slice 200 13 > s
-        "Hello, world!".as-bytes
-      as-string.
-        s.slice 0 5
-    $.equal-to "Hello"
+# @todo #684:30min We need to add ram-slice.slice object
+#  here. This object would return ram-slice object and get
+#  two parameters: position and size, same as in ram.slice
+#  object. And will allow us to make a chain of slice objects.
+[rho position size] > ram-slice
 
-[] > writes-integer-to-ram
-  ram 1024 > r
-  3.as-bytes > b
-  r.write 0 b > w
-  assert-that > @
-    and.
-      w.eq TRUE
-      (r.slice 0 8).as-int.eq 3
-    $.equal-to TRUE
+  [] > @ /bytes
 
-[] > several-slices-ram
-  ram 1024 > r
-  assert-that > @
-    seq
-      write.
-        r.slice 10 3
-        "abc".as-bytes
-      write.
-        r.slice 13 3
-        "def".as-bytes
-      as-string.
-        (r.slice 10 6).slice 0 6
-    $.equal-to "abcdef"
-
-[] > intersection-writes-in-ram
-  ram 64 > r
-  assert-that > @
-    seq
-      write.
-        r.slice 0 10
-        "1234567890".as-bytes
-      write.
-        r.slice 5 10
-        "-----".as-bytes
-      as-string.
-        (r.slice 0 10).slice 0 10
-    $.equal-to "12345-----"
+  [data] > write /bytes

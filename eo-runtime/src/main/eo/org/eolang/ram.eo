@@ -28,9 +28,8 @@
 # Random-access memory (RAM).
 [size] > ram
 
-  # Write bytes B at position P.
-  # Returns itself.
-  [p b] > write /true
+  # Write bytes from position.
+  [position data] > write /true
 
-  # Read L bytes at position P.
-  [p l] > read /bytes
+  # Slice fixed size of bytes from position.
+  [position size] > slice /ram-slice

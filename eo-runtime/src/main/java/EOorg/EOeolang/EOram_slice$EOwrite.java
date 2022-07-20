@@ -33,33 +33,30 @@ import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
- * Read from memory.
+ * Write to memory bytes from position, according to ram.slice object.
  * @since 0.1
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "ram.read")
-public class EOram$EOread extends PhDefault {
+public class EOram_slice$EOwrite extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOread(final Phi sigma) {
+    public EOram_slice$EOwrite(final Phi sigma) {
         super(sigma);
-        this.add("p", new AtFree());
-        this.add("l", new AtFree());
+        this.add("data", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> {
-                    final int pos = new Param(rho, "p").strong(Long.class).intValue();
-                    final int len = new Param(rho, "l").strong(Long.class).intValue();
-                    return new Data.ToPhi(
-                        Ram.INSTANCE.read(rho.attr("ρ").get(), pos, len)
-                    );
+                    final Phi ram = rho.attr("ρ").get();
+                    final int pos = new Param(ram, "position").strong(Long.class).intValue();
+                    final byte[] bytes = new Param(rho, "data").strong(byte[].class);
+                    Ram.INSTANCE.write(ram.attr("rho").get(), pos, bytes);
+                    return new Data.ToPhi(true);
                 }
             )
         );
