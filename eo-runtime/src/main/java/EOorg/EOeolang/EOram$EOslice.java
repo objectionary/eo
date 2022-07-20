@@ -37,8 +37,8 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Read from memory.
- * @since 0.1
+ * Slice fixed size of bytes from position.
+ * @since 0.25
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "ram.slice")

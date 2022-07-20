@@ -35,7 +35,7 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Write to memory bytes from position, according to ram.slice object.
+ * Write bytes to memory from position, according to the ram.slice object.
  * @since 0.1
  * @checkstyle TypeNameCheck (5 lines)
  */
