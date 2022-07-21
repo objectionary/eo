@@ -60,6 +60,7 @@ public final class OyRemote implements Objectionary {
     /**
      * Ctor.
      * @param hash The GitHub hash
+     * @todo add checking if incoming hash is already commit sha.
      */
     public OyRemote(final String hash) {
         this.template = String.format(

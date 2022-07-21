@@ -126,8 +126,8 @@ public final class AssembleMojo extends SafeMojo {
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";
+    @Parameter(property = "eo.hash", required = true, defaultValue = "87bfa60441c17bcfd4fe7f5711b9ef41a3e82fb4")
+    private String hash = "87bfa60441c17bcfd4fe7f5711b9ef41a3e82fb4";
 
     /**
      * The path to a text file where paths of all added

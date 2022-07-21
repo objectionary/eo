@@ -45,7 +45,7 @@ final class OyCachingTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyCaching(
-                    "master",
+                    "branch",
                     path,
                     name -> new InputOf(content)
                 ).get("org.example.main")
@@ -53,7 +53,7 @@ final class OyCachingTest {
             Matchers.is(content)
         );
         Assertions.assertTrue(
-            path.resolve("sources/master/org/example/main.eo")
+            path.resolve("sources/branch/org/example/main.eo")
                 .toFile()
                 .exists()
         );
