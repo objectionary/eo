@@ -132,7 +132,10 @@ SOFTWARE.
     <xsl:value-of select="text()"/>
     <xsl:text>"</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='string' and @data!='array']" mode="head">
+  <xsl:template match="o[@data='bool']" mode="head">
+    <xsl:value-of select="upper-case(text())"/>
+  </xsl:template>
+  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool']" mode="head">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="node()|@*">
