@@ -26,6 +26,10 @@
 +version 0.0.0
 
 # Random-access memory (RAM).
+# @todo #684:30min We need to add ram.ram-slice.slice object
+#  here. This object would return ram-slice object and get
+#  two parameters: position and size, same as in ram.slice
+#  object. And will allow us to make a chain of slice objects.
 [size] > ram
 
   # Write bytes from position.
@@ -33,3 +37,9 @@
 
   # Slice fixed size of bytes from position.
   [position size] > slice /ram-slice
+
+  [rho position size] > ram-slice
+
+    [] > @ /bytes
+
+    [data] > write /bytes

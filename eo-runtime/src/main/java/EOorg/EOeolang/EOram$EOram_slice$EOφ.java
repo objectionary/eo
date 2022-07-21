@@ -28,25 +28,22 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
  * Read from memory.
  * @since 0.25
  * @checkstyle TypeNameCheck (5 lines)
  */
-public class EOram_slice$EOφ extends PhDefault {
+public class EOram$EOram_slice$EOφ extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram_slice$EOφ(final Phi sigma) {
+    public EOram$EOram_slice$EOφ(final Phi sigma) {
         super(sigma);
         this.add(
             "φ",

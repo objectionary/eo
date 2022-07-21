@@ -39,12 +39,12 @@ import org.eolang.Phi;
  * @since 0.1
  * @checkstyle TypeNameCheck (5 lines)
  */
-public class EOram_slice$EOwrite extends PhDefault {
+public class EOram$EOram_slice$EOwrite extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram_slice$EOwrite(final Phi sigma) {
+    public EOram$EOram_slice$EOwrite(final Phi sigma) {
         super(sigma);
         this.add("data", new AtFree());
         this.add(

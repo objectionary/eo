@@ -63,7 +63,7 @@ public class EOram$EOslice extends PhDefault {
                     return new PhWith(
                         new PhWith(
                             new PhWith(
-                                new EOram_slice(rho),
+                                new EOram$EOram_slice(rho),
                                 "rho",
                                 ram
                             ),
