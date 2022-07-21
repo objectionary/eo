@@ -63,8 +63,8 @@ public final class PullMojo extends SafeMojo {
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash", required = true, defaultValue = "87bfa60441c17bcfd4fe7f5711b9ef41a3e82fb4")
-    private String hash;
+    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
+    private String hash = "master";
 
     /**
      * Pull again even if the .eo file is already present?
@@ -92,7 +92,7 @@ public final class PullMojo extends SafeMojo {
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
-                && !row.exists(AssembleMojo.ATTR_XMIR)
+            && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         if (this.objectionary == null) {
             this.objectionary = new OyFallback(
