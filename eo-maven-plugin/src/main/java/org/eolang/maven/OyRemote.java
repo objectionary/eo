@@ -92,7 +92,7 @@ public final class OyRemote implements Objectionary {
      * @return SHA of commit
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    private String getSha(final String hash) throws JSONException, IOException {
+    private String getSha(final String hash) {
         String sha = "master";
         try {
             final String query = String.format(
@@ -105,7 +105,6 @@ public final class OyRemote implements Objectionary {
         } catch (final IOException | JSONException exception) {
             Logger.info(this, exception.toString());
             Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
-            throw exception;
         }
         return sha;
     }
