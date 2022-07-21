@@ -42,7 +42,7 @@ import org.json.JSONObject;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AssignmentInOperand", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class OyRemote implements Objectionary {
 
     /**
@@ -92,7 +92,7 @@ public final class OyRemote implements Objectionary {
      * @return SHA of commit
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    private String getSha(final String hash) {
+    private String getSha(final String hash) throws JSONException, IOException {
         String sha = "master";
         try {
             final String query = String.format(
@@ -103,7 +103,9 @@ public final class OyRemote implements Objectionary {
             final JSONObject obj = OyRemote.readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
+            Logger.info(this, exception.toString());
             Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
+            throw exception;
         }
         return sha;
     }
@@ -117,7 +119,11 @@ public final class OyRemote implements Objectionary {
     private static String readAll(final Reader reader) throws IOException {
         final StringBuilder sbuilder = new StringBuilder();
         int cur;
-        while ((cur = reader.read()) != -1) {
+        while (true) {
+            cur = reader.read();
+            if (cur == -1) {
+                break;
+            }
             sbuilder.append((char) cur);
         }
         return sbuilder.toString();
