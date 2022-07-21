@@ -31,7 +31,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.json.JSONException;
@@ -92,7 +92,7 @@ public final class OyRemote implements Objectionary {
      * @return SHA of commit
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    String getSha(final String hash) {
+    private String getSha(final String hash) {
         String sha = "master";
         try {
             final String query = String.format(
@@ -100,7 +100,7 @@ public final class OyRemote implements Objectionary {
                 "https://api.github.com/repos/objectionary/home/git/refs/heads/%s",
                 hash
             );
-            final JSONObject obj = readJsonFromUrl(query);
+            final JSONObject obj = OyRemote.readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
             Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
@@ -132,12 +132,11 @@ public final class OyRemote implements Objectionary {
      */
     private static JSONObject readJsonFromUrl(final String url) throws IOException, JSONException {
         final InputStream istream = new URL(url).openStream();
-        try {
-            final BufferedReader reader = new BufferedReader(
-                new InputStreamReader(istream, Charset.forName("UTF-8"))
-            );
-            final String jsontext = readAll(reader);
-            return new JSONObject(jsontext);
+        try (BufferedReader reader = new BufferedReader(
+            new InputStreamReader(istream, StandardCharsets.UTF_8)
+        )) {
+            final String json = OyRemote.readAll(reader);
+            return new JSONObject(json);
         } finally {
             istream.close();
         }
