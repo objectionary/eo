@@ -60,3 +60,13 @@
       text ""
       * "foo" "друг" "bar"
     $.equal-to "fooдругbar"
+
+[] > nested-joins
+  assert-that > @
+    joined.
+      text
+        joined.
+          text "&"
+          * " " " "
+      * "start" "end"
+    $.equal-to "start & end"
