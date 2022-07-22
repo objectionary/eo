@@ -42,7 +42,8 @@ import org.json.JSONObject;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals",
+    "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"})
 public final class OyRemote implements Objectionary {
 
     /**
@@ -52,21 +53,22 @@ public final class OyRemote implements Objectionary {
 
     /**
      * Ctor.
-     */
-    public OyRemote() {
-        this("master");
-    }
-
-    /**
-     * Ctor.
      * @param hash The GitHub hash
+     * @throws JSONException if fails
+     * @throws IOException if fails
      */
-    public OyRemote(final String hash) {
-        this.template = String.format(
-            // @checkstyle LineLength (1 line)
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            this.getSha(hash)
-        );
+    public OyRemote(final String hash) throws IOException, JSONException {
+        try {
+            this.template = String.format(
+                // @checkstyle LineLength (1 line)
+                "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
+                this.getSha(hash)
+            );
+        } catch (final IOException | JSONException exception) {
+            Logger.info(this, exception.toString());
+            Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
+            throw exception;
+        }
     }
 
     @Override
@@ -90,9 +92,11 @@ public final class OyRemote implements Objectionary {
      * Hash of head master.
      * @param hash String "master"
      * @return SHA of commit
+     * @throws JSONException if fails
+     * @throws IOException if fails
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    private String getSha(final String hash) {
+    private String getSha(final String hash) throws IOException, JSONException {
         String sha = "master";
         try {
             final String query = String.format(
@@ -105,6 +109,7 @@ public final class OyRemote implements Objectionary {
         } catch (final IOException | JSONException exception) {
             Logger.info(this, exception.toString());
             Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
+            throw exception;
         }
         return sha;
     }

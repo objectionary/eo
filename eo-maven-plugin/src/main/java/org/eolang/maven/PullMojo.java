@@ -33,6 +33,7 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.json.JSONException;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -89,7 +90,7 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionary;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() throws IOException, JSONException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
             && !row.exists(AssembleMojo.ATTR_XMIR)

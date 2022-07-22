@@ -36,6 +36,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.json.JSONException;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -110,7 +111,7 @@ abstract class SafeMojo extends AbstractMojo {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
             this.exec();
-        } catch (final IOException ex) {
+        } catch (final IOException | JSONException ex) {
             throw new MojoFailureException(
                 String.format(
                     "Failed to execute %s",
@@ -158,8 +159,9 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Exec it.
+     * @throws JSONException If fails
      * @throws IOException If fails
      */
-    abstract void exec() throws IOException;
+    abstract void exec() throws IOException, JSONException;
 
 }
