@@ -116,7 +116,6 @@ public final class RegisterMojo extends SafeMojo {
             }
             this.scopedTojos()
                 .add(name)
-                .set("eo.hash", "master")
                 .set(AssembleMojo.ATTR_VERSION, ParseMojo.ZERO)
                 .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());
             Logger.debug(this, "EO source %s registered", name);
