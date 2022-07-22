@@ -58,17 +58,26 @@ public final class OyRemote implements Objectionary {
      * @throws IOException if fails
      */
     public OyRemote(final String hash) throws IOException, JSONException {
-        try {
-            this.template = String.format(
-                // @checkstyle LineLength (1 line)
-                "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-                this.getSha(hash)
-            );
-        } catch (final IOException | JSONException exception) {
-            Logger.info(this, exception.toString());
-            Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
-            throw exception;
+        final int limit = 2;
+        int tries = 0;
+        String sha;
+        while (true) {
+            try {
+                sha = this.getSha(hash);
+                break;
+            } catch (final IOException | JSONException exception) {
+                tries = tries + 1;
+                if (tries == limit) {
+                    Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
+                    throw exception;
+                }
+            }
         }
+        this.template = String.format(
+            // @checkstyle LineLength (1 line)
+            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
+            sha
+        );
     }
 
     @Override
