@@ -540,6 +540,9 @@ SOFTWARE.
           <xsl:value-of select="@as"/>
           <xsl:text>"</xsl:text>
         </xsl:when>
+        <xsl:when test="../@base = 'org.eolang.error'">
+          <xsl:text>"α"</xsl:text>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="position() - 1"/>
         </xsl:otherwise>
