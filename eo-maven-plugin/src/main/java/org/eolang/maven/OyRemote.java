@@ -68,7 +68,6 @@ public final class OyRemote implements Objectionary {
             } catch (final IOException | JSONException exception) {
                 tries = tries + 1;
                 if (tries == limit) {
-                    Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
                     throw exception;
                 }
             }
