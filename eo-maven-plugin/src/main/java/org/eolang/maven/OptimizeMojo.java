@@ -47,7 +47,6 @@ import org.eolang.parser.ParsingTrain;
  * Optimize XML files.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "optimize",

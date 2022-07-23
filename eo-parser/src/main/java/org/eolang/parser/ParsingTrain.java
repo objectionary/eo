@@ -40,7 +40,6 @@ import org.cactoos.iterable.Mapped;
  * Train of XSL shifts.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ParsingTrain extends TrEnvelope {
 

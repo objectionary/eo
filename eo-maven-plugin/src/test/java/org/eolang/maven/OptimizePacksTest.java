@@ -38,7 +38,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for packs.
  *
  * @since 1.0
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class OptimizePacksTest {
 

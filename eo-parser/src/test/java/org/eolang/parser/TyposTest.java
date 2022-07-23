@@ -43,7 +43,6 @@ import org.yaml.snakeyaml.Yaml;
  * Test case for typos.
  *
  * @since 1.0
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TyposTest {
 

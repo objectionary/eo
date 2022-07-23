@@ -33,7 +33,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Add object names to the "foreign" registry as demanded.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "demand-foreign",

@@ -43,7 +43,6 @@ import org.cactoos.set.SetOf;
  * copy to target/classes.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "place",

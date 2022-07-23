@@ -43,7 +43,6 @@ import org.cactoos.set.SetOf;
  * It deletes binary files, which were previously copied by "place" mojo.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 @Mojo(
@@ -159,7 +158,6 @@ public final class UnplaceMojo extends SafeMojo {
                 }
                 Logger.info(
                     this,
-                    // @checkstyle LineLength (1 line)
                     "The binary %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
                     related
                 );
@@ -192,14 +190,12 @@ public final class UnplaceMojo extends SafeMojo {
             deleted += 1;
             Logger.debug(
                 this,
-                // @checkstyle LineLength (1 line)
                 "The binary %s is removed since it doesn't match 'selectivelyPlace' list of globs",
                 related
             );
         }
         Logger.info(
             this,
-            // @checkstyle LineLength (1 line)
             "Because of 'selectivelyPlace' list of globs: %d files remained and %d deleted",
             remained, deleted
         );

@@ -38,7 +38,6 @@ import org.yaml.snakeyaml.Yaml;
  * Check that XSL transforms right.
  *
  * @since 1.0
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (5 lines)
  */
 public final class CheckXSL {

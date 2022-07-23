@@ -39,7 +39,6 @@ import org.cactoos.set.SetOf;
  * Find and register all {@code .eo} sources in the "foreign" catalog.
  *
  * @since 0.12
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "register",

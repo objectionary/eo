@@ -39,7 +39,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "assemble",

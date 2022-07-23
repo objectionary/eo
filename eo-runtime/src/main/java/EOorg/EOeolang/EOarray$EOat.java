@@ -59,7 +59,6 @@ public class EOarray$EOat extends PhDefault {
                     final int idx = new Param(rho, "i").strong(Long.class).intValue();
                     if (array.length <= idx) {
                         return EOerror.make(
-                            // @checkstyle LineLengthCheck (1 line)
                             "Can't at() the %dth element of the array, there are just %d of them",
                             idx, array.length
                         );
