@@ -22,7 +22,7 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.25.0
++version 0.25.1
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.text
 +junit
@@ -39,3 +39,34 @@
       text ".."
       * "foo" "друг" "bar"
     $.equal-to "foo..друг..bar"
+
+[] > joins-array-2
+  assert-that > @
+    joined.
+      text ", "
+      * "Привет" "мир!"
+    $.equal-to "Привет, мир!"
+
+[] > joins-array-3
+  assert-that > @
+    joined.
+      text ""
+      *
+    $.equal-to ""
+
+[] > joins-array-4
+  assert-that > @
+    joined.
+      text ""
+      * "foo" "друг" "bar"
+    $.equal-to "fooдругbar"
+
+[] > nested-joins
+  assert-that > @
+    joined.
+      text
+        joined.
+          text "&"
+          * " " " "
+      * "start" "end"
+    $.equal-to "start & end"

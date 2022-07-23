@@ -22,7 +22,7 @@
 
 +package org.eolang.collections
 +home https://github.com/objectionary/eo
-+version 0.25.0
++version 0.25.1
 +alias org.eolang.collections.map
 +alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
@@ -92,3 +92,12 @@
     $.equal-to
       list
         * 2 1 "c"
+
+[] > map-large-key-test
+  map * > init-mp!
+  init-mp.with "key123" 42 > mp!
+  assert-that > @
+    * (mp.size) ((mp.found "key123").at 0)
+    $.equal-to
+      list
+        * 1 42
