@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.25.1
++version 0.25.2
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -78,10 +78,13 @@
     $.equal-to TRUE
 
 [] > switch-case-with-error
-  assert-that > @
-    msg.
-      switch
-    $.equal-to "switch cases are empty"
+  try > @
+    switch
+    [ex]
+      assert-that > @
+        ex
+        $.equal-to "switch cases are empty"
+    nop
 
 [] > switch-complex-case
   [] > c1

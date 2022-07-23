@@ -22,7 +22,12 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.25.1
-+rt jvm org.eolang:eo-runtime:0.25.1
++version 0.25.2
++rt jvm org.eolang:eo-runtime:0.25.2
 
-[msg] > error /?
+# This object must be used in order to terminate the program
+# due to an error. Just make a copy of it with any encapsulated object.
+# The first attempt to dataize it will lead to runtime error and program
+# termination. The only way to catch such an error is by using
+# the object 'try'.
+[] > error /?
