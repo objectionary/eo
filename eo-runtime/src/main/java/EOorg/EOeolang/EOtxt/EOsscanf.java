@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang.EOtxt;
 
-import EOorg.EOeolang.EOerror;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,7 +36,7 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import EOorg.EOeolang.EOerror;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -95,24 +94,15 @@ public class EOsscanf extends PhDefault {
                                     } else if (Conversion.isBoolean(c)) {
                                         buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
                                     } else {
-                                        return new PhWith(
-                                            new EOerror(Phi.Φ), "msg",
-                                            new Data.ToPhi(
-                                                String.format(
-                                                    "Format pattern not supported yet: %s",
-                                                    pattern
-                                                )
-                                            )
+                                        return EOerror.make(
+                                            "Format pattern not supported yet: %s",
+                                            pattern
                                         );
                                     }
                                 } else {
-                                    return new PhWith(
-                                        new EOerror(Phi.Φ), "msg",
-                                        new Data.ToPhi(
-                                            String.format(
-                                                "Can't recognize format pattern: %s", pattern
-                                            )
-                                        )
+                                    return EOerror.make(
+                                        "Can't recognize format pattern: %s",
+                                        pattern
                                     );
                                 }
                             }
@@ -122,10 +112,7 @@ public class EOsscanf extends PhDefault {
                             | NullPointerException
                             | NoSuchElementException ex
                     ) {
-                        return new PhWith(
-                            new EOerror(Phi.Φ), "msg",
-                            new Data.ToPhi(ex.getMessage())
-                        );
+                        return EOerror.make(ex.getMessage());
                     }
                     return new Data.ToPhi(buffer.toArray(new Phi[0]));
                 }

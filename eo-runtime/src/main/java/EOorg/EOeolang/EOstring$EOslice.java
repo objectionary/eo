@@ -32,7 +32,6 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -64,17 +63,17 @@ public class EOstring$EOslice extends PhDefault {
                     final int end = length + start;
                     final Phi result;
                     if (start < 0) {
-                        result = error(
+                        result = EOerror.make(
                             "Start index must be greater than 0 but was %d",
                             start
                         );
                     } else if (start > end) {
-                        result = error(
+                        result = EOerror.make(
                             "End index must be greater or equal to start but was %d < %d",
                             end, start
                         );
                     } else if (end > str.length()) {
-                        result = error(
+                        result = EOerror.make(
                             "Start index + length must not exceed string length but was %d > %d",
                             end, str.length()
                         );
@@ -87,19 +86,4 @@ public class EOstring$EOslice extends PhDefault {
         );
     }
 
-    /**
-     * Building error.
-     * @param msg Formatted string for error message
-     * @param args Arguments for the formatted string
-     * @return A φ containing error
-     */
-    private static Phi error(final String msg, final Object... args) {
-        return new PhWith(
-            new EOerror(Phi.Φ),
-            "msg",
-            new Data.ToPhi(
-                String.format(msg, args)
-            )
-        );
-    }
 }

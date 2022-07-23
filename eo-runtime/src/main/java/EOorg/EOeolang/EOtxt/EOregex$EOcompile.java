@@ -61,11 +61,7 @@ public class EOregex$EOcompile extends PhDefault {
                     final String pattern = new Param(regex, "r").strong(String.class);
                     final StringBuilder builder = new StringBuilder();
                     if (!pattern.startsWith("/")) {
-                        return new PhWith(
-                            new EOerror(Phi.Φ),
-                            "msg",
-                            new Data.ToPhi("Wrong regex syntax: \"/\" is missing")
-                        );
+                        return EOerror.make("Wrong regex syntax: \"/\" is missing");
                     }
                     final int last = pattern.lastIndexOf("/");
                     if (!pattern.endsWith("/")) {
@@ -80,12 +76,8 @@ public class EOregex$EOcompile extends PhDefault {
                             "r",
                             new Data.ToPhi(compiled)
                         );
-                    } catch (IllegalArgumentException e) {
-                        phi = new PhWith(
-                            new EOerror(Phi.Φ),
-                            "msg",
-                            new Data.ToPhi(e.getMessage())
-                        );
+                    } catch (final IllegalArgumentException ex) {
+                        phi = EOerror.make(ex.getMessage());
                     }
                     return phi;
                 }
