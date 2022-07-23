@@ -187,7 +187,6 @@ public final class AssembleMojo extends SafeMojo {
     private boolean failOnError = true;
 
     @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);

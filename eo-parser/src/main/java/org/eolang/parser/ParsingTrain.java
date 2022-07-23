@@ -53,7 +53,6 @@ public final class ParsingTrain extends TrEnvelope {
     /**
      * Sheets in the right order.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
         "/org/eolang/parser/errors/middle-varargs.xsl",

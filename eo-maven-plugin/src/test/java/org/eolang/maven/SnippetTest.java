@@ -67,7 +67,6 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
     /**

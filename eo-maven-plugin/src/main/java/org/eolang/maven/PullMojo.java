@@ -49,7 +49,6 @@ import org.apache.maven.plugins.annotations.Parameter;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PullMojo extends SafeMojo {
 
     /**

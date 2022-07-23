@@ -46,7 +46,6 @@ import org.junit.jupiter.params.provider.ValueSource;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SyntaxTest {
 
     @Test

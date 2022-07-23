@@ -126,7 +126,6 @@ public final class OptimizeMojo extends SafeMojo {
      * @return The file with optimized XMIR
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private XML optimize(final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);

@@ -39,7 +39,6 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class UnplaceMojoTest {
 
     @Test
