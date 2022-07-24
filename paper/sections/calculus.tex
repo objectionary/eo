@@ -304,11 +304,16 @@ the total number of elements in the array.
 Atoms may have their $\lambda$-terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
 \begin{equation}\label{def:stdout}
-\begin{split}
-& \ff{stdout}(\ff{text}) \mapsto \lambda s.M_\text{stdout},
-\end{split}
+\ff{stdout}(\ff{text}) \mapsto \lambda s.M_\text{stdout},
 \end{equation}
 where $M_\text{stdout}$ is a $\lambda$-term defined externally.
+
+In atoms, $\lambda$-terms are bound to $\varphi$ attribute.
+Thus, a more formal form of the Eq.~\ref{def:stdout} is:
+\begin{equation*}
+\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \emptyset, \varphi \mapsto \lambda s.M_\text{stdout} \rrbracket.
+\end{equation*}
+
 
 \subsection{Locators}
 
