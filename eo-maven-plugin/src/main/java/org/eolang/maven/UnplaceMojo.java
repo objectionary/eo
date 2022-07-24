@@ -161,9 +161,12 @@ public final class UnplaceMojo extends SafeMojo {
                     related
                 );
             }
-            UnplaceMojo.delete(path);
-            unplaced += 1;
-            Logger.debug(this, "Binary %s deleted", Save.rel(path));
+            if (UnplaceMojo.delete(path)) {
+                unplaced += 1;
+                Logger.debug(this, "Binary %s deleted", Save.rel(path));
+            } else {
+                Logger.debug(this, "Binary %s already deleted", Save.rel(path));
+            }
         }
         return unplaced;
     }
@@ -233,11 +236,16 @@ public final class UnplaceMojo extends SafeMojo {
     /**
      * Delete file and its parent if it's empty.
      * @param file The file
+     * @return TRUE if deleted
      * @throws IOException If fails
      */
-    private static void delete(final Path file) throws IOException {
+    private static boolean delete(final Path file) throws IOException {
         Path dir = file.getParent();
-        Files.delete(file);
+        boolean deleted = false;
+        if (Files.exists(file)) {
+            Files.delete(file);
+            deleted = true;
+        }
         while (!Files.newDirectoryStream(dir).iterator().hasNext()) {
             final Path curdir = dir;
             dir = curdir.getParent();
@@ -248,6 +256,7 @@ public final class UnplaceMojo extends SafeMojo {
                 Save.rel(dir)
             );
         }
+        return deleted;
     }
 
 }
