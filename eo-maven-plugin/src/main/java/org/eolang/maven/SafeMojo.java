@@ -111,7 +111,7 @@ abstract class SafeMojo extends AbstractMojo {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
             this.exec();
-        } catch (final IOException | JSONException ex) {
+        } catch (final IOException | JSONException | InterruptedException ex) {
             throw new MojoFailureException(
                 String.format(
                     "Failed to execute %s",
@@ -161,7 +161,8 @@ abstract class SafeMojo extends AbstractMojo {
      * Exec it.
      * @throws JSONException If fails
      * @throws IOException If fails
+     * @throws InterruptedException if fails
      */
-    abstract void exec() throws IOException, JSONException;
+    abstract void exec() throws IOException, JSONException, InterruptedException;
 
 }

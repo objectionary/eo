@@ -32,6 +32,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.json.JSONException;
@@ -54,12 +55,15 @@ public final class OyRemote implements Objectionary {
     /**
      * Init class.
      * @param hash Hash
+     * @param maxtries Max count of tries to get response from github
+     * @param timeout Timeout in milliseconds
      * @return OyRemote
      * @throws IOException if fails
      * @throws JSONException if fails
+     * @throws InterruptedException if fails
      */
-    public OyRemote init(final String hash) throws IOException, JSONException {
-        final int limit = 2;
+    public OyRemote init(final String hash, final int maxtries, final int timeout)
+        throws IOException, JSONException, InterruptedException {
         int tries = 0;
         String sha;
         while (true) {
@@ -68,9 +72,10 @@ public final class OyRemote implements Objectionary {
                 break;
             } catch (final IOException | JSONException exception) {
                 tries = tries + 1;
-                if (tries == limit) {
+                if (tries == maxtries) {
                     throw exception;
                 }
+                TimeUnit.MILLISECONDS.sleep(timeout);
             }
         }
         this.template = String.format(

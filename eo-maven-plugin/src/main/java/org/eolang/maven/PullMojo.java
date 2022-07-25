@@ -90,11 +90,13 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionary;
 
     @Override
-    public void exec() throws IOException, JSONException {
+    public void exec() throws IOException, JSONException, InterruptedException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
             && !row.exists(AssembleMojo.ATTR_XMIR)
         );
+        final int maxtries = 2;
+        final int timeout = 50;
         if (this.objectionary == null) {
             this.objectionary = new OyFallback(
                 new OyHome(
@@ -104,7 +106,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     this.hash,
                     this.outputPath,
-                    new OyRemote().init(this.hash)
+                    new OyRemote().init(this.hash, maxtries, timeout)
                 )
             );
         }
