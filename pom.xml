@@ -91,7 +91,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
-        <version>1.18.20</version>
+        <version>1.18.24</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
@@ -122,7 +122,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.29</version>
+        <version>1.30</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -143,6 +143,12 @@ SOFTWARE.
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
         <version>4.9.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>annotations</artifactId>
+        <version>3.0.1u2</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
