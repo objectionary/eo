@@ -104,4 +104,9 @@ public final class PhLogged implements Phi {
         return ret;
     }
 
+    @Override
+    public String location() {
+        return this.origin.location();
+    }
+
 }

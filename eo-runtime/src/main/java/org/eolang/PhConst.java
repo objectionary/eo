@@ -100,4 +100,9 @@ public final class PhConst implements Phi {
         );
     }
 
+    @Override
+    public String location() {
+        return this.origin.location();
+    }
+
 }
