@@ -48,31 +48,43 @@ import org.json.JSONObject;
 public final class OyRemote implements Objectionary {
 
     /**
+     * Hash.
+     */
+    private final String hash;
+
+    /**
      * The address template.
      */
     private String template;
 
     /**
-     * Init class.
+     * Constructor.
      * @param hash Hash
-     * @param maxtries Max count of tries to get response from github
-     * @param timeout Timeout in milliseconds
+     */
+    public OyRemote(final String hash) {
+        this.hash = hash;
+    }
+
+    /**
+     * Init class.
      * @return OyRemote
      * @throws IOException if fails
      * @throws JSONException if fails
      * @throws InterruptedException if fails
      */
-    public OyRemote init(final String hash, final int maxtries, final int timeout)
+    public OyRemote resolve()
         throws IOException, JSONException, InterruptedException {
-        int tries = 0;
+        final int tries = 2;
+        final int timeout = 50;
+        int tried = 0;
         String sha;
         while (true) {
             try {
-                sha = this.getSha(hash);
+                sha = this.getSha();
                 break;
             } catch (final IOException | JSONException exception) {
-                tries = tries + 1;
-                if (tries == maxtries) {
+                tried = tried + 1;
+                if (tried == tries) {
                     throw exception;
                 }
                 TimeUnit.MILLISECONDS.sleep(timeout);
@@ -105,19 +117,18 @@ public final class OyRemote implements Objectionary {
 
     /**
      * Hash of head master.
-     * @param hash String "master"
      * @return SHA of commit
      * @throws JSONException if fails
      * @throws IOException if fails
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    private String getSha(final String hash) throws IOException, JSONException {
+    private String getSha() throws IOException, JSONException {
         String sha = "master";
         try {
             final String query = String.format(
                 // @checkstyle LineLength (1 line)
                 "https://api.github.com/repos/objectionary/home/git/refs/heads/%s",
-                hash
+                this.hash
             );
             final JSONObject obj = OyRemote.readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
