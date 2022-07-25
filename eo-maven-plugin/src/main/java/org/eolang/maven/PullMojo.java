@@ -104,7 +104,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     this.hash,
                     this.outputPath,
-                    new OyRemote(this.hash)
+                    new OyRemote().init(this.hash)
                 )
             );
         }

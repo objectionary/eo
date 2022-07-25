@@ -49,15 +49,16 @@ public final class OyRemote implements Objectionary {
     /**
      * The address template.
      */
-    private final String template;
+    private String template;
 
     /**
-     * Ctor.
-     * @param hash The GitHub hash
-     * @throws JSONException if fails
+     * Init class.
+     * @param hash Hash
+     * @return OyRemote
      * @throws IOException if fails
+     * @throws JSONException if fails
      */
-    public OyRemote(final String hash) throws IOException, JSONException {
+    public OyRemote init(final String hash) throws IOException, JSONException {
         final int limit = 2;
         int tries = 0;
         String sha;
@@ -77,6 +78,7 @@ public final class OyRemote implements Objectionary {
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
             sha
         );
+        return this;
     }
 
     @Override
