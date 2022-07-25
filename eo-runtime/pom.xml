@@ -59,16 +59,19 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-log</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
   </dependencies>

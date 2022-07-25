@@ -37,19 +37,23 @@ SOFTWARE.
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
@@ -61,26 +65,32 @@ SOFTWARE.
       <!-- to make sure it stays in the "compile" scope no matter what profile is used -->
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-manifests</artifactId>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-log</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -92,11 +102,13 @@ SOFTWARE.
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
+      <!-- version from parent POM -->
     </dependency>
   </dependencies>
   <build>
