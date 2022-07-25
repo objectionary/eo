@@ -23,17 +23,18 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.eolang.Dataized;
+import org.eolang.ExError;
 import org.eolang.PhCopy;
 import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOstdin}.
@@ -79,15 +80,14 @@ public final class EOstdinTest {
         String expected = "";
         mockSystemIn(expected);
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        final ExError error = Assertions.assertThrows(
+            ExError.class,
+            () -> new Dataized(phi).take(String.class)
+        );
         MatcherAssert.assertThat(
-            new Dataized(
-                phi.attr("msg").get()
-            ).take(String.class),
+            new Dataized(error.enclosure()).take(String.class),
             Matchers.equalTo("There is no line in the standard input stream to consume")
         );
-        Assertions.assertThrows(Exception.class, () -> {
-            new Dataized(phi).take(String.class);
-        });
     }
 
     @Test

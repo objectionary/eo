@@ -124,8 +124,8 @@ public final class ExprReduce<T> implements Expr {
         final Phi[] args = new Param(rho, this.param).strong(Phi[].class);
         for (int idx = 0; idx < args.length; ++idx) {
             final Object val = new Dataized(args[idx]).take();
-            if (!(val.getClass().getCanonicalName().equals(this.type.getCanonicalName()))) {
-                phi = new EOerror.PhWithError(
+            if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
+                phi = EOerror.make(
                     "The %dth argument of '%s' is not a(n) %s: %s",
                     idx + 1, this.oper, this.type.getSimpleName(), val
                 );
@@ -135,7 +135,7 @@ public final class ExprReduce<T> implements Expr {
             final T typed = this.type.cast(val);
             final String msg = this.validation.apply(typed);
             if (!msg.isEmpty()) {
-                phi = new EOerror.PhWithError(
+                phi = EOerror.make(
                     "The %dth argument of '%s' is invalid: %s",
                     idx + 1, this.oper, msg
                 );

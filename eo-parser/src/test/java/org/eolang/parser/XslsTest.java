@@ -40,7 +40,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * in {@code src/test/xsl} directories.
  *
  * @since 0.21
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class XslsTest {
 

@@ -36,9 +36,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class AssembleMojoTest {
 
     @Test

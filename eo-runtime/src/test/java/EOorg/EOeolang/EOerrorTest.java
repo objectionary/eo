@@ -21,40 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package EOorg.EOeolang;
 
-package org.eolang;
+import org.eolang.Dataized;
+import org.eolang.ExError;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * When error happens.
+ * Test case for {@link EOerror}.
  *
- * @since 0.24
+ * @since 0.26
  */
-public final class ExError extends ExAbstract {
+public final class EOerrorTest {
 
-    /**
-     * Serialization identifier.
-     */
-    private static final long serialVersionUID = 1735493012609760997L;
-
-    /**
-     * Enclosure.
-     */
-    private final Phi enc;
-
-    /**
-     * Ctor.
-     * @param enclosure Enclosure inside the error
-     */
-    public ExError(final Phi enclosure) {
-        super(enclosure.toString());
-        this.enc = enclosure;
+    @Test
+    public void makesToxicObject() {
+        Assertions.assertThrows(
+            ExError.class,
+            () -> new Dataized(
+                EOerror.make("intentional error")
+            ).take()
+        );
     }
 
-    /**
-     * Take it.
-     * @return The enclosed object
-     */
-    public Phi enclosure() {
-        return this.enc;
-    }
 }

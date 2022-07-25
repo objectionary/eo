@@ -27,6 +27,7 @@ import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,24 +37,60 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link UnplaceMojo}.
  *
  * @since 0.1
+ * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
 public final class UnplaceMojoTest {
 
     @Test
     public void testCleaning(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
-        new Save("abc", foo).save();
+        new Save("...", foo).save();
+        final Path pparent = foo.getParent().getParent();
+        final Path foo2 = temp.resolve("a/b/c/foo2.class");
+        new Save("...", foo2).save();
+        final Path foo3 = temp.resolve("a/b/c/d/foo3.class");
+        new Save("...", foo3).save();
+        final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
+        new Save("...", foo4).save();
         final Path list = temp.resolve("placed.json");
         new MonoTojos(new Csv(list)).add(foo.toString())
             .set("kind", "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set("hash", new FileHash(foo));
+        new MonoTojos(new Csv(list)).add(foo2.toString())
+            .set("kind", "class")
+            .set(PlaceMojo.ATTR_RELATED, "---")
+            .set("hash", new FileHash(foo2));
+        new MonoTojos(new Csv(list)).add(foo3.toString())
+            .set("kind", "class")
+            .set(PlaceMojo.ATTR_RELATED, "---")
+            .set("hash", new FileHash(foo3));
+        new MonoTojos(new Csv(list)).add(foo4.toString())
+            .set("kind", "class")
+            .set(PlaceMojo.ATTR_RELATED, "---")
+            .set("hash", new FileHash(foo4));
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
             Files.exists(foo),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(foo2),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(foo3),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(foo4),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(Paths.get(String.valueOf(pparent))),
             Matchers.is(false)
         );
     }

@@ -27,14 +27,13 @@
  */
 package EOorg.EOeolang.EOio;
 
-import EOorg.EOeolang.EOerror;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import EOorg.EOeolang.EOerror;
 import org.eolang.Phi;
 
 /**
@@ -66,15 +65,10 @@ public class EOstdin$EOφ extends PhDefault {
                             buf.write((byte) b);
                         }
                         return new Data.ToPhi(buf.toString());
-                    } catch (IOException e) {
-                        return new PhWith(
-                            new EOerror(Phi.Φ), "msg",
-                            new Data.ToPhi(
-                                String.format(
-                                    "Cannot read from the standard input stream: %s",
-                                    e.getMessage()
-                                )
-                            )
+                    } catch (IOException ex) {
+                        return EOerror.make(
+                            "Cannot read from the standard input stream: %s",
+                            ex.getMessage()
                         );
                     }
                 }

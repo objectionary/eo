@@ -20,16 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
++alias org.eolang.collections.list
 +home https://github.com/objectionary/eo
-+version 0.0.0
++package org.eolang.txt
 +rt jvm org.eolang:eo-runtime:0.0.0
++version 0.0.0
 
 [s] > text
+
+  s > @
 
   # Trim it from both sides
   [] > trim /string
 
   # Joins an array of strings, using current string
   # as a delimiter
-  [items] > joined /string
+  [items] > joined
+    reducei. > res!
+      list
+        items
+      ("".as-bytes)
+      [acc i x]
+        if. > @
+          i.eq ((items.length).minus 1)
+          (acc.concat (x.as-bytes))
+          ((acc.concat (x.as-bytes)).concat (s.as-bytes))
+    res.as-string > @

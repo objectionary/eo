@@ -92,3 +92,12 @@
     $.equal-to
       list
         * 2 1 "c"
+
+[] > map-large-key-test
+  map * > init-mp!
+  init-mp.with "key123" 42 > mp!
+  assert-that > @
+    * (mp.size) ((mp.found "key123").at 0)
+    $.equal-to
+      list
+        * 1 42

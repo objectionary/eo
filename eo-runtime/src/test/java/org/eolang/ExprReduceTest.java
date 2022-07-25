@@ -25,6 +25,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,9 +63,14 @@ class ExprReduceTest {
         phi = new PhWith(phi, 0, new Data.ToPhi(10L));
         phi = new PhWith(phi, 1, new Data.ToPhi(20.0));
         phi = new PhWith(phi, 2, new Data.ToPhi(-5L));
+        final Phi ret = phi;
+        final ExError error = Assertions.assertThrows(
+            ExError.class,
+            () -> new Dataized(ret).take(String.class)
+        );
         MatcherAssert.assertThat(
-            new Param(expr.get(phi), "msg").strong(String.class),
-            Matchers.equalTo("The 2th argument of 'plus' is not a(n) Long: 20.0")
+            new Dataized(error.enclosure()).take(String.class),
+            Matchers.equalTo("The 2th argument of 'int.plus' is not a(n) Long: 20.0")
         );
     }
 }

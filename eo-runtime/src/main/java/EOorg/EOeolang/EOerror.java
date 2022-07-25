@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.ExError;
 import org.eolang.PhDefault;
@@ -39,6 +38,10 @@ import org.eolang.XmirObject;
 
 /**
  * ERROR.
+ *
+ * <p>This object you must return in case of any error. It is highly
+ * recommended to use {@link EOerror#make(String, Object...)} method
+ * instead of its constructor.</p>
  *
  * @since 0.22
  * @checkstyle TypeNameCheck (5 lines)
@@ -52,22 +55,30 @@ public final class EOerror extends PhDefault {
      */
     public EOerror(final Phi sigma) {
         super(sigma);
-        this.add("msg", new AtFree());
+        this.add("α", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> {
-                    throw new ExError(sigma, rho);
+                    final Phi enclosure = rho.attr("α").get();
+                    enclosure.move(this);
+                    throw new ExError(enclosure);
                 }
             )
         );
     }
 
     /**
-     * Phi constructed with error.
-     * @since 1.0
+     * Ctor.
+     *
+     * <p>Use this method to build a new error object. Don't use the
+     * constructor here. This factory method is much more convenient.</>
+     *
+     * @param format Message format string, similar to {@link String#format(String, Object...)}
+     * @param params Parameters, which will be passed to the formatter
      */
+<<<<<<< HEAD
     public static final class PhWithError implements Phi {
 
         /**
@@ -132,5 +143,13 @@ public final class EOerror extends PhDefault {
         public String φTerm() {
             return this.phi.φTerm();
         }
+=======
+    public static Phi make(final String format, final Object... params) {
+        return new PhWith(
+            new EOerror(Phi.Φ),
+            "α",
+            new Data.ToPhi(String.format(format, params))
+        );
+>>>>>>> 1f358a597dc3f47cdd9967d99283fa3a9b482505
     }
 }

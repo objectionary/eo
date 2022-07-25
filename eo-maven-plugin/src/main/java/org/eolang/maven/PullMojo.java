@@ -38,7 +38,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Pull EO XML files from Objectionary and parse them into XML.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #561:30min Add a parameter to bypass/overwrite cache
  *  for combination of Local and Caching and Remote.
  *  It was suggested by @yegor256 to rely on -U parameter of Maven
@@ -50,7 +49,6 @@ import org.apache.maven.plugins.annotations.Parameter;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PullMojo extends SafeMojo {
 
     /**

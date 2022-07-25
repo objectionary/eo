@@ -66,7 +66,7 @@ public class EOtry extends PhDefault {
                         ret = new Data.ToPhi(new Dataized(main).take());
                     } catch (final ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
-                        ctch.attr(0).put(ex.take().copy().attr("msg").get());
+                        ctch.attr(0).put(ex.enclosure());
                         ctch.move(rho);
                         ret = new Data.ToPhi(
                             new Dataized(ctch).take()

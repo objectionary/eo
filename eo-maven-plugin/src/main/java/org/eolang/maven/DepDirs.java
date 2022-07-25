@@ -57,7 +57,6 @@ final class DepDirs extends ListEnvelope<String> {
      * @param dir The dir
      * @return List
      * @throws IOException If fails
-     * @checkstyle MagicNumber (20 lines)
      */
     private static List<String> list(final Path dir) throws IOException {
         final List<String> names = new LinkedList<>();

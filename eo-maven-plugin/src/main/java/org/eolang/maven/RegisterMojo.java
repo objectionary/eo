@@ -39,7 +39,6 @@ import org.cactoos.set.SetOf;
  * Find and register all {@code .eo} sources in the "foreign" catalog.
  *
  * @since 0.12
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "register",
@@ -74,16 +73,11 @@ public final class RegisterMojo extends SafeMojo {
 
     /**
      * List of inclusion GLOB filters for finding EO files
-     * in the {@code &lt;includeSources&gt;} directory, which can be
+     * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
-     *
+     * @implNote {@code property} attribute is omitted for collection
+     * properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
-     * @todo #636:30min Here, the "property" attribute of the @Parameter
-     *  annotation is not set. If we set it, in order to enable configuration
-     *  through command line arguments, the default value won't be set.
-     *  I don't know how to fix this. Let's investigate what is the right
-     *  way according to Maven traditions. If we fix this, let's also
-     *  fix "excludeSources" here and "include/excludeBinaries" in PlaceMojo.
      */
     @Parameter
     private Set<String> includeSources = new SetOf<>("**.eo");
