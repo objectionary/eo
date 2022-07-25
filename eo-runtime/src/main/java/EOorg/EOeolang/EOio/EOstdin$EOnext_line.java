@@ -30,8 +30,8 @@ package EOorg.EOeolang.EOio;
 import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import EOorg.EOeolang.EOerror;
 import org.eolang.Phi;
 
 /**
@@ -55,7 +55,7 @@ public class EOstdin$EOnext_line extends PhDefault {
                 rho -> {
                     try (Scanner sc = new Scanner(System.in)) {
                         if (!sc.hasNextLine()) {
-                            return EOerror.make(
+                            throw new ExFailure(
                                 "There is no line in the standard input stream to consume"
                             );
                         }

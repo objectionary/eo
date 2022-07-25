@@ -24,37 +24,63 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
+
 /**
- * When error happens.
+ * It catches {@link ExFailure} and
+ * throws {@link EOerror.ExError}.
  *
- * @since 0.24
+ * @since 0.26
  */
-public final class ExError extends ExAbstract {
+public final class AtSafe implements Attr {
 
     /**
-     * Serialization identifier.
+     * Origin attribute.
      */
-    private static final long serialVersionUID = 1735493012609760997L;
-
-    /**
-     * Enclosure.
-     */
-    private final Phi enc;
+    private final Attr origin;
 
     /**
      * Ctor.
-     * @param enclosure Enclosure inside the error
+     * @param attr Origin attribute
      */
-    public ExError(final Phi enclosure) {
-        super(enclosure.toString());
-        this.enc = enclosure;
+    public AtSafe(final Attr attr) {
+        this.origin = attr;
     }
 
-    /**
-     * Take it.
-     * @return The enclosed object
-     */
-    public Phi enclosure() {
-        return this.enc;
+    @Override
+    public String toString() {
+        return this.origin.toString();
     }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtSafe(this.origin.copy(self));
+    }
+
+    @Override
+    public Phi get() {
+        Phi phi;
+        try {
+            phi = this.origin.get();
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
+        if (!(phi instanceof Data)) {
+            phi = new PhSafe(phi);
+        }
+        return phi;
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
+    }
+
 }

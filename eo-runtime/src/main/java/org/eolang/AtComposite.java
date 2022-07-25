@@ -73,8 +73,8 @@ public final class AtComposite implements Attr {
             return this.expr.get(this.rho);
         } catch (final RuntimeException ex) {
             throw ex;
-        } catch (final Exception ex) {
-            throw new IllegalArgumentException(ex);
+        } catch (final Throwable ex) {
+            throw new ExFailure("system error", ex);
         }
     }
 

@@ -23,10 +23,10 @@
  */
 package EOorg.EOeolang.EOio;
 
+import EOorg.EOeolang.EOerror;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.eolang.Dataized;
-import org.eolang.ExError;
 import org.eolang.PhCopy;
 import org.eolang.PhMethod;
 import org.eolang.Phi;
@@ -80,13 +80,15 @@ public final class EOstdinTest {
         String expected = "";
         mockSystemIn(expected);
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
-        final ExError error = Assertions.assertThrows(
-            ExError.class,
+        final EOerror.ExError error = Assertions.assertThrows(
+            EOerror.ExError.class,
             () -> new Dataized(phi).take(String.class)
         );
         MatcherAssert.assertThat(
             new Dataized(error.enclosure()).take(String.class),
-            Matchers.equalTo("There is no line in the standard input stream to consume")
+            Matchers.containsString(
+                "There is no line in the standard input stream to consume"
+            )
         );
     }
 

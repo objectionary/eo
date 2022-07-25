@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOstring;
 import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,6 +59,20 @@ public final class PhDefaultTest {
         MatcherAssert.assertThat(
             new Dataized(phi.attr("ν").get()).take(Long.class),
             Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    public void failsGracefullyOnMissingAttribute() {
+        final ExUnset error = Assertions.assertThrows(
+            ExUnset.class,
+            () -> new EOstring(Phi.Φ).attr("missing-attr").get()
+        );
+        MatcherAssert.assertThat(
+            error.getMessage(),
+            Matchers.containsString(
+                "Error at \"EOorg.EOeolang.EOstring#missing-attr\" attribute"
+            )
         );
     }
 

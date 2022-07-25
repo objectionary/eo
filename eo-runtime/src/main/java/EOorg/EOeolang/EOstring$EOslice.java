@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -61,26 +62,25 @@ public class EOstring$EOslice extends PhDefault {
                     final int start = new Param(rho, "start").strong(Long.class).intValue();
                     final int length = new Param(rho, "len").strong(Long.class).intValue();
                     final int end = length + start;
-                    final Phi result;
                     if (start < 0) {
-                        result = EOerror.make(
+                        throw new ExFailure(
                             "Start index must be greater than 0 but was %d",
                             start
                         );
-                    } else if (start > end) {
-                        result = EOerror.make(
+                    }
+                    if (start > end) {
+                        throw new ExFailure(
                             "End index must be greater or equal to start but was %d < %d",
                             end, start
                         );
-                    } else if (end > str.length()) {
-                        result = EOerror.make(
+                    }
+                    if (end > str.length()) {
+                        throw new ExFailure(
                             "Start index + length must not exceed string length but was %d > %d",
                             end, str.length()
                         );
-                    } else {
-                        result = new Data.ToPhi(str.substring(start, end));
                     }
-                    return result;
+                    return new Data.ToPhi(str.substring(start, end));
                 }
             )
         );

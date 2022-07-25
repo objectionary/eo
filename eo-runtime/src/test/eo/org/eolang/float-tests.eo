@@ -190,8 +190,7 @@
           1.001
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.equal-to "The 1th argument of 'float.plus' is not a(n) Double: 311"
 
 [] > neg-test
@@ -240,8 +239,7 @@
           0.0
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.equal-to "The 2th argument of 'float.div' is invalid: division by zero is infinity"
 
 [] > to-bytes-and-backwards
