@@ -27,6 +27,8 @@
  */
 package EOorg.EOeolang.EOtxt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.AtComposite;
@@ -62,13 +64,28 @@ public class EOregex$EOmatch extends PhDefault {
                     final String r = new Param(regex, "r").strong(String.class);
                     final String txt = new Param(rho, "txt").strong(String.class);
                     final Matcher matcher = Pattern.compile(r).matcher(txt);
-                    if (matcher.matches()) {
-                        final Phi[] dest =
-                            new Phi[matcher.groupCount() == 0 ? 1 : matcher.groupCount()];
-                        return new Data.ToPhi(dest);
-                    } else {
-                        return new Data.ToPhi(new Phi[]{});
+                    List<Phi> dest = new ArrayList<>(0);
+                    while (matcher.find()) {
+                        Phi[] groups;
+                        if (matcher.groupCount() > 0) {
+                            groups = new Phi[matcher.groupCount()];
+                            for (int i = 0; i < groups.length; i += 1) {
+                                groups[i] = new Data.ToPhi(matcher.group(i));
+                            }
+                        } else {
+                            groups = new Phi[] {};
+                        }
+                        dest.add(
+                            new Data.ToPhi(
+                                new Phi[] {
+                                    new Data.ToPhi(Long.valueOf(matcher.start())),
+                                    new Data.ToPhi(matcher.group()),
+                                    new Data.ToPhi(groups)
+                                }
+                            )
+                        );
                     }
+                    return new Data.ToPhi(dest.toArray(new Phi[] {}));
                 }
             )
         );

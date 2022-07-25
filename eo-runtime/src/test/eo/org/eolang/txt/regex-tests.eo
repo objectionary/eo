@@ -49,6 +49,44 @@
     $.is
       $.equal-to FALSE
 
+[] > match-returns-correct-position
+  assert-that > @
+    at.
+      at.
+        match.
+          compile.
+            regex "/([a-z]+)/i"
+          "hello"
+        0
+      0
+    $.equal-to 0
+
+[] > match-returns-correct-string
+  assert-that > @
+    at.
+      at.
+        match.
+          compile.
+            regex "/([a-z]+)/i"
+          "hello"
+        0
+      1
+    $.equal-to "hello"
+
+[] > match-returns-correct-group
+  assert-that > @
+    at.
+      at.
+        at.
+          match.
+            compile.
+              regex "/([a-z]+)/i"
+            "hello"
+          0
+        2
+      0
+    $.equal-to "hello"
+
 [] > check-dotall-option
   assert-that > @
     regex "/(.*)/s"
@@ -138,3 +176,103 @@
         FALSE > @
     $.is
       $.equal-to "Wrong regex syntax: \"/\" is missing"
+
+[] > test-simple-replace
+  assert-that > @
+    replaced.
+      compile.
+        QQ.txt.regex "/([a-z])/"
+      "abcde"
+      "11"
+    $.equal-to "a11c11e"
+
+[] > test-replacei
+  assert-that > @
+    replacei.
+      replaced.
+        compile.
+          QQ.txt.regex "/([a-z])/"
+        "abcde"
+        "11"
+      4
+      "a11c11e"
+      6
+      *
+    $.equal-to "a11c11e"
+
+[] > test-nextpt
+  assert-that > @
+    nextpt.
+      replacei.
+        replaced.
+          compile.
+            QQ.txt.regex "/([a-z])/"
+          "1"
+          "0"
+        0
+        ""
+        0
+        * (* 3 "aa" (*))
+    $.equal-to 5
+
+[] > test-replace-mitem
+  assert-that > @
+    at.
+      mitem.
+        replacei.
+          replaced.
+            compile.
+              QQ.txt.regex "/([a-z])/"
+            "1"
+            "0"
+          0
+          ""
+          0
+          * (* 3 "aa" (*))
+      1
+    $.equal-to "aa"
+
+[] > test-replace-part-first
+  assert-that > @
+    part.
+      replacei.
+        replaced.
+          compile.
+            QQ.txt.regex "/([b])/"
+          "abcbe"
+          "11"
+        0
+        ""
+        0
+        * (* 1 "b" (*))
+    $.equal-to "a11"
+
+[] > test-replace-part-second
+  assert-that > @
+    part.
+      replacei.
+        replaced.
+          compile.
+            QQ.txt.regex "/([b,d])/"
+          "abcde"
+          "11"
+        2
+        "a11"
+        3
+        * (* 3 "b" (*))
+    $.equal-to "a11c11"
+
+[] > test-replace-nextacc
+  assert-that > @
+    nextacc.
+      replacei.
+        replaced.
+          compile.
+            QQ.txt.regex "/([b,d])/"
+          "abcde"
+          "11"
+        2
+        "a11"
+        3
+        * (* 3 "d" (*))
+    $.equal-to "a11c11e"
