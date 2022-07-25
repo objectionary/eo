@@ -78,78 +78,11 @@ public final class EOerror extends PhDefault {
      * @param format Message format string, similar to {@link String#format(String, Object...)}
      * @param params Parameters, which will be passed to the formatter
      */
-<<<<<<< HEAD
-    public static final class PhWithError implements Phi {
-
-        /**
-         * Constructed phi.
-         */
-        private final Phi phi;
-
-        /**
-         * Ctor.
-         * @param msg Error message
-         */
-        public PhWithError(final String msg) {
-            this.phi = new PhWith(
-                new EOerror(Phi.Φ),
-                "msg",
-                new Data.ToPhi(
-                    msg
-                )
-            );
-        }
-
-        /**
-         * Ctor.
-         * @param format Message format string
-         * @param params Parameters
-         */
-        public PhWithError(final String format, final Object... params) {
-            this(
-                String.format(
-                    format,
-                    params
-                )
-            );
-        }
-
-        @Override
-        public Phi copy() {
-            return this.phi.copy();
-        }
-
-        @Override
-        public void move(final Phi rho) {
-            this.phi.move(rho);
-        }
-
-        @Override
-        public Attr attr(final int pos) {
-            return this.phi.attr(pos);
-        }
-
-        @Override
-        public Attr attr(final String name) {
-            return this.phi.attr(name);
-        }
-
-        @Override
-        public String location() {
-            return this.phi.location();
-        }
-
-        @Override
-        public String φTerm() {
-            return this.phi.φTerm();
-        }
-=======
     public static Phi make(final String format, final Object... params) {
         return new PhWith(
             new EOerror(Phi.Φ),
             "α",
             new Data.ToPhi(String.format(format, params))
         );
->>>>>>> 1f358a597dc3f47cdd9967d99283fa3a9b482505
     }
 }
