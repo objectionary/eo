@@ -40,7 +40,6 @@ import org.eolang.parser.ParsingTrain;
  * An abstract transpiler.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class Transpiler {
 

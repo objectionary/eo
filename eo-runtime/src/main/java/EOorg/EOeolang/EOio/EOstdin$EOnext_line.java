@@ -27,12 +27,11 @@
  */
 package EOorg.EOeolang.EOio;
 
-import EOorg.EOeolang.EOerror;
 import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import EOorg.EOeolang.EOerror;
 import org.eolang.Phi;
 
 /**
@@ -56,11 +55,8 @@ public class EOstdin$EOnext_line extends PhDefault {
                 rho -> {
                     try (Scanner sc = new Scanner(System.in)) {
                         if (!sc.hasNextLine()) {
-                            return new PhWith(
-                                new EOerror(Phi.Φ), "msg",
-                                new Data.ToPhi(
-                                    "There is no line in the standard input stream to consume"
-                                )
+                            return EOerror.make(
+                                "There is no line in the standard input stream to consume"
                             );
                         }
                         return new Data.ToPhi(sc.nextLine());

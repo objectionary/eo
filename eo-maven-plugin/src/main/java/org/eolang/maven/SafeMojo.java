@@ -82,7 +82,6 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     @Parameter(property = "eo.foreignFormat", required = true, defaultValue = "csv")
     protected String foreignFormat = "csv";
 

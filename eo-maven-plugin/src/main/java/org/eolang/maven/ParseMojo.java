@@ -46,7 +46,6 @@ import org.xembly.Xembler;
  * Parse EO to XML.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "parse",

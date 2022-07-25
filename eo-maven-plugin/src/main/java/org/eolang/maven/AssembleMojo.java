@@ -39,7 +39,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "assemble",
@@ -188,7 +187,6 @@ public final class AssembleMojo extends SafeMojo {
     private boolean failOnError = true;
 
     @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);

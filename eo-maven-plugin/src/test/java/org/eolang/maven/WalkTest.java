@@ -34,7 +34,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link Walk}.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class WalkTest {
 

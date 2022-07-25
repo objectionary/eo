@@ -32,7 +32,6 @@ import org.xembly.Xembler;
 /**
  * Test for {@link Objects}.
  * @since 0.1
- * @checkstyle MagicNumberCheck (1000 lines)
  */
 final class ObjectsTest {
 

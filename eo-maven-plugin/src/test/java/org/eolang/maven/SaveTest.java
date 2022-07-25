@@ -43,7 +43,6 @@ import org.junit.jupiter.params.provider.ValueSource;
  */
 final class SaveTest {
 
-    // @checkstyle MagicNumber (1 line)
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
     void saves(final int size, @TempDir final Path temp) throws IOException {

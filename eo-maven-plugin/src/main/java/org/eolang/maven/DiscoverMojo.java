@@ -44,7 +44,6 @@ import org.cactoos.list.ListOf;
  * add them to the catalog.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "discover-foreign",

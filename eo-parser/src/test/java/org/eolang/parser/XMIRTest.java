@@ -48,7 +48,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link XMIR}.
  *
  * @since 0.5
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 public final class XMIRTest {

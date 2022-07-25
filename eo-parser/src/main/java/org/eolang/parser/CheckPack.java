@@ -43,7 +43,6 @@ import org.yaml.snakeyaml.Yaml;
  * One test scenario of parsing and post-processing.
  *
  * @since 1.0
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class CheckPack {
 

@@ -47,7 +47,6 @@ import org.eolang.parser.ParsingTrain;
  * Optimize XML files.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "optimize",
@@ -127,7 +126,6 @@ public final class OptimizeMojo extends SafeMojo {
      * @return The file with optimized XMIR
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private XML optimize(final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);

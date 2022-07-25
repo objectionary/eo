@@ -41,7 +41,6 @@ import org.cactoos.text.UncheckedText;
  * and replace 0.0.0 versions in them to the right numbers.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "copy",

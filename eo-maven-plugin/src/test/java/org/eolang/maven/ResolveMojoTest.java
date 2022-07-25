@@ -37,7 +37,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ResolveMojo}.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ResolveMojoTest {
@@ -129,7 +128,6 @@ public final class ResolveMojoTest {
         MatcherAssert.assertThat(
             excpt.getMessage(),
             Matchers.equalTo(
-                // @checkstyle LineLengthCheck (1 line)
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )
         );

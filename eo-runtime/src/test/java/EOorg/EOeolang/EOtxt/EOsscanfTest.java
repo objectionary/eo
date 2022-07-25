@@ -25,11 +25,13 @@ package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExError;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -130,16 +132,22 @@ public final class EOsscanfTest {
         final Phi read = new Data.ToPhi("is true");
         final Phi phi = new PhMethod(
             new PhWith(
-            new PhWith(
-                new EOsscanf(Phi.Φ),
-                "format",
-                format
+                new PhWith(
+                    new EOsscanf(Phi.Φ),
+                    "format",
+                    format
+                ),
+                "read",
+                read
             ),
-            "read",
-            read
-        ), "msg") ;
+            "msg"
+        );
+        final ExError error = Assertions.assertThrows(
+            ExError.class,
+            () -> new Dataized(phi).take(String.class)
+        );
         MatcherAssert.assertThat(
-            new Dataized(phi).take(String.class),
+            new Dataized(error.enclosure()).take(String.class),
             Matchers.equalTo("Can't recognize format pattern: %l")
         );
     }
@@ -150,16 +158,22 @@ public final class EOsscanfTest {
         final Phi read = new Data.ToPhi("1");
         final Phi phi = new PhMethod(
             new PhWith(
-            new PhWith(
-                new EOsscanf(Phi.Φ),
-                "format",
-                format
+                new PhWith(
+                    new EOsscanf(Phi.Φ),
+                    "format",
+                    format
+                ),
+                "read",
+                read
             ),
-            "read",
-            read
-        ), "msg") ;
+            "msg"
+        );
+        final ExError error = Assertions.assertThrows(
+            ExError.class,
+            () -> new Dataized(phi).take(String.class)
+        );
         MatcherAssert.assertThat(
-            new Dataized(phi).take(String.class),
+            new Dataized(error.enclosure()).take(String.class),
             Matchers.equalTo("Can't recognize format pattern: %123")
         );
     }

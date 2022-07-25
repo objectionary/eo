@@ -58,7 +58,6 @@ public final class OyRemote implements Objectionary {
      */
     public OyRemote(final String hash) {
         this.template = String.format(
-            // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
             hash
         );

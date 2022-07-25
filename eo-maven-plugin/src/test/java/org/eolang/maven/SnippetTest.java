@@ -66,9 +66,7 @@ import org.yaml.snakeyaml.Yaml;
  * released, you enable this test again.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SnippetTest {
 
     /**
