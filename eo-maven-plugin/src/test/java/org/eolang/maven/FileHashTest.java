@@ -23,47 +23,37 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * MD5 hash of a file (its content).
+ * Test for {@link FileHash}.
  *
- * @since 0.24
+ * @since 0.26
  */
-final class FileHash {
+final class FileHashTest {
 
-    /**
-     * The file.
-     */
-    private final Path file;
-
-    /**
-     * Ctor.
-     * @param path The name of the file
-     */
-    FileHash(final Path path) {
-        this.file = path;
+    @Test
+    void readsFromExistingFile(@TempDir final Path temp) throws IOException {
+        final Path path = temp.resolve("1.txt");
+        new Save("hey, you", path).save();
+        MatcherAssert.assertThat(
+            new FileHash(path).toString(),
+            Matchers.startsWith("[-26, 1, -29, 113, ")
+        );
     }
 
-    @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
-        } else {
-            hash = "";
-        }
-        return hash;
+    @Test
+    void readsFromAbsentFile(@TempDir final Path temp) {
+        final Path path = temp.resolve("2.txt");
+        MatcherAssert.assertThat(
+            new FileHash(path).toString(),
+            Matchers.equalTo("")
+        );
     }
 
 }
