@@ -104,8 +104,9 @@ public final class Dataized {
             Dataized.LOGGER.log(
                 Level.FINE,
                 String.format(
-                    "%s\uD835\uDD3B( %s ) ➜ %s",
+                    "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
                     String.join("", Collections.nCopies(before, "·")),
+                    this.phi.location(),
                     this.phi.φTerm().replaceAll("[\n\t]", ""),
                     new Data.Value<>(data).φTerm()
                 )

@@ -85,4 +85,9 @@ final class PhImmovable implements Phi {
         return this.origin.attr(attr);
     }
 
+    @Override
+    public String location() {
+        return this.origin.location();
+    }
+
 }

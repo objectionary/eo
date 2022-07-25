@@ -95,4 +95,9 @@ class PhOnce implements Phi {
     public final Attr attr(final String name) {
         return this.object.take().attr(name);
     }
+
+    @Override
+    public String location() {
+        return this.object.take().location();
+    }
 }
