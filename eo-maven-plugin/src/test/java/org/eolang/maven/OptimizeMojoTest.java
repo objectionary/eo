@@ -37,7 +37,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link OptimizeMojo}.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class OptimizeMojoTest {
@@ -107,7 +106,6 @@ public final class OptimizeMojoTest {
             String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
         );
         final long start = System.currentTimeMillis();
-        // @checkstyle MagicNumber (1 line)
         tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L));
         src.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(1L));
         new Moja<>(OptimizeMojo.class)

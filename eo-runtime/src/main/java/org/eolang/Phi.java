@@ -85,6 +85,11 @@ public interface Phi extends Term {
         public Attr attr(final String name) {
             return this.pkg.attr(name);
         }
+
+        @Override
+        public String location() {
+            return "?:?";
+        }
     };
 
     /**
@@ -117,4 +122,9 @@ public interface Phi extends Term {
      */
     Attr attr(String name);
 
+    /**
+     * Get code location of the phi.
+     * @return String containing code location
+     */
+    String location();
 }

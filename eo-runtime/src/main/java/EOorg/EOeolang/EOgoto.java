@@ -168,7 +168,7 @@ public class EOgoto extends PhDefault {
         /**
          * Sigma.
          */
-        public final Phi sigma;
+        private final Phi sigma;
 
         /**
          * Ctor.
@@ -193,12 +193,12 @@ public class EOgoto extends PhDefault {
         /**
          * Sigma.
          */
-        public final Phi sigma;
+        private final Phi sigma;
 
         /**
          * Return.
          */
-        public final Phi ret;
+        private final Phi ret;
 
         /**
          * Ctor.

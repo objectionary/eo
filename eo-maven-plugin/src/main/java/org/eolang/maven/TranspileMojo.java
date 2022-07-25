@@ -40,7 +40,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 /**
  * Compile.
  *
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
  */
 @Mojo(

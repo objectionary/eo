@@ -52,7 +52,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * runtime.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "resolve",

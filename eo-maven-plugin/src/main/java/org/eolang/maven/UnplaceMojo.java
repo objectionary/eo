@@ -43,7 +43,6 @@ import org.cactoos.set.SetOf;
  * It deletes binary files, which were previously copied by "place" mojo.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 @Mojo(
@@ -72,7 +71,6 @@ public final class UnplaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
     private String placedFormat = "csv";
 
@@ -159,14 +157,16 @@ public final class UnplaceMojo extends SafeMojo {
                 }
                 Logger.info(
                     this,
-                    // @checkstyle LineLength (1 line)
                     "The binary %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
                     related
                 );
             }
-            UnplaceMojo.delete(path);
-            unplaced += 1;
-            Logger.debug(this, "Binary %s deleted", Save.rel(path));
+            if (UnplaceMojo.delete(path)) {
+                unplaced += 1;
+                Logger.debug(this, "Binary %s deleted", Save.rel(path));
+            } else {
+                Logger.debug(this, "Binary %s already deleted", Save.rel(path));
+            }
         }
         return unplaced;
     }
@@ -192,14 +192,12 @@ public final class UnplaceMojo extends SafeMojo {
             deleted += 1;
             Logger.debug(
                 this,
-                // @checkstyle LineLength (1 line)
                 "The binary %s is removed since it doesn't match 'selectivelyPlace' list of globs",
                 related
             );
         }
         Logger.info(
             this,
-            // @checkstyle LineLength (1 line)
             "Because of 'selectivelyPlace' list of globs: %d files remained and %d deleted",
             remained, deleted
         );
@@ -238,11 +236,16 @@ public final class UnplaceMojo extends SafeMojo {
     /**
      * Delete file and its parent if it's empty.
      * @param file The file
+     * @return TRUE if deleted
      * @throws IOException If fails
      */
-    private static void delete(final Path file) throws IOException {
+    private static boolean delete(final Path file) throws IOException {
         Path dir = file.getParent();
-        Files.delete(file);
+        boolean deleted = false;
+        if (Files.exists(file)) {
+            Files.delete(file);
+            deleted = true;
+        }
         while (!Files.newDirectoryStream(dir).iterator().hasNext()) {
             final Path curdir = dir;
             dir = curdir.getParent();
@@ -253,6 +256,7 @@ public final class UnplaceMojo extends SafeMojo {
                 Save.rel(dir)
             );
         }
+        return deleted;
     }
 
 }

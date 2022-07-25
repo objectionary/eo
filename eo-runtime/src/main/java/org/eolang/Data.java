@@ -39,7 +39,6 @@ import java.util.function.Supplier;
  *
  * @param <T> Data type.
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (200 lines)
  */
 public interface Data<T> {
 
@@ -177,6 +176,11 @@ public interface Data<T> {
         @Override
         public Attr attr(final String name) {
             return this.object.attr(name);
+        }
+
+        @Override
+        public String location() {
+            return this.object.location();
         }
 
         @Override

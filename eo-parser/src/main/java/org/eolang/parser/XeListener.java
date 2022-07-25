@@ -96,7 +96,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void exitProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs
-            // @checkstyle MagicNumber (1 line)
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
@@ -369,7 +368,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         } else if (ctx.HEX() != null) {
             type = "int";
             data = Long.toString(
-                // @checkstyle MagicNumberCheck (1 line)
                 Long.parseLong(text.substring(2), 16)
             );
         } else if (ctx.STRING() != null) {
@@ -462,7 +460,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     private static String trimMargin(final String text, final int indent) {
         final String rexp = "\n\\s{%d}";
         String res = text
-            // @checkstyle MagicNumberCheck (1 line)
             .substring(3, text.length() - 3);
         res = res.replaceAll(String.format(rexp, indent), "\n");
         if (!res.isEmpty() && res.charAt(0) == '\n') {

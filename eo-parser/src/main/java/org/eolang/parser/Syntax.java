@@ -52,7 +52,6 @@ import org.xembly.Xembler;
  * Syntax parser, from EO to XMIR, using ANTLR4.
  *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Syntax {
 

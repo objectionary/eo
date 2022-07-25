@@ -131,7 +131,6 @@ public final class Main {
      * @param opt The option
      * @return TRUE if it's time to exit
      * @throws IOException If fails
-     * @checkstyle LineLengthCheck 30
      */
     private static boolean parse(final String opt) throws IOException {
         if ("--verbose".equals(opt)) {
@@ -146,7 +145,6 @@ public final class Main {
             exit = true;
         }
         if ("--help".equals(opt)) {
-            // @checkstyle LineLengthCheck (11 lines)
             Main.LOGGER.info(
                 String.join(
                     "\n",

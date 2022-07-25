@@ -36,7 +36,6 @@ import java.nio.file.Path;
  * Train that spies.
  *
  * @since 0.23
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class SpyTrain extends TrEnvelope {
 

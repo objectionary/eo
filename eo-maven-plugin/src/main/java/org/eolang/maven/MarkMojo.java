@@ -39,7 +39,6 @@ import org.apache.maven.plugins.annotations.Mojo;
  * visible in resolved artifacts.
  *
  * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "extend",
