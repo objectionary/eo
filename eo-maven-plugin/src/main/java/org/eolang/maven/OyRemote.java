@@ -136,6 +136,8 @@ public final class OyRemote implements Objectionary {
                 this.hash
             );
             final JSONObject obj = this.readJsonFromUrl(query);
+            System.out.println("OBJECT");
+            System.out.println(obj);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
             Logger.info(this, exception.toString());
@@ -159,7 +161,7 @@ public final class OyRemote implements Objectionary {
             final HttpRequest request = HttpRequest.newBuilder()
                 .header(
                     "Authorization", "token "
-                    .concat("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")
+                    .concat("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")
                 )
                 .uri(new URI(url)).GET().build();
             final HttpResponse<String> response = HttpClient.newBuilder()
