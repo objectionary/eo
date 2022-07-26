@@ -58,11 +58,11 @@ public class EOstdin$EOφ extends PhDefault {
                     try (BufferedInputStream bis = new BufferedInputStream(System.in);
                         ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
                         while (true) {
-                            final int byteData = bis.read();
-                            if (byteData == -1) {
+                            final int data = bis.read();
+                            if (data == -1) {
                                 break;
                             }
-                            buf.write((byte) byteData);
+                            buf.write((byte) data);
                         }
                         return new Data.ToPhi(buf.toString());
                     } catch (final IOException ex) {
