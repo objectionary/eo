@@ -75,17 +75,14 @@ public final class OyRemote implements Objectionary {
      */
     public OyRemote resolve()
         throws IOException, JSONException, InterruptedException, URISyntaxException {
-        final int tries = 8;
+        final int tries = 1;
         final int timeout = 1000;
         int tried = 0;
         String sha;
         while (true) {
             try {
-                sha = "master";
-                for (int idx = 0; idx < tries; ++idx) {
-                    sha = this.getSha();
-                    Logger.info(this, "commit sha is ".concat(sha));
-                }
+                sha = this.getSha();
+                Logger.info(this, "commit sha is ".concat(sha));
                 break;
             } catch (final IOException | JSONException exception) {
                 tried = tried + 1;
