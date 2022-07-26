@@ -75,7 +75,7 @@ public final class OyRemote implements Objectionary {
      */
     public OyRemote resolve()
         throws IOException, JSONException, InterruptedException, URISyntaxException {
-        final int tries = 3;
+        final int tries = 8;
         final int timeout = 1000;
         int tried = 0;
         String sha;
