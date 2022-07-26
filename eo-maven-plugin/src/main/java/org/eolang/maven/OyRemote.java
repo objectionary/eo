@@ -158,9 +158,8 @@ public final class OyRemote implements Objectionary {
         try {
             final HttpRequest request = HttpRequest.newBuilder()
                 .header(
-                    "User-Agent", "Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) "
-                    .concat("AppleWebKit/537.36 (KHTML, like Gecko) ")
-                    .concat("Chrome/51.0.2704.64 Safari/537.36")
+                    "Authorization", "token "
+                    .concat("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")
                 )
                 .uri(new URI(url)).GET().build();
             final HttpResponse<String> response = HttpClient.newBuilder()
