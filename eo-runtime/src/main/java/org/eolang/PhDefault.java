@@ -24,6 +24,7 @@
 package org.eolang;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -120,7 +121,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         PhDefault.terms.get().add(this.vertex);
         final List<String> list = new ArrayList<>(this.attrs.size());
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-            e -> List.of("σ", "ρ", "Δ").contains(e.getKey())
+            e -> Arrays.asList("σ", "ρ", "Δ").contains(e.getKey())
         ).collect(Collectors.toList())) {
             final String attr = String.format(
                 "%s ↦ %s",
@@ -246,7 +247,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 final Phi phi = this.cached.get(name, aphi::get);
                 final Phi found = phi.attr(name).get();
                 found.move(this);
-                return new AtSimple(found);
+                attr = new AtSimple(found);
             }
         }
         attr = this.named(attr, name);
@@ -256,6 +257,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (this.getClass().isAnnotationPresent(Volatile.class)) {
             this.cached.reset();
         }
+        attr = new AtSafe(attr);
         return attr;
     }
 

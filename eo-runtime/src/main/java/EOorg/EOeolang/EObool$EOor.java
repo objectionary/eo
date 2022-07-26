@@ -31,6 +31,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -65,7 +66,7 @@ public class EObool$EOor extends PhDefault {
                         }
                         final Object val = new Dataized(args[idx]).take();
                         if (!(val instanceof Boolean)) {
-                            throw new IllegalArgumentException(
+                            throw new ExFailure(
                                 String.format(
                                     "The %dth argument of 'or' is of type %s, not Boolean",
                                     idx, val.getClass().getCanonicalName()

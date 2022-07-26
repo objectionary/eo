@@ -76,28 +76,18 @@ public final class Dataized {
         final int before = Dataized.LEVEL.get();
         Dataized.LEVEL.set(before + 1);
         Phi src = this.phi;
-        try {
-            if (!(src instanceof Data)) {
-                src = src.attr("Δ").get();
-            }
-        } catch (final ExFailure ex) {
-            throw new ExFailure(
-                String.format(
-                    "Attribute failure at:%n\t%s",
-                    new Indented(this.phi.toString())
-                ),
-                ex
-            );
-        }
         if (!(src instanceof Data)) {
-            throw new ExFailure(
-                String.format(
-                    "The attribute Δ has %s instead of %s at:%n\t%s",
-                    src.getClass().getCanonicalName(),
-                    Data.class.getCanonicalName(),
-                    new Indented(this.phi)
-                )
-            );
+            src = src.attr("Δ").get();
+            if (!(src instanceof Data)) {
+                throw new IllegalStateException(
+                    String.format(
+                        "The attribute Δ of %s has %s instead of %s",
+                        this.phi.getClass().getCanonicalName(),
+                        src.getClass().getCanonicalName(),
+                        Data.class.getCanonicalName()
+                    )
+                );
+            }
         }
         final Object data = Data.class.cast(src).take();
         if (Dataized.LOGGER.isLoggable(Level.FINE)) {

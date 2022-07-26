@@ -27,10 +27,10 @@
  */
 package EOorg.EOeolang.EOtxt;
 
-import EOorg.EOeolang.EOerror;
 import java.util.regex.Pattern;
 import org.eolang.AtComposite;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -61,25 +61,23 @@ public class EOregex$EOcompile extends PhDefault {
                     final String pattern = new Param(regex, "r").strong(String.class);
                     final StringBuilder builder = new StringBuilder();
                     if (!pattern.startsWith("/")) {
-                        return EOerror.make("Wrong regex syntax: \"/\" is missing");
+                        throw new ExFailure("Wrong regex syntax: \"/\" is missing");
                     }
                     final int last = pattern.lastIndexOf("/");
                     if (!pattern.endsWith("/")) {
                         builder.append("(?").append(pattern.substring(last + 1)).append(")");
                     }
                     builder.append(pattern, 1, last);
-                    Phi phi;
                     try {
                         final String compiled = Pattern.compile(builder.toString()).pattern();
-                        phi = new PhWith(
+                        return new PhWith(
                             new EOregex(rho),
                             "r",
                             new Data.ToPhi(compiled)
                         );
                     } catch (final IllegalArgumentException ex) {
-                        phi = EOerror.make(ex.getMessage());
+                        throw new ExFailure(ex.getMessage());
                     }
-                    return phi;
                 }
             )
         );

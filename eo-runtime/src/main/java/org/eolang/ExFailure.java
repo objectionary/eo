@@ -39,9 +39,10 @@ public final class ExFailure extends ExAbstract {
     /**
      * Ctor.
      * @param cause Exception cause
+     * @param args Arguments for {@link String#format(String, Object...)}
      */
-    public ExFailure(final String cause) {
-        super(cause);
+    public ExFailure(final String cause, final Object... args) {
+        super(String.format(cause, args));
     }
 
     /**

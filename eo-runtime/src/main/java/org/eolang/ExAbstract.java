@@ -50,7 +50,7 @@ public abstract class ExAbstract extends RuntimeException {
      * Ctor.
      * @param cause Exception cause
      */
-    ExAbstract(final String cause) {
+    public ExAbstract(final String cause) {
         super(cause);
     }
 

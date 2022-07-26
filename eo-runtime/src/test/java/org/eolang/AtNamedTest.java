@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -38,13 +39,18 @@ public final class AtNamedTest {
     @Test
     public void rethrowsCorrectly() {
         final Phi phi = new AtNamedTest.Dummy();
-        final Attr named = new AtNamed("attr", "object", phi, phi.attr("x"));
+        final EOerror.ExError error = Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> phi.attr("x").get().attr("anything").get()
+        );
         MatcherAssert.assertThat(
-            Assertions.assertThrows(
-                ExFailure.class,
-                named::get
-            ).getMessage(),
-            Matchers.containsString("Error at \"attr\" attribute")
+            new Dataized(error.enclosure()).take(String.class),
+            Matchers.allOf(
+                Matchers.containsString(
+                    "Error at \"org.eolang.AtNamedTest.Dummy#x\" attribute"
+                ),
+                Matchers.containsString("caused by intended")
+            )
         );
     }
 

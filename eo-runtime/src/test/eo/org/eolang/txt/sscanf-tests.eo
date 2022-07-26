@@ -66,17 +66,17 @@
     $.equal-to TRUE
 
 [] > sscanf-with-error
-  assert-that > @
-    try
-      []
-        sscanf > @
-          "%l"
-          "error"
-      [e]
-        e > @
-      [finally]
-        FALSE > @
-    $.equal-to "Can't recognize format pattern: %l"
+  nop > @
+    assert-that
+      try
+        []
+          sscanf > @
+            "%l"
+            "error"
+        [e]
+          e > @
+        nop
+      $.equal-to "Can't recognize format pattern: %l"
 
 [] > sscanf-with-string-int-float
   assert-that > @

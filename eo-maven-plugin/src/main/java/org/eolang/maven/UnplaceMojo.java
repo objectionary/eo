@@ -150,7 +150,12 @@ public final class UnplaceMojo extends SafeMojo {
         for (final Tojo tojo : tojos) {
             final String related = tojo.get(PlaceMojo.ATTR_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
-            if (!tojo.get(PlaceMojo.ATTR_HASH).equals(new FileHash(path).toString())) {
+            final String hash = new FileHash(path).toString();
+            if (!tojo.get(PlaceMojo.ATTR_HASH).equals(hash)) {
+                if (hash.isEmpty()) {
+                    Logger.debug(this, "The binary %s is gone, won't unplace", related);
+                    continue;
+                }
                 if (!UnplaceMojo.inside(related, this.removeBinaries)) {
                     Logger.warn(this, "The binary %s looks different, won't unplace", related);
                     continue;

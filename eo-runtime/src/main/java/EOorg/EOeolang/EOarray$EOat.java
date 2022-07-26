@@ -29,6 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -58,7 +59,7 @@ public class EOarray$EOat extends PhDefault {
                     final Phi[] array = new Param(rho).strong(Phi[].class);
                     final int idx = new Param(rho, "i").strong(Long.class).intValue();
                     if (array.length <= idx) {
-                        return EOerror.make(
+                        throw new ExFailure(
                             "Can't at() the %dth element of the array, there are just %d of them",
                             idx, array.length
                         );

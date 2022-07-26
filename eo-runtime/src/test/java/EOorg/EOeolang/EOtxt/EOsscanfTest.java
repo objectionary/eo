@@ -25,7 +25,7 @@ package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExError;
+import org.eolang.ExFailure;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -142,13 +142,13 @@ public final class EOsscanfTest {
             ),
             "msg"
         );
-        final ExError error = Assertions.assertThrows(
-            ExError.class,
+        final ExFailure error = Assertions.assertThrows(
+            ExFailure.class,
             () -> new Dataized(phi).take(String.class)
         );
         MatcherAssert.assertThat(
-            new Dataized(error.enclosure()).take(String.class),
-            Matchers.equalTo("Can't recognize format pattern: %l")
+            error.getMessage(),
+            Matchers.containsString("Can't recognize format pattern: %l")
         );
     }
 
@@ -168,13 +168,13 @@ public final class EOsscanfTest {
             ),
             "msg"
         );
-        final ExError error = Assertions.assertThrows(
-            ExError.class,
+        final ExFailure error = Assertions.assertThrows(
+            ExFailure.class,
             () -> new Dataized(phi).take(String.class)
         );
         MatcherAssert.assertThat(
-            new Dataized(error.enclosure()).take(String.class),
-            Matchers.equalTo("Can't recognize format pattern: %123")
+            error.getMessage(),
+            Matchers.containsString("Can't recognize format pattern: %123")
         );
     }
 

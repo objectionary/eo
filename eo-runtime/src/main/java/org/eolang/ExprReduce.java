@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -69,7 +68,7 @@ public final class ExprReduce<T> implements Expr {
     /**
      * Operation name.
      */
-    private String oper;
+    private final String oper;
 
     /**
      * Ctor.
@@ -117,36 +116,27 @@ public final class ExprReduce<T> implements Expr {
     }
 
     @Override
-    public Phi get(final Phi rho) throws Exception {
-        Phi phi = null;
-        boolean error = false;
+    public Phi get(final Phi rho) {
         T acc = new Param(rho).strong(this.type);
         final Phi[] args = new Param(rho, this.param).strong(Phi[].class);
         for (int idx = 0; idx < args.length; ++idx) {
             final Object val = new Dataized(args[idx]).take();
             if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
-                phi = EOerror.make(
+                throw new ExFailure(
                     "The %dth argument of '%s' is not a(n) %s: %s",
                     idx + 1, this.oper, this.type.getSimpleName(), val
                 );
-                error = true;
-                break;
             }
             final T typed = this.type.cast(val);
             final String msg = this.validation.apply(typed);
             if (!msg.isEmpty()) {
-                phi = EOerror.make(
+                throw new ExFailure(
                     "The %dth argument of '%s' is invalid: %s",
                     idx + 1, this.oper, msg
                 );
-                error = true;
-                break;
             }
             acc = this.reduction.apply(acc, typed);
         }
-        if (!error) {
-            phi = new Data.ToPhi(acc);
-        }
-        return phi;
+        return new Data.ToPhi(acc);
     }
 }

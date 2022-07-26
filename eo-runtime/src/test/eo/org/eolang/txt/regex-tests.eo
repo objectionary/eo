@@ -172,8 +172,7 @@
         (regex "(.)+").compile > @
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.is
       $.equal-to "Wrong regex syntax: \"/\" is missing"
 

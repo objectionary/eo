@@ -23,7 +23,9 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Md5DigestOf;
 import org.cactoos.bytes.UncheckedBytes;
@@ -51,11 +53,17 @@ final class FileHash {
 
     @Override
     public String toString() {
-        return new String(
-            new UncheckedBytes(
-                new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-            ).asBytes()
-        );
+        final String hash;
+        if (Files.exists(this.file)) {
+            hash = Arrays.toString(
+                new UncheckedBytes(
+                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
+                ).asBytes()
+            );
+        } else {
+            hash = "";
+        }
+        return hash;
     }
 
 }
