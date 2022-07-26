@@ -136,8 +136,6 @@ public final class OyRemote implements Objectionary {
                 this.hash
             );
             final JSONObject obj = this.readJsonFromUrl(query);
-            System.out.println("OBJECT");
-            System.out.println(obj);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
             Logger.info(this, exception.toString());
