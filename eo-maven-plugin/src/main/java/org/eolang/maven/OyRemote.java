@@ -157,10 +157,6 @@ public final class OyRemote implements Objectionary {
         JSONException, URISyntaxException, InterruptedException {
         try {
             final HttpRequest request = HttpRequest.newBuilder()
-                .header(
-                    "Authorization", "token "
-                    .concat("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")
-                )
                 .uri(new URI(url)).GET().build();
             final HttpResponse<String> response = HttpClient.newBuilder()
                 .build()
