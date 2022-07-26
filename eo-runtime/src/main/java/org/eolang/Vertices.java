@@ -136,13 +136,7 @@ final class Vertices {
             tryThrow(phi);
             tryThrow(sig);
 
-            Object statement;
-            if (expression) {
-                statement = phi;
-            } else {
-                statement = sig;
-            }
-            return statement;
+            return expression ? phi : sig;
         }
 
 
