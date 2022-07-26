@@ -71,24 +71,24 @@ final class Vertices {
         final String label;
         try {
             label = String.valueOf(
+                new If(
+                    canToString(obj),
+                    obj.toString(),
                     new If(
-                        canToString(obj),
-                        obj.toString(),
+                        obj instanceof Pattern,
+                        Pattern.class.cast(obj).pattern(),
                         new If(
-                            obj instanceof Pattern,
-                            Pattern.class.cast(obj).pattern(),
-                            new If(
-                                obj instanceof byte[],
-                                Arrays.toString(byte[].class.cast(obj)),
-                                new IllegalArgumentException(
-                                        String.format(
-                                                "Unknown type for vertex allocation: %s",
-                                                obj.getClass().getCanonicalName()
-                                        )
-                                )
-                            ).statement()
+                            obj instanceof byte[],
+                            Arrays.toString(byte[].class.cast(obj)),
+                            new IllegalArgumentException(
+                                    String.format(
+                                            "Unknown type for vertex allocation: %s",
+                                            obj.getClass().getCanonicalName()
+                                    )
+                            )
                         ).statement()
                     ).statement()
+                ).statement()
             );
         } catch (Throwable e) {
             throw new RuntimeException(e);
@@ -138,6 +138,9 @@ final class Vertices {
         }
 
 
+        /**
+         * @throws Throwable phi or sig if was passed into ctor
+         */
         public Object statement() throws Throwable {
             tryThrow(phi);
             tryThrow(sig);
