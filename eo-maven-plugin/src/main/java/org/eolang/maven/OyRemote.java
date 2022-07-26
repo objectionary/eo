@@ -138,7 +138,7 @@ public final class OyRemote implements Objectionary {
             final JSONObject obj = this.readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
-            Logger.info(this, "Couldn't get commit SHA.");
+            Logger.info(this, exception.toString());
             throw exception;
         }
         return sha;
