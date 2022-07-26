@@ -77,12 +77,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Terms being processed now.
      */
-    private final ThreadLocal<Set<Integer>> terms = new ThreadLocal<>();
-
-    /**
-     * Terms being processed now.
-     */
-    private final ThreadLocal<Set<Integer>> strings = new ThreadLocal<>();
+    private final static ThreadLocal<Set<Integer>> terms = new ThreadLocal<>();
 
     /**
      * Ctor.
@@ -116,16 +111,16 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
-        if (this.terms.get() == null) {
-            this.terms.set(new HashSet<>());
+        if (PhDefault.terms.get() == null) {
+            PhDefault.terms.set(new HashSet<>());
         }
-        if (this.terms.get().contains(this.vertex)) {
+        if (PhDefault.terms.get().contains(this.vertex)) {
             return String.format("ν%d", this.vertex);
         }
-        this.terms.get().add(this.vertex);
+        PhDefault.terms.get().add(this.vertex);
         final List<String> list = new ArrayList<>(this.attrs.size());
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-            e -> List.of("σ", "ρ").contains(e.getKey())
+            e -> List.of("σ", "ρ", "Δ").contains(e.getKey())
         ).collect(Collectors.toList())) {
             final String attr = String.format(
                 "%s ↦ %s",
@@ -134,7 +129,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             );
             list.add(attr);
         }
-        this.terms.get().remove(this.vertex);
+        PhDefault.terms.get().remove(this.vertex);
         Collections.sort(list);
         String txt = this.getClass().getSimpleName();
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
@@ -155,7 +150,19 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String toString() {
-        return this.toStringWith();
+        String result = String.format(
+            "%sv%d",
+            this.getClass().getCanonicalName(),
+            this.vertex
+        );
+        if (this.attrs.containsKey("Δ")) {
+            result= String.format(
+                "%s=%s",
+                result,
+                this.attrs.get("Δ").toString()
+            );
+        }
+        return result;
     }
 
     @Override
@@ -254,7 +261,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String location() {
-        return "?:?";
+        return "?";
     }
 
     /**
@@ -272,48 +279,6 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.order.add(name);
         }
         this.attrs.put(name, attr);
-    }
-
-    /**
-     * Make a string with this additional list of lines.
-     * @param lines Lines to show in addition
-     * @return The string
-     */
-    protected String toStringWith(final String... lines) {
-        if (this.strings.get() == null) {
-            this.strings.set(new HashSet<>());
-        }
-        if (this.strings.get().contains(this.vertex)) {
-            return String.format("ν%d", this.vertex);
-        }
-        this.strings.get().add(this.vertex);
-        final Collection<String> list = new ArrayList<>(this.attrs.size());
-        for (final String line : lines) {
-            list.add(new Indented(line).toString());
-        }
-        list.add(String.format("▸order=%s", new Indented(this.order)));
-        list.add(String.format("▸cached=%s", new Indented(this.cached)));
-        final List<String> sorted = new ArrayList<>(this.attrs.size());
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-            final int idx = this.order.indexOf(ent.getKey());
-            sorted.add(
-                String.format(
-                    "%s%s=%s",
-                    ent.getKey(),
-                    idx >= 0 ? String.format("(#%d)", idx) : "",
-                    new Indented(ent.getValue())
-                )
-            );
-        }
-        this.strings.get().remove(this.vertex);
-        Collections.sort(sorted);
-        list.addAll(sorted);
-        return String.format(
-            "%sν%d:{\n  %s\n}",
-            this.getClass().getCanonicalName(),
-            this.vertex,
-            String.join("\n\t", list)
-        );
     }
 
     /**

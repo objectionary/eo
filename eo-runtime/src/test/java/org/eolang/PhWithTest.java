@@ -81,7 +81,7 @@ public final class PhWithTest {
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
             ).copy().toString(),
-            Matchers.containsString("ρ=Φ")
+            Matchers.containsString("int.plus≡EOorg.EOeolang.EOint$EOplusv")
         );
     }
 

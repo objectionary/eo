@@ -181,98 +181,34 @@
   assert-that > @
     replaced.
       compile.
-        QQ.txt.regex "/([a-z])/"
+        QQ.txt.regex "/([bd])/"
       "abcde"
       "11"
     $.equal-to "a11c11e"
 
-[] > test-replacei
+[] > test-no-match-replace
   assert-that > @
-    replacei.
-      replaced.
-        compile.
-          QQ.txt.regex "/([a-z])/"
-        "abcde"
-        "11"
-      4
-      "a11c11e"
-      6
-      *
-    $.equal-to "a11c11e"
+    replaced.
+      compile.
+        QQ.txt.regex "/([xyz])/"
+      "abcde"
+      "11"
+    $.equal-to "abcde"
 
-[] > test-nextpt
+[] > test-replace-empty
   assert-that > @
-    nextpt.
-      replacei.
-        replaced.
-          compile.
-            QQ.txt.regex "/([a-z])/"
-          "1"
-          "0"
-        0
-        ""
-        0
-        * (* 3 "aa" (*))
-    $.equal-to 5
+    replaced.
+      compile.
+        QQ.txt.regex "/([xyz])/"
+      ""
+      "11"
+    $.equal-to ""
 
-[] > test-replace-mitem
+[] > test-replace-with-empty
   assert-that > @
-    at.
-      mitem.
-        replacei.
-          replaced.
-            compile.
-              QQ.txt.regex "/([a-z])/"
-            "1"
-            "0"
-          0
-          ""
-          0
-          * (* 3 "aa" (*))
-      1
-    $.equal-to "aa"
-
-[] > test-replace-part-first
-  assert-that > @
-    part.
-      replacei.
-        replaced.
-          compile.
-            QQ.txt.regex "/([b])/"
-          "abcbe"
-          "11"
-        0
-        ""
-        0
-        * (* 1 "b" (*))
-    $.equal-to "a11"
-
-[] > test-replace-part-second
-  assert-that > @
-    part.
-      replacei.
-        replaced.
-          compile.
-            QQ.txt.regex "/([b,d])/"
-          "abcde"
-          "11"
-        2
-        "a11"
-        3
-        * (* 3 "b" (*))
-    $.equal-to "a11c11"
-
-[] > test-replace-nextacc
-  assert-that > @
-    nextacc.
-      replacei.
-        replaced.
-          compile.
-            QQ.txt.regex "/([b,d])/"
-          "abcde"
-          "11"
-        2
-        "a11"
-        3
-        * (* 3 "d" (*))
-    $.equal-to "a11c11e"
+    replaced.
+      compile.
+        QQ.txt.regex "/([xyz]+)/"
+      "abxxxxxcd"
+      ""
+    $.equal-to "abcd"
