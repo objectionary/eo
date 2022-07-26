@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
  * The class is thread-safe.
  *
  * @since 0.18
+ * @checkstyle
  */
 final class Vertices {
 
@@ -67,25 +68,32 @@ final class Vertices {
      * @return Next vertex available or previously registered
      */
     public int best(final Object obj) {
-        if (obj instanceof Phi[]) {
-            return this.next();
-        }
         final String label;
-        if (obj instanceof Long || obj instanceof String || obj instanceof Character
-            || obj instanceof Double || obj instanceof Boolean) {
-            label = obj.toString();
-        } else if (obj instanceof Pattern) {
-            label = Pattern.class.cast(obj).pattern();
-        } else if (obj instanceof byte[]) {
-            label = Arrays.toString(byte[].class.cast(obj));
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unknown type for vertex allocation: %s",
-                    obj.getClass().getCanonicalName()
-                )
+        try {
+            label = String.valueOf(
+                    new If(
+                        canToString(obj),
+                        obj.toString(),
+                        new If(
+                            obj instanceof Pattern,
+                            Pattern.class.cast(obj).pattern(),
+                            new If(
+                                obj instanceof byte[],
+                                Arrays.toString(byte[].class.cast(obj)),
+                                new IllegalArgumentException(
+                                        String.format(
+                                                "Unknown type for vertex allocation: %s",
+                                                obj.getClass().getCanonicalName()
+                                        )
+                                )
+                            ).statement()
+                        ).statement()
+                    ).statement()
             );
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
+
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -94,9 +102,57 @@ final class Vertices {
         }
         digest.update(String.format("%s %s", obj.getClass().getName(), label).getBytes());
         final String hash = new String(digest.digest());
-        return this.seen.computeIfAbsent(
-            hash, key -> this.seen.size() + 1
-        );
+
+        try {
+            return Integer.class.cast(
+                    new If(
+                            obj instanceof Phi[],
+                            this.next(),
+                            this.seen.computeIfAbsent(
+                                    hash, key -> this.seen.size() + 1
+                            )
+                    ).statement()
+            );
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private static final class If {
+        boolean expression;
+        Object phi;
+        Object sig;
+
+        public If(boolean expression, Object phi, Object sig) throws Throwable {
+            if (phi instanceof Throwable) {
+                throw Throwable.class.cast(phi);
+            }
+            if (sig instanceof Throwable) {
+                throw Throwable.class.cast(sig);
+            }
+
+            this.expression = expression;
+            this.phi = phi;
+            this.sig = sig;
+        }
+
+
+        public Object statement() {
+            Object statement;
+            if (expression) {
+                statement = phi;
+            } else {
+                statement = sig;
+            }
+            return statement;
+        }
+    }
+
+
+    private boolean canToString(Object obj) {
+        return obj instanceof Long || obj instanceof String || obj instanceof Character
+                || obj instanceof Double || obj instanceof Boolean;
     }
 
 }
