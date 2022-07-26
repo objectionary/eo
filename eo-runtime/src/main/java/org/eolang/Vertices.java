@@ -119,6 +119,12 @@ final class Vertices {
     }
 
 
+    private boolean canToString(Object obj) {
+        return obj instanceof Long || obj instanceof String || obj instanceof Character
+                || obj instanceof Double || obj instanceof Boolean;
+    }
+
+
     private static final class If {
         boolean expression;
         Object phi;
@@ -146,11 +152,4 @@ final class Vertices {
             }
         }
     }
-
-
-    private boolean canToString(Object obj) {
-        return obj instanceof Long || obj instanceof String || obj instanceof Character
-                || obj instanceof Double || obj instanceof Boolean;
-    }
-
 }
