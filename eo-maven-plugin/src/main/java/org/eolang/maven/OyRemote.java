@@ -81,8 +81,11 @@ public final class OyRemote implements Objectionary {
         String sha;
         while (true) {
             try {
-                sha = this.getSha();
-                Logger.info(this, "commit sha is ".concat(sha));
+                sha = "master";
+                for (int idx = 0; idx < tries; ++idx) {
+                    sha = this.getSha();
+                    Logger.info(this, "commit sha is ".concat(sha));
+                }
                 break;
             } catch (final IOException | JSONException exception) {
                 tried = tried + 1;
