@@ -124,21 +124,18 @@ final class Vertices {
         Object phi;
         Object sig;
 
-        public If(boolean expression, Object phi, Object sig) throws Throwable {
-            if (phi instanceof Throwable) {
-                throw Throwable.class.cast(phi);
-            }
-            if (sig instanceof Throwable) {
-                throw Throwable.class.cast(sig);
-            }
 
+        public If(boolean expression, Object phi, Object sig) {
             this.expression = expression;
             this.phi = phi;
             this.sig = sig;
         }
 
 
-        public Object statement() {
+        public Object statement() throws Throwable {
+            tryThrow(phi);
+            tryThrow(sig);
+
             Object statement;
             if (expression) {
                 statement = phi;
@@ -146,6 +143,13 @@ final class Vertices {
                 statement = sig;
             }
             return statement;
+        }
+
+
+        private void tryThrow(Object phi) throws Throwable {
+            if (phi instanceof Throwable) {
+                throw Throwable.class.cast(phi);
+            }
         }
     }
 
