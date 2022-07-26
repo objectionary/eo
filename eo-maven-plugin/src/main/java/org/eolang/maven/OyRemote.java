@@ -82,6 +82,7 @@ public final class OyRemote implements Objectionary {
         while (true) {
             try {
                 sha = this.getSha();
+                Logger.info(this, "commit sha is ".concat(sha));
                 break;
             } catch (final IOException | JSONException exception) {
                 tried = tried + 1;
@@ -137,7 +138,7 @@ public final class OyRemote implements Objectionary {
             final JSONObject obj = this.readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
-            Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
+            Logger.info(this, "Couldn't get commit SHA.");
             throw exception;
         }
         return sha;
@@ -167,7 +168,7 @@ public final class OyRemote implements Objectionary {
                 .send(request, HttpResponse.BodyHandlers.ofString());
             return new JSONObject(response.body());
         } catch (final URISyntaxException | InterruptedException exception) {
-            Logger.info(this, "Problem with request or its result");
+            Logger.info(this, exception.toString());
             throw exception;
         }
     }
