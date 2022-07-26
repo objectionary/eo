@@ -24,14 +24,14 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -71,9 +71,10 @@ public final class OyRemote implements Objectionary {
      * @throws IOException if fails
      * @throws JSONException if fails
      * @throws InterruptedException if fails
+     * @throws URISyntaxException if fails
      */
     public OyRemote resolve()
-        throws IOException, JSONException, InterruptedException {
+        throws IOException, JSONException, InterruptedException, URISyntaxException {
         final int tries = 3;
         final int timeout = 1000;
         int tried = 0;
@@ -120,9 +121,12 @@ public final class OyRemote implements Objectionary {
      * @return SHA of commit
      * @throws JSONException if fails
      * @throws IOException if fails
+     * @throws URISyntaxException if fails
+     * @throws InterruptedException if fails
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    private String getSha() throws IOException, JSONException {
+    private String getSha() throws IOException, JSONException,
+        InterruptedException, URISyntaxException {
         String sha = "master";
         try {
             final String query = String.format(
@@ -130,7 +134,7 @@ public final class OyRemote implements Objectionary {
                 "https://api.github.com/repos/objectionary/home/git/refs/heads/%s",
                 this.hash
             );
-            final JSONObject obj = OyRemote.readJsonFromUrl(query);
+            final JSONObject obj = this.readJsonFromUrl(query);
             sha = obj.getJSONObject("object").getString("sha");
         } catch (final IOException | JSONException exception) {
             Logger.info(this, "Couldn't get commit SHA. It will be set as \"master\"");
@@ -140,40 +144,31 @@ public final class OyRemote implements Objectionary {
     }
 
     /**
-     * Reader.
-     * @param reader Reader
-     * @return String
-     * @throws IOException if something went wrong
-     */
-    private static String readAll(final Reader reader) throws IOException {
-        final StringBuilder sbuilder = new StringBuilder();
-        int cur;
-        while (true) {
-            cur = reader.read();
-            if (cur == -1) {
-                break;
-            }
-            sbuilder.append((char) cur);
-        }
-        return sbuilder.toString();
-    }
-
-    /**
      * Function from reading by url.
      * @param url URL
      * @return JSONobject
      * @throws IOException exception
      * @throws JSONException exception
+     * @throws URISyntaxException exception
+     * @throws InterruptedException exception
      */
-    private static JSONObject readJsonFromUrl(final String url) throws IOException, JSONException {
-        final InputStream istream = new URL(url).openStream();
-        try (BufferedReader reader = new BufferedReader(
-            new InputStreamReader(istream, StandardCharsets.UTF_8)
-        )) {
-            final String json = OyRemote.readAll(reader);
-            return new JSONObject(json);
-        } finally {
-            istream.close();
+    private JSONObject readJsonFromUrl(final String url) throws IOException,
+        JSONException, URISyntaxException, InterruptedException {
+        try {
+            final HttpRequest request = HttpRequest.newBuilder()
+                .header(
+                    "User-Agent", "Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) "
+                    .concat("AppleWebKit/537.36 (KHTML, like Gecko) ")
+                    .concat("Chrome/51.0.2704.64 Safari/537.36")
+                )
+                .uri(new URI(url)).GET().build();
+            final HttpResponse<String> response = HttpClient.newBuilder()
+                .build()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+            return new JSONObject(response.body());
+        } catch (final URISyntaxException | InterruptedException exception) {
+            Logger.info(this, "Problem with request or its result");
+            throw exception;
         }
     }
 

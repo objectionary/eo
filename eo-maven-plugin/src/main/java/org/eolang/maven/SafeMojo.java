@@ -27,6 +27,7 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.maven.execution.MavenSession;
@@ -111,7 +112,7 @@ abstract class SafeMojo extends AbstractMojo {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
             this.exec();
-        } catch (final IOException | JSONException | InterruptedException ex) {
+        } catch (final IOException | JSONException | InterruptedException | URISyntaxException ex) {
             throw new MojoFailureException(
                 String.format(
                     "Failed to execute %s",
@@ -162,7 +163,9 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws JSONException If fails
      * @throws IOException If fails
      * @throws InterruptedException if fails
+     * @throws URISyntaxException if fails
      */
-    abstract void exec() throws IOException, JSONException, InterruptedException;
+    abstract void exec() throws IOException, JSONException,
+        InterruptedException, URISyntaxException;
 
 }
