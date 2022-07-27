@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.CachedTojos;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.Json;
 import com.yegor256.tojos.Mono;
@@ -77,6 +78,8 @@ final class Catalog {
                 )
             );
         }
-        return new MonoTojos(mono);
+        return new CachedTojos(
+            new MonoTojos(mono)
+        );
     }
 }

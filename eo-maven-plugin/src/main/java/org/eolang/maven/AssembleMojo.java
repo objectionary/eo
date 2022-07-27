@@ -203,14 +203,15 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(PlaceMojo.class),
         };
         while (true) {
+            final StopWatch times = new StopWatch();
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
             final String after = this.status();
             ++cycle;
             Logger.info(
-                this, "Assemble cycle #%d (%s -> %s)",
-                cycle, before, after
+                this, "Assemble cycle #%d (%s -> %s), took %.4f sec",
+                cycle, before, after, times.lap()
             );
             if (after.equals(before)) {
                 break;

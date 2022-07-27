@@ -126,6 +126,11 @@ final class Moja<T extends AbstractMojo> {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("Moja<%s>}", this.type.getSimpleName());
+    }
+
     /**
      * List all fields of a class.
      * @param cls The class

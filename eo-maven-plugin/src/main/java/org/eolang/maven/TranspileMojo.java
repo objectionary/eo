@@ -117,7 +117,7 @@ public final class TranspileMojo extends SafeMojo {
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             this.targetDir.toPath().resolve(TranspileMojo.PRE)
         );
-        final Collection<Tojo> sources = this.tojos().select(
+        final Collection<Tojo> sources = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
