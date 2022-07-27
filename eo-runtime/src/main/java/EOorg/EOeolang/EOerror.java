@@ -40,9 +40,10 @@ import org.eolang.XmirObject;
 /**
  * ERROR.
  *
- * <p>This object you must return in case of any error. It is highly
- * recommended to use {@link EOerror#make(String, Object...)} method
- * instead of its constructor.</p>
+ * <p>You are NOT supposed to use this object programmatically. It is only
+ * used from EO, but not from Java. From Java you just throw
+ * {@link ExFailure}. It will be properly caught and converted to the error.
+ * Again, DON'T USE THIS OBJECT PROGRAMMATICALLY.
  *
  * @since 0.22
  * @checkstyle TypeNameCheck (5 lines)
@@ -86,19 +87,6 @@ public final class EOerror extends PhDefault {
             "α",
             new Data.ToPhi(String.format(format, params))
         );
-    }
-
-    /**
-     * Ctor.
-     *
-     * <p>Use this method to build a new error object. Don't use the
-     * constructor here. This factory method is much more convenient.</p>
-     *
-     * @param cause The cause
-     * @return The error object
-     */
-    public static Phi make(final Throwable cause) {
-        return EOerror.make(EOerror.message(cause));
     }
 
     /**
