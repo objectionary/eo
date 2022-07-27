@@ -157,12 +157,11 @@
 
 [] > mapi-should-works
   assert-that > @
-    as-array.
-      mapi.
-        list
-          * 1 2 3 4
-        [x i]
-          x.times 2 > @
+    mapi.
+      list
+        * 1 2 3 4
+      [x i]
+        x.times 2 > @
     $.equal-to
       list
         * 2 4 6 8
@@ -170,13 +169,12 @@
 # this test performs mapping of list using the index for it
 [] > mapi-index-can-be-accessed
   [numbers...] > multipliedByNaturalSequence
-    as-array. > @
-      mapi.
-        list numbers
-        [current index]
-          times. > @
-            (sscanf "%d" current).at 0
-            index.plus 1
+    mapi. > @
+      list numbers
+      [current index]
+        times. > @
+          (sscanf "%d" current).at 0
+          index.plus 1
   (multipliedByNaturalSequence "1" "2" "3") > mulSeq
   assert-that > @
     sprintf "%d %d %d" (mulSeq.at 0) (mulSeq.at 1) (mulSeq.at 2)
@@ -186,23 +184,21 @@
 [] > simple-mapping-int-to-string
   assert-that > @
     length.
-      as-array.
-        map.
-          list
-            * 1 2 3
-          [i]
-            (number i).as-string > @
+      map.
+        list
+          * 1 2 3
+        [i]
+          (number i).as-string > @
     $.equal-to 3
 
 [] > using-map-as-object
   assert-that > @
     (text " ").joined
-      as-array.
-        map.
-          list
-            * 1 2
-          [i]
-            (number i).as-string > @
+      map.
+        list
+          * 1 2
+        [i]
+          (number i).as-string > @
     $.equal-to "1 2"
 
 # if map does mutate lists, then this test would fail
@@ -211,14 +207,13 @@
 # to an int list
 [] > map-does-dot-mutate-array
   [numbers...] > squares
-    as-array. > @
-      map.
-        list numbers
-        [current]
-          pow. > @
-            number
-              (sscanf "%d" current).at 0
-            2
+    map. > @
+      list numbers
+      [current]
+        pow. > @
+          number
+            (sscanf "%d" current).at 0
+          2
   (squares "1" "2" "3") > sq
   assert-that > @
     sprintf "%d %d %d" (sq.at 0) (sq.at 1) (sq.at 2)

@@ -47,7 +47,7 @@ public final class EOlistEOmapTest {
         final Phi list = new EOlist(Phi.Φ);
         final Phi array = new Data.ToPhi(
             new Phi[]{
-                new Data.ToPhi(5L),
+                new Data.ToPhi(6L),
                 new Data.ToPhi(1L)
             }
         );
@@ -58,16 +58,14 @@ public final class EOlistEOmapTest {
         );
 
         final Phi[] items = new Dataized(
-            new PhMethod(
-                new PhWith(
-                    new PhMethod(list, "map"),
-                    0, new EOlistEOmapTest.Kid(Phi.Φ)
-                ), "as-array"
+            new PhWith(
+                new PhMethod(list, "map"),
+                0, new EOlistEOmapTest.Kid(Phi.Φ)
             )
         ).take(Phi[].class);
         MatcherAssert.assertThat(
             new Dataized(items[0]).take(String.class),
-            Matchers.equalTo("5")
+            Matchers.equalTo("6")
         );
     }
 
