@@ -68,6 +68,21 @@ final class Vertices {
      * @return Next vertex available or previously registered
      */
     public int best(final Object obj) {
+        final int best;
+        if (obj instanceof Phi[]) {
+            best = this.next();
+        } else {
+            best = this.bestNonPhi(obj);
+        }
+        return best;
+    }
+
+    /**
+     * Get the best suitable one.
+     * @param obj The object to find
+     * @return Next vertex available or previously registered in non-phi instance
+     */
+    private int bestNonPhi(final Object obj) {
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -78,11 +93,13 @@ final class Vertices {
             String.format(
                 "%s %s",
                 obj.getClass().getName(),
-                this.labelFrom(obj)
+                labelFrom(obj)
             ).getBytes()
         );
         final String hash = new String(digest.digest());
-        return this.bestByInstanceOf(obj, hash);
+        return this.seen.computeIfAbsent(
+            hash, key -> this.seen.size() + 1
+        );
     }
 
     /**
@@ -90,8 +107,8 @@ final class Vertices {
      * @param obj Label from
      * @return Label based on obj instance
      */
-    private String labelFrom(final Object obj) {
-        final String label = this.labelByInstanceOf(obj);
+    private static String labelFrom(final Object obj) {
+        final String label = labelByInstanceOf(obj);
         if (Objects.equals(null, label)) {
             throw new IllegalArgumentException(
                 String.format(
@@ -108,9 +125,9 @@ final class Vertices {
      * @param obj Whose instance check
      * @return Label from <b>obj</b>
      */
-    private String labelByInstanceOf(final Object obj) {
+    private static String labelByInstanceOf(final Object obj) {
         String label = null;
-        if (this.canToString(obj)) {
+        if (canToString(obj)) {
             label = obj.toString();
         } else if (obj instanceof Pattern) {
             label = Pattern.class.cast(obj).pattern();
@@ -125,8 +142,8 @@ final class Vertices {
      * @param obj Whose instance check
      * @return Presence as boolean
      */
-    private boolean canToString(final Object obj) {
-        return this.numeric(obj) || this.nonNumeric(obj) || obj instanceof Boolean;
+    private static boolean canToString(final Object obj) {
+        return numeric(obj) || nonNumeric(obj) || obj instanceof Boolean;
     }
 
     /**
@@ -134,7 +151,7 @@ final class Vertices {
      * @param obj Whose instance check
      * @return Result instanceof obj
      */
-    private boolean nonNumeric(final Object obj) {
+    private static boolean nonNumeric(final Object obj) {
         return obj instanceof String || obj instanceof Character;
     }
 
@@ -143,24 +160,8 @@ final class Vertices {
      * @param obj Whose instance check
      * @return Result instanceof obj
      */
-    private boolean numeric(final Object obj) {
+    private static boolean numeric(final Object obj) {
         return obj instanceof Long || obj instanceof Double;
-    }
-
-    /**
-     * Picking up best by an instance of passed object.
-     * @param obj From the best
-     * @param hash Of digest
-     * @return Best based on obj instance
-     */
-    private int bestByInstanceOf(final Object obj, final String hash) {
-        int best = this.next();
-        if (!(obj instanceof Phi[])) {
-            best = this.seen.computeIfAbsent(
-                hash, key -> this.seen.size() + 1
-            );
-        }
-        return best;
     }
 
 }
