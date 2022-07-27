@@ -271,7 +271,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.ConfusingTernary" })
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterHead(final ProgramParser.HeadContext ctx) {
         this.objects.start(
             ctx.getStart().getLine(),
@@ -348,7 +348,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     // @checkstyle ExecutableStatementCountCheck (100 lines)
     @Override
-    @SuppressWarnings({ "PMD.ConfusingTernary", "PMD.CyclomaticComplexity" })
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;

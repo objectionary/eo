@@ -30,7 +30,8 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.ExError;
+import org.eolang.ExAbstract;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -39,9 +40,10 @@ import org.eolang.XmirObject;
 /**
  * ERROR.
  *
- * <p>This object you must return in case of any error. It is highly
- * recommended to use {@link EOerror#make(String, Object...)} method
- * instead of its constructor.</p>
+ * <p>You are NOT supposed to use this object programmatically. It is only
+ * used from EO, but not from Java. From Java you just throw
+ * {@link ExFailure}. It will be properly caught and converted to the error.
+ * Again, DON'T USE THIS OBJECT PROGRAMMATICALLY.
  *
  * @since 0.22
  * @checkstyle TypeNameCheck (5 lines)
@@ -73,10 +75,11 @@ public final class EOerror extends PhDefault {
      * Ctor.
      *
      * <p>Use this method to build a new error object. Don't use the
-     * constructor here. This factory method is much more convenient.</>
+     * constructor here. This factory method is much more convenient.</p>
      *
      * @param format Message format string, similar to {@link String#format(String, Object...)}
      * @param params Parameters, which will be passed to the formatter
+     * @return The error object
      */
     public static Phi make(final String format, final Object... params) {
         return new PhWith(
@@ -85,4 +88,61 @@ public final class EOerror extends PhDefault {
             new Data.ToPhi(String.format(format, params))
         );
     }
+
+    /**
+     * Make a message from an exception.
+     * @param exp The exception
+     * @return Message
+     */
+    public static String message(final Throwable exp) {
+        final StringBuilder ret = new StringBuilder(0);
+        if (exp.getMessage() != null) {
+            if (!(exp instanceof ExFailure)) {
+                ret.append(exp.getClass().getSimpleName()).append(": ");
+            }
+            ret.append(exp.getMessage().replace("%", "%%"));
+        }
+        if (exp.getCause() != null) {
+            ret.append("; caused by ").append(EOerror.message(exp.getCause()));
+        }
+        return ret.toString();
+    }
+
+    /**
+     * This exception is thrown by the {@link EOerror} object only.
+     *
+     * <p>You are not supposed to use it anywhere else!</p>
+     *
+     * @since 0.24
+     */
+    public static final class ExError extends ExAbstract {
+
+        /**
+         * Serialization identifier.
+         */
+        private static final long serialVersionUID = 1735493012609760997L;
+
+        /**
+         * Enclosure.
+         */
+        private final Phi enc;
+
+        /**
+         * Ctor.
+         * @param enclosure Enclosure inside the error
+         */
+        public ExError(final Phi enclosure) {
+            super(enclosure.toString());
+            this.enc = enclosure;
+        }
+
+        /**
+         * Take it.
+         * @return The enclosed object
+         */
+        public Phi enclosure() {
+            return this.enc;
+        }
+    }
+
 }

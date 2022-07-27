@@ -31,7 +31,6 @@ import java.util.Arrays;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -59,7 +58,7 @@ public class EOarray$EOconcat extends PhDefault {
                 this,
                 rho -> {
                     final Phi[] first = new Param(rho).strong(Phi[].class);
-                    final Phi[] second = new Dataized(rho.attr("arr").get()).take(Phi[].class);
+                    final Phi[] second = new Param(rho, "arr").strong(Phi[].class);
                     final Phi[] result = Arrays.copyOf(first, first.length + second.length);
                     System.arraycopy(second, 0, result, first.length, second.length);
                     return new Data.ToPhi(result);

@@ -24,7 +24,6 @@
 package EOorg.EOeolang;
 
 import org.eolang.Dataized;
-import org.eolang.ExError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +37,7 @@ public final class EOerrorTest {
     @Test
     public void makesToxicObject() {
         Assertions.assertThrows(
-            ExError.class,
+            EOerror.ExError.class,
             () -> new Dataized(
                 EOerror.make("intentional error")
             ).take()

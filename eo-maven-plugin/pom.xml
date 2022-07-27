@@ -35,7 +35,6 @@ SOFTWARE.
   <description>EO-to-Java Maven Plugin</description>
   <properties>
     <maven.version>3.8.1</maven.version>
-    <kotlin.version>1.4.32</kotlin.version>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
   <distributionManagement>
@@ -48,6 +47,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
+      <!-- This version is intentionally lower than the current version of the project -->
       <version>0.24.0</version>
       <scope>test</scope>
     </dependency>
@@ -59,31 +59,38 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
+      <!-- version from parent POM -->
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-log</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-maven-slf4j</artifactId>
+      <version>0.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -103,7 +110,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.6.2</version>
+      <version>3.6.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -121,33 +128,29 @@ SOFTWARE.
     <dependency>
       <groupId>org.twdata.maven</groupId>
       <artifactId>mojo-executor</artifactId>
-      <version>2.3.2</version>
+      <version>2.4.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
-      <version>3.0.1</version>
-      <scope>provided</scope>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-compiler-plugin</artifactId>
-      <version>3.8.1</version>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -158,22 +161,25 @@ SOFTWARE.
     <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
+      <version>1.1.4</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
+      <version>1.1.4</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
-      <version>5.5.2</version>
+      <version>5.6</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

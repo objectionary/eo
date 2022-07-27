@@ -34,9 +34,9 @@ import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import EOorg.EOeolang.EOerror;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -78,41 +78,37 @@ public class EOsscanf extends PhDefault {
                             if (valid) {
                                 final int start = pattern.indexOf(Conversion.PERCENT_SIGN);
                                 final char c = pattern.charAt(start + 1);
-                                if (Conversion.isValid(c)) {
-                                    if (pattern.length() > 2) {
-                                        final int end = start + 1 == pattern.length() - 1
-                                            ? 0
-                                            : pattern.length() - (start + 2);
-                                        val = val.substring(start, val.length() - end);
-                                    }
-                                    if (Conversion.isString(c) || Conversion.isCharacter(c)) {
-                                        buffer.add(new Data.ToPhi(val));
-                                    } else if (Conversion.isInteger(c)) {
-                                        buffer.add(new Data.ToPhi(Long.parseLong(val)));
-                                    } else if (Conversion.isFloat(c)) {
-                                        buffer.add(new Data.ToPhi(Double.parseDouble(val)));
-                                    } else if (Conversion.isBoolean(c)) {
-                                        buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
-                                    } else {
-                                        return EOerror.make(
-                                            "Format pattern not supported yet: %s",
-                                            pattern
-                                        );
-                                    }
-                                } else {
-                                    return EOerror.make(
+                                if (!Conversion.isValid(c)) {
+                                    throw new ExFailure(
                                         "Can't recognize format pattern: %s",
+                                        pattern
+                                    );
+                                }
+                                if (pattern.length() > 2) {
+                                    final int end = start + 1 == pattern.length() - 1
+                                        ? 0
+                                        : pattern.length() - (start + 2);
+                                    val = val.substring(start, val.length() - end);
+                                }
+                                if (Conversion.isString(c) || Conversion.isCharacter(c)) {
+                                    buffer.add(new Data.ToPhi(val));
+                                } else if (Conversion.isInteger(c)) {
+                                    buffer.add(new Data.ToPhi(Long.parseLong(val)));
+                                } else if (Conversion.isFloat(c)) {
+                                    buffer.add(new Data.ToPhi(Double.parseDouble(val)));
+                                } else if (Conversion.isBoolean(c)) {
+                                    buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
+                                } else {
+                                    throw new ExFailure(
+                                        "Format pattern not supported yet: %s",
                                         pattern
                                     );
                                 }
                             }
                         }
-                    } catch (
-                        final IllegalArgumentException
-                            | NullPointerException
-                            | NoSuchElementException ex
-                    ) {
-                        return EOerror.make(ex.getMessage());
+                    } catch (final IllegalArgumentException
+                        | NullPointerException | NoSuchElementException ex) {
+                        throw new ExFailure(ex.getMessage());
                     }
                     return new Data.ToPhi(buffer.toArray(new Phi[0]));
                 }

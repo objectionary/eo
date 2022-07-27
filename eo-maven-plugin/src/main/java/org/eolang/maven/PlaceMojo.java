@@ -68,6 +68,11 @@ public final class PlaceMojo extends SafeMojo {
     public static final String ATTR_HASH = "hash";
 
     /**
+     * Where the binary is coming from (JAR name).
+     */
+    public static final String ATTR_ORIGIN = "dependency";
+
+    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -124,14 +129,14 @@ public final class PlaceMojo extends SafeMojo {
             for (final String dep : deps) {
                 final Collection<Tojo> before = this.catalog().select(
                     row -> row.get(Tojos.KEY).equals(dep)
-                        && "jar".equals(row.get("kind"))
+                        && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
                 if (!before.isEmpty()) {
                     Logger.info(this, "Binaries from %s have already been placed", dep);
                     continue;
                 }
                 copied += this.place(home, dep);
-                this.catalog().add(dep).set("kind", "jar");
+                this.catalog().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
             }
             if (copied == 0) {
                 Logger.info(
@@ -159,6 +164,7 @@ public final class PlaceMojo extends SafeMojo {
      * @return How many binaries placed
      * @throws IOException If fails
      * @checkstyle ExecutableStatementCountCheck (200 lines)
+     * @checkstyle CyclomaticComplexityCheck (200 lines)
      */
     private int place(final Path home, final String dep) throws IOException {
         final Path dir = home.resolve(dep);
@@ -170,7 +176,8 @@ public final class PlaceMojo extends SafeMojo {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
                 Logger.debug(
-                    this, "File %s is not a binary, but a source, won't place it",
+                    this,
+                    "File %s is not a binary, but a source, won't place it",
                     Save.rel(file)
                 );
                 continue;
@@ -178,28 +185,35 @@ public final class PlaceMojo extends SafeMojo {
             final Path target = this.outputDir.toPath().resolve(path);
             final Collection<Tojo> before = this.catalog().select(
                 row -> row.get(Tojos.KEY).equals(target.toString())
-                    && "class".equals(row.get("kind"))
+                    && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
-            if (!before.isEmpty()) {
-                Logger.warn(
-                    this, "File %s is already placed to %s maybe by another JAR",
-                    Save.rel(file), Save.rel(target)
+            if (!before.isEmpty() && !Files.exists(target)) {
+                throw new IllegalStateException(
+                    String.format(
+                        "The file %s has been placed to %s, but now it's gone",
+                        Save.rel(file), Save.rel(target)
+                    )
                 );
             }
-            if (Files.exists(target)) {
-                if (target.toFile().length() == file.toFile().length()) {
-                    Logger.debug(
-                        this, "File %s is already placed to %s",
-                        Save.rel(file), Save.rel(target)
-                    );
-                } else {
-                    Logger.warn(
-                        this, "File %s (%d bytes) is already placed to %s (%d bytes!)",
-                        Save.rel(file), file.toFile().length(),
-                        Save.rel(target), target.toFile().length()
-                    );
-                }
+            if (!before.isEmpty() && Files.exists(target)
+                && target.toFile().length() == file.toFile().length()) {
+                Logger.warn(
+                    this,
+                    "The same file %s is already placed to %s maybe by %s, skipping",
+                    Save.rel(file), Save.rel(target),
+                    before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
+                );
                 continue;
+            }
+            if (!before.isEmpty() && Files.exists(target)
+                && target.toFile().length() != file.toFile().length()) {
+                Logger.warn(
+                    this,
+                    "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
+                    Save.rel(file), file.toFile().length(),
+                    Save.rel(target), target.toFile().length(),
+                    before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
+                );
             }
             new Save(new InputOf(file), target).save();
             this.catalog().add(target.toString())
@@ -211,7 +225,7 @@ public final class PlaceMojo extends SafeMojo {
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set("dep", dep);
+                .set(PlaceMojo.ATTR_ORIGIN, dep);
             ++copied;
         }
         if (copied > 0) {

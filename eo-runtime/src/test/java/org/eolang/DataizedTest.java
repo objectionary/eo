@@ -75,5 +75,4 @@ public final class DataizedTest {
             )
         );
     }
-
 }

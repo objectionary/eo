@@ -24,12 +24,15 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
+
 /**
- * A named object.
+ * It catches {@link ExFailure} and
+ * throws {@link EOerror.ExError}.
  *
- * @since 0.17
+ * @since 0.26
  */
-final class PhNamed implements Phi {
+public final class PhSafe implements Phi {
 
     /**
      * The original.
@@ -37,19 +40,11 @@ final class PhNamed implements Phi {
     private final Phi origin;
 
     /**
-     * The name.
-     */
-    private final String name;
-
-    /**
      * Ctor.
-     *
      * @param phi The object
-     * @param txt The name
      */
-    PhNamed(final Phi phi, final String txt) {
+    public PhSafe(final Phi phi) {
         this.origin = phi;
-        this.name = txt;
     }
 
     @Override
@@ -64,17 +59,17 @@ final class PhNamed implements Phi {
 
     @Override
     public String toString() {
-        return String.format("%s≡%s", this.name, this.origin.toString());
+        return this.origin.toString();
     }
 
     @Override
     public String φTerm() {
-        return String.format("%s ≡ %s", this.name, this.origin.φTerm());
+        return this.origin.φTerm();
     }
 
     @Override
     public Phi copy() {
-        return new PhNamed(this.origin.copy(), this.name);
+        return new PhSafe(this.origin.copy());
     }
 
     @Override
@@ -84,12 +79,24 @@ final class PhNamed implements Phi {
 
     @Override
     public Attr attr(final int pos) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(pos));
+        try {
+            return this.origin.attr(pos);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
     }
 
     @Override
     public Attr attr(final String attr) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(attr));
+        try {
+            return this.origin.attr(attr);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
     }
 
     @Override

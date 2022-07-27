@@ -39,7 +39,8 @@ class ExprReduceTest {
             "plus",
             "x",
             Long.class,
-            Long::sum);
+            Long::sum
+        );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
         phi = new PhWith(phi, 0, new Data.ToPhi(10L));
@@ -52,25 +53,26 @@ class ExprReduceTest {
     }
 
     @Test
-    void wrongTypeTest() throws Exception {
+    void wrongTypeTest() {
         final ExprReduce<Long> expr = new ExprReduce<>(
             "plus",
             "x",
             Long.class,
-            Long::sum);
+            Long::sum
+        );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
         phi = new PhWith(phi, 0, new Data.ToPhi(10L));
         phi = new PhWith(phi, 1, new Data.ToPhi(20.0));
         phi = new PhWith(phi, 2, new Data.ToPhi(-5L));
         final Phi ret = phi;
-        final ExError error = Assertions.assertThrows(
-            ExError.class,
-            () -> new Dataized(ret).take(String.class)
+        final ExFailure error = Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Dataized(expr.get(ret)).take()
         );
         MatcherAssert.assertThat(
-            new Dataized(error.enclosure()).take(String.class),
-            Matchers.equalTo("The 2th argument of 'int.plus' is not a(n) Long: 20.0")
+            error.getMessage(),
+            Matchers.equalTo("The 2th argument of 'plus' is not a(n) Long: 20.0")
         );
     }
 }

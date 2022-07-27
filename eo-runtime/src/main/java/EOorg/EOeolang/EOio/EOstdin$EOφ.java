@@ -32,8 +32,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.eolang.AtComposite;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import EOorg.EOeolang.EOerror;
 import org.eolang.Phi;
 
 /**
@@ -58,15 +58,15 @@ public class EOstdin$EOφ extends PhDefault {
                     try (BufferedInputStream bis = new BufferedInputStream(System.in);
                         ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
                         while (true) {
-                            final int b = bis.read();
-                            if (b == -1) {
+                            final int data = bis.read();
+                            if (data == -1) {
                                 break;
                             }
-                            buf.write((byte) b);
+                            buf.write((byte) data);
                         }
                         return new Data.ToPhi(buf.toString());
-                    } catch (IOException ex) {
-                        return EOerror.make(
+                    } catch (final IOException ex) {
+                        throw new ExFailure(
                             "Cannot read from the standard input stream: %s",
                             ex.getMessage()
                         );

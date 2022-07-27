@@ -197,8 +197,7 @@
         2.div 0 > @
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.equal-to
       "The 1th argument of 'int.div' is invalid: division by zero is infinity"
 
@@ -239,8 +238,7 @@
         100.div 1 2 3.0 > @
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.equal-to "The 3th argument of 'int.div' is not a(n) Long: 3.0"
 
 [] > to-bytes-and-backwards
@@ -298,8 +296,7 @@
         100.plus 1 2 3.0 > @
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.equal-to "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
 
 [] > multiply-several-arguments
@@ -314,8 +311,7 @@
         100.times 1 2 3.0 > @
       [e]
         e > @
-      [finally]
-        FALSE > @
+      nop
     $.equal-to "The 3th argument of 'int.times' is not a(n) Long: 3.0"
 
 [] > multiply-by-zero

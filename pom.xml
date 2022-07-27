@@ -64,7 +64,7 @@ SOFTWARE.
         <role>Architect</role>
         <role>Developer</role>
       </roles>
-      <timezone>-7</timezone>
+      <timezone>+3</timezone>
     </developer>
   </developers>
   <issueManagement>
@@ -86,21 +86,28 @@ SOFTWARE.
       <url>https://github.com/objectionary/eo</url>
     </site>
   </distributionManagement>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.24</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.51.0</version>
+        <version>0.52.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
         <artifactId>xembly</artifactId>
         <version>0.26.2</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.11.0</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>
@@ -115,7 +122,43 @@ SOFTWARE.
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.29</version>
+        <version>1.30</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-log</artifactId>
+        <version>0.20.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-xml</artifactId>
+        <version>0.23.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-matchers</artifactId>
+        <version>1.5.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>2.0.0-alpha5</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>4.9.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>annotations</artifactId>
+        <version>3.0.1u2</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -128,17 +171,6 @@ SOFTWARE.
           <configuration>
             <treatWarningsAsErrors>true</treatWarningsAsErrors>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.jcabi</groupId>
-          <artifactId>jcabi-maven-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>javax.xml.bind</groupId>
-              <artifactId>jaxb-api</artifactId>
-              <version>2.3.1</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>com.github.github</groupId>
@@ -166,7 +198,7 @@ SOFTWARE.
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.20.0</version>
+            <version>0.21.0</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>

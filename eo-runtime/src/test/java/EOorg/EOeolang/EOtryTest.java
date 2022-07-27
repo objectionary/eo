@@ -23,11 +23,14 @@
  */
 package EOorg.EOeolang;
 
+import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -49,11 +52,83 @@ public final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(Phi.Φ),
+                            0, new Broken(Phi.Φ)
+                        ),
+                        1, new Catcher(Phi.Φ)
+                    ),
+                    2,
+                    new EOnop(Phi.Φ)
+                )
+            ).take(String.class),
+            Matchers.containsString("it is brok")
+        );
+    }
+
+    @Test
+    public void usesCatcherOutput() {
+        final Phi body = new PhWith(
+            new PhWith(
+                new PhWith(
+                    new EOtry(Phi.Φ),
+                    0, new Broken(Phi.Φ)
+                ),
+                1, new Catcher(Phi.Φ)
+            ),
+            2,
+            new EOnop(Phi.Φ)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(body, "eq"),
+                    0, new Data.ToPhi("it is broken")
+                )
+            ).take(Boolean.class),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void printsCatcherOutput() {
+        final Phi body = new PhWith(
+            new PhWith(
+                new PhWith(
+                    new EOtry(Phi.Φ),
+                    0, new Broken(Phi.Φ)
+                ),
+                1, new Catcher(Phi.Φ)
+            ),
+            2,
+            new EOnop(Phi.Φ)
+        );
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new EOsprintf(Phi.Φ),
+                        0, new Data.ToPhi("this is it: %s")
+                    ),
+                    1, body
+                )
+            ).take(String.class),
+            Matchers.equalTo("this is it: it is broken")
+        );
+    }
+
+    @Test
+    public void worksWithoutException() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new PhWith(
+                            new EOtry(Phi.Φ),
                             0, new Main(Phi.Φ)
                         ),
                         1, new Catcher(Phi.Φ)
                     ),
-                    2, new Data.ToPhi(true)
+                    2,
+                    new EOnop(Phi.Φ)
                 )
             ).take(Long.class),
             Matchers.equalTo(42L)
@@ -67,6 +142,20 @@ public final class EOtryTest {
                 this, self -> new Data.ToPhi(
                     new Dataized(new Data.ToPhi(42L)).take()
             )));
+        }
+    }
+
+    public static class Broken extends PhDefault {
+        public Broken(final Phi sigma) {
+            super(sigma);
+            this.add(
+                "φ",
+                new AtComposite(
+                    this, self -> {
+                        throw new ExFailure("it is broken");
+                    }
+                )
+            );
         }
     }
 

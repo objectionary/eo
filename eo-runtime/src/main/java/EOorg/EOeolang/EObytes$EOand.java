@@ -32,6 +32,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -63,7 +64,7 @@ public class EObytes$EOand extends PhDefault {
                     for (int index = 0; index < args.length; ++index) {
                         final Object val = new Dataized(args[index]).take();
                         if (!(val instanceof byte[])) {
-                            throw new IllegalArgumentException(
+                            throw new ExFailure(
                                 String.format(
                                     "The %dth argument of 'and' is of type %s, not bytes",
                                     index, val.getClass().getCanonicalName()

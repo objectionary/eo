@@ -22,47 +22,65 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang.EOio;
+package org.eolang;
 
-import java.util.Scanner;
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.ExFailure;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
+import EOorg.EOeolang.EOerror;
 
 /**
- * Standard Input. Consumes only one line.
+ * It catches {@link ExFailure} and
+ * throws {@link EOerror.ExError}.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.26
  */
-public class EOstdin$EOnext_line extends PhDefault {
+public final class AtSafe implements Attr {
+
+    /**
+     * Origin attribute.
+     */
+    private final Attr origin;
 
     /**
      * Ctor.
-     * @param parent Sigma
+     * @param attr Origin attribute
      */
-    public EOstdin$EOnext_line(final Phi parent) {
-        super(parent);
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    try (Scanner sc = new Scanner(System.in)) {
-                        if (!sc.hasNextLine()) {
-                            throw new ExFailure(
-                                "There is no line in the standard input stream to consume"
-                            );
-                        }
-                        return new Data.ToPhi(sc.nextLine());
-                    }
-                }
-            )
-        );
+    public AtSafe(final Attr attr) {
+        this.origin = attr;
     }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtSafe(this.origin.copy(self));
+    }
+
+    @Override
+    public Phi get() {
+        Phi phi;
+        try {
+            phi = this.origin.get();
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
+        if (!(phi instanceof Data)) {
+            phi = new PhSafe(phi);
+        }
+        return phi;
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
+    }
+
 }

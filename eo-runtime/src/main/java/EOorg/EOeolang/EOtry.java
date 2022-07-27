@@ -31,7 +31,6 @@ import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExError;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -63,14 +62,13 @@ public class EOtry extends PhDefault {
                     main.move(rho);
                     Phi ret;
                     try {
-                        ret = new Data.ToPhi(new Dataized(main).take());
-                    } catch (final ExError ex) {
+                        final Object obj = new Dataized(main).take();
+                        ret = new Data.ToPhi(obj);
+                    } catch (final EOerror.ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
                         ctch.attr(0).put(ex.enclosure());
                         ctch.move(rho);
-                        ret = new Data.ToPhi(
-                            new Dataized(ctch).take()
-                        );
+                        ret = new Data.ToPhi(new Dataized(ctch).take());
                     } finally {
                         final Phi fin = rho.attr("finally").get().copy();
                         fin.move(rho);
