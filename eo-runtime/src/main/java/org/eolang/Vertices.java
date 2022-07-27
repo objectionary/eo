@@ -130,13 +130,21 @@ final class Vertices {
 
     /**
      * This class is a replacement for the ternary operator
+     * <p><p><b>Example:</b></p> expression ? obj1 : obj2; – ternary</p>
+     * <p>new If(expression, obj1, obj2).statement(); - object analog</p>
      */
     private static final class If {
-        boolean expression;
-        Object phi;
-        Object sig;
+        final boolean expression;
+        final Object phi;
+        final Object sig;
 
 
+        /**
+         * Ctor
+         * @param expression just expression with two conditions
+         * @param phi statement of object if <b>expression</b> is <i>true</i>
+         * @param sig statement of object if <b>expression</b> is <i>false</i>
+         */
         public If(boolean expression, Object phi, Object sig) {
             this.expression = expression;
             this.phi = phi;
@@ -144,6 +152,10 @@ final class Vertices {
         }
 
 
+        /**
+         * @return statement of whole object
+         * @throws Throwable that was passed instead as <b>phi</b> or <b>sig</b>
+         */
         public Object statement() throws Throwable {
             tryThrow(phi);
             tryThrow(sig);
