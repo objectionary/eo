@@ -89,8 +89,12 @@ public interface Data<T> {
 
         @Override
         public boolean equals(final Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
             return this.take().equals(((Once<?>) obj).take());
         }
 
