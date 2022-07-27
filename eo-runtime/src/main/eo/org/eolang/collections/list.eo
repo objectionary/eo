@@ -41,7 +41,6 @@
   # one for the accumulator, the second one
   # for the index and the third one for the element
   # of the array.
-
   [a f] > reducei
     rec-reduce (* a 0) f arr > @
 
