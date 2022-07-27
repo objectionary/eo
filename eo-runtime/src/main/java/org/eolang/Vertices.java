@@ -26,6 +26,7 @@ package org.eolang;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -36,7 +37,6 @@ import java.util.regex.Pattern;
  * The class is thread-safe.
  *
  * @since 0.18
- * @checkstyle
  */
 final class Vertices {
 
@@ -68,106 +68,99 @@ final class Vertices {
      * @return Next vertex available or previously registered
      */
     public int best(final Object obj) {
-        final String label = stringFrom(obj);
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (final NoSuchAlgorithmException ex) {
             throw new IllegalStateException(ex);
         }
-        digest.update(String.format("%s %s", obj.getClass().getName(), label).getBytes());
+        digest.update(
+            String.format(
+                "%s %s",
+                obj.getClass().getName(),
+                this.labelFrom(obj)
+            ).getBytes()
+        );
         final String hash = new String(digest.digest());
-
-        try {
-            return Integer.class.cast(
-                    new If(
-                            obj instanceof Phi[],
-                            this.next(),
-                            this.seen.computeIfAbsent(
-                                    hash, key -> this.seen.size() + 1
-                            )
-                    ).statement()
-            );
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        return this.bestByInstanceOf(obj, hash);
     }
-
-
-    private String stringFrom(final Object obj) {
-        try {
-            return String.valueOf(
-                    new If(
-                            canToString(obj),
-                            obj.toString(),
-                            new If(
-                                    obj instanceof Pattern,
-                                    Pattern.class.cast(obj).pattern(),
-                                    new If(
-                                            obj instanceof byte[],
-                                            Arrays.toString(byte[].class.cast(obj)),
-                                            new IllegalArgumentException(
-                                                    String.format(
-                                                            "Unknown type for vertex allocation: %s",
-                                                            obj.getClass().getCanonicalName()
-                                                    )
-                                            )
-                                    ).statement()
-                            ).statement()
-                    ).statement()
-            );
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private boolean canToString(final Object obj) {
-        return obj instanceof Long || obj instanceof String || obj instanceof Character
-                || obj instanceof Double || obj instanceof Boolean;
-    }
-
 
     /**
-     * This class is a replacement for the ternary operator
-     * <p><p><b>Example:</b></p> expression ? obj1 : obj2; – ternary</p>
-     * <p>new If(expression, obj1, obj2).statement(); - object analog</p>
+     * Get label from Object.
+     * @param obj Label from
+     * @return Label based on obj instance
      */
-    private static final class If {
-        final boolean expression;
-        final Object phi;
-        final Object sig;
-
-
-        /**
-         * Ctor
-         * @param expression just expression with two conditions
-         * @param phi statement of object if <b>expression</b> is <i>true</i>
-         * @param sig statement of object if <b>expression</b> is <i>false</i>
-         */
-        public If(boolean expression, Object phi, Object sig) {
-            this.expression = expression;
-            this.phi = phi;
-            this.sig = sig;
+    private String labelFrom(final Object obj) {
+        final String label = this.labelByInstanceOf(obj);
+        if (Objects.equals(null, label)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unknown type for vertex allocation: %s",
+                    obj.getClass().getCanonicalName()
+                )
+            );
         }
-
-
-        /**
-         * @return statement of object, <b>phi</b> or <b>sig</b>
-         * @throws Throwable that was passed as <b>phi</b> or <b>sig</b>
-         */
-        public Object statement() throws Throwable {
-            tryThrow(phi);
-            tryThrow(sig);
-
-            return expression ? phi : sig;
-        }
-
-
-        private void tryThrow(Object obj) throws Throwable {
-            if (obj instanceof Throwable) {
-                throw Throwable.class.cast(obj);
-            }
-        }
+        return label;
     }
+
+    /**
+     * Mustn't change this method access level.
+     * @param obj Whose instance check
+     * @return Label from <b>obj</b>
+     */
+    private String labelByInstanceOf(final Object obj) {
+        String label = null;
+        if (this.canToString(obj)) {
+            label = obj.toString();
+        } else if (obj instanceof Pattern) {
+            label = Pattern.class.cast(obj).pattern();
+        } else if (obj instanceof byte[]) {
+            label = Arrays.toString(byte[].class.cast(obj));
+        }
+        return label;
+    }
+
+    /**
+     * Checks <b>obj</b> for the presence of toString() method.
+     * @param obj Whose instance check
+     * @return Presence as boolean
+     */
+    private boolean canToString(final Object obj) {
+        return this.numeric(obj) || this.nonNumeric(obj) || obj instanceof Boolean;
+    }
+
+    /**
+     * Checks obj on an instance of non-numeric type.
+     * @param obj Whose instance check
+     * @return Result instanceof obj
+     */
+    private boolean nonNumeric(final Object obj) {
+        return obj instanceof String || obj instanceof Character;
+    }
+
+    /**
+     * Checks obj on an instance of numeric type.
+     * @param obj Whose instance check
+     * @return Result instanceof obj
+     */
+    private boolean numeric(final Object obj) {
+        return obj instanceof Long || obj instanceof Double;
+    }
+
+    /**
+     * Picking up best by an instance of passed object.
+     * @param obj From the best
+     * @param hash Of digest
+     * @return Best based on obj instance
+     */
+    private int bestByInstanceOf(final Object obj, final String hash) {
+        int best = this.next();
+        if (!(obj instanceof Phi[])) {
+            best = this.seen.computeIfAbsent(
+                hash, key -> this.seen.size() + 1
+            );
+        }
+        return best;
+    }
+
 }
