@@ -38,7 +38,7 @@
   # Slice fixed size of bytes from position.
   [position size] > slice /ram-slice
 
-  [rho position size] > ram-slice
+  [position size] > ram-slice
 
     [] > @ /bytes
 

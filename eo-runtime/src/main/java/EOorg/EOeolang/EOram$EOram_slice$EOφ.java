@@ -51,7 +51,7 @@ public class EOram$EOram_slice$EOφ extends PhDefault {
                 this,
                 rho -> new Data.ToPhi(
                     Ram.INSTANCE.read(
-                        rho.attr("ρ").get().attr("rho").get(),
+                        rho.attr("ρ").get().attr("ρ").get().attr("ρ").get(),
                         new Param(
                             rho.attr("ρ").get(), "position"
                         ).strong(Long.class).intValue(),

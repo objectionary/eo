@@ -58,15 +58,9 @@ public class EOram$EOslice extends PhDefault {
                 rho -> {
                     final long pos = new Param(rho, "position").strong(Long.class);
                     final long len = new Param(rho, "size").strong(Long.class);
-                    final Phi ram = rho.attr("ρ").get();
-
                     return new PhWith(
                         new PhWith(
-                            new PhWith(
-                                new EOram$EOram_slice(rho),
-                                "rho",
-                                ram
-                            ),
+                            new EOram$EOram_slice(rho),
                             "position",
                             new Data.ToPhi(pos)
                         ),

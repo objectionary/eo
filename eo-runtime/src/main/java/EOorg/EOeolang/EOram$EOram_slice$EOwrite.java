@@ -55,7 +55,7 @@ public class EOram$EOram_slice$EOwrite extends PhDefault {
                     final Phi ram = rho.attr("ρ").get();
                     final int pos = new Param(ram, "position").strong(Long.class).intValue();
                     final byte[] bytes = new Param(rho, "data").strong(byte[].class);
-                    Ram.INSTANCE.write(ram.attr("rho").get(), pos, bytes);
+                    Ram.INSTANCE.write(ram.attr("ρ").get(), pos, bytes);
                     return new Data.ToPhi(true);
                 }
             )

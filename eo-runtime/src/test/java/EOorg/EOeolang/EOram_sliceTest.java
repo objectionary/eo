@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Test case for {@link EOram_slice}.
+ * Test case for {@link EOram$EOram_slice}.
  *
  * @since 0.23
  */
