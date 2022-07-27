@@ -26,7 +26,6 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [arr] > list
-
   arr > @
 
   # Is it empty?
@@ -119,3 +118,12 @@
               item
               x.at idx
       FALSE
+
+  # Returns the combined current and passed arrays
+  [passed] > concat
+    reduce. > @!
+      list
+        passed
+      ^
+      [a x]
+        a.with x > @
