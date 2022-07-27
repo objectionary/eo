@@ -56,6 +56,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
 
     /**
+     * Terms being processed now.
+     */
+    private static final ThreadLocal<Set<Integer>> terms = new ThreadLocal<>();
+
+    /**
      * Identity of it (the ID of the vertex).
      */
     protected int vertex;
@@ -74,11 +79,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Cached \phi.
      */
     private CachedPhi cached = new CachedPhi();
-
-    /**
-     * Terms being processed now.
-     */
-    private final static ThreadLocal<Set<Integer>> terms = new ThreadLocal<>();
 
     /**
      * Ctor.
@@ -115,36 +115,31 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (PhDefault.terms.get() == null) {
             PhDefault.terms.set(new HashSet<>());
         }
+        String txt;
         if (PhDefault.terms.get().contains(this.vertex)) {
-            return String.format("ν%d", this.vertex);
-        }
-        PhDefault.terms.get().add(this.vertex);
-        final List<String> list = new ArrayList<>(this.attrs.size());
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-            e -> Arrays.asList("σ", "ρ", "Δ").contains(e.getKey())
-        ).collect(Collectors.toList())) {
-            final String attr = String.format(
-                "%s ↦ %s",
-                ent.getKey(),
-                ent.getValue().φTerm()
-            );
-            list.add(attr);
-        }
-        PhDefault.terms.get().remove(this.vertex);
-        Collections.sort(list);
-        String txt = this.getClass().getSimpleName();
-        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
-        if (xmir != null) {
-            txt = xmir.oname();
-            if ("@".equals(txt)) {
-                txt = "φ";
+            txt = String.format("ν%d", this.vertex);
+        } else {
+            PhDefault.terms.get().add(this.vertex);
+            final List<String> list = new ArrayList<>(this.attrs.size());
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
+                e -> Arrays.asList("σ", "ρ", "Δ").contains(e.getKey())
+            ).collect(Collectors.toList())) {
+                final String attr = String.format(
+                    "%s ↦ %s",
+                    ent.getKey(),
+                    ent.getValue().φTerm()
+                );
+                list.add(attr);
             }
-        }
-        if (!list.isEmpty()) {
-            txt = String.format(
-                "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
-                new Indented(String.join(",\n", list))
-            );
+            PhDefault.terms.get().remove(this.vertex);
+            Collections.sort(list);
+            txt = this.oname();
+            if (!list.isEmpty()) {
+                txt = String.format(
+                    "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
+                    new Indented(String.join(",\n", list))
+                );
+            }
         }
         return txt;
     }
@@ -157,7 +152,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.vertex
         );
         if (this.attrs.containsKey("Δ")) {
-            result= String.format(
+            result = String.format(
                 "%s=%s",
                 result,
                 this.attrs.get("Δ").toString()

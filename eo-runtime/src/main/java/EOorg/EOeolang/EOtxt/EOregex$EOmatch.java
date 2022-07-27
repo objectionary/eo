@@ -61,16 +61,16 @@ public class EOregex$EOmatch extends PhDefault {
                 this,
                 rho -> {
                     final Phi regex = rho.attr("ρ").get();
-                    final String r = new Param(regex, "r").strong(String.class);
+                    final String pattern = new Param(regex, "r").strong(String.class);
                     final String txt = new Param(rho, "txt").strong(String.class);
-                    final Matcher matcher = Pattern.compile(r).matcher(txt);
-                    List<Phi> dest = new ArrayList<>(0);
+                    final Matcher matcher = Pattern.compile(pattern).matcher(txt);
+                    final List<Phi> dest = new ArrayList<>(0);
                     while (matcher.find()) {
-                        Phi[] groups;
+                        final Phi[] groups;
                         if (matcher.groupCount() > 0) {
                             groups = new Phi[matcher.groupCount()];
-                            for (int i = 0; i < groups.length; i += 1) {
-                                groups[i] = new Data.ToPhi(matcher.group(i));
+                            for (int idx = 0; idx < groups.length; idx += 1) {
+                                groups[idx] = new Data.ToPhi(matcher.group(idx));
                             }
                         } else {
                             groups = new Phi[] {};
@@ -80,7 +80,7 @@ public class EOregex$EOmatch extends PhDefault {
                                 new Phi[] {
                                     new Data.ToPhi(Long.valueOf(matcher.start())),
                                     new Data.ToPhi(matcher.group()),
-                                    new Data.ToPhi(groups)
+                                    new Data.ToPhi(groups),
                                 }
                             )
                         );
