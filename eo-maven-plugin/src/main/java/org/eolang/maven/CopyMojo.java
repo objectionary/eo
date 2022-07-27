@@ -115,8 +115,9 @@ public final class CopyMojo extends SafeMojo {
             );
         } else {
             Logger.info(
-                this, "%d sources copied from %s to %s",
-                sources.size(), Save.rel(this.sourcesDir.toPath()), Save.rel(target)
+                this, "%d source(s) copied from %s to %s",
+                sources.size(), Save.rel(this.sourcesDir.toPath()),
+                Save.rel(target)
             );
         }
     }

@@ -74,7 +74,14 @@ public final class AtComposite implements Attr {
         } catch (final RuntimeException ex) {
             throw ex;
         } catch (final Throwable ex) {
-            throw new ExFailure("system error", ex);
+            throw new ExFailure(
+                String.format(
+                    "Unexpected error '%s' of type %s",
+                    ex.getMessage(),
+                    ex.getClass().getSimpleName()
+                ),
+                ex
+            );
         }
     }
 

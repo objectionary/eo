@@ -54,21 +54,25 @@ public final class UnplaceMojoTest {
         new Save("...", foo4).save();
         final Path list = temp.resolve("placed.json");
         new MonoTojos(new Csv(list)).add(foo.toString())
-            .set("kind", "class")
+            .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
-            .set("hash", new FileHash(foo));
+            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_HASH, new FileHash(foo));
         new MonoTojos(new Csv(list)).add(foo2.toString())
-            .set("kind", "class")
+            .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
-            .set("hash", new FileHash(foo2));
+            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_HASH, new FileHash(foo2));
         new MonoTojos(new Csv(list)).add(foo3.toString())
-            .set("kind", "class")
+            .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
-            .set("hash", new FileHash(foo3));
+            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_HASH, new FileHash(foo3));
         new MonoTojos(new Csv(list)).add(foo4.toString())
-            .set("kind", "class")
+            .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
-            .set("hash", new FileHash(foo4));
+            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_HASH, new FileHash(foo4));
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")

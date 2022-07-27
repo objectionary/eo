@@ -34,7 +34,7 @@
 # ```
 # goto
 #   [g]
-#     seq
+#     seq > @
 #       g.forward TRUE
 #       stdout "Will never be printed"
 # ```
@@ -44,7 +44,7 @@
 # ```
 # goto
 #   [g]
-#     seq
+#     seq > @
 #       stdout "Will be printed forever"
 #       g.backward
 # ```

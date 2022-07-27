@@ -106,7 +106,6 @@ public final class UnplaceMojo extends SafeMojo {
      * Place what's necessary.
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     public void placeThem() throws IOException {
         final Collection<Tojo> tojos = new Catalog(
             this.placed.toPath(), this.placedFormat
@@ -153,24 +152,36 @@ public final class UnplaceMojo extends SafeMojo {
             final String hash = new FileHash(path).toString();
             if (!tojo.get(PlaceMojo.ATTR_HASH).equals(hash)) {
                 if (hash.isEmpty()) {
-                    Logger.debug(this, "The binary %s is gone, won't unplace", related);
+                    Logger.debug(
+                        this, "The binary %s of %s is gone, won't unplace",
+                        related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    );
                     continue;
                 }
                 if (!UnplaceMojo.inside(related, this.removeBinaries)) {
-                    Logger.warn(this, "The binary %s looks different, won't unplace", related);
+                    Logger.warn(
+                        this, "The binary %s of %s looks different, won't unplace",
+                        related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    );
                     continue;
                 }
                 Logger.info(
                     this,
-                    "The binary %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
-                    related
+                    "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
+                    related, tojo.get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
             if (UnplaceMojo.delete(path)) {
                 unplaced += 1;
-                Logger.debug(this, "Binary %s deleted", Save.rel(path));
+                Logger.debug(
+                    this, "Binary %s of %s deleted",
+                    Save.rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                );
             } else {
-                Logger.debug(this, "Binary %s already deleted", Save.rel(path));
+                Logger.debug(
+                    this, "Binary %s of %s already deleted",
+                    Save.rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                );
             }
         }
         return unplaced;
@@ -197,8 +208,8 @@ public final class UnplaceMojo extends SafeMojo {
             deleted += 1;
             Logger.debug(
                 this,
-                "The binary %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                related
+                "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
+                related, tojo.get(PlaceMojo.ATTR_ORIGIN)
             );
         }
         Logger.info(
