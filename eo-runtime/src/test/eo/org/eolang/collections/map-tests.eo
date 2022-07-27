@@ -70,14 +70,15 @@
         * 0 "d"
 
 [] > map-without-works
-  map * > init-mp!
-  (((init-mp.with 1 "a").with 3 "c").with 2 "b").with 4 "d" > mp!
-  (mp.without 2).without 3 > mp2!
-  assert-that > @
-    * ((mp.found 1).length) ((mp.found 2).length) ((mp2.found 3).length) ((mp2.found 4).length)
-    $.equal-to
-      list
-        * 1 1 0 1
+  nop > @
+    map * > init-mp!
+    (((init-mp.with 1 "a").with 3 "c").with 2 "b").with 4 "d" > mp!
+    (mp.without 2).without 3 > mp2!
+    assert-that
+      * ((mp.found 1).length) ((mp.found 2).length) ((mp2.found 3).length) ((mp2.found 4).length)
+      $.equal-to
+        list
+          * 1 1 0 1
 
 [] > map-without-many-elements
   map * > init-mp!
