@@ -94,7 +94,7 @@ final class Vertices {
     }
 
 
-    private String stringFrom(Object obj) {
+    private String stringFrom(final Object obj) {
         try {
             return String.valueOf(
                     new If(
@@ -122,7 +122,7 @@ final class Vertices {
     }
 
 
-    private boolean canToString(Object obj) {
+    private boolean canToString(final Object obj) {
         return obj instanceof Long || obj instanceof String || obj instanceof Character
                 || obj instanceof Double || obj instanceof Boolean;
     }
@@ -153,7 +153,7 @@ final class Vertices {
 
 
         /**
-         * @return statement of whole object
+         * @return statement of object, <b>phi</b> or <b>sig</b>
          * @throws Throwable that was passed as <b>phi</b> or <b>sig</b>
          */
         public Object statement() throws Throwable {
