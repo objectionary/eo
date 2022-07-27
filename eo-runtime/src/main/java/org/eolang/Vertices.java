@@ -154,7 +154,7 @@ final class Vertices {
 
         /**
          * @return statement of whole object
-         * @throws Throwable that was passed instead as <b>phi</b> or <b>sig</b>
+         * @throws Throwable that was passed as <b>phi</b> or <b>sig</b>
          */
         public Object statement() throws Throwable {
             tryThrow(phi);
