@@ -80,7 +80,7 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>@{argLine} -Duser.language=ru -Duser.region=RU -Ddataized.log.until=5</argLine>
+          <argLine>@{argLine} -Duser.language=ru -Duser.region=RU</argLine>
           <systemProperties>
             <java.util.logging.config.file>${project.basedir}/src/test/resources/jul.properties</java.util.logging.config.file>
           </systemProperties>
