@@ -64,13 +64,12 @@
 
   # Subtract from the current one
   [x...] > minus
-    as-array. > x-neg
-      map.
-        list
-          x
-        [element]
-          neg. > @
-            element
+    map. > x-neg
+      list
+        x
+      [element]
+        neg. > @
+          element
     ^.plus > @
       ...x-neg
 

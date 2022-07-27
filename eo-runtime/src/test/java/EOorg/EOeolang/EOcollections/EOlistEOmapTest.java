@@ -58,11 +58,9 @@ public final class EOlistEOmapTest {
         );
 
         final Phi[] items = new Dataized(
-            new PhMethod(
-                new PhWith(
-                    new PhMethod(list, "map"),
-                    0, new EOlistEOmapTest.Kid(Phi.Φ)
-                ), "as-array"
+            new PhWith(
+                new PhMethod(list, "map"),
+                0, new EOlistEOmapTest.Kid(Phi.Φ)
             )
         ).take(Phi[].class);
         MatcherAssert.assertThat(
