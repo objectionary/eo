@@ -152,9 +152,9 @@ final class Vertices {
         }
 
 
-        private void tryThrow(Object phi) throws Throwable {
-            if (phi instanceof Throwable) {
-                throw Throwable.class.cast(phi);
+        private void tryThrow(Object obj) throws Throwable {
+            if (obj instanceof Throwable) {
+                throw Throwable.class.cast(obj);
             }
         }
     }
