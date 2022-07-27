@@ -48,18 +48,14 @@
         * "c" 0 "a" "c"
 
 [] > map-find-and-with
-  map * > fmp!
-  ((((fmp.with 1 "a").with "abc" "cba").with 4 5).with 3 5) > mp!
-  mp.found 1 > r1!
-  mp.found 2 > r2!
-  mp.found 3 > r3!
-  mp.found 4 > r4!
-  mp.found "abc" > rabc!
-  assert-that > @
-    * (r1.at 0) (r2.length) (r3.at 0) (r4.at 0) (rabc.at 0)
-    $.equal-to
-      list
-        * "a" 0 5 5 "cba"
+  nop > @
+    map * > init-mp!
+    (init-mp.with 1 "a").with "abc" "cba" > mp!
+    assert-that
+      * ((mp.found 1).at 0) ((mp.found "abc").at 0)
+      $.equal-to
+        list
+          * "a" "cba"
 
 [] > map-of-maps
   map * > init-mp!
@@ -94,10 +90,9 @@
         * 2 1 "c"
 
 [] > map-large-key-test
-  map * > init-mp!
-  init-mp.with "key123" 42 > mp!
-  assert-that > @
-    * (mp.size) ((mp.found "key123").at 0)
-    $.equal-to
-      list
-        * 1 42
+  nop > @
+    map * > init-mp!
+    init-mp.with "key123" 42 > mp!
+    assert-that
+      ((mp.found "key123").at 0)
+      $.equal-to 42

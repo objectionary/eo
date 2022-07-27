@@ -43,10 +43,10 @@
   * (* 1 "a") (* 4 "b") (* "c" 5) (* 8 7) > arr
   mmp.rebuild harr arr > res
   assert-that > @
-    * ((res.at 0).length) ((res.at 1).length) ((res.at 2).length) ((res.at 3).length) (((res.at 0).at 0).at 0) (((res.at 3).at 0).at 1)
+    * (((res.at 0).at 0).at 0) (((res.at 3).at 0).at 1)
     $.equal-to
       list
-        * 2 1 0 1 4 5
+        * 4 5
 
 [] > multimap-pairs-to-hash-test
   multimap * > mp!
@@ -74,44 +74,6 @@
   assert-that > @
     mp2.size
     $.equal-to 2
-
-# Speed test
-[] > multimap-with-many-objects
-  multimap * > mp!
-  with. > mp2!
-    with.
-      with.
-        with.
-          with.
-            with.
-              with.
-                with.
-                  with.
-                    with.
-                      mp
-                      1
-                      "a"
-                    2
-                    "b"
-                  3
-                  "c"
-                4
-                "d"
-              5
-              "e"
-            6
-            "f"
-          7
-          "g"
-        8
-        "h"
-      9
-      "i"
-    10
-    "j"
-  assert-that > @
-    mp2.size
-    $.equal-to 10
 
 [] > multimap-find-in-list-works
   multimap * > mp!
@@ -144,18 +106,14 @@
         * "c" 0 "a" "c"
 
 [] > multimap-find-and-with
-  multimap * > fmp!
-  ((((fmp.with 1 "a").with "abc" "cba").with 4 5).with 3 5) > mp!
-  mp.found 1 > r1!
-  mp.found 2 > r2!
-  mp.found 3 > r3!
-  mp.found 4 > r4!
-  mp.found "abc" > rabc!
-  assert-that > @
-    * (r1.at 0) (r2.length) (r3.at 0) (r4.at 0) (rabc.at 0)
-    $.equal-to
-      list
-        * "a" 0 5 5 "cba"
+  nop > @
+    multimap * > init-mp!
+    init-mp.with 1 "a" > mp!
+    assert-that
+      * ((mp.found 1).at 0) ((mp.found "abc").length)
+      $.equal-to
+        list
+          * "a" 0
 
 [] > multimap-of-multimaps
   multimap * > init-mp!
@@ -196,10 +154,11 @@
     $.equal-to 0
 
 [] > multimap-large-key-test
-  (multimap *).with "key123" 42 > mp!
-  assert-that > @
-    (mp.found "key123").length
-    $.equal-to 1
+  nop > @
+    (multimap *).with "key123" 42 > mp!
+    assert-that
+      (mp.found "key123").length
+      $.equal-to 1
 
 [] > collision-test
   TRUE > a!
