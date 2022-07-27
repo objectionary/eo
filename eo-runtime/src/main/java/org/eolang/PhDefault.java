@@ -25,7 +25,6 @@ package org.eolang;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Terms being processed now.
      */
-    private static final ThreadLocal<Set<Integer>> terms = new ThreadLocal<>();
+    private static final ThreadLocal<Set<Integer>> TERMS = new ThreadLocal<>();
 
     /**
      * Identity of it (the ID of the vertex).
@@ -112,14 +111,14 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
-        if (PhDefault.terms.get() == null) {
-            PhDefault.terms.set(new HashSet<>());
+        if (PhDefault.TERMS.get() == null) {
+            PhDefault.TERMS.set(new HashSet<>());
         }
         String txt;
-        if (PhDefault.terms.get().contains(this.vertex)) {
+        if (PhDefault.TERMS.get().contains(this.vertex)) {
             txt = String.format("ν%d", this.vertex);
         } else {
-            PhDefault.terms.get().add(this.vertex);
+            PhDefault.TERMS.get().add(this.vertex);
             final List<String> list = new ArrayList<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
                 e -> Arrays.asList("σ", "ρ", "Δ").contains(e.getKey())
@@ -131,7 +130,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 );
                 list.add(attr);
             }
-            PhDefault.terms.get().remove(this.vertex);
+            PhDefault.TERMS.get().remove(this.vertex);
             Collections.sort(list);
             txt = this.oname();
             if (!list.isEmpty()) {
@@ -147,7 +146,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public String toString() {
         String result = String.format(
-            "%sv%d",
+            "%sν%d",
             this.getClass().getCanonicalName(),
             this.vertex
         );
