@@ -23,6 +23,7 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
++alias org.eolang.collections.list
 +rt jvm org.eolang:eo-runtime:0.0.0
 
 [] > array
@@ -39,4 +40,10 @@
   [x] > with /array
 
   # Returns the combined current and passed arrays
-  [arr] > concat /array
+  [arr] > concat
+    reduce. > @!
+      list
+        arr
+      ^
+      [a x]
+        a.with x > @
