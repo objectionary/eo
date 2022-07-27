@@ -98,7 +98,7 @@ public final class Dataized {
                     String.join("", Collections.nCopies(before, "·")),
                     this.phi.location(),
                     this.phi.φTerm().replaceAll("[\n\t]", ""),
-                    new Data.Value<>(data)
+                    new Data.Value<>(data).φTerm()
                 )
             );
         }
