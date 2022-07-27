@@ -22,8 +22,8 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.25.4
-+rt jvm org.eolang:eo-runtime:0.25.4
++version 0.25.5
++rt jvm org.eolang:eo-runtime:0.25.5
 
 # Non-conditional forward and backward jumps. Returns TRUE
 # if the backward jump happened, an object provided to
@@ -34,7 +34,7 @@
 # ```
 # goto
 #   [g]
-#     seq
+#     seq > @
 #       g.forward TRUE
 #       stdout "Will never be printed"
 # ```
@@ -44,7 +44,7 @@
 # ```
 # goto
 #   [g]
-#     seq
+#     seq > @
 #       stdout "Will be printed forever"
 #       g.backward
 # ```
