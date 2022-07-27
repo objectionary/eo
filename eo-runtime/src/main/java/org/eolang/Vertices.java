@@ -68,32 +68,7 @@ final class Vertices {
      * @return Next vertex available or previously registered
      */
     public int best(final Object obj) {
-        final String label;
-        try {
-            label = String.valueOf(
-                new If(
-                    canToString(obj),
-                    obj.toString(),
-                    new If(
-                        obj instanceof Pattern,
-                        Pattern.class.cast(obj).pattern(),
-                        new If(
-                            obj instanceof byte[],
-                            Arrays.toString(byte[].class.cast(obj)),
-                            new IllegalArgumentException(
-                                    String.format(
-                                            "Unknown type for vertex allocation: %s",
-                                            obj.getClass().getCanonicalName()
-                                    )
-                            )
-                        ).statement()
-                    ).statement()
-                ).statement()
-            );
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-
+        final String label = stringFrom(obj);
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -119,12 +94,43 @@ final class Vertices {
     }
 
 
+    private String stringFrom(Object obj) {
+        try {
+            return String.valueOf(
+                    new If(
+                            canToString(obj),
+                            obj.toString(),
+                            new If(
+                                    obj instanceof Pattern,
+                                    Pattern.class.cast(obj).pattern(),
+                                    new If(
+                                            obj instanceof byte[],
+                                            Arrays.toString(byte[].class.cast(obj)),
+                                            new IllegalArgumentException(
+                                                    String.format(
+                                                            "Unknown type for vertex allocation: %s",
+                                                            obj.getClass().getCanonicalName()
+                                                    )
+                                            )
+                                    ).statement()
+                            ).statement()
+                    ).statement()
+            );
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private boolean canToString(Object obj) {
         return obj instanceof Long || obj instanceof String || obj instanceof Character
                 || obj instanceof Double || obj instanceof Boolean;
     }
 
 
+    /**
+     * This class is a replacement for the ternary operator
+     */
     private static final class If {
         boolean expression;
         Object phi;
@@ -138,9 +144,6 @@ final class Vertices {
         }
 
 
-        /**
-         * @throws Throwable phi or sig if was passed into ctor
-         */
         public Object statement() throws Throwable {
             tryThrow(phi);
             tryThrow(sig);
