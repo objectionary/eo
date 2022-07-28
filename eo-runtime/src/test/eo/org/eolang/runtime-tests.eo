@@ -84,7 +84,7 @@
 
 [] > makes-deep-object-recursively
   assert-that > @
-    x 10
+    x 5
     $.equal-to 0
   [i] > x
     if. > @
