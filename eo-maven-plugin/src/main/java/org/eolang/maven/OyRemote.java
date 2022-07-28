@@ -24,14 +24,10 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Scanner;
 import org.cactoos.Input;
@@ -97,20 +93,6 @@ public final class OyRemote implements Objectionary {
     }
 
     /**
-     * File downloader.
-     * @param link Link to file
-     * @param name Location
-     * @throws IOException If fails
-     */
-    private static void download(final String link, final String name)
-        throws IOException {
-        final URL url = new URL(link);
-        try (InputStream in = url.openStream()) {
-            Files.copy(in, Paths.get(name), StandardCopyOption.REPLACE_EXISTING);
-        }
-    }
-
-    /**
      * Hash of head master.
      * @return SHA of commit
      * @throws IOException if fails
@@ -118,22 +100,9 @@ public final class OyRemote implements Objectionary {
      */
     private String getSha() throws IOException {
         String sha = "master";
-        final String link = String.format(
-            "%s%s",
-            "https://raw.githubusercontent.com/",
-            "objectionary/home/gh-pages/tags.txt"
-        );
-        final long time = System.nanoTime();
-        final String name = String.format("%s%s", time, ".txt");
-        download(link, name);
-        final File file = new File(
-            String.format(
-                "%s/%s",
-                System.getProperty("user.dir"),
-                name
-            )
-        );
-        final Scanner scanner = new Scanner(file);
+        final String link = "https://home.objectionary.com/tags.txt";
+        final InputStream ins = new URL(link).openStream();
+        final Scanner scanner = new Scanner(ins);
         while (scanner.hasNextLine()) {
             final String line = scanner.nextLine();
             final String[] parts = line.split("\t");
@@ -143,7 +112,6 @@ public final class OyRemote implements Objectionary {
                 break;
             }
         }
-        file.delete();
         return sha;
     }
 
