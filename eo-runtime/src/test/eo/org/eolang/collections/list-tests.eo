@@ -313,20 +313,14 @@
             "\t"
             "bbt"
 
-# @todo #841:30m Remove all nop objects from tests.
-#  Including list-tests and array-tests.
-#  We need to fix tests with nop objects and remove
-#  it from them. This can be done only after eo-hamcrest
-#  release with a new fixes of a list.equal object.
 [] > nested-array-eq-should-works
-  nop > @
-    * 1 "2" 3.0 > a
-    * 1 "2" ((number 3).as-float) > b
-    assert-that
-      * "w" a
-      $.equal-to
-        list
-          * "w" b
+  list (* 1 "2" 3.0) > a
+  list (* 1 "2" ((number 3).as-float)) > b
+  assert-that > @
+    list (* "w" a)
+    $.equal-to
+      list
+        * "w" b
 
 # two different arrays not equal
 [] > two-different-arrays-not-equal
@@ -339,15 +333,14 @@
 
 #two different nested arrays not eq
 [] > nested-array-not-eq-should-works
-  nop > @
-    * 5 "\07" "18" > a
-    * 5 "neq" ((number 18).as-string) > b
-    assert-that
-      * "not eq" a
-      $.not
-        $.equal-to
-          list
-            * "not eq" b
+  list (* 5 "\07" "18") > a
+  list (* 5 "neq" ((number 18).as-string)) > b
+  assert-that > @
+    list (* "not eq" a)
+    $.not
+      $.equal-to
+        list
+          * "not eq" b
 
 # check that varargs not eq works
 [] > varargs-not-eq-should-works
