@@ -22,9 +22,10 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.25.5
++version 0.26.0
 +alias org.eolang.collections.list
-+rt jvm org.eolang:eo-runtime:0.25.5
++alias org.eolang.txt.text
++rt jvm org.eolang:eo-runtime:0.26.0
 
 # Regular expression in Perl format.
 # Free attribute "r" is a string represenation of regex object.
@@ -43,7 +44,11 @@
 
   [] > compile /regex
 
-  # Match the text and return the array of matched groups
+  # Match the text and return the array of matched blocks.
+  # Each matched block consists of
+  #  - start position in which match was found
+  #  - matched string
+  #  - array of identified matched groups
   [txt] > match /array
 
   # Matches
@@ -52,3 +57,69 @@
       is-empty.
         list (^.match txt)
 
+  # A string with all encounters of pattern in txt
+  # replaced with rpl
+  [txt rpl] > replaced
+
+    # Perform partial replace operation for
+    # pt - next unhandled index in text
+    # acc - replaced text so far
+    # pa - next unhandled index in replaced text
+    # m - matched segments array
+    [pt acc pa m] > replacei
+
+      [] > nextpt
+        plus. > @!
+          mitem.at 0
+          length.
+            mitem.at 1
+
+      [] > mitem
+        m.at 0 > @!
+
+      [] > part
+        joined. > @!
+          (text "")
+          *
+            slice.
+              acc
+              0
+              pa
+            slice.
+              txt
+              pt
+              minus.
+                mitem.at 0
+                pt
+            rpl
+
+      [] > nextacc
+        joined. > @!
+          (text "")
+          *
+            part
+            slice.
+              txt
+              nextpt
+              minus.
+                txt.length
+                nextpt
+
+      if. > @
+        not.
+          is-empty.
+            list m
+        ^.replacei
+          nextpt
+          nextacc
+          part.length
+          without.
+            list m
+            0
+        acc
+
+    replacei > @
+      0
+      txt
+      0
+      (match txt)

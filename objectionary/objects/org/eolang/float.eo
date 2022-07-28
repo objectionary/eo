@@ -23,8 +23,8 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +alias org.eolang.collections.list
-+version 0.25.5
-+rt jvm org.eolang:eo-runtime:0.25.5
++version 0.26.0
++rt jvm org.eolang:eo-runtime:0.26.0
 
 [] > float
   # Tests that $ = x
@@ -66,13 +66,12 @@
 
   # Difference between $ and x
   [x...] > minus
-    as-array. > x-neg
-      map.
-        list
-          x
-        [element]
-          neg. > @
-            element
+    map. > x-neg
+      list
+        x
+      [element]
+        neg. > @
+          element
     ^.plus > @
       ...x-neg
 

@@ -22,7 +22,7 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.25.5
++version 0.26.0
 +alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +junit
@@ -65,15 +65,14 @@
     $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
-  nop > @
-    * > anArray
-      1
-      2
-    assert-that
-      anArray
-      $.array-each
-        $.equal-to 1
-        $.equal-to 2
+  * > anArray
+    1
+    2
+  assert-that > @
+    anArray
+    $.array-each
+      $.equal-to 1
+      $.equal-to 2
 
 [] > array-with-in-seq
   [a] > foo
@@ -111,7 +110,9 @@
 [] > concat-array-with-empty-array-1
   * 1 2 3 > a
   * > b
-  a.concat b > res
+  concat. > res
+    list a
+    b
   assert-that > @
     res.length
     $.equal-to 3
@@ -119,7 +120,9 @@
 [] > concat-array-with-empty-array-2
   * > a
   * 1 2 3 > b
-  a.concat b > res
+  concat. > res
+    list a
+    b
   assert-that > @
     res.length
     $.equal-to 3
@@ -127,7 +130,9 @@
 [] > concat-array-with-empty-array-3
   * > a
   * > b
-  a.concat b > res
+  concat. > res
+    list a
+    b
   assert-that > @
     res.length
     $.equal-to 0
@@ -135,7 +140,9 @@
 [] > concat-arrays
   * 1 2 3 > a
   * 100 200 > b
-  a.concat b > res
+  concat. > res
+    list a
+    b
   assert-that > @
     plus.
       res.at 2
@@ -146,7 +153,11 @@
   * 0 1 2 > a
   * 3 4 > b
   * (* "five" "six") (* "siven") > c
-  a.concat (b.concat c) > res
+  concat. > res
+    list a
+    concat.
+      list b
+      c
   assert-that > @
     * (res.length) ((res.at 5).at 1)
     $.equal-to

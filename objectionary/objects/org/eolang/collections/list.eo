@@ -22,11 +22,10 @@
 
 +package org.eolang.collections
 +home https://github.com/objectionary/eo
-+version 0.25.5
-+rt jvm org.eolang:eo-runtime:0.25.5
++version 0.26.0
++rt jvm org.eolang:eo-runtime:0.26.0
 
 [arr] > list
-
   arr > @
 
   # Is it empty?
@@ -60,9 +59,6 @@
                 i
                 arr.at i
       acc
-
-  [] > as-array
-    arr > @
 
   # Reduce from start "a" using the function "f"
   [a f] > reduce
@@ -122,3 +118,12 @@
               item
               x.at idx
       FALSE
+
+  # Returns the combined current and passed arrays
+  [passed] > concat
+    reduce. > @!
+      list
+        passed
+      ^
+      [a x]
+        a.with x > @

@@ -22,38 +22,21 @@
 
 +package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.25.5
++version 0.26.0
 +alias org.eolang.ram
 +alias org.eolang.hamcrest.assert-that
 +junit
 
-[] > writes-into-ram-and-reads-from-ram
-  ram 10 > r
-  r.write 0 65-66-67-68-69 > w
-  r.read 0 5 > data
-  assert-that > @
-    and.
-      eq.
-        w
-        TRUE
-      eq.
-        data
-        65-66-67-68-69
-    $.equal-to TRUE
-
-[] > writes-at-random-position
+[] > writes-and-slice-ram
   ram 1024 > r
-  r.write 512 65-66-67-68-69 > w
-  r.read 513 4 > data
   assert-that > @
-    and.
-      eq.
-        w
-        TRUE
-      eq.
-        data
-        66-67-68-69
-    $.equal-to TRUE
+    seq
+      write.
+        r.slice 200 13 > s
+        "Hello, world!".as-bytes
+      as-string.
+        s.slice 0 5
+    $.equal-to "Hello"
 
 [] > writes-integer-to-ram
   ram 1024 > r
@@ -62,5 +45,33 @@
   assert-that > @
     and.
       w.eq TRUE
-      (r.read 0 8).as-int.eq 3
+      (r.slice 0 8).as-int.eq 3
     $.equal-to TRUE
+
+[] > several-slices-ram
+  ram 1024 > r
+  assert-that > @
+    seq
+      write.
+        r.slice 10 3
+        "abc".as-bytes
+      write.
+        r.slice 13 3
+        "def".as-bytes
+      as-string.
+        (r.slice 10 6).slice 0 6
+    $.equal-to "abcdef"
+
+[] > intersection-writes-in-ram
+  ram 64 > r
+  assert-that > @
+    seq
+      write.
+        r.slice 0 10
+        "1234567890".as-bytes
+      write.
+        r.slice 5 10
+        "-----".as-bytes
+      as-string.
+        (r.slice 0 10).slice 0 10
+    $.equal-to "12345-----"

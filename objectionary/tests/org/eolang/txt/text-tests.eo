@@ -22,7 +22,7 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.25.5
++version 0.26.0
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.text
 +junit
@@ -70,3 +70,83 @@
           * " " " "
       * "start" "end"
     $.equal-to "start & end"
+
+[] > text-lower-case
+  assert-that > @
+    (text "HeLlO wOrLd!").lower-case
+    $.equal-to "hello world!"
+
+[] > text-lower-case-2
+  assert-that > @
+    (text "hello 1234").lower-case
+    $.equal-to "hello 1234"
+
+[] > text-upper-case
+  assert-that > @
+    (text "HeLlO wOrLd!").upper-case
+    $.equal-to "HELLO WORLD!"
+
+[] > text-upper-case-2
+  assert-that > @
+    (text "hello 123").upper-case
+    $.equal-to "HELLO 123"
+
+[] > text-contains
+  assert-that > @
+    ((text "some text here").contains "me te")
+    $.equal-to TRUE
+
+[] > text-contains-2
+  assert-that > @
+    ((text "some text here").contains "me text.")
+    $.equal-to FALSE
+
+[] > text-contains-3
+  assert-that > @
+    ((text "1234456").contains "1")
+    $.equal-to TRUE
+
+[] > text-starts-with
+  assert-that > @
+    ((text "some text here").starts-with "me te")
+    $.equal-to FALSE
+
+[] > text-starts-with-2
+  assert-that > @
+    ((text "some text here").starts-with "some ")
+    $.equal-to TRUE
+
+[] > text-starts-with-3
+  assert-that > @
+    ((text "some text here").starts-with "some  ")
+    $.equal-to FALSE
+
+[] > text-ends-with
+  assert-that > @
+    ((text "some text here").ends-with "me te")
+    $.equal-to FALSE
+
+[] > text-ends-with-2
+  assert-that > @
+    ((text "some text here").ends-with " here")
+    $.equal-to TRUE
+
+[] > text-ends-with-3
+  assert-that > @
+    ((text "some text here").ends-with "  here")
+    $.equal-to FALSE
+
+[] > text-index-of
+  assert-that > @
+    ((text "some text here").index-of "me te")
+    $.equal-to 2
+
+[] > text-index-of-2
+  assert-that > @
+    ((text "some text here").index-of " here")
+    $.equal-to 9
+
+[] > text-index-of-3
+  assert-that > @
+    ((text "some text here").index-of "  here")
+    $.equal-to -1

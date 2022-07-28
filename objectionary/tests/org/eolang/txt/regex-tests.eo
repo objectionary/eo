@@ -22,7 +22,7 @@
 
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
-+version 0.25.5
++version 0.26.0
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.regex
 +alias org.eolang.collections.list
@@ -48,6 +48,44 @@
       "Hello, World!"
     $.is
       $.equal-to FALSE
+
+[] > match-returns-correct-position
+  assert-that > @
+    at.
+      at.
+        match.
+          compile.
+            regex "/([a-z]+)/i"
+          "hello"
+        0
+      0
+    $.equal-to 0
+
+[] > match-returns-correct-string
+  assert-that > @
+    at.
+      at.
+        match.
+          compile.
+            regex "/([a-z]+)/i"
+          "hello"
+        0
+      1
+    $.equal-to "hello"
+
+[] > match-returns-correct-group
+  assert-that > @
+    at.
+      at.
+        at.
+          match.
+            compile.
+              regex "/([a-z]+)/i"
+            "hello"
+          0
+        2
+      0
+    $.equal-to "hello"
 
 [] > check-dotall-option
   assert-that > @
@@ -137,3 +175,39 @@
       nop
     $.is
       $.equal-to "Wrong regex syntax: \"/\" is missing"
+
+[] > test-simple-replace
+  assert-that > @
+    replaced.
+      compile.
+        QQ.txt.regex "/([bd])/"
+      "abcde"
+      "11"
+    $.equal-to "a11c11e"
+
+[] > test-no-match-replace
+  assert-that > @
+    replaced.
+      compile.
+        QQ.txt.regex "/([xyz])/"
+      "abcde"
+      "11"
+    $.equal-to "abcde"
+
+[] > test-replace-empty
+  assert-that > @
+    replaced.
+      compile.
+        QQ.txt.regex "/([xyz])/"
+      ""
+      "11"
+    $.equal-to ""
+
+[] > test-replace-with-empty
+  assert-that > @
+    replaced.
+      compile.
+        QQ.txt.regex "/([xyz]+)/"
+      "abxxxxxcd"
+      ""
+    $.equal-to "abcd"
