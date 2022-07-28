@@ -49,10 +49,10 @@
 
 [] > map-find-and-with
   map * > init-mp!
-  (init-mp.with 1 "a").with "abc" "cba" > mp!
+  init-mp.with 1 "a" > mp!
   assert-that > @
-    ((mp.found "abc").at 0)
-    $.equal-to "abc"
+    ((mp.found 1).at 0)
+    $.equal-to "a"
 
 [] > map-of-maps
   map * > init-mp!
