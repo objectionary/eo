@@ -48,9 +48,9 @@ public final class OyRemote implements Objectionary {
      * Constructor.
      * @param tag Tag
      * @throws IOException if fails
-     * @throws TagNotFoundException if fails
+     * @throws IllegalArgumentException if fails
      */
-    public OyRemote(final String tag) throws IOException, TagNotFoundException {
+    public OyRemote(final String tag) throws IOException, IllegalArgumentException {
         this.template = String.format(
             // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",

@@ -51,7 +51,7 @@ public class HashOfTagTest {
     @Test
     public void testCommitHashException() {
         Assertions.assertThrows(
-            TagNotFoundException.class,
+            IllegalArgumentException.class,
             () -> new HashOfTag("nonsense").getHash()
         );
     }

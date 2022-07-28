@@ -49,9 +49,9 @@ public class HashOfTag {
      * Constructor.
      * @param tag Tag
      * @throws IOException if fails
-     * @throws TagNotFoundException if fails
+     * @throws IllegalArgumentException if fails
      */
-    public HashOfTag(final String tag) throws IOException, TagNotFoundException {
+    public HashOfTag(final String tag) throws IOException, IllegalArgumentException {
         this.tag = tag;
         this.hash = this.getSha();
     }
@@ -68,9 +68,9 @@ public class HashOfTag {
      * Hash of tag.
      * @return SHA of commit
      * @throws IOException if fails
-     * @throws TagNotFoundException if fails
+     * @throws IllegalArgumentException if fails
      */
-    private String getSha() throws IOException, TagNotFoundException {
+    private String getSha() throws IOException, IllegalArgumentException {
         final String link = "https://home.objectionary.com/tags.txt";
         final InputStream ins = new URL(link).openStream();
         final Scanner scanner = new Scanner(ins);
@@ -82,7 +82,7 @@ public class HashOfTag {
                 return parts[0];
             }
         }
-        throw new TagNotFoundException("Tag doesn't exist");
+        throw new IllegalArgumentException();
     }
 
 }

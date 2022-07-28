@@ -110,7 +110,7 @@ abstract class SafeMojo extends AbstractMojo {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
             this.exec();
-        } catch (final IOException | TagNotFoundException ex) {
+        } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
                     "Failed to execute %s",
@@ -159,8 +159,8 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Exec it.
      * @throws IOException If fails
-     * @throws TagNotFoundException If fails.
+     * @throws IllegalArgumentException If fails.
      */
-    abstract void exec() throws IOException, TagNotFoundException;
+    abstract void exec() throws IOException, IllegalArgumentException;
 
 }
