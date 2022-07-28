@@ -42,18 +42,12 @@ public class EOtext$EOindex_of extends PhDefault {
     public EOtext$EOindex_of(final Phi sigma) {
         super(sigma);
         this.add("substr", new AtFree());
-        this.add(
-                "φ",
-                new AtComposite(
-                        this,
-                        rho -> {
-                            final String substring = new Dataized(rho.attr("substr").get()).take(String.class);
-                            final Phi text = rho.attr("ρ").get();
-                            final String content = new Param(text, "s").strong(String.class);
-                            return new Data.ToPhi((long) content.indexOf(substring));
-                        }
-                )
-        );
+        this.add("φ", new AtComposite(this, rho -> {
+            final String substring = new Dataized(rho.attr("substr").get()).take(String.class);
+            final Phi text = rho.attr("ρ").get();
+            final String content = new Param(text, "s").strong(String.class);
+            return new Data.ToPhi((long) content.indexOf(substring));
+        }));
     }
 
 }
