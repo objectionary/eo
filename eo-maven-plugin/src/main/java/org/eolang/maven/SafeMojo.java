@@ -125,7 +125,7 @@ abstract class SafeMojo extends AbstractMojo {
             this.exec();
             Logger.info(
                 this,
-                "Execution of %s took %.4f sec",
+                "Execution of %s took %[ms]s sec",
                 this.getClass().getSimpleName(),
                 times.lap()
             );

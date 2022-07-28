@@ -210,7 +210,7 @@ public final class AssembleMojo extends SafeMojo {
             final String after = this.status();
             ++cycle;
             Logger.info(
-                this, "Assemble cycle #%d (%s -> %s), took %.4f sec",
+                this, "Assemble cycle #%d (%s -> %s), took %[ms]s sec",
                 cycle, before, after, times.lap()
             );
             if (after.equals(before)) {

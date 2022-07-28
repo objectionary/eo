@@ -63,51 +63,42 @@ public class StopWatch {
     /**
      * Measure time since start.
      * @param tag Lap tag
-     * @return Seconds
+     * @return Nanos
      */
-    public double lap(final String tag) {
+    public long lap(final String tag) {
         final long time = System.nanoTime() - this.start;
         this.laps.put(tag, time);
-        return StopWatch.seconds(time);
+        return time;
     }
 
     /**
      * Measure time since start with empty tag.
      * @return Seconds
      */
-    public double lap() {
+    public long lap() {
         return this.lap("");
     }
 
     /**
-     * Get duration for lap in seconds.
+     * Get duration for lap in nanos.
      * @param tag Lap tag
      * @return Duration
      */
-    public double time(final String tag) {
-        double duration = 0.0d;
+    public long time(final String tag) {
+        long duration = 0L;
         if (this.laps.containsKey(tag)) {
-            duration = StopWatch.seconds(this.laps.get(tag));
+            duration = this.laps.get(tag);
         }
         return duration;
     }
 
     /**
-     * Total time, sec.
-     * @return Total in seconds
+     * Total time, nanos.
+     * @return Total in nanos
      */
-    public double total() {
+    public long total() {
         return this.laps.values().stream()
-            .mapToDouble(StopWatch::seconds)
-            .max().orElse(0.0);
-    }
-
-    /**
-     * Translate nanos to seconds.
-     * @param nanos Duration
-     * @return Duration in seconds
-     */
-    private static double seconds(final long nanos) {
-        return nanos / 1_000_000_000.0;
+            .mapToLong(Long::longValue)
+            .max().orElse(0L);
     }
 }
