@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Scanner;
 import org.cactoos.Input;
@@ -104,7 +105,7 @@ public final class OyRemote implements Objectionary {
     private static void download(final String link, final String name) throws IOException {
         final URL url = new URL(link);
         try (InputStream in = url.openStream()) {
-            Files.copy(in, Paths.get(name));
+            Files.copy(in, Paths.get(name), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
