@@ -95,6 +95,10 @@
         &.f x > @
 
   # For each array element dataize the object
+  # Here "f" must be an abstract object with
+  # one free attribute, the element of the
+  # array.
+  # Comment for initial commit.
   [f] > each /bool
 
   # Create a new list without the i-th element
