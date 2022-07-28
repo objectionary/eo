@@ -42,12 +42,18 @@ public class EOtext$EOstarts_with extends PhDefault {
     public EOtext$EOstarts_with(final Phi sigma) {
         super(sigma);
         this.add("substr", new AtFree());
-        this.add("φ", new AtComposite(this, rho -> {
-            final String substring = new Dataized(rho.attr("substr").get()).take(String.class);
-            final Phi text = rho.attr("ρ").get();
-            final String content = new Param(text, "s").strong(String.class);
-            return new Data.ToPhi(content.startsWith(substring));
-        }));
+        this.add(
+                "φ",
+                new AtComposite(
+                        this,
+                        rho -> {
+                            final String substring = new Dataized(rho.attr("substr").get()).take(String.class);
+                            final Phi text = rho.attr("ρ").get();
+                            final String content = new Param(text, "s").strong(String.class);
+                            return new Data.ToPhi(content.startsWith(substring));
+                        }
+                )
+        );
     }
 
 }

@@ -23,12 +23,7 @@
  */
 package EOorg.EOeolang.EOtxt;
 
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.eolang.*;
 
 /**
  * UPPER_CASE.
@@ -46,11 +41,17 @@ public class EOtext$EOupper_case extends PhDefault {
      */
     public EOtext$EOupper_case(final Phi sigma) {
         super(sigma);
-        this.add("φ", new AtComposite(this, rho -> {
-            final Phi text = rho.attr("ρ").get();
-            final String content = new Param(text, "s").strong(String.class);
-            return new Data.ToPhi(content.toUpperCase());
-        }));
+        this.add(
+                "φ",
+                new AtComposite(
+                        this,
+                        rho -> {
+                            final Phi text = rho.attr("ρ").get();
+                            final String content = new Param(text, "s").strong(String.class);
+                            return new Data.ToPhi(content.toUpperCase());
+                        }
+                )
+        );
     }
 
 }
