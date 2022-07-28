@@ -29,12 +29,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Scanner;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -125,10 +123,8 @@ public final class OyRemote implements Objectionary {
             "https://raw.githubusercontent.com/",
             "objectionary/home/gh-pages/tags.txt"
         );
-        final int len = 15;
-        final byte[] array = new byte[len];
-        new Random().nextBytes(array);
-        final String name = new String(array, StandardCharsets.UTF_8);
+        final long time = System.nanoTime();
+        final String name = String.format("%s%s", time, ".txt");
         download(link, name);
         final File file = new File(
             String.format(
