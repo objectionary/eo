@@ -26,6 +26,7 @@ package org.eolang.maven;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -44,6 +45,14 @@ public class HashOfTagTest {
         MatcherAssert.assertThat(
             hash,
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
+        );
+    }
+
+    @Test
+    public void testCommitHashException() {
+        Assertions.assertThrows(
+            TagNotFoundException.class,
+            () -> new HashOfTag("nonsense").getHash()
         );
     }
 }
