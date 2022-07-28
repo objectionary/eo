@@ -35,32 +35,15 @@ import org.junit.jupiter.api.Test;
 public class HashOfTagTest {
     @Test
     public void testCommitHash() throws Exception {
-        final String format = "%s%s%s";
-        final String domain = "https://raw.githubusercontent.com/objectionary/home/";
-        final String suffix = "/objects/%s.eo";
-        OyRemote instance = new OyRemote("0.23.19");
+        String hash = new HashOfTag("0.23.19").getHash();
         MatcherAssert.assertThat(
-            instance.getTemplate(),
-            Matchers.equalTo(
-                String.format(
-                    format,
-                    domain,
-                    "4b19944d86058e3c81e558340a3a13bc335a2b48",
-                    suffix
-                )
-            )
+            hash,
+            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
         );
-        instance = new OyRemote("0.26.0");
+        hash = new HashOfTag("0.26.0").getHash();
         MatcherAssert.assertThat(
-            instance.getTemplate(),
-            Matchers.equalTo(
-                String.format(
-                    format,
-                    domain,
-                    "e0b783692ef749bb184244acb2401f551388a328",
-                    suffix
-                )
-            )
+            hash,
+            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
         );
     }
 }

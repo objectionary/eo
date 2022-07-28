@@ -50,7 +50,6 @@ public class HashOfTag {
      * @param tag Tag
      * @throws IOException if fails
      * @throws TagNotFoundException if fails
-     * @checkstyle NonStaticMethodCheck (20 lines)
      */
     public HashOfTag(final String tag) throws IOException, TagNotFoundException {
         this.tag = tag;
@@ -70,7 +69,6 @@ public class HashOfTag {
      * @return SHA of commit
      * @throws IOException if fails
      * @throws TagNotFoundException if fails
-     * @checkstyle NonStaticMethodCheck (20 lines)
      */
     private String getSha() throws IOException, TagNotFoundException {
         final String link = "https://home.objectionary.com/tags.txt";
