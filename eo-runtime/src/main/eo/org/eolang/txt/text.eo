@@ -56,8 +56,8 @@
   # Checks that string starts with substr
   [substr] > starts-with /bool
 
-  # Returns index of substr in string
-  # If no element was found, it returns -1
+  # Returns index of substr in string,
+  # if no element was found, it returns -1
   [substr] > index-of /int
 
   # Returns string in lower case
