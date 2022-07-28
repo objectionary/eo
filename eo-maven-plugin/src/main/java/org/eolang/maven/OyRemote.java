@@ -93,6 +93,14 @@ public final class OyRemote implements Objectionary {
     }
 
     /**
+     * Accessor.
+     * @return Template
+     */
+    public String getTemplate() {
+        return this.template;
+    }
+
+    /**
      * Hash of head master.
      * @return SHA of commit
      * @throws IOException if fails
