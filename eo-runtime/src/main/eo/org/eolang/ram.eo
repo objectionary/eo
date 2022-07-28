@@ -20,17 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.0.0
++package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
++version 0.0.0
 
 # Random-access memory (RAM).
+# @todo #684:30min We need to add ram.ram-slice.slice object
+#  here. This object would return ram-slice object and get
+#  two parameters: position and size, same as in ram.slice
+#  object. And will allow us to make a chain of slice objects.
 [size] > ram
 
-  # Write bytes B at position P.
-  # Returns itself.
-  [p b] > write /true
+  # Write bytes from position.
+  [position data] > write /true
 
-  # Read L bytes at position P.
-  [p l] > read /bytes
+  # Slice fixed size of bytes from position.
+  [position size] > slice /ram-slice
+
+  [position size] > ram-slice
+
+    [] > @ /bytes
+
+    [data] > write /bytes
