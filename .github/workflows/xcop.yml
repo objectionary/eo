@@ -8,8 +8,8 @@ name: xcop
     branches:
       - master
 jobs:
-  xcop-lint:
-    runs-on: ubuntu-latest
+  xcop:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: g4s8/xcop-action@master
