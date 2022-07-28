@@ -89,7 +89,7 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionary;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() throws IOException, TagNotFoundException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
@@ -103,7 +103,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     this.hash,
                     this.outputPath,
-                    new OyRemote(this.hash).resolve()
+                    new OyRemote(this.hash)
                 )
             );
         }

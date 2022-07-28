@@ -25,62 +25,66 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+import java.util.Objects;
+import java.util.Scanner;
 
 /**
- * The simple HTTP Objectionary server.
- *
- * @since 0.1
+ * Hash of tag.
+ * @since 0.26
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals",
-    "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"})
-public final class OyRemote implements Objectionary {
+public class HashOfTag {
+    /**
+     * Hash.
+     */
+    private final String hash;
 
     /**
-     * The address template.
+     * Tag.
      */
-    private final String template;
+    private final String tag;
 
     /**
      * Constructor.
      * @param tag Tag
      * @throws IOException if fails
      * @throws TagNotFoundException if fails
+     * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    public OyRemote(final String tag) throws IOException, TagNotFoundException {
-        this.template = String.format(
-            // @checkstyle LineLength (1 line)
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            new HashOfTag(tag).getHash()
-        );
-    }
-
-    @Override
-    public String toString() {
-        return this.template;
-    }
-
-    @Override
-    public Input get(final String name) throws MalformedURLException {
-        final URL url = new URL(
-            String.format(this.template, name.replace(".", "/"))
-        );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
+    public HashOfTag(final String tag) throws IOException, TagNotFoundException {
+        this.tag = tag;
+        this.hash = this.getSha();
     }
 
     /**
      * Accessor.
      * @return Template
      */
-    public String getTemplate() {
-        return this.template;
+    public String getHash() {
+        return this.hash;
+    }
+
+    /**
+     * Hash of tag.
+     * @return SHA of commit
+     * @throws IOException if fails
+     * @throws TagNotFoundException if fails
+     * @checkstyle NonStaticMethodCheck (20 lines)
+     */
+    private String getSha() throws IOException, TagNotFoundException {
+        final String link = "https://home.objectionary.com/tags.txt";
+        final InputStream ins = new URL(link).openStream();
+        final Scanner scanner = new Scanner(ins);
+        while (scanner.hasNextLine()) {
+            final String line = scanner.nextLine();
+            final String[] parts = line.split("\t");
+            if (Objects.equals(parts[1], this.tag)) {
+                Logger.info(this, "commit sha is %s", parts[0]);
+                return parts[0];
+            }
+        }
+        throw new TagNotFoundException("Tag doesn't exist");
     }
 
 }

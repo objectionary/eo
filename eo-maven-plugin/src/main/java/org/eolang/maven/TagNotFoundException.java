@@ -24,43 +24,17 @@
 
 package org.eolang.maven;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link OyRemote}.
+ * Exception.
  * @since 0.26
  */
-public class HashGettingTest {
-    @Test
-    public void testCommitHash() throws Exception {
-        final String format = "%s%s%s";
-        final String domain = "https://raw.githubusercontent.com/objectionary/home/";
-        final String suffix = "/objects/%s.eo";
-        OyRemote instance = new OyRemote("0.23.19").resolve();
-        MatcherAssert.assertThat(
-            instance.getTemplate(),
-            Matchers.equalTo(
-                String.format(
-                    format,
-                    domain,
-                    "4b19944d86058e3c81e558340a3a13bc335a2b48",
-                    suffix
-                )
-            )
-        );
-        instance = new OyRemote("0.26.0").resolve();
-        MatcherAssert.assertThat(
-            instance.getTemplate(),
-            Matchers.equalTo(
-                String.format(
-                    format,
-                    domain,
-                    "e0b783692ef749bb184244acb2401f551388a328",
-                    suffix
-                )
-            )
-        );
+@SuppressWarnings("serial")
+public class TagNotFoundException extends Exception {
+    /**
+     * Constructor.
+     * @param error Error
+     */
+    public TagNotFoundException(final String error) {
+        super(error);
     }
 }
