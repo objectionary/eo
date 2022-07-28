@@ -100,21 +100,30 @@ public final class OyRemote implements Objectionary {
      */
     private String getSha() throws IOException {
         String sha = "master";
-        final String command = "curl -o tags.txt https://raw.githubusercontent.com/"
-            .concat("objectionary/home/gh-pages/tags.txt");
+        final String command = String.format(
+            "%s%s",
+            "curl -o tags.txt https://raw.githubusercontent.com/",
+            "objectionary/home/gh-pages/tags.txt"
+        );
         try {
             Runtime.getRuntime().exec(command).waitFor();
         } catch (final InterruptedException exception) {
             Logger.info(this, exception.toString());
         }
-        final File file = new File(System.getProperty("user.dir").concat("/tags.txt"));
+        final File file = new File(
+            String.format(
+                "%s/%s",
+                System.getProperty("user.dir"),
+                "tags.txt"
+            )
+        );
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 final String line = scanner.nextLine();
                 if (line.contains(this.tag)) {
                     sha = line.split("\t")[0];
                     Logger.info(
-                        this, "commit sha is ".concat(sha)
+                        this, String.format("%s %s", "commit sha is", sha)
                     );
                     file.delete();
                     break;
