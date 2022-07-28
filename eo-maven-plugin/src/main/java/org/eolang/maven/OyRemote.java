@@ -24,19 +24,14 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * The simple HTTP Objectionary server.
@@ -48,9 +43,9 @@ import org.json.JSONObject;
 public final class OyRemote implements Objectionary {
 
     /**
-     * Hash.
+     * Tag.
      */
-    private final String hash;
+    private final String tag;
 
     /**
      * The address template.
@@ -59,39 +54,19 @@ public final class OyRemote implements Objectionary {
 
     /**
      * Constructor.
-     * @param hash Hash
+     * @param tag Tag
      */
-    public OyRemote(final String hash) {
-        this.hash = hash;
+    public OyRemote(final String tag) {
+        this.tag = tag;
     }
 
     /**
      * Init class.
      * @return OyRemote
      * @throws IOException if fails
-     * @throws JSONException if fails
-     * @throws InterruptedException if fails
-     * @throws URISyntaxException if fails
      */
-    public OyRemote resolve()
-        throws IOException, JSONException, InterruptedException, URISyntaxException {
-        final int tries = 1;
-        final int timeout = 1000;
-        int tried = 0;
-        String sha;
-        while (true) {
-            try {
-                sha = this.getSha();
-                Logger.info(this, "commit sha is ".concat(sha));
-                break;
-            } catch (final IOException | JSONException exception) {
-                tried = tried + 1;
-                if (tried == tries) {
-                    throw exception;
-                }
-                TimeUnit.MILLISECONDS.sleep(timeout);
-            }
-        }
+    public OyRemote resolve() throws IOException {
+        final String sha = this.getSha();
         this.template = String.format(
             // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
@@ -120,52 +95,39 @@ public final class OyRemote implements Objectionary {
     /**
      * Hash of head master.
      * @return SHA of commit
-     * @throws JSONException if fails
      * @throws IOException if fails
-     * @throws URISyntaxException if fails
-     * @throws InterruptedException if fails
      * @checkstyle NonStaticMethodCheck (20 lines)
      */
-    private String getSha() throws IOException, JSONException,
-        InterruptedException, URISyntaxException {
+    private String getSha() throws IOException {
         String sha = "master";
+        final String command = "curl -o tags.txt https://raw.githubusercontent.com/"
+            .concat("objectionary/home/gh-pages/tags.txt");
         try {
-            final String query = String.format(
-                // @checkstyle LineLength (1 line)
-                "https://api.github.com/repos/objectionary/home/git/refs/heads/%s",
-                this.hash
-            );
-            final JSONObject obj = this.readJsonFromUrl(query);
-            sha = obj.getJSONObject("object").getString("sha");
-        } catch (final IOException | JSONException exception) {
+            Runtime.getRuntime().exec(command).waitFor();
+        } catch (final InterruptedException exception) {
+            Logger.info(this, exception.toString());
+        }
+        final File file = new File(System.getProperty("user.dir").concat("/tags.txt"));
+        try {
+            final Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+                if (line.contains(this.tag)) {
+                    sha = line.split("\t")[0];
+                    Logger.info(
+                        this, "commit sha is ".concat(sha)
+                    );
+                    scanner.close();
+                    file.delete();
+                    break;
+                }
+            }
+        } catch (final FileNotFoundException exception) {
+            file.delete();
             Logger.info(this, exception.toString());
             throw exception;
         }
         return sha;
-    }
-
-    /**
-     * Function from reading by url.
-     * @param url URL
-     * @return JSONobject
-     * @throws IOException exception
-     * @throws JSONException exception
-     * @throws URISyntaxException exception
-     * @throws InterruptedException exception
-     */
-    private JSONObject readJsonFromUrl(final String url) throws IOException,
-        JSONException, URISyntaxException, InterruptedException {
-        try {
-            final HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(url)).GET().build();
-            final HttpResponse<String> response = HttpClient.newBuilder()
-                .build()
-                .send(request, HttpResponse.BodyHandlers.ofString());
-            return new JSONObject(response.body());
-        } catch (final URISyntaxException | InterruptedException exception) {
-            Logger.info(this, exception.toString());
-            throw exception;
-        }
     }
 
 }
