@@ -35,10 +35,6 @@ import java.util.Scanner;
  * @since 0.26
  */
 public class HashOfTag {
-    /**
-     * Hash.
-     */
-    private final String hash;
 
     /**
      * Tag.
@@ -48,20 +44,9 @@ public class HashOfTag {
     /**
      * Constructor.
      * @param tag Tag
-     * @throws IOException if fails
-     * @throws IllegalArgumentException if fails
      */
-    public HashOfTag(final String tag) throws IOException, IllegalArgumentException {
+    public HashOfTag(final String tag) {
         this.tag = tag;
-        this.hash = this.getSha();
-    }
-
-    /**
-     * Accessor.
-     * @return Template
-     */
-    public String getHash() {
-        return this.hash;
     }
 
     /**
@@ -70,7 +55,7 @@ public class HashOfTag {
      * @throws IOException if fails
      * @throws IllegalArgumentException if fails
      */
-    private String getSha() throws IOException, IllegalArgumentException {
+    public String getHash() throws IOException, IllegalArgumentException {
         final String link = "https://home.objectionary.com/tags.txt";
         final InputStream ins = new URL(link).openStream();
         final Scanner scanner = new Scanner(ins);
