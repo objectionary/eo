@@ -366,19 +366,3 @@
         list
           args.
             b 1 2 "fail"
-
-[] > recursion-falls-test
-  reducei2. > res!
-    list
-      * 7 13 29
-    1
-    [a i x]
-      times. > @
-        a
-        x
-  seq > @
-    stdout
-      sprintf
-        ". %d\n"
-        0
-    TRUE
