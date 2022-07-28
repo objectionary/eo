@@ -142,12 +142,12 @@
     ((text "some text here").index-of "me te")
     $.equal-to 2
 
-[] > text-index-of
+[] > text-index-of-2
   assert-that > @
     ((text "some text here").index-of " here")
     $.equal-to 9
 
-[] > text-index-of
+[] > text-index-of-3
   assert-that > @
     ((text "some text here").index-of "  here")
     $.equal-to -1
