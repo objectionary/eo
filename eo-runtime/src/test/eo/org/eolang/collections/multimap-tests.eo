@@ -107,10 +107,10 @@
 
 [] > multimap-find-and-with
   multimap * > init-mp!
-  init-mp.with 1 "a" > mp!
+  init-mp.with 1 2 > mp!
   assert-that > @
     ((mp.found 1).at 0)
-    $.equal-to "a"
+    $.equal-to 2
 
 [] > multimap-of-multimaps
   multimap * > init-mp!
