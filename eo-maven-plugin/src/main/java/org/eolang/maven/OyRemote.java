@@ -25,10 +25,13 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Scanner;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -93,6 +96,19 @@ public final class OyRemote implements Objectionary {
     }
 
     /**
+     * File downloader.
+     * @param link Link to file
+     * @param name Location
+     * @throws IOException If fails
+     */
+    private static void download(final String link, final String name) throws IOException {
+        final URL url = new URL(link);
+        try (InputStream in = url.openStream()) {
+            Files.copy(in, Paths.get(name));
+        }
+    }
+
+    /**
      * Hash of head master.
      * @return SHA of commit
      * @throws IOException if fails
@@ -100,16 +116,12 @@ public final class OyRemote implements Objectionary {
      */
     private String getSha() throws IOException {
         String sha = "master";
-        final String command = String.format(
+        final String link = String.format(
             "%s%s",
-            "curl -o tags.txt https://raw.githubusercontent.com/",
+            "https://raw.githubusercontent.com/",
             "objectionary/home/gh-pages/tags.txt"
         );
-        try {
-            Runtime.getRuntime().exec(command).waitFor();
-        } catch (final InterruptedException exception) {
-            Logger.info(this, exception.toString());
-        }
+        download(link, "tags.txt");
         final File file = new File(
             String.format(
                 "%s/%s",
@@ -117,23 +129,17 @@ public final class OyRemote implements Objectionary {
                 "tags.txt"
             )
         );
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                final String line = scanner.nextLine();
-                if (line.contains(this.tag)) {
-                    sha = line.split("\t")[0];
-                    Logger.info(
-                        this, String.format("%s %s", "commit sha is", sha)
-                    );
-                    file.delete();
-                    break;
-                }
+        final Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) {
+            final String line = scanner.nextLine();
+            final String[] parts = line.split("\t");
+            if (Objects.equals(parts[1], this.tag)) {
+                sha = parts[0];
+                Logger.info(this, "commit sha is %s", sha);
+                break;
             }
-        } catch (final FileNotFoundException exception) {
-            file.delete();
-            Logger.info(this, exception.toString());
-            throw exception;
         }
+        file.delete();
         return sha;
     }
 
