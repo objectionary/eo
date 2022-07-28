@@ -108,8 +108,7 @@ public final class OyRemote implements Objectionary {
             Logger.info(this, exception.toString());
         }
         final File file = new File(System.getProperty("user.dir").concat("/tags.txt"));
-        try {
-            final Scanner scanner = new Scanner(file);
+        try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 final String line = scanner.nextLine();
                 if (line.contains(this.tag)) {
@@ -117,7 +116,6 @@ public final class OyRemote implements Objectionary {
                     Logger.info(
                         this, "commit sha is ".concat(sha)
                     );
-                    scanner.close();
                     file.delete();
                     break;
                 }
