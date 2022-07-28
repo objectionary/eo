@@ -23,6 +23,7 @@
 +package org.eolang.txt
 +home https://github.com/objectionary/eo
 +version 0.0.0
++alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.text
 +junit
@@ -70,3 +71,45 @@
           * " " " "
       * "start" "end"
     $.equal-to "start & end"
+
+[] > text-lower-case
+  assert-that > @
+    * ((text "HeLlO wOrLd!").lower-case) ((text "hello 1234").lower-case) ((text "123").lower-case)
+    $.equal-to
+      list
+        * "hello world!" "hello 1234" "123"
+
+[] > text-upper-case
+  assert-that > @
+    * ((text "HeLlO wOrLd!").upper-case) ((text "hello 1234").upper-case) ((text "123").upper-case)
+    $.equal-to
+      list
+        * "HELLO WORLD!" "HELLO 1234" "123"
+
+[] > text-contains
+  assert-that > @
+    * ((text "some text here").contains "me te") ((text "some text here").contains "me text.") ((text "1234456").contains "1")
+    $.equal-to
+      list
+        * TRUE FALSE TRUE
+
+[] > text-starts-with
+  assert-that > @
+    * ((text "some text here").starts-with "me te") ((text "some text here").starts-with "some ") ((text "some text here").starts-with "some  ")
+    $.equal-to
+      list
+        * FALSE TRUE FALSE
+
+[] > text-ends-with
+  assert-that > @
+    * ((text "some text here").ends-with "me te") ((text "some text here").ends-with " here") ((text "some text here").ends-with "  here")
+    $.equal-to
+      list
+        * FALSE TRUE FALSE
+
+[] > text-index-of
+  assert-that > @
+    * ((text "some text here").index-of "me te") ((text "some text here").index-of " here") ((text "some text here").index-of "  here")
+    $.equal-to
+      list
+        * 2 9 -1

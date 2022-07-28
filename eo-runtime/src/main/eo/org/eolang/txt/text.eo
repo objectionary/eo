@@ -46,3 +46,22 @@
           (acc.concat (x.as-bytes))
           ((acc.concat (x.as-bytes)).concat (s.as-bytes))
     res.as-string > @
+
+  # Checks that string contains substr
+  [substr] > contains /bool
+
+  # Checks that string ends with substr
+  [substr] > ends-with /bool
+
+  # Checks that string starts with substr
+  [substr] > starts-with /bool
+
+  # Returns index of substr in string
+  # If no element was found, it returns -1
+  [substr] > index-of /int
+
+  # Returns string in lower case
+  [] > lower-case /string
+  #
+  # Returns string in upper case
+  [] > upper-case /string
