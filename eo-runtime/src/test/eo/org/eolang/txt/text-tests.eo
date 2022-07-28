@@ -88,8 +88,8 @@
 
 [] > text-upper-case-2
   assert-that > @
-    (text "hello 1234").upper-case
-    $.equal-to "HELLO 1234"
+    (text "hello 123").upper-case
+    $.equal-to "HELLO 123"
 
 [] > text-contains
   assert-that > @
