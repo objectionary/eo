@@ -50,7 +50,7 @@ public class EOtext$EOindex_of extends PhDefault {
                             final String substring = new Dataized(rho.attr("substr").get()).take(String.class);
                             final Phi text = rho.attr("ρ").get();
                             final String content = new Param(text, "s").strong(String.class);
-                            return new Data.ToPhi((long)content.indexOf(substring));
+                            return new Data.ToPhi((long) content.indexOf(substring));
                         }
                 )
         );
