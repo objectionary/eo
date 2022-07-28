@@ -29,10 +29,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -102,7 +104,8 @@ public final class OyRemote implements Objectionary {
      * @param name Location
      * @throws IOException If fails
      */
-    private static void download(final String link, final String name) throws IOException {
+    private static void download(final String link, final String name)
+        throws IOException {
         final URL url = new URL(link);
         try (InputStream in = url.openStream()) {
             Files.copy(in, Paths.get(name), StandardCopyOption.REPLACE_EXISTING);
@@ -122,12 +125,16 @@ public final class OyRemote implements Objectionary {
             "https://raw.githubusercontent.com/",
             "objectionary/home/gh-pages/tags.txt"
         );
-        download(link, "tags.txt");
+        final int len = 15;
+        final byte[] array = new byte[len];
+        new Random().nextBytes(array);
+        final String name = new String(array, StandardCharsets.UTF_8);
+        download(link, name);
         final File file = new File(
             String.format(
                 "%s/%s",
                 System.getProperty("user.dir"),
-                "tags.txt"
+                name
             )
         );
         final Scanner scanner = new Scanner(file);
