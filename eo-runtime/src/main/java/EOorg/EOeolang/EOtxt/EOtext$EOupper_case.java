@@ -46,17 +46,11 @@ public class EOtext$EOupper_case extends PhDefault {
      */
     public EOtext$EOupper_case(final Phi sigma) {
         super(sigma);
-        this.add(
-                "φ",
-                new AtComposite(
-                        this,
-                        rho -> {
-                            final Phi text = rho.attr("ρ").get();
-                            final String content = new Param(text, "s").strong(String.class);
-                            return new Data.ToPhi(content.toUpperCase());
-                        }
-                )
-        );
+        this.add("φ", new AtComposite(this, rho -> {
+            final Phi text = rho.attr("ρ").get();
+            final String content = new Param(text, "s").strong(String.class);
+            return new Data.ToPhi(content.toUpperCase());
+        }));
     }
 
 }
