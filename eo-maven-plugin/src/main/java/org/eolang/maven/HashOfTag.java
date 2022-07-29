@@ -67,8 +67,9 @@ public class HashOfTag {
                 return parts[0];
             }
         }
-        Logger.info(this, "Tag %s doesn't exist", this.tag);
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(
+            String.format("Tag %s doesn't exist", this.tag)
+        );
     }
 
 }
