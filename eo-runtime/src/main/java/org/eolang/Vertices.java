@@ -67,12 +67,48 @@ final class Vertices {
      * @return Next vertex available or previously registered
      */
     public int best(final Object obj) {
+        final int best;
         if (obj instanceof Phi[]) {
-            return this.next();
+            best = this.next();
+        } else {
+            best = this.bestNonPhi(obj);
         }
+        return best;
+    }
+
+    /**
+     * Get the best suitable one.
+     * @param obj The object to find
+     * @return Next vertex available or previously registered in non-phi instance
+     */
+    private int bestNonPhi(final Object obj) {
+        final MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (final NoSuchAlgorithmException ex) {
+            throw new IllegalStateException(ex);
+        }
+        digest.update(
+            String.format(
+                "%s %s",
+                obj.getClass().getName(),
+                label(obj)
+            ).getBytes()
+        );
+        final String hash = new String(digest.digest());
+        return this.seen.computeIfAbsent(
+            hash, key -> this.seen.size() + 1
+        );
+    }
+
+    /**
+     * Get label from Object.
+     * @param obj Label from
+     * @return Label from <b>obj</b>
+     */
+    private static String label(final Object obj) {
         final String label;
-        if (obj instanceof Long || obj instanceof String || obj instanceof Character
-            || obj instanceof Double || obj instanceof Boolean) {
+        if (primitive(obj)) {
             label = obj.toString();
         } else if (obj instanceof Pattern) {
             label = Pattern.class.cast(obj).pattern();
@@ -86,17 +122,34 @@ final class Vertices {
                 )
             );
         }
-        final MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("SHA-256");
-        } catch (final NoSuchAlgorithmException ex) {
-            throw new IllegalStateException(ex);
-        }
-        digest.update(String.format("%s %s", obj.getClass().getName(), label).getBytes());
-        final String hash = new String(digest.digest());
-        return this.seen.computeIfAbsent(
-            hash, key -> this.seen.size() + 1
-        );
+        return label;
+    }
+
+    /**
+     * Checks <b>obj</b> for the presence of toString() method.
+     * @param obj Whose instance check
+     * @return Presence as boolean
+     */
+    private static boolean primitive(final Object obj) {
+        return numeric(obj) || literal(obj) || obj instanceof Boolean;
+    }
+
+    /**
+     * Checks obj on an instance of non-numeric type.
+     * @param obj Whose instance check
+     * @return Result instanceof obj
+     */
+    private static boolean literal(final Object obj) {
+        return obj instanceof String || obj instanceof Character;
+    }
+
+    /**
+     * Checks obj on an instance of numeric type.
+     * @param obj Whose instance check
+     * @return Result instanceof obj
+     */
+    private static boolean numeric(final Object obj) {
+        return obj instanceof Long || obj instanceof Double;
     }
 
 }
