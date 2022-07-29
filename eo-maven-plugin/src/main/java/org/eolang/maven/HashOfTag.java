@@ -53,7 +53,6 @@ public class HashOfTag {
      * Hash of tag.
      * @return SHA of commit
      * @throws IOException if fails
-     * @throws IllegalArgumentException if fails
      */
     public String hash() throws IOException {
         final String link = "https://home.objectionary.com/tags.txt";
