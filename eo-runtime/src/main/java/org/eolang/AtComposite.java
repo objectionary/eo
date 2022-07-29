@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.io.IOException;
+
 /**
  * Static attribute with an expression inside, which
  * constructs an object.
@@ -71,12 +73,10 @@ public final class AtComposite implements Attr {
     public Phi get() {
         try {
             return this.expr.get(this.rho);
-        } catch (final RuntimeException ex) {
-            throw ex;
-        } catch (final Throwable ex) {
+        } catch (final IOException | InstantiationException ex) {
             throw new ExFailure(
                 String.format(
-                    "Unexpected error '%s' of type %s",
+                    "Failure on get execution: '%s', type: %s",
                     ex.getMessage(),
                     ex.getClass().getSimpleName()
                 ),
@@ -91,5 +91,4 @@ public final class AtComposite implements Attr {
             "You can't overwrite static expression"
         );
     }
-
 }
