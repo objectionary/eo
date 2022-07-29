@@ -93,7 +93,7 @@ final class Vertices {
             String.format(
                 "%s %s",
                 obj.getClass().getName(),
-                labelFrom(obj)
+                label(obj)
             ).getBytes()
         );
         final String hash = new String(digest.digest());
@@ -105,9 +105,9 @@ final class Vertices {
     /**
      * Get label from Object.
      * @param obj Label from
-     * @return Label based on obj instance
+     * @return Label from <b>obj</b>
      */
-    private static String labelFrom(final Object obj) {
+    private static String label(final Object obj) {
         final String label = labelByInstanceOf(obj);
         if (Objects.equals(null, label)) {
             throw new IllegalArgumentException(
@@ -123,11 +123,11 @@ final class Vertices {
     /**
      * Mustn't change this method access level.
      * @param obj Whose instance check
-     * @return Label from <b>obj</b>
+     * @return Label based on obj instance
      */
     private static String labelByInstanceOf(final Object obj) {
         String label = null;
-        if (canToString(obj)) {
+        if (isPrimitive(obj)) {
             label = obj.toString();
         } else if (obj instanceof Pattern) {
             label = Pattern.class.cast(obj).pattern();
@@ -142,8 +142,8 @@ final class Vertices {
      * @param obj Whose instance check
      * @return Presence as boolean
      */
-    private static boolean canToString(final Object obj) {
-        return numeric(obj) || nonNumeric(obj) || obj instanceof Boolean;
+    private static boolean isPrimitive(final Object obj) {
+        return numeric(obj) || literal(obj) || obj instanceof Boolean;
     }
 
     /**
@@ -151,7 +151,7 @@ final class Vertices {
      * @param obj Whose instance check
      * @return Result instanceof obj
      */
-    private static boolean nonNumeric(final Object obj) {
+    private static boolean literal(final Object obj) {
         return obj instanceof String || obj instanceof Character;
     }
 
