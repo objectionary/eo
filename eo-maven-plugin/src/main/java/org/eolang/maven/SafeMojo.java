@@ -121,14 +121,16 @@ abstract class SafeMojo extends AbstractMojo {
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
-            final StopWatch times = new StopWatch();
+            final long start = System.nanoTime();
             this.exec();
-            Logger.info(
-                this,
-                "Execution of %s took %[nano]s",
-                this.getClass().getSimpleName(),
-                times.lap()
-            );
+            if (Logger.isDebugEnabled(this)) {
+                Logger.debug(
+                    this,
+                    "Execution of %s took %[nano]s",
+                    this.getClass().getSimpleName(),
+                    System.nanoTime() - start
+                );
+            }
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
