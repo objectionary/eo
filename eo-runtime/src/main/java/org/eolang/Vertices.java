@@ -26,7 +26,6 @@ package org.eolang;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -108,8 +107,14 @@ final class Vertices {
      * @return Label from <b>obj</b>
      */
     private static String label(final Object obj) {
-        final String label = labelByInstanceOf(obj);
-        if (Objects.equals(null, label)) {
+        final String label;
+        if (primitive(obj)) {
+            label = obj.toString();
+        } else if (obj instanceof Pattern) {
+            label = Pattern.class.cast(obj).pattern();
+        } else if (obj instanceof byte[]) {
+            label = Arrays.toString(byte[].class.cast(obj));
+        } else {
             throw new IllegalArgumentException(
                 String.format(
                     "Unknown type for vertex allocation: %s",
@@ -121,28 +126,11 @@ final class Vertices {
     }
 
     /**
-     * Mustn't change this method access level.
-     * @param obj Whose instance check
-     * @return Label based on obj instance
-     */
-    private static String labelByInstanceOf(final Object obj) {
-        String label = null;
-        if (isPrimitive(obj)) {
-            label = obj.toString();
-        } else if (obj instanceof Pattern) {
-            label = Pattern.class.cast(obj).pattern();
-        } else if (obj instanceof byte[]) {
-            label = Arrays.toString(byte[].class.cast(obj));
-        }
-        return label;
-    }
-
-    /**
      * Checks <b>obj</b> for the presence of toString() method.
      * @param obj Whose instance check
      * @return Presence as boolean
      */
-    private static boolean isPrimitive(final Object obj) {
+    private static boolean primitive(final Object obj) {
         return numeric(obj) || literal(obj) || obj instanceof Boolean;
     }
 
