@@ -118,11 +118,10 @@
   (init-mp.with "a" "b").with "c" "d" > mp2!
   init-mp.with TRUE FALSE > mp3!
   ((init-mp.with 0 mp1).with 1 mp2).with 2 mp3 > mp-res!
-  assert-that > @
+  eq. > @
+    list
+      * 0 "d"
     * ((mp-res.found -1).length) ((((mp-res.found 1).at 0).found "c").at 0)
-    $.equal-to
-      list
-        * 0 "d"
 
 [] > multimap-without-works
   multimap * > init-mp!
