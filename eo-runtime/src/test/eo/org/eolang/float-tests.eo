@@ -102,6 +102,18 @@
       10.9
     $.equal-to FALSE
 
+[] > zero-eq-to-zero
+  eq. > @
+    0.0.eq 0.0
+    TRUE
+
+[] > float-zero-not-eq-to-int-zero
+  eq. > @
+    eq.
+      0.0
+      0
+    FALSE
+
 [] > eq-true
   assert-that > @
     123.5

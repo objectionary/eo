@@ -130,6 +130,18 @@
     $.equal-to TRUE
     "check int.gte.not"
 
+[] > zero-eq-to-zero
+  eq. > @
+    0.eq 0
+    TRUE
+
+[] > int-zero-not-eq-to-float-zero
+  eq. > @
+    eq.
+      0
+      0.0
+    FALSE
+
 [] > eq-true
   assert-that > @
     eq.
