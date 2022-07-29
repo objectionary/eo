@@ -303,7 +303,7 @@ public interface Data<T> {
                 }
                 txt = out.toString();
             } else if (this.val.getClass().isArray()) {
-                txt = Arrays.toString((Object[]) this.val);
+                txt = String.format("array[%d]", ((Object[])this.val).length);
             } else {
                 txt = this.val.toString();
             }
