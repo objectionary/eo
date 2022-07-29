@@ -25,50 +25,50 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+import java.util.Objects;
+import java.util.Scanner;
 
 /**
- * The simple HTTP Objectionary server.
- *
- * @since 0.1
+ * Hash of tag.
+ * @since 0.26
  */
-public final class OyRemote implements Objectionary {
+public class HashOfTag {
 
     /**
-     * The address template.
+     * Tag.
      */
-    private final String template;
+    private final String tag;
 
     /**
      * Constructor.
      * @param tag Tag
-     * @throws IOException if fails.
      */
-    public OyRemote(final String tag) throws IOException {
-        this.template = String.format(
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            new HashOfTag(tag).hash()
-        );
+    public HashOfTag(final String tag) {
+        this.tag = tag;
     }
 
-    @Override
-    public String toString() {
-        return this.template;
-    }
-
-    @Override
-    public Input get(final String name) throws MalformedURLException {
-        final URL url = new URL(
-            String.format(this.template, name.replace(".", "/"))
+    /**
+     * Hash of tag.
+     * @return SHA of commit
+     * @throws IOException if fails
+     */
+    public String hash() throws IOException {
+        final String link = "https://home.objectionary.com/tags.txt";
+        final InputStream ins = new URL(link).openStream();
+        final Scanner scanner = new Scanner(ins);
+        while (scanner.hasNextLine()) {
+            final String line = scanner.nextLine();
+            final String[] parts = line.split("\t");
+            if (Objects.equals(parts[1], this.tag)) {
+                Logger.info(this, "Git sha of %s is %s", this.tag, parts[0]);
+                return parts[0];
+            }
+        }
+        throw new IllegalArgumentException(
+            String.format("Tag %s doesn't exist", this.tag)
         );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
     }
 
 }
