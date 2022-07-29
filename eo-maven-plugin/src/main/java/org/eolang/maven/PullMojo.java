@@ -89,7 +89,7 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionary;
 
     @Override
-    public void exec() throws IOException, IllegalArgumentException {
+    public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)

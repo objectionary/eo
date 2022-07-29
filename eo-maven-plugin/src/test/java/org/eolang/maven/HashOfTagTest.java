@@ -35,13 +35,8 @@ import org.junit.jupiter.api.Test;
  */
 public class HashOfTagTest {
     @Test
-    public void testCommitHash() throws Exception {
-        String hash = new HashOfTag("0.23.19").getHash();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
-        hash = new HashOfTag("0.26.0").getHash();
+    public void testCommitHashTag() {
+        final String hash = new HashOfTag("0.26.0").toString();
         MatcherAssert.assertThat(
             hash,
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
@@ -49,10 +44,19 @@ public class HashOfTagTest {
     }
 
     @Test
+    public void testCommitHashOldTag() {
+        final String hash = new HashOfTag("0.23.19").toString();
+        MatcherAssert.assertThat(
+            hash,
+            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
+        );
+    }
+
+    @Test
     public void testCommitHashException() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new HashOfTag("nonsense").getHash()
+            () -> new HashOfTag("nonsense").toString()
         );
     }
 }

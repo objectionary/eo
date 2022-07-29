@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
@@ -35,8 +34,6 @@ import org.cactoos.io.InputOf;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals",
-    "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"})
 public final class OyRemote implements Objectionary {
 
     /**
@@ -47,14 +44,12 @@ public final class OyRemote implements Objectionary {
     /**
      * Constructor.
      * @param tag Tag
-     * @throws IOException if fails
-     * @throws IllegalArgumentException if fails
      */
-    public OyRemote(final String tag) throws IOException, IllegalArgumentException {
+    public OyRemote(final String tag) {
         this.template = String.format(
             // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            new HashOfTag(tag).getHash()
+            new HashOfTag(tag)
         );
     }
 
@@ -73,14 +68,6 @@ public final class OyRemote implements Objectionary {
             name, url
         );
         return new InputOf(url);
-    }
-
-    /**
-     * Accessor.
-     * @return Template
-     */
-    public String getTemplate() {
-        return this.template;
     }
 
 }

@@ -159,8 +159,7 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Exec it.
      * @throws IOException If fails
-     * @throws IllegalArgumentException If fails.
      */
-    abstract void exec() throws IOException, IllegalArgumentException;
+    abstract void exec() throws IOException;
 
 }

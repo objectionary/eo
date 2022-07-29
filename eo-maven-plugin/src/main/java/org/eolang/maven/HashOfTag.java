@@ -52,19 +52,27 @@ public class HashOfTag {
     /**
      * Hash of tag.
      * @return SHA of commit
-     * @throws IOException if fails
-     * @throws IllegalArgumentException if fails
      */
-    public String getHash() throws IOException, IllegalArgumentException {
-        final String link = "https://home.objectionary.com/tags.txt";
-        final InputStream ins = new URL(link).openStream();
-        final Scanner scanner = new Scanner(ins);
-        while (scanner.hasNextLine()) {
-            final String line = scanner.nextLine();
-            final String[] parts = line.split("\t");
-            if (Objects.equals(parts[1], this.tag)) {
-                Logger.info(this, "commit sha is %s", parts[0]);
-                return parts[0];
+    public String toString() {
+        try {
+            final String link = "https://home.objectionary.com/tags.txt";
+            final InputStream ins = new URL(link).openStream();
+            final Scanner scanner = new Scanner(ins);
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+                final String[] parts = line.split("\t");
+                if (Objects.equals(parts[1], this.tag)) {
+                    Logger.info(this, "Git sha of %s is %s", this.tag, parts[0]);
+                    return parts[0];
+                }
+            }
+            Logger.info(this, "Tag %s doesn't exist", this.tag);
+        } catch (final IOException exception) {
+            Logger.info(this, exception.toString());
+            try {
+                throw exception;
+            } catch (final IOException exc) {
+                Logger.info(this, exc.toString());
             }
         }
         throw new IllegalArgumentException();
