@@ -24,6 +24,7 @@
 
 package org.eolang.maven;
 
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -35,8 +36,8 @@ import org.junit.jupiter.api.Test;
  */
 public class HashOfTagTest {
     @Test
-    public void testCommitHashTag() {
-        final String hash = new HashOfTag("0.26.0").toString();
+    public void testCommitHashTag() throws IOException {
+        final String hash = new HashOfTag("0.26.0").hash();
         MatcherAssert.assertThat(
             hash,
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
@@ -44,8 +45,8 @@ public class HashOfTagTest {
     }
 
     @Test
-    public void testCommitHashOldTag() {
-        final String hash = new HashOfTag("0.23.19").toString();
+    public void testCommitHashOldTag() throws IOException {
+        final String hash = new HashOfTag("0.23.19").hash();
         MatcherAssert.assertThat(
             hash,
             Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
@@ -56,7 +57,7 @@ public class HashOfTagTest {
     public void testCommitHashException() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new HashOfTag("nonsense").toString()
+            () -> new HashOfTag("nonsense").hash()
         );
     }
 }
