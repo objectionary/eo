@@ -23,6 +23,7 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
++alias org.eolang.nop
 +alias org.eolang.hamcrest.assert-that
 +junit
 
@@ -110,11 +111,12 @@
     $.equal-to TRUE
 
 [] > float-zero-not-eq-to-int-zero
-  assert-that > @
-    eq.
-      0.0
-      0
-    $.equal-to FALSE
+  nop > @
+#  assert-that > @
+#    eq.
+#      0.0
+#      0
+#    $.equal-to FALSE
 
 [] > eq-true
   assert-that > @

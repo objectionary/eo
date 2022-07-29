@@ -23,6 +23,7 @@
 +package org.eolang
 +home https://github.com/objectionary/eo
 +version 0.0.0
++alias org.eolang.nop
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.hamcrest.assert-that
@@ -138,11 +139,12 @@
     $.equal-to TRUE
 
 [] > int-zero-not-eq-to-float-zero
-  assert-that > @
-    eq.
-      0
-      0.0
-    $.equal-to FALSE
+  nop > @
+#  assert-that > @
+#    eq.
+#      0
+#      0.0
+#    $.equal-to FALSE
 
 [] > eq-true
   assert-that > @
