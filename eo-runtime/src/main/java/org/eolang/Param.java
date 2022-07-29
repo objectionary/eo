@@ -153,11 +153,9 @@ public final class Param {
         final Object ret = this.weak();
         final byte[] res;
         if (Long.class.isInstance(ret)) {
-            res = ByteBuffer.allocate(Long.BYTES)
-                .putLong(ret.equals (0L)
-                    ? -0L
-                    : (long) ret)
-                .array();
+            res = ret.equals(0L)
+                ? ByteBuffer.allocate(Double.BYTES).putDouble(-0.0).array()
+                : ByteBuffer.allocate(Long.BYTES).putLong((long) ret).array();
         } else if (Character.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
         } else if (Double.class.isInstance(ret)) {
