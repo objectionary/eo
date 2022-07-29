@@ -55,9 +55,6 @@ public final class OyCaching implements Objectionary {
      * @param ver Version.
      * @param cache Cache directory.
      * @param primary Primary objectionary.
-     * @todo #625:30m link changes in OyRemote with this class
-     *  Now all classes use "master" for resolving paths
-     *  Probably we should use commit sha if it is given
      */
     public OyCaching(
         final String ver,

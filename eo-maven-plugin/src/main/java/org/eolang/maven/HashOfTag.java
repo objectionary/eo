@@ -55,7 +55,7 @@ public class HashOfTag {
      * @throws IOException if fails
      * @throws IllegalArgumentException if fails
      */
-    public String hash() throws IOException, IllegalArgumentException {
+    public String hash() throws IOException {
         final String link = "https://home.objectionary.com/tags.txt";
         final InputStream ins = new URL(link).openStream();
         final Scanner scanner = new Scanner(ins);
