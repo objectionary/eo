@@ -103,16 +103,18 @@
     $.equal-to FALSE
 
 [] > zero-eq-to-zero
-  eq. > @
-    0.0.eq 0.0
-    TRUE
+  assert-that > @
+    eq.
+      0.0
+      0.0
+    $.equal-to TRUE
 
 [] > float-zero-not-eq-to-int-zero
-  eq. > @
+  assert-that > @
     eq.
       0.0
       0
-    FALSE
+    $.equal-to FALSE
 
 [] > eq-true
   assert-that > @
