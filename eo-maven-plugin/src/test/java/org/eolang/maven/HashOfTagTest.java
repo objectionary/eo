@@ -21,54 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * The simple HTTP Objectionary server.
- *
- * @since 0.1
+ * Test case for {@link OyRemote}.
+ * @since 0.26
  */
-public final class OyRemote implements Objectionary {
-
-    /**
-     * The address template.
-     */
-    private final String template;
-
-    /**
-     * Constructor.
-     * @param tag Tag
-     * @throws IOException if fails.
-     */
-    public OyRemote(final String tag) throws IOException {
-        this.template = String.format(
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            new HashOfTag(tag).hash()
+public class HashOfTagTest {
+    @Test
+    public void testCommitHashTag() throws IOException {
+        final String hash = new HashOfTag("0.26.0").hash();
+        MatcherAssert.assertThat(
+            hash,
+            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
         );
     }
 
-    @Override
-    public String toString() {
-        return this.template;
+    @Test
+    public void testCommitHashOldTag() throws IOException {
+        final String hash = new HashOfTag("0.23.19").hash();
+        MatcherAssert.assertThat(
+            hash,
+            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
+        );
     }
 
-    @Override
-    public Input get(final String name) throws MalformedURLException {
-        final URL url = new URL(
-            String.format(this.template, name.replace(".", "/"))
+    @Test
+    public void testCommitHashException() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new HashOfTag("nonsense").hash()
         );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
     }
-
 }

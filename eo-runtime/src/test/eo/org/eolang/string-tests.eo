@@ -111,9 +111,15 @@
 
 [] > similar-strings-generate-similar-hashes
   assert-that > @
-    "hello world".as-hash
+    "hello".as-hash
     $.equal-to
-      "hello world".as-hash
+      "hello".as-hash
+
+[] > large-similar-strings-generate-similar-hashes
+  assert-that > @
+    "hello12".as-hash
+    $.equal-to
+      "hello12".as-hash
 
 [] > compares-two-strings
   assert-that > @
