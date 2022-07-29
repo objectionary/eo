@@ -26,7 +26,6 @@ package org.eolang;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * Param of an object (convenient retrieval mechanism).
@@ -120,13 +119,14 @@ public final class Param {
                 final byte[] cpy = new byte[Long.BYTES];
                 int posx = cpy.length;
                 int posy = ret.length;
-                while (posy-- > 0 && posx-- > 0) {
+                while (posy > 0 && posx > 0) {
+                    posy -= 1;
+                    posx -= 1;
                     cpy[posx] = ret[posy];
                 }
-                if (ret[0] < 0) {
-                    while (posx-- > 0) {
-                        cpy[posx] = -1;
-                    }
+                while (ret[0] < 0 && posx > 0) {
+                    posx -= 1;
+                    cpy[posx] = -1;
                 }
                 res = ByteBuffer.wrap(cpy).getLong();
             }
@@ -167,5 +167,4 @@ public final class Param {
         }
         return res;
     }
-
 }
