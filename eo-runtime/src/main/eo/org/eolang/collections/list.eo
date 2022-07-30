@@ -109,12 +109,11 @@
             arr.length
           [i]
             seq > @
-              f (arr.at idx)
-              ^.idx.write (i.plus 1)
-    if. > @
-      ^.is-empty
-      error "List is empty"
+              f (arr.at i)
+              idx.write (i.plus 1)
+    eq. > @
       iterate f
+      arr.length
 
   # Create a new list without the i-th element
   [i] > without
