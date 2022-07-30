@@ -114,8 +114,12 @@
       eq. > @
         arr.length
         0
+    [] > less
+      lt. > @
+        arr.length
+        0
     if. > @
-      equals.or (arr.length.lt 0)
+      equals.or less
       []
         "List is empty!" > msg
       iterate f
