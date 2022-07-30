@@ -50,14 +50,14 @@ public class EOint$EOgt extends PhDefault {
      */
     public EOint$EOgt(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("ig", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho).strong(Long.class)
-                        > new Param(rho, "x").strong(Long.class)
+                        > new Param(rho, "ig").strong(Long.class)
                 )
             )
         );

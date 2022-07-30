@@ -51,7 +51,7 @@ public class EObytes$EOright extends PhDefault {
      */
     public EObytes$EOright(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("br", new AtFree());
         this.add(
             "φ",
             new AtComposite(
@@ -60,7 +60,7 @@ public class EObytes$EOright extends PhDefault {
                     new Param(rho)
                         .fromBytes(BigInteger.class)
                         .shiftRight(
-                            new Param(rho, "x").strong(Long.class).intValue()
+                            new Param(rho, "br").strong(Long.class).intValue()
                         ).toByteArray()
                 )
             )

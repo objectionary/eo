@@ -64,10 +64,10 @@
   [] > not /bytes
 
   # Calculate bitwise left shift
-  [x] > left /bytes
+  [bl] > left /bytes
 
   # Calculate bitwise right shift
-  [x] > right /bytes
+  [br] > right /bytes
 
   # Converts to bool
   [] > as-bool
