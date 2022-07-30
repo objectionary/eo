@@ -99,21 +99,21 @@
   # one free attribute, the element of the
   # array.
   [f] > each
-    memory 0 > idx
     [f] > iterate
       seq > @
+        memory 0 > idx
         idx.write 0
         while.
-          idx.lt arr.length
+          lt.
+            idx
+            arr.length
           [i]
-            f > el
-              arr.at idx
-            idx.write (i.plus 1)
-    [] > err
-      "List is empty" > msg
+            seq > @
+              f (arr.at idx)
+              ^.idx.write (i.plus 1)
     if. > @
       ^.is-empty
-      err
+      error "List is empty"
       iterate f
 
   # Create a new list without the i-th element
