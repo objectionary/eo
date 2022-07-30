@@ -113,7 +113,7 @@
     [] > emptyListError
       "List is empty" > msg
     if. > @
-      $.is-empty
+      ^.is-empty
       emptyListError
       iterate f
 
