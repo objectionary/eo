@@ -84,15 +84,12 @@ public final class Param {
         if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
-                    "The argument '.%s' with value %s (rho %s, phi term %s, loc %s, to str %s) is of Java type '%s', not '%s' as expected",
+                    "The argument '.%s' with value %s (attr term %s, rho term %s, phi term %s) is of Java type '%s', not '%s' as expected",
                     this.attr,
                     ret,
-                    new Dataized(
-                        this.rho.attr("ρ").get()
-                    ).take(),
+                    this.rho.attr(this.attr).φTerm(),
+                    this.rho.attr("ρ").φTerm(),
                     this.rho.φTerm(),
-                    this.rho.location(),
-                    this.rho.toString(),
                     ret.getClass().getCanonicalName(),
                     type.getCanonicalName()
                 )
