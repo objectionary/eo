@@ -110,18 +110,10 @@
             f > el
               arr.at idx
             idx.write (i.plus 1)
-    [] > equalsToZero
-      eq. > @
-        arr.length
-        0
-    [] > less
-      lt. > @
-        arr.length
-        0
     [] > emptyListError
       "List is empty" > msg
     if. > @
-      equalsToZero.or less
+      $.is-empty
       emptyListError
       iterate f
 
