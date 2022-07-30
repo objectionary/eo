@@ -94,6 +94,7 @@ SOFTWARE.
           <foreign>${project.basedir}/target/eo/foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <hash>master</hash>
+          <failOnWarning>true</failOnWarning>
         </configuration>
         <executions>
           <execution>
