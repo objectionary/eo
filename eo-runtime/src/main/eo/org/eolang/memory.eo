@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
 +home https://github.com/objectionary/eo
-+version 0.0.0
++package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
++version 0.0.0
 
 # Storage of data in memory.
 [] > memory /?
