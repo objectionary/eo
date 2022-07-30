@@ -117,11 +117,11 @@
   (init-mp.with 1 2).with 3 4 > mp1!
   (init-mp.with "a" "b").with "c" "d" > mp2!
   init-mp.with TRUE FALSE > mp3!
-  ((init-mp.with 0 mp1).with 1 mp2).with 2 mp3 > mp-res!
+  ((init-mp.with 1 mp1).with 2 mp2).with 3 mp3 > mp-res!
   eq. > @
     list
       * 0 "d"
-    * ((mp-res.found -1).length) ((((mp-res.found 1).at 0).found "c").at 0)
+    * ((mp-res.found -1).length) ((((mp-res.found 2).at 0).found "c").at 0)
 
 [] > multimap-without-works
   multimap * > init-mp!
