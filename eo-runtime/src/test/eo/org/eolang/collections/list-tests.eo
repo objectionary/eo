@@ -231,7 +231,6 @@
       "one"
       "two"
       "three"
-      "four"
   .each > @
     [i] (stdout i > @)
 
