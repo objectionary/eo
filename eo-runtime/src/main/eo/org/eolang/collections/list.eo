@@ -98,9 +98,22 @@
   # Here "f" must be an abstract object with
   # one free attribute, the element of the
   # array.
-  # TODO: change comment.
-  # Comment for initial commit.
-  [f] > each /bool
+  [f] > each
+    memory 0 > idx
+    # Here "f" same as in parent object
+    [f] > throughEach
+      seq > @
+        idx.write 0
+        while.
+          idx.lt arr.length
+          [i]
+            f (arr.at idx)
+            idx.write (i.plus 1)
+    if. > @
+      (arr.length.eq 0).or (arr.length.lt 0)
+      []
+        "List is empty!" > msg
+      throughEach f
 
   # Create a new list without the i-th element
   [i] > without
