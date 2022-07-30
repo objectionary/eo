@@ -100,7 +100,6 @@
   # array.
   [f] > each
     memory 0 > idx
-    # Here "f" same as in parent object
     [f] > iterate
       seq > @
         idx.write 0
@@ -110,11 +109,11 @@
             f > el
               arr.at idx
             idx.write (i.plus 1)
-    [] > emptyListError
+    [] > err
       "List is empty" > msg
     if. > @
       ^.is-empty
-      emptyListError
+      err
       iterate f
 
   # Create a new list without the i-th element
