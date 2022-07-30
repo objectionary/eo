@@ -107,10 +107,9 @@
         while.
           idx.lt arr.length
           [i]
-            f
+            f > el
               arr.at idx
-            idx.write
-              i.plus 1
+            idx.write (i.plus 1)
     if. > @
       (arr.length.eq 0).or (arr.length.lt 0)
       []
