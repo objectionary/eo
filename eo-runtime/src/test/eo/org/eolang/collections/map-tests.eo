@@ -63,7 +63,7 @@
   eq. > @
     list
       * 0 "d"
-    * ((mp-res.found 3).length) ((((mp-res.found 1).at 0).found "c").at 0)
+    * ((mp-res.found -1).length) ((((mp-res.found 1).at 0).found "c").at 0)
 
 [] > map-without-works
   map * > init-mp!
