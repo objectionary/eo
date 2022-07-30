@@ -101,7 +101,7 @@
   [f] > each
     memory 0 > idx
     # Here "f" same as in parent object
-    [f] > iterateWith
+    [f] > iterate
       seq > @
         idx.write 0
         while.
@@ -110,11 +110,15 @@
             f > el
               arr.at idx
             idx.write (i.plus 1)
+    [] > equals
+      eq. > @
+        arr.length
+        0
     if. > @
-      (arr.length.eq 0).or (arr.length.lt 0)
+      equals.or (arr.length.lt 0)
       []
         "List is empty!" > msg
-      iterateWith f
+      iterate f
 
   # Create a new list without the i-th element
   [i] > without
