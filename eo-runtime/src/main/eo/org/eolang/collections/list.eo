@@ -110,7 +110,7 @@
             f > el
               arr.at idx
             idx.write (i.plus 1)
-    [] > equals
+    [] > equalsToZero
       eq. > @
         arr.length
         0
@@ -118,10 +118,11 @@
       lt. > @
         arr.length
         0
+    [] > emptyListError
+      "List is empty" > msg
     if. > @
-      equals.or less
-      []
-        "List is empty!" > msg
+      equalsToZero.or less
+      emptyListError
       iterate f
 
   # Create a new list without the i-th element
