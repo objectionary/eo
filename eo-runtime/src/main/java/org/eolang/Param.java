@@ -54,6 +54,7 @@ public final class Param {
 
     /**
      * Ctor.
+     *
      * @param obj The object to fetch \rho from
      */
     public Param(final Phi obj) {
@@ -62,7 +63,8 @@ public final class Param {
 
     /**
      * Ctor.
-     * @param obj The object to fetch the attribute from
+     *
+     * @param obj  The object to fetch the attribute from
      * @param name Name of the attr
      */
     public Param(final Phi obj, final String name) {
@@ -72,8 +74,9 @@ public final class Param {
 
     /**
      * Fetch and check type.
+     *
      * @param type The type
-     * @param <T> The type
+     * @param <T>  The type
      * @return The object
      */
     public <T> T strong(final Class<T> type) {
@@ -81,8 +84,12 @@ public final class Param {
         if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
-                    "The argument '.%s' is of Java type '%s', not '%s' as expected",
+                    "The argument '.%s' with value %s of obj %s is of Java type '%s', not '%s' as expected",
                     this.attr,
+                    ret,
+                    new Dataized(
+                        this.rho.attr("ρ").get()
+                    ).take(),
                     ret.getClass().getCanonicalName(),
                     type.getCanonicalName()
                 )
@@ -93,6 +100,7 @@ public final class Param {
 
     /**
      * Fetch and DON'T check type.
+     *
      * @return The object
      */
     public Object weak() {
@@ -103,8 +111,9 @@ public final class Param {
 
     /**
      * Fetch BYTES as type.
+     *
      * @param type The type
-     * @param <T> The type
+     * @param <T>  The type
      * @return The object
      */
     public <T> T fromBytes(final Class<T> type) {
@@ -147,6 +156,7 @@ public final class Param {
 
     /**
      * Fetch BYTES of any type.
+     *
      * @return The bytes.
      */
     public byte[] asBytes() {
@@ -158,7 +168,7 @@ public final class Param {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
         } else if (Double.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Double.BYTES)
-                .putDouble(ret.equals (0.0)
+                .putDouble(ret.equals(0.0)
                     ? -0.0
                     : (double) ret)
                 .array();
