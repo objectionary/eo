@@ -34,6 +34,7 @@ zip: *.tex sections/*.tex
 	mkdir package
 	cd package
 	cp ../eolang-paper.tex .
+	cp ../phigure.sty .
 	cp ../main.bib .
 	for p in $(PACKAGES); do cp $(TLROOT)/tex/latex/$${p}/$${p}.sty .; done
 	cp -r ../sections .
