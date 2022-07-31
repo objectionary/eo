@@ -26,7 +26,7 @@ Fig.~\ref{fig:book2} represents it as a graph.
   \node[empty] (v3) [below right=1cm and 1cm of v2] {$v_3$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v3) node [attr] {\ff{isbn}};
   \node[object] (d4) [below left=0.5cm and 1.5cm of v4] {$d_4$};
-    \draw (v4) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d4) node [attr] {$\delta$};
+    \draw (v4) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d4) node [attr] {$\Delta$};
   \node [anchor=south east] at (current bounding box.south east) {
   \begin{minipage}{15em}\raggedleft
     $d_{4} \to \ff{"Object Thinking"}$
@@ -49,7 +49,7 @@ depicts it as any other object.
 The rectangle attached to the vertice $v_1$ makes it an atom (see Def.~\ref{def:atom})
 and $M_1$, the content of the rectangle, is its $\lambda$-term. Atoms
 are depicted with double-lined circles. The data $d_4$
-attached to the vertice $v_4$ by the named edge $\delta$
+attached to the vertice $v_4$ by the named edge $\Delta$
 is the text \ff{"Object Thinking"}.
 
 There are six graphical elements that may be present on an object graph:
@@ -183,7 +183,7 @@ ADD(|$v_4$|);
 BIND(|$v_2$|, |$v_4$|, title);
 REF(e, |$v_2$|, |$\Phi$|.memory, price);
 ADD(|$d_4$|);
-BIND(|$v_4$|, |$d_4$|, |$\delta$|);
+BIND(|$v_4$|, |$d_4$|, |$\Delta$|);
 \end{ffcode}
 \end{twocols}
 
@@ -382,7 +382,7 @@ The last rule deals with data, such as integers, string literals, and so on
 \begin{equation*}
 \dfrac
   {v_i | \Gamma}
-  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\delta) \quad d_i \to \Gamma}
+  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\Delta) \quad d_i \to \Gamma}
   \jrule{data}
 \end{equation*}
 Here the mapping $d_i \to \Gamma$ is added to the graph as a comment.
@@ -424,7 +424,7 @@ where to get the data. The object \ff{sum} is not data, but
 it knows how to calculate it. Once being asked to turn itself into
 data it will ask all its three inner object the same question:
 ``What data you represent?'' They are integers and will return the
-data they have attached to their attributes $\delta$. Then, the object
+data they have attached to their attributes $\Delta$. Then, the object
 \ff{sum}, using its $\lambda$-term, will calculate the arithmetic
 sum of the numbers returned by its inner objects.
 
@@ -441,15 +441,15 @@ by the following object graph:
   \node[object, below left=1cm of v2] (v3) {$v_{3}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v3) node [attr] {$a_1$};
   \node[object, below=0.7cm of v3] (d3) {\ff{8}};
-    \draw (v3) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d3) node [attr] {$\delta$};
+    \draw (v3) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d3) node [attr] {$\Delta$};
   \node[object, below=1cm of v2] (v4) {$v_{4}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v4) node [attr] {$a_2$};
   \node[object, below=0.7cm of v4] (d4) {\ff{13}};
-    \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d4) node [attr] {$\delta$};
+    \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d4) node [attr] {$\Delta$};
   \node[object, below right=1cm of v2] (v5) {$v_{5}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v5) node [attr] {$a_3$};
   \node[object, below=0.7cm of v5] (d5) {\ff{-9}};
-    \draw (v5) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d5) node [attr] {$\delta$};
+    \draw (v5) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d5) node [attr] {$\Delta$};
 \end{phigure}\end{center}
 
 The dataization of $v_2$, which is an anonymous copy of \ff{sum} with
@@ -497,18 +497,18 @@ to use $\mathbb{R}$ in order to find some object.
 
 If a function returns data, which doesn't have a locator, a new vertice
 $v_i$ is created implicitly with the locator $\Phi.v_i$, and
-a single attribute $\delta$ connected to the data returned, where
+a single attribute $\Delta$ connected to the data returned, where
 $i$ is the next available index in the graph.
 
 For example, $\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},
-\delta, \emptyset)$ being executed on the graph presented at the
+\Delta, \emptyset)$ being executed on the graph presented at the
 Fig.~\ref{fig:is} would return the vertice $d_{21}$, which is $+9$.
 
 We also define a dataization function, which turns an object into data:
 
 \begin{algo}
 \kw{function} $\mathbb{D}(l)$ \\
-  \tab \kw{return} $\mathbb{R}(l, \delta, \emptyset)$ \\
+  \tab \kw{return} $\mathbb{R}(l, \Delta, \emptyset)$ \\
 \kw{end}
 \end{algo}
 
@@ -573,7 +573,7 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
   \node[object] (v19) [below left=1.5cm of v10] {$v_{19}$};
     \draw (v10) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v19) node [attr] {\ff{radius}};
   \node[object] (d19) [below left=1cm of v19] {$d_{19}$};
-    \draw (v19) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d19) node [attr] {$\delta$};
+    \draw (v19) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d19) node [attr] {$\Delta$};
   \node[object] (v11) [below right=2cm and 0.5cm of v10] {$v_{11}$};
     \draw (v10) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v11) node [attr] {\ff{center}};
   \node[dup] (v15d1) [left=1cm of v11] {$v_{15}$};
@@ -581,11 +581,11 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
   \node[object] (v20) [below left=1cm of v11] {$v_{20}$};
     \draw (v11) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v20) node [attr] {\ff{x}};
   \node[object] (d20) [below=1cm of v20] {$d_{20}$};
-    \draw (v20) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d20) node [attr] {$\delta$};
+    \draw (v20) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d20) node [attr] {$\Delta$};
   \node[object] (v21) [below right=1cm of v11] {$v_{21}$};
     \draw (v11) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v21) node [attr] {\ff{y}};
   \node[object] (d21) [below=1cm of v21] {$d_{21}$};
-    \draw (v21) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d21) node [attr] {$\delta$};
+    \draw (v21) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d21) node [attr] {$\Delta$};
 
   \node[object] (v12) [above right=0.2cm and 4cm of v10] {$v_{12}$};
     \node[dup] (v0d3) [left=1cm of v12] {$\Phi$};
@@ -601,11 +601,11 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
   \node[object] (v22) [below left=1cm of v13] {$v_{22}$};
     \draw (v13) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v22) node [attr] {\ff{x}};
   \node[object] (d22) [below=1cm of v22] {$d_{22}$};
-    \draw (v22) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d22) node [attr] {$\delta$};
+    \draw (v22) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d22) node [attr] {$\Delta$};
   \node[object] (v23) [below right=1cm of v13] {$v_{23}$};
     \draw (v13) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v23) node [attr] {\ff{y}};
   \node[object] (d23) [below=1cm of v23] {$d_{23}$};
-    \draw (v23) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d23) node [attr] {$\delta$};
+    \draw (v23) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d23) node [attr] {$\Delta$};
 
   \node [anchor=south west] at (current bounding box.south west) {
   \begin{minipage}{25em}\raggedright
@@ -614,7 +614,7 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     $d_{21} \to +9$ \\
     $d_{22} \to +1$ \\
     $d_{23} \to +7$ \\
-    $M_{14} \to \sqrt{\begin{matrix*}[l](\mathbb{R}(\xi.\ff{to}.\ff{x}, \delta, s)-\mathbb{R}(\rho.\ff{x}, \delta, s))^2 + \\ + (\mathbb{R}(\xi.\ff{to}.\ff{y}, \delta, s)-\mathbb{R}(\rho.\ff{y}, \delta, s))^2\end{matrix*}}$ \\
+    $M_{14} \to \sqrt{\begin{matrix*}[l](\mathbb{R}(\xi.\ff{to}.\ff{x}, \Delta, s)-\mathbb{R}(\rho.\ff{x}, \Delta, s))^2 + \\ + (\mathbb{R}(\xi.\ff{to}.\ff{y}, \Delta, s)-\mathbb{R}(\rho.\ff{y}, \Delta, s))^2\end{matrix*}}$ \\
     $M_5 \to \mathbb{R}(\xi.\ff{t}, \ff{lte}, s)$ \\
     $M_7 \to \mathbb{R}(\xi.\ff{t}, \ff{distance}, s)$ \\
   \end{minipage}};
