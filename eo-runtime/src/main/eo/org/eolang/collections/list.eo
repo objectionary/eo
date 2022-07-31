@@ -99,21 +99,25 @@
   # one free attribute, the element of the
   # array.
   [f] > each
-    [f] > iterate
-      seq > @
+    if. > @
+      ^.is-empty
+      FALSE
+      seq
         memory 0 > idx
-        idx.write 0
         while.
           lt.
             idx
             arr.length
           [i]
-            seq > @
-              f (arr.at i)
-              idx.write (i.plus 1)
-    eq. > @
-      iterate f
-      arr.length
+            if. > @
+              eq.
+                (arr.at i).as-bytes
+                0
+              error "φ is empty!"
+              seq
+                f (arr.at i)
+                idx.write (i.plus 1)
+        TRUE
 
   # Create a new list without the i-th element
   [i] > without
