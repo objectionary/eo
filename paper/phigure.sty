@@ -25,6 +25,7 @@
 
 \RequirePackage{tikz}
   \usetikzlibrary{arrows}
+  \usetikzlibrary{shapes}
   \usetikzlibrary{decorations}
   \usetikzlibrary{decorations.pathmorphing}
   \usetikzlibrary{intersections}
@@ -40,6 +41,7 @@
 \tikzstyle{om} = [->,>=stealth',node distance=2.5cm,thick]
 \tikzstyle{thing} = [thick,inner sep=0pt,minimum height=2.4em,draw,font={\small}]
 \tikzstyle{object} = [thing,circle]
+\tikzstyle{data} = [thing,regular polygon,regular polygon sides=8]
 \tikzstyle{dup} = [thing,rectangle,draw=none,minimum height=1.5em,inner sep=3pt]
 \tikzstyle{empty} = [object]
 \tikzstyle{transforms} = [fill=white!80!black, single arrow, minimum height=0.5cm, minimum width=0.5cm,single arrow head extend=2mm]

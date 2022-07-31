@@ -25,7 +25,7 @@ Fig.~\ref{fig:book2} represents it as a graph.
     \draw (v2) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}}  (v4) node [attr] {\ff{title}};
   \node[empty] (v3) [below right=1cm and 1cm of v2] {$v_3$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v3) node [attr] {\ff{isbn}};
-  \node[object] (d4) [below left=0.5cm and 1.5cm of v4] {$d_4$};
+  \node[data] (d4) [below left=0.5cm and 1.5cm of v4] {$d_4$};
     \draw (v4) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d4) node [attr] {$\Delta$};
   \node [anchor=south east] at (current bounding box.south east) {
   \begin{minipage}{15em}\raggedleft
@@ -440,15 +440,15 @@ by the following object graph:
     \draw[parent] (v2) edge [bend right=30] (v1);
   \node[object, below left=1cm of v2] (v3) {$v_{3}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v3) node [attr] {$a_1$};
-  \node[object, below=0.7cm of v3] (d3) {\ff{8}};
+  \node[data, below=0.7cm of v3] (d3) {\ff{8}};
     \draw (v3) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d3) node [attr] {$\Delta$};
   \node[object, below=1cm of v2] (v4) {$v_{4}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v4) node [attr] {$a_2$};
-  \node[object, below=0.7cm of v4] (d4) {\ff{13}};
+  \node[data, below=0.7cm of v4] (d4) {\ff{13}};
     \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d4) node [attr] {$\Delta$};
   \node[object, below right=1cm of v2] (v5) {$v_{5}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v5) node [attr] {$a_3$};
-  \node[object, below=0.7cm of v5] (d5) {\ff{-9}};
+  \node[data, below=0.7cm of v5] (d5) {\ff{-9}};
     \draw (v5) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d5) node [attr] {$\Delta$};
 \end{phigure}\end{center}
 
@@ -572,7 +572,7 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     \draw[parent] (v10) -- (v1d1);
   \node[object] (v19) [below left=1.5cm of v10] {$v_{19}$};
     \draw (v10) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v19) node [attr] {\ff{radius}};
-  \node[object] (d19) [below left=1cm of v19] {$d_{19}$};
+  \node[data] (d19) [below left=1cm of v19] {$d_{19}$};
     \draw (v19) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d19) node [attr] {$\Delta$};
   \node[object] (v11) [below right=2cm and 0.5cm of v10] {$v_{11}$};
     \draw (v10) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v11) node [attr] {\ff{center}};
@@ -580,11 +580,11 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     \draw[parent] (v11) -- (v15d1);
   \node[object] (v20) [below left=1cm of v11] {$v_{20}$};
     \draw (v11) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v20) node [attr] {\ff{x}};
-  \node[object] (d20) [below=1cm of v20] {$d_{20}$};
+  \node[data] (d20) [below=1cm of v20] {$d_{20}$};
     \draw (v20) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d20) node [attr] {$\Delta$};
   \node[object] (v21) [below right=1cm of v11] {$v_{21}$};
     \draw (v11) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v21) node [attr] {\ff{y}};
-  \node[object] (d21) [below=1cm of v21] {$d_{21}$};
+  \node[data] (d21) [below=1cm of v21] {$d_{21}$};
     \draw (v21) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d21) node [attr] {$\Delta$};
 
   \node[object] (v12) [above right=0.2cm and 4cm of v10] {$v_{12}$};
@@ -600,11 +600,11 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     \draw[parent] (v13) -- (v15d2);
   \node[object] (v22) [below left=1cm of v13] {$v_{22}$};
     \draw (v13) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v22) node [attr] {\ff{x}};
-  \node[object] (d22) [below=1cm of v22] {$d_{22}$};
+  \node[data] (d22) [below=1cm of v22] {$d_{22}$};
     \draw (v22) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d22) node [attr] {$\Delta$};
   \node[object] (v23) [below right=1cm of v13] {$v_{23}$};
     \draw (v13) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v23) node [attr] {\ff{y}};
-  \node[object] (d23) [below=1cm of v23] {$d_{23}$};
+  \node[data] (d23) [below=1cm of v23] {$d_{23}$};
     \draw (v23) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d23) node [attr] {$\Delta$};
 
   \node [anchor=south west] at (current bounding box.south west) {
