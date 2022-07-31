@@ -26,6 +26,7 @@ package org.eolang;
 import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -34,6 +35,32 @@ import org.junit.jupiter.api.Test;
  * @since 0.16
  */
 public final class AtCompositeTest {
+
+    @Test
+    public void decoratesCheckedException() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new AtComposite(
+                Phi.Φ,
+                self -> {
+                    throw new InstantiationException("intended checked");
+                }
+            ).get()
+        );
+    }
+
+    @Test
+    public void decoratesUncheckedException() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new AtComposite(
+                Phi.Φ,
+                self -> {
+                    throw new IllegalStateException("intended unchecked");
+                }
+            ).get()
+        );
+    }
 
     @Test
     public void passesSelfCorrectly() {
