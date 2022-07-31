@@ -90,7 +90,21 @@
         &.f x > @
 
   # For each array element dataize the object
-  [f] > each /bool
+  # Here "f" must be an abstract object with
+  # one free attribute, the element of the
+  # array.
+  [f] > each
+    seq > @
+      memory 0 > idx
+      while.
+        lt.
+          idx
+          arr.length
+        [i]
+          seq > @
+            f (arr.at i)
+            idx.write (i.plus 1)
+      TRUE
 
   # Create a new list without the i-th element
   [i] > without
