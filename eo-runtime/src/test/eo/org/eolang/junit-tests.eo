@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
-+version 0.0.0
 +alias assertThat org.eolang.hamcrest.assert-that
++home https://github.com/objectionary/eo
 +junit
++package org.eolang
++version 0.0.0
 
 [] > x
   TRUE > @

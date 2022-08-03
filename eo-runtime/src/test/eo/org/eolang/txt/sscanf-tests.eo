@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
-+home https://github.com/objectionary/eo
-+version 0.0.0
 +alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
-+alias org.eolang.txt.sscanf
 +alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
++home https://github.com/objectionary/eo
 +junit
++package org.eolang.txt
++version 0.0.0
 
 [] > sscanf-with-string
   assert-that > @
