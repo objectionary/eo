@@ -94,7 +94,7 @@ public final class RegisterMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final int before = this.tojos().select(t -> true).size();
+        final int before = this.tojos.value().select(t -> true).size();
         if (before > 0) {
             Logger.info(this, "There are %d EO sources registered already", before);
         }

@@ -34,7 +34,7 @@ SOFTWARE.
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
-    <maven.version>3.8.2</maven.version>
+    <maven.version>3.8.6</maven.version>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
   <distributionManagement>
@@ -156,7 +156,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.9.1</version>
+      <version>0.11.0</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>

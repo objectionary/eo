@@ -90,15 +90,17 @@ public final class Dataized {
             }
         }
         final Object data = Data.class.cast(src).take();
-        if (Dataized.LOGGER.isLoggable(Level.FINE)) {
+        if (Dataized.LOGGER.isLoggable(Level.FINE)
+            && Dataized.LEVEL.get() < 4
+        ) {
             Dataized.LOGGER.log(
                 Level.FINE,
                 String.format(
                     "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
                     String.join("", Collections.nCopies(before, "·")),
                     this.phi.location(),
-                    this.phi.φTerm().replaceAll("[\n\t]", ""),
-                    new Data.Value<>(data).φTerm()
+                    this.phi.toString().replaceAll("[\n\t]", ""),
+                    new Data.Value<>(data).toString().replaceAll("[\n\t]", "")
                 )
             );
         }

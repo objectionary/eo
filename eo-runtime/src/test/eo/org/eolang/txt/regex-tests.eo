@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
-+home https://github.com/objectionary/eo
-+version 0.0.0
++alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.regex
-+alias org.eolang.collections.list
++home https://github.com/objectionary/eo
++package org.eolang.txt
 +junit
++version 0.0.0
 
 [] > matches-string-against-pattern
   assert-that > @

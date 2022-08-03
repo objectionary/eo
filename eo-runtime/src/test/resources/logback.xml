@@ -31,5 +31,5 @@ SOFTWARE.
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>
-  <logger name="org.eolang.Dataized" level="INFO"/>
+  <logger name="org.eolang.Dataized" level="FINE"/>
 </configuration>

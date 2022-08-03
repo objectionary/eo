@@ -1,0 +1,12 @@
+xsls:
+  - /org/eolang/parser/warnings/unit-test-without-phi.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=1]
+  - /program/errors/error[@line='3']
+  - /program/errors/error[@check='unit-test-without-phi']
+  - //o[@name='test']
+eo: |
+  +junit
+
+  [] > test
+    TRUE
