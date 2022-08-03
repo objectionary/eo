@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * The class is thread-safe.
  *
  * @since 0.1
- * @checkstyle
+ * @checkstyle DesignForExtensionCheck (500 lines)
  */
 public abstract class PhDefault implements Phi, Cloneable {
 
