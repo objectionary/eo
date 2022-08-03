@@ -354,3 +354,30 @@
         list
           args.
             b 1 2 "fail"
+
+[] > reduce-with-memory-test
+  eq. > @
+    foo
+    7
+
+  [] > foo
+    reduce. > res
+      list
+        * 0
+      *
+      [acc x]
+        acc.with (memory x) > @
+    seq > @
+      (res.at 0).write 7
+      (res.at 0)
+
+[] > reduce-with-memory-test-2
+  eq. > @
+    foo2
+    7
+
+  [] > foo2
+    (*).with (memory 0) > res
+    seq > @
+      (res.at 0).write 7
+      (res.at 0)
