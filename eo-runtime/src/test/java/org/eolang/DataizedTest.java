@@ -70,7 +70,7 @@ public final class DataizedTest {
         MatcherAssert.assertThat(
             logs.get(0).getMessage(),
             Matchers.allOf(
-                Matchers.containsString("int⟦"),
+                Matchers.containsString("intν"),
                 Matchers.not(Matchers.containsString("\n"))
             )
         );
