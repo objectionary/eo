@@ -77,7 +77,7 @@ public final class AssembleMojoTest {
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, Transpiler.EXT
+                        ParseMojo.DIR, TranspileMojo.EXT
                     )
                 )
             ),
@@ -133,7 +133,7 @@ public final class AssembleMojoTest {
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, Transpiler.EXT
+                        ParseMojo.DIR, TranspileMojo.EXT
                     )
                 )
             ),
@@ -144,7 +144,7 @@ public final class AssembleMojoTest {
                 target.resolve(
                     String.format(
                         "%s/main.%s",
-                        ParseMojo.DIR, Transpiler.EXT
+                        ParseMojo.DIR, TranspileMojo.EXT
                     )
                 )
             ),
