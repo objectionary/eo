@@ -23,12 +23,13 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -36,6 +37,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -104,11 +107,30 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(property = "eo.scope")
     protected String scope = "compile";
 
+    /**
+     * Cached tojos.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final Unchecked<Tojos> tojos = new Unchecked<>(
+        new Sticky<>(
+            () -> new Catalog(this.foreign.toPath(), this.foreignFormat).make()
+        )
+    );
+
     @Override
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
+            final long start = System.nanoTime();
             this.exec();
+            if (Logger.isDebugEnabled(this)) {
+                Logger.debug(
+                    this,
+                    "Execution of %s took %[nano]s",
+                    this.getClass().getSimpleName(),
+                    System.nanoTime() - start
+                );
+            }
         } catch (final IOException ex) {
             throw new MojoFailureException(
                 String.format(
@@ -121,23 +143,15 @@ abstract class SafeMojo extends AbstractMojo {
     }
 
     /**
-     * Tojos to use.
-     * @return Tojos to use
-     */
-    protected final Tojos tojos() {
-        return new Catalog(this.foreign.toPath(), this.foreignFormat).make();
-    }
-
-    /**
      * Tojos to use, in my scope only.
      * @return Tojos to use
      */
     protected final Tojos scopedTojos() {
-        final Tojos tojos = this.tojos();
+        final Tojos unscoped = this.tojos.value();
         return new Tojos() {
             @Override
             public Tojo add(final String name) {
-                final Tojo tojo = tojos.add(name);
+                final Tojo tojo = unscoped.add(name);
                 if (!tojo.exists(AssembleMojo.ATTR_SCOPE)) {
                     tojo.set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
                 }
@@ -145,9 +159,9 @@ abstract class SafeMojo extends AbstractMojo {
             }
 
             @Override
-            public List<Tojo> select(final Function<Tojo, Boolean> filter) {
-                return tojos.select(
-                    t -> filter.apply(t)
+            public List<Tojo> select(final Predicate<Tojo> filter) {
+                return unscoped.select(
+                    t -> filter.test(t)
                         && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
                         || "test".equals(SafeMojo.this.scope))
                 );
