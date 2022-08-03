@@ -24,7 +24,7 @@
 .ONESHELL:
 
 TLROOT=$$(kpsewhich -var-value TEXMFDIST)
-PACKAGES=ffcode to-be-determined href-ul
+PACKAGES=ffcode to-be-determined href-ul minted
 REPO=objectionary/eo
 
 gsed=$(if $(shell which gsed),gsed,sed)
