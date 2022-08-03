@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import java.io.IOException;
-
 /**
  * Static attribute with an expression inside, which
  * constructs an object.
@@ -73,10 +71,13 @@ public final class AtComposite implements Attr {
     public Phi get() {
         try {
             return this.expr.get(this.rho);
-        } catch (final IOException | InstantiationException ex) {
+        // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Throwable ex) {
             throw new ExFailure(
                 String.format(
-                    "Failure on get execution: '%s', type: %s",
+                    "Unexpected error '%s' of type %s",
                     ex.getMessage(),
                     ex.getClass().getSimpleName()
                 ),

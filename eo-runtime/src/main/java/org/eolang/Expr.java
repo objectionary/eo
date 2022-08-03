@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import java.io.IOException;
-
 /**
  * Lambda expression.
  *
@@ -38,7 +36,7 @@ public interface Expr {
      *
      * @param rho The \rho of this expression (the parent of it)
      * @return The Phi calculated
-     * @throws IOException In case issues with I/O, InstantiationException
+     * @throws Exception If anything goes wrong
      */
-    Phi get(Phi rho) throws IOException, InstantiationException;
+    Phi get(Phi rho) throws Exception;
 }
