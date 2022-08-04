@@ -35,7 +35,7 @@ SOFTWARE.
   [] > app
     hello > @
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and not(@base = //meta[head='alias']/part[1]) and @base != '@' and @base != 'Q' and @base != 'QQ' and @base != '^' and @base != '&amp;' and @base != '$']">
     <xsl:copy>
       <xsl:attribute name="base">

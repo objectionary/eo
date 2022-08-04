@@ -31,7 +31,7 @@ SOFTWARE.
   are not visible in the current scope. Maybe they are
   global or just a mistake.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and @base!='$' and @base!='^']">
     <xsl:variable name="o" select="."/>
     <xsl:copy>

@@ -28,7 +28,7 @@ SOFTWARE.
   are missed/broken due to abstracts floating up. We find
   them and fix them.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(@ref)]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>

@@ -31,7 +31,7 @@ SOFTWARE.
 
   If some alias is badly formatted, a runtime error is issued.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[not(@ref) and @base and not(starts-with(@base, '.')) and not(contains(@base, '.'))]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>

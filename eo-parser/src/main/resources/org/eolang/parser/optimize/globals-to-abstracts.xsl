@@ -39,7 +39,7 @@ SOFTWARE.
       pi
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="objects/o[not(eo:abstract(.))]">
     <xsl:element name="o">
       <xsl:apply-templates select="@name|@line|@ref"/>

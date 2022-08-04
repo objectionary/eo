@@ -39,7 +39,7 @@ SOFTWARE.
   </o>
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@method]" mode="#all" priority="0">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>
     <xsl:copy>

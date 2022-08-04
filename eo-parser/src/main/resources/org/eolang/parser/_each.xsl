@@ -25,7 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:param name="step"/>
   <xsl:param name="sheet"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="errors/error[not(@step) or not(@sheet)]">
     <xsl:copy>
       <xsl:attribute name="step">

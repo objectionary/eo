@@ -26,7 +26,7 @@ SOFTWARE.
   <!--
   Here we remove @level attribute from all objects.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="//o[o[@level]]">
     <xsl:copy>
       <xsl:apply-templates select="node() except o[@level]|@*"/>
