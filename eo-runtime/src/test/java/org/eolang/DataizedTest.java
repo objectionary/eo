@@ -25,6 +25,7 @@ package org.eolang;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -49,7 +50,7 @@ public final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Handler() {
+        final Handler hnd = new ConsoleHandler() {
             @Override
             public void publish(final LogRecord record) {
                 logs.add(record);
