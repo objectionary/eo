@@ -28,7 +28,7 @@ SOFTWARE.
       <pattern>%highlight(%-5level) %logger{15} - %msg%n</pattern>
     </encoder>
   </appender>
-  <root level="INFO">
+  <root level="FINE">
     <appender-ref ref="STDOUT"/>
   </root>
   <logger name="org.eolang.Dataized" level="FINE"/>

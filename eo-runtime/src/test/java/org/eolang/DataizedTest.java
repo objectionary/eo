@@ -25,7 +25,6 @@ package org.eolang;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -50,7 +49,7 @@ public final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new ConsoleHandler() {
+        final Handler hnd = new Handler() {
             @Override
             public void publish(final LogRecord record) {
                 logs.add(record);
@@ -68,6 +67,7 @@ public final class DataizedTest {
         new Dataized(new Data.ToPhi(1L)).take();
         log.setLevel(before);
         log.removeHandler(hnd);
+        MatcherAssert.assertThat("Logs should not be empty", logs.size(), Matchers.not(0));
         MatcherAssert.assertThat(
             logs.get(0).getMessage(),
             Matchers.allOf(
