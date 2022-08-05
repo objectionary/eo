@@ -202,62 +202,31 @@ public class EOsscanf extends PhDefault {
         static final char PERCENT_SIGN        = '%';
 
         /**
-         * Valiate char.
+         * Validate char.
          * @param character Char to validate
          * @return True if valid char, otherwise false
          */
         static boolean isValid(final char character) {
-            return character == BOOLEAN
-                || character == BOOLEAN_UPPER
-                || character == STRING
-                || character == STRING_UPPER
-                || character == HASHCODE
-                || character == HASHCODE_UPPER
-                || character == CHARACTER
-                || character == CHARACTER_UPPER
-                || character == DECIMAL_INTEGER
-                || character == OCTAL_INTEGER
-                || character == HEXADECIMAL_INTEGER
-                || character == HEXADECIMAL_INTEGER_UPPER
-                || character == SCIENTIFIC
-                || character == SCIENTIFIC_UPPER
-                || character == GENERAL
-                || character == GENERAL_UPPER
-                || character == DECIMAL_FLOAT
-                || character == HEXADECIMAL_FLOAT
-                || character == HEXADECIMAL_FLOAT_UPPER
-                || character == LINE_SEPARATOR
-                || character == PERCENT_SIGN;
+            return isGeneral(character)
+                || isNumeric(character)
+                || isLiteral(character);
         }
 
         /**
-         * Check for object.
+         * Check for an object.
          * @param character Char to check
-         * @return True iff the Conversion is applicable to all objects
+         * @return True if the Conversion is applicable to all objects
          */
         static boolean isGeneral(final char character) {
-            return character == BOOLEAN
-                || character == BOOLEAN_UPPER
-                || character == STRING
-                || character == STRING_UPPER
-                || character == HASHCODE
-                || character == HASHCODE_UPPER;
-        }
-
-        /**
-         * Check for string.
-         * @param character Char to check
-         * @return True iff the Conversion is applicable to string
-         */
-        static boolean isString(final char character) {
-            return character == STRING
-                || character == STRING_UPPER;
+            return isBoolean(character)
+                || isString(character)
+                || isCharacter(character);
         }
 
         /**
          * Check for boolean.
          * @param character Char to check
-         * @return True iff the Conversion is applicable to boolean
+         * @return True if the Conversion is applicable to boolean
          */
         static boolean isBoolean(final char character) {
             return character == BOOLEAN
@@ -265,9 +234,19 @@ public class EOsscanf extends PhDefault {
         }
 
         /**
+         * Check for string.
+         * @param character Char to check
+         * @return True if the Conversion is applicable to string
+         */
+        static boolean isString(final char character) {
+            return character == STRING
+                || character == STRING_UPPER;
+        }
+
+        /**
          * Check for character.
          * @param character Char to check
-         * @return True iff the Conversion is applicable to character
+         * @return True if the Conversion is applicable to character
          */
         static boolean isCharacter(final char character) {
             return character == CHARACTER
@@ -275,9 +254,19 @@ public class EOsscanf extends PhDefault {
         }
 
         /**
-         * Check for integer.
+         * Check for numeric.
          * @param character Char to check
-         * @return True iff the Conversion is applicable to integer
+         * @return True if the Conversion does not require an argument
+         */
+        private static boolean isNumeric(final char character) {
+            return isInteger(character)
+                || isFloat(character);
+        }
+
+        /**
+         * Check for an integer.
+         * @param character Char to check
+         * @return True if the Conversion is applicable to integer
          */
         static boolean isInteger(final char character) {
             return character == DECIMAL_INTEGER
@@ -302,13 +291,44 @@ public class EOsscanf extends PhDefault {
         }
 
         /**
+         * Check for numeric.
+         * @param character Char to check
+         * @return True if the Conversion does not require an argument
+         */
+        private static boolean isLiteral(final char character) {
+            return isHash(character)
+                || isText(character)
+                || isDate(character);
+        }
+
+        /**
+         * Check for hash.
+         * @param character Char to check
+         * @return True if the Conversion does not require an argument
+         */
+        static boolean isHash(final char character) {
+            return character == HASHCODE
+                || character == HASHCODE_UPPER;
+        }
+
+        /**
          * Check for text.
          * @param character Char to check
-         * @return True iff the Conversion does not require an argument
+         * @return True if the Conversion does not require an argument
          */
         static boolean isText(final char character) {
             return character == LINE_SEPARATOR
                 || character == PERCENT_SIGN;
+        }
+
+        /**
+         * Check for date.
+         * @param character Char to check
+         * @return True if the Conversion does not require an argument
+         */
+        private static boolean isDate(final char character) {
+            return character == DATE_TIME
+                || character == DATE_TIME_UPPER;
         }
     }
 }
