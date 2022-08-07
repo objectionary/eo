@@ -439,17 +439,17 @@ by the following object graph:
   \node[object, above right=1.2cm and 2.8cm of v1] (v2) {$v_{2}$};
     \draw[parent] (v2) edge [bend right=30] (v1);
   \node[object, below left=1cm of v2] (v3) {$v_{3}$};
-    \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v3) node [attr] {$a_1$};
+    \draw (v2) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v3) node [attr] {$a_1$};
   \node[data, below=0.7cm of v3] (d3) {\ff{8}};
     \draw (v3) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d3) node [attr] {$\Delta$};
   \node[object, below=1cm of v2] (v4) {$v_{4}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v4) node [attr] {$a_2$};
   \node[data, below=0.7cm of v4] (d4) {\ff{13}};
-    \draw (v4) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d4) node [attr] {$\Delta$};
+    \draw (v4) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d4) node [attr] {$\Delta$};
   \node[object, below right=1cm of v2] (v5) {$v_{5}$};
     \draw (v2) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v5) node [attr] {$a_3$};
   \node[data, below=0.7cm of v5] (d5) {\ff{-9}};
-    \draw (v5) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d5) node [attr] {$\Delta$};
+    \draw (v5) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d5) node [attr] {$\Delta$};
 \end{phigure}\end{center}
 
 The dataization of $v_2$, which is an anonymous copy of \ff{sum} with
