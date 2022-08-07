@@ -572,7 +572,7 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     \draw[parent] (v10) -- (v1d1);
   \node[object] (v19) [below left=1.5cm of v10] {$v_{19}$};
     \draw (v10) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v19) node [attr] {\ff{radius}};
-  \node[data] (d19) [below left=1cm of v19] {$d_{19}$};
+  \node[data] (d19) [below left=1cm of v19] {\texttt{+40}};
     \draw (v19) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (d19) node [attr] {$\Delta$};
   \node[object] (v11) [below right=2cm and 0.5cm of v10] {$v_{11}$};
     \draw (v10) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v11) node [attr] {\ff{center}};
@@ -580,11 +580,11 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     \draw[parent] (v11) -- (v15d1);
   \node[object] (v20) [below left=1cm of v11] {$v_{20}$};
     \draw (v11) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v20) node [attr] {\ff{x}};
-  \node[data] (d20) [below=1cm of v20] {$d_{20}$};
+  \node[data] (d20) [below=1cm of v20] {\texttt{-3}};
     \draw (v20) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d20) node [attr] {$\Delta$};
   \node[object] (v21) [below right=1cm of v11] {$v_{21}$};
     \draw (v11) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v21) node [attr] {\ff{y}};
-  \node[data] (d21) [below=1cm of v21] {$d_{21}$};
+  \node[data] (d21) [below=1cm of v21] {\texttt{+9}};
     \draw (v21) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d21) node [attr] {$\Delta$};
 
   \node[object] (v12) [above right=0.2cm and 4cm of v10] {$v_{12}$};
@@ -600,20 +600,15 @@ Program terminates with an error message when $\mathbb{D}(x)$ is $\perp$.
     \draw[parent] (v13) -- (v15d2);
   \node[object] (v22) [below left=1cm of v13] {$v_{22}$};
     \draw (v13) -- pic[sloped,rho]{parallel arrow={-0.3,-0.15}} (v22) node [attr] {\ff{x}};
-  \node[data] (d22) [below=1cm of v22] {$d_{22}$};
+  \node[data] (d22) [below=1cm of v22] {\texttt{+1}};
     \draw (v22) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d22) node [attr] {$\Delta$};
   \node[object] (v23) [below right=1cm of v13] {$v_{23}$};
     \draw (v13) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v23) node [attr] {\ff{y}};
-  \node[data] (d23) [below=1cm of v23] {$d_{23}$};
+  \node[data] (d23) [below=1cm of v23] {\texttt{+7}};
     \draw (v23) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (d23) node [attr] {$\Delta$};
 
   \node [anchor=south west] at (current bounding box.south west) {
   \begin{minipage}{25em}\raggedright
-    $d_{19} \to +40$ \\
-    $d_{20} \to -3$ \\
-    $d_{21} \to +9$ \\
-    $d_{22} \to +1$ \\
-    $d_{23} \to +7$ \\
     $M_{14} \to \sqrt{\begin{matrix*}[l](\mathbb{R}(\xi.\ff{to}.\ff{x}, \Delta, s)-\mathbb{R}(\rho.\ff{x}, \Delta, s))^2 + \\ + (\mathbb{R}(\xi.\ff{to}.\ff{y}, \Delta, s)-\mathbb{R}(\rho.\ff{y}, \Delta, s))^2\end{matrix*}}$ \\
     $M_5 \to \mathbb{R}(\xi.\ff{t}, \ff{lte}, s)$ \\
     $M_7 \to \mathbb{R}(\xi.\ff{t}, \ff{distance}, s)$ \\
