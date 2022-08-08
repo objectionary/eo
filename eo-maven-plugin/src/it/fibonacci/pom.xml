@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.57.2</version>
+    <version>0.60.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -36,6 +36,12 @@ SOFTWARE.
   <name>Fibonacci Numbers Calculator</name>
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
@@ -46,9 +52,6 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
-              <goal>copy</goal>
-              <goal>unplace</goal>
-              <goal>unspile</goal>
             </goals>
           </execution>
         </executions>
@@ -70,10 +73,9 @@ SOFTWARE.
         <configuration>
           <mainClass>org.eolang.Main</mainClass>
           <arguments>
-            <argument>--verbose</argument>
             <argument>org.eolang.examples.app</argument>
-            <argument>4</argument>
-            <argument>3</argument>
+            <argument>6</argument>
+            <argument>8</argument>
           </arguments>
         </configuration>
       </plugin>

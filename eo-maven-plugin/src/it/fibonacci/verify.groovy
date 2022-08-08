@@ -23,8 +23,8 @@
  */
 
 [
-  'target/eo/foreign.json',
-  'target/eo/placed.json',
+  'target/eo/foreign.csv',
+  'target/eo/placed.csv',
   'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
   'target/eo/01-parse/org/eolang/examples/app.xmir',
   'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
@@ -40,11 +40,10 @@ String log = new File(basedir, 'build.log').text
 [
   '--- eo-maven-plugin:',
   'org.eolang unpacked to eo-runtime',
-  '4th Fibonacci number is 3',
+  '6th Fibonacci number is 8',
   'BUILD SUCCESS',
-  '𝔻( '
 ].each { assert log.contains(it) }
 
-assert log.split('\n4th Fibonacci number is 3\n', -1).length-1 == 1
+assert log.split('\n6th Fibonacci number is 8\n', -1).length-1 == 1
 
 true

@@ -24,23 +24,32 @@
 +alias org.eolang.examples.fibonacci
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
-+alias org.eolang.math.number
 
 [args...] > app
+  at. > n!
+    QQ.txt.sscanf
+      "%d"
+      args.at 0
+    0
+  at. > e!
+    QQ.txt.sscanf
+      "%d"
+      args.at 1
+    0
   and. > @
     stdout
       sprintf
         "%dth Fibonacci number is %d\n"
-        (number (args.at 0)).as-int > n!
+        n
         fibonacci n > f
     if.
       not.
         eq.
-          (number (args.at 1)).as-int > e
+          e
           f
       []
         sprintf > msg
           "%d not equal to %d"
-          ^.n
-          ^.f
+          e
+          f
       TRUE

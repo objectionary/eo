@@ -32,6 +32,6 @@
     n
     plus.
       fibonacci
-        n.sub 1
+        n.minus 1
       fibonacci
-        n.sub 2
+        n.minus 2
