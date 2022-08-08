@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
@@ -108,11 +109,8 @@ public final class GmiMojo extends SafeMojo {
                     "/org/eolang/maven/xmir-to-gmi.xsl"
                 )
             ).back().back();
-        final String txt = new Xsline(train)
-            .pass(new XMLDocument(xmir))
-            .xpath("//gmi/text()")
-            .get(0);
-        new Save(txt, gmi).save();
+        final XML after = new Xsline(train).pass(new XMLDocument(xmir));
+        new Save(after.toString(), gmi).save();
         Logger.debug(
             this, "GMI for %s saved to %s",
             Save.rel(xmir), Save.rel(gmi)

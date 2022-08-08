@@ -1,0 +1,13 @@
+tests:
+  - v0.rho[data=''].
+  - //v[@from=//v[] and @name='simple']
+eo: |
+  [] > simple
+    foo > @
+      bar
+      42
+      []
+        "Jeff" > hello
+
+<v id="v0">
+  <e to="v1" title="\rho" />

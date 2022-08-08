@@ -75,4 +75,5 @@ public final class GmiMojoTest {
             Matchers.is(true)
         );
     }
+
 }
