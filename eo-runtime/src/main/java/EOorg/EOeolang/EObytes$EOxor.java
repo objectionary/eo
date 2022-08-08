@@ -28,10 +28,12 @@
 package EOorg.EOeolang;
 
 import java.math.BigInteger;
+import java.util.BitSet;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -58,13 +60,24 @@ public class EObytes$EOxor extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
+                    final byte[] base = new Param(rho).strong(byte[].class);
                     final Phi[] args = new Param(rho, "b").strong(Phi[].class);
                     for (int index = 0; index < args.length; ++index) {
-                        final byte[] arg = new Dataized(args[index]).take(byte[].class);
-                        base = base.xor(new BigInteger(arg));
+                        final Object val = new Dataized(args[index]).take();
+                        if (!(val instanceof byte[])) {
+                            throw new ExFailure(
+                                String.format(
+                                    "The %dth argument of 'xor' is of type %s, not bytes",
+                                    index, val.getClass().getCanonicalName()
+                                )
+                            );
+                        }
+                        final byte[] arg = byte[].class.cast(val);
+                        for (int i = 0; i < Math.min(base.length, arg.length); i++) {
+                            base[i] ^= arg[i];
+                        }
                     }
-                    return new Data.ToPhi(base.toByteArray());
+                    return new Data.ToPhi(base);
                 }
             )
         );

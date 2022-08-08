@@ -26,6 +26,7 @@ package org.eolang;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.util.BitSet;
 
 /**
  * Param of an object (convenient retrieval mechanism).
@@ -112,32 +113,20 @@ public final class Param {
         final Object res;
         if (BigInteger.class.equals(type)) {
             res = new BigInteger(ret);
-        } else if (Long.class.equals(type)) {
-            if (ret.length == 1) {
-                res = (long) ret[0];
-            } else {
-                final byte[] cpy = new byte[Long.BYTES];
-                int posx = cpy.length;
-                int posy = ret.length;
-                while (posy > 0 && posx > 0) {
-                    posy -= 1;
-                    posx -= 1;
-                    cpy[posx] = ret[posy];
-                }
-                while (ret[0] < 0 && posx > 0) {
-                    posx -= 1;
-                    cpy[posx] = -1;
-                }
-                res = ByteBuffer.wrap(cpy).getLong();
-            }
-        } else if (Character.class.equals(type)) {
+        } else if (Long.class.equals(type)
+        	&& Long.BYTES == ret.length) {
+            res = ByteBuffer.wrap(ret).getLong();
+        } else if (Character.class.equals(type)
+        	&& Character.BYTES == ret.length) {
             res = ByteBuffer.wrap(ret).getChar();
-        } else if (Double.class.equals(type)) {
+        } else if (Double.class.equals(type)
+        	&& Double.BYTES == ret.length) {
             res = ByteBuffer.wrap(ret).getDouble();
         } else {
             throw new ExFailure(
                 String.format(
-                    "Unsupported type: '%s'",
+                    "Unsupported conversion of %d bytes to '%s'",
+                    ret.length,
                     type
                 )
             );
