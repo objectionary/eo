@@ -28,15 +28,19 @@ SOFTWARE.
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
   <xsl:template match="/">
+    <xsl:text>ADD "graph"; </xsl:text>
     <xsl:apply-templates select="gmi/i"/>
   </xsl:template>
   <xsl:template match="i">
     <xsl:value-of select="@name"/>
+    <xsl:text> </xsl:text>
     <xsl:for-each select="a">
       <xsl:if test="position() &gt; 1">
-        <xsl:text> </xsl:text>
+        <xsl:text>, </xsl:text>
       </xsl:if>
+      <xsl:text>"</xsl:text>
       <xsl:value-of select="."/>
+      <xsl:text>"; UP;</xsl:text>
     </xsl:for-each>
     <xsl:value-of select="$EOL"/>
   </xsl:template>

@@ -70,7 +70,7 @@ public final class GmiMojo extends SafeMojo {
         int total = 0;
         for (final Tojo tojo : tojos) {
             final Path gmi = new Place(tojo.get(Tojos.KEY)).make(
-                this.targetDir.toPath().resolve(GmiMojo.DIR), "gmi"
+                this.targetDir.toPath().resolve(GmiMojo.DIR), "gmi.xml"
             );
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {

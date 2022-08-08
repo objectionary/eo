@@ -1,6 +1,6 @@
-tests:
-  - v0.rho[data=''].
-  - //v[@from=//v[] and @name='simple']
+locators:
+  - .simple .@ .α0
+  - .simple .@ .α2 .hello .Δ =4a-65-66-66
 eo: |
   [] > simple
     foo > @
@@ -8,6 +8,3 @@ eo: |
       42
       []
         "Jeff" > hello
-
-<v id="v0">
-  <e to="v1" title="\rho" />

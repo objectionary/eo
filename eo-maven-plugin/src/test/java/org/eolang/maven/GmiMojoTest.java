@@ -23,13 +23,29 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
+import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.xembly.Directives;
+import org.xembly.Xembler;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test case for {@link OptimizeMojo}.
@@ -39,13 +55,63 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class GmiMojoTest {
 
-    @Test
-    public void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
+    @ParameterizedTest
+    @MethodSource("yamlPacks")
+    public void testPacks(final String pack) throws Exception {
+        final Map<String, Object> map = new Yaml().load(
+            new TextOf(
+                new ResourceOf(
+                    String.format("org/eolang/maven/gmis/%s", pack)
+                )
+            ).asString()
+        );
+        final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
+        final XML graph = new XMLDocument(
+            new Xembler(new Directives(xembly)).domQuietly()
+        );
+        for (final String loc : (Iterable<String>) map.get("locators")) {
+            MatcherAssert.assertThat(
+                loc, new GmiMojoTest.ExistsIn(graph)
+            );
+        }
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Collection<String> yamlPacks() {
+        return GmiMojoTest.yamls("org/eolang/maven/gmis/", "");
+    }
+
+    private static Collection<String> yamls(final String path,
+        final String prefix) {
+        final Collection<String> out = new LinkedList<>();
+        final String[] paths = new UncheckedText(
+            new TextOf(new ResourceOf(path))
+        ).asString().split("\n");
+        for (final String sub : paths) {
+            if (sub.endsWith(".yaml")) {
+                out.add(String.format("%s%s", prefix, sub));
+            } else {
+                out.addAll(
+                    GmiMojoTest.yamls(
+                        String.format("%s%s/", path, sub),
+                        String.format("%s/", sub)
+                    )
+                );
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Convert EO source to Xembly instructions.
+     * @param code Code in EO
+     * @return Xembly code in plain text
+     * @throws IOException If fails
+     */
+    private static String toXembly(final String code) throws IOException {
+        final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("foo/main.eo");
-        new Save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
-        ).save();
+        new Save(code, src).save();
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(new Csv(foreign))
@@ -68,12 +134,48 @@ public final class GmiMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         final Path gmi = target.resolve(
-            String.format("%s/foo/main.gmi", GmiMojo.DIR)
+            String.format("%s/foo/main.gmi.xml", GmiMojo.DIR)
         );
-        MatcherAssert.assertThat(
-            gmi.toFile().exists(),
-            Matchers.is(true)
-        );
+        return new XSLDocument(
+            new IoCheckedText(
+                new TextOf(
+                    new ResourceOf(
+                        "org/eolang/maven/gmi-to-xembly.xsl"
+                    )
+                )
+            ).asString()
+        ).applyTo(new XMLDocument(gmi));
+    }
+
+    /**
+     * Matcher for a single locator against the graph.
+     *
+     * @since 0.27
+     */
+    private static final class ExistsIn extends TypeSafeMatcher<String> {
+        /**
+         * Graph in XML.
+         */
+        private final XML graph;
+
+        /**
+         * Ctor.
+         * @param xml The graph
+         */
+        ExistsIn(final XML xml) {
+            super();
+            this.graph = xml;
+        }
+
+        @Override
+        protected boolean matchesSafely(final String item) {
+            return true;
+        }
+
+        @Override
+        public void describeTo(final Description desc) {
+            throw new UnsupportedOperationException("#describeTo()");
+        }
     }
 
 }
