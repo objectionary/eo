@@ -48,7 +48,6 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -76,7 +75,6 @@ public final class SnippetTest {
     @TempDir
     public Path temp;
 
-    @Disabled
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
@@ -97,10 +95,14 @@ public final class SnippetTest {
             new InputOf(map.get("in").toString()),
             new OutputTo(stdout)
         );
-        MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
+        MatcherAssert.assertThat(
+            String.format("'%s' returned wrong exit code", yml),
+            result, Matchers.equalTo(map.get("exit"))
+        );
         Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
+                String.format("'%s' printed something wrong", yml),
                 new String(stdout.toByteArray(), StandardCharsets.UTF_8),
                 Matchers.matchesPattern(
                     Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)

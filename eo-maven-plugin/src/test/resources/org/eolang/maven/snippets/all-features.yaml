@@ -8,12 +8,12 @@ eo: |
 
   [args...] > main
     seq > a
-      []
+      42
     [x] > foo
       if.
         x.eq 0
-        []
-        []
+        error "x is zero"
+        42
     seq > @
       QQ.io.stdout
         "works!"
