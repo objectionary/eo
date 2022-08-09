@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -100,12 +101,10 @@ public final class DataizedTest {
         log.addHandler(hnd);
         final Phi wrong = new PhIncorrect(Phi.Φ);
         IntStream.range(0, 5).forEach(
-            i -> {
-                try {
-                    new Dataized(wrong).take();
-                } catch (Exception ignored) {
-                }
-            }
+            i -> Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Dataized(wrong).take()
+            )
         );
         new Dataized(new Data.ToPhi(1L)).take();
         log.setLevel(before);
