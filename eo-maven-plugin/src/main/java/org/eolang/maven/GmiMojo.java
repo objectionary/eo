@@ -109,7 +109,9 @@ public final class GmiMojo extends SafeMojo {
                     "/org/eolang/maven/xmir-to-gmi.xsl"
                 )
             ).back().back();
-        final XML after = new Xsline(train).pass(new XMLDocument(xmir));
+        final XML before = new XMLDocument(xmir);
+        Logger.debug(this, "XMIR before generating GMIs:\n%s", before);
+        final XML after = new Xsline(train).pass(before);
         new Save(after.toString(), gmi).save();
         Logger.debug(
             this, "GMI for %s saved to %s",

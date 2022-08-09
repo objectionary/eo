@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
@@ -69,9 +71,16 @@ public final class GmiMojoTest {
         final XML graph = new XMLDocument(
             new Xembler(new Directives(xembly)).domQuietly()
         );
+        Logger.info(this, "Graph:\n%s", graph);
         for (final String loc : (Iterable<String>) map.get("locators")) {
             MatcherAssert.assertThat(
                 loc, new GmiMojoTest.ExistsIn(graph)
+            );
+        }
+        for (final String xpath : (Iterable<String>) map.get("xpaths")) {
+            MatcherAssert.assertThat(
+                graph,
+                XhtmlMatchers.hasXPath(xpath)
             );
         }
     }
@@ -133,8 +142,22 @@ public final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        final Path gmi = target.resolve(
-            String.format("%s/foo/main.gmi.xml", GmiMojo.DIR)
+        final XML gmi = new XMLDocument(
+            target.resolve(
+                String.format("%s/foo/main.gmi.xml", GmiMojo.DIR)
+            )
+        );
+        Logger.info(
+            GmiMojoTest.class, "GMIs:\n  %s",
+            new XSLDocument(
+                new IoCheckedText(
+                    new TextOf(
+                        new ResourceOf(
+                            "org/eolang/maven/gmi-to-text.xsl"
+                        )
+                    )
+                ).asString()
+            ).applyTo(gmi).replace("\n", "\n  ")
         );
         return new XSLDocument(
             new IoCheckedText(
@@ -144,7 +167,7 @@ public final class GmiMojoTest {
                     )
                 )
             ).asString()
-        ).applyTo(new XMLDocument(gmi));
+        ).applyTo(gmi);
     }
 
     /**

@@ -1,3 +1,7 @@
+xpaths:
+  - /graph/v[@id='v0']/e[@to='v1' and @title='simple']
+  - //v[@id='v1']/e[@to='v2' and @title='@']
+  - //v[@id='v1']/e[@to='v0' and @title='^']
 locators:
   - .simple .@ .α0
   - .simple .@ .α2 .hello .Δ =4a-65-66-66
@@ -5,6 +9,7 @@ eo: |
   [] > simple
     foo > @
       bar
+        TRUE
       42
       []
         "Jeff" > hello

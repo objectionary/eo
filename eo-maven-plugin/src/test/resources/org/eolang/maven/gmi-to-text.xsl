@@ -22,32 +22,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="xmir-to-gmi" version="2.0">
-  <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:function name="eo:vertex" as="xs:string">
-    <xsl:param name="o" as="node()"/>
-    <xsl:variable name="ret">
-      <xsl:text>v</xsl:text>
-      <xsl:value-of select="count($o/ancestor::o) + count($o/preceding::o) + 1"/>
-    </xsl:variable>
-    <xsl:value-of select="$ret"/>
-  </xsl:function>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="gmi-to-text" version="2.0">
+  <xsl:output encoding="UTF-8" method="text"/>
+  <xsl:variable name="EOL">
+    <xsl:value-of select="'&#10;'"/>
+  </xsl:variable>
   <xsl:template match="/">
-    <xsl:element name="gmi">
-      <xsl:apply-templates select="program/objects//o"/>
-    </xsl:element>
+    <xsl:apply-templates select="gmi/i"/>
   </xsl:template>
-  <xsl:template match="o">
-    <xsl:element name="i">
-      <xsl:attribute name="name">
-        <xsl:text>ADD</xsl:text>
-      </xsl:attribute>
-      <xsl:element name="a">
-        <xsl:value-of select="eo:vertex(.)"/>
-      </xsl:element>
-      <xsl:element name="c">
-        <xsl:text>Add new vertex to the graph</xsl:text>
-      </xsl:element>
-    </xsl:element>
+  <xsl:template match="i">
+    <xsl:value-of select="@name"/>
+    <xsl:text>(</xsl:text>
+    <xsl:for-each select="a">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <xsl:text>"</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>"</xsl:text>
+    </xsl:for-each>
+    <xsl:text>);</xsl:text>
+    <xsl:if test="c">
+      <xsl:text> # </xsl:text>
+      <xsl:value-of select="c"/>
+    </xsl:if>
+    <xsl:value-of select="$EOL"/>
   </xsl:template>
 </xsl:stylesheet>
