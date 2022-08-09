@@ -51,7 +51,7 @@ public class EObytes$EOleft extends PhDefault {
      */
     public EObytes$EOleft(final Phi sigma) {
         super(sigma);
-        this.add("bl", new AtFree());
+        this.add("x", new AtFree());
         this.add(
             "φ",
             new AtComposite(

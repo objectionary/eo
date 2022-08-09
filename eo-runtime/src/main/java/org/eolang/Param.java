@@ -84,12 +84,8 @@ public final class Param {
         if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
-                    "The argument '.%s' with value %s (attr term %s, rho term %s, phi term %s) is of Java type '%s', not '%s' as expected",
+                    "The argument '.%s' is of Java type '%s', not '%s' as expected",                    this.attr,
                     this.attr,
-                    ret,
-                    this.rho.attr(this.attr).φTerm(),
-                    this.rho.attr("ρ").φTerm(),
-                    this.rho.φTerm(),
                     ret.getClass().getCanonicalName(),
                     type.getCanonicalName()
                 )
@@ -168,9 +164,7 @@ public final class Param {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
         } else if (Double.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Double.BYTES)
-                .putDouble(ret.equals(0.0)
-                    ? -0.0
-                    : (double) ret)
+                .putDouble(ret.equals(0.0) ? -0.0 : (double) ret)
                 .array();
         } else {
             throw new ExFailure(

@@ -47,7 +47,7 @@
       ^.lt x
 
   # Tests that $ > x
-  [ig] > gt /bool
+  [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > gte
