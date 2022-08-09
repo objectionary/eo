@@ -30,6 +30,7 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
@@ -101,12 +102,14 @@ public final class GmiMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void render(final Path xmir, final Path gmi) throws IOException {
-        final Train<Shift> train = new TrClasspath<>(
-            new ParsingTrain(),
-            "/org/eolang/maven/gmi/R0.xsl",
-            "/org/eolang/maven/gmi/R1.xsl",
-            "/org/eolang/maven/gmi/R8.xsl"
-        ).back();
+        final Train<Shift> train = new TrLogged(
+            new TrClasspath<>(
+                new ParsingTrain(),
+                "/org/eolang/maven/gmi/R0.xsl",
+                "/org/eolang/maven/gmi/R1.xsl",
+                "/org/eolang/maven/gmi/R8.xsl"
+            ).back()
+        );
         final XML before = new XMLDocument(xmir);
         Logger.info(this, "XMIR before generating GMIs:\n%s", before);
         final XML after = new Xsline(train).pass(before);
