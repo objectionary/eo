@@ -35,7 +35,7 @@
     elements-amount > @
 
   [arr] > concat-all-arrays
-    reduce. > @
+    reduced. > @
       list
         arr
       *
@@ -45,7 +45,7 @@
           x
 
   [arr] > pairs-to-hash
-    reduce. > @
+    reduced. > @
       list
         arr
       *
@@ -65,7 +65,7 @@
       mmp
 
   [key arr] > find-in-list
-    reduce. > @
+    reduced. > @
       list
         arr
       *
@@ -89,7 +89,7 @@
       ^.find-in-list key (m.at (num.mod (m.length)))
 
   [key arr] > without-in-list
-    reduce. > @
+    reduced. > @
       list
         arr
       *

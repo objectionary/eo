@@ -40,15 +40,15 @@
   # one for the accumulator, the second one
   # for the index and the third one for the element
   # of the array.
-  [a f] > reducei
-    rec-reduce (* a 0) f arr > @
+  [a f] > reducedi
+    rec-reduced (* a 0) f arr > @
 
-    [acc-index func carr] > rec-reduce
+    [acc-index func carr] > rec-reduced
       (acc-index.at 0) > acc
       (acc-index.at 1) > index
       if. > @
         (index.lt (carr.length))
-        rec-reduce
+        rec-reduced
           *
             func
               acc
@@ -60,8 +60,8 @@
         acc
 
   # Reduce from start "a" using the function "f"
-  [a f] > reduce
-    ^.reducei > @
+  [a f] > reduced
+    ^.reducedi > @
       a
       [a idx item]
         &.f > @
@@ -74,7 +74,7 @@
   # for the index.
   [f] > mapi
     list > @
-      ^.reducei
+      ^.reducedi
         *
         [a idx item]
           with. > @
@@ -108,7 +108,7 @@
 
   # Create a new list without the i-th element
   [i] > without
-    ^.reducei > @
+    ^.reducedi > @
       *
       [a idx item]
         if. > @
@@ -122,7 +122,7 @@
       eq.
         arr.length
         x.length
-      ^.reducei
+      ^.reducedi
         TRUE
         [a idx item]
           and. > @
@@ -134,7 +134,7 @@
 
   # Returns the combined current and passed arrays
   [passed] > concat
-    reduce. > @!
+    reduced. > @!
       list
         passed
       ^

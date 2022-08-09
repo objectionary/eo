@@ -85,7 +85,7 @@
 [] > reduce-with-index-test
   * 2 2 > src
   assert-that > @
-    reducei.
+    reducedi.
       list
         * 1 1
       0
@@ -98,7 +98,7 @@
 
 [] > reducei-long-int-array
   assert-that > @
-    reducei.
+    reducedi.
       list
         * 1 2 3 4
       0
@@ -110,7 +110,7 @@
 
 [] > reducei-bools-array
   assert-that > @
-    reducei.
+    reducedi.
       list
         * TRUE TRUE FALSE
       TRUE
@@ -126,7 +126,7 @@
   [] > b
     500 > @
   assert-that > @
-    reducei.
+    reducedi.
       list
         * a b
       0
@@ -145,7 +145,7 @@
 # reduce without index test
 [] > reduce-without-index-test
   assert-that > @
-    reduce.
+    reduced.
       list
         * 1 2 3 4
       -1
