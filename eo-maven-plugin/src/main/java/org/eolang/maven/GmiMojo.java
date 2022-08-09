@@ -29,14 +29,12 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -103,14 +101,14 @@ public final class GmiMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void render(final Path xmir, final Path gmi) throws IOException {
-        final Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain()))
-            .with(
-                Arrays.asList(
-                    "/org/eolang/maven/xmir-to-gmi.xsl"
-                )
-            ).back().back();
+        final Train<Shift> train = new TrClasspath<>(
+            new ParsingTrain(),
+            "/org/eolang/maven/gmi/R0.xsl",
+            "/org/eolang/maven/gmi/R1.xsl",
+            "/org/eolang/maven/gmi/R8.xsl"
+        ).back();
         final XML before = new XMLDocument(xmir);
-        Logger.debug(this, "XMIR before generating GMIs:\n%s", before);
+        Logger.info(this, "XMIR before generating GMIs:\n%s", before);
         final XML after = new Xsline(train).pass(before);
         new Save(after.toString(), gmi).save();
         Logger.debug(

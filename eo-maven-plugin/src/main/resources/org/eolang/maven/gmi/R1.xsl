@@ -23,31 +23,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="xmir-to-gmi" version="2.0">
+  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:function name="eo:vertex" as="xs:string">
-    <xsl:param name="o" as="node()"/>
-    <xsl:variable name="ret">
-      <xsl:text>v</xsl:text>
-      <xsl:value-of select="count($o/ancestor::o) + count($o/preceding::o) + 1"/>
-    </xsl:variable>
-    <xsl:value-of select="$ret"/>
-  </xsl:function>
-  <xsl:template match="/">
-    <xsl:element name="gmi">
+  <xsl:template match="/program/gmi">
+    <xsl:copy>
       <xsl:apply-templates select="program/objects//o"/>
-    </xsl:element>
+    </xsl:copy>
   </xsl:template>
-  <xsl:template match="o">
-    <xsl:element name="i">
-      <xsl:attribute name="name">
-        <xsl:text>ADD</xsl:text>
-      </xsl:attribute>
-      <xsl:element name="a">
-        <xsl:value-of select="eo:vertex(.)"/>
-      </xsl:element>
-      <xsl:element name="c">
+  <xsl:template match="o[eo:abstract(.)]">
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'ADD'"/>
+      <xsl:with-param name="args">
+        <a><xsl:value-of select="eo:vertex(.)"/></a>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
         <xsl:text>Add new vertex to the graph</xsl:text>
-      </xsl:element>
-    </xsl:element>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args">
+        <a>
+          <xsl:choose>
+            <xsl:when test="ancestor::o">
+              <xsl:value-of select="eo:vertex(ancestor::o)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>v0</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+        <a><xsl:value-of select="eo:vertex(.)"/></a>
+        <a><xsl:value-of select="@name"/></a>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:choose>
+          <xsl:when test="ancestor::o">
+            <xsl:text>This object belongs to another object</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>This object belongs to the global scope</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
 </xsl:stylesheet>
