@@ -373,10 +373,10 @@
 
 [] > reduce-with-memory-test-2
   eq. > @
-    foo2
+    foo
     7
 
-  [] > foo2
+  [] > foo
     (*).with (memory 0) > res
     seq > @
       (res.at 0).write 7
