@@ -8,13 +8,13 @@ tests:
   - /program/errors/error[@line='4']
   - /program/errors/error[@line='6']
 eo: |
-  +architect yegor256
-  +architect yegor256@mail
+  +architect hello
+  +architect hello@mail
   +architect someone@@
   +architect @gmail.com
-  +architect yegor256@gmail.com
-  +architect yegor256@.com
-  +architect yegor256@mail.ru
+  +architect hello@gmail.com
+  +architect someone24@.com
+  +architect hello@mail.ru
   +alias org.eolang.io.stdout
 
   [x] > foo
