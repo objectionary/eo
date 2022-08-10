@@ -59,7 +59,7 @@ public final class EOlistEOmapTest {
 
         final Phi[] items = new Dataized(
             new PhWith(
-                new PhMethod(list, "map"),
+                new PhMethod(list, "mapped"),
                 0, new EOlistEOmapTest.Kid(Phi.Φ)
             )
         ).take(Phi[].class);
