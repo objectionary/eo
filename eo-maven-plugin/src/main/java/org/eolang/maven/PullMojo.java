@@ -204,5 +204,10 @@ public final class PullMojo extends SafeMojo {
         public Input get(final String name) throws IOException {
             return this.swapped.value().get(name);
         }
+
+        @Override
+        public String toString() {
+            return this.swapped.value().toString();
+        }
     }
 }
