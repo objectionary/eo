@@ -159,6 +159,21 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Fallback which can swap primary/secondary repos.
+     * <p/>
+     * The key purpose of this class is to allow dynamic determination
+     * of which Oy (fist or second) to use as primary and which as fallback based on given
+     * boolean property.
+     * <p/>
+     * For {@link PullMojo} this is used to bypass reading from cache by always checking remote
+     * first and only fallback to local in case of object miss:
+     * <pre>
+     *     new PullMojo.FallbackSwapOy(
+     *         &lt local &gt,
+     *         &lt remote &gt,
+     *         this.forceUpdate()
+     *     );
+     * </pre>
+     *
      * @since 1.0
      */
     public static final class FallbackSwapOy implements Objectionary {
