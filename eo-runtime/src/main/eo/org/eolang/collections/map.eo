@@ -34,7 +34,7 @@
   # Returns list of all keys in multimap
   [] > keys
     (multimap *).concat-all-arrays m > caa!
-    map. > @
+    mapped. > @
       list
         caa
       [curr]
