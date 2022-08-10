@@ -57,7 +57,7 @@ public class EOint$EOgt extends PhDefault {
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho).strong(Long.class)
-                        > new Param(rho, "ig").strong(Long.class)
+                        > new Param(rho, "x").strong(Long.class)
                 )
             )
         );

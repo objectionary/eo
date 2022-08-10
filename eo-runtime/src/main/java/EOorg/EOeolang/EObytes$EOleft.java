@@ -60,7 +60,7 @@ public class EObytes$EOleft extends PhDefault {
                     new Param(rho)
                         .fromBytes(BigInteger.class)
                         .shiftLeft(
-                            new Param(rho, "bl").strong(Long.class).intValue()
+                            new Param(rho, "x").strong(Long.class).intValue()
                         ).toByteArray()
                 )
             )

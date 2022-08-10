@@ -84,7 +84,7 @@ public final class Param {
         if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
-                    "The argument '.%s' is of Java type '%s', not '%s' as expected",                    this.attr,
+                    "The argument '.%s' is of Java type '%s', not '%s' as expected",
                     this.attr,
                     ret.getClass().getCanonicalName(),
                     type.getCanonicalName()
