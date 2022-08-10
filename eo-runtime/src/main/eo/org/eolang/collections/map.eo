@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.collections.list
 +alias org.eolang.collections.multimap
 +alias org.eolang.math.number
 +home https://github.com/objectionary/eo
@@ -29,6 +30,15 @@
 [m] > map
 
   memory 0 > elements-amount
+
+  # Returns list of all keys in multimap
+  [] > keys
+    (multimap *).concat-all-arrays m > caa!
+    map. > @
+      list
+        caa
+      [curr]
+        curr.at 0 > @
 
   # Returns amount of elements in multimap
   [] > size
