@@ -156,3 +156,11 @@
   assert-that > @
     a.as-hash
     $.equal-to (b.as-hash)
+
+[] > multimap-keys-test
+  ((multimap *).with 11 "a").with 5 "b" > mp!
+  assert-that > @
+    times.
+      ((mp.keys).at 0)
+      ((mp.keys).at 1)
+    $.equal-to 55
