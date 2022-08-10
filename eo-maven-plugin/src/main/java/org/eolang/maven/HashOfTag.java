@@ -34,7 +34,7 @@ import java.util.Scanner;
  * Hash of tag.
  * @since 0.26
  */
-public class HashOfTag {
+final class HashOfTag {
 
     /**
      * Tag.
@@ -43,10 +43,10 @@ public class HashOfTag {
 
     /**
      * Constructor.
-     * @param tag Tag
+     * @param hash Tag
      */
-    public HashOfTag(final String tag) {
-        this.tag = tag;
+    HashOfTag(final String hash) {
+        this.tag = hash;
     }
 
     /**
