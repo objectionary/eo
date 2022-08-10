@@ -67,7 +67,7 @@ public class HashOfTag {
             }
         }
         throw new IllegalArgumentException(
-            String.format("Tag %s doesn't exist", this.tag)
+            String.format("Tag %s doesn't exist in %s", this.tag, link)
         );
     }
 

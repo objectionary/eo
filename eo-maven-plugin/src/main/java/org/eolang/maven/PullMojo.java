@@ -93,15 +93,17 @@ public final class PullMojo extends SafeMojo {
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         if (this.objectionary == null) {
+            final String full = new HashOfTag(this.hash).hash();
+            final String small = full.substring(0, 7);
             this.objectionary = new OyFallback(
                 new OyHome(
-                    this.hash,
+                    small,
                     this.outputPath
                 ),
                 new OyCaching(
-                    this.hash,
+                    small,
                     this.outputPath,
-                    new OyRemote(this.hash)
+                    new OyRemote(full)
                 )
             );
         }
