@@ -59,6 +59,26 @@
           carr
         acc
 
+  #DEPRICATED, please remove after update of eo-hamcrest
+  [a f] > reducei
+    rec-reduce (* a 0) f arr > @
+
+    [acc-index func carr] > rec-reduce
+      (acc-index.at 0) > acc
+      (acc-index.at 1) > index
+      if. > @
+        (index.lt (carr.length))
+        rec-reduce
+          *
+            func
+              acc
+              index
+              (carr.at index)
+            (index.plus 1)
+          func
+          carr
+        acc
+
   # Reduce from start "a" using the function "f"
   [a f] > reduced
     ^.reducedi > @
@@ -68,7 +88,7 @@
           a
           item
 
-  # DEPRICATED. Reduce from start "a" using the function "f"
+  # DEPRICATED, please remove after update of eo-hamcrest.
   [a f] > reduce
     ^.reducedi > @
       a
