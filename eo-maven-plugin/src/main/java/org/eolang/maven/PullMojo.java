@@ -33,9 +33,6 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.Input;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -93,7 +90,7 @@ public final class PullMojo extends SafeMojo {
         if (this.objectionary == null) {
             final String full = new HashOfTag(this.hash).hash();
             final String small = full.substring(0, 7);
-            this.objectionary = new PullMojo.FallbackSwapOy(
+            this.objectionary = new OyFallbackSwap(
                 new OyHome(
                     small,
                     this.outputPath
@@ -157,72 +154,4 @@ public final class PullMojo extends SafeMojo {
         return src;
     }
 
-    /**
-     * Fallback which can swap primary/secondary repos.
-     * <p/>
-     * The key purpose of this class is to allow dynamic determination
-     * of which Oy (fist or second) to use as primary and which as fallback based on given
-     * boolean property.
-     * <p/>
-     * For {@link PullMojo} this is used to bypass reading from cache by always checking remote
-     * first and only fallback to local in case of object miss:
-     * <pre>
-     *     new PullMojo.FallbackSwapOy(
-     *         &lt local &gt,
-     *         &lt remote &gt,
-     *         this.forceUpdate()
-     *     );
-     * </pre>
-     *
-     * @since 1.0
-     */
-    public static final class FallbackSwapOy implements Objectionary {
-        /**
-         * Swapped Oy.
-         */
-        private final Unchecked<Objectionary> swapped;
-
-        /**
-         * Ctor.
-         *
-         * @param first Initial primary
-         * @param second Initial secondary
-         * @param swap Whether to swap
-         */
-        public FallbackSwapOy(
-            final Objectionary first,
-            final Objectionary second,
-            final boolean swap
-        ) {
-            this.swapped = new Unchecked<>(
-                new Sticky<>(
-                    () -> {
-                        final Objectionary result;
-                        if (swap) {
-                            result = new OyFallback(
-                                second,
-                                first
-                            );
-                        } else {
-                            result = new OyFallback(
-                                first,
-                                second
-                            );
-                        }
-                        return result;
-                    }
-                )
-            );
-        }
-
-        @Override
-        public Input get(final String name) throws IOException {
-            return this.swapped.value().get(name);
-        }
-
-        @Override
-        public String toString() {
-            return this.swapped.value().toString();
-        }
-    }
 }

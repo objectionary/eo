@@ -23,50 +23,59 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
 import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PullMojo}.
- *
- * @since 0.1
+ * Tests for {@link OyFallbackSwap}.
+ * @since 1.0
  */
-public final class PullMojoTest {
+class OyFallbackSwapTest {
+    @Test
+    public void testFallbackNoSwapOy() throws Exception {
+        MatcherAssert.assertThat(
+            new TextOf(
+                new OyFallbackSwap(
+                    s -> new InputOf("[] > local\n"),
+                    s -> new InputOf("[] > remote\n"),
+                    false
+                ).get("")
+            ).asString(),
+            Matchers.containsString("local")
+        );
+    }
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) {
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
-            .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with(
-                "objectionary",
-                (Objectionary) input -> new InputOf("[] > hello\n")
-            )
-            .execute();
+    public void testFallbackSwapOyFail() throws Exception {
         MatcherAssert.assertThat(
-            Files.exists(
-                target.resolve(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
-            Matchers.is(true)
+            new TextOf(
+                new OyFallbackSwap(
+                    s -> new InputOf("[] > local\n"),
+                    s -> {
+                        throw new IOException("Can't get object");
+                    },
+                    false
+                ).get("")
+            ).asString(),
+            Matchers.containsString("local")
+        );
+    }
+
+    @Test
+    public void testFallbackSwapOy() throws Exception {
+        MatcherAssert.assertThat(
+            new TextOf(
+                new OyFallbackSwap(
+                    s -> new InputOf("[] > local\n"),
+                    s -> new InputOf("[] > remote\n"),
+                    true
+                ).get("")
+            ).asString(),
+            Matchers.containsString("remote")
         );
     }
 }
