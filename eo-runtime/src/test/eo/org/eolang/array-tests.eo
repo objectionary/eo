@@ -65,15 +65,14 @@
     $.equal-to 100
 
 [] > array-as-a-bound-attribute-size-2
-  nop > @
-    * > anArray
-      1
-      2
-    assert-that
-      anArray
-      $.array-each
-        $.equal-to 1
-        $.equal-to 2
+  * > anArray
+    1
+    2
+  assert-that > @
+    anArray
+    $.array-each
+      $.equal-to 1
+      $.equal-to 2
 
 [] > array-with-in-seq
   [a] > foo
