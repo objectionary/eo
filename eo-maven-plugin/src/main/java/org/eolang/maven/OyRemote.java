@@ -50,7 +50,7 @@ public final class OyRemote implements Objectionary {
     public OyRemote(final String tag) throws IOException {
         this.template = String.format(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            new HashOfTag(tag).hash()
+            tag
         );
     }
 
