@@ -59,7 +59,8 @@
           carr
         acc
 
-  #DEPRICATED, please remove after update of eo-hamcrest
+  # @todo #1011. DEPRICATED, please remove after update of eo-hamcrest
+  # One test in eo use one attribute of assert-that that use deprecated attributes.
   [a f] > reducei
     rec-reduce (* a 0) f arr > @
 
@@ -88,7 +89,8 @@
           a
           item
 
-  # DEPRICATED, please remove after update of eo-hamcrest.
+  # @todo #1011 DEPRICATED, please remove after update of eo-hamcrest.
+  # One test in eo use one attribute of assert-that that use deprecated attributes.
   [a f] > reduce
     ^.reducedi > @
       a
