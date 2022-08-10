@@ -35,7 +35,7 @@ SOFTWARE.
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args">
-        <a><xsl:value-of select="eo:vertex(.)"/></a>
+        <xsl:value-of select="eo:vertex(.)"/>
       </xsl:with-param>
       <xsl:with-param name="comment">
         <xsl:text>Add new vertex to the graph</xsl:text>
@@ -44,18 +44,16 @@ SOFTWARE.
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args">
-        <a>
-          <xsl:choose>
-            <xsl:when test="ancestor::o">
-              <xsl:value-of select="eo:vertex(ancestor::o)"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>v0</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </a>
-        <a><xsl:value-of select="eo:vertex(.)"/></a>
-        <a><xsl:value-of select="@name"/></a>
+        <xsl:choose>
+          <xsl:when test="ancestor::o">
+            <xsl:value-of select="eo:vertex(ancestor::o)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>v0</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="eo:vertex(.)"/>
+        <xsl:value-of select="@name"/>
       </xsl:with-param>
       <xsl:with-param name="comment">
         <xsl:choose>

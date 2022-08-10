@@ -34,8 +34,8 @@ SOFTWARE.
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'DATA'"/>
       <xsl:with-param name="args">
-        <a><xsl:value-of select="eo:vertex(.)"/></a>
-        <a><xsl:value-of select="."/></a>
+        <xsl:value-of select="eo:vertex(.)"/>
+        <xsl:value-of select="."/>
       </xsl:with-param>
       <xsl:with-param name="comment">
         <xsl:text>This is a data object of type "</xsl:text>

@@ -34,13 +34,13 @@ SOFTWARE.
   </xsl:function>
   <xsl:template name="i">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:param name="args"/>
+    <xsl:param name="args" as="item()*"/>
     <xsl:param name="comment" as="xs:string"/>
     <xsl:element name="i">
       <xsl:attribute name="name">
         <xsl:value-of select="$name"/>
       </xsl:attribute>
-      <xsl:for-each select="$args/a">
+      <xsl:for-each select="$args">
         <xsl:element name="a">
           <xsl:value-of select="."/>
         </xsl:element>
