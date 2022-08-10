@@ -25,9 +25,11 @@ package org.eolang.maven;
 
 import com.yegor256.tojos.Json;
 import com.yegor256.tojos.MonoTojos;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -70,4 +72,47 @@ public final class PullMojoTest {
         );
     }
 
+    @Test
+    public void testFallbackNoSwapOy() throws Exception {
+        MatcherAssert.assertThat(
+            new TextOf(
+                new PullMojo.FallbackSwapOy(
+                    s -> new InputOf("[] > local\n"),
+                    s -> new InputOf("[] > remote\n"),
+                    false
+                ).get("")
+            ).asString(),
+            Matchers.containsString("local")
+        );
+    }
+
+    @Test
+    public void testFallbackSwapOyFail() throws Exception {
+        MatcherAssert.assertThat(
+            new TextOf(
+                new PullMojo.FallbackSwapOy(
+                    s -> new InputOf("[] > local\n"),
+                    s -> {
+                        throw new IOException("Can't get object");
+                    },
+                    false
+                ).get("")
+            ).asString(),
+            Matchers.containsString("local")
+        );
+    }
+
+    @Test
+    public void testFallbackSwapOy() throws Exception {
+        MatcherAssert.assertThat(
+            new TextOf(
+                new PullMojo.FallbackSwapOy(
+                    s -> new InputOf("[] > local\n"),
+                    s -> new InputOf("[] > remote\n"),
+                    true
+                ).get("")
+            ).asString(),
+            Matchers.containsString("remote")
+        );
+    }
 }
