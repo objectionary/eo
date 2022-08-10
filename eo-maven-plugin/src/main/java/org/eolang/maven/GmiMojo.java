@@ -30,17 +30,18 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.parser.ParsingTrain;
 
 /**
  * Convert XMIR to GMI.
@@ -104,19 +105,20 @@ public final class GmiMojo extends SafeMojo {
     private void render(final Path xmir, final Path gmi) throws IOException {
         final Train<Shift> train = new TrLogged(
             new TrClasspath<>(
-                new ParsingTrain(),
+                new TrDefault<>(),
                 "/org/eolang/maven/gmi/R0.xsl",
                 "/org/eolang/maven/gmi/R1.xsl",
-                "/org/eolang/maven/gmi/R8.xsl"
-            ).back()
+                "/org/eolang/maven/gmi/R3.xsl",
+                "/org/eolang/maven/gmi/R6.xsl"
+            ).back(),
+            GmiMojo.class
         );
         final XML before = new XMLDocument(xmir);
-        Logger.info(this, "XMIR before generating GMIs:\n%s", before);
         final XML after = new Xsline(train).pass(before);
         new Save(after.toString(), gmi).save();
         Logger.debug(
-            this, "GMI for %s saved to %s",
-            Save.rel(xmir), Save.rel(gmi)
+            this, "GMI for %s saved to %s (%s chars)",
+            Save.rel(xmir), Save.rel(gmi), Files.size(gmi)
         );
     }
 

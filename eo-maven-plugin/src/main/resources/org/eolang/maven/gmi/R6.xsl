@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R6" version="2.0">
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/gmi">
@@ -31,62 +31,61 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="gmi">
+  <xsl:template match="o[not(@base) or not(@data)]" mode="gmi">
+    <!-- ignore them -->
+  </xsl:template>
+  <xsl:template match="o[@base and @data]" mode="gmi">
+    <xsl:variable name="dx">
+      <xsl:value-of select="eo:vertex(.)"/>
+      <xsl:text>d</xsl:text>
+    </xsl:variable>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:value-of select="$dx"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R1] Add new vertex to the graph</xsl:text>
+        <xsl:text>[R6] Add new data vertex</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
-    <xsl:for-each select="o[@name and not(@base)]">
-      <xsl:call-template name="i">
-        <xsl:with-param name="name" select="'BIND'"/>
-        <xsl:with-param name="args" as="item()*">
-          <xsl:sequence>
-            <xsl:value-of select="eo:edge(ancestor::o[1], .)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:vertex(ancestor::o[1])"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:vertex(.)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="@name"/>
-          </xsl:sequence>
-        </xsl:with-param>
-        <xsl:with-param name="comment">
-          <xsl:text>[R1] Free attribute of abstract object</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:for-each>
-    <xsl:if test="@name and not(ancestor::o)">
-      <xsl:call-template name="i">
-        <xsl:with-param name="name" select="'BIND'"/>
-        <xsl:with-param name="args" as="item()*">
-          <xsl:sequence>
-            <xsl:value-of select="eo:edge(//objects, .)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:vertex(//objects)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:vertex(.)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="@name"/>
-          </xsl:sequence>
-        </xsl:with-param>
-        <xsl:with-param name="comment">
-          <xsl:text>[R1] This object belongs to the global scope</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:edge(., .)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:vertex(.)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="$dx"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>Δ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>[R6] Data attribute of data object</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'DATA'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="$dx"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="."/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>[R6] This is a data object of type "</xsl:text>
+        <xsl:value-of select="@data"/>
+        <xsl:text>"</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

@@ -22,31 +22,54 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="xmir-to-gmi" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R3" version="2.0">
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/gmi">
     <xsl:copy>
-      <xsl:apply-templates select="program/objects//o"/>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and @data]">
+  <xsl:template match="o[ancestor::o[@abstract] and not(@base)]" mode="gmi">
+    <!-- ignore it -->
+  </xsl:template>
+  <xsl:template match="o[ancestor::o[not(@abstract)] or @base]" mode="gmi">
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'DATA'"/>
-      <xsl:with-param name="args">
-        <xsl:value-of select="eo:vertex(.)"/>
-        <xsl:value-of select="."/>
+      <xsl:with-param name="name" select="'REF'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:edge(ancestor::o[1], .)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:vertex(ancestor::o[1])"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:vertex(.)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:choose>
+            <xsl:when test="@name">
+              <xsl:value-of select="@name"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:variable name="r">
+                <xsl:text>α</xsl:text>
+                <xsl:value-of select="count(preceding-sibling::o)"/>
+              </xsl:variable>
+              <xsl:value-of select="$r"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>This is a data object of type "</xsl:text>
-        <xsl:value-of select="@data"/>
-        <xsl:text>"</xsl:text>
+        <xsl:text>[R3] Bound attribute</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="node()|@*" mode="#current"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

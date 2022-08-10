@@ -22,19 +22,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="xmir-to-gmi" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
   <!--
   Here we start the graph and create the root node.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program[not(gmi)]">
+  <xsl:template match="program[not(gmi)]">
     <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="gmi">
+        <xsl:call-template name="i">
+          <xsl:with-param name="name" select="'ADD'"/>
+          <xsl:with-param name="args" as="item()*">
+            <xsl:sequence>
+              <xsl:text>v0</xsl:text>
+            </xsl:sequence>
+          </xsl:with-param>
+          <xsl:with-param name="comment">
+            <xsl:text>[R0] This is root vertex</xsl:text>
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

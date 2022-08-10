@@ -3,8 +3,9 @@ xpaths:
   - //v[@id='v1']/e[@to='v2' and @title='@']
   - //v[@id='v1']/e[@to='v0' and @title='^']
 locators:
-  - .simple .@ .α0
-  - .simple .@ .α2 .hello .Δ =4a-65-66-66
+  - .simple .@ .α0 .α0 .Δ =true
+  - .simple .@ .α1 .Δ =42
+  - .simple .@ .α2 .hello .Δ =Jeff
 eo: |
   [] > simple
     foo > @

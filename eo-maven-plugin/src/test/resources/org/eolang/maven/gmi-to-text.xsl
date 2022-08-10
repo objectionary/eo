@@ -28,7 +28,7 @@ SOFTWARE.
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
   <xsl:template match="/">
-    <xsl:apply-templates select="gmi/i"/>
+    <xsl:apply-templates select="program/gmi/i"/>
   </xsl:template>
   <xsl:template match="i">
     <xsl:value-of select="@name"/>

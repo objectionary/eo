@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.IoCheckedText;
@@ -182,6 +183,11 @@ public final class GmiMojoTest {
         private final XML graph;
 
         /**
+         * The description of a failure.
+         */
+        private String failure;
+
+        /**
          * Ctor.
          * @param xml The graph
          */
@@ -192,12 +198,49 @@ public final class GmiMojoTest {
 
         @Override
         protected boolean matchesSafely(final String item) {
-            return true;
+            boolean matches = true;
+            String vertex = "v0";
+            for (final String sub : item.split(" ")) {
+                if (sub.charAt(0) == '.') {
+                    final List<String> opts = this.graph.xpath(
+                        String.format(
+                            "//v[@id='%s']/e[@title='%s']/@to",
+                            vertex, sub.substring(1)
+                        )
+                    );
+                    if (opts.isEmpty()) {
+                        this.failure = String.format(
+                            "Can't find path '%s' while staying at %s",
+                            sub, vertex
+                        );
+                        matches = false;
+                        break;
+                    }
+                    vertex = opts.get(0);
+                    continue;
+                }
+                if (sub.charAt(0) == '=') {
+                    matches = !this.graph.xpath(
+                        String.format(
+                            "//v[@id='%s']/data[text() = '%s']/text()",
+                            vertex, sub.substring(1)
+                        )
+                    ).isEmpty();
+                    if (!matches) {
+                        this.failure = String.format(
+                            "Can't find data '%s' while staying at %s",
+                            sub, vertex
+                        );
+                        break;
+                    }
+                }
+            }
+            return matches;
         }
 
         @Override
         public void describeTo(final Description desc) {
-            throw new UnsupportedOperationException("#describeTo()");
+            desc.appendText(this.failure);
         }
     }
 

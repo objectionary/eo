@@ -29,19 +29,56 @@ SOFTWARE.
   </xsl:variable>
   <xsl:template match="/">
     <xsl:text>ADD "graph"; </xsl:text>
-    <xsl:apply-templates select="gmi/i"/>
+    <xsl:apply-templates select="program/gmi/i"/>
   </xsl:template>
-  <xsl:template match="i">
-    <xsl:value-of select="@name"/>
-    <xsl:text> </xsl:text>
-    <xsl:for-each select="a">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>"; UP;</xsl:text>
-    </xsl:for-each>
+  <xsl:template match="i[@name='ADD']">
+    <xsl:text>XPATH "/graph"; </xsl:text>
+    <xsl:text>ADD "v"; </xsl:text>
+    <xsl:text>ATTR "id", "</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <xsl:template match="i[@name='BIND']">
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>']"; </xsl:text>
+    <xsl:text>ADD "e";</xsl:text>
+    <xsl:text>ATTR "id", "</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>"; </xsl:text>
+    <xsl:text>ATTR "to", "</xsl:text>
+    <xsl:value-of select="a[3]"/>
+    <xsl:text>"; </xsl:text>
+    <xsl:text>ATTR "title", "</xsl:text>
+    <xsl:value-of select="a[4]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <xsl:template match="i[@name='REF']">
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>']"; </xsl:text>
+    <xsl:text>ADD "e";</xsl:text>
+    <xsl:text>ATTR "id", "</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>"; </xsl:text>
+    <xsl:text>ATTR "to", "</xsl:text>
+    <xsl:value-of select="a[3]"/>
+    <xsl:text>"; </xsl:text>
+    <xsl:text>ATTR "title", "</xsl:text>
+    <xsl:value-of select="a[4]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <xsl:template match="i[@name='DATA']">
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']"; </xsl:text>
+    <xsl:text>ADD "data"; </xsl:text>
+    <xsl:text>SET "</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
 </xsl:stylesheet>
