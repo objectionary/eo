@@ -72,7 +72,7 @@
   # object with two free attributes. The first
   # one for the element of the array, the second one
   # for the index.
-  [f] > mapi
+  [f] > mappedi
     list > @
       ^.reducedi
         *
@@ -84,8 +84,8 @@
   # Map without index. Here "f" must be an abstract
   # object with one free attribute, for the element
   # of the array.
-  [f] > map
-    ^.mapi > @
+  [f] > mapped
+    ^.mappedi > @
       [x idx]
         &.f x > @
 

@@ -155,9 +155,9 @@
           x
     $.equal-to -24
 
-[] > mapi-should-works
+[] > mappedi-should-works
   assert-that > @
-    mapi.
+    mappedi.
       list
         * 1 2 3 4
       [x i]
@@ -167,9 +167,9 @@
         * 2 4 6 8
 
 # this test performs mapping of list using the index for it
-[] > mapi-index-can-be-accessed
+[] > mappedi-index-can-be-accessed
   [numbers...] > multipliedByNaturalSequence
-    mapi. > @
+    mappedi. > @
       list numbers
       [current index]
         times. > @
@@ -184,30 +184,30 @@
 [] > simple-mapping-int-to-string
   assert-that > @
     length.
-      map.
+      mapped.
         list
           * 1 2 3
         [i]
           (number i).as-string > @
     $.equal-to 3
 
-[] > using-map-as-object
+[] > using-mapped-as-object
   assert-that > @
     (text " ").joined
-      map.
+      mapped.
         list
           * 1 2
         [i]
           (number i).as-string > @
     $.equal-to "1 2"
 
-# if map does mutate lists, then this test would fail
+# if mapped does mutate lists, then this test would fail
 # because of the absence of the as-int attribute
 # that is caused by mutation of the original string list
 # to an int list
-[] > map-does-dot-mutate-array
+[] > mapped-does-dot-mutate-array
   [numbers...] > squares
-    map. > @
+    mapped. > @
       list numbers
       [current]
         pow. > @

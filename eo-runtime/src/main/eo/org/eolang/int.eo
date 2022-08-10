@@ -64,7 +64,7 @@
 
   # Subtract from the current one
   [x...] > minus
-    map. > x-neg
+    mapped. > x-neg
       list
         x
       [element]
