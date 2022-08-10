@@ -92,6 +92,7 @@ public final class AssembleMojoTest {
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+package test",
                 "",
                 "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
             ),
@@ -101,6 +102,7 @@ public final class AssembleMojoTest {
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+package test",
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),

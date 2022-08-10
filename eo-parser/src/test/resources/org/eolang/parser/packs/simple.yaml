@@ -6,10 +6,11 @@ tests:
   - /program[@time != '']
   - /program/objects
   - //o[not(@name) and @base='a']
-  - //o[@base='a' and @line='1']
-  - //o[@base='b' and @line='2']
-  - //o[@base='c' and @line='3']
+  - //o[@base='a' and @line='2']
+  - //o[@base='b' and @line='3']
+  - //o[@base='c' and @line='4']
 eo: |
+  +package test
   a
     b
       c
