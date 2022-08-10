@@ -68,6 +68,15 @@
           a
           item
 
+  # DEPRICATED. Reduce from start "a" using the function "f"
+  [a f] > reduce
+    ^.reducedi > @
+      a
+      [a idx item]
+        &.f > @
+          a
+          item
+
   # Map with index. Here "f" must be an abstract
   # object with two free attributes. The first
   # one for the element of the array, the second one
