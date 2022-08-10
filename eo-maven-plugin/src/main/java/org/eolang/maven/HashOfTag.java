@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -35,6 +37,11 @@ import java.util.Scanner;
  * @since 0.26
  */
 final class HashOfTag {
+
+    /**
+     * Static map with all hash requests.
+     */
+    private static final Map<String, String> REQUESTED_HASHES = new HashMap<>();
 
     /**
      * Tag.
@@ -56,19 +63,30 @@ final class HashOfTag {
      */
     public String hash() throws IOException {
         final String link = "https://home.objectionary.com/tags.txt";
-        final InputStream ins = new URL(link).openStream();
-        final Scanner scanner = new Scanner(ins);
-        while (scanner.hasNextLine()) {
-            final String line = scanner.nextLine();
-            final String[] parts = line.split("\t");
-            if (Objects.equals(parts[1], this.tag)) {
-                Logger.info(this, "Git sha of %s is %s", this.tag, parts[0]);
-                return parts[0];
+        String result = "";
+        if (REQUESTED_HASHES.containsKey(this.tag)) {
+            result = REQUESTED_HASHES.get(this.tag);
+        } else {
+            final InputStream ins = new URL(link).openStream();
+            final Scanner scanner = new Scanner(ins);
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+                final String[] parts = line.split("\t");
+                if (Objects.equals(parts[1], this.tag)) {
+                    result = parts[0];
+                    REQUESTED_HASHES.put(this.tag, result);
+                    break;
+                }
             }
         }
-        throw new IllegalArgumentException(
-            String.format("Tag %s doesn't exist in %s", this.tag, link)
-        );
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException(
+                String.format("Tag %s doesn't exist in %s", this.tag, link)
+            );
+        } else {
+            Logger.info(this, "Git sha of %s is %s", this.tag, result);
+            return result;
+        }
     }
 
 }
