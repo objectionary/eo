@@ -111,12 +111,12 @@ to write even a simple EO program. There are objects like `string`, `int`, `spri
 
 ## Bypassing object cache
 
-By default, during compilation the plugin will check local cache for required objects
+By default, during compilation the plugin will check local cache (`~/.eo`) for required objects
 and only download (and cache) them from [Objectionary home](https://github.com/objectionary/home)
 in case they are not found locally.
 
-This behaviour can be changed to always download objects from remote by providing Maven option `-U` 
-(see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
+This behaviour can be changed to always download objects from remote by providing 
+Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
 
 ```shell
 mvn -U clean install
