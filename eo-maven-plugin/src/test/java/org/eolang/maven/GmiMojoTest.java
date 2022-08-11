@@ -197,7 +197,11 @@ public final class GmiMojoTest {
         }
 
         @Override
-        protected boolean matchesSafely(final String item) {
+        public void describeTo(final Description desc) {
+            desc.appendText(this.failure);
+        }
+
+        public boolean matchesSafely(final String item) {
             boolean matches = true;
             String vertex = "v0";
             for (final String sub : item.split(" ")) {
@@ -238,10 +242,6 @@ public final class GmiMojoTest {
             return matches;
         }
 
-        @Override
-        public void describeTo(final Description desc) {
-            desc.appendText(this.failure);
-        }
     }
 
 }
