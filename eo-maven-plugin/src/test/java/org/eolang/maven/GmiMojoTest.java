@@ -27,10 +27,10 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -38,7 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.Description;
@@ -143,32 +142,25 @@ public final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        final XML gmi = new XMLDocument(
-            target.resolve(
-                String.format("%s/foo/main.gmi.xml", GmiMojo.DIR)
-            )
-        );
         Logger.info(
             GmiMojoTest.class, "GMIs:\n  %s",
-            new XSLDocument(
-                new IoCheckedText(
-                    new TextOf(
-                        new ResourceOf(
-                            "org/eolang/maven/gmi-to-text.xsl"
-                        )
+            new String(
+                Files.readAllBytes(
+                    target.resolve(
+                        String.format("%s/foo/main.gmi", GmiMojo.DIR)
                     )
-                ).asString()
-            ).applyTo(gmi).replace("\n", "\n  ")
+                ),
+                StandardCharsets.UTF_8
+            ).replace("\n", "\n  ")
         );
-        return new XSLDocument(
-            new IoCheckedText(
-                new TextOf(
-                    new ResourceOf(
-                        "org/eolang/maven/gmi-to-xembly.xsl"
-                    )
+        return new String(
+            Files.readAllBytes(
+                target.resolve(
+                    String.format("%s/foo/main.gmi.xe", GmiMojo.DIR)
                 )
-            ).asString()
-        ).applyTo(gmi);
+            ),
+            StandardCharsets.UTF_8
+        );
     }
 
     /**
@@ -201,6 +193,7 @@ public final class GmiMojoTest {
             desc.appendText(this.failure);
         }
 
+        @Override
         public boolean matchesSafely(final String item) {
             boolean matches = true;
             String vertex = "v0";

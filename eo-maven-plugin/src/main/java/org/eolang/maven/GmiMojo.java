@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
@@ -42,6 +43,9 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
 
 /**
  * Convert XMIR to GMI.
@@ -67,11 +71,10 @@ public final class GmiMojo extends SafeMojo {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
+        final Path home = this.targetDir.toPath().resolve(GmiMojo.DIR);
         int total = 0;
         for (final Tojo tojo : tojos) {
-            final Path gmi = new Place(tojo.get(Tojos.KEY)).make(
-                this.targetDir.toPath().resolve(GmiMojo.DIR), "gmi.xml"
-            );
+            final Path gmi = new Place(tojo.get(Tojos.KEY)).make(home, "gmi");
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
@@ -91,7 +94,10 @@ public final class GmiMojo extends SafeMojo {
                 Logger.info(this, "No .xmir converted to GMIs");
             }
         } else {
-            Logger.info(this, "Converted %d .xmir to GMIs", total);
+            Logger.info(
+                this, "Converted %d .xmir to GMIs, saved to %s",
+                total, Save.rel(home)
+            );
         }
     }
 
@@ -115,7 +121,34 @@ public final class GmiMojo extends SafeMojo {
         );
         final XML before = new XMLDocument(xmir);
         final XML after = new Xsline(train).pass(before);
-        new Save(after.toString(), gmi).save();
+        new Save(
+            new XSLDocument(
+                new IoCheckedText(
+                    new TextOf(
+                        new ResourceOf(
+                            "org/eolang/maven/gmi-to-text.xsl"
+                        )
+                    )
+                ).asString()
+            ).applyTo(after),
+            gmi
+        ).save();
+        new Save(
+            new XSLDocument(
+                new IoCheckedText(
+                    new TextOf(
+                        new ResourceOf(
+                            "org/eolang/maven/gmi-to-xembly.xsl"
+                        )
+                    )
+                ).asString()
+            ).applyTo(after),
+            gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
+        ).save();
+        new Save(
+            after.toString(),
+            gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
+        ).save();
         Logger.debug(
             this, "GMI for %s saved to %s (%s chars)",
             Save.rel(xmir), Save.rel(gmi), Files.size(gmi)
