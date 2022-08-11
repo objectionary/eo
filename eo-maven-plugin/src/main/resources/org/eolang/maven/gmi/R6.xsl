@@ -31,10 +31,7 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[not(@base) or not(@data)]" mode="gmi">
-    <!-- ignore them -->
-  </xsl:template>
-  <xsl:template match="o[@base and @data]" mode="gmi">
+  <xsl:template match="o[@base and @data]" mode="gmi" priority="1">
     <xsl:variable name="dx">
       <xsl:value-of select="eo:vertex(.)"/>
       <xsl:text>d</xsl:text>
@@ -86,6 +83,9 @@ SOFTWARE.
         <xsl:text>"</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
+  </xsl:template>
+  <xsl:template match="o" mode="gmi">
+    <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

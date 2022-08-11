@@ -54,6 +54,20 @@ SOFTWARE.
     <xsl:value-of select="a[4]"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
+    <xsl:if test="a[4] != '^'">
+      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+      <xsl:value-of select="a[3]"/>
+      <xsl:text>']"; </xsl:text>
+      <xsl:text>ADD "e";</xsl:text>
+      <xsl:text>ATTR "id", "</xsl:text>
+      <xsl:value-of select="a[1]"/>
+      <xsl:text>.up"; </xsl:text>
+      <xsl:text>ATTR "to", "</xsl:text>
+      <xsl:value-of select="a[2]"/>
+      <xsl:text>"; </xsl:text>
+      <xsl:text>ATTR "title", "^";</xsl:text>
+      <xsl:value-of select="$EOL"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="i[@name='REF']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>

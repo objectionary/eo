@@ -31,10 +31,7 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[ancestor::o[@abstract] and not(@base)]" mode="gmi">
-    <!-- ignore it -->
-  </xsl:template>
-  <xsl:template match="o[ancestor::o[not(@abstract)] or @base]" mode="gmi">
+  <xsl:template match="o[ancestor::o[not(@abstract)] or @base]" mode="gmi" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'REF'"/>
       <xsl:with-param name="args" as="item()*">
@@ -66,6 +63,9 @@ SOFTWARE.
         <xsl:text>[R3] Bound attribute</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
+  </xsl:template>
+  <xsl:template match="o" mode="gmi">
+    <!-- ignore it -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
