@@ -27,13 +27,19 @@ SOFTWARE.
   <xsl:variable name="EOL">
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
+  <xsl:variable name="TAB">
+    <xsl:value-of select="$EOL"/>
+    <xsl:value-of select="'  '"/>
+  </xsl:variable>
   <xsl:template match="/">
     <xsl:text>ADD "graph"; </xsl:text>
     <xsl:apply-templates select="program/gmi/i"/>
   </xsl:template>
   <xsl:template match="i[@name='ADD']">
     <xsl:text>XPATH "/graph"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "v"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "id", "</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>";</xsl:text>
@@ -43,43 +49,55 @@ SOFTWARE.
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "e";</xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "id", "</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "to", "</xsl:text>
     <xsl:value-of select="a[3]"/>
     <xsl:text>"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "title", "</xsl:text>
     <xsl:value-of select="a[4]"/>
     <xsl:text>";</xsl:text>
-    <xsl:value-of select="$EOL"/>
     <xsl:if test="a[4] != '^'">
+      <xsl:value-of select="$TAB"/>
       <xsl:text>XPATH "/graph/v[@id='</xsl:text>
       <xsl:value-of select="a[3]"/>
       <xsl:text>']"; </xsl:text>
-      <xsl:text>ADD "e";</xsl:text>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>ADD "e"; </xsl:text>
+      <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "id", "</xsl:text>
       <xsl:value-of select="a[1]"/>
       <xsl:text>.up"; </xsl:text>
+      <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "to", "</xsl:text>
       <xsl:value-of select="a[2]"/>
       <xsl:text>"; </xsl:text>
+      <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "title", "^";</xsl:text>
-      <xsl:value-of select="$EOL"/>
     </xsl:if>
+    <xsl:value-of select="$EOL"/>
   </xsl:template>
   <xsl:template match="i[@name='REF']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; </xsl:text>
-    <xsl:text>ADD "e";</xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>ADD "e"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "id", "</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "to", "</xsl:text>
     <xsl:value-of select="a[3]"/>
     <xsl:text>"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "title", "</xsl:text>
     <xsl:value-of select="a[4]"/>
     <xsl:text>";</xsl:text>
@@ -89,7 +107,9 @@ SOFTWARE.
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "data"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <xsl:text>SET "</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>";</xsl:text>
