@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.txt
-+home https://github.com/objectionary/eo
-+version 0.26.0
++alias org.eolang.collections.list
 +alias org.eolang.hamcrest.assert-that
 +alias org.eolang.txt.regex
-+alias org.eolang.collections.list
++home https://github.com/objectionary/eo
++package org.eolang.txt
 +junit
++version 0.27.0
 
 [] > matches-string-against-pattern
   assert-that > @
@@ -180,10 +180,10 @@
   assert-that > @
     replaced.
       compile.
-        QQ.txt.regex "/([bd])/"
-      "abcde"
+        QQ.txt.regex "/([b])/"
+      "abc"
       "11"
-    $.equal-to "a11c11e"
+    $.equal-to "a11c"
 
 [] > test-no-match-replace
   assert-that > @

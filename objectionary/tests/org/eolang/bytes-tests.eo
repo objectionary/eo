@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
-+version 0.26.0
 +alias org.eolang.hamcrest.assert-that
++home https://github.com/objectionary/eo
 +junit
++package org.eolang
++version 0.27.0
 
 [] > takes-part-of-bytes
   assert-that > @
@@ -381,8 +381,8 @@
 
 [] > bytes-as-hash-value
   assert-that > @
-    02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55.as-hash
-    $.equal-to -1932520235722523316
+    01.as-hash
+    $.equal-to 1
 
 [] > xor-as-int
   assert-that > @
