@@ -27,10 +27,10 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Hash of tag.
@@ -39,9 +39,9 @@ import java.util.Scanner;
 final class HashOfTag {
 
     /**
-     * Static map with all hash requests.
+     * Static thread safe map with all hash requests.
      */
-    private static final Map<String, String> REQUESTED_HASHES = new HashMap<>();
+    private static final Map<String, String> REQUESTED_HASHES = new ConcurrentHashMap<>();
 
     /**
      * Tag.
@@ -83,10 +83,9 @@ final class HashOfTag {
             throw new IllegalArgumentException(
                 String.format("Tag %s doesn't exist in %s", this.tag, link)
             );
-        } else {
-            Logger.info(this, "Git sha of %s is %s", this.tag, result);
-            return result;
         }
+        Logger.info(this, "Git sha of %s is %s", this.tag, result);
+        return result;
     }
 
 }
