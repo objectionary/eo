@@ -27,10 +27,10 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Hash of tag.
@@ -39,9 +39,9 @@ import java.util.concurrent.ConcurrentHashMap;
 final class HashOfTag {
 
     /**
-     * Static thread safe map with all hash requests.
+     * Static map with all hash requests.
      */
-    private static final Map<String, String> REQUESTED_HASHES = new ConcurrentHashMap<>();
+    private static final Map<String, String> REQUESTED_HASHES = new HashMap<>();
 
     /**
      * Tag.
@@ -64,18 +64,20 @@ final class HashOfTag {
     public String hash() throws IOException {
         final String link = "https://home.objectionary.com/tags.txt";
         String result = "";
-        if (REQUESTED_HASHES.containsKey(this.tag)) {
-            result = REQUESTED_HASHES.get(this.tag);
-        } else {
-            final InputStream ins = new URL(link).openStream();
-            final Scanner scanner = new Scanner(ins);
-            while (scanner.hasNextLine()) {
-                final String line = scanner.nextLine();
-                final String[] parts = line.split("\t");
-                if (Objects.equals(parts[1], this.tag)) {
-                    result = parts[0];
-                    REQUESTED_HASHES.put(this.tag, result);
-                    break;
+        synchronized (HashOfTag.REQUESTED_HASHES) {
+            if (REQUESTED_HASHES.containsKey(this.tag)) {
+                result = REQUESTED_HASHES.get(this.tag);
+            } else {
+                final InputStream ins = new URL(link).openStream();
+                final Scanner scanner = new Scanner(ins);
+                while (scanner.hasNextLine()) {
+                    final String line = scanner.nextLine();
+                    final String[] parts = line.split("\t");
+                    if (Objects.equals(parts[1], this.tag)) {
+                        result = parts[0];
+                        REQUESTED_HASHES.put(this.tag, result);
+                        break;
+                    }
                 }
             }
         }
