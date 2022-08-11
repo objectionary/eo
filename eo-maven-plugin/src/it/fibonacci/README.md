@@ -1,4 +1,4 @@
-<img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
+<img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 This is a simple example a program written entirely in EO.
 You can use the files from this directory as a template.
