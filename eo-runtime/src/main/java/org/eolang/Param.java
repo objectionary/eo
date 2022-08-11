@@ -54,7 +54,6 @@ public final class Param {
 
     /**
      * Ctor.
-     *
      * @param obj The object to fetch \rho from
      */
     public Param(final Phi obj) {
@@ -63,7 +62,6 @@ public final class Param {
 
     /**
      * Ctor.
-     *
      * @param obj  The object to fetch the attribute from
      * @param name Name of the attr
      */
@@ -74,9 +72,8 @@ public final class Param {
 
     /**
      * Fetch and check type.
-     *
      * @param type The type
-     * @param <T>  The type
+     * @param <T> The type
      * @return The object
      */
     public <T> T strong(final Class<T> type) {
@@ -96,7 +93,6 @@ public final class Param {
 
     /**
      * Fetch and DON'T check type.
-     *
      * @return The object
      */
     public Object weak() {
@@ -107,9 +103,8 @@ public final class Param {
 
     /**
      * Fetch BYTES as type.
-     *
      * @param type The type
-     * @param <T>  The type
+     * @param <T> The type
      * @return The object
      */
     public <T> T fromBytes(final Class<T> type) {
@@ -164,10 +159,7 @@ public final class Param {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
         } else if (Double.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Double.BYTES)
-                .putDouble(ret.equals(0.0)
-                    ? -0.0
-                    : (double) ret
-                )
+                .putDouble(ret.equals(0.0) ? -0.0 : (double) ret)
                 .array();
         } else {
             throw new ExFailure(
