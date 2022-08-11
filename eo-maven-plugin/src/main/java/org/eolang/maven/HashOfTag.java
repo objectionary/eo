@@ -58,6 +58,7 @@ final class HashOfTag {
 
     /**
      * Hash of tag.
+     * The method is thread-safe.
      * @return SHA of commit
      * @throws IOException if fails
      */
