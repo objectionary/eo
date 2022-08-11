@@ -68,7 +68,7 @@ public final class JavaFiles {
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
-            Logger.info(
+            Logger.debug(
                 this, "No .java files generated from %s",
                 Save.rel(this.source)
             );

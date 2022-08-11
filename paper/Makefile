@@ -24,7 +24,7 @@
 .ONESHELL:
 
 TLROOT=$$(kpsewhich -var-value TEXMFDIST)
-PACKAGES=ffcode to-be-determined href-ul
+PACKAGES=ffcode to-be-determined href-ul minted
 REPO=objectionary/eo
 
 gsed=$(if $(shell which gsed),gsed,sed)
@@ -34,6 +34,7 @@ zip: *.tex sections/*.tex
 	mkdir package
 	cd package
 	cp ../eolang-paper.tex .
+	cp ../phigure.sty .
 	cp ../main.bib .
 	for p in $(PACKAGES); do cp $(TLROOT)/tex/latex/$${p}/$${p}.sty .; done
 	cp -r ../sections .

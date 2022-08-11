@@ -69,6 +69,11 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
+     * Absolute location of GMI file.
+     */
+    public static final String ATTR_GMI = "gmi";
+
+    /**
      * Tojo ATTR.
      */
     public static final String ATTR_JAR = "jar";
@@ -203,15 +208,18 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(PlaceMojo.class),
         };
         while (true) {
+            final long start = System.nanoTime();
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
             final String after = this.status();
             ++cycle;
-            Logger.info(
-                this, "Assemble cycle #%d (%s -> %s)",
-                cycle, before, after
-            );
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
+                    this, "Assemble cycle #%d (%s -> %s), took %[nano]s",
+                    cycle, before, after, System.nanoTime() - start
+                );
+            }
             if (after.equals(before)) {
                 break;
             }

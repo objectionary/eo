@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang.io
-+home https://github.com/objectionary/eo
-+version 0.0.0
++alias org.eolang.math.random
 +alias sprintf org.eolang.txt.sprintf
 +alias stdout org.eolang.io.stdout
-+alias org.eolang.math.random
++home https://github.com/objectionary/eo
 +junit
++package org.eolang.io
++version 0.0.0
 
 [] > prints-string-to-console
   stdout > @

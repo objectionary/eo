@@ -97,10 +97,14 @@ public final class SnippetTest {
             new InputOf(map.get("in").toString()),
             new OutputTo(stdout)
         );
-        MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
+        MatcherAssert.assertThat(
+            String.format("'%s' returned wrong exit code", yml),
+            result, Matchers.equalTo(map.get("exit"))
+        );
         Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
+                String.format("'%s' printed something wrong", yml),
                 new String(stdout.toByteArray(), StandardCharsets.UTF_8),
                 Matchers.matchesPattern(
                     Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)

@@ -10,4 +10,4 @@ eo: |
     QQ.io.stdout > @
       QQ.txt.sprintf
         "Hello, дорогой %s!"
-        args.get 0
+        args.at 0

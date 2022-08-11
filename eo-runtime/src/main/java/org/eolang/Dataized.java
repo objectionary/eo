@@ -75,35 +75,40 @@ public final class Dataized {
     public Object take() {
         final int before = Dataized.LEVEL.get();
         Dataized.LEVEL.set(before + 1);
-        Phi src = this.phi;
-        if (!(src instanceof Data)) {
-            src = src.attr("Δ").get();
+        try {
+            Phi src = this.phi;
             if (!(src instanceof Data)) {
-                throw new IllegalStateException(
+                src = src.attr("Δ").get();
+                if (!(src instanceof Data)) {
+                    throw new IllegalStateException(
+                        String.format(
+                            "The attribute Δ of %s has %s instead of %s",
+                            this.phi.getClass().getCanonicalName(),
+                            src.getClass().getCanonicalName(),
+                            Data.class.getCanonicalName()
+                        )
+                    );
+                }
+            }
+            final Object data = Data.class.cast(src).take();
+            if (Dataized.LOGGER.isLoggable(Level.FINE)
+                && Dataized.LEVEL.get() < 4
+            ) {
+                Dataized.LOGGER.log(
+                    Level.FINE,
                     String.format(
-                        "The attribute Δ of %s has %s instead of %s",
-                        this.phi.getClass().getCanonicalName(),
-                        src.getClass().getCanonicalName(),
-                        Data.class.getCanonicalName()
+                        "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
+                        String.join("", Collections.nCopies(before, "·")),
+                        this.phi.location(),
+                        this.phi.toString().replaceAll("[\n\t]", ""),
+                        new Data.Value<>(data).toString().replaceAll("[\n\t]", "")
                     )
                 );
             }
+            return data;
+        } finally {
+            Dataized.LEVEL.set(before);
         }
-        final Object data = Data.class.cast(src).take();
-        if (Dataized.LOGGER.isLoggable(Level.FINE)) {
-            Dataized.LOGGER.log(
-                Level.FINE,
-                String.format(
-                    "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
-                    String.join("", Collections.nCopies(before, "·")),
-                    this.phi.location(),
-                    this.phi.φTerm().replaceAll("[\n\t]", ""),
-                    new Data.Value<>(data).φTerm()
-                )
-            );
-        }
-        Dataized.LEVEL.set(before);
-        return data;
     }
 
     /**

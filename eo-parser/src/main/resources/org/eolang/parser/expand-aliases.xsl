@@ -33,7 +33,7 @@ SOFTWARE.
 
   +alias foo org.example.foo
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/metas/meta[head='alias' and not(contains(tail, ' '))]">
     <xsl:copy>
       <xsl:attribute name="expanded"/>

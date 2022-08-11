@@ -1,14 +1,9 @@
 ---
 name: codecov
-"on":
+on:
   push:
     branches:
       - master
-    paths-ignore: ['paper/**', 'sandbox/**']
-  pull_request:
-    branches:
-      - master
-    paths-ignore: ['paper/**', 'sandbox/**']
 jobs:
   codecov:
     runs-on: ubuntu-20.04

@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
-+version 0.0.0
 +alias org.eolang.hamcrest.assert-that
++home https://github.com/objectionary/eo
 +junit
++package org.eolang
++version 0.0.0
 
 [] > calculates-length-of-spaces-only
   assert-that > @
@@ -114,12 +114,6 @@
     "hello".as-hash
     $.equal-to
       "hello".as-hash
-
-[] > large-similar-strings-generate-similar-hashes
-  assert-that > @
-    "hello12".as-hash
-    $.equal-to
-      "hello12".as-hash
 
 [] > compares-two-strings
   assert-that > @

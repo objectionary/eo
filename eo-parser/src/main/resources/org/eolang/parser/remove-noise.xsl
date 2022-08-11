@@ -28,7 +28,7 @@ SOFTWARE.
   the XMIR document by removing all listings, metas, etc. Only
   objects will stay with the information relevant to processing of them.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/listing">
     <!-- delete it -->
   </xsl:template>

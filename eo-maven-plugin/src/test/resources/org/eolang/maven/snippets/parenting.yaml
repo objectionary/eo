@@ -6,7 +6,7 @@ args: ["main", "123"]
 eo: |
   [args...] > main
     [] > take
-      ^.args.get 0 > @
+      ^.args.at 0 > @
     QQ.io.stdout > @
       QQ.txt.sprintf
         "The arg is %s"

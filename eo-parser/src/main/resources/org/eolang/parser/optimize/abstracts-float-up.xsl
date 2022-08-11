@@ -41,7 +41,7 @@ SOFTWARE.
     foo$test > test
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="n">

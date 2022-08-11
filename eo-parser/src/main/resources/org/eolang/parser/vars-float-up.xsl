@@ -42,7 +42,7 @@ SOFTWARE.
       x
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="objects">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="full"/>

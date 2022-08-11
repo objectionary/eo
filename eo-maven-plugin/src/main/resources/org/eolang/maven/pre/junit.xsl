@@ -27,7 +27,7 @@ SOFTWARE.
   This stylesheet will take outer objects and put them into
   classes that are unit tests.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:function name="eo:name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\$')"/>

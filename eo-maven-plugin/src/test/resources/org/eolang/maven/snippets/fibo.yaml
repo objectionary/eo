@@ -1,19 +1,23 @@
 exit: 0
 in: ""
 out:
-  - ".*The 14th fibo is 377.*"
-args: ["main", "14"]
+  - ".*The 6th fibo is 8.*"
+args: ["main", "6"]
 eo: |
   [args...] > main
     [n] > f
       if. > @
         n.lt 2
         n
-        add.
-          f (n.sub 1)
-          f (n.sub 2)
+        plus.
+          f (n.minus 1)
+          f (n.minus 2)
     QQ.io.stdout > @
       QQ.txt.sprintf
         "The %dth fibo is %d"
-        (QQ.math.number (args.get 0)).as-int > num
+        at. > num
+          QQ.txt.sscanf
+            "%d"
+            args.at 0
+          0
         f num
