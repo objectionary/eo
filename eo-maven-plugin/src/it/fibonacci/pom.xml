@@ -39,6 +39,7 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
+        <configuration combine.self="override"/>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
