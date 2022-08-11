@@ -44,6 +44,4 @@ String log = new File(basedir, 'build.log').text
   'BUILD SUCCESS',
 ].each { assert log.contains(it) }
 
-assert log.split('\n6th Fibonacci number is 8\n', -1).length-1 == 1
-
 true

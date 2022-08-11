@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.60.0</version>
+    <version>0.60.4</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -36,6 +36,10 @@ SOFTWARE.
   <name>Fibonacci Numbers Calculator</name>
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
