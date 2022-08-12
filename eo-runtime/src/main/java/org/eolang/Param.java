@@ -62,7 +62,7 @@ public final class Param {
 
     /**
      * Ctor.
-     * @param obj  The object to fetch the attribute from
+     * @param obj The object to fetch the attribute from
      * @param name Name of the attr
      */
     public Param(final Phi obj, final String name) {
