@@ -27,10 +27,10 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="count(/program/metas/meta[head ='package'])=0">
+      <xsl:if test="count(/program/metas/meta[head ='package'and count(part)!=1])>0">
         <xsl:element name="error">
             <xsl:attribute name="check">
-              <xsl:text>missing-package</xsl:text>
+              <xsl:text>wrong-package-name</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
@@ -38,23 +38,9 @@ SOFTWARE.
             <xsl:attribute name="severity">
               <xsl:text>warning</xsl:text>
             </xsl:attribute>
-            <xsl:text>Missing package</xsl:text>
+            <xsl:text>Wrong package name</xsl:text>
           </xsl:element>
       </xsl:if>
-        <xsl:if test="count(/program/metas/meta[head ='package'])>1">
-            <xsl:element name="error">
-                <xsl:attribute name="check">
-                    <xsl:text>more-one-package</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="line">
-                    <xsl:value-of select="@line"/>
-                </xsl:attribute>
-                <xsl:attribute name="severity">
-                    <xsl:text>warning</xsl:text>
-                </xsl:attribute>
-                <xsl:text>More than one package specified</xsl:text>
-            </xsl:element>
-        </xsl:if>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

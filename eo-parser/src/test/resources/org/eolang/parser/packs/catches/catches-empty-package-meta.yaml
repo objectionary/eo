@@ -1,5 +1,5 @@
 xsls:
-  - /org/eolang/parser/warnings/mandatory-package-meta.xsl
+  - /org/eolang/parser/warnings/correct-package-meta.xsl
 tests:
   - /program/errors[count(error[@severity='warning'])=1]
   - /program/errors[count(error[@severity='error'])=0]
