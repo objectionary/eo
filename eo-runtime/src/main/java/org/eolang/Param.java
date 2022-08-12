@@ -147,7 +147,6 @@ public final class Param {
 
     /**
      * Fetch BYTES of any type.
-     *
      * @return The bytes.
      */
     public byte[] asBytes() {
