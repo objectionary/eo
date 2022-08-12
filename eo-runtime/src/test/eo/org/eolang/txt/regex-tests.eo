@@ -181,10 +181,10 @@
   assert-that > @
     replaced.
       compile.
-        QQ.txt.regex "/([bd])/"
-      "abcde"
+        QQ.txt.regex "/([b])/"
+      "abc"
       "11"
-    $.equal-to "a11c11e"
+    $.equal-to "a11c"
 
 [] > test-no-match-replace
   assert-that > @
