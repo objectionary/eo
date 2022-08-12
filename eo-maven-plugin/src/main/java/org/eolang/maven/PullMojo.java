@@ -38,11 +38,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Pull EO XML files from Objectionary and parse them into XML.
  *
  * @since 0.1
- * @todo #561:30min Add a parameter to bypass/overwrite cache
- *  for combination of Local and Caching and Remote.
- *  It was suggested by @yegor256 to rely on -U parameter of Maven
- *  (https://github.com/objectionary/eo/issues/561#issuecomment-1007128430).
- *  If it is possible to access it from the plugin.
  */
 @Mojo(
     name = "pull",
@@ -95,7 +90,7 @@ public final class PullMojo extends SafeMojo {
         if (this.objectionary == null) {
             final String full = new HashOfTag(this.hash).hash();
             final String small = full.substring(0, 7);
-            this.objectionary = new OyFallback(
+            this.objectionary = new OyFallbackSwap(
                 new OyHome(
                     small,
                     this.outputPath
@@ -104,7 +99,8 @@ public final class PullMojo extends SafeMojo {
                     small,
                     this.outputPath,
                     new OyRemote(full)
-                )
+                ),
+                this.forceUpdate()
             );
         }
         if (!tojos.isEmpty()) {
@@ -119,6 +115,14 @@ public final class PullMojo extends SafeMojo {
                 tojos.size(), this.objectionary
             );
         }
+    }
+
+    /**
+     * Is force update option enabled.
+     * @return True if option enabled and false otherwise
+     */
+    private boolean forceUpdate() {
+        return this.session.getRequest().isUpdateSnapshots();
     }
 
     /**
