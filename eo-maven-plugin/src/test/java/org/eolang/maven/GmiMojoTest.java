@@ -69,7 +69,13 @@ public final class GmiMojoTest {
         );
         final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
         final XML graph = new XMLDocument(
-            new Xembler(new Directives(xembly)).domQuietly()
+            new Xembler(
+                new Directives()
+                    .add("graph")
+                    .add("v")
+                    .attr("id", "v0")
+                    .append(new Directives(xembly))
+            ).domQuietly()
         );
         Logger.info(this, "Graph:\n%s", graph);
         for (final String loc : (Iterable<String>) map.get("locators")) {

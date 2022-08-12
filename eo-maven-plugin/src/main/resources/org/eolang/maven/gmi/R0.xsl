@@ -32,17 +32,7 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="gmi">
-        <xsl:call-template name="i">
-          <xsl:with-param name="name" select="'ADD'"/>
-          <xsl:with-param name="args" as="item()*">
-            <xsl:sequence>
-              <xsl:text>v0</xsl:text>
-            </xsl:sequence>
-          </xsl:with-param>
-          <xsl:with-param name="comment">
-            <xsl:text>[R0] This is root vertex</xsl:text>
-          </xsl:with-param>
-        </xsl:call-template>
+        <!-- empty one -->
       </xsl:element>
     </xsl:copy>
   </xsl:template>

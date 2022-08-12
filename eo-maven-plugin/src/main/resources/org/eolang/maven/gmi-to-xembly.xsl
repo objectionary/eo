@@ -32,7 +32,6 @@ SOFTWARE.
     <xsl:value-of select="'  '"/>
   </xsl:variable>
   <xsl:template match="/">
-    <xsl:text>ADD "graph"; </xsl:text>
     <xsl:apply-templates select="program/gmi/i"/>
   </xsl:template>
   <xsl:template match="i[@name='ADD']">
