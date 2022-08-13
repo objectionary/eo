@@ -308,12 +308,11 @@ For example, the object at \lref{stdout} would be denoted as
 \end{equation}
 where $M_\texttt{stdout}$ is a $\lambda$-term defined externally.
 
-In atoms, $\lambda$-terms are bound to $\varphi$ attribute.
+In atoms, $\lambda$-terms are bound to $\lambda$ attribute.
 Thus, a more formal form of the Eq.~\ref{def:stdout} is:
 \begin{equation*}
-\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \varphi \mapsto \lambda s.M_\text{stdout} \rrbracket.
+\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto \lambda s.M_\text{stdout} \rrbracket.
 \end{equation*}
-
 
 \subsection{Locators}
 
