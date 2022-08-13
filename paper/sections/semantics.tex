@@ -43,7 +43,7 @@ where all other objects that are not anonymous (see Def.~\ref{def:parent}) are b
 The vertice $v_2$ is the abstract object \ff{book2}. The name of the object within the
 scope of $\Phi$ is the label on the edge from $\Phi$ to $v_2$. The labeled edge
 between $v_2$ and $v_3$ makes the object $v_3$ an attribute of $v_2$ with the
-identifier \ff{isbn}. Even though the object $v_3$ is $\emptyset$, the graph
+identifier \ff{isbn}. Even though the object $v_3$ is $\varnothing$, the graph
 depicts it as any other object.
 
 The rectangle attached to the vertice $v_1$ makes it an atom (see Def.~\ref{def:atom})
@@ -510,14 +510,14 @@ a single attribute $\Delta$ connected to the data returned, where
 $i$ is the next available index in the graph.
 
 For example, $\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},
-\Delta, \emptyset)$ being executed on the graph presented at the
+\Delta, \varnothing)$ being executed on the graph presented at the
 Fig.~\ref{fig:is} would return the vertice $d_{21}$, which is $+9$.
 
 We also define a dataization function, which turns an object into data:
 
 \begin{algo}
 \kw{function} $\mathbb{D}(k)$ \\
-  \tab \kw{return} $\mathbb{R}(k, \Delta, \emptyset)$ \\
+  \tab \kw{return} $\mathbb{R}(k, \Delta, \varnothing)$ \\
 \kw{end}
 \end{algo}
 
