@@ -83,22 +83,22 @@ $\ff{ADD}(v_1)$
     \node[object] (v1) {$v_1$};
   \end{phigure}
   \\
-$\ff{BIND}(v_1, v_2, a)$
+$\ff{BIND}(e_1, v_1, v_2, a)$
   \>
-  \tabfill{Adds a solid labeled uni-directed edge $a$ from an existing vertice $v_1$ to an existing vertice $v_2$,
+  \tabfill{Adds a solid uni-directed edge $e_1$ labeled as $a$ from an existing vertice $v_1$ to an existing vertice $v_2$,
   making a snake edge if $a$ equals to $\rho$ and adding a reverse snake edge otherwise:}
   \\
   \> \begin{phigure}
     \node[object] (v1) {$v_1$};
     \node[object, right of=v1] (v2) {$v_2$};
-    \draw (v1) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v2) node [attr] {$a$};
+    \draw (v1) -- pic[sloped,rho]{parallel arrow={0.3,-0.15}} (v2) node [attr] {$a$} node [edge-name] {$e_1$};
   \end{phigure}
   \\
 $\ff{DOT}(e_1, m, v_3, e_2)$
   \>
-  \tabfill{Breaks the edge $e_1$ going from $v_1$ to $v_2$,
+  \tabfill{Deletes the edge $e_1$ going from $v_1$ to $v_2$,
     adding a new atom vertice $v_3$,
-    connecting $v_1$ to $v_3$ with an $e_2$ labeled the same way as $e_1$,
+    connecting $v_1$ to $v_3$ with an edge $e_2$ labeled the same way as $e_1$,
     connecting $v_3$ and $v_2$ with an edge labeled as \ff{t},
     and
     attaching a rectangle with a special lambda expression to $v_3$:}
@@ -147,11 +147,21 @@ $\ff{ATOM}(v_1, M_1)$
     \node[lambda] at (v1d.south east) {$M_1$};
   \end{phigure}
 \\
-$\ff{REF}(e_1, v_1, l, a)$
+$\ff{DATA}(v_1, \Gamma)$
+  \>
+  \tabfill{Changes the shape of an existing vertice $v_1$ to a polygon and sets its data to $\Gamma$:}
+  \\
+  \> \begin{phigure}
+    \node[object] (v1) {$v_1$};
+    \node[transforms, right=0.3cm of v1] {};
+    \node[data, right=1cm of v1] (v1d) {$\Gamma$};
+  \end{phigure}
+\\
+$\ff{REF}(e_1, v_1, k, a)$
   \>
   \tabfill{Starting from the vertice $v_1$,
-    finds a vertice $v_2$ by the locator $l$
-    and links them with an edge $e_1$ named as $a$ with a supplementary label $l$
+    finds a vertice $v_2$ by the locator $k$
+    and links them with an edge $e_1$ named as $a$ with a supplementary label $k$
     (omitting the circle around the vertice $v_2$ is a visual
     trick that helps avoid a long arrow, which would need to be drawn from $v_1$ to the
     found $v_2$ otherwise):}
@@ -159,7 +169,7 @@ $\ff{REF}(e_1, v_1, l, a)$
   \> \begin{phigure}
     \node[object] (v1) {$v_1$};
     \node[dup, right of=v1] (v2) {$v_2$};
-    \draw[ref] (v1) -- (v2) node [attr] {$a$} node [locator] {$l$} node [edge-name] {$e_1$};
+    \draw[ref] (v1) -- (v2) node [attr] {$a$} node [locator] {$k$} node [edge-name] {$e_1$};
   \end{phigure}
   \\
 \end{tabbing}
@@ -382,10 +392,9 @@ The last rule deals with data, such as integers, string literals, and so on
 \begin{equation*}
 \dfrac
   {v_i | \Gamma}
-  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\Delta) \quad d_i \to \Gamma}
+  {\ff{ADD}(d_i) \quad \ff{BIND}(v_i,d_i,\Delta) \quad \ff{DATA}(d_i, \Gamma)}
   \jrule{data}
 \end{equation*}
-Here the mapping $d_i \to \Gamma$ is added to the graph as a comment.
 
 There is also one rule, which transforms atoms to the object graph by \rrule{lambda}
 attaching lambda expressions to vertices:
@@ -457,17 +466,17 @@ three arguments $v_3$, $v_4$, and $v_5$, would produce an arithmetic
 sum of three integers calculated by the $\lambda$-term of $v_1$.
 
 We suggest the following recursive object discovery
-algorithm, which finds a vertice in a graph by its locator $l$ and
+algorithm, which finds a vertice in a graph by its locator $k$ and
 returns a vertice connected to it as an attribute $a$:
 
 \begin{twocols}
 \begin{algo}
-\kw{function} $\mathbb{R}(l,a,S)$ \\
-  \tab $v \gets l$ \\
-  \tab \kw{if} $l$ is a locator with a dot inside \\
-  \tab\tab $a' \gets$ after the last dot in $l$ \\
-  \tab\tab $l' \gets$ before $a'$ in $l$ \\
-  \tab\tab $v \gets$ $\mathbb{R}(l', a', S)$ \\
+\kw{function} $\mathbb{R}(k,a,S)$ \\
+  \tab $v \gets k$ \\
+  \tab \kw{if} $k$ is a locator with a dot inside \\
+  \tab\tab $a' \gets$ after the last dot in $k$ \\
+  \tab\tab $k' \gets$ before $a'$ in $k$ \\
+  \tab\tab $v \gets$ $\mathbb{R}(k', a', S)$ \\
   \tab \kw{end if} \\
   \tab \kw{if} $v = \xi$ \kw{then} $v \gets S[0]$ \\
   \tab \kw{if} $v = \rho$ \kw{then} $v \gets S[1]$ \\
@@ -507,8 +516,8 @@ Fig.~\ref{fig:is} would return the vertice $d_{21}$, which is $+9$.
 We also define a dataization function, which turns an object into data:
 
 \begin{algo}
-\kw{function} $\mathbb{D}(l)$ \\
-  \tab \kw{return} $\mathbb{R}(l, \Delta, \emptyset)$ \\
+\kw{function} $\mathbb{D}(k)$ \\
+  \tab \kw{return} $\mathbb{R}(k, \Delta, \emptyset)$ \\
 \kw{end}
 \end{algo}
 
