@@ -249,8 +249,8 @@ producing:
 \end{equation}
 
 Because of decoration, the expression
-$\rho$.$\varphi$.\ff{distance} in Eq.~\ref{eq:c-empty} is semantically equivalent to a shorter expression
-$\rho$.\ff{distance} in Eq.~\ref{eq:c-fin}.
+$\rho.\varphi.\ff{distance}$ in Eq.~\ref{eq:c-empty} is semantically equivalent to a shorter expression
+$\rho.\ff{distance}$ in Eq.~\ref{eq:c-fin}.
 
 The following expression makes a new object \ff{is}, which represents
 a sequence of object applications ending with a copy of \ff{lte}:
@@ -311,7 +311,7 @@ where $M_\texttt{stdout}$ is a $\lambda$-term defined externally.
 In atoms, $\lambda$-terms are bound to $\lambda$ attribute.
 Thus, a more formal form of the Eq.~\ref{def:stdout} is:
 \begin{equation*}
-\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto \lambda s.M_\text{stdout} \rrbracket.
+\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto M_\text{stdout} \rrbracket.
 \end{equation*}
 
 \subsection{Locators}
