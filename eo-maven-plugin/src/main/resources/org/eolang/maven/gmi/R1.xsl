@@ -40,7 +40,18 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R1] Add new vertex to the graph</xsl:text>
+        <xsl:text>[R1]</xsl:text>
+        <xsl:if test="@abstract">
+          <xsl:text> abstract</xsl:text>
+        </xsl:if>
+        <xsl:if test="@name">
+          <xsl:text> name=</xsl:text>
+          <xsl:value-of select="@name"/>
+        </xsl:if>
+        <xsl:if test="@base">
+          <xsl:text> base=</xsl:text>
+          <xsl:value-of select="@base"/>
+        </xsl:if>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:for-each select="o[@name and not(@base)]">

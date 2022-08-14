@@ -24,27 +24,16 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="strip" version="2.0">
   <!--
-  Currently each <a/> element starts with either "edge:", or "vertex:",
-  or "text:", or "data:". Here, we strip the prefixes.
+  For each element <a/> that has vertex or edge absolute numbers
+  we add a dollar sign, to indicate that it's a variable.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program/gmi/i/a">
+  <xsl:template match="program/gmi/i/a[. != 'v0' and @prefix = 'vertex' or @prefix = 'edge']">
     <xsl:copy>
-      <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
-      <xsl:variable name="body" select="replace(., '^[a-z]+:', '')"/>
-      <xsl:attribute name="prefix">
-        <xsl:value-of select="$prefix"/>
-      </xsl:attribute>
-      <xsl:choose>
-        <xsl:when test="$prefix = 'vertex'">
-          <xsl:text>v</xsl:text>
-        </xsl:when>
-        <xsl:when test="$prefix = 'edge'">
-          <xsl:text>e</xsl:text>
-        </xsl:when>
-      </xsl:choose>
-      <xsl:value-of select="$body"/>
+      <xsl:apply-templates select="node() except text()|@*"/>
+      <xsl:text>$</xsl:text>
+      <xsl:value-of select="."/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
