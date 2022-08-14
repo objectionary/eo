@@ -47,11 +47,11 @@ SOFTWARE.
         <xsl:sequence>
           <xsl:choose>
             <xsl:when test="@name">
-              <xsl:value-of select="@name"/>
+              <xsl:value-of select="concat('text:', @name)"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:variable name="r">
-                <xsl:text>α</xsl:text>
+                <xsl:text>text:α</xsl:text>
                 <xsl:value-of select="count(preceding-sibling::o)"/>
               </xsl:variable>
               <xsl:value-of select="$r"/>

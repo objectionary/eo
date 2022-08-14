@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Csv;
@@ -81,12 +80,6 @@ public final class GmiMojoTest {
         for (final String loc : (Iterable<String>) map.get("locators")) {
             MatcherAssert.assertThat(
                 loc, new GmiMojoTest.ExistsIn(graph)
-            );
-        }
-        for (final String xpath : (Iterable<String>) map.get("xpaths")) {
-            MatcherAssert.assertThat(
-                graph,
-                XhtmlMatchers.hasXPath(xpath)
             );
         }
     }

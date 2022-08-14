@@ -1,7 +1,3 @@
-xpaths:
-  - /graph/v[@id='v0']/e[@to='v1' and @title='simple']
-  - //v[@id='v1']/e[@to='v2' and @title='@']
-  - //v[@id='v1']/e[@to='v0' and @title='^']
 locators:
   - .simple .@ .α0 .α0 .Δ =true
   - .simple .@ .α1 .Δ =42

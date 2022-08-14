@@ -57,7 +57,7 @@ SOFTWARE.
             <xsl:value-of select="eo:vertex(.)"/>
           </xsl:sequence>
           <xsl:sequence>
-            <xsl:value-of select="@name"/>
+            <xsl:value-of select="concat('text:', @name)"/>
           </xsl:sequence>
         </xsl:with-param>
         <xsl:with-param name="comment">
@@ -79,7 +79,7 @@ SOFTWARE.
             <xsl:value-of select="eo:vertex(.)"/>
           </xsl:sequence>
           <xsl:sequence>
-            <xsl:value-of select="@name"/>
+            <xsl:value-of select="concat('text:', @name)"/>
           </xsl:sequence>
         </xsl:with-param>
         <xsl:with-param name="comment">

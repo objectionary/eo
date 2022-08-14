@@ -60,7 +60,7 @@ SOFTWARE.
           <xsl:value-of select="$dx"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:text>Δ</xsl:text>
+          <xsl:text>text:Δ</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
@@ -74,7 +74,7 @@ SOFTWARE.
           <xsl:value-of select="$dx"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="."/>
+          <xsl:value-of select="concat('data:', .)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
