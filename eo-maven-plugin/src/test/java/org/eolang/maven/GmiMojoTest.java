@@ -72,7 +72,7 @@ public final class GmiMojoTest {
                 new Directives()
                     .add("graph")
                     .add("v")
-                    .attr("id", "v0")
+                    .attr("id", "ν0")
                     .append(new Directives(xembly))
             ).domQuietly()
         );
@@ -195,7 +195,7 @@ public final class GmiMojoTest {
         @Override
         public boolean matchesSafely(final String item) {
             boolean matches = true;
-            String vertex = "v0";
+            String vertex = "ν0";
             for (final String sub : item.split(" ")) {
                 if (sub.charAt(0) == '.') {
                     final List<String> opts = this.graph.xpath(

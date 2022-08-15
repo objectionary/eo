@@ -38,10 +38,10 @@ SOFTWARE.
       </xsl:attribute>
       <xsl:choose>
         <xsl:when test="$prefix = 'vertex'">
-          <xsl:text>v</xsl:text>
+          <xsl:text>ν</xsl:text>
         </xsl:when>
         <xsl:when test="$prefix = 'edge'">
-          <xsl:text>e</xsl:text>
+          <xsl:text>ε</xsl:text>
         </xsl:when>
       </xsl:choose>
       <xsl:value-of select="$body"/>
