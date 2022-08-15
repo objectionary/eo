@@ -33,7 +33,7 @@ SOFTWARE.
         <xsl:if test="count(//o[@base=$name]) = 0">
           <xsl:element name="error">
             <xsl:attribute name="check">
-              <xsl:text>unused-aliasses</xsl:text>
+              <xsl:text>unused-aliases</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="@line"/>
