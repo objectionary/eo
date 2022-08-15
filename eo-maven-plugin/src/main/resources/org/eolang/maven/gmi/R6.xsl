@@ -74,7 +74,7 @@ SOFTWARE.
           <xsl:value-of select="$dx"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('data:', .)"/>
+          <xsl:value-of select="concat('data:', @data, '/', .)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
