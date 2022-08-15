@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,7 @@ public final class AtComposite implements Attr {
     public Phi get() {
         try {
             return this.expr.get(this.rho);
+        // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;
         } catch (final Throwable ex) {
@@ -91,5 +92,4 @@ public final class AtComposite implements Attr {
             "You can't overwrite static expression"
         );
     }
-
 }
