@@ -55,6 +55,16 @@ SOFTWARE.
       </xsl:with-param>
     </xsl:call-template>
     <xsl:for-each select="o[@name and not(@base)]">
+      <xsl:variable name="attr">
+        <xsl:choose>
+          <xsl:when test="@name = '@'">
+            <xsl:text>φ</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@name"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
       <xsl:call-template name="i">
         <xsl:with-param name="name" select="'BIND'"/>
         <xsl:with-param name="args" as="item()*">
@@ -68,7 +78,7 @@ SOFTWARE.
             <xsl:value-of select="eo:vertex(.)"/>
           </xsl:sequence>
           <xsl:sequence>
-            <xsl:value-of select="concat('text:', @name)"/>
+            <xsl:value-of select="concat('text:', $attr)"/>
           </xsl:sequence>
         </xsl:with-param>
         <xsl:with-param name="comment">
