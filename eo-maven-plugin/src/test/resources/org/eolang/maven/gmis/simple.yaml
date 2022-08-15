@@ -1,7 +1,7 @@
 locators:
-  - .simple .@ .α0 .α0 .Δ =bool/true
-  - .simple .@ .α1 .Δ =int/42
-  - .simple .@ .α2 .hello .Δ =string/Jeff
+  - .simple .φ .α0 .α0 .Δ =bool/true
+  - .simple .φ .α1 .Δ =int/42
+  - .simple .φ .α2 .hello .Δ =string/Jeff
 eo: |
   [] > simple
     foo > @

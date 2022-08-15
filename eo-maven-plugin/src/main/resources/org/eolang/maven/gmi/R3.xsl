@@ -47,7 +47,7 @@ SOFTWARE.
         <xsl:sequence>
           <xsl:choose>
             <xsl:when test="@name">
-              <xsl:value-of select="concat('text:', @name)"/>
+              <xsl:value-of select="concat('text:', eo:attribute(@name))"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:variable name="r">

@@ -57,6 +57,20 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
+  <xsl:function name="eo:attribute" as="xs:string">
+    <xsl:param name="a" as="xs:string"/>
+    <xsl:variable name="ret">
+      <xsl:choose>
+        <xsl:when test="$a = '@'">
+          <xsl:text>φ</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$a"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="$ret"/>
+  </xsl:function>
   <xsl:template name="i">
     <xsl:param name="name" as="xs:string"/>
     <xsl:param name="args" as="item()*"/>
