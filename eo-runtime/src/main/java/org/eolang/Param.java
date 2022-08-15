@@ -157,7 +157,9 @@ public final class Param {
         } else if (Character.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
         } else if (Double.class.isInstance(ret)) {
-            res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
+            res = ByteBuffer.allocate(Double.BYTES)
+                .putDouble(ret.equals(0.0) ? -0.0 : (double) ret)
+                .array();
         } else {
             throw new ExFailure(
                 String.format(
