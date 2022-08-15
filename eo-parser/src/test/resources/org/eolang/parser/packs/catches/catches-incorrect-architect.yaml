@@ -1,0 +1,21 @@
+xsls:
+  - /org/eolang/parser/warnings/incorrect-architect.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=5]
+  - /program/errors/error[@line='1']
+  - /program/errors/error[@line='2']
+  - /program/errors/error[@line='3']
+  - /program/errors/error[@line='4']
+  - /program/errors/error[@line='6']
+eo: |
+  +architect hello
+  +architect hello@mail
+  +architect someone@@
+  +architect @gmail.com
+  +architect hello@gmail.com
+  +architect someone24@.com
+  +architect hello@mail.ru
+  +alias org.eolang.io.stdout
+
+  [x] > foo
+    x.div in.nextInt > @

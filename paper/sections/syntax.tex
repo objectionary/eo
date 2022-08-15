@@ -72,16 +72,13 @@ Java-notation is used for numbers and strings.
   \> \alt \T{application} \V{␣} \T{application} \\
 \T{head} \df \opt{\V{...}} \grp{ \T{name} \opt{\V{'}} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
   \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \alt \V{Q} \alt \V{QQ} } \\
-\T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
-  \> \alt \T{float} \alt \T{regex} \\
+\T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \alt \T{float} \\
 \T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \alt \V{-{}-} \\
 \T{bool} \df \V{TRUE} \alt \V{FALSE} \\
 \T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
 \T{string} \df \RE{"[\^{}"]*"} \\
 \T{integer} \df \RE{[+-]?\textbackslash{}d+|0x[a-f\textbackslash{}d]+} \\
-\T{regex} \df \RE{/.+/[a-z]*} \\
-\T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{\T{exp}} \\
-\T{exp} \df \RE{e(+|-)?\textbackslash{}d+} \\
+\T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{ \RE{e(+|-)?\textbackslash{}d+} } \\
 \end{tabbing}
 \end{multicols}
 \figcap{The full syntax of \eo{} in BNF.

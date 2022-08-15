@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ public final class JavaFiles {
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
-            Logger.info(
+            Logger.debug(
                 this, "No .java files generated from %s",
                 Save.rel(this.source)
             );

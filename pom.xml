@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.59.0</version>
+    <version>0.60.4</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -102,7 +102,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
         <artifactId>xembly</artifactId>
-        <version>0.26.2</version>
+        <version>0.27.0</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -112,12 +112,32 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.5.3</version>
+        <version>0.7.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.6.2</version>
+        <type>pom</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <version>5.6.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.6.2</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.yaml</groupId>
@@ -127,7 +147,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-log</artifactId>
-        <version>0.20.1</version>
+        <version>0.21.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -152,7 +172,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
-        <version>4.9.2</version>
+        <version>4.10.1</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -203,7 +223,7 @@ SOFTWARE.
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.21.0</version>
+            <version>0.21.1</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>

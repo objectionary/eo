@@ -1,8 +1,9 @@
 tests:
   - /program/errors[count(*)=0]
-  - //o[@name='f' and @line='2']
-  - //o[@base='f' and @ref='2']
+  - //o[@name='f' and @line='3']
+  - //o[@base='f' and @ref='3']
 eo: |
+  +package test
   [args...] > main
     [n] > f
       f 5 > @

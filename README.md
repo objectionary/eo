@@ -6,7 +6,7 @@
 
 [![mvn-linux](https://github.com/objectionary/eo/actions/workflows/mvn.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/mvn.yml)
 [![PDD status](http://www.0pdd.com/svg?name=objectionary/eo)](http://www.0pdd.com/p?name=objectionary/eo)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b8b59692f3c8c973ac54/maintainability)](https://codeclimate.com/github/objectionary/eo/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b8b59692f3c8c973ac54/maintainability)](https://codeclimate.com/github/cqfn/eo/maintainability)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
 [![codecov](https://codecov.io/gh/objectionary/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eo)
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eo)](https://hitsofcode.com/view/github/objectionary/eo)
@@ -15,6 +15,7 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/reports/0ebb3149-4934-4565-bf6f-6fa41aed3b49)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/22dac7549c384692b79e02107de1d3c3)](https://www.codacy.com/gh/objectionary/eo/dashboard)
 [![Known Vulnerabilities](https://snyk.io/test/github/objectionary/eo/badge.svg)](https://snyk.io/test/github/objectionary/eo)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.objectionary%3Aeo&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=com.objectionary%3Aeo)
 
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))

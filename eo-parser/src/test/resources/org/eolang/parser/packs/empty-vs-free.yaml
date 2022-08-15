@@ -4,5 +4,6 @@ tests:
   - //o[@name='x']
   - //o[@name='y' and @abstract]
 eo: |
+  +package test
   [x] > foo
     [] > y

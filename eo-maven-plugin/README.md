@@ -8,7 +8,7 @@ This is Maven plugin for EO.
 Here is a simple program that gets a year from command line and tells you
 whether it's leap or not:
 
-```
+```eo
 [args...] > main
   [y] > leap
     or. > @
@@ -21,6 +21,7 @@ whether it's leap or not:
       "%d is %sa leap year!"
       (args.get 0).as-int > year!
       if. (leap year:y) "" "not "
+
 ```
 
 In order to compile this program, put it into `src/main/eo/main.eo` and then
@@ -107,5 +108,18 @@ There is also a module called `eo-runtime`, which includes both `.eo` and `.java
 for most popular and important objects that any of you will need in order
 to write even a simple EO program. There are objects like `string`, `int`, `sprintf`,
 `stdout`, and so on. By the way, you may want to contribute there by creating new objects.
+
+## Bypassing object cache
+
+By default, during compilation the plugin will check local cache (`~/.eo`) for required objects
+and only download (and cache) them from [Objectionary home](https://github.com/objectionary/home)
+in case they are not found locally.
+
+This behaviour can be changed to always download objects from remote by providing 
+Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
+
+```shell
+mvn -U clean install
+```
 
 

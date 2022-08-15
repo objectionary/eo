@@ -1,0 +1,14 @@
+xsls:
+  - /org/eolang/parser/warnings/mandatory-package-meta.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=1]
+  - /program/errors[count(error[@severity='error'])=0]
+eo: |
+  +alias stding org.eolang.io.stdin
+  +alias stdout org.eolang.io.stdout
+  +home https://github.com/objectionary/eo
+  +package test
+  +package sandbox
+
+  [] > main
+    (stdout "Hello, world!").print

@@ -182,9 +182,9 @@ In case of application, an object is created by the prepending object:
   \begin{equation}
   \begin{split}
   & a \mapsto \llbracket b \mapsto c, d \mapsto e.f, g \mapsto h.i(j) \rrbracket \br
-  & b.\rho = a \br
-  & d.\rho = e \br
-  & g.\rho = h.
+  & a.b.\rho = a \br
+  & a.d.\rho = e \br
+  & a.g.\rho = h.
   \end{split}
   \end{equation}
 
@@ -311,13 +311,6 @@ where $M_\texttt{stdout}$ is a $\lambda$-term defined externally.
 In atoms, $\lambda$-terms are bound to $\varphi$ attribute.
 Thus, a more formal form of the Eq.~\ref{def:stdout} is:
 \begin{equation*}
-\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \emptyset, \varphi \mapsto \lambda s.M_\texttt{stdout} \rrbracket.
-\end{equation*}
-
-
-In atoms, $\lambda$-terms are bound to $\varphi$ attribute.
-Thus, a more formal form of the Eq.~\ref{def:stdout} is:
-\begin{equation*}
 \ff{stdout} \mapsto \llbracket \ff{text} \mapsto \emptyset, \varphi \mapsto \lambda s.M_\text{stdout} \rrbracket.
 \end{equation*}
 
@@ -376,7 +369,7 @@ the object application:
 
 \begin{eodefinition}\label{def:identity}
 If $x$ is an object then $x.\nu$ is a positive integer data object
-with a unique identify of $x$ in the entire runtime scope.
+with a unique identity of $x$ in the entire runtime scope.
 \end{eodefinition}
 
 For example, without any other objects in scope it is safe

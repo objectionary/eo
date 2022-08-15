@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,12 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -129,18 +127,17 @@ public final class OptimizeMojo extends SafeMojo {
     private XML optimize(final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain())).with(
-            Arrays.asList(
-                "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                "/org/eolang/parser/optimize/remove-refs.xsl",
-                "/org/eolang/parser/optimize/abstracts-float-up.xsl",
-                "/org/eolang/parser/optimize/remove-levels.xsl",
-                "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/optimize/fix-missed-names.xsl",
-                "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/errors/broken-refs.xsl"
-            )
-        ).back().back();
+        Train<Shift> train = new TrClasspath<>(
+            new ParsingTrain(),
+            "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
+            "/org/eolang/parser/optimize/remove-refs.xsl",
+            "/org/eolang/parser/optimize/abstracts-float-up.xsl",
+            "/org/eolang/parser/optimize/remove-levels.xsl",
+            "/org/eolang/parser/add-refs.xsl",
+            "/org/eolang/parser/optimize/fix-missed-names.xsl",
+            "/org/eolang/parser/add-refs.xsl",
+            "/org/eolang/parser/errors/broken-refs.xsl"
+        ).back();
         if (this.trackOptimizationSteps) {
             final Path dir = place.make(
                 this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""

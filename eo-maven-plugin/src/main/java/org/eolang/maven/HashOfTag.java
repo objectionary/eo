@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -34,7 +36,12 @@ import java.util.Scanner;
  * Hash of tag.
  * @since 0.26
  */
-public class HashOfTag {
+final class HashOfTag {
+
+    /**
+     * Static map with all hash requests.
+     */
+    private static final Map<String, String> REQUESTED_HASHES = new HashMap<>();
 
     /**
      * Tag.
@@ -43,32 +50,45 @@ public class HashOfTag {
 
     /**
      * Constructor.
-     * @param tag Tag
+     * @param hash Tag
      */
-    public HashOfTag(final String tag) {
-        this.tag = tag;
+    HashOfTag(final String hash) {
+        this.tag = hash;
     }
 
     /**
      * Hash of tag.
+     * The method is thread-safe.
      * @return SHA of commit
      * @throws IOException if fails
      */
     public String hash() throws IOException {
         final String link = "https://home.objectionary.com/tags.txt";
-        final InputStream ins = new URL(link).openStream();
-        final Scanner scanner = new Scanner(ins);
-        while (scanner.hasNextLine()) {
-            final String line = scanner.nextLine();
-            final String[] parts = line.split("\t");
-            if (Objects.equals(parts[1], this.tag)) {
-                Logger.info(this, "Git sha of %s is %s", this.tag, parts[0]);
-                return parts[0];
+        String result = "";
+        synchronized (HashOfTag.REQUESTED_HASHES) {
+            if (REQUESTED_HASHES.containsKey(this.tag)) {
+                result = REQUESTED_HASHES.get(this.tag);
+            } else {
+                final InputStream ins = new URL(link).openStream();
+                final Scanner scanner = new Scanner(ins);
+                while (scanner.hasNextLine()) {
+                    final String line = scanner.nextLine();
+                    final String[] parts = line.split("\t");
+                    if (Objects.equals(parts[1], this.tag)) {
+                        result = parts[0];
+                        REQUESTED_HASHES.put(this.tag, result);
+                        break;
+                    }
+                }
             }
         }
-        throw new IllegalArgumentException(
-            String.format("Tag %s doesn't exist", this.tag)
-        );
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException(
+                String.format("Tag %s doesn't exist in %s", this.tag, link)
+            );
+        }
+        Logger.info(this, "Git sha of %s is %s", this.tag, result);
+        return result;
     }
 
 }

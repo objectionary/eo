@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -67,6 +67,11 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_XMIR2 = "xmir2";
+
+    /**
+     * Absolute location of GMI file.
+     */
+    public static final String ATTR_GMI = "gmi";
 
     /**
      * Tojo ATTR.
