@@ -77,6 +77,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/errors/duplicate-names.xsl",
         "/org/eolang/parser/warnings/duplicate-metas.xsl",
         "/org/eolang/parser/warnings/mandatory-package-meta.xsl",
+        "/org/eolang/parser/warnings/correct-package-meta.xsl",
         "/org/eolang/parser/errors/unused-aliases.xsl",
         "/org/eolang/parser/errors/data-objects.xsl",
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",

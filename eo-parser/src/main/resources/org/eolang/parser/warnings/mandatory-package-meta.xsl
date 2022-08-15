@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,32 +29,32 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
       <xsl:if test="count(/program/metas/meta[head ='package'])=0">
         <xsl:element name="error">
-            <xsl:attribute name="check">
-              <xsl:text>missing-package</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:attribute name="severity">
-              <xsl:text>warning</xsl:text>
-            </xsl:attribute>
-            <xsl:text>Missing package</xsl:text>
-          </xsl:element>
+          <xsl:attribute name="check">
+            <xsl:text>missing-package</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>warning</xsl:text>
+          </xsl:attribute>
+          <xsl:text>Missing package</xsl:text>
+        </xsl:element>
       </xsl:if>
-        <xsl:if test="count(/program/metas/meta[head ='package'])>1">
-            <xsl:element name="error">
-                <xsl:attribute name="check">
-                    <xsl:text>more-one-package</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="line">
-                    <xsl:value-of select="@line"/>
-                </xsl:attribute>
-                <xsl:attribute name="severity">
-                    <xsl:text>warning</xsl:text>
-                </xsl:attribute>
-                <xsl:text>More than one package specified</xsl:text>
-            </xsl:element>
-        </xsl:if>
+      <xsl:if test="count(/program/metas/meta[head ='package'])&gt;1">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>more-one-package</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>warning</xsl:text>
+          </xsl:attribute>
+          <xsl:text>More than one package specified</xsl:text>
+        </xsl:element>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
