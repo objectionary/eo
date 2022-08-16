@@ -7,6 +7,8 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -14,6 +16,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test for {@link Ram}.
  * @since 1.0
  */
+@Execution(ExecutionMode.CONCURRENT)
 final class RamTest {
     @ParameterizedTest
     @CsvSource({
