@@ -49,6 +49,12 @@ import org.xembly.Directives;
  *  After that update this todo. When all data types
  *  are stored as bytes, remove data attribute from XML
  *  and XSLT templates.
+ * @todo #348:30min Avoid using Java types in XSLT
+ *  processing. data.xslt and to-java.xslt use
+ *  java-type attribute. This attribute is redundant
+ *  and can be replaced by type inference. This
+ *  change will ease the task off removing data
+ *  attribute above.
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class XeListener implements ProgramListener, Iterable<Directive> {
