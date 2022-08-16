@@ -31,10 +31,10 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
- * @todo #632:30min Implement shift & left methods.
- *  New implementation should not truncate length of
- *  the original massive. After that, update this PDD
- *  to make changes to a corresponding EObytes classes.
+ * @todo #632:30min Current shift implementation
+ *  does not preserve sing. Add sign-preserving
+ *  shift if needed. After that, update this PDD
+ *  to make changes to corresponding EObytes classes.
  */
 public final class BytesOf implements Bytes {
     /**
@@ -115,13 +115,41 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
-    public Bytes left(final int size) {
-        throw new UnsupportedOperationException("left-shift in NYI");
-    }
+    public Bytes shift(final int bits) {
+        final byte[] bytes = this.take();
+        final int mod = Math.abs(bits) % 8;
+        final int offset = Math.abs(bits) / 8;
+        if (bits < 0) {
+            final byte carry = (byte) ((0x01 << mod) - 1);
+            for (int i = 0; i < bytes.length; i++) {
+                final int source = i + offset;
+                if (source >= bytes.length) {
+                    bytes[i] = 0;
+                } else {
+                    byte dst = (byte) (bytes[source] << mod);
+                    if (source + 1 < bytes.length) {
+                        dst |= bytes[source + 1] >>> (8 - mod) & carry;
+                    }
+                    bytes[i] = dst;
+                }
+            }
+        } else {
+            final byte carry = (byte) (0xFF << (8 - mod));
+            for (int i = bytes.length - 1; i >= 0; i--) {
+                final int source = i - offset;
+                if (source < 0) {
+                    bytes[i] = 0;
+                } else {
+                    byte dst = (byte) ((0xff & bytes[source]) >>> mod);
+                    if (source - 1 >= 0) {
+                        dst |= bytes[source - 1] << (8 - mod) & carry;
+                    }
+                    bytes[i] = dst;
+                }
+            }
 
-    @Override
-    public Bytes right(final int size) {
-        throw new UnsupportedOperationException("right-shift in NYI");
+        }
+        return new BytesOf(bytes);
     }
 
     @Override
