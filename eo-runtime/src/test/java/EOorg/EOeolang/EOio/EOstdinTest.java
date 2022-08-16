@@ -128,6 +128,48 @@ public final class EOstdinTest {
         );
     }
 
+    @Test
+    public void stdinMultipleNewLineCrushTest() {
+        for(int i = 0; i < 1e3; ++i) {
+            stdinOneLineTest();
+        }
+    }
+
+    @Test
+    public void stdinMultipleNextLineCrushTest() {
+        for(int i = 0; i < 1e3; ++i) {
+            nextLineOneLineTest();
+        }
+    }
+    
+    @Test
+    public void stdinfewOneLineTest() {
+        String expected1 = "first-line";
+        String expected2 = "second-line";
+        String expected3 = "third-line";
+        mockSystemIn(expected1 + "\n" + expected2 + "\n" + expected3 + "\n");
+        Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        String actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(expected1)
+        );
+
+        phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(expected2)
+        );
+
+        phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(expected3)
+        );        
+    }
+
     private void mockSystemIn(String mockingText) {
         System.setIn(new ByteArrayInputStream(mockingText.getBytes()));
     }

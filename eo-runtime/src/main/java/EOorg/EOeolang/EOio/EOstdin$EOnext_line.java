@@ -28,6 +28,8 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.Scanner;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.ExFailure;
@@ -59,7 +61,22 @@ public class EOstdin$EOnext_line extends PhDefault {
                                 "There is no line in the standard input stream to consume"
                             );
                         }
-                        return new Data.ToPhi(sc.nextLine());
+
+                        final String firstline = sc.nextLine();
+                        if(sc.hasNextLine()) {
+                            String leftlines = "";
+                            while(sc.hasNextLine()) {
+                                leftlines += sc.nextLine() + "\n";
+                            }
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(leftlines);
+                            String data = sb.toString();
+                            InputStream is = new ByteArrayInputStream(data.getBytes());
+                            System.setIn(is);
+                        }
+
+                        return new Data.ToPhi(firstline);
                     }
                 }
             )
