@@ -34,6 +34,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
 import org.xembly.Directive;
@@ -379,8 +380,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             type = "bytes";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = XeListener.bytesToHex(
-                XeListener.trimMargin(text, indent)
-                    .getBytes(StandardCharsets.UTF_8)
+                StringEscapeUtils.unescapeJava(
+                    XeListener.trimMargin(text, indent)
+                ).getBytes(StandardCharsets.UTF_8)
             );
         } else {
             throw new ParsingException(
