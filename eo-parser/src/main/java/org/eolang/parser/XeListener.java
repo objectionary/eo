@@ -365,29 +365,37 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
+        final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             type = "bytes";
+            base = "bytes";
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
         } else if (ctx.BOOL() != null) {
             type = "bool";
+            base = "bool";
             data = Boolean.toString(Boolean.parseBoolean(text));
         } else if (ctx.FLOAT() != null) {
             type = "float";
+            base = "float";
             data = Double.toString(Double.parseDouble(text));
         } else if (ctx.INT() != null) {
             type = "int";
+            base = "int";
             data = Long.toString(Long.parseLong(text));
         } else if (ctx.HEX() != null) {
             type = "int";
+            base = "int";
             data = Long.toString(
                 Long.parseLong(text.substring(2), 16)
             );
         } else if (ctx.STRING() != null) {
             type = "string";
+            base = "string";
             data = text.substring(1, text.length() - 1);
         } else if (ctx.TEXT() != null) {
             type = "bytes";
+            base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = XeListener.bytesToHex(
                 StringEscapeUtils.unescapeJava(
@@ -405,7 +413,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             );
         }
         this.objects.prop("data", type);
-        this.objects.prop("base", type);
+        this.objects.prop("base", base);
         this.objects.data(
             data
                 .replace("\n", "\\n")
