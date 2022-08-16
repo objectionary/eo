@@ -24,10 +24,12 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.StringJoiner;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -374,9 +376,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             type = "string";
             data = text.substring(1, text.length() - 1);
         } else if (ctx.TEXT() != null) {
-            type = "string";
+            type = "bytes";
             final int indent = ctx.getStart().getCharPositionInLine();
-            data = XeListener.trimMargin(text, indent);
+            data = XeListener.bytesToHex(
+                XeListener.trimMargin(text, indent)
+                    .getBytes(StandardCharsets.UTF_8)
+            );
         } else {
             throw new ParsingException(
                 String.format(
@@ -469,5 +474,18 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             res = res.substring(0, res.length() - 1);
         }
         return res;
+    }
+
+    /**
+     * Bytes to HEX.
+     * @param bytes Bytes.
+     * @return Hexadecimal value as string.
+     */
+    private static String bytesToHex(final byte[] bytes) {
+        final StringJoiner str = new StringJoiner(" ");
+        for (final byte bty : bytes) {
+            str.add(String.format("%02X", bty));
+        }
+        return str.toString();
     }
 }
