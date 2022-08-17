@@ -2,7 +2,13 @@ locators:
   - .simple .φ .α0 .α0 .Δ =bool/true
   - .simple .φ .α1 .Δ =int/42
   - .simple .φ .α2 .hello .Δ =string/Jeff
+  - .boom .x
+  - .boom λfoo.boom
 eo: |
+  +package foo
+  
+  [x] > boom /int
+
   [] > simple
     foo > @
       bar
@@ -10,3 +16,4 @@ eo: |
       42
       []
         "Jeff" > hello
+

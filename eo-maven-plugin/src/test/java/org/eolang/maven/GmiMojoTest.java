@@ -230,6 +230,21 @@ public final class GmiMojoTest {
                         break;
                     }
                 }
+                if (sub.charAt(0) == 'λ') {
+                    matches = !this.graph.xpath(
+                        String.format(
+                            "//v[@id='%s']/lambda[text() = '%s']/text()",
+                            vertex, sub.substring(1)
+                        )
+                    ).isEmpty();
+                    if (!matches) {
+                        this.failure = String.format(
+                            "Can't find lambda '%s' while staying at %s",
+                            sub, vertex
+                        );
+                        break;
+                    }
+                }
             }
             return matches;
         }

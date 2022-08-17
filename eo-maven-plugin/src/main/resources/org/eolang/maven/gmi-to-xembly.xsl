@@ -114,4 +114,16 @@ SOFTWARE.
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
+  <xsl:template match="i[@name='ATOM']">
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>ADD "lambda"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>SET "</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
 </xsl:stylesheet>
