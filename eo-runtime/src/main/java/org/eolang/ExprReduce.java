@@ -34,15 +34,16 @@ import java.util.function.Function;
  * <p/>Definition example:
  * <code><pre>
  *     final VarargExpr&lt;Long&gt; expr = new VarargExpr<>(
- *         new ExprReduce.Storage(
  *         "plus",
  *         "x",
- *         Long.class
- *         ),
- *         Long::sum,
+ *         new ExrpReduce.Args(
+ *             Long.class,
+ *             Long::sum,
+ *             x -> ""
+ *         )
  *     );
  * </pre></code>
- * @param <T> Type of arguments
+ * @param <T> Type of arguments passing to validation and reduction functions
  * @since 1.0
  */
 public final class ExprReduce<T> implements Expr {
@@ -52,6 +53,9 @@ public final class ExprReduce<T> implements Expr {
      */
     private final String param;
 
+    /**
+     * Object contains type of varargs, validation and reduction functions.
+     */
     private final Args<T> arguments;
 
     /**
@@ -62,14 +66,14 @@ public final class ExprReduce<T> implements Expr {
     /**
      * Ctor.
      *
-     * @param arguments Stores operation name, name of parameter with varargs and type of varargs
-     * @param reduction Reduction operation on consecutive varags
-     * @param validation Validation function
+     * @param oper Operation name
+     * @param param Param name with varargs
+     * @param arguments Object contains type of varargs, validation and reduction functions
      */
     public ExprReduce(
-            final String oper,
-            final String param,
-            final Args<T> arguments
+        final String oper,
+        final String param,
+        final Args<T> arguments
     ) {
         this.oper = oper;
         this.param = param;
@@ -78,19 +82,19 @@ public final class ExprReduce<T> implements Expr {
 
     @Override
     public Phi get(final Phi rho) {
-        T acc = arguments.accumulator(rho);
+        T acc = this.arguments.accumulator(rho);
         final Phi[] args = new Param(rho, this.param).strong(Phi[].class);
         for (int idx = 0; idx < args.length; ++idx) {
             final Object val = new Dataized(args[idx]).take();
-            arguments.checkType(val,this.oper, idx);
-            final String msg = arguments.validate(val);
+            this.arguments.checkType(val, this.oper, idx);
+            final String msg = this.arguments.validate(val);
             if (!msg.isEmpty()) {
                 throw new ExFailure(
-                        "The %dth argument of '%s' is invalid: %s",
-                        idx + 1, this.oper, msg
+                    "The %dth argument of '%s' is invalid: %s",
+                    idx + 1, this.oper, msg
                 );
             }
-            acc = arguments.reduce(acc, val);
+            acc = this.arguments.reduce(acc, val);
         }
         return new Data.ToPhi(acc);
     }
@@ -99,13 +103,19 @@ public final class ExprReduce<T> implements Expr {
      * Builds a class that stores some attributes of ExprReduce object.
      * <p/>Definition example:
      * <code><pre>
-     *     final VarargExpr&lt;Long&gt; st = new Storage<>(
-     *         "plus",
-     *         "x",
-     *         Long.class
+     *     final VarargExpr&lt;Long&gt; st = new Args<>(
+     *         Long.class,
+     *         (acc, x) -> acc / x,
+     *         x -> {
+     *             String msg = "";
+     *             if (x.equals(0.0)) {
+     *                 msg = "division by zero is infinity";
+     *             }
+     *             return msg;
+     *         }
      *     );
      * </pre></code>
-     * @param <T> Type of arguments
+     * @param <T> Type of arguments passing to validation and reduction functions
      * @since 1.0
      */
     public static final class Args<T> {
@@ -128,39 +138,65 @@ public final class ExprReduce<T> implements Expr {
         /**
          * Ctor.
          *
-         * @param oper Operation name
-         * @param param Name of parameter with varargs
          * @param type Type of varargs
+         * @param reduction Reduction operation on consecutive varags
+         * @param validation Validation function
          */
         public Args(
-                final Class<T> type,
-                final BiFunction<T, T, T> reduction,
-                final Function<T, String> validation
+            final Class<T> type,
+            final BiFunction<T, T, T> reduction,
+            final Function<T, String> validation
         ) {
             this.type = type;
             this.reduction = reduction;
             this.validation = validation;
         }
 
-        public void checkType(final Object val, final String oper, int idx){
+        /**
+         * Ctor.
+         *
+         * @param val New object that should be added
+         * @param oper Operation name
+         * @param idx Index or the currently processed argument
+         */
+        public void checkType(final Object val, final String oper, final int idx) {
             if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
                 throw new ExFailure(
-                        "The %dth argument of '%s' is not a(n) %s: %s",
-                        idx + 1, oper, this.type.getSimpleName(), val
+                    "The %dth argument of '%s' is not a(n) %s: %s",
+                    idx + 1, oper, this.type.getSimpleName(), val
                 );
             }
         }
 
-        public T accumulator(final Phi rho){
+        /**
+         * Ctor.
+         *
+         * @param rho Rho object
+         * @return Retuns the default state of accumulator
+         */
+        public T accumulator(final Phi rho) {
             return new Param(rho).strong(this.type);
         }
 
-        public String validate(final Object val){
+        /**
+         * Ctor.
+         *
+         * @param val New object that should be added
+         * @return Returns empty string if validation passed and error message else
+         */
+        public String validate(final Object val) {
             final T typed = this.type.cast(val);
             return this.validation.apply(typed);
         }
 
-        public T reduce(T acc, final Object val){
+        /**
+         * Ctor.
+         *
+         * @param acc Accumulator of the reduce method
+         * @param val New object that should be added
+         * @return Returns new state of accumulator after adding a new value
+         */
+        public T reduce(final T acc, final Object val) {
             final T typed = this.type.cast(val);
             return this.reduction.apply(acc, typed);
         }

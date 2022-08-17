@@ -57,11 +57,11 @@ public class EOfloat$EOplus extends PhDefault {
                 new ExprReduce<>(
                     "float.plus",
                     "x",
-             new ExprReduce.Args<Double>(
-                Double.class,
-                Double::sum,
-                x -> ""
-        )
+                    new ExprReduce.Args<Double>(
+                        Double.class,
+                        Double::sum,
+                        x -> ""
+                    )
                 )
             )
         );

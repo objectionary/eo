@@ -61,11 +61,11 @@ public class EOint$EOplus extends PhDefault {
                 new ExprReduce<>(
                     "int.plus",
                     "x",
-                        new ExprReduce.Args<Long>(
-                                Long.class,
-                                Long::sum,
-                                x -> ""
-                        )
+                    new ExprReduce.Args<Long>(
+                        Long.class,
+                        Long::sum,
+                        x -> ""
+                    )
                 )
             )
         );

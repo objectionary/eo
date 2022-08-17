@@ -38,11 +38,11 @@ class ExprReduceTest {
         final ExprReduce<Long> expr = new ExprReduce<>(
             "plus",
             "x",
-                new ExprReduce.Args<Long>(
-                        Long.class,
-                        Long::sum,
-                        x -> ""
-                )
+            new ExprReduce.Args<Long>(
+                Long.class,
+                Long::sum,
+                x -> ""
+            )
         );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
@@ -60,11 +60,11 @@ class ExprReduceTest {
         final ExprReduce<Long> expr = new ExprReduce<>(
             "plus",
             "x",
-                new ExprReduce.Args<Long>(
-                        Long.class,
-                        Long::sum,
-                        x -> ""
-                )
+            new ExprReduce.Args<Long>(
+                Long.class,
+                Long::sum,
+                x -> ""
+            )
         );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
