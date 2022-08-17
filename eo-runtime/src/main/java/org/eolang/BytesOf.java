@@ -37,8 +37,9 @@ import java.util.Arrays;
  *  to make changes to corresponding EObytes classes.
  */
 public final class BytesOf implements Bytes {
+
     /**
-     * Binary data
+     * Binary data.
      */
     private final byte[] data;
 
@@ -55,7 +56,7 @@ public final class BytesOf implements Bytes {
      * @param str UTF-8 Text.
      */
     public BytesOf(final String str) {
-       this(str.getBytes(StandardCharsets.UTF_8));
+        this(str.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -63,12 +64,11 @@ public final class BytesOf implements Bytes {
      * @param number Long number.
      */
     public BytesOf(final long number) {
-       this(ByteBuffer.allocate(Long.BYTES).putLong(number).array());
+        this(ByteBuffer.allocate(Long.BYTES).putLong(number).array());
     }
 
-
     /**
-     * Ctor
+     * Ctor.
      * @param number Double number.
      */
     public BytesOf(final Double number) {
@@ -78,8 +78,8 @@ public final class BytesOf implements Bytes {
     @Override
     public Bytes not() {
         final byte[] copy = this.take();
-        for (int i = 0; i < copy.length; i++) {
-            copy[i] = (byte) ~copy[i];
+        for (int index = 0; index < copy.length; index += 1) {
+            copy[index] = (byte) ~copy[index];
         }
         return new BytesOf(copy);
     }
@@ -88,8 +88,8 @@ public final class BytesOf implements Bytes {
     public Bytes and(final Bytes other) {
         final byte[] first = this.take();
         final byte[] second = other.take();
-        for (int i = 0; i < Math.min(first.length, second.length); i++) {
-            first[i] = (byte) (first[i] & second[i]);
+        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
+            first[index] = (byte) (first[index] & second[index]);
         }
         return new BytesOf(first);
     }
@@ -98,8 +98,8 @@ public final class BytesOf implements Bytes {
     public Bytes or(final Bytes other) {
         final byte[] first = this.take();
         final byte[] second = other.take();
-        for (int i = 0; i < Math.min(first.length, second.length); i++) {
-            first[i] = (byte) (first[i] | second[i]);
+        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
+            first[index] = (byte) (first[index] | second[index]);
         }
         return new BytesOf(first);
     }
@@ -108,46 +108,47 @@ public final class BytesOf implements Bytes {
     public Bytes xor(final Bytes other) {
         final byte[] first = this.take();
         final byte[] second = other.take();
-        for (int i = 0; i < Math.min(first.length, second.length); i++) {
-            first[i] = (byte) (first[i] ^ second[i]);
+        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
+            first[index] = (byte) (first[index] ^ second[index]);
         }
         return new BytesOf(first);
     }
 
     @Override
     public Bytes shift(final int bits) {
+        // @checkstyle MethodBodyCommentsCheck (3 lines)
+        // @checkstyle NestedIfDepthCheck (40 lines)
         final byte[] bytes = this.take();
         final int mod = Math.abs(bits) % 8;
         final int offset = Math.abs(bits) / 8;
         if (bits < 0) {
             final byte carry = (byte) ((0x01 << mod) - 1);
-            for (int i = 0; i < bytes.length; i++) {
-                final int source = i + offset;
+            for (int index = 0; index < bytes.length; index += 1) {
+                final int source = index + offset;
                 if (source >= bytes.length) {
-                    bytes[i] = 0;
+                    bytes[index] = 0;
                 } else {
                     byte dst = (byte) (bytes[source] << mod);
                     if (source + 1 < bytes.length) {
                         dst |= bytes[source + 1] >>> (8 - mod) & carry;
                     }
-                    bytes[i] = dst;
+                    bytes[index] = dst;
                 }
             }
         } else {
             final byte carry = (byte) (0xFF << (8 - mod));
-            for (int i = bytes.length - 1; i >= 0; i--) {
-                final int source = i - offset;
+            for (int index = bytes.length - 1; index >= 0; index -= 1) {
+                final int source = index - offset;
                 if (source < 0) {
-                    bytes[i] = 0;
+                    bytes[index] = 0;
                 } else {
                     byte dst = (byte) ((0xff & bytes[source]) >>> mod);
                     if (source - 1 >= 0) {
                         dst |= bytes[source - 1] << (8 - mod) & carry;
                     }
-                    bytes[i] = dst;
+                    bytes[index] = dst;
                 }
             }
-
         }
         return new BytesOf(bytes);
     }

@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
@@ -43,6 +47,7 @@ public final class EOregexEOmatchTest {
      * Method name.
      */
     private static final String MATCH = "match";
+
     /**
      * Attribute name.
      */
@@ -50,9 +55,9 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void matchesString() {
-        final String r = "/([a-z]+)/";
+        final String pattern = "/([a-z]+)/";
         final Phi regex = new EOregex(Phi.Φ);
-        regex.attr("r").put(new Data.ToPhi(r));
+        regex.attr("r").put(new Data.ToPhi(pattern));
         final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(
@@ -68,9 +73,9 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void matchesStringWithEntirePattern() {
-        final String r = "/([a-z]+)/";
+        final String pattern = "/([a-z]+)/";
         final Phi regex = new EOregex(Phi.Φ);
-        regex.attr(0).put(new Data.ToPhi(r));
+        regex.attr(0).put(new Data.ToPhi(pattern));
         final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(
@@ -86,9 +91,9 @@ public final class EOregexEOmatchTest {
 
     @Test
     public void doesntMatchString() {
-        final String r = "/([A-Z]{2})/";
+        final String pattern = "/([A-Z]{2})/";
         final Phi regex = new EOregex(Phi.Φ);
-        regex.attr(0).put(new Data.ToPhi(r));
+        regex.attr(0).put(new Data.ToPhi(pattern));
         final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(

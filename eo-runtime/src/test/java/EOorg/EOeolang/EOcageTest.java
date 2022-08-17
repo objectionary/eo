@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
@@ -205,7 +209,15 @@ public final class EOcageTest {
         ).take(Boolean.class);
     }
 
+    /**
+     * Dummy Phi.
+     * @since 1.0
+     */
     public static class Dummy extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Dummy(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());

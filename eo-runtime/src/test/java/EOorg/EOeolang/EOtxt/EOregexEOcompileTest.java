@@ -21,6 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
@@ -42,6 +50,7 @@ public final class EOregexEOcompileTest {
      * Method name.
      */
     private static final String MATCH = "match";
+
     /**
      * Attribute name.
      */
@@ -49,9 +58,9 @@ public final class EOregexEOcompileTest {
 
     @Test
     public void compiledWithoutFlag() {
-        final String r = "/([a-z]+)/";
+        final String pattern = "/([a-z]+)/";
         final Phi regex = new EOregex(Phi.Φ);
-        regex.attr("r").put(new Data.ToPhi(r));
+        regex.attr("r").put(new Data.ToPhi(pattern));
         final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(
@@ -67,9 +76,9 @@ public final class EOregexEOcompileTest {
 
     @Test
     public void compiledWithFlag() {
-        String r = "/([a-z]+)/i";
+        final String pattern = "/([a-z]+)/i";
         final Phi regex = new EOregex(Phi.Φ);
-        regex.attr("r").put(new Data.ToPhi(r));
+        regex.attr("r").put(new Data.ToPhi(pattern));
         final Phi compiled = new EOregex$EOcompile(regex);
         MatcherAssert.assertThat(
             new Dataized(

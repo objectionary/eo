@@ -54,12 +54,26 @@ public final class AtNamedTest {
         );
     }
 
+    /**
+     * Dummy Phi.
+     * @since 1.0
+     */
     private static class Dummy extends PhDefault {
+
+        /**
+         * Ctor.
+         */
         Dummy() {
             super();
-            this.add("x", new AtComposite(this, rho -> {
-                throw new ExFailure("intended");
-            }));
+            this.add(
+                "x",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        throw new ExFailure("intended");
+                    }
+                )
+            );
         }
     }
 
