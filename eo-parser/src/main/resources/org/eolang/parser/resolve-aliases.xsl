@@ -50,7 +50,7 @@ SOFTWARE.
                 <xsl:value-of select="$meta/@line"/>
               </xsl:message>
             </xsl:if>
-            <xsl:value-of select="$tail"/>
+            <xsl:value-of select="$tail[1]"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$o/@base"/>
