@@ -129,20 +129,6 @@ public final class EOstdinTest {
     }
 
     @Test
-    public void stdinMultipleNewLineCrushTest() {
-        for(int i = 0; i < 1e3; ++i) {
-            stdinOneLineTest();
-        }
-    }
-
-    @Test
-    public void stdinMultipleNextLineCrushTest() {
-        for(int i = 0; i < 1e3; ++i) {
-            nextLineOneLineTest();
-        }
-    }
-    
-    @Test
     public void stdinfewOneLineTest() {
         String expected1 = "first-line";
         String expected2 = "second-line";
