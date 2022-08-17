@@ -98,7 +98,7 @@ public final class Dataized {
             }
             final Object data = Data.class.cast(src).take();
             if (Dataized.LOGGER.isLoggable(Level.FINE)
-                && Dataized.LEVEL.get() < Dataized.MAX_LEVEL.get() + 1
+                && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
             ) {
                 Dataized.LOGGER.log(
                     Level.FINE,
