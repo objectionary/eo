@@ -108,6 +108,13 @@ abstract class SafeMojo extends AbstractMojo {
     protected String scope = "compile";
 
     /**
+     * Whether we should skip goals execution.
+     */
+    @Parameter(property = "eo.skip", defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Boolean skip = false;
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
@@ -121,6 +128,9 @@ abstract class SafeMojo extends AbstractMojo {
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         try {
+            if (this.skip) {
+                return;
+            }
             final long start = System.nanoTime();
             this.exec();
             if (Logger.isDebugEnabled(this)) {
