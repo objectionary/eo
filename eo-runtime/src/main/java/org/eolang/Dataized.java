@@ -59,7 +59,7 @@ public final class Dataized {
      * Max dataization level.
      */
     private static final ThreadLocal<Integer> MAX_LEVEL = ThreadLocal.withInitial(() ->
-            Integer.getInteger("max.dataization.log", 4));
+            Integer.getInteger("max.dataization.log", 3));
 
     /**
      * The object to datarize.
@@ -98,7 +98,7 @@ public final class Dataized {
             }
             final Object data = Data.class.cast(src).take();
             if (Dataized.LOGGER.isLoggable(Level.FINE)
-                && Dataized.LEVEL.get() < Dataized.MAX_LEVEL.get()
+                && Dataized.LEVEL.get() < Dataized.MAX_LEVEL.get() + 1
             ) {
                 Dataized.LOGGER.log(
                     Level.FINE,
