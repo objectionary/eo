@@ -63,6 +63,12 @@ public final class Main {
     private static final Logger EOLOG = Logger.getLogger("org.eolang");
 
     /**
+     * Not for instantiation.
+     */
+    private Main() {
+    }
+
+    /**
      * The method called by JVM when the program starts.
      *
      * @param args Command line args

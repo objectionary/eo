@@ -50,6 +50,7 @@ public interface Bytes extends Data<byte[]> {
      * OR operation.
      * @param other Bytes.
      * @return Bytes.
+     * @checkstyle MethodNameCheck (2 lines)
      */
     Bytes or(Bytes other);
 

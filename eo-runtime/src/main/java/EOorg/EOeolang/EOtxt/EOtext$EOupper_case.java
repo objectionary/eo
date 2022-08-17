@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Eugene Darashkevich
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
-import org.eolang.*;
+import org.eolang.AtComposite;
+import org.eolang.Data;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
  * UPPER_CASE.

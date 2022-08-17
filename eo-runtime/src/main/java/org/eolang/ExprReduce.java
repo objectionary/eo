@@ -69,6 +69,7 @@ public final class ExprReduce<T> implements Expr {
      * @param oper Operation name
      * @param param Param name with varargs
      * @param arguments Object contains type of varargs, validation and reduction functions
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public ExprReduce(
         final String oper,
@@ -79,7 +80,6 @@ public final class ExprReduce<T> implements Expr {
         this.param = param;
         this.arguments = arguments;
     }
-
     @Override
     public Phi get(final Phi rho) {
         T acc = this.arguments.accumulator(rho);
