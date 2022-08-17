@@ -87,8 +87,7 @@ public final class Param {
                     StandardCharsets.UTF_8
                 )
             );
-        }
-        else if (!type.isInstance(ret)) {
+        } else if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
                     "The argument '.%s' is of Java type '%s', not '%s' as expected",
@@ -97,8 +96,7 @@ public final class Param {
                     type.getCanonicalName()
                 )
             );
-        }
-        else {
+        } else {
             result = ret;
         }
         return type.cast(result);
