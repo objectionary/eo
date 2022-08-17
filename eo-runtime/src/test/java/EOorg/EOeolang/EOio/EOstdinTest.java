@@ -130,33 +130,31 @@ public final class EOstdinTest {
 
     @Test
     public void stdinfewOneLineTest() {
-        String first = "first-line";
-        String second = "second-line";
-        String third = "third-line";
-        mockSystemIn(first + "\n" + second + "\n" + third + "\n");
+        final String first = "first-line";
+        final String second = "second-line";
+        final String third = "third-line";
+        this.mockSystemIn("first-line\nsecond-line\nthird-line\n");
         Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
             Matchers.equalTo(first)
         );
-
         phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
             Matchers.equalTo(second)
         );
-
         phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
             Matchers.equalTo(third)
-        );        
+        );
     }
 
-    private void mockSystemIn(String mockingText) {
-        System.setIn(new ByteArrayInputStream(mockingText.getBytes()));
+    private void mockSystemIn(final String text) {
+        System.setIn(new ByteArrayInputStream(text.getBytes()));
     }
 }
