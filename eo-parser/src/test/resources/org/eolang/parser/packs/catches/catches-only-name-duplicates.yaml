@@ -1,11 +1,11 @@
 xsls:
   - /org/eolang/parser/errors/duplicate-names.xsl
+  - /org/eolang/parser/errors/duplicate-aliases.xsl
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/errors/unused-aliases.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=1]
-  - /program/errors/error[@line='3']
   - //o[@name='foo']
 eo: |
   +alias org.eolang.io.stdout
