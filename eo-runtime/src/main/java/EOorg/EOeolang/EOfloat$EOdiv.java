@@ -57,6 +57,7 @@ public class EOfloat$EOdiv extends PhDefault {
                 new ExprReduce<>(
                     "float.div",
                     "x",
+                    new ExprReduce.Args<Double>(
                     Double.class,
                     (acc, x) -> acc / x,
                     x -> {
@@ -66,6 +67,7 @@ public class EOfloat$EOdiv extends PhDefault {
                         }
                         return msg;
                     }
+                    )
                 )
             )
         );

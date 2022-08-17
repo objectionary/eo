@@ -57,8 +57,11 @@ public class EOfloat$EOtimes extends PhDefault {
                 new ExprReduce<>(
                     "float.times",
                     "x",
-                    Double.class,
-                    (acc, x) -> acc * x
+        new ExprReduce.Args<Double>(
+                Double.class,
+                (acc, x) -> acc * x,
+                x -> ""
+        )
                 )
             )
         );

@@ -34,9 +34,11 @@ import java.util.function.Function;
  * <p/>Definition example:
  * <code><pre>
  *     final VarargExpr&lt;Long&gt; expr = new VarargExpr<>(
+ *         new ExprReduce.Storage(
  *         "plus",
  *         "x",
- *         Long.class,
+ *         Long.class
+ *         ),
  *         Long::sum,
  *     );
  * </pre></code>
@@ -50,20 +52,7 @@ public final class ExprReduce<T> implements Expr {
      */
     private final String param;
 
-    /**
-     * Varargs type.
-     */
-    private final Class<T> type;
-
-    /**
-     * Reduction.
-     */
-    private final BiFunction<T, T, T> reduction;
-
-    /**
-     * Validation.
-     */
-    private final Function<T, String> validation;
+    private final Args<T> arguments;
 
     /**
      * Operation name.
@@ -73,70 +62,107 @@ public final class ExprReduce<T> implements Expr {
     /**
      * Ctor.
      *
-     * @param oper Operation name
-     * @param param Name of parameter with varargs
-     * @param type Type of varargs
+     * @param arguments Stores operation name, name of parameter with varargs and type of varargs
      * @param reduction Reduction operation on consecutive varags
      * @param validation Validation function
      */
     public ExprReduce(
-        final String oper,
-        final String param,
-        final Class<T> type,
-        final BiFunction<T, T, T> reduction,
-        final Function<T, String> validation
+            final String oper,
+            final String param,
+            final Args<T> arguments
     ) {
-        this.param = param;
-        this.type = type;
-        this.reduction = reduction;
         this.oper = oper;
-        this.validation = validation;
-    }
-
-    /**
-     * Ctor.
-     * @param oper Peration name
-     * @param param Name of parameter with varargs
-     * @param type Type of varargs
-     * @param reduction Reduction operation on consecutive varargs
-     */
-    public ExprReduce(
-        final String oper,
-        final String param,
-        final Class<T> type,
-        final BiFunction<T, T, T> reduction
-    ) {
-        this(
-            oper,
-            param,
-            type,
-            reduction,
-            x -> ""
-        );
+        this.param = param;
+        this.arguments = arguments;
     }
 
     @Override
     public Phi get(final Phi rho) {
-        T acc = new Param(rho).strong(this.type);
+        T acc = arguments.accumulator(rho);
         final Phi[] args = new Param(rho, this.param).strong(Phi[].class);
         for (int idx = 0; idx < args.length; ++idx) {
             final Object val = new Dataized(args[idx]).take();
-            if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
-                throw new ExFailure(
-                    "The %dth argument of '%s' is not a(n) %s: %s",
-                    idx + 1, this.oper, this.type.getSimpleName(), val
-                );
-            }
-            final T typed = this.type.cast(val);
-            final String msg = this.validation.apply(typed);
+            arguments.checkType(val,this.oper, idx);
+            final String msg = arguments.validate(val);
             if (!msg.isEmpty()) {
                 throw new ExFailure(
-                    "The %dth argument of '%s' is invalid: %s",
-                    idx + 1, this.oper, msg
+                        "The %dth argument of '%s' is invalid: %s",
+                        idx + 1, this.oper, msg
                 );
             }
-            acc = this.reduction.apply(acc, typed);
+            acc = arguments.reduce(acc, val);
         }
         return new Data.ToPhi(acc);
+    }
+
+    /**
+     * Builds a class that stores some attributes of ExprReduce object.
+     * <p/>Definition example:
+     * <code><pre>
+     *     final VarargExpr&lt;Long&gt; st = new Storage<>(
+     *         "plus",
+     *         "x",
+     *         Long.class
+     *     );
+     * </pre></code>
+     * @param <T> Type of arguments
+     * @since 1.0
+     */
+    public static final class Args<T> {
+
+        /**
+         * Varargs type.
+         */
+        private final Class<T> type;
+
+        /**
+         * Reduction.
+         */
+        private final BiFunction<T, T, T> reduction;
+
+        /**
+         * Validation.
+         */
+        private final Function<T, String> validation;
+
+        /**
+         * Ctor.
+         *
+         * @param oper Operation name
+         * @param param Name of parameter with varargs
+         * @param type Type of varargs
+         */
+        public Args(
+                final Class<T> type,
+                final BiFunction<T, T, T> reduction,
+                final Function<T, String> validation
+        ) {
+            this.type = type;
+            this.reduction = reduction;
+            this.validation = validation;
+        }
+
+        public void checkType(final Object val, final String oper, int idx){
+            if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
+                throw new ExFailure(
+                        "The %dth argument of '%s' is not a(n) %s: %s",
+                        idx + 1, oper, this.type.getSimpleName(), val
+                );
+            }
+        }
+
+        public T accumulator(final Phi rho){
+            return new Param(rho).strong(this.type);
+        }
+
+        public String validate(final Object val){
+            final T typed = this.type.cast(val);
+            return this.validation.apply(typed);
+        }
+
+        public T reduce(T acc, final Object val){
+            final T typed = this.type.cast(val);
+            return this.reduction.apply(acc, typed);
+        }
     }
 }
