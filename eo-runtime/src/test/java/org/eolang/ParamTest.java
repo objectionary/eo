@@ -43,11 +43,15 @@ final class ParamTest {
                     new EOstring(Phi.Φ),
                     "ρ",
                     new Data.Value<>(
-                        new byte[]{'A', 'B', 'C'}
+                        new byte[]{
+                            (byte) 0xD0, (byte) 0xB0,
+                            (byte) 0xD0, (byte) 0xB1,
+                            (byte) 0xD0, (byte) 0xB2
+                        }
                     )
                 )
             ).strong(String.class) ,
-            Matchers.is("ABC")
+            Matchers.is("абв")
         );
     }
 
