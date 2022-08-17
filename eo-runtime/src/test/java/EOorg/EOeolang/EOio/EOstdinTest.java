@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
@@ -43,6 +47,9 @@ import org.junit.jupiter.api.Test;
  */
 public final class EOstdinTest {
 
+    /**
+     * DEFAULT_STDIN.
+     */
     private static final InputStream DEFAULT_STDIN = System.in;
 
     @AfterAll
@@ -52,8 +59,8 @@ public final class EOstdinTest {
 
     @Test
     public void nextLineOneLineTest() {
-        String expected = "this is a test input!";
-        mockSystemIn(expected + "\n");
+        final String expected = "this is a test input!";
+        this.mockSystemIn(String.format("%s\n", expected));
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -64,9 +71,9 @@ public final class EOstdinTest {
 
     @Test
     public void nextLineMultiLineTest() {
-        String expected = "this is a test input!";
-        String input = expected + "\nanother line\nyet another line";
-        mockSystemIn(input);
+        final String expected = "this is a test input!";
+        final String input = String.format("%s\nanother line\nyet another line", expected);
+        this.mockSystemIn(input);
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -77,8 +84,8 @@ public final class EOstdinTest {
 
     @Test
     public void nextLineEmptyTest() {
-        String expected = "";
-        mockSystemIn(expected);
+        final String expected = "";
+        this.mockSystemIn(expected);
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
@@ -94,8 +101,8 @@ public final class EOstdinTest {
 
     @Test
     public void stdinOneLineTest() {
-        String expected = "this is a testing input!\n";
-        mockSystemIn(expected);
+        final String expected = "this is a testing input!\n";
+        this.mockSystemIn(expected);
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -106,8 +113,8 @@ public final class EOstdinTest {
 
     @Test
     public void stdinMultiLineTest() {
-        String expected = "this is a test input!\nanother line\nyet another line";
-        mockSystemIn(expected);
+        final String expected = "this is a test input!\nanother line\nyet another line";
+        this.mockSystemIn(expected);
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -118,8 +125,8 @@ public final class EOstdinTest {
 
     @Test
     public void stdinEmptyTest() {
-        String expected = "";
-        mockSystemIn(expected);
+        final String expected = "";
+        this.mockSystemIn(expected);
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(

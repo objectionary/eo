@@ -78,6 +78,7 @@ public final class ExprReduce<T> implements Expr {
      * @param type Type of varargs
      * @param reduction Reduction operation on consecutive varags
      * @param validation Validation function
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public ExprReduce(
         final String oper,
@@ -99,6 +100,7 @@ public final class ExprReduce<T> implements Expr {
      * @param param Name of parameter with varargs
      * @param type Type of varargs
      * @param reduction Reduction operation on consecutive varargs
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public ExprReduce(
         final String oper,

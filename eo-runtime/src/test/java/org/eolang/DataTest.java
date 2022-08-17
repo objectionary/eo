@@ -171,7 +171,7 @@ public final class DataTest {
             new Data.Value<>(
                 new Phi[] {
                     new Data.ToPhi("foo"),
-                    new Data.ToPhi(1L)
+                    new Data.ToPhi(1L),
                 }
             ),
             Matchers.not(
@@ -179,7 +179,7 @@ public final class DataTest {
                     new Data.Value<>(
                         new Phi[] {
                             new Data.ToPhi("foo"),
-                            new Data.ToPhi(1L)
+                            new Data.ToPhi(1L),
                         }
                     )
                 )
