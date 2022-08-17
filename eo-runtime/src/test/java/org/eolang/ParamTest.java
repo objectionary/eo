@@ -50,7 +50,7 @@ final class ParamTest {
                         }
                     )
                 )
-            ).strong(String.class) ,
+            ).strong(String.class),
             Matchers.is("абв")
         );
     }
