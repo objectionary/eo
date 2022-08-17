@@ -130,29 +130,29 @@ public final class EOstdinTest {
 
     @Test
     public void stdinfewOneLineTest() {
-        String expected1 = "first-line";
-        String expected2 = "second-line";
-        String expected3 = "third-line";
-        mockSystemIn(expected1 + "\n" + expected2 + "\n" + expected3 + "\n");
+        String first = "first-line";
+        String second = "second-line";
+        String third = "third-line";
+        mockSystemIn(first + "\n" + second + "\n" + third + "\n");
         Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
-            Matchers.equalTo(expected1)
+            Matchers.equalTo(first)
         );
 
         phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
-            Matchers.equalTo(expected2)
+            Matchers.equalTo(second)
         );
 
         phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
-            Matchers.equalTo(expected3)
+            Matchers.equalTo(third)
         );        
     }
 

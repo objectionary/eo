@@ -62,21 +62,18 @@ public class EOstdin$EOnext_line extends PhDefault {
                             );
                         }
 
-                        final String firstline = sc.nextLine();
-                        if(sc.hasNextLine()) {
-                            String leftlines = "";
-                            while(sc.hasNextLine()) {
-                                leftlines += sc.nextLine() + "\n";
+                        final String line = sc.nextLine();
+                        if (sc.hasNextLine()) {
+                            StringBuilder leftlines = new StringBuilder();
+                            while (sc.hasNextLine()) {
+                                leftlines.append(sc.nextLine()).append("\n");
                             }
 
-                            StringBuilder sb = new StringBuilder();
-                            sb.append(leftlines);
-                            String data = sb.toString();
-                            InputStream is = new ByteArrayInputStream(data.getBytes());
+                            final InputStream is = new ByteArrayInputStream(leftlines.toString().getBytes());
                             System.setIn(is);
                         }
 
-                        return new Data.ToPhi(firstline);
+                        return new Data.ToPhi(line);
                     }
                 }
             )
