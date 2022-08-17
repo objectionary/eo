@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
@@ -71,18 +75,30 @@ public final class EOheapEOpointerEOblockTest {
         );
     }
 
+    /**
+     * Inverse Phi.
+     * @since 1.0
+     */
     public static class Inverse extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Inverse(final Phi sigma) {
             super(sigma);
             this.add("b", new AtFree());
-            this.add("φ", new AtComposite(
-                this, self -> new Data.ToPhi(
-                    new String(
-                        new Dataized(self.attr("b").get()).take(byte[].class),
-                        StandardCharsets.UTF_8
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> new Data.ToPhi(
+                        new String(
+                            new Dataized(self.attr("b").get()).take(byte[].class),
+                            StandardCharsets.UTF_8
+                        )
                     )
                 )
-            ));
+            );
         }
     }
 

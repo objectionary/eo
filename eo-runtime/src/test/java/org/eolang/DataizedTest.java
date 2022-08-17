@@ -56,10 +56,12 @@ public final class DataizedTest {
             public void publish(final LogRecord record) {
                 logs.add(record);
             }
+
             @Override
             public void flush() {
                 throw new UnsupportedOperationException("#flush()");
             }
+
             @Override
             public void close() throws SecurityException {
                 throw new UnsupportedOperationException("#close()");
@@ -89,10 +91,12 @@ public final class DataizedTest {
             public void publish(final LogRecord record) {
                 logs.add(record);
             }
+
             @Override
             public void flush() {
                 throw new UnsupportedOperationException("#flush()");
             }
+
             @Override
             public void close() throws SecurityException {
                 throw new UnsupportedOperationException("#close()");
