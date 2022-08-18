@@ -37,6 +37,10 @@ SOFTWARE.
         <xsl:value-of select="//metas/meta[head='package']/tail"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
+      <xsl:for-each select="ancestor::o[@abstract and @name]">
+        <xsl:value-of select="@name"/>
+        <xsl:text>.</xsl:text>
+      </xsl:for-each>
       <xsl:value-of select="@name"/>
     </xsl:variable>
     <xsl:call-template name="i">
