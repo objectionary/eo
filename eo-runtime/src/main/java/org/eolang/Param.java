@@ -26,7 +26,6 @@ package org.eolang;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Param of an object (convenient retrieval mechanism).
@@ -80,14 +79,7 @@ public final class Param {
     public <T> T strong(final Class<T> type) {
         final Object ret = this.weak();
         final Object result;
-        if (byte[].class.isInstance(ret) && type.equals(String.class)) {
-            result = type.cast(
-                new String(
-                    byte[].class.cast(ret),
-                    StandardCharsets.UTF_8
-                )
-            );
-        } else if (!type.isInstance(ret)) {
+        if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
                     "The argument '.%s' is of Java type '%s', not '%s' as expected",

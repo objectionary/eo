@@ -66,6 +66,11 @@ SOFTWARE.
           </xsl:attribute>
           <xsl:choose>
             <xsl:when test="@data='bytes'">
+              <xsl:choose>
+                <xsl:when test="@base='string'">
+                  <xsl:text>new String(</xsl:text>
+                </xsl:when>
+              </xsl:choose>
               <xsl:text>new byte[] {</xsl:text>
               <xsl:for-each select="tokenize(text(), ' ')">
                 <xsl:if test="position() &gt; 1">
@@ -75,6 +80,11 @@ SOFTWARE.
                 <xsl:value-of select="."/>
               </xsl:for-each>
               <xsl:text>}</xsl:text>
+              <xsl:choose>
+                <xsl:when test="@base='string'">
+                  <xsl:text>)</xsl:text>
+                </xsl:when>
+              </xsl:choose>
             </xsl:when>
             <xsl:when test="@data='string'">
               <xsl:text>"</xsl:text>
