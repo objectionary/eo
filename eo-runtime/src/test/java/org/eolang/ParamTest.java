@@ -44,9 +44,12 @@ final class ParamTest {
                     "ρ",
                     new Data.Value<>(
                         new byte[]{
-                            (byte) 0xD0, (byte) 0xB0,
-                            (byte) 0xD0, (byte) 0xB1,
-                            (byte) 0xD0, (byte) 0xB2
+                            (byte) 0xD0,
+                            (byte) 0xB0,
+                            (byte) 0xD0,
+                            (byte) 0xB1,
+                            (byte) 0xD0,
+                            (byte) 0xB2
                         }
                     )
                 )
@@ -54,5 +57,4 @@ final class ParamTest {
             Matchers.is("абв")
         );
     }
-
 }
