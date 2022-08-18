@@ -205,123 +205,281 @@ public final class PhDefaultTest {
         );
     }
 
+    /**
+     * Foo.
+     * @since 1.0
+     */
     public static class Foo extends PhDefault {
-         public Foo(final Phi sigma) {
-             this(sigma, new Object());
-         }
-         public Foo(final Phi sigma, final Object data) {
-             super(sigma);
-             this.add("x", new AtFree());
-             this.add("kid", new AtComposite(
-                 this, PhDefaultTest.Kid::new
-             ));
-             this.add("φ", new AtComposite(
-                 this, self -> new Data.ToPhi(data)
-             ));
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        public Foo(final Phi sigma) {
+            this(sigma, new Object());
+        }
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         * @param data Data
+         */
+        public Foo(final Phi sigma, final Object data) {
+            super(sigma);
+            this.add("x", new AtFree());
+            this.add(
+                "kid",
+                new AtComposite(
+                    this,
+                    PhDefaultTest.Kid::new
+                )
+            );
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> new Data.ToPhi(data)
+                )
+            );
         }
     }
 
+    /**
+     * Dummy.
+     * @since 1.0
+     */
     public static class Dummy extends PhDefault {
-        public static int count;
+        /**
+         * Count.
+         */
+        private static int count;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Dummy(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(
-                this, self -> {
-                    ++PhDefaultTest.Dummy.count;
-                    return new Data.ToPhi(1L);
-                }
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        ++PhDefaultTest.Dummy.count;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
         }
     }
 
+    /**
+     * Counter.
+     * @since 1.0
+     */
     public static class Counter extends PhDefault {
+        /**
+         * Count.
+         */
         private long count;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Counter(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(
-                this, self -> {
-                    ++this.count;
-                    return new Data.ToPhi(new byte[] { (byte) 0x01 });
-                }
-            ));
-            this.add("count", new AtComposite(
-                this, self -> new Data.ToPhi(this.count)
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        ++this.count;
+                        return new Data.ToPhi(new byte[] {(byte) 0x01});
+                    }
+                )
+            );
+            this.add(
+                "count",
+                new AtComposite(
+                    this,
+                    self -> new Data.ToPhi(this.count)
+                )
+            );
         }
     }
 
+    /**
+     * Kid.
+     * @since 1.0
+     */
     public static class Kid extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Kid(final Phi sigma) {
             super(sigma);
             this.add("z", new AtFree());
-            this.add("φ", new AtComposite(
-                this, self -> new EOsprintf(new Data.ToPhi(1L))
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> new EOsprintf(new Data.ToPhi(1L))
+                )
+            );
         }
     }
 
+    /**
+     * First.
+     * @since 1.0
+     */
     public static class First extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public First(final Phi sigma) {
             super(sigma);
             this.add("a", new AtFree(new Data.ToPhi(1L)));
-            this.add("φ", new AtComposite(
-                this, PhDefaultTest.Second::new
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    PhDefaultTest.Second::new
+                )
+            );
         }
     }
 
+    /**
+     * Second.
+     * @since 1.0
+     */
     public static class Second extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Second(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(
-                this, self -> self.attr("ρ").get().attr("a").get()
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> self.attr("ρ").get().attr("a").get()
+                )
+            );
         }
     }
 
+    /**
+     * Endless Recursion.
+     * @since 1.0
+     */
     public static class EndlessRecursion extends PhDefault {
-        public static int count;
+        /**
+         * Count.
+         */
+        private static int count;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public EndlessRecursion(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, self -> {
-                --PhDefaultTest.EndlessRecursion.count;
-                if (PhDefaultTest.EndlessRecursion.count <= 0) {
-                    return new Data.ToPhi(0L);
-                }
-                return new PhCopy(new PhDefaultTest.EndlessRecursion(self));
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        --PhDefaultTest.EndlessRecursion.count;
+                        final Phi result;
+                        if (PhDefaultTest.EndlessRecursion.count <= 0) {
+                            result = new Data.ToPhi(0L);
+                        } else {
+                            result = new PhCopy(new PhDefaultTest.EndlessRecursion(self));
+                        }
+                        return result;
+                    }
+                )
+            );
         }
     }
 
+    /**
+     * Recursive Phi.
+     * @since 1.0
+     */
     public static class RecursivePhi extends PhDefault {
-        public static int count;
+        /**
+         * Count.
+         */
+        private static int count;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public RecursivePhi(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, rho -> {
-                --PhDefaultTest.RecursivePhi.count;
-                if (PhDefaultTest.RecursivePhi.count <= 0) {
-                    return new Data.ToPhi(0L);
-                }
-                return new Data.ToPhi(new Dataized(rho).take(Long.class));
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        --PhDefaultTest.RecursivePhi.count;
+                        final Phi result;
+                        if (PhDefaultTest.RecursivePhi.count <= 0) {
+                            result = new Data.ToPhi(0L);
+                        } else {
+                            result =  new Data.ToPhi(new Dataized(rho).take(Long.class));
+                        }
+                        return result;
+                    }
+                )
+            );
         }
     }
 
+    /**
+     * RecursivePhiViaNew.
+     * @since 1.0
+     */
     public static class RecursivePhiViaNew extends PhDefault {
-        public static int count;
+        /**
+         * Count.
+         */
+        private static int count;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public RecursivePhiViaNew(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, rho -> {
-                --PhDefaultTest.RecursivePhiViaNew.count;
-                if (PhDefaultTest.RecursivePhi.count <= 0) {
-                    return new Data.ToPhi(0L);
-                }
-                return new Data.ToPhi(
-                    new Dataized(
-                        new RecursivePhiViaNew(Phi.Φ)
-                    ).take(Long.class)
-                );
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        --PhDefaultTest.RecursivePhiViaNew.count;
+                        final Phi result;
+                        if (PhDefaultTest.RecursivePhi.count <= 0) {
+                            result = new Data.ToPhi(0L);
+                        } else {
+                            result = new Data.ToPhi(
+                                new Dataized(
+                                    new RecursivePhiViaNew(Phi.Φ)
+                                ).take(Long.class)
+                            );
+                        }
+                        return result;
+                    }
+                )
+            );
         }
     }
 

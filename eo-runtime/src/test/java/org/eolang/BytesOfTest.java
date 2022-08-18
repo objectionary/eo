@@ -55,6 +55,7 @@ final class BytesOfTest {
             Matchers.equalTo(new BytesOf(127L))
         );
     }
+
     @Test
     void andWorks() {
         final Bytes bytes = new BytesOf(127L);
