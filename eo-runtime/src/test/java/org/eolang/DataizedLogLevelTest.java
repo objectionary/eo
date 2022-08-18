@@ -65,13 +65,18 @@ public final class DataizedLogLevelTest {
             }
         };
         log.addHandler(hnd);
-        final Thread thread = new Thread(() ->
-        {
-            System.clearProperty("max.dataization.log");
-            System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
-            final Phi phi = new PhiDec(Phi.Φ);
-            new Dataized(phi).take();
-        });
+        final Thread thread = new Thread(
+            () -> {
+                String beforeProperty = System.getProperty("max.dataization.log");
+                System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
+                final Phi phi = new PhiDec(Phi.Φ);
+                new Dataized(phi).take();
+                if (beforeProperty != null) {
+                    System.getProperties().setProperty("max.dataization.log", beforeProperty);
+                } else {
+                    System.clearProperty("max.dataization.log");
+                }
+            });
         thread.start();
         thread.join();
         log.setLevel(before);
@@ -105,13 +110,18 @@ public final class DataizedLogLevelTest {
             }
         };
         log.addHandler(hnd);
-        final Thread thread = new Thread(() ->
-        {
-            System.clearProperty("max.dataization.log");
-            System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
-            final Phi phi = new PhiDec(Phi.Φ);
-            new Dataized(phi).take();
-        });
+        final Thread thread = new Thread(
+            () -> {
+                String beforeProperty = System.getProperty("max.dataization.log");
+                System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
+                final Phi phi = new PhiDec(Phi.Φ);
+                new Dataized(phi).take();
+                if (beforeProperty != null) {
+                    System.getProperties().setProperty("max.dataization.log", beforeProperty);
+                } else {
+                    System.clearProperty("max.dataization.log");
+                }
+            });
         thread.start();
         thread.join();
         log.setLevel(before);
