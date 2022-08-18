@@ -29,6 +29,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -67,12 +68,12 @@ public final class DataizedLogLevelTest {
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
-                String beforeProperty = System.getProperty("max.dataization.log");
+                String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi).take();
-                if (beforeProperty != null) {
-                    System.getProperties().setProperty("max.dataization.log", beforeProperty);
+                if (property != null) {
+                    System.getProperties().setProperty("max.dataization.log", property);
                 } else {
                     System.clearProperty("max.dataization.log");
                 }
@@ -112,12 +113,12 @@ public final class DataizedLogLevelTest {
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
-                String beforeProperty = System.getProperty("max.dataization.log");
+                String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi).take();
-                if (beforeProperty != null) {
-                    System.getProperties().setProperty("max.dataization.log", beforeProperty);
+                if (property != null) {
+                    System.getProperties().setProperty("max.dataization.log", property);
                 } else {
                     System.clearProperty("max.dataization.log");
                 }
@@ -146,10 +147,18 @@ public final class DataizedLogLevelTest {
          */
         public PhiDec(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtOnce(new AtComposite(this, rho ->
-                new PhWith(
-                    new PhCopy(
-                        new PhMethod(new Data.ToPhi(2L), "plus")), 0, new Data.ToPhi(2L))))
+            this.add(
+                "φ",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> new PhWith(
+                            new PhCopy(new PhMethod(new Data.ToPhi(2L), "plus")),
+                            0,
+                            new Data.ToPhi(2L)
+                        )
+                    )
+                )
             );
         }
     }
