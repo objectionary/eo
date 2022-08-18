@@ -63,12 +63,12 @@ public class EOstdin$EOnext_line extends PhDefault {
                         }
                         final String line = sc.nextLine();
                         if (sc.hasNextLine()) {
-                            final StringBuilder leftlines = new StringBuilder();
+                            final StringBuilder input = new StringBuilder();
                             while (sc.hasNextLine()) {
-                                leftlines.append(sc.nextLine()).append("\n");
+                                input.append(sc.nextLine()).append(System.lineSeparator());
                             }
                             final InputStream inpstr =
-                                new ByteArrayInputStream(leftlines.toString().getBytes());
+                                new ByteArrayInputStream(input.toString().getBytes());
                             System.setIn(inpstr);
                         }
                         return new Data.ToPhi(line);
