@@ -58,8 +58,8 @@ public final class Dataized {
     /**
      * Max dataization level.
      */
-    private static final ThreadLocal<Integer> MAX_LEVEL = ThreadLocal.withInitial(() ->
-            Integer.getInteger("max.dataization.log", 3));
+    private static final ThreadLocal<Integer> MAX_LEVEL =
+        ThreadLocal.withInitial(() -> Integer.getInteger("max.dataization.log", 3));
 
     /**
      * The object to datarize.
