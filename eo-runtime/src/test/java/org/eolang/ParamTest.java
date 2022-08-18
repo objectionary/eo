@@ -49,7 +49,7 @@ final class ParamTest {
                             (byte) 0xD0,
                             (byte) 0xB1,
                             (byte) 0xD0,
-                            (byte) 0xB2
+                            (byte) 0xB2,
                         }
                     )
                 )
