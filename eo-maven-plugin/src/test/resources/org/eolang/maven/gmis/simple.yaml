@@ -1,7 +1,7 @@
 locators:
   - .simple .φ .α0 .α0 .Δ =bool/true
   - .simple .φ .α1 .Δ =int/42
-  - .simple .φ .α2 .hello .Δ =string/Jeff
+  - .simple .φ .α2 .hello .Δ =string/Jeff\u0027s
 eo: |
   [] > simple
     foo > @
@@ -9,4 +9,4 @@ eo: |
         TRUE
       42
       []
-        "Jeff" > hello
+        "Jeff's" > hello
