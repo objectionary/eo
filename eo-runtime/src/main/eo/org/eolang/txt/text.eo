@@ -37,7 +37,7 @@
   # Joins an array of strings, using current string
   # as a delimiter
   [items] > joined
-    reducei. > res!
+    reducedi. > res!
       list
         items
       ("".as-bytes)

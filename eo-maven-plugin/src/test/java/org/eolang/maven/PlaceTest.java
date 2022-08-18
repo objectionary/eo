@@ -39,10 +39,10 @@ public final class PlaceTest {
     public void makesPath() {
         MatcherAssert.assertThat(
             new Place("hello.foo.bar")
-                .make(Paths.get("/tmp/test"), Transpiler.EXT)
+                .make(Paths.get("/tmp/test"), TranspileMojo.EXT)
                 .toString()
                 .replace("\\", "/"),
-            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", Transpiler.EXT))
+            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", TranspileMojo.EXT))
         );
     }
 

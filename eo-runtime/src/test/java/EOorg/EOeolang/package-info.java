@@ -23,31 +23,14 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle PackageNameCheck (20 lines)
  */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EObool}.
+ * EO runtime.
  *
  * @since 0.1
+ * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
+ * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
  */
-public final class EOboolEOnotTest {
-
-    @Test
-    public void inversesValue() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi not = left.attr("not").get();
-        MatcherAssert.assertThat(
-            new Dataized(not).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
-    }
-}
+package EOorg.EOeolang;

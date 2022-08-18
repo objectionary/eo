@@ -146,7 +146,7 @@ public final class PhConstTest {
     @Test
     public void keepsDecorateeConst() {
         final Boom boom = new Boom();
-        Phi cnst = new PhConst(boom);
+        final Phi cnst = new PhConst(boom);
         for (int idx = 0; idx < 10; ++idx) {
             final Phi phi = cnst.attr("φ").get().copy();
             phi.attr("x").put(new Data.ToPhi(1L));
@@ -161,8 +161,9 @@ public final class PhConstTest {
             new Envelope(Phi.Φ),
             0,
             new PhWith(
-               new Envelope(Phi.Φ),
-                0, new PhConst(new Rnd(Phi.Φ))
+                new Envelope(Phi.Φ),
+                0,
+                new PhConst(new Rnd(Phi.Φ))
             )
         );
         MatcherAssert.assertThat(
@@ -221,38 +222,90 @@ public final class PhConstTest {
         );
     }
 
+    /**
+     * Rnd.
+     * @since 1.0
+     */
     private static class Rnd extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Rnd(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(this, rho ->
-                new Data.ToPhi(new SecureRandom().nextDouble())
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+                )
+            );
         }
     }
 
+    /**
+     * Dummy Phi.
+     * @since 1.0
+     */
     private static class Dummy extends PhDefault {
-        public int count;
+        /**
+         * Count.
+         */
+        private int count;
+
+        /**
+         * Ctor.
+         * @param name Name
+         */
         Dummy(final String name) {
             super();
-            this.add("φ", new AtComposite(this, self -> {
-                ++this.count;
-                return new Data.ToPhi(1L);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        ++this.count;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
             this.add(name, new AtComposite(this, PhConstTest.Kid::new));
         }
     }
 
+    /**
+     * Kid Phi.
+     * @since 1.0
+     */
     private static class Kid extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Kid(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(
-                new Dataized(self.attr("ρ").get()).take(Long.class)
-            )));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> new Data.ToPhi(
+                        new Dataized(self.attr("ρ").get()).take(Long.class)
+                    )
+                )
+            );
         }
     }
 
+    /**
+     * Phi envelope.
+     * @since 1.0
+     */
     private static class Envelope extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Envelope(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
@@ -260,17 +313,42 @@ public final class PhConstTest {
         }
     }
 
+    /**
+     * Boom Phi.
+     * @since 1.0
+     */
     private static class Boom extends PhDefault {
-        public int count;
+        /**
+         * Count.
+         */
+        private int count;
+
+        /**
+         * Ctor.
+         */
         Boom() {
-            this.add("φ", new AtComposite(this, self -> {
-                ++this.count;
-                return new Sub(self);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        ++this.count;
+                        return new Sub(self);
+                    }
+                )
+            );
         }
     }
 
+    /**
+     * Sub phi.
+     * @since 1.0
+     */
     private static class Sub extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Sub(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());

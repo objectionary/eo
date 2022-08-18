@@ -24,11 +24,19 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +44,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.parser.ParsingTrain;
 
 /**
  * Compile.
@@ -50,6 +59,11 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class TranspileMojo extends SafeMojo {
+
+    /**
+     * Extension for compiled sources in XMIR format (XML).
+     */
+    public static final String EXT = "xmir";
 
     /**
      * The directory where to transpile to.
@@ -113,17 +127,13 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Transpiler cmp = new Transpiler(
-            this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            this.targetDir.toPath().resolve(TranspileMojo.PRE)
-        );
         final Collection<Tojo> sources = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
         int saved = 0;
         for (final Tojo tojo : sources) {
-            final Path transpiled = cmp.transpile(
+            final Path transpiled = this.transpile(
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
             final Set<String> failures = new HashSet<>(3);
@@ -161,5 +171,53 @@ public final class TranspileMojo extends SafeMojo {
                 Save.rel(this.generatedDir.toPath())
             );
         }
+    }
+
+    /**
+     * Transpile.
+     *
+     * @param file The path to the .xmir file
+     * @return Path to transpiled .xmir file
+     * @throws IOException If any issues with I/O
+     */
+    public Path transpile(final Path file) throws IOException {
+        final XML input = new XMLDocument(file);
+        final String name = input.xpath("/program/@name").get(0);
+        final Place place = new Place(name);
+        final Path target = place.make(
+            this.targetDir.toPath().resolve(TranspileMojo.DIR),
+            TranspileMojo.EXT
+        );
+        if (
+            target.toFile().exists()
+                && target.toFile().lastModified() >= file.toFile().lastModified()
+        ) {
+            Logger.info(
+                this, "XMIR %s (%s) were already transpiled to %s",
+                Save.rel(file), name, Save.rel(target)
+            );
+        } else {
+            Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain().empty())).with(
+                Arrays.asList(
+                    "/org/eolang/maven/pre/classes.xsl",
+                    "/org/eolang/maven/pre/package.xsl",
+                    "/org/eolang/maven/pre/junit.xsl",
+                    "/org/eolang/maven/pre/rename-junit-inners.xsl",
+                    "/org/eolang/maven/pre/attrs.xsl",
+                    "/org/eolang/maven/pre/varargs.xsl",
+                    "/org/eolang/maven/pre/data.xsl",
+                    "/org/eolang/maven/pre/to-java.xsl"
+                )
+            ).back().back();
+            train = new SpyTrain(
+                train, place.make(
+                    this.targetDir.toPath().resolve(TranspileMojo.PRE),
+                    ""
+                )
+            );
+            final XML out = new Xsline(train).pass(input);
+            new Save(out.toString(), target).saveQuietly();
+        }
+        return target;
     }
 }

@@ -92,21 +92,42 @@ public final class PhMethodTest {
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(total));
     }
 
+    /**
+     * Dummy default.
+     * @since 1.0
+     */
     public static class Dummy extends PhDefault {
-        public int count;
+        /**
+         * Count.
+         */
+        private int count;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Dummy(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(
-                this, self -> {
-                ++this.count;
-                return new Data.ToPhi(1L);
-            }));
-            this.add("foo", new AtComposite(
-                this, self -> {
-                ++this.count;
-                return new Data.ToPhi(1L);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        this.count += 1;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
+            this.add(
+                "foo",
+                new AtComposite(
+                    this,
+                    self -> {
+                        this.count += 1;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
         }
     }
-
 }

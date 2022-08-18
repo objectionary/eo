@@ -18,6 +18,7 @@ tests:
   - //o[@base='string' and @name='stringY' and @data]
   - //o[@base='string' and @name='textX' and @data]
 eo: |
+  +package test
   01- > bytesX
 
   00-02-4F-1A-FF-01 > bytesX

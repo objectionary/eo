@@ -65,7 +65,7 @@ public final class OptimizeMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         final Path tgt = target.resolve(
-            String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+            String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
         );
         final long mtime = tgt.toFile().lastModified();
         new Moja<>(OptimizeMojo.class)
@@ -103,7 +103,7 @@ public final class OptimizeMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         final Path tgt = target.resolve(
-            String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+            String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
         );
         final long start = System.currentTimeMillis();
         tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L));
@@ -154,7 +154,7 @@ public final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
                 )
             ),
             Matchers.is(true)
@@ -194,7 +194,7 @@ public final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             Files.notExists(
                 target.resolve(
-                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, Transpiler.EXT)
+                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
                 )
             ),
             Matchers.is(true)

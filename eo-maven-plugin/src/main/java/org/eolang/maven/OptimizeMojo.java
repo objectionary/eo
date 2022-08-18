@@ -163,7 +163,7 @@ public final class OptimizeMojo extends SafeMojo {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Path target = place.make(
-            this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
+            this.targetDir.toPath().resolve(OptimizeMojo.DIR), TranspileMojo.EXT
         );
         new Save(xml.toString(), target).save();
         Logger.debug(

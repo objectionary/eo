@@ -157,7 +157,15 @@ public final class Param {
         } else if (Character.class.isInstance(ret)) {
             res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
         } else if (Double.class.isInstance(ret)) {
-            res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
+            final double adjusted;
+            if (ret.equals(0.0)) {
+                adjusted = -0.0;
+            } else {
+                adjusted = (double) ret;
+            }
+            res = ByteBuffer.allocate(Double.BYTES)
+                .putDouble(adjusted)
+                .array();
         } else {
             throw new ExFailure(
                 String.format(

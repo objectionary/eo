@@ -142,7 +142,7 @@ public final class ParseMojo extends SafeMojo {
             return;
         }
         final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR), Transpiler.EXT
+            this.targetDir.toPath().resolve(ParseMojo.DIR), TranspileMojo.EXT
         );
         new Save(
             new XMLDocument(

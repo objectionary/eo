@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
@@ -75,9 +79,8 @@ public final class EOsscanfTest {
         );
         MatcherAssert.assertThat(
             new Dataized(
-                new Dataized(phi).take(Phi[].class
-                )[0])
-                .take(Long.class),
+                new Dataized(phi).take(Phi[].class)[0]
+            ).take(Long.class),
             Matchers.equalTo(1231231313L)
         );
     }
@@ -97,9 +100,8 @@ public final class EOsscanfTest {
         );
         MatcherAssert.assertThat(
             new Dataized(
-                new Dataized(phi).take(Phi[].class
-                )[0])
-                .take(Double.class),
+                new Dataized(phi).take(Phi[].class)[0]
+            ).take(Double.class),
             Matchers.equalTo(1231231.22)
         );
     }
@@ -119,9 +121,8 @@ public final class EOsscanfTest {
         );
         MatcherAssert.assertThat(
             new Dataized(
-                new Dataized(phi).take(Phi[].class
-                )[0])
-                .take(Boolean.class),
+                new Dataized(phi).take(Phi[].class)[0]
+            ).take(Boolean.class),
             Matchers.equalTo(true)
         );
     }

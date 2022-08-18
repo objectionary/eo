@@ -21,33 +21,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang;
 
 /**
- * Test case for {@link EObool}.
+ * Bytes.
  *
- * @since 0.1
+ * Represents byte array of arbitrary size,
+ * convertible to a numeric value.
+ * Original size is preserved by and, or and xor.
+ *
+ * @since 1.0
  */
-public final class EOboolEOnotTest {
+public interface Bytes extends Data<byte[]> {
+    /**
+     * NOT operation.
+     * @return Bytes.
+     */
+    Bytes not();
 
-    @Test
-    public void inversesValue() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi not = left.attr("not").get();
-        MatcherAssert.assertThat(
-            new Dataized(not).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
-    }
+    /**
+     * AND operation.
+     * @param other Bytes.
+     * @return Bytes.
+     */
+    Bytes and(Bytes other);
+
+    /**
+     * OR operation.
+     * @param other Bytes.
+     * @return Bytes.
+     * @checkstyle MethodNameCheck (2 lines)
+     */
+    Bytes or(Bytes other);
+
+    /**
+     * XOR operation.
+     * @param other Bytes.
+     * @return Bytes.
+     */
+    Bytes xor(Bytes other);
+
+    /**
+     * Big-endian shift.
+     * @param bits Bits to shift, negative to shift left.
+     * @return Bytes.
+     */
+    Bytes shift(int bits);
+
+    /**
+     * Convert to number.
+     * @param type Type.
+     * @return Number.
+     * @param <T> Numeric type.
+     */
+    <T extends Number> T asNumber(Class<T> type);
 }

@@ -80,7 +80,7 @@
 
   # Converts this to hash
   [] > as-hash
-    reduce. > @
+    reduced. > @
       list
         bytes-as-array ^
       1

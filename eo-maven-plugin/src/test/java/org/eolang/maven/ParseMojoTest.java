@@ -62,7 +62,7 @@ public final class ParseMojoTest {
         MatcherAssert.assertThat(
             Files.exists(
                 target.resolve(
-                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, Transpiler.EXT)
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             ),
             Matchers.is(true)
@@ -139,7 +139,7 @@ public final class ParseMojoTest {
         MatcherAssert.assertThat(
             Files.notExists(
                 target.resolve(
-                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, Transpiler.EXT)
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             ),
             Matchers.is(true)
