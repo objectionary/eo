@@ -27,6 +27,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link BytesOf}.
@@ -53,6 +55,7 @@ final class BytesOfTest {
             Matchers.equalTo(new BytesOf(127L))
         );
     }
+
     @Test
     void andWorks() {
         final Bytes bytes = new BytesOf(127L);
@@ -95,6 +98,24 @@ final class BytesOfTest {
         Assertions.assertThrows(
             UnsupportedOperationException.class,
             () -> bytes.asNumber(Long.class)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0x000000FF,  -8, 0x0000FF00",
+        "0x000000FF, -16, 0x00FF0000",
+        "0x000000FF, -24, 0xFF000000",
+        "0xFF000000,   8, 0x00FF0000",
+        "0xFF000000,  16, 0x0000FF00",
+        "0xFF000000,  24, 0x000000FF",
+        "0x000000FF,   8, 0x00000000"
+    })
+    void shiftWorks(final long num, final int bits, final long expected) {
+        final Bytes bytes = new BytesOf(num);
+        MatcherAssert.assertThat(
+            bytes.shift(bits).asNumber(Long.class),
+            Matchers.equalTo(expected)
         );
     }
 }

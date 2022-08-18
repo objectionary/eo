@@ -50,6 +50,7 @@ public interface Bytes extends Data<byte[]> {
      * OR operation.
      * @param other Bytes.
      * @return Bytes.
+     * @checkstyle MethodNameCheck (2 lines)
      */
     Bytes or(Bytes other);
 
@@ -61,18 +62,11 @@ public interface Bytes extends Data<byte[]> {
     Bytes xor(Bytes other);
 
     /**
-     * Left shift.
-     * @param size Size.
+     * Big-endian shift.
+     * @param bits Bits to shift, negative to shift left.
      * @return Bytes.
      */
-    Bytes left(int size);
-
-    /**
-     * Right shift.
-     * @param size Size.
-     * @return Bytes.
-     */
-    Bytes right(int size);
+    Bytes shift(int bits);
 
     /**
      * Convert to number.

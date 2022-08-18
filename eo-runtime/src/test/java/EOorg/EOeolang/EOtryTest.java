@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import EOorg.EOeolang.EOtxt.EOsprintf;
@@ -135,23 +139,46 @@ public final class EOtryTest {
         );
     }
 
+    /**
+     * Main.
+     * @since 1.0
+     */
     public static class Main extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Main(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtComposite(
-                this, self -> new Data.ToPhi(
-                    new Dataized(new Data.ToPhi(42L)).take()
-            )));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> new Data.ToPhi(
+                        new Dataized(new Data.ToPhi(42L)).take()
+                    )
+                )
+            );
         }
     }
 
+    /**
+     * Broken.
+     * @since 1.0
+     */
     public static class Broken extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma.
+         */
         public Broken(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
                 new AtComposite(
-                    this, self -> {
+                    this,
+                    self -> {
                         throw new ExFailure("it is broken");
                     }
                 )
@@ -159,14 +186,25 @@ public final class EOtryTest {
         }
     }
 
+    /**
+     * Catcher.
+     * @since 1.0
+     */
     public static class Catcher extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Catcher(final Phi sigma) {
             super(sigma);
             this.add("ex", new AtFree());
-            this.add("φ", new AtComposite(
-                this, self -> self.attr("ex").get()
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> self.attr("ex").get()
+                )
+            );
         }
     }
-
 }

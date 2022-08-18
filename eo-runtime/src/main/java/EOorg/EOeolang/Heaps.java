@@ -110,6 +110,7 @@ final class Heaps {
      * Free it.
      * @param heap The heap
      * @param ptr The pointer
+     * @checkstyle NonStaticMethodCheck (5 lines)
      */
     public void free(final Phi heap, final int ptr) {
         // Nothing yet

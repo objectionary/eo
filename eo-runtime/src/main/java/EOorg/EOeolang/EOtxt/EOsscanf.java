@@ -52,6 +52,8 @@ public class EOsscanf extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
+     * @checkstyle CyclomaticComplexityCheck (75 lines)
+     * @checkstyle NestedIfDepthCheck (75 lines)
      */
     public EOsscanf(final Phi sigma) {
         super(sigma);
@@ -77,26 +79,29 @@ public class EOsscanf extends PhDefault {
                                 && pattern.length() > 1;
                             if (valid) {
                                 final int start = pattern.indexOf(Conversion.PERCENT_SIGN);
-                                final char c = pattern.charAt(start + 1);
-                                if (!Conversion.isValid(c)) {
+                                final char chr = pattern.charAt(start + 1);
+                                if (!Conversion.isValid(chr)) {
                                     throw new ExFailure(
                                         "Can't recognize format pattern: %s",
                                         pattern
                                     );
                                 }
                                 if (pattern.length() > 2) {
-                                    final int end = start + 1 == pattern.length() - 1
-                                        ? 0
-                                        : pattern.length() - (start + 2);
+                                    final int end;
+                                    if (start + 1 == pattern.length() - 1) {
+                                        end = 0;
+                                    } else {
+                                        end = pattern.length() - (start + 2);
+                                    }
                                     val = val.substring(start, val.length() - end);
                                 }
-                                if (Conversion.isString(c) || Conversion.isCharacter(c)) {
+                                if (Conversion.isString(chr) || Conversion.isCharacter(chr)) {
                                     buffer.add(new Data.ToPhi(val));
-                                } else if (Conversion.isInteger(c)) {
+                                } else if (Conversion.isInteger(chr)) {
                                     buffer.add(new Data.ToPhi(Long.parseLong(val)));
-                                } else if (Conversion.isFloat(c)) {
+                                } else if (Conversion.isFloat(chr)) {
                                     buffer.add(new Data.ToPhi(Double.parseDouble(val)));
-                                } else if (Conversion.isBoolean(c)) {
+                                } else if (Conversion.isBoolean(chr)) {
                                     buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
                                 } else {
                                     throw new ExFailure(
@@ -120,6 +125,7 @@ public class EOsscanf extends PhDefault {
      * Format conversion.
      * @since 0.23
      * @checkstyle JavadocVariableCheck (70 lines)
+     * @checkstyle CyclomaticComplexityCheck (75 lines)
      */
     private static class Conversion {
         // Byte, Short, Integer, Long, BigInteger
@@ -191,6 +197,7 @@ public class EOsscanf extends PhDefault {
          * @return True if valid char, otherwise false
          */
         static boolean isValid(final char character) {
+            final boolean result;
             switch (character) {
                 case BOOLEAN:
                 case BOOLEAN_UPPER:
@@ -213,10 +220,12 @@ public class EOsscanf extends PhDefault {
                 case HEXADECIMAL_FLOAT_UPPER:
                 case LINE_SEPARATOR:
                 case PERCENT_SIGN:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -225,6 +234,7 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to all objects
          */
         static boolean isGeneral(final char character) {
+            final boolean result;
             switch (character) {
                 case BOOLEAN:
                 case BOOLEAN_UPPER:
@@ -232,10 +242,12 @@ public class EOsscanf extends PhDefault {
                 case STRING_UPPER:
                 case HASHCODE:
                 case HASHCODE_UPPER:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -244,13 +256,16 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to string
          */
         static boolean isString(final char character) {
+            final boolean result;
             switch (character) {
                 case STRING:
                 case STRING_UPPER:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -259,13 +274,16 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to boolean
          */
         static boolean isBoolean(final char character) {
+            final boolean result;
             switch (character) {
                 case BOOLEAN:
                 case BOOLEAN_UPPER:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -274,13 +292,16 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to character
          */
         static boolean isCharacter(final char character) {
+            final boolean result;
             switch (character) {
                 case CHARACTER:
                 case CHARACTER_UPPER:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -289,15 +310,18 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to integer
          */
         static boolean isInteger(final char character) {
+            final boolean result;
             switch (character) {
                 case DECIMAL_INTEGER:
                 case OCTAL_INTEGER:
                 case HEXADECIMAL_INTEGER:
                 case HEXADECIMAL_INTEGER_UPPER:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -306,6 +330,7 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to floating-point
          */
         static boolean isFloat(final char character) {
+            final boolean result;
             switch (character) {
                 case SCIENTIFIC:
                 case SCIENTIFIC_UPPER:
@@ -314,10 +339,12 @@ public class EOsscanf extends PhDefault {
                 case DECIMAL_FLOAT:
                 case HEXADECIMAL_FLOAT:
                 case HEXADECIMAL_FLOAT_UPPER:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
 
         /**
@@ -326,13 +353,16 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion does not require an argument
          */
         static boolean isText(final char character) {
+            final boolean result;
             switch (character) {
                 case LINE_SEPARATOR:
                 case PERCENT_SIGN:
-                    return true;
+                    result = true;
+                    break;
                 default:
-                    return false;
+                    result = false;
             }
+            return result;
         }
     }
 }

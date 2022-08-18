@@ -32,8 +32,8 @@ import java.io.RandomAccessFile;
 import java.io.UncheckedIOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 
@@ -51,7 +51,7 @@ public enum Ram {
     /**
      * Phi to File mapping.
      */
-    private final Map<Phi, RandomAccessFile> addresses = new HashMap<>();
+    private final Map<Phi, RandomAccessFile> addresses = new ConcurrentHashMap<>();
 
     /**
      * Read.
