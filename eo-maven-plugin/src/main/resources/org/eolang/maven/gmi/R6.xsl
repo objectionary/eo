@@ -31,7 +31,8 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and @data]" mode="gmi" priority="1">
+  <!-- remove this "!=array" after the fix: https://github.com/objectionary/eo/issues/1060 -->
+  <xsl:template match="o[@base and @data and @data != 'array']" mode="gmi" priority="1">
     <xsl:variable name="dx">
       <xsl:value-of select="eo:vertex(.)"/>
       <xsl:text>d</xsl:text>
