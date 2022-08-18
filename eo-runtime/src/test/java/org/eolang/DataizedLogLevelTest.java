@@ -29,7 +29,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -68,7 +67,7 @@ public final class DataizedLogLevelTest {
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
-                String property = System.getProperty("max.dataization.log");
+                final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi).take();
@@ -113,7 +112,7 @@ public final class DataizedLogLevelTest {
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
-                String property = System.getProperty("max.dataization.log");
+                final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi).take();
