@@ -31,6 +31,7 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StLambda;
+import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrLogged;
@@ -124,7 +125,8 @@ public final class GmiMojo extends SafeMojo {
                     "/org/eolang/maven/gmi/R7.xsl",
                     "/org/eolang/maven/gmi/rename.xsl",
                     "/org/eolang/maven/gmi/strip.xsl",
-                    "/org/eolang/maven/gmi/variability.xsl"
+                    "/org/eolang/maven/gmi/variability.xsl",
+                    "/org/eolang/maven/gmi/final.xsl"
                 ).back(),
                 GmiMojo.class
             ),
@@ -136,6 +138,7 @@ public final class GmiMojo extends SafeMojo {
                     return new XMLDocument(dom);
                 }
             ),
+            new StSchema("/org/eolang/maven/gmi/after.xsd")
         );
         final XML before = new XMLDocument(xmir);
         final XML after = new Xsline(train).pass(before);

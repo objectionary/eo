@@ -31,8 +31,8 @@ SOFTWARE.
     <xsl:value-of select="$EOL"/>
     <xsl:value-of select="'  '"/>
   </xsl:variable>
-  <xsl:template match="/">
-    <xsl:apply-templates select="program/gmi/i"/>
+  <xsl:template match="/gmi">
+    <xsl:apply-templates select="i"/>
   </xsl:template>
   <xsl:template match="i[@name='ADD']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>

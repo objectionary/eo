@@ -22,30 +22,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="gmi-to-text" version="2.0">
-  <xsl:output encoding="UTF-8" method="text"/>
-  <xsl:variable name="EOL">
-    <xsl:value-of select="'&#10;'"/>
-  </xsl:variable>
-  <xsl:template match="/gmi">
-    <xsl:apply-templates select="i"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="final" version="2.0">
+  <!--
+  Here we remove everything from the document, except the "gmi"
+  node, making it the root one.
+  -->
+  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:template match="/">
+    <xsl:copy-of select="program/gmi"/>
   </xsl:template>
-  <xsl:template match="i">
-    <xsl:value-of select="@name"/>
-    <xsl:text>(</xsl:text>
-    <xsl:for-each select="a">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>"</xsl:text>
-    </xsl:for-each>
-    <xsl:text>);</xsl:text>
-    <xsl:if test="c">
-      <xsl:text> # </xsl:text>
-      <xsl:value-of select="c"/>
-    </xsl:if>
-    <xsl:value-of select="$EOL"/>
+  <xsl:template match="node()|@*" mode="#default">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
