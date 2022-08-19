@@ -112,7 +112,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     @Parameter(property = "eo.skip", defaultValue = "false")
     @SuppressWarnings("PMD.ImmutableField")
-    private boolean skip = false;
+    private boolean skip;
 
     /**
      * Cached tojos.
@@ -133,17 +133,17 @@ abstract class SafeMojo extends AbstractMojo {
                 this.exec();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
-                            this,
-                            "Execution of %s took %[nano]s",
-                            this.getClass().getSimpleName(),
-                            System.nanoTime() - start
+                        this,
+                        "Execution of %s took %[nano]s",
+                        this.getClass().getSimpleName(),
+                        System.nanoTime() - start
                     );
                 }
             } catch (final IOException ex) {
                 throw new MojoFailureException(
                         String.format(
-                                "Failed to execute %s",
-                                this.getClass().getCanonicalName()
+                            "Failed to execute %s",
+                            this.getClass().getCanonicalName()
                         ),
                         ex
                 );
