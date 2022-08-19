@@ -112,7 +112,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     @Parameter(property = "eo.skip", defaultValue = "false")
     @SuppressWarnings("PMD.ImmutableField")
-    private Boolean skip = false;
+    private boolean skip = false;
 
     /**
      * Cached tojos.
@@ -127,28 +127,27 @@ abstract class SafeMojo extends AbstractMojo {
     @Override
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        try {
-            if (this.skip) {
-                return;
-            }
-            final long start = System.nanoTime();
-            this.exec();
-            if (Logger.isDebugEnabled(this)) {
-                Logger.debug(
-                    this,
-                    "Execution of %s took %[nano]s",
-                    this.getClass().getSimpleName(),
-                    System.nanoTime() - start
+        if (!this.skip) {
+            try {
+                final long start = System.nanoTime();
+                this.exec();
+                if (Logger.isDebugEnabled(this)) {
+                    Logger.debug(
+                            this,
+                            "Execution of %s took %[nano]s",
+                            this.getClass().getSimpleName(),
+                            System.nanoTime() - start
+                    );
+                }
+            } catch (final IOException ex) {
+                throw new MojoFailureException(
+                        String.format(
+                                "Failed to execute %s",
+                                this.getClass().getCanonicalName()
+                        ),
+                        ex
                 );
             }
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Failed to execute %s",
-                    this.getClass().getCanonicalName()
-                ),
-                ex
-            );
         }
     }
 
