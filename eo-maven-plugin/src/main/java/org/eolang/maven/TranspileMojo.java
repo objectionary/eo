@@ -76,6 +76,23 @@ public final class TranspileMojo extends SafeMojo {
     public static final String PRE = "05-pre";
 
     /**
+     * Parsing train with XSLs.
+     */
+    private static final Train<Shift> TRAIN = new TrBulk<>(
+        new TrClasspath<>(new ParsingTrain().empty()),
+        Arrays.asList(
+            "/org/eolang/maven/pre/classes.xsl",
+            "/org/eolang/maven/pre/package.xsl",
+            "/org/eolang/maven/pre/junit.xsl",
+            "/org/eolang/maven/pre/rename-junit-inners.xsl",
+            "/org/eolang/maven/pre/attrs.xsl",
+            "/org/eolang/maven/pre/varargs.xsl",
+            "/org/eolang/maven/pre/data.xsl",
+            "/org/eolang/maven/pre/to-java.xsl"
+        )
+    ).back().back();
+
+    /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -197,25 +214,14 @@ public final class TranspileMojo extends SafeMojo {
                 Save.rel(file), name, Save.rel(target)
             );
         } else {
-            Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain().empty())).with(
-                Arrays.asList(
-                    "/org/eolang/maven/pre/classes.xsl",
-                    "/org/eolang/maven/pre/package.xsl",
-                    "/org/eolang/maven/pre/junit.xsl",
-                    "/org/eolang/maven/pre/rename-junit-inners.xsl",
-                    "/org/eolang/maven/pre/attrs.xsl",
-                    "/org/eolang/maven/pre/varargs.xsl",
-                    "/org/eolang/maven/pre/data.xsl",
-                    "/org/eolang/maven/pre/to-java.xsl"
-                )
-            ).back().back();
-            train = new SpyTrain(
-                train, place.make(
+            Train<Shift> trn = TranspileMojo.TRAIN;
+            trn = new SpyTrain(
+                trn, place.make(
                     this.targetDir.toPath().resolve(TranspileMojo.PRE),
                     ""
                 )
             );
-            final XML out = new Xsline(train).pass(input);
+            final XML out = new Xsline(trn).pass(input);
             new Save(out.toString(), target).saveQuietly();
         }
         return target;
