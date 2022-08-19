@@ -141,11 +141,11 @@ abstract class SafeMojo extends AbstractMojo {
                 }
             } catch (final IOException ex) {
                 throw new MojoFailureException(
-                        String.format(
-                            "Failed to execute %s",
-                            this.getClass().getCanonicalName()
-                        ),
-                        ex
+                    String.format(
+                        "Failed to execute %s",
+                        this.getClass().getCanonicalName()
+                    ),
+                    ex
                 );
             }
         }
