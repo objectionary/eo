@@ -40,7 +40,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  *
  * @since 0.22
  */
-@Execution(ExecutionMode.SAME_THREAD)
 public final class DataizedLogLevelTest {
     @Test
     public void shortLogs() throws InterruptedException {
