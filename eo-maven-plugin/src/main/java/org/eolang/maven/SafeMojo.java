@@ -127,7 +127,13 @@ abstract class SafeMojo extends AbstractMojo {
     @Override
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        if (!this.skip) {
+        if (this.skip) {
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
+                    this, "Execution skipped due to eo.skip option"
+                );
+            }
+        } else {
             try {
                 final long start = System.nanoTime();
                 this.exec();
@@ -146,12 +152,6 @@ abstract class SafeMojo extends AbstractMojo {
                         this.getClass().getCanonicalName()
                     ),
                     ex
-                );
-            }
-        } else {
-            if (Logger.isInfoEnabled(this)) {
-                Logger.info(
-                    this, "Execution skipped due to eo.skip option"
                 );
             }
         }
