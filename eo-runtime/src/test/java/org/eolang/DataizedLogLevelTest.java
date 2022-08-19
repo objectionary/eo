@@ -41,6 +41,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @since 0.22
  */
 public final class DataizedLogLevelTest {
+
     @Test
     public void shortLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
