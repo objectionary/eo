@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -86,11 +85,8 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     public void placeThem() throws IOException {
-        System.out.println("PLACED (u)!!!: " + this.placed + "   " + this.placedFormat);
-//        final Collection<Tojo> tojos = this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
-        final Collection<Tojo> tojos = new Catalog(
-                this.placed.toPath(), this.placedFormat
-        ).make().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
+        final Collection<Tojo> tojos =
+            this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(tojos);

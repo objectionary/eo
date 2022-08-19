@@ -111,12 +111,13 @@ abstract class SafeMojo extends AbstractMojo {
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
      * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
      * @since 0.11.0
      */
     @Parameter(
-            property = "eo.placed",
-            required = true,
-            defaultValue = "${project.build.directory}/eo/placed.csv"
+        property = "eo.placed",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/placed.csv"
     )
     protected File placed;
 
@@ -140,6 +141,7 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Cached placed tojos.
+     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
