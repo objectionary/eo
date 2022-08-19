@@ -108,12 +108,43 @@ abstract class SafeMojo extends AbstractMojo {
     protected String scope = "compile";
 
     /**
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files are placed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+            property = "eo.placed",
+            required = true,
+            defaultValue = "${project.build.directory}/eo/placed.csv"
+    )
+    protected File placed;
+
+    /**
+     * Format of "placed" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
+    protected String placedFormat = "csv";
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected final Unchecked<Tojos> tojos = new Unchecked<>(
         new Sticky<>(
             () -> new Catalog(this.foreign.toPath(), this.foreignFormat).make()
+        )
+    );
+
+    /**
+     * Cached placed tojos.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
+        new Sticky<>(
+            () -> new Catalog(this.placed.toPath(), this.placedFormat).make()
         )
     );
 

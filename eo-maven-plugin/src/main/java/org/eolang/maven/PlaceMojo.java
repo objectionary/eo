@@ -84,27 +84,6 @@ public final class PlaceMojo extends SafeMojo {
     private File outputDir;
 
     /**
-     * The path to a text file where paths of all added
-     * .class (and maybe others) files are placed.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.11.0
-     */
-    @Parameter(
-        property = "eo.placed",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/placed.csv"
-    )
-    private File placed;
-
-    /**
-     * Format of "placed" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    private String placedFormat = "csv";
-
-    /**
      * List of inclusion GLOB filters for finding class files.
      * @since 0.15
      * @checkstyle MemberNameCheck (7 lines)
@@ -127,7 +106,7 @@ public final class PlaceMojo extends SafeMojo {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.catalog().select(
+                final Collection<Tojo> before = this.placedTojos.value().select(
                     row -> row.get(Tojos.KEY).equals(dep)
                         && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
@@ -136,7 +115,7 @@ public final class PlaceMojo extends SafeMojo {
                     continue;
                 }
                 copied += this.place(home, dep);
-                this.catalog().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
+                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
             }
             if (copied == 0) {
                 Logger.info(
@@ -183,7 +162,7 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<Tojo> before = this.catalog().select(
+            final Collection<Tojo> before = this.placedTojos.value().select(
                 row -> row.get(Tojos.KEY).equals(target.toString())
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
@@ -216,7 +195,7 @@ public final class PlaceMojo extends SafeMojo {
                 );
             }
             new Save(new InputOf(file), target).save();
-            this.catalog().add(target.toString())
+            this.placedTojos.value().add(target.toString())
                 .set(PlaceMojo.ATTR_KIND, "class")
                 .set(PlaceMojo.ATTR_HASH, new FileHash(target))
                 .set(
@@ -249,5 +228,4 @@ public final class PlaceMojo extends SafeMojo {
     private Tojos catalog() {
         return new Catalog(this.placed.toPath(), this.placedFormat).make();
     }
-
 }

@@ -54,27 +54,6 @@ import org.cactoos.set.SetOf;
 public final class UnplaceMojo extends SafeMojo {
 
     /**
-     * The path to a text file where paths of all added
-     * .class (and maybe others) files are placed.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.11.0
-     */
-    @Parameter(
-        property = "eo.placed",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/placed.csv"
-    )
-    private File placed;
-
-    /**
-     * Format of "placed" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    private String placedFormat = "csv";
-
-    /**
      * List of inclusion GLOB filters for unplacing (these files will be removed for sure).
      * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
@@ -107,9 +86,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     public void placeThem() throws IOException {
-        final Collection<Tojo> tojos = new Catalog(
-            this.placed.toPath(), this.placedFormat
-        ).make().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
+        final Collection<Tojo> tojos = this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(tojos);
