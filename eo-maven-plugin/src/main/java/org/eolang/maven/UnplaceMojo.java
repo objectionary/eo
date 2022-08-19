@@ -86,7 +86,11 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     public void placeThem() throws IOException {
-        final Collection<Tojo> tojos = this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
+        System.out.println("PLACED (u)!!!: " + this.placed + "   " + this.placedFormat);
+//        final Collection<Tojo> tojos = this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
+        final Collection<Tojo> tojos = new Catalog(
+                this.placed.toPath(), this.placedFormat
+        ).make().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(tojos);

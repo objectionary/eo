@@ -101,12 +101,13 @@ public final class PlaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        System.out.println("PLACED (p)!!!: " + this.placed + "   " + this.placedFormat);
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.placedTojos.value().select(
+                final Collection<Tojo> before = this.catalog().select(
                     row -> row.get(Tojos.KEY).equals(dep)
                         && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
@@ -115,7 +116,7 @@ public final class PlaceMojo extends SafeMojo {
                     continue;
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
+                this.catalog().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
             }
             if (copied == 0) {
                 Logger.info(
@@ -162,7 +163,7 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<Tojo> before = this.placedTojos.value().select(
+            final Collection<Tojo> before = this.catalog().select(
                 row -> row.get(Tojos.KEY).equals(target.toString())
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
@@ -195,7 +196,7 @@ public final class PlaceMojo extends SafeMojo {
                 );
             }
             new Save(new InputOf(file), target).save();
-            this.placedTojos.value().add(target.toString())
+            this.catalog().add(target.toString())
                 .set(PlaceMojo.ATTR_KIND, "class")
                 .set(PlaceMojo.ATTR_HASH, new FileHash(target))
                 .set(
