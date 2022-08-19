@@ -148,6 +148,12 @@ abstract class SafeMojo extends AbstractMojo {
                     ex
                 );
             }
+        } else {
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
+                    this, "Execution skipped due to eo.skip option"
+                );
+            }
         }
     }
 
