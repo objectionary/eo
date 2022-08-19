@@ -129,13 +129,13 @@ public final class GmiMojo extends SafeMojo {
                 GmiMojo.class
             ),
             new StLambda(
-                "escape",
+                "escape-data",
                 xml -> {
                     final Node dom = xml.node();
                     GmiMojo.escape(dom);
                     return new XMLDocument(dom);
                 }
-            )
+            ),
         );
         final XML before = new XMLDocument(xmir);
         final XML after = new Xsline(train).pass(before);

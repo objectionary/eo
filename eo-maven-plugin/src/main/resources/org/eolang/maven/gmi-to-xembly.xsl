@@ -35,6 +35,9 @@ SOFTWARE.
     <xsl:apply-templates select="program/gmi/i"/>
   </xsl:template>
   <xsl:template match="i[@name='ADD']">
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']"; STRICT "0"; </xsl:text>
     <xsl:text>XPATH "/graph"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "v"; </xsl:text>
@@ -46,8 +49,17 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="i[@name='BIND']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[3]"/>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[4]"/>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
+    <xsl:text>XPATH "//v/e[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']"; STRICT "0"; </xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
-    <xsl:text>']"; </xsl:text>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "e";</xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -84,6 +96,12 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="i[@name='REF']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[3]"/>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
+    <xsl:text>XPATH "//v/e[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']"; STRICT "0"; </xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -105,7 +123,7 @@ SOFTWARE.
   <xsl:template match="i[@name='DATA']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
-    <xsl:text>']"; </xsl:text>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "data"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -117,7 +135,7 @@ SOFTWARE.
   <xsl:template match="i[@name='ATOM']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
-    <xsl:text>']"; </xsl:text>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "lambda"; </xsl:text>
     <xsl:value-of select="$TAB"/>

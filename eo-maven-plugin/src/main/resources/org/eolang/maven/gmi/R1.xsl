@@ -31,7 +31,7 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="gmi">
+  <xsl:template match="o[@name and (@abstract or @base)]" mode="gmi" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
@@ -41,17 +41,37 @@ SOFTWARE.
       </xsl:with-param>
       <xsl:with-param name="comment">
         <xsl:text>[R1]</xsl:text>
-        <xsl:if test="@abstract">
-          <xsl:text> abstract</xsl:text>
-        </xsl:if>
         <xsl:if test="@name">
           <xsl:text> name=</xsl:text>
           <xsl:value-of select="@name"/>
+        </xsl:if>
+        <xsl:if test="@abstract">
+          <xsl:text> abstract</xsl:text>
         </xsl:if>
         <xsl:if test="@base">
           <xsl:text> base=</xsl:text>
           <xsl:value-of select="@base"/>
         </xsl:if>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:vertex(ancestor::*[1])"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:vertex(.)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="concat('text:', @name)"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>[R1] This object belongs to its owner</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:for-each select="o[@name and not(@base)]">
@@ -76,28 +96,9 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:call-template>
     </xsl:for-each>
-    <xsl:if test="@name and not(ancestor::o)">
-      <xsl:call-template name="i">
-        <xsl:with-param name="name" select="'BIND'"/>
-        <xsl:with-param name="args" as="item()*">
-          <xsl:sequence>
-            <xsl:value-of select="eo:edge(//objects, .)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:vertex(//objects)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:vertex(.)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="concat('text:', @name)"/>
-          </xsl:sequence>
-        </xsl:with-param>
-        <xsl:with-param name="comment">
-          <xsl:text>[R1] This object belongs to the global scope</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
+  </xsl:template>
+  <xsl:template match="o" mode="gmi">
+    <!-- ignore it -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
