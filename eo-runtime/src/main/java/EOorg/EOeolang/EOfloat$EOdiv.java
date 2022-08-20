@@ -57,15 +57,17 @@ public class EOfloat$EOdiv extends PhDefault {
                 new ExprReduce<>(
                     "float.div",
                     "x",
-                    Double.class,
-                    (acc, x) -> acc / x,
-                    x -> {
-                        String msg = "";
-                        if (x.equals(0.0)) {
-                            msg = "division by zero is infinity";
+                    new ExprReduce.Args<Double>(
+                        Double.class,
+                        (acc, x) -> acc / x,
+                        x -> {
+                            String msg = "";
+                            if (x.equals(0.0)) {
+                                msg = "division by zero is infinity";
+                            }
+                            return msg;
                         }
-                        return msg;
-                    }
+                    )
                 )
             )
         );

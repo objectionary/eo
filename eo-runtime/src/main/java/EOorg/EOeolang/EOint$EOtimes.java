@@ -57,8 +57,11 @@ public class EOint$EOtimes extends PhDefault {
                 new ExprReduce<>(
                     "int.times",
                     "x",
-                    Long.class,
-                    (acc, x) -> acc * x
+                    new ExprReduce.Args<Long>(
+                        Long.class,
+                        (acc, x) -> acc * x,
+                        x -> ""
+                    )
                 )
             )
         );
