@@ -96,23 +96,51 @@ public final class AtCompositeTest {
         );
     }
 
+    /**
+     * Dummy phi.
+     * @since 1.0
+     */
     private static class Dummy extends PhDefault {
-        public Phi self;
+        /**
+         * Self.
+         */
+        private Phi self;
+
+        /**
+         * Ctor.
+         */
         Dummy() {
             super();
-            this.add("φ", new AtComposite(this, rho -> {
-                this.self = rho;
-                return new Data.ToPhi(1L);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        this.self = rho;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
         }
     }
 
+    /**
+     * Rnd.
+     * @since 1.0
+     */
     private static class Rnd extends PhDefault {
+        /**
+         * Ctor.
+         */
         Rnd() {
             super();
-            this.add("φ", new AtComposite(this,
-                rho -> new Data.ToPhi(new SecureRandom().nextDouble())
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+                )
+            );
         }
     }
 }

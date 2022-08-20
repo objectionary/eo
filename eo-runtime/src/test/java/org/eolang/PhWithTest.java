@@ -85,7 +85,16 @@ public final class PhWithTest {
         );
     }
 
+    /**
+     * Dummy Phi.
+     * @since 1.0
+     */
     public static class Dummy extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Dummy(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));

@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.Data;
@@ -35,6 +39,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOas_phi}.
  *
  * @since 0.22
+ * @checkstyle TypeNameCheck (4 lines)
  */
 public final class EOas_phiTest {
 

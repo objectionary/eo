@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang.EOtxt;
 
 import org.eolang.Data;
@@ -39,9 +43,9 @@ public final class EOtextEOtrimTest {
 
     @Test
     public void trimsString() {
-        final String s = "Hello, world!  ";
+        final String data = "Hello, world!  ";
         final Phi text = new EOtext(Phi.Φ);
-        text.attr("s").put(new Data.ToPhi(s));
+        text.attr("s").put(new Data.ToPhi(data));
         final Phi phi = new EOtext$EOtrim(text);
         MatcherAssert.assertThat(
             new Dataized(phi).take(String.class),
