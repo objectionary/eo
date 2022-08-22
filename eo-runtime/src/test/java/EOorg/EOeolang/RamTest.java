@@ -43,7 +43,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test for {@link Ram}.
  * @since 1.0
- * @checkstyle ParameterNumberCheck (10 lines)
+ * @checkstyle ParameterNumberCheck (17 lines)
  */
 @Execution(ExecutionMode.CONCURRENT)
 final class RamTest {
