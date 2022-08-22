@@ -118,10 +118,10 @@ $\ff{DOT}(e_1, m, v_3, e_2)$
   \\
 $\ff{COPY}(e_1, v_3, e_2)$
   \>
-  \tabfill{Breaks the edge $e_1$ going from $v_1$ to $v_2$,
+  \tabfill{Reconnects the edge $e_1$ going from $v_1$ to $v_2$,
     adding a new vertice $v_3$,
-    connecting $v_1$ and $v_3$ with an edge $e_2$ labed the same way as $e_1$,
-    and connecting $v_3$ and $v_2$ with a dotted edge:}
+    connecting $v_1$ and $v_3$ with edge $e_1$,
+    and connecting $v_3$ and $v_2$ with a new dotted edge $e_2$:}
   \\
   \> \begin{phigure}
     \node[object] (v1) {$v_1$};
@@ -129,10 +129,10 @@ $\ff{COPY}(e_1, v_3, e_2)$
     \draw (v1) -- (v2) node [attr] {$a$} node [edge-name] {$e_1$};
     \node[object, right=1cm of v2] (v1d) {$v_1$};
     \node[transforms, right=0.3cm of v2] {};
-    \node[object, right=0.5cm of v1d] (v2d) {$v_2$};
-    \node[object, below right=0.8cm and 0.4cm of v1d] (v3) {$v_3$};
-    \draw (v1d) -- (v3) node [attr] {$a$} node [edge-name] {$e_2$};
-    \draw[parent] (v3) -- (v2d);
+    \node[object, right=0.7cm of v1d] (v2d) {$v_2$};
+    \node[object, below right=0.8cm and 0.2cm of v1d] (v3) {$v_3$};
+    \draw (v1d) -- (v3) node [attr] {$a$} node [edge-name] {$e_1$};
+    \draw[parent] (v3) -- (v2d) node [edge-name] {$e_2$};
   \end{phigure}
   \\
 $\ff{ATOM}(v_1, M_1)$
@@ -350,7 +350,7 @@ with an edge instead of a vertice:
 \begin{equation*}
 \dfrac
   {e_i | (E_1) \; E_2}
-  {\ff{COPY}(e_i, v_{i\rr 1}, e_{i\rr 2}) \quad v_{i\rr 1}|E_1 \quad e_{i\rr 2}|E_2}
+  {\ff{COPY}(e_i, v_{i\rr 1}, e_{i\rr 2}) \quad v_{i\rr 1}|E_1 \quad e_{i}|E_2}
   \jrule{copy}
 \end{equation*}
 To continue the processing of the expression inside the abstract object
@@ -358,7 +358,7 @@ To continue the processing of the expression inside the abstract object
 \begin{equation*}
 \dfrac
   {e_{16} | \ohat{E_1}{(\ff{to} \mapsto \xi.\ff{p})} \; \ohat{E_2}{.\ff{lte}(\ff{radius})}}
-  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad v_{17}|\ff{to} \mapsto \xi.\ff{p} \quad e_{18}|.\ff{lte}(\ff{radius})}
+  {\ff{COPY}(e_{16}, v_{17}, e_{18}) \quad v_{17}|\ff{to} \mapsto \xi.\ff{p} \quad e_{16}|.\ff{lte}(\ff{radius})}
 \end{equation*}
 Visually, this rule would produce the following modifications on the graph:
 
@@ -373,8 +373,8 @@ Visually, this rule would produce the following modifications on the graph:
     node[lambda] at (v15d.south east) {$M_{15}$};
     \draw (v12) -- (v15) node [attr] {$\varphi$} node [edge-name] {$e_{16}$};
   \node[object, above right=0cm and 1.5cm of v12d] (v17) {$v_{17}$};
-    \draw (v12d) -- (v17) node [attr] {$\varphi$} node [edge-name] {$e_{18}$};
-    \draw[parent] (v17) edge [bend right=30] (v15d);
+    \draw (v12d) -- (v17) node [attr] {$\varphi$} node [edge-name] {$e_{16}$};
+    \draw[parent] (v17) edge [bend right=30] node [edge-name] {$e_{18}$} (v15d);
 \end{phigure}\end{center}
 
 The last rule deals with data, such as integers, string literals, and so on
