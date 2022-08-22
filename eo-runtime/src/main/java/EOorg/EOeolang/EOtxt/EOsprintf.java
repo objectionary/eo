@@ -71,7 +71,11 @@ public class EOsprintf extends PhDefault {
                     final Phi[] args = new Param(rho, "args").strong(Phi[].class);
                     final Collection<Object> items = new LinkedList<>();
                     for (int idx = 0; idx < args.length; idx += 1) {
-                        items.add(format(args[idx], idx, format));
+                        Object arg = new Dataized(args[idx]).take();
+                        if (arg instanceof byte[]) {
+                            arg = format(arg, idx, format);
+                        }
+                        items.add(arg);
                     }
                     return new Data.ToPhi(String.format(Locale.US, format, items.toArray()));
                 }
@@ -80,9 +84,9 @@ public class EOsprintf extends PhDefault {
     }
 
     /**
-     * Return formatted object, if argumen is byte array.
+     * Return formatted object, if argument is byte array.
      *
-     * @param phi Argument of the sprintf
+     * @param arg Argument of the sprintf
      * @param index Index of the argument in array
      * @param format Format string
      * @return Formatted argument
@@ -91,14 +95,13 @@ public class EOsprintf extends PhDefault {
      *  become an first bytes character string. We need to
      *  support another flags, like %a, %o, %s, etc.
      */
-    private static Object format(final Phi phi, final int index, final String format) {
-        final Object arg = new Dataized(phi).take();
+    private static Object format(final Object arg, final int index, final String format) {
         Object result = arg;
-        if (arg instanceof byte[]) {
-            final int occurrence = findOccurrence(format, index);
+        final int occurrence = findOccurrence(format, index);
+        if (occurrence != -1) {
             final String flag = format.substring(occurrence, occurrence + 2);
             if (CHAR_FLAG.equalsIgnoreCase(flag)) {
-                result =  (char) ((byte[]) arg)[0];
+                result = (char) ((byte[]) arg)[0];
             }
         }
         return result;
