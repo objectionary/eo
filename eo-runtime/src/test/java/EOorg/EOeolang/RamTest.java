@@ -34,6 +34,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +47,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @Execution(ExecutionMode.CONCURRENT)
 final class RamTest {
+    @Disabled
     @ParameterizedTest
     @CsvSource({
         "5,  0, hello, 0, 5, hello",
