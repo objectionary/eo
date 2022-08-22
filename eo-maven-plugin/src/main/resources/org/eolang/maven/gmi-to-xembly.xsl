@@ -49,10 +49,10 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="i[@name='BIND']">
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
-    <xsl:value-of select="a[3]"/>
+    <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:text>XPATH "/graph/v[@id='</xsl:text>
-    <xsl:value-of select="a[4]"/>
+    <xsl:value-of select="a[3]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:text>XPATH "//v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
@@ -62,50 +62,6 @@ SOFTWARE.
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "e";</xsl:text>
-    <xsl:value-of select="$TAB"/>
-    <xsl:text>ATTR "id", "</xsl:text>
-    <xsl:value-of select="a[1]"/>
-    <xsl:text>"; </xsl:text>
-    <xsl:value-of select="$TAB"/>
-    <xsl:text>ATTR "to", "</xsl:text>
-    <xsl:value-of select="a[3]"/>
-    <xsl:text>"; </xsl:text>
-    <xsl:value-of select="$TAB"/>
-    <xsl:text>ATTR "title", "</xsl:text>
-    <xsl:value-of select="a[4]"/>
-    <xsl:text>";</xsl:text>
-    <xsl:if test="a[4] != '^'">
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
-      <xsl:value-of select="a[3]"/>
-      <xsl:text>']"; </xsl:text>
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>ADD "e"; </xsl:text>
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>ATTR "id", "</xsl:text>
-      <xsl:value-of select="a[1]"/>
-      <xsl:text>.up"; </xsl:text>
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>ATTR "to", "</xsl:text>
-      <xsl:value-of select="a[2]"/>
-      <xsl:text>"; </xsl:text>
-      <xsl:value-of select="$TAB"/>
-      <xsl:text>ATTR "title", "^";</xsl:text>
-    </xsl:if>
-    <xsl:value-of select="$EOL"/>
-  </xsl:template>
-  <xsl:template match="i[@name='REF']">
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
-    <xsl:value-of select="a[3]"/>
-    <xsl:text>']"; STRICT "1"; </xsl:text>
-    <xsl:text>XPATH "//v/e[@id='</xsl:text>
-    <xsl:value-of select="a[1]"/>
-    <xsl:text>']"; STRICT "0"; </xsl:text>
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
-    <xsl:value-of select="a[2]"/>
-    <xsl:text>']"; </xsl:text>
-    <xsl:value-of select="$TAB"/>
-    <xsl:text>ADD "e"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "id", "</xsl:text>
     <xsl:value-of select="a[1]"/>

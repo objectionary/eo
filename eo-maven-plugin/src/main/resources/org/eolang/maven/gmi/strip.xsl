@@ -29,7 +29,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program/gmi/i/a">
+  <xsl:template match="/gmi/i/a">
     <xsl:copy>
       <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
       <xsl:variable name="body" select="replace(., '^[a-z]+:', '')"/>

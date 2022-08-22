@@ -29,7 +29,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program/gmi/i/a[. != 'ν0' and @prefix = 'vertex' or @prefix = 'edge']">
+  <xsl:template match="/gmi/i/a[. != 'ν0' and @prefix = 'vertex' or @prefix = 'edge']">
     <xsl:copy>
       <xsl:apply-templates select="node() except text()|@*"/>
       <xsl:text>$</xsl:text>

@@ -24,7 +24,9 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
   <!--
-  Here we start the graph.
+  Here we start the graph, creating a new XML element "gmi" under "program".
+  All further XSL transformations will work with "i" elements inside
+  this "gmi" one.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>

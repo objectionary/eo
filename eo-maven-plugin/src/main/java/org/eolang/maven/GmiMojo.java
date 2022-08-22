@@ -71,6 +71,35 @@ public final class GmiMojo extends SafeMojo {
      */
     public static final String DIR = "gmi";
 
+    /**
+     * The train that generates GMI.
+     */
+    private static final Train<Shift> TRAIN = new TrWith(
+        new TrLogged(
+            new TrClasspath<>(
+                new TrDefault<>(),
+                "/org/eolang/maven/gmi/R0.xsl",
+                "/org/eolang/maven/gmi/R1.xsl",
+                "/org/eolang/maven/gmi/R6.xsl",
+                "/org/eolang/maven/gmi/R7.xsl",
+                "/org/eolang/maven/gmi/focus.xsl",
+                "/org/eolang/maven/gmi/rename.xsl",
+                "/org/eolang/maven/gmi/strip.xsl",
+                "/org/eolang/maven/gmi/variability.xsl"
+            ).back(),
+            GmiMojo.class
+        ),
+        new StLambda(
+            "escape-data",
+            xml -> {
+                final Node dom = xml.node();
+                GmiMojo.escape(dom);
+                return new XMLDocument(dom);
+            }
+        ),
+        new StSchema("/org/eolang/maven/gmi/after.xsd")
+    );
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
@@ -80,7 +109,7 @@ public final class GmiMojo extends SafeMojo {
         int total = 0;
         for (final Tojo tojo : tojos) {
             final Path gmi = new Place(tojo.get(Tojos.KEY)).make(home, "gmi");
-            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
@@ -114,34 +143,8 @@ public final class GmiMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void render(final Path xmir, final Path gmi) throws IOException {
-        final Train<Shift> train = new TrWith(
-            new TrLogged(
-                new TrClasspath<>(
-                    new TrDefault<>(),
-                    "/org/eolang/maven/gmi/R0.xsl",
-                    "/org/eolang/maven/gmi/R1.xsl",
-                    "/org/eolang/maven/gmi/R3.xsl",
-                    "/org/eolang/maven/gmi/R6.xsl",
-                    "/org/eolang/maven/gmi/R7.xsl",
-                    "/org/eolang/maven/gmi/rename.xsl",
-                    "/org/eolang/maven/gmi/strip.xsl",
-                    "/org/eolang/maven/gmi/variability.xsl",
-                    "/org/eolang/maven/gmi/final.xsl"
-                ).back(),
-                GmiMojo.class
-            ),
-            new StLambda(
-                "escape-data",
-                xml -> {
-                    final Node dom = xml.node();
-                    GmiMojo.escape(dom);
-                    return new XMLDocument(dom);
-                }
-            ),
-            new StSchema("/org/eolang/maven/gmi/after.xsd")
-        );
         final XML before = new XMLDocument(xmir);
-        final XML after = new Xsline(train).pass(before);
+        final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         new Save(
             new XSLDocument(
                 new IoCheckedText(

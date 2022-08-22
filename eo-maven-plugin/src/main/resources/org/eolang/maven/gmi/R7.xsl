@@ -23,6 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R7" version="2.0">
+  <!--
+  Here we attach atoms to vertices using ATOM instruction.
+  -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/gmi">
@@ -54,8 +57,8 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R6] This is a data object of type "</xsl:text>
-        <xsl:value-of select="@data"/>
+        <xsl:text>[R6] This is an atom returning "</xsl:text>
+        <xsl:value-of select="@atom"/>
         <xsl:text>"</xsl:text>
       </xsl:with-param>
     </xsl:call-template>

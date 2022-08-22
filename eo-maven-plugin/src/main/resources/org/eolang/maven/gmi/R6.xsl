@@ -33,49 +33,14 @@ SOFTWARE.
   </xsl:template>
   <!-- remove this "!=array" after the fix: https://github.com/objectionary/eo/issues/1060 -->
   <xsl:template match="o[@base and @data and @data != 'array']" mode="gmi" priority="1">
-    <xsl:variable name="dx">
-      <xsl:value-of select="eo:vertex(.)"/>
-      <xsl:text>d</xsl:text>
-    </xsl:variable>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ADD'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="$dx"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R6] Add new data vertex</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'BIND'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:edge(., .)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="$dx"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:text>text:Δ</xsl:text>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R6] Data attribute of data object</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'DATA'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="$dx"/>
+          <xsl:value-of select="eo:vertex(.)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('data:', @data, '/', .)"/>
+          <xsl:value-of select="concat('data:', @data, '/', text())"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

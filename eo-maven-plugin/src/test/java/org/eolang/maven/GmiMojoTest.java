@@ -215,11 +215,11 @@ public final class GmiMojoTest {
                     vertex = opts.get(0);
                     continue;
                 }
-                if (sub.charAt(0) == '=') {
+                if (sub.startsWith("Δ=")) {
                     matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/data[text() = '%s']/text()",
-                            vertex, sub.substring(1)
+                            vertex, sub.substring(2)
                         )
                     ).isEmpty();
                     if (!matches) {
@@ -230,11 +230,11 @@ public final class GmiMojoTest {
                         break;
                     }
                 }
-                if (sub.charAt(0) == 'λ') {
+                if (sub.startsWith("λ=")) {
                     matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/lambda[text() = '%s']/text()",
-                            vertex, sub.substring(1)
+                            vertex, sub.substring(2)
                         )
                     ).isEmpty();
                     if (!matches) {

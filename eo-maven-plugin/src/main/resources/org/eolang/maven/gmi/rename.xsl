@@ -31,11 +31,11 @@ SOFTWARE.
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="sorted">
-    <xsl:perform-sort select="//gmi/i/a[starts-with(., 'edge:') or starts-with(., 'vertex:') and . != 'vertex:0']">
+    <xsl:perform-sort select="/gmi/i/a[starts-with(., 'edge:') or starts-with(., 'vertex:') and . != 'vertex:0']">
       <xsl:sort select="."/>
     </xsl:perform-sort>
   </xsl:variable>
-  <xsl:template match="program/gmi/i/a[matches(., '[a-z]+:.*') and . != 'vertex:0']">
+  <xsl:template match="/gmi/i/a[matches(., '[a-z]+:.*') and . != 'vertex:0']">
     <xsl:variable name="a" select="."/>
     <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
     <xsl:copy>
