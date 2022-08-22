@@ -50,6 +50,11 @@ import org.eolang.XmirObject;
 public class EOsprintf extends PhDefault {
 
     /**
+     * Format flag, replaces a character.
+     */
+    private static final String CHAR_FLAG = "%c";
+
+    /**
      * Ctor.
      * @param sigma Sigma
      */
@@ -65,8 +70,12 @@ public class EOsprintf extends PhDefault {
                     final String format = new Param(rho, "format").strong(String.class);
                     final Phi[] args = new Param(rho, "args").strong(Phi[].class);
                     final Collection<Object> items = new LinkedList<>();
-                    for (final Phi arg : args) {
-                        items.add(new Dataized(arg).take());
+                    for (int idx = 0; idx < args.length; ++idx) {
+                        Object arg = new Dataized(args[idx]).take();
+                        if (arg instanceof byte[]) {
+                            arg = format(arg, idx, format);
+                        }
+                        items.add(arg);
                     }
                     return new Data.ToPhi(String.format(Locale.US, format, items.toArray()));
                 }
@@ -74,4 +83,53 @@ public class EOsprintf extends PhDefault {
         );
     }
 
+    /**
+     * Return formatted object, if argument is byte array.
+     *
+     * @param arg Argument of the sprintf
+     * @param index Index of the argument in array
+     * @param format Format string
+     * @return Formatted argument
+     * @todo #1049:30min Current implementation supports
+     *  only character formatting. It means that byte array
+     *  become an first bytes character string. We need to
+     *  support another flags, like %a, %o, %s, etc.
+     */
+    private static Object format(final Object arg, final int index, final String format) {
+        Object result = arg;
+        final int occurrence = findOccurrence(format, index);
+        if (occurrence != -1) {
+            final String flag = format.substring(occurrence, occurrence + 2);
+            if (CHAR_FLAG.equalsIgnoreCase(flag)) {
+                result = (char) ((byte[]) arg)[0];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Find index of the flag occurrence.
+     *
+     * @param format Format string
+     * @param index Index of the argument in array
+     * @return Index of th flag
+     */
+    private static int findOccurrence(final String format, final int index) {
+        final String flag = "%";
+        String fmt = format;
+        int result = -1;
+        for (int occurrence = 0; occurrence <= index; ++occurrence) {
+            int idx = fmt.indexOf(flag);
+            if (idx == -1) {
+                result = idx;
+                break;
+            }
+            if (format.charAt(idx + 1) == '%') {
+                idx += 1;
+            }
+            fmt = fmt.substring(idx);
+            result = idx;
+        }
+        return result;
+    }
 }

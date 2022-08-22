@@ -51,6 +51,11 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
       <!-- version from parent POM -->
@@ -58,7 +63,7 @@ SOFTWARE.
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
-      <version>9.8.0-5</version>
+      <version>11.4</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
