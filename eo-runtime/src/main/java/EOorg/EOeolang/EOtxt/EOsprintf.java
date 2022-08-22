@@ -70,7 +70,7 @@ public class EOsprintf extends PhDefault {
                     final String format = new Param(rho, "format").strong(String.class);
                     final Phi[] args = new Param(rho, "args").strong(Phi[].class);
                     final Collection<Object> items = new LinkedList<>();
-                    for (int idx = 0; idx < args.length; idx += 1) {
+                    for (int idx = 0; idx < args.length; ++idx) {
                         Object arg = new Dataized(args[idx]).take();
                         if (arg instanceof byte[]) {
                             arg = format(arg, idx, format);
@@ -118,7 +118,7 @@ public class EOsprintf extends PhDefault {
         final String flag = "%";
         String fmt = format;
         int result = -1;
-        for (int occurrence = 0; occurrence <= index; occurrence += 1) {
+        for (int occurrence = 0; occurrence <= index; ++occurrence) {
             int idx = fmt.indexOf(flag);
             if (idx == -1) {
                 result = idx;
