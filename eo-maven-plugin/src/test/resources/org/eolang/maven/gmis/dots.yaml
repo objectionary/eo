@@ -1,7 +1,7 @@
 locators:
-  - .dots .α1 .α0 λ=???
+  - .dots .x λ=S(ξ.b)
+  - .dots .x .α0 λ=S(ξ.a)
+  - .dots .x .α0 .α0 ν=0
 eo: |
   [] > dots
-    42 > x
-    []
-      ^.x
+    Q.a.b > x

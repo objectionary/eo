@@ -82,6 +82,7 @@ public final class GmiMojo extends SafeMojo {
                 "/org/eolang/maven/gmi/R1.xsl",
                 "/org/eolang/maven/gmi/R6.xsl",
                 "/org/eolang/maven/gmi/R7.xsl",
+                "/org/eolang/maven/gmi/R8.xsl",
                 "/org/eolang/maven/gmi/focus.xsl",
                 "/org/eolang/maven/gmi/rename.xsl",
                 "/org/eolang/maven/gmi/strip.xsl",
