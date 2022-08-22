@@ -31,6 +31,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,6 +63,21 @@ public final class OptimizeMojo extends SafeMojo {
      * The directory where to transpile to.
      */
     public static final String DIR = "03-optimize";
+
+    /**
+     * Parsing train with XSLs.
+     */
+    private static final Train<Shift> TRAIN = new TrClasspath<>(
+        new ParsingTrain(),
+        "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
+        "/org/eolang/parser/optimize/remove-refs.xsl",
+        "/org/eolang/parser/optimize/abstracts-float-up.xsl",
+        "/org/eolang/parser/optimize/remove-levels.xsl",
+        "/org/eolang/parser/add-refs.xsl",
+        "/org/eolang/parser/optimize/fix-missed-names.xsl",
+        "/org/eolang/parser/add-refs.xsl",
+        "/org/eolang/parser/errors/broken-refs.xsl"
+    ).back();
 
     /**
      * Track optimization steps into intermediate XML files?
@@ -122,33 +138,23 @@ public final class OptimizeMojo extends SafeMojo {
      *
      * @param file EO file
      * @return The file with optimized XMIR
-     * @throws IOException If fails
+     * @throws FileNotFoundException If fails
      */
-    private XML optimize(final Path file) throws IOException {
+    private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
-        final Place place = new Place(name);
-        Train<Shift> train = new TrClasspath<>(
-            new ParsingTrain(),
-            "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
-            "/org/eolang/parser/optimize/remove-refs.xsl",
-            "/org/eolang/parser/optimize/abstracts-float-up.xsl",
-            "/org/eolang/parser/optimize/remove-levels.xsl",
-            "/org/eolang/parser/add-refs.xsl",
-            "/org/eolang/parser/optimize/fix-missed-names.xsl",
-            "/org/eolang/parser/add-refs.xsl",
-            "/org/eolang/parser/errors/broken-refs.xsl"
-        ).back();
+        Train<Shift> trn = OptimizeMojo.TRAIN;
         if (this.trackOptimizationSteps) {
+            final Place place = new Place(name);
             final Path dir = place.make(
                 this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
             );
-            train = new SpyTrain(train, dir);
+            trn = new SpyTrain(trn, dir);
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
                 Save.rel(dir)
             );
         }
-        return new Xsline(train).pass(new XMLDocument(file));
+        return new Xsline(trn).pass(new XMLDocument(file));
     }
 
     /**

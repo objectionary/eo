@@ -61,6 +61,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     /**
      * Identity of it (the ID of the vertex).
+     * @checkstyle VisibilityModifierCheck (2 lines)
      */
     protected int vertex;
 

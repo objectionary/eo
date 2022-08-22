@@ -21,33 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import java.io.IOException;
+import org.cactoos.Input;
 
 /**
- * Test case for {@link EObool}.
+ * Fake empty HTTP Objectionary server.
  *
  * @since 0.1
  */
-public final class EOboolEOnotTest {
+public final class OyEmpty implements Objectionary {
 
-    @Test
-    public void inversesValue() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi not = left.attr("not").get();
-        MatcherAssert.assertThat(
-            new Dataized(not).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
+    @Override
+    public String toString() {
+        return "empty";
     }
+
+    @Override
+    public Input get(final String name) throws IOException {
+        throw new IOException("Empty objectionary");
+    }
+
 }

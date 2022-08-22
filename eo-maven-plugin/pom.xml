@@ -80,7 +80,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-maven-slf4j</artifactId>
-      <version>0.10</version>
+      <version>0.12.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -147,6 +147,11 @@ SOFTWARE.
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>

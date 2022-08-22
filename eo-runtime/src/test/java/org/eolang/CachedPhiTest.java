@@ -60,13 +60,15 @@ public final class CachedPhiTest {
         final AtomicReference<Supplier<Phi>> sup = new AtomicReference<>();
         sup.set(
             () -> {
+                final Phi result;
                 if (count.decrementAndGet() == 0) {
-                    return new Data.ToPhi(42L);
+                    result = new Data.ToPhi(42L);
+                } else {
+                    result = cphi.get("x", sup.get());
                 }
-                return cphi.get("x", sup.get());
+                return result;
             }
         );
-        ;
         MatcherAssert.assertThat(
             new Dataized(cphi.get("x", sup.get())).take(Long.class),
             Matchers.equalTo(42L)
