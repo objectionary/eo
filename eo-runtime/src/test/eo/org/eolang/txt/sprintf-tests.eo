@@ -43,3 +43,8 @@
       "Jeff"
       "X"
     $.equal-to "Привет 3.14 Jeff X!"
+
+[] > prints-bytes-string
+  assert-that > @
+    sprintf "%c" (56.as-bytes.slice 7 1)
+    $.equal-to "8"
