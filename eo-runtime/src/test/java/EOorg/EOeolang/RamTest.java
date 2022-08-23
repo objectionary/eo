@@ -29,12 +29,17 @@ package EOorg.EOeolang;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentSkipListSet;
 import org.eolang.Data;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -72,4 +77,68 @@ final class RamTest {
             )
         );
     }
+
+    @Nested
+    @Execution(ExecutionMode.CONCURRENT)
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    final class ConcurrentAccessTheToSameDataTest {
+        /**
+         * Ram object reference.
+         */
+        private final Phi ref = new PhWith(
+            new EOram(Phi.Φ),
+            0,
+            new Data.ToPhi(128L)
+        );
+
+        /**
+         * Used threads.
+         */
+        private final Collection<Long> threads = new ConcurrentSkipListSet<>();
+
+        @ParameterizedTest
+        @CsvSource({
+            "hello       ,  0",
+            "bye         , 10",
+            "hello world , 20",
+            "привет      , 50"
+        })
+        void writesAndReads(
+            final String data,
+            final int position
+        ) throws IOException {
+            this.threads.add(Thread.currentThread().getId());
+            Ram.INSTANCE.write(this.ref, position, data.getBytes(StandardCharsets.UTF_8));
+            MatcherAssert.assertThat(
+                new String(
+                    Ram.INSTANCE.read(
+                        this.ref,
+                        position,
+                        data.getBytes(StandardCharsets.UTF_8).length
+                    ),
+                    StandardCharsets.UTF_8
+                ),
+                Matchers.is(
+                    data
+                )
+            );
+        }
+
+        @AfterAll
+        void shouldBeConcurrent() {
+            MatcherAssert.assertThat(
+                "test was executed concurrently",
+                this.threads,
+                Matchers.hasSize(
+                    Matchers.anyOf(
+                        Matchers.greaterThan(1),
+                        Matchers.equalTo(
+                            Runtime.getRuntime().availableProcessors()
+                        )
+                    )
+                )
+            );
+        }
+    }
+
 }
