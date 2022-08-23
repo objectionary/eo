@@ -35,7 +35,8 @@ import java.util.Scanner;
  * Hash of tag.
  * @since 0.26
  * @todo #1062:30min Make HashOfTag testable without accessing web.
- *  We need to be able to populate tags with custom values.
+ *  We need to be able to populate tags with custom values rather than
+ *  always download it from the web.
  */
 final class HashOfTag {
 
