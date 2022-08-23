@@ -196,7 +196,7 @@ public final class ParseMojo extends SafeMojo {
      * @return Version value or empty string if attribute doesn't exist.
      */
     private static String verSafe(final Tojo tojo) {
-        String ver = "";
+        String ver = ParseMojo.ZERO;
         if (tojo.exists(AssembleMojo.ATTR_VERSION)) {
             ver = tojo.get(AssembleMojo.ATTR_VERSION);
         }
@@ -218,7 +218,7 @@ public final class ParseMojo extends SafeMojo {
                 "Unable to get hash for ver %s",
                 ver
             );
-            hash = "0000000";
+            hash = ver;
         }
         return hash;
     }
