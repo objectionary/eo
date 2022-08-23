@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.23
  */
-public final class ParsingTrainTest {
+final class ParsingTrainTest {
 
     @Test
-    public void buildsList() {
+    void buildsList() {
         MatcherAssert.assertThat(
             new ParsingTrain(),
             Matchers.iterableWithSize(Matchers.greaterThan(1))

@@ -44,11 +44,11 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 1.0
  */
-public final class TyposTest {
+final class TyposTest {
 
     @ParameterizedTest
     @MethodSource("yamlTypos")
-    public void testPacks(final String yml) throws Exception {
+    void testPacks(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             new TextOf(
