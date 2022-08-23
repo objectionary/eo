@@ -37,9 +37,9 @@ import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,8 +51,8 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @checkstyle ParameterNumberCheck (17 lines)
  */
 @Execution(ExecutionMode.CONCURRENT)
+@EnabledIf("EOorg.EOeolang.RamTest#isMulticore")
 final class RamTest {
-    @Disabled
     @ParameterizedTest
     @CsvSource({
         "5,  0, hello, 0, 5, hello",
@@ -72,9 +72,7 @@ final class RamTest {
         final byte[] bytes = Ram.INSTANCE.read(ref, rdr, len);
         MatcherAssert.assertThat(
             new String(bytes, StandardCharsets.UTF_8),
-            Matchers.is(
-                result
-            )
+            Matchers.is(result)
         );
     }
 
@@ -118,9 +116,7 @@ final class RamTest {
                     ),
                     StandardCharsets.UTF_8
                 ),
-                Matchers.is(
-                    data
-                )
+                Matchers.is(data)
             );
         }
 
@@ -129,16 +125,16 @@ final class RamTest {
             MatcherAssert.assertThat(
                 "test was executed concurrently",
                 this.threads,
-                Matchers.hasSize(
-                    Matchers.anyOf(
-                        Matchers.greaterThan(1),
-                        Matchers.equalTo(
-                            Runtime.getRuntime().availableProcessors()
-                        )
-                    )
-                )
+                Matchers.hasSize(Matchers.greaterThan(1))
             );
         }
     }
 
+    /**
+     * Is this system multi-core?
+     * @return Boolean.
+     */
+    private static boolean isMulticore() {
+        return Runtime.getRuntime().availableProcessors() > 2;
+    }
 }
