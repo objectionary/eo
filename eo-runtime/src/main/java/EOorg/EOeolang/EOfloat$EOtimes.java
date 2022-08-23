@@ -54,12 +54,15 @@ public class EOfloat$EOtimes extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                new ExprReduce<>(
-                    "float.times",
-                    "x",
-                    Double.class,
-                    (acc, x) -> acc * x
-                )
+                    new ExprReduce<Double>(
+                            "x",
+                            (acc, x) -> acc * x,
+                            new ExprReduce.Args(
+                                    Double.class,
+                                    x -> "",
+                                    "float.times"
+                            )
+                    )
             )
         );
     }

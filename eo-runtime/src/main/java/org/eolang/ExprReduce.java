@@ -23,8 +23,11 @@
  */
 package org.eolang;
 
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Builds a phi performing reduction operation on varargs parameter.
@@ -51,25 +54,11 @@ public final class ExprReduce<T> implements Expr {
     private final String param;
 
     /**
-     * Varargs type.
-     */
-    private final Class<T> type;
-
-    /**
      * Reduction.
      */
-    private final BiFunction<T, T, T> reduction;
+    private final BinaryOperator<T> reduction;
 
-    /**
-     * Validation.
-     */
-    private final Function<T, String> validation;
-
-    /**
-     * Operation name.
-     */
-    private final String oper;
-
+    private final Args<T> arguments;
     /**
      * Ctor.
      *
@@ -81,64 +70,73 @@ public final class ExprReduce<T> implements Expr {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     public ExprReduce(
-        final String oper,
         final String param,
-        final Class<T> type,
-        final BiFunction<T, T, T> reduction,
-        final Function<T, String> validation
+        final BinaryOperator<T> reduction,
+        final Args<T> arguments
     ) {
         this.param = param;
-        this.type = type;
         this.reduction = reduction;
-        this.oper = oper;
-        this.validation = validation;
-    }
-
-    /**
-     * Ctor.
-     * @param oper Peration name
-     * @param param Name of parameter with varargs
-     * @param type Type of varargs
-     * @param reduction Reduction operation on consecutive varargs
-     * @checkstyle ParameterNumberCheck (10 lines)
-     */
-    public ExprReduce(
-        final String oper,
-        final String param,
-        final Class<T> type,
-        final BiFunction<T, T, T> reduction
-    ) {
-        this(
-            oper,
-            param,
-            type,
-            reduction,
-            x -> ""
-        );
+        this.arguments = arguments;
     }
 
     @Override
     public Phi get(final Phi rho) {
-        T acc = new Param(rho).strong(this.type);
-        final Phi[] args = new Param(rho, this.param).strong(Phi[].class);
-        for (int idx = 0; idx < args.length; ++idx) {
-            final Object val = new Dataized(args[idx]).take();
-            if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
-                throw new ExFailure(
-                    "The %dth argument of '%s' is not a(n) %s: %s",
-                    idx + 1, this.oper, this.type.getSimpleName(), val
-                );
-            }
-            final T typed = this.type.cast(val);
-            final String msg = this.validation.apply(typed);
-            if (!msg.isEmpty()) {
-                throw new ExFailure(
-                    "The %dth argument of '%s' is invalid: %s",
-                    idx + 1, this.oper, msg
-                );
-            }
-            acc = this.reduction.apply(acc, typed);
+        Optional<T> acc = this.arguments.get(rho, this.param).stream().reduce(this.reduction);
+        return new Data.ToPhi(acc.get());
+    }
+
+    public static class Args<T>{
+
+        /**
+         * Varargs type.
+         */
+        private final Class<T> type;
+
+        /**
+         * Validation.
+         */
+        private final Function<T, String> validation;
+
+        /**
+         * Operation name.
+         */
+        private final String oper;
+
+        public Args(
+            final Class<T> type,
+            final Function<T, String> validation,
+            final String oper
+        ){
+            this.type = type;
+            this.validation = validation;
+            this.oper = oper;
         }
-        return new Data.ToPhi(acc);
+
+        public List<T> get(Phi rho, String param){
+            T acc = new Param(rho).strong(this.type);
+            List<T> ls = new ArrayList<>();
+            ls.add(acc);
+            final Phi[] args = new Param(rho, param).strong(Phi[].class);
+            for (int idx = 0; idx < args.length; ++idx) {
+                final Object val = new Dataized(args[idx]).take();
+                if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
+                    throw new ExFailure(
+                            "The %dth argument of '%s' is not a(n) %s: %s",
+                            idx + 1, this.oper, this.type.getSimpleName(), val
+                    );
+                }
+                final T typed = this.type.cast(val);
+                final String msg = this.validation.apply(typed);
+                if (!msg.isEmpty()) {
+                    throw new ExFailure(
+                            "The %dth argument of '%s' is invalid: %s",
+                            idx + 1, this.oper, msg
+                    );
+                }
+                ls.add(typed);
+            }
+            return ls;
+        }
+
     }
 }
