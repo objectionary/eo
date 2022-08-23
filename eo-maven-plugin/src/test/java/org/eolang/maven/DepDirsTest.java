@@ -36,10 +36,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class DepDirsTest {
+final class DepDirsTest {
 
     @Test
-    public void findsDirs(@TempDir final Path temp) throws IOException {
+    void findsDirs(@TempDir final Path temp) throws IOException {
         new Save("", temp.resolve("a/b/c/f/test.txt")).save();
         new Save("", temp.resolve("a/b/f.txt")).save();
         new Save("", temp.resolve("test/f.txt")).save();

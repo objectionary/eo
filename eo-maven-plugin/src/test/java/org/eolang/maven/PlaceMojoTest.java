@@ -35,10 +35,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class PlaceMojoTest {
+final class PlaceMojoTest {
 
     @Test
-    public void placesBinaries(@TempDir final Path temp) throws Exception {
+    void placesBinaries(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         final Path classes = temp.resolve("classes");
         new Save("x1", bins.resolve("foo/hello/0.1/EObar/x.bin")).save();

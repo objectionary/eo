@@ -55,11 +55,11 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class GmiMojoTest {
+final class GmiMojoTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    public void testPacks(final String pack) throws Exception {
+    void testPacks(final String pack) throws Exception {
         final Map<String, Object> map = new Yaml().load(
             new TextOf(
                 new ResourceOf(
