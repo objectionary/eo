@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class PhDefaultTest {
+final class PhDefaultTest {
 
     @Test
-    public void comparesTwoObjects() {
+    void comparesTwoObjects() {
         final Phi phi = new PhDefaultTest.First(Phi.Φ);
         MatcherAssert.assertThat(
             phi, Matchers.equalTo(phi)
@@ -46,7 +46,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void comparesTwoCopies() {
+    void comparesTwoCopies() {
         final Phi phi = new PhDefaultTest.First(Phi.Φ);
         MatcherAssert.assertThat(
             phi.copy(), Matchers.not(Matchers.equalTo(phi.copy()))
@@ -54,7 +54,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void makesObjectIdentity() {
+    void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.First(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(phi.attr("ν").get()).take(Long.class),
@@ -63,7 +63,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void failsGracefullyOnMissingAttribute() {
+    void failsGracefullyOnMissingAttribute() {
         final ExUnset error = Assertions.assertThrows(
             ExUnset.class,
             () -> new EOstring(Phi.Φ).attr("missing-attr").get()
@@ -77,7 +77,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void makesCopy() {
+    void makesCopy() {
         final Phi num = new Data.ToPhi(42L);
         final Phi parent = new EOsprintf(Phi.Φ);
         final String data = "Hello, world!";
@@ -95,7 +95,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void setsFreeAttributeOnlyOnce() {
+    void setsFreeAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo(Phi.Φ);
         phi.attr(0).put(num);
@@ -106,7 +106,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void takesRhoFromAttribute() {
+    void takesRhoFromAttribute() {
         final Phi phi = new PhDefaultTest.Kid(new Data.ToPhi(0L));
         MatcherAssert.assertThat(
             new Dataized(phi.attr("φ").get().attr("ρ").get()).take(Long.class),
@@ -115,7 +115,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void changesRhoOnCopy() {
+    void changesRhoOnCopy() {
         final Phi foo = new Foo(Phi.Φ);
         final Phi kid = foo.attr("kid").get();
         kid.move(Phi.Φ);
@@ -126,7 +126,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void getsRhoFromPhi() {
+    void getsRhoFromPhi() {
         final Phi first = new PhDefaultTest.First(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(first).take(Long.class),
@@ -135,7 +135,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void printsEndlessRecursionObject() {
+    void printsEndlessRecursionObject() {
         final Phi phi = new PhDefaultTest.EndlessRecursion(Phi.Φ);
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
@@ -145,7 +145,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void recursiveCachingOfPhi() {
+    void recursiveCachingOfPhi() {
         final Phi phi = new PhDefaultTest.RecursivePhi(Phi.Φ);
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
@@ -155,7 +155,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void recursiveCachingOfPhiViaNew() {
+    void recursiveCachingOfPhiViaNew() {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew(Phi.Φ);
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
@@ -165,7 +165,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void resetsCacheOnCopy() {
+    void resetsCacheOnCopy() {
         final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
         phi.attr("plus").get();
         final Phi copy = phi.copy();
@@ -178,7 +178,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void readsMultipleTimes() {
+    void readsMultipleTimes() {
         final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
         final long total = 2L;
         for (long idx = 0L; idx < total; ++idx) {
@@ -191,7 +191,7 @@ public final class PhDefaultTest {
     }
 
     @Test
-    public void readsMultipleTimesThroughAttribute() {
+    void readsMultipleTimesThroughAttribute() {
         final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
         final Phi eql = phi.attr("eq").get().copy();
         eql.attr(0).put(new Data.ToPhi(true));
@@ -214,7 +214,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Foo(final Phi sigma) {
+        Foo(final Phi sigma) {
             this(sigma, new Object());
         }
 
@@ -223,7 +223,7 @@ public final class PhDefaultTest {
          * @param sigma Sigma
          * @param data Data
          */
-        public Foo(final Phi sigma, final Object data) {
+        Foo(final Phi sigma, final Object data) {
             super(sigma);
             this.add("x", new AtFree());
             this.add(
@@ -257,7 +257,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Dummy(final Phi sigma) {
+        Dummy(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -286,7 +286,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Counter(final Phi sigma) {
+        Counter(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -317,7 +317,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Kid(final Phi sigma) {
+        Kid(final Phi sigma) {
             super(sigma);
             this.add("z", new AtFree());
             this.add(
@@ -340,7 +340,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public First(final Phi sigma) {
+        First(final Phi sigma) {
             super(sigma);
             this.add("a", new AtFree(new Data.ToPhi(1L)));
             this.add(
@@ -362,7 +362,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Second(final Phi sigma) {
+        Second(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -388,7 +388,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public EndlessRecursion(final Phi sigma) {
+        EndlessRecursion(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -423,7 +423,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public RecursivePhi(final Phi sigma) {
+        RecursivePhi(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -458,7 +458,7 @@ public final class PhDefaultTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public RecursivePhiViaNew(final Phi sigma) {
+        RecursivePhiViaNew(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",

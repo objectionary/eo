@@ -67,7 +67,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  */
-public final class SnippetTest {
+final class SnippetTest {
 
     /**
      * Temp dir.
@@ -80,7 +80,7 @@ public final class SnippetTest {
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
-    public void testFullRun(final String yml) throws Exception {
+    void testFullRun(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             new TextOf(

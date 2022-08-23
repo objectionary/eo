@@ -45,7 +45,7 @@ import org.junit.jupiter.api.io.TempDir;
 public final class ParseMojoTest {
 
     @Test
-    public void testSimpleParsing(@TempDir final Path temp) throws Exception {
+    void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
         new Save(
@@ -79,7 +79,7 @@ public final class ParseMojoTest {
     }
 
     @Test
-    public void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
+    void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
         new Save(
@@ -122,7 +122,7 @@ public final class ParseMojoTest {
     }
 
     @Test
-    public void testCrashOnInvalidSyntax(@TempDir final Path temp)
+    void testCrashOnInvalidSyntax(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
@@ -142,7 +142,7 @@ public final class ParseMojoTest {
     }
 
     @Test
-    public void testCrashesWithFileName(@TempDir final Path temp)
+    void testCrashesWithFileName(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
@@ -163,7 +163,7 @@ public final class ParseMojoTest {
     }
 
     @Test
-    public void testDoNotCrashesWithFailOnError(@TempDir final Path temp)
+    void testDoNotCrashesWithFailOnError(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
