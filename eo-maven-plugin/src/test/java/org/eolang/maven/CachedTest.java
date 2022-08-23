@@ -35,9 +35,9 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Tests for Cached.
  * @since 1.0
  */
-public final class CachedTest {
+final class CachedTest {
     @Test
-    public void testContentOfCachedFile(@TempDir final Path temp) throws Exception {
+    void testContentOfCachedFile(@TempDir final Path temp) throws Exception {
         final String content = String.join(
             "\n",
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
@@ -53,7 +53,7 @@ public final class CachedTest {
     }
 
     @Test
-    public void testCachedObjectExists(@TempDir final Path temp) throws Exception {
+    void testCachedObjectExists(@TempDir final Path temp) throws Exception {
         new Cached("1.0.0", "org.eolang.txt.text.xmir", temp.resolve("parsed"))
             .save(
                 String.join(
@@ -71,7 +71,7 @@ public final class CachedTest {
 
     @ValueSource(strings = {"1.0.0", "0.0.1", "abc", "a.b.c.0"})
     @ParameterizedTest
-    public void testMeaningfulVersion(final String ver) {
+    void testMeaningfulVersion(final String ver) {
         MatcherAssert.assertThat(
             ParseMojo.versioned(ver),
             Matchers.is(true)
@@ -80,7 +80,7 @@ public final class CachedTest {
 
     @ValueSource(strings = {"0.0.0", "*.*.*", "", "   "})
     @ParameterizedTest
-    public void testNoVersion(final String ver) {
+    void testNoVersion(final String ver) {
         MatcherAssert.assertThat(
             ParseMojo.versioned(ver),
             Matchers.is(false)
