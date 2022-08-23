@@ -43,7 +43,7 @@ import java.util.function.Function;
  *         )
  *     );
  * </pre></code>
- * @param <T> Type of arguments
+ * @param <T> Type of arguments that are going to be reduced
  * @since 1.0
  */
 public final class ExprReduce<T> implements Expr {
@@ -70,7 +70,6 @@ public final class ExprReduce<T> implements Expr {
      * @param reduction Reduction operation on consecutive varags
      * @param arguments Arguments storing and parsing object
      * @since 1.0
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public ExprReduce(
         final String param,
@@ -103,7 +102,7 @@ public final class ExprReduce<T> implements Expr {
      *
      *     );
      * </pre></code>
-     * @param <T> Type of arguments
+     * @param <T> Type of arguments that are going to be reduced
      * @since 1.0
      */
     public static final class Args<T> {
@@ -129,7 +128,6 @@ public final class ExprReduce<T> implements Expr {
          * @param type Type of parameter with varargs
          * @param validation Validation operation on varargs
          * @param oper Operation that that should be used with varargs
-         * @checkstyle ParameterNumberCheck (10 lines)
          */
         public Args(
             final Class<T> type,
@@ -141,7 +139,13 @@ public final class ExprReduce<T> implements Expr {
             this.oper = oper;
         }
 
-        @Override
+        /**
+         * Ctor.
+         *
+         * @param rho Rho argument that is parsed
+         * @param param Name of parameter with varargs
+         * @return Returns the list of parsed and validated values
+         */
         public List<T> get(final Phi rho, final String param) {
             final T acc = new Param(rho).strong(this.type);
             final Phi[] args = new Param(rho, param).strong(Phi[].class);
