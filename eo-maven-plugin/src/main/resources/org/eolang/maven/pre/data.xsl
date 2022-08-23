@@ -81,8 +81,8 @@ SOFTWARE.
                   </xsl:if>
                   <xsl:text>(byte) 0x</xsl:text>
                   <xsl:value-of select="."/>
-                  <xsl:text>}</xsl:text>
                 </xsl:for-each>
+                <xsl:text>}</xsl:text>
               </xsl:variable>
               <xsl:choose>
                 <xsl:when test="@base='string'">
