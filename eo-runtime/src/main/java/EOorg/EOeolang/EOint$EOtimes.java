@@ -55,13 +55,13 @@ public class EOint$EOtimes extends PhDefault {
             new AtComposite(
                 this,
                     new ExprReduce<Long>(
-                            "x",
-                            (acc, x) -> acc * x,
-                            new ExprReduce.Args(
-                                    Long.class,
-                                    x -> "",
-                                    "int.times"
-                            )
+                        "x",
+                        (acc, x) -> acc * x,
+                        new ExprReduce.Args(
+                            Long.class,
+                            x -> "",
+                            "int.times"
+                        )
                     )
             )
         );

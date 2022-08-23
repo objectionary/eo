@@ -55,13 +55,13 @@ public class EOfloat$EOplus extends PhDefault {
             new AtComposite(
                 this,
                 new ExprReduce<Double>(
-                        "x",
-                        Double::sum,
-                        new ExprReduce.Args(
-                                Double.class,
-                                x -> "",
-                                "float.plus"
-                        )
+                    "x",
+                    Double::sum,
+                    new ExprReduce.Args(
+                        Double.class,
+                        x -> "",
+                        "float.plus"
+                    )
                 )
             )
         );

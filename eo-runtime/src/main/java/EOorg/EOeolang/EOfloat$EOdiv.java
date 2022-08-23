@@ -55,19 +55,19 @@ public class EOfloat$EOdiv extends PhDefault {
             new AtComposite(
                 this,
                 new ExprReduce<Double>(
-                     "x",
-                     (acc, x) -> acc / x,
-                     new ExprReduce.Args(
-                           Double.class,
-                             x -> {
-                                 String msg = "";
-                                 if (x.equals(0.0)) {
-                                     msg = "division by zero is infinity";
-                                 }
-                                 return msg;
-                             },
-                             "float.div"
-                      )
+                    "x",
+                    (acc, x) -> acc / x,
+                    new ExprReduce.Args(
+                        Double.class,
+                        x -> {
+                            String msg = "";
+                            if (x.equals(0.0)) {
+                                msg = "division by zero is infinity";
+                            }
+                            return msg;
+                        },
+                        "float.div"
+                    )
                 )
             )
         );

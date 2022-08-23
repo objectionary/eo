@@ -35,14 +35,14 @@ import org.junit.jupiter.api.Test;
 class ExprReduceTest {
     @Test
     void exprTest() throws Exception {
-        final ExprReduce<Long> expr = new ExprReduce<Long>(
-              "x",
-              Long::sum,
-              new ExprReduce.Args(
-                      Long.class,
-                      x -> "",
-                      "plus"
-              )
+        final ExprReduce expr = new ExprReduce<Long>(
+            "x",
+            Long::sum,
+            new ExprReduce.Args(
+                Long.class,
+                x -> "",
+                "plus"
+            )
         );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
@@ -57,14 +57,14 @@ class ExprReduceTest {
 
     @Test
     void wrongTypeTest() {
-        final ExprReduce<Long> expr = new ExprReduce<Long>(
-                "x",
-                Long::sum,
-                new ExprReduce.Args(
-                        Long.class,
-                        x -> "",
-                        "plus"
-                )
+        final ExprReduce expr = new ExprReduce<Long>(
+            "x",
+            Long::sum,
+            new ExprReduce.Args(
+                Long.class,
+                x -> "",
+                "plus"
+            )
         );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
