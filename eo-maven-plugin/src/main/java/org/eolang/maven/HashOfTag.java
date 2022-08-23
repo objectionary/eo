@@ -34,6 +34,8 @@ import java.util.Scanner;
 /**
  * Hash of tag.
  * @since 0.26
+ * @todo #1062:30min Make HashOfTag testable without accessing web.
+ *  We need to be able to populate tags with custom values.
  */
 final class HashOfTag {
 
@@ -76,6 +78,14 @@ final class HashOfTag {
         }
         Logger.info(this, "Git sha of %s is %s", this.tag, result);
         return result;
+    }
+
+    /**
+     * Short version of hash.
+     * @return SHA of commit
+     */
+    public String shortHash() {
+        return this.hash().substring(0, 7);
     }
 
     /**

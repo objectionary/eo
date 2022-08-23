@@ -170,9 +170,21 @@ abstract class SafeMojo extends AbstractMojo {
     }
 
     /**
+     * Is it a true version?
+     * @param ver Version to check
+     * @return True if version has meaningful value and false otherwise
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    protected static boolean versioned(final String ver) {
+        final String trimmed = ver.trim();
+        return !trimmed.isEmpty()
+            && !trimmed.equals("0.0.0")
+            && !trimmed.equals("*.*.*");
+    }
+
+    /**
      * Exec it.
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
-
 }

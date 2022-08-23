@@ -28,6 +28,8 @@ import com.yegor256.tojos.MonoTojos;
 import com.yegor256.tojos.SmartTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -39,6 +41,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ParseMojoTest {
 
     @Test
@@ -58,6 +61,49 @@ public final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .execute();
+        MatcherAssert.assertThat(
+            Files.exists(
+                target.resolve(
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new SmartTojos(
+                new MonoTojos(new Csv(foreign))
+            ).getById("foo.x.main").exists("xmir"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
+        final Path target = temp.resolve("target");
+        new Save(
+            "invalid content",
+            src
+        ).save();
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new Cached(
+            new HashOfTag("0.25.0").shortHash(),
+            "foo.x.main.xmir",
+            temp.resolve("parsed")
+        ).save(
+            new TextOf(new ResourceOf("org/eolang/maven/main.xmir")).asString()
+        );
+        new MonoTojos(new Csv(foreign))
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString())
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("parsed"))
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
