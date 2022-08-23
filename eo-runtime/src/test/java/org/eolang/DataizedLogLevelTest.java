@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.22
  */
-public final class DataizedLogLevelTest {
+final class DataizedLogLevelTest {
 
     @Test
-    public void shortLogs() throws InterruptedException {
+    void shortLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -86,7 +86,7 @@ public final class DataizedLogLevelTest {
     }
 
     @Test
-    public void longLogs() throws InterruptedException {
+    void longLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -142,7 +142,7 @@ public final class DataizedLogLevelTest {
          *
          * @param sigma Sigma
          */
-        public PhiDec(final Phi sigma) {
+        PhiDec(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",

@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.18
  */
-public final class PhNamedTest {
+final class PhNamedTest {
 
     @Test
-    public void comparesTwoObjects() {
+    void comparesTwoObjects() {
         MatcherAssert.assertThat(
             new PhNamed(new Data.ToPhi(1L), ""),
             Matchers.equalTo(new PhNamed(new Data.ToPhi(1L), ""))

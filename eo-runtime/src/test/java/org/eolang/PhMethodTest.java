@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-public final class PhMethodTest {
+final class PhMethodTest {
 
     @Test
-    public void comparesTwoObjects() {
+    void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
             num.attr("plus").get(),
@@ -44,7 +44,7 @@ public final class PhMethodTest {
     }
 
     @Test
-    public void safeToString() {
+    void safeToString() {
         MatcherAssert.assertThat(
             new PhMethod(Phi.Φ, "hello").toString(),
             Matchers.endsWith(".hello")
@@ -52,7 +52,7 @@ public final class PhMethodTest {
     }
 
     @Test
-    public void calculatesPhiJustOnce() {
+    void calculatesPhiJustOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "φ");
         final int total = 10;
@@ -63,7 +63,7 @@ public final class PhMethodTest {
     }
 
     @Test
-    public void calculatesToLocalJustOnce() {
+    void calculatesToLocalJustOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
@@ -74,7 +74,7 @@ public final class PhMethodTest {
     }
 
     @Test
-    public void calculatesThroughPhiOnce() {
+    void calculatesThroughPhiOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
@@ -82,7 +82,7 @@ public final class PhMethodTest {
     }
 
     @Test
-    public void calculatesThroughPhiManyTimes() {
+    void calculatesThroughPhiManyTimes() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         final int total = 10;
@@ -106,7 +106,7 @@ public final class PhMethodTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Dummy(final Phi sigma) {
+        Dummy(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",

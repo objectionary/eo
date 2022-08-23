@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.18
  */
-public final class VerticesTest {
+final class VerticesTest {
 
     @Test
-    public void makesNext() {
+    void makesNext() {
         MatcherAssert.assertThat(
             new Vertices().next(),
             Matchers.equalTo(1)
@@ -43,7 +43,7 @@ public final class VerticesTest {
     }
 
     @Test
-    public void makesSameNumber() {
+    void makesSameNumber() {
         final Vertices vtx = new Vertices();
         vtx.next();
         MatcherAssert.assertThat(
