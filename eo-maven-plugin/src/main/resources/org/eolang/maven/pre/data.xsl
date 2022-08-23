@@ -42,7 +42,7 @@ SOFTWARE.
             <xsl:choose>
               <xsl:when test="@data='bytes'">
                 <xsl:choose>
-                  <xsl:when test="@base='string'">
+                  <xsl:when test="@base='org.eolang.string'">
                     <xsl:text>String</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
@@ -85,7 +85,7 @@ SOFTWARE.
                 <xsl:text>}</xsl:text>
               </xsl:variable>
               <xsl:choose>
-                <xsl:when test="@base='string'">
+                <xsl:when test="@base='org.eolang.string'">
                   <xsl:text>new String(</xsl:text>
                   <xsl:value-of select="$array"/>
                   <xsl:text>)</xsl:text>
