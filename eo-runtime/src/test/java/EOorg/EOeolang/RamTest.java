@@ -39,7 +39,9 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,6 +53,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @checkstyle ParameterNumberCheck (17 lines)
  */
 @Execution(ExecutionMode.CONCURRENT)
+@DisabledOnOs(OS.MAC)
 final class RamTest {
     @ParameterizedTest
     @CsvSource({
