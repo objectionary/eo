@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 
 /**
@@ -67,14 +68,9 @@ public class Cached {
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public String content() throws IOException {
-        try {
-            return new TextOf(
-                this.path()
-            ).asString();
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            throw new IOException(ex);
-        }
+        return new IoCheckedText(
+            new TextOf(this.path())
+        ).asString();
     }
 
     /**

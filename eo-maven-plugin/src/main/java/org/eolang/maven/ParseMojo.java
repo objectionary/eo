@@ -207,6 +207,9 @@ public final class ParseMojo extends SafeMojo {
      * Get hash for the version.
      * @param ver Version to tag
      * @return Version tag
+     * @todo #1062:30mins Lets introduce new method `HashOfTag.contains()`
+     *  and get rid of exception-driven workflow. We can use new method
+     *  to check the existence of tag to be hashed and behave accordingly.
      */
     private static String safeHash(final String ver) {
         String hash;
