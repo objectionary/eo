@@ -86,6 +86,7 @@ final class RamTest {
      * Is this system multi-core?
      * @return Boolean.
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static boolean isMulticore() {
         return Runtime.getRuntime().availableProcessors() > 2;
     }
