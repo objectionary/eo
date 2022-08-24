@@ -51,7 +51,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @checkstyle ParameterNumberCheck (17 lines)
  */
 @Execution(ExecutionMode.CONCURRENT)
-@EnabledIf("EOorg.EOeolang.RamTest#isMulticore")
 final class RamTest {
     @ParameterizedTest
     @CsvSource({
@@ -67,7 +66,11 @@ final class RamTest {
         final int len,
         final String result
     ) throws IOException {
-        final Phi ref = new PhWith(new EOram(Phi.Φ), 0, new Data.ToPhi(total));
+        final Phi ref = new PhWith(
+            new EOram(new Data.ToPhi(System.nanoTime())),
+            0,
+            new Data.ToPhi(total)
+        );
         Ram.INSTANCE.write(ref, wrt, data.getBytes(StandardCharsets.UTF_8));
         final byte[] bytes = Ram.INSTANCE.read(ref, rdr, len);
         MatcherAssert.assertThat(
@@ -79,12 +82,13 @@ final class RamTest {
     @Nested
     @Execution(ExecutionMode.CONCURRENT)
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @EnabledIf("EOorg.EOeolang.RamTest#isMulticore")
     final class ConcurrentAccessTheToSameDataTest {
         /**
          * Ram object reference.
          */
         private final Phi ref = new PhWith(
-            new EOram(Phi.Φ),
+            new EOram(new Data.ToPhi(System.nanoTime())),
             0,
             new Data.ToPhi(128L)
         );
