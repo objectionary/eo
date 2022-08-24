@@ -39,10 +39,10 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
-public final class UnplaceMojoTest {
+final class UnplaceMojoTest {
 
     @Test
-    public void testCleaning(@TempDir final Path temp) throws Exception {
+    void testCleaning(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
         new Save("...", foo).save();
         final Path pparent = foo.getParent().getParent();

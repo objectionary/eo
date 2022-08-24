@@ -36,10 +36,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class CopyMojoTest {
+final class CopyMojoTest {
 
     @Test
-    public void copiesSources(@TempDir final Path temp) throws Exception {
+    void copiesSources(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
         new Save(

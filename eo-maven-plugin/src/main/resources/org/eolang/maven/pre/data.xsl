@@ -41,7 +41,14 @@ SOFTWARE.
           <xsl:attribute name="java-type">
             <xsl:choose>
               <xsl:when test="@data='bytes'">
-                <xsl:text>byte[]</xsl:text>
+                <xsl:choose>
+                  <xsl:when test="@base='org.eolang.string'">
+                    <xsl:text>String</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:text>byte[]</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
               </xsl:when>
               <xsl:when test="@data='string'">
                 <xsl:text>String</xsl:text>
@@ -66,15 +73,27 @@ SOFTWARE.
           </xsl:attribute>
           <xsl:choose>
             <xsl:when test="@data='bytes'">
-              <xsl:text>new byte[] {</xsl:text>
-              <xsl:for-each select="tokenize(text(), ' ')">
-                <xsl:if test="position() &gt; 1">
-                  <xsl:text>, </xsl:text>
-                </xsl:if>
-                <xsl:text>(byte) 0x</xsl:text>
-                <xsl:value-of select="."/>
-              </xsl:for-each>
-              <xsl:text>}</xsl:text>
+              <xsl:variable name="array">
+                <xsl:text>new byte[] {</xsl:text>
+                <xsl:for-each select="tokenize(text(), ' ')">
+                  <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                  </xsl:if>
+                  <xsl:text>(byte) 0x</xsl:text>
+                  <xsl:value-of select="."/>
+                </xsl:for-each>
+                <xsl:text>}</xsl:text>
+              </xsl:variable>
+              <xsl:choose>
+                <xsl:when test="@base='org.eolang.string'">
+                  <xsl:text>new String(</xsl:text>
+                  <xsl:value-of select="$array"/>
+                  <xsl:text>)</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$array"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:when>
             <xsl:when test="@data='string'">
               <xsl:text>"</xsl:text>

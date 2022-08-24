@@ -40,10 +40,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.22
  */
-public class SkipTest {
+class SkipTest {
 
     @Test
-    public void testExecutedPullMojo(@TempDir final Path temp) {
+    void testExecutedPullMojo(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
@@ -60,7 +60,7 @@ public class SkipTest {
     }
 
     @Test
-    public void testSkippedPullMojo(@TempDir final Path temp) {
+    void testSkippedPullMojo(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, true);
         MatcherAssert.assertThat(
@@ -77,7 +77,7 @@ public class SkipTest {
     }
 
     @Test
-    public void testSkippedCopyMojo(@TempDir final Path temp) throws IOException {
+    void testSkippedCopyMojo(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
         this.executeCopyMojo(temp, classes, true);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
@@ -88,7 +88,7 @@ public class SkipTest {
     }
 
     @Test
-    public void testExecutedCopyMojo(@TempDir final Path temp) throws IOException {
+    void testExecutedCopyMojo(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
         this.executeCopyMojo(temp, classes, false);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");

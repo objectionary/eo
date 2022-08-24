@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
-public final class CachedPhiTest {
+final class CachedPhiTest {
 
     @Test
-    public void simpleCaching() {
+    void simpleCaching() {
         final AtomicInteger count = new AtomicInteger(0);
         final CachedPhi cphi = new CachedPhi();
         final Supplier<Phi> sup = () -> {
@@ -54,7 +54,7 @@ public final class CachedPhiTest {
     }
 
     @Test
-    public void recursiveCaching() {
+    void recursiveCaching() {
         final AtomicInteger count = new AtomicInteger(3);
         final CachedPhi cphi = new CachedPhi();
         final AtomicReference<Supplier<Phi>> sup = new AtomicReference<>();

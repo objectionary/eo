@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.11
  */
-public final class PlaceTest {
+final class PlaceTest {
 
     @Test
-    public void makesPath() {
+    void makesPath() {
         MatcherAssert.assertThat(
             new Place("hello.foo.bar")
                 .make(Paths.get("/tmp/test"), TranspileMojo.EXT)
@@ -47,7 +47,7 @@ public final class PlaceTest {
     }
 
     @Test
-    public void makesSimplePath() {
+    void makesSimplePath() {
         MatcherAssert.assertThat(
             new Place("hey")
                 .make(Paths.get("/tmp"), "xml")

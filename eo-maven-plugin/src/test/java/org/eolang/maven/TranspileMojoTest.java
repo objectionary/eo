@@ -54,10 +54,10 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TranspileMojoTest {
+final class TranspileMojoTest {
 
     @Test
-    public void recompilesIfExpired(@TempDir final Path temp)
+    void recompilesIfExpired(@TempDir final Path temp)
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
@@ -112,7 +112,7 @@ public final class TranspileMojoTest {
     }
 
     @Test
-    public void testFailOnWarning(@TempDir final Path temp) throws Exception {
+    void testFailOnWarning(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo.src.eo");
         new Save(new ResourceOf("org/eolang/maven/withwarning.eo"), src).save();
         final Path target = temp.resolve("target");
@@ -154,7 +154,7 @@ public final class TranspileMojoTest {
     }
 
     @Test
-    public void testFailOnError(@TempDir final Path temp) throws Exception {
+    void testFailOnError(@TempDir final Path temp) throws Exception {
         final Path wrong = temp.resolve("foo.wrong.eo");
         final Path right = temp.resolve("foo.right.eo");
         new Save(new ResourceOf("org/eolang/maven/witherror.eo"), wrong).save();
@@ -209,7 +209,7 @@ public final class TranspileMojoTest {
     }
 
     @Test
-    public void testSimpleCompilation(@TempDir final Path temp)
+    void testSimpleCompilation(@TempDir final Path temp)
         throws Exception {
         final String java = this.compile(
             temp,
@@ -222,7 +222,7 @@ public final class TranspileMojoTest {
     }
 
     @Test
-    public void testRealCompilation(@TempDir final Path temp)
+    void testRealCompilation(@TempDir final Path temp)
         throws Exception {
         final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo");
         Assumptions.assumeTrue(Files.exists(src));

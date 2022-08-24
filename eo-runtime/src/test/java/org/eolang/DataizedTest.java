@@ -43,10 +43,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @since 0.22
  */
 @Execution(ExecutionMode.SAME_THREAD)
-public final class DataizedTest {
+final class DataizedTest {
 
     @Test
-    public void logsCorrectly() {
+    void logsCorrectly() {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -81,7 +81,7 @@ public final class DataizedTest {
     }
 
     @Test
-    public void logsWhenException() {
+    void logsWhenException() {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -132,7 +132,7 @@ public final class DataizedTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public PhIncorrect(final Phi sigma) {
+        PhIncorrect(final Phi sigma) {
             super(sigma);
             this.add(
                 "Δ",

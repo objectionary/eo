@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.24
  */
-public final class PhPackageTest {
+final class PhPackageTest {
 
     @Test
-    public void takesPackage() {
+    void takesPackage() {
         MatcherAssert.assertThat(
             Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get(),
             Matchers.equalTo(
@@ -45,7 +45,7 @@ public final class PhPackageTest {
     }
 
     @Test
-    public void findsLongClass() {
+    void findsLongClass() {
         MatcherAssert.assertThat(
             Phi.Φ.attr("org").get()
                 .attr("eolang").get()

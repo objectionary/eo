@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-public final class PhWithTest {
+final class PhWithTest {
 
     @Test
-    public void comparesTwoObjects() {
+    void comparesTwoObjects() {
         final Phi dummy = new PhWith(
             new PhMethod(new PhWithTest.Dummy(Phi.Φ), "plus"),
             0, new Data.ToPhi(1L)
@@ -47,7 +47,7 @@ public final class PhWithTest {
     }
 
     @Test
-    public void takesMethod() {
+    void takesMethod() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -60,7 +60,7 @@ public final class PhWithTest {
     }
 
     @Test
-    public void passesToSubObject() {
+    void passesToSubObject() {
         final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(
@@ -74,7 +74,7 @@ public final class PhWithTest {
     }
 
     @Test
-    public void printsToString() {
+    void printsToString() {
         final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
         MatcherAssert.assertThat(
             new PhWith(
@@ -95,7 +95,7 @@ public final class PhWithTest {
          * Ctor.
          * @param sigma Sigma
          */
-        public Dummy(final Phi sigma) {
+        Dummy(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
