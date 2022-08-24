@@ -75,7 +75,7 @@ public class Cached {
 
     /**
      * Is it cached?
-     * @return True if object exists in case and false otherwise
+     * @return True if object exists in cache and false otherwise
      */
     public boolean exists() {
         return this.path().toFile().exists();

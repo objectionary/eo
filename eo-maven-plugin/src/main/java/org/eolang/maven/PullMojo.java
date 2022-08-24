@@ -92,11 +92,11 @@ public final class PullMojo extends SafeMojo {
             final HashOfTag tag = new HashOfTag(this.hash);
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    tag.shortHash(),
+                    tag.narrow(),
                     this.outputPath
                 ),
                 new OyCaching(
-                    tag.shortHash(),
+                    tag.narrow(),
                     this.outputPath,
                     PullMojo.remote(tag.hash())
                 ),

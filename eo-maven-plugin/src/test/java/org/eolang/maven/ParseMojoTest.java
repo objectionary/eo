@@ -88,7 +88,7 @@ final class ParseMojoTest {
         ).save();
         final Path foreign = temp.resolve("eo-foreign.json");
         new Cached(
-            new HashOfTag("0.25.0").shortHash(),
+            new HashOfTag("0.25.0").narrow(),
             "foo.x.main.xmir",
             temp.resolve("parsed")
         ).save(

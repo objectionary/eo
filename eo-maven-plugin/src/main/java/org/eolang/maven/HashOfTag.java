@@ -85,7 +85,7 @@ final class HashOfTag {
      * Short version of hash.
      * @return SHA of commit
      */
-    public String shortHash() {
+    public String narrow() {
         return this.hash().substring(0, 7);
     }
 

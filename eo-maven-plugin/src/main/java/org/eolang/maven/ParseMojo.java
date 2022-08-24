@@ -214,7 +214,7 @@ public final class ParseMojo extends SafeMojo {
     private static String safeHash(final String ver) {
         String hash;
         try {
-            hash = new HashOfTag(ver).shortHash();
+            hash = new HashOfTag(ver).narrow();
         } catch (final IllegalArgumentException ex) {
             Logger.debug(
                 ParseMojo.class,
