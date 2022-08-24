@@ -79,6 +79,18 @@ final class RamTest {
         );
     }
 
+    /**
+     * Is this system multi-core?
+     * @return Boolean.
+     */
+    private static boolean isMulticore() {
+        return Runtime.getRuntime().availableProcessors() > 2;
+    }
+
+    /**
+     * Test for concurrent access.
+     * @since 1.0
+     */
     @Nested
     @Execution(ExecutionMode.CONCURRENT)
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -134,11 +146,4 @@ final class RamTest {
         }
     }
 
-    /**
-     * Is this system multi-core?
-     * @return Boolean.
-     */
-    private static boolean isMulticore() {
-        return Runtime.getRuntime().availableProcessors() > 2;
-    }
 }
