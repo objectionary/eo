@@ -29,15 +29,16 @@ import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 
 /**
- * Cached file in EO compilation process. The file is assumed to
- * have text content in any format.
+ * Cached object in EO compilation process.
+ * The object is assumed to have text content in any format.
+ * The object is identified by {@link #name} and {@link #ver} combination.
  * @since 1.0
  */
 public class Cached {
     /**
      * Name of an object.
      */
-    private final String object;
+    private final String name;
 
     /**
      * Version tag.
@@ -52,12 +53,12 @@ public class Cached {
     /**
      * Ctor.
      * @param ver Version tag
-     * @param object Object name
+     * @param name Object name
      * @param cache Cache root
      */
-    public Cached(final String ver, final String object, final Path cache) {
+    public Cached(final String ver, final String name, final Path cache) {
         this.ver = ver;
-        this.object = object;
+        this.name = name;
         this.cache = cache;
     }
 
@@ -98,6 +99,6 @@ public class Cached {
      * @return Absolute path to the object file.
      */
     private Path path() {
-        return this.cache.resolve(this.ver).resolve(this.object);
+        return this.cache.resolve(this.ver).resolve(this.name);
     }
 }
