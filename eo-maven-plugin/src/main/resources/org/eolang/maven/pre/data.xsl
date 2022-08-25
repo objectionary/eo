@@ -88,6 +88,7 @@ SOFTWARE.
                 <xsl:when test="@base='org.eolang.string'">
                   <xsl:text>new String(</xsl:text>
                   <xsl:value-of select="$array"/>
+                  <xsl:text>, java.nio.charset.StandardCharsets.UTF_8</xsl:text>
                   <xsl:text>)</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
