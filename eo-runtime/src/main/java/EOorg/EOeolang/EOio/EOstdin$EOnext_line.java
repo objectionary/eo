@@ -52,7 +52,6 @@ public class EOstdin$EOnext_line extends PhDefault {
      * Ctor.
      * @param parent Sigma
      */
-    // static int line_counter = 0;
 
     public EOstdin$EOnext_line(final Phi parent) {
         super(parent);
@@ -61,29 +60,24 @@ public class EOstdin$EOnext_line extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    // try (Scanner sc = new Scanner(System.in)) {
-                        // if (!sc.hasNextLine()) {
-                        //     throw new ExFailure(
-                        //         "There is no line in the standard input stream to consume"
-                        //     );
-                        // }
-                        // final String line = sc.nextLine();
-                        // if (sc.hasNextLine()) {
-                        //     final StringBuilder builder = new StringBuilder();
-                        //     while (sc.hasNextLine()) {
-                        //         builder.append(sc.nextLine()).append(System.lineSeparator());
-                        //     }
-                        //     final InputStream input =
-                        //         new ByteArrayInputStream(builder.toString().getBytes());
-                        //     System.setIn(input);
-                        // }
-                        // return new Data.ToPhi(line);
-
-                    // }            
-                    final Phi stdin = rho.attr("ρ").get();
-                    final String input = new Param(stdin, "Δ").strong(String.class);
-                    final String[] lines = input.split(System.lineSeparator());
-                    return new Data.ToPhi(lines[0]);
+                    try (Scanner sc = new Scanner(System.in)) {
+                        if (!sc.hasNextLine()) {
+                            throw new ExFailure(
+                                "There is no line in the standard input stream to consume"
+                            );
+                        }
+                        final String line = sc.nextLine();
+                        if (sc.hasNextLine()) {
+                            final StringBuilder builder = new StringBuilder();
+                            while (sc.hasNextLine()) {
+                                builder.append(sc.nextLine()).append(System.lineSeparator());
+                            }
+                            final InputStream input =
+                                new ByteArrayInputStream(builder.toString().getBytes());
+                            System.setIn(input);
+                        }
+                        return new Data.ToPhi(line);
+                    }            
                 }
             )
         );
