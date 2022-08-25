@@ -141,7 +141,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void sshiftDoesNotSupportLeftShift() {
+    void sshiftDoesNotSupportRightShift() {
         final Bytes bytes = new BytesOf(Integer.MAX_VALUE);
         Assertions.assertThrows(
             UnsupportedOperationException.class,
