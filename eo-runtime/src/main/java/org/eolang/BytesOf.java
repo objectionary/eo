@@ -164,7 +164,7 @@ public final class BytesOf implements Bytes {
     @Override
     public Bytes sshift(final int bits) {
         if (bits < 0) {
-            throw new UnsupportedOperationException("left sshift is NYI");
+            throw new UnsupportedOperationException("right sshift is NYI");
         }
         final byte[] bytes = this.shift(bits).take();
         if (this.take()[0] < 0) {
