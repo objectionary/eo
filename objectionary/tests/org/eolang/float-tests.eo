@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Yegor Bugayenko
+# Copyright (c) 2016-2022 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,11 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +junit
-+version 0.27.0
++version 0.27.2
 
 [] > less-true
   assert-that > @
@@ -100,6 +101,20 @@
     gte.
       0.7
       10.9
+    $.equal-to FALSE
+
+[] > zero-eq-to-zero
+  assert-that > @
+    eq.
+      0.0
+      0.0
+    $.equal-to TRUE
+
+[] > float-zero-not-eq-to-int-zero
+  assert-that > @
+    eq.
+      0.0
+      0
     $.equal-to FALSE
 
 [] > eq-true
