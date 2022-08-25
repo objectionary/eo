@@ -118,4 +118,57 @@ final class BytesOfTest {
             Matchers.equalTo(expected)
         );
     }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0x00000000,   8, 0x00000000",
+        "0xFFFFFFFF,   8, 0xFFFFFFFF",
+        "0xFF000000,   8, 0xFFFF0000",
+        "0xFF000000,  16, 0xFFFFFF00",
+        "0xFF000000,  24, 0xFFFFFFFF",
+        "0x0000000C,   2, 0x00000003",
+        "0xFFFFFFF4,   2, 0xFFFFFFFD",
+        "0xFFFFFF80,   3, 0xFFFFFFF0",
+        "0xFFFFFC00,   3, 0xFFFFFF80",
+    })
+    void sshiftWorks(final long num, final int bits, final long expected) {
+        final Bytes bytes = new BytesOf((int)num);
+        final Integer actual = bytes.sshift(bits).asNumber(Integer.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo((int)expected)
+        );
+    }
+
+    @Test
+    void sshiftDoesNotSupportLeftShift() {
+        final Bytes bytes = new BytesOf(Integer.MAX_VALUE);
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> bytes.sshift(-1)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "00000000",
+        "00000001",
+        "00000011",
+        "00000111",
+        "00001111",
+        "00011111",
+        "00111111",
+        "01111111",
+        "11111111"
+    })
+    void countsZeros(final String num) {
+        MatcherAssert.assertThat(
+            BytesOf.numberOfLeadingZeros(
+                (byte)Integer.parseUnsignedInt(num, 2)
+            ),
+            Matchers.equalTo(
+                (byte) num.chars().filter(x -> x == '0').count()
+            )
+        );
+    }
 }
