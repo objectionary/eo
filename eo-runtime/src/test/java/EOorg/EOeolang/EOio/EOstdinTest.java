@@ -137,10 +137,10 @@ public final class EOstdinTest {
 
     @Test
     public void stdinfewOneLineTest() {
-        final String first = "first-line";
-        final String second = "second-line";
-        final String third = "third-line";
-        this.mockSystemIn("first-line\nsecond-line\nthird-line\n");
+        final String first = "\u0066\u0069\u0072\u0073\u0074";
+        final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
+        final String third = "\u0074\u0068\u0069\u0072\u0064";
+        this.mockSystemIn("first\nsecond\nthird\n");
         Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
