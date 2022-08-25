@@ -148,27 +148,4 @@ final class BytesOfTest {
             () -> bytes.sshift(-1)
         );
     }
-
-    @ParameterizedTest
-    @CsvSource({
-        "00000000",
-        "00000001",
-        "00000011",
-        "00000111",
-        "00001111",
-        "00011111",
-        "00111111",
-        "01111111",
-        "11111111"
-    })
-    void countsZeros(final String num) {
-        MatcherAssert.assertThat(
-            BytesOf.numberOfLeadingZeros(
-                (byte) Integer.parseUnsignedInt(num, 2)
-            ),
-            Matchers.equalTo(
-                (byte) num.chars().filter(x -> x == '0').count()
-            )
-        );
-    }
 }

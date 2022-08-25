@@ -242,7 +242,7 @@ public final class BytesOf implements Bytes {
      * @param num Byte.
      * @return Number between 0 and 8.
      */
-    static byte numberOfLeadingZeros(final byte num) {
+    private static byte numberOfLeadingZeros(final byte num) {
         final byte result;
         if (num <= 0) {
             if (num == 0) {
