@@ -26,6 +26,10 @@ SOFTWARE.
   <!--
   This one maps XMIR to EO original syntax. It's used
   in XMIR.java class.
+
+  @todo #1085:30m Add conversion from 'bytes' representation
+   back to 'int', 'string' & the rest of types. Then proceed
+   to with the parent todo.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
@@ -135,8 +139,11 @@ SOFTWARE.
   <xsl:template match="o[@data='bool']" mode="head">
     <xsl:value-of select="upper-case(text())"/>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool']" mode="head">
+  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool' and @data!='bytes']" mode="head">
     <xsl:value-of select="text()"/>
+  </xsl:template>
+  <xsl:template match="o[@data='bytes']" mode="head">
+    <xsl:value-of select="replace(text(), ' ', '-')"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
