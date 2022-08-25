@@ -23,21 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:variable name="data-objects" as="element()*">
-    <a>org.eolang.bytes</a>
-    <a>org.eolang.string</a>
-    <a>org.eolang.array</a>
-    <a>org.eolang.int</a>
-    <a>org.eolang.float</a>
-    <a>org.eolang.bool</a>
-    <a>org.eolang.double</a>
-  </xsl:variable>
-  <!--
-   @todo #1060:30m Avoid duplication with a better
-    condition check inside to-java.xslt.
-    Array can be constructed as raw data, and also
-    by .with method.
-  -->
   <xsl:variable name="literal-objects" as="element()*">
     <a>org.eolang.bytes</a>
     <a>org.eolang.string</a>
