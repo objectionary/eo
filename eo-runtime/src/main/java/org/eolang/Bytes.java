@@ -73,8 +73,8 @@ public interface Bytes extends Data<byte[]> {
 
     /**
      * Big-endian signed right shift.
-     * Performs sign extension,on signed number types, i.e.
-     * it will fill the top bits with 1 if the first bit is 1
+     * Performs sign extension, i.e. it will
+     * fill the top bits with 1 if the first bit is 1
      * and with 0 otherwise.
      *
      * @param bits Bits to shift, negative value causes exception.

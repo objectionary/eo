@@ -129,14 +129,14 @@ final class BytesOfTest {
         "0x0000000C,   2, 0x00000003",
         "0xFFFFFFF4,   2, 0xFFFFFFFD",
         "0xFFFFFF80,   3, 0xFFFFFFF0",
-        "0xFFFFFC00,   3, 0xFFFFFF80",
+        "0xFFFFFC00,   3, 0xFFFFFF80"
     })
     void sshiftWorks(final long num, final int bits, final long expected) {
-        final Bytes bytes = new BytesOf((int)num);
-        final Integer actual = bytes.sshift(bits).asNumber(Integer.class);
+        final Bytes bytes = new BytesOf((int) num);
+        final int actual = bytes.sshift(bits).asNumber(Integer.class);
         MatcherAssert.assertThat(
             actual,
-            Matchers.equalTo((int)expected)
+            Matchers.equalTo((int) expected)
         );
     }
 
@@ -164,7 +164,7 @@ final class BytesOfTest {
     void countsZeros(final String num) {
         MatcherAssert.assertThat(
             BytesOf.numberOfLeadingZeros(
-                (byte)Integer.parseUnsignedInt(num, 2)
+                (byte) Integer.parseUnsignedInt(num, 2)
             ),
             Matchers.equalTo(
                 (byte) num.chars().filter(x -> x == '0').count()

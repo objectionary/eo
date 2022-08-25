@@ -163,20 +163,19 @@ public final class BytesOf implements Bytes {
 
     @Override
     public Bytes sshift(final int bits) {
-        if(bits < 0) {
+        if (bits < 0) {
             throw new UnsupportedOperationException("left sshift is NYI");
         }
         final byte[] bytes = this.shift(bits).take();
-        if(this.take()[0] < 0) {
+        if (this.take()[0] < 0) {
             for (int index = 0; index < bytes.length; index += 1) {
                 final int zeros = BytesOf.numberOfLeadingZeros(
                     bytes[index]
                 );
                 bytes[index] = (byte) (bytes[index] ^ (-1 << (Byte.SIZE - zeros)));
-                if(zeros != Byte.SIZE) {
+                if (zeros != Byte.SIZE) {
                     break;
                 }
-
             }
         }
         return new BytesOf(bytes);
@@ -253,16 +252,16 @@ public final class BytesOf implements Bytes {
             }
         } else {
             byte temp = num;
-            int n = Byte.SIZE - 1;
+            int bts = Byte.SIZE - 1;
             if (temp >= 1 << 4) {
-                n -= 4;
+                bts -= 4;
                 temp >>>= 4;
             }
             if (temp >= 1 << 2) {
-                n -= 2;
+                bts -= 2;
                 temp >>>= 2;
             }
-            result = (byte) (n - (temp >>> 1));
+            result = (byte) (bts - (temp >>> 1));
         }
         return result;
     }
