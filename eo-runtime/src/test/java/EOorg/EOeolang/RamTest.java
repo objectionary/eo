@@ -70,7 +70,7 @@ final class RamTest {
         final String result
     ) throws IOException {
         final Phi ref = new PhWith(
-            new EOram(new Data.ToPhi(System.nanoTime())),
+            new EOram(Phi.Φ),
             0,
             new Data.ToPhi(total)
         );
@@ -104,7 +104,7 @@ final class RamTest {
          * Ram object reference.
          */
         private final Phi ref = new PhWith(
-            new EOram(new Data.ToPhi(System.nanoTime())),
+            new EOram(Phi.Φ),
             0,
             new Data.ToPhi(128L)
         );
