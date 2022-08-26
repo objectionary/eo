@@ -21,17 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-static boolean netIsAvailable() {
+
+/**
+ * Check the internet connection.
+ *
+ * @return Is the internet connection available
+ */
+private static boolean netIsAvailable() {
+    boolean available = true;
     try {
         final URL url = new URL("http://www.google.com");
         final URLConnection conn = url.openConnection();
         conn.connect();
         conn.getInputStream().close();
-        return true;
-    } catch (IOException ignored) {
-        return false;
+    } catch (final IOException ignored) {
+        available = false;
     }
+    return available;
 }
+
 [
   'target/eo/foreign.csv',
   'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
@@ -43,9 +51,9 @@ static boolean netIsAvailable() {
 ].each { assert new File(basedir, it).exists()}
 
 [
-        'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
-        'target/eo/placed.csv',
-        'target/eo/04-pull/org/eolang/array.eo',
+  'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
+  'target/eo/placed.csv',
+  'target/eo/04-pull/org/eolang/array.eo',
 ].each { assert new File(basedir, it).exists() ||  !netIsAvailable() }
 
 String log = new File(basedir, 'build.log').text

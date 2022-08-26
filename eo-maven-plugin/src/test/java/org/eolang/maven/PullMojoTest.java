@@ -73,15 +73,21 @@ final class PullMojoTest {
         );
     }
 
+    /**
+     * Check the internet connection.
+     *
+     * @return Is the internet connection available
+     */
     private static boolean netIsAvailable() {
+        boolean available = true;
         try {
             final URL url = new URL("http://www.google.com");
             final URLConnection conn = url.openConnection();
             conn.connect();
             conn.getInputStream().close();
-            return true;
-        } catch (IOException e) {
-            return false;
+        } catch (final IOException ignored) {
+            available = false;
         }
+        return available;
     }
 }

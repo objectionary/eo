@@ -86,16 +86,16 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> !row.exists(AssembleMojo.ATTR_EO)
-                && !row.exists(AssembleMojo.ATTR_XMIR)
-        );
-        if (!netIsAvailable()){
+        if (!netIsAvailable()) {
             Logger.warn(
                 this, "There is not internet connection. Pull skipped"
             );
             return;
         }
+        final Collection<Tojo> tojos = this.scopedTojos().select(
+            row -> !row.exists(AssembleMojo.ATTR_EO)
+                && !row.exists(AssembleMojo.ATTR_XMIR)
+        );
         if (this.objectionary == null) {
             final String full = new HashOfTag(this.hash).hash();
             final String small = full.substring(0, 7);
@@ -179,16 +179,22 @@ public final class PullMojo extends SafeMojo {
         return src;
     }
 
+    /**
+     * Check the internet connection.
+     *
+     * @return Is the internet connection available
+     */
     private static boolean netIsAvailable() {
+        boolean available = true;
         try {
             final URL url = new URL("http://www.google.com");
             final URLConnection conn = url.openConnection();
             conn.connect();
             conn.getInputStream().close();
-            return true;
-        } catch (IOException e) {
-            return false;
+        } catch (final IOException ignored) {
+            available = false;
         }
+        return available;
     }
 
 }
