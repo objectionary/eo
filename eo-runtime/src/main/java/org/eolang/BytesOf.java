@@ -246,7 +246,7 @@ public final class BytesOf implements Bytes {
         final byte result;
         if (num == 0) {
             result = (byte) Byte.SIZE;
-        } else if (num < 0){
+        } else if (num < 0) {
             result = (byte) 0;
         } else {
             byte temp = num;
