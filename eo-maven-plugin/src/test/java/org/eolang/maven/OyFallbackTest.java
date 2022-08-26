@@ -60,7 +60,7 @@ final class OyFallbackTest {
             new TextOf(objectionary.get(object)).asString()
         );
         Assertions.assertTrue(
-            path.resolve("sources/master/org/example/main.eo").toFile().exists()
+            path.resolve("pulled/master/org/example/main.eo").toFile().exists()
         );
         Assertions.assertNotNull(objectionary.get(object));
         MatcherAssert.assertThat(
