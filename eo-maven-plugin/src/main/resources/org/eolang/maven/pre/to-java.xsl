@@ -180,7 +180,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$data-objects[text()=$type]">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree());</xsl:text>
     </xsl:if>
@@ -196,7 +196,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="equals-and-hashCode">
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$data-objects[text()=$type]">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:text>@Override</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
