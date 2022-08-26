@@ -244,12 +244,10 @@ public final class BytesOf implements Bytes {
      */
     private static byte numberOfLeadingZeros(final byte num) {
         final byte result;
-        if (num <= 0) {
-            if (num == 0) {
-                result = (byte) Byte.SIZE;
-            } else {
-                result = (byte) 0;
-            }
+        if (num == 0) {
+            result = (byte) Byte.SIZE;
+        } else if (num < 0){
+            result = (byte) 0;
         } else {
             byte temp = num;
             int bts = Byte.SIZE - 1;
