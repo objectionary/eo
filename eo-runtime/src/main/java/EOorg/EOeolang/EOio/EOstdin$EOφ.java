@@ -28,8 +28,13 @@
 package EOorg.EOeolang.EOio;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.ExFailure;
@@ -43,7 +48,7 @@ import org.eolang.Phi;
  * @checkstyle TypeNameCheck (5 lines)
  */
 public class EOstdin$EOφ extends PhDefault {
-
+    public final static Scanner input = new Scanner(System.in);
     /**
      * Ctor.
      * @param parent Sigma

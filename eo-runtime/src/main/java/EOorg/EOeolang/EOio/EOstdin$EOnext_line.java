@@ -53,6 +53,7 @@ public class EOstdin$EOnext_line extends PhDefault {
      * @param parent Sigma
      */
 
+    static final Scanner sc = new Scanner(System.in);
     public EOstdin$EOnext_line(final Phi parent) {
         super(parent);
         this.add(
@@ -60,24 +61,14 @@ public class EOstdin$EOnext_line extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    try (Scanner sc = new Scanner(System.in)) {
-                        if (!sc.hasNextLine()) {
-                            throw new ExFailure(
-                                "There is no line in the standard input stream to consume"
-                            );
-                        }
+                    try {
                         final String line = sc.nextLine();
-                        if (sc.hasNextLine()) {
-                            final StringBuilder builder = new StringBuilder();
-                            while (sc.hasNextLine()) {
-                                builder.append(sc.nextLine()).append(System.lineSeparator());
-                            }
-                            final InputStream input =
-                                new ByteArrayInputStream(builder.toString().getBytes());
-                            System.setIn(input);
-                        }
                         return new Data.ToPhi(line);
-                    }            
+                    } catch (Exception e) {
+                        throw new ExFailure(
+                            "There is no line in the standard input stream to consume"
+                        );
+                    }
                 }
             )
         );
