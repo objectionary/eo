@@ -39,10 +39,10 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ResolveMojoTest {
+final class ResolveMojoTest {
 
     @Test
-    public void testSimpleResolve(@TempDir final Path temp) throws Exception {
+    void testSimpleResolve(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             "+rt jvm org.eolang:eo-runtime:0.7.0\n\n[] > foo /int\n",
@@ -75,7 +75,7 @@ public final class ResolveMojoTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
-    public void testConflictingDependencies(@TempDir final Path temp) throws IOException {
+    void testConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Save(
             String.format(
@@ -134,7 +134,7 @@ public final class ResolveMojoTest {
     }
 
     @Test
-    public void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
+    void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Save(
             String.format(

@@ -24,14 +24,17 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.StringJoiner;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
 import org.xembly.Directive;
@@ -42,6 +45,16 @@ import org.xembly.Directives;
  *
  * @since 0.1
  * @checkstyle CyclomaticComplexityCheck (500 lines)
+ * @todo #348:30min Make changes to store INT as bytes.
+ *  After that update this todo. When all data types
+ *  are stored as bytes, remove data attribute from XML
+ *  and XSLT templates.
+ * @todo #348:30min Avoid using Java types in XSLT
+ *  processing. data.xslt and to-java.xslt use
+ *  java-type attribute. This attribute is redundant
+ *  and can be replaced by type inference. This
+ *  change will ease the task off removing data
+ *  attribute above.
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class XeListener implements ProgramListener, Iterable<Directive> {
@@ -352,31 +365,43 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
+        final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             type = "bytes";
+            base = "bytes";
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
         } else if (ctx.BOOL() != null) {
             type = "bool";
+            base = "bool";
             data = Boolean.toString(Boolean.parseBoolean(text));
         } else if (ctx.FLOAT() != null) {
             type = "float";
+            base = "float";
             data = Double.toString(Double.parseDouble(text));
         } else if (ctx.INT() != null) {
             type = "int";
+            base = "int";
             data = Long.toString(Long.parseLong(text));
         } else if (ctx.HEX() != null) {
             type = "int";
+            base = "int";
             data = Long.toString(
                 Long.parseLong(text.substring(2), 16)
             );
         } else if (ctx.STRING() != null) {
             type = "string";
+            base = "string";
             data = text.substring(1, text.length() - 1);
         } else if (ctx.TEXT() != null) {
-            type = "string";
+            type = "bytes";
+            base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
-            data = XeListener.trimMargin(text, indent);
+            data = XeListener.bytesToHex(
+                StringEscapeUtils.unescapeJava(
+                    XeListener.trimMargin(text, indent)
+                ).getBytes(StandardCharsets.UTF_8)
+            );
         } else {
             throw new ParsingException(
                 String.format(
@@ -388,7 +413,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             );
         }
         this.objects.prop("data", type);
-        this.objects.prop("base", type);
+        this.objects.prop("base", base);
         this.objects.data(
             data
                 .replace("\n", "\\n")
@@ -469,5 +494,18 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             res = res.substring(0, res.length() - 1);
         }
         return res;
+    }
+
+    /**
+     * Bytes to HEX.
+     * @param bytes Bytes.
+     * @return Hexadecimal value as string.
+     */
+    private static String bytesToHex(final byte[] bytes) {
+        final StringJoiner str = new StringJoiner(" ");
+        for (final byte bty : bytes) {
+            str.add(String.format("%02X", bty));
+        }
+        return str.toString();
     }
 }

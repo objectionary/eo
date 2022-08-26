@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.11
  */
-public final class UnplaceTest {
+final class UnplaceTest {
 
     @Test
-    public void makesName() {
+    void makesName() {
         MatcherAssert.assertThat(
             new Unplace(Paths.get("/tmp/foo/bar")).make(
                 Paths.get("/tmp/foo/bar/a/b/c.eo")

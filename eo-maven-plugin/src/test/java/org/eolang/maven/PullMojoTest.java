@@ -41,10 +41,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class PullMojoTest {
+final class PullMojoTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) {
+    void testSimplePull(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         new MonoTojos(new Json(foreign))

@@ -39,10 +39,10 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class OptimizeMojoTest {
+final class OptimizeMojoTest {
 
     @Test
-    public void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
+    void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
@@ -80,7 +80,7 @@ public final class OptimizeMojoTest {
     }
 
     @Test
-    public void optimizesIfExpired(@TempDir final Path temp) throws Exception {
+    void optimizesIfExpired(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
@@ -120,7 +120,7 @@ public final class OptimizeMojoTest {
     }
 
     @Test
-    public void testSimpleOptimize(@TempDir final Path temp) throws Exception {
+    void testSimpleOptimize(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
@@ -162,7 +162,7 @@ public final class OptimizeMojoTest {
     }
 
     @Test
-    public void testOptimizeWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
+    void testOptimizeWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Save(
             String.join(

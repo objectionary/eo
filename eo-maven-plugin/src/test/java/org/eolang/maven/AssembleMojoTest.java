@@ -40,10 +40,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class AssembleMojoTest {
+final class AssembleMojoTest {
 
     @Test
-    public void assemblesTogether(@TempDir final Path temp) throws Exception {
+    void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             String.join(
@@ -89,7 +89,7 @@ public final class AssembleMojoTest {
     }
 
     @Test
-    public void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
+    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
             String.join(

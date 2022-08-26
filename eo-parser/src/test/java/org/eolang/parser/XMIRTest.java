@@ -50,11 +50,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 0.5
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-public final class XMIRTest {
+final class XMIRTest {
 
     @ParameterizedTest
     @MethodSource("samples")
-    public void printsToEO(final String sample) throws Exception {
+    void printsToEO(final String sample) throws Exception {
         final String src = new TextOf(
             new ResourceOf(sample)
         ).asString();

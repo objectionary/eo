@@ -41,7 +41,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.21
  */
-public final class XslsTest {
+final class XslsTest {
 
     /**
      * Where is the home of this module.
@@ -52,7 +52,7 @@ public final class XslsTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    public void testPacks(final Path path) throws Exception {
+    void testPacks(final Path path) throws Exception {
         MatcherAssert.assertThat(
             new CheckXSL(
                 XslsTest.HOME.resolve("src/main/resources"),

@@ -46,10 +46,10 @@ import org.junit.jupiter.params.provider.ValueSource;
  *
  * @since 0.1
  */
-public final class SyntaxTest {
+final class SyntaxTest {
 
     @Test
-    public void parsesSimpleCode() throws Exception {
+    void parsesSimpleCode() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-1",
@@ -72,7 +72,7 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void copiesListingCorrectly() throws Exception {
+    void copiesListingCorrectly() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")
@@ -104,7 +104,7 @@ public final class SyntaxTest {
         "a b c > x\n  x ^ > @",
         "[] > x\n  x ^ > @"
     })
-    public void shouldBeParsable(final String code) {
+    void shouldBeParsable(final String code) {
         final Syntax syntax = new Syntax(
             "test-2",
             new InputOf(code),
@@ -116,7 +116,7 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void failsWithDoubleNewLine() {
+    void failsWithDoubleNewLine() {
         final Syntax syntax = new Syntax(
             "test-3",
             new InputOf("1 > x\n\n\n2 > y"),
@@ -141,7 +141,7 @@ public final class SyntaxTest {
         "this < code is definitely > wrong",
         "[] > x\n x ^ > @"
     })
-    public void failsOnBrokenSyntax(final String code) {
+    void failsOnBrokenSyntax(final String code) {
         final Syntax syntax = new Syntax(
             "test-it-2",
             new InputOf(code),
@@ -154,7 +154,7 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void parsesArrow() throws IOException {
+    void parsesArrow() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-it-3",
@@ -171,7 +171,7 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void prasesNested() throws IOException {
+    void prasesNested() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-it-4",
@@ -191,7 +191,7 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void prasesDefinition() throws IOException {
+    void prasesDefinition() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-it-5",
@@ -211,7 +211,7 @@ public final class SyntaxTest {
     }
 
     @Test
-    public void prasesMethodCalls() throws IOException {
+    void prasesMethodCalls() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-it-1",

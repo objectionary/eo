@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.21
  */
-public final class AtNamedTest {
+final class AtNamedTest {
 
     @Test
-    public void rethrowsCorrectly() {
+    void rethrowsCorrectly() {
         final Phi phi = new AtNamedTest.Dummy();
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
