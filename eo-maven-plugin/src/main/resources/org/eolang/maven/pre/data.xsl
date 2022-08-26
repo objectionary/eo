@@ -38,39 +38,6 @@ SOFTWARE.
           <xsl:value-of select="@data"/>
         </xsl:attribute>
         <xsl:element name="value">
-          <xsl:attribute name="java-type">
-            <xsl:choose>
-              <xsl:when test="@data='bytes'">
-                <xsl:choose>
-                  <xsl:when test="@base='org.eolang.string'">
-                    <xsl:text>String</xsl:text>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:text>byte[]</xsl:text>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:when>
-              <xsl:when test="@data='string'">
-                <xsl:text>String</xsl:text>
-              </xsl:when>
-              <xsl:when test="@data='float'">
-                <xsl:text>Double</xsl:text>
-              </xsl:when>
-              <xsl:when test="@data='int'">
-                <xsl:text>Long</xsl:text>
-              </xsl:when>
-              <xsl:when test="@data='bool'">
-                <xsl:text>Boolean</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:message terminate="yes">
-                  <xsl:text>Unknown data type "</xsl:text>
-                  <xsl:value-of select="@data"/>
-                  <xsl:text>"</xsl:text>
-                </xsl:message>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:attribute>
           <xsl:choose>
             <xsl:when test="@data='bytes'">
               <xsl:variable name="array">
