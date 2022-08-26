@@ -66,8 +66,14 @@ final class XMIRTest {
         final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
         Logger.debug(this, "Second:%n%s", second);
         MatcherAssert.assertThat(
-            first.toString(),
-            Matchers.equalTo(second.toString())
+            first.toString()
+                .replaceAll("data=\"\\S+\"", "")
+            ,
+            Matchers.equalTo(
+                second
+                    .toString()
+                    .replaceAll("data=\"\\S+\"", "")
+            )
         );
     }
 

@@ -27,8 +27,12 @@ SOFTWARE.
   This one maps XMIR to EO original syntax. It's used
   in XMIR.java class.
 
-  @todo #1085:30m Add conversion from 'bytes' representation
-   back to 'int', 'string' & the rest of types. Then proceed
+  @todo #1099:30m Current bytes to string conversion
+   supports only ASCII characters & text blocks.
+   Make it possible to handle any unicode character and
+   double-quoted strings.
+  @todo #1099:30m Add conversion from 'bytes' representation
+   back to 'int', 'double' & the rest of types. Then proceed
    to with the parent todo.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -143,7 +147,20 @@ SOFTWARE.
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="o[@data='bytes']" mode="head">
-    <xsl:value-of select="replace(text(), ' ', '-')"/>
+    <xsl:choose>
+      <xsl:when test="@base='string'">
+        <xsl:text>"""</xsl:text>
+        <xsl:value-of select="$eol"/>
+        <xsl:for-each select="tokenize(text(), ' ')">
+          <xsl:value-of select="concat('\u00', .)"/>
+        </xsl:for-each>
+        <xsl:value-of select="$eol"/>
+        <xsl:text>"""</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="replace(text(), ' ', '-')"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
