@@ -108,7 +108,7 @@ public enum Ram {
                                 .getName(),
                             ".mem"
                         ).toFile(),
-                        "rw"
+                        "rws"
                     );
                     file.setLength(size);
                     return file;
