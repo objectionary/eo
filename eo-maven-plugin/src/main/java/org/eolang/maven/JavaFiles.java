@@ -105,7 +105,7 @@ public final class JavaFiles {
                 ),
                 dest
             ).save();
-        } catch (InvalidPathException ex) {
+        } catch (final InvalidPathException ex) {
             throw new IOException(
                 String.format(
                     "Unable to save Java class `%s`. Check you system encoding. Expected `UTF-8`",
