@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.cactoos.text.Joined;
@@ -93,15 +94,25 @@ public final class JavaFiles {
      */
     private static void saveJava(final XML java, final Path generated) throws IOException {
         final String type = java.xpath("@java-name").get(0);
-        final Path dest = new Place(type).make(
-            generated, "java"
-        );
-        new Save(
-            new Joined(
-                "",
-                java.xpath("java/text()")
-            ),
-            dest
-        ).save();
+        try {
+            final Path dest = new Place(type).make(
+                generated, "java"
+            );
+            new Save(
+                new Joined(
+                    "",
+                    java.xpath("java/text()")
+                ),
+                dest
+            ).save();
+        } catch (InvalidPathException ex) {
+            throw new IOException(
+                String.format(
+                    "Unable to save Java class `%s`. Check you system encoding. Expected `UTF-8`",
+                    type
+                ),
+                ex
+            );
+        }
     }
 }
