@@ -86,7 +86,7 @@ public final class MainTest {
 
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
-        args.add("java");
+        args.add(MainTest.jdkExecutable("java"));
         args.add("-Dfile.encoding=utf-8");
         args.add("-cp");
         args.add(System.getProperty("java.class.path"));
@@ -106,6 +106,28 @@ public final class MainTest {
         }
         return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
             .replaceFirst("Picked up .*\n", "");
+    }
+
+    /**
+     * Locate java executable.
+     * @return Path to java executable.
+     */
+    private static String jdkExecutable(final String name) {
+        final String result;
+        final String relative = "%s/bin/%s";
+        final String property = System.getProperty("java.home");
+        if (property != null) {
+            result = String.format(relative, property, name);
+        } else {
+            final String environ = System.getenv("JAVA_HOME");
+            if (environ != null) {
+                result = String.format(relative, environ, name);
+            }
+            else {
+                result = name;
+            }
+        }
+        return result;
     }
 
 }
