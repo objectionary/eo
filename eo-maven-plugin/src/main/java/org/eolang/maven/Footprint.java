@@ -85,7 +85,7 @@ public class Footprint {
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public String content(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.ver), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.safeVer()), ext);
         final Path target = new Place(program).make(this.main, ext);
         final IoCheckedText content;
         if (Footprint.versioned(this.ver) && cached.toFile().exists()) {
@@ -109,7 +109,7 @@ public class Footprint {
      */
     public void save(final String program, final String ext, final Supplier<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.ver), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.safeVer()), ext);
         final Path target = new Place(program).make(this.main, ext);
         final String text;
         if (Footprint.versioned(this.ver) && cached.toFile().exists()) {
@@ -132,6 +132,14 @@ public class Footprint {
             text,
             target
         ).save();
+    }
+
+    /**
+     * Transform version for legal path.
+     * @return Version tag
+     */
+    private String safeVer() {
+        return this.ver.replaceAll("\\*", "_");
     }
 
     /**
