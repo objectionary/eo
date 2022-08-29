@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -87,12 +88,16 @@ final class ParseMojoTest {
             src
         ).save();
         final Path foreign = temp.resolve("eo-foreign.json");
-        new Cached(
+        new Footprint(
             new HashOfTag("0.25.0").narrow(),
-            "foo.x.main.xmir",
+            target,
             temp.resolve("parsed")
         ).save(
-            new TextOf(new ResourceOf("org/eolang/maven/main.xmir")).asString()
+            "foo.x.main",
+            "xmir",
+            () -> new UncheckedText(
+                new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
+            ).asString()
         );
         new MonoTojos(new Csv(foreign))
             .add("foo.x.main")

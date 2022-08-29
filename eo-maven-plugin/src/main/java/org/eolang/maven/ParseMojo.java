@@ -123,71 +123,63 @@ public final class ParseMojo extends SafeMojo {
      * @param tojo The tojo
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
-        final String ver = ParseMojo.verSafe(tojo);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Cached cached = new Cached(
-            ParseMojo.safeHash(ver),
-            String.format("%s.%s", name, AssembleMojo.ATTR_XMIR),
+        final Footprint footprint = new Footprint(
+            ParseMojo.safeHash(ParseMojo.verSafe(tojo)),
+            this.targetDir.toPath().resolve(ParseMojo.DIR),
             this.cache
         );
-        final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR),
-            TranspileMojo.EXT
-        );
-        if (ParseMojo.versioned(ver) && cached.exists()) {
-            Logger.info(
-                this,
-                "Found parsed in cache %s:%s",
-                Save.rel(source),
-                ver
-            );
-            new Save(
-                cached.content(),
-                target
-            ).save();
-        } else {
-            try {
-                new Syntax(
-                    name,
-                    new InputOf(source),
-                    new OutputTo(baos)
-                ).parse();
-                // @checkstyle IllegalCatchCheck (1 line)
-            } catch (final RuntimeException ex) {
-                if (this.failOnError) {
-                    throw new IllegalArgumentException(
-                        String.format("Failed to parse %s", source),
-                        ex
-                    );
+        try {
+            footprint.save(
+                name,
+                AssembleMojo.ATTR_XMIR,
+                () -> {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    try {
+                        new Syntax(
+                            name,
+                            new InputOf(source),
+                            new OutputTo(baos)
+                        ).parse();
+                        // @checkstyle IllegalCatchCheck (1 line)
+                    } catch (final Exception ex) {
+                        throw new IllegalArgumentException(
+                            String.format("Failed to parse %s", source),
+                            ex
+                        );
+                    }
+                    return new XMLDocument(
+                        new Xembler(
+                            new Directives().xpath("/program").attr(
+                                "source",
+                                source.toAbsolutePath()
+                            )
+                        ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                    ).toString();
                 }
-                Logger.warn(
-                    this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
-                    source.toString(),
-                    ex.getMessage()
-                );
-                return;
-            }
-            final String content = new XMLDocument(
-                new Xembler(
-                    new Directives().xpath("/program").attr(
-                        "source", source.toAbsolutePath()
-                    )
-                ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
-            ).toString();
-            new Save(content, target).save();
-            if (SafeMojo.versioned(ver)) {
-                cached.save(content);
-            }
+            );
+            final Path target = new Place(name).make(
+                this.targetDir.toPath().resolve(ParseMojo.DIR),
+                TranspileMojo.EXT
+            );
+            tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
             Logger.debug(
                 this, "Parsed %s to %s",
                 Save.rel(source), Save.rel(target)
             );
+        } catch (final IllegalArgumentException ex) {
+            if (this.failOnError || !ex.getMessage().contains("Failed to parse")) {
+                throw ex;
+            }
+            Logger.warn(
+                this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
+                source.toString(),
+                ex.getMessage()
+            );
         }
-        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
     }
 
     /**

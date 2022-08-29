@@ -35,7 +35,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Tests for Cached.
  * @since 1.0
  */
-final class CachedTest {
+final class FootprintTest {
     @Test
     void testContentOfCachedFile(@TempDir final Path temp) throws Exception {
         final String content = String.join(
@@ -44,46 +44,30 @@ final class CachedTest {
             "<program>",
             "</program>"
         );
-        new Cached("1.0.0", "org.eolang.txt.text.xmir", temp.resolve("parsed"))
-            .save(content);
+        new Footprint("1.0.0", temp.resolve("target"), temp.resolve("parsed"))
+            .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new Cached("1.0.0", "org.eolang.txt.text.xmir", temp.resolve("parsed")).content(),
+            new Footprint("1.0.0", temp.resolve("target"), temp.resolve("parsed"))
+                .content("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
-        );
-    }
-
-    @Test
-    void testCachedObjectExists(@TempDir final Path temp) throws Exception {
-        new Cached("1.0.0", "org.eolang.txt.text.xmir", temp.resolve("parsed"))
-            .save(
-                String.join(
-                    "\n",
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-                    "<program>",
-                    "</program>"
-            )
-        );
-        MatcherAssert.assertThat(
-            new Cached("1.0.0", "org.eolang.txt.text.xmir", temp.resolve("parsed")).exists(),
-            Matchers.is(true)
-        );
-    }
-
-    @ValueSource(strings = {"1.0.0", "0.0.1", "abc", "a.b.c.0"})
-    @ParameterizedTest
-    void testMeaningfulVersion(final String ver) {
-        MatcherAssert.assertThat(
-            ParseMojo.versioned(ver),
-            Matchers.is(true)
         );
     }
 
     @ValueSource(strings = {"0.0.0", "*.*.*", "", "   "})
     @ParameterizedTest
-    void testNoVersion(final String ver) {
+    void testContentOfNoCacheFile(final String ver, @TempDir final Path temp) throws Exception {
+        final String content = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<program>",
+            "</program>"
+        );
+        new Footprint(ver, temp.resolve("target"), temp.resolve("parsed"))
+            .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            ParseMojo.versioned(ver),
-            Matchers.is(false)
+            new Footprint("*.*.*", temp.resolve("target"), temp.resolve("parsed"))
+                .content("org.eolang.txt.text", "xmir"),
+            Matchers.equalTo(content)
         );
     }
 }
