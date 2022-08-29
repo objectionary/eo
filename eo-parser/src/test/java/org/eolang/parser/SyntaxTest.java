@@ -191,7 +191,7 @@ final class SyntaxTest {
     }
 
     @Test
-    void prasesDefinition() throws IOException {
+    void parsesDefinition() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-it-5",
@@ -211,7 +211,7 @@ final class SyntaxTest {
     }
 
     @Test
-    void prasesMethodCalls() throws IOException {
+    void parsesMethodCalls() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-it-1",
@@ -225,7 +225,32 @@ final class SyntaxTest {
                 "/program[@name='test-it-1']",
                 "/program/objects/o[@base='.add']",
                 "/program/objects/o/o[@data='int']",
-                "/program/objects/o/o[@data='bool']"
+                "/program/objects/o/o[@base='bool']"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "FALSE > false",
+        "TRUE > true"
+    })
+    void storesAsBytes(final String code) throws IOException {
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final Syntax syntax = new Syntax(
+            "test-3",
+            new InputOf(code),
+            new OutputTo(output)
+        );
+        syntax.parse();
+        final XML xml = new XMLDocument(
+            new String(output.toByteArray(), StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            xml,
+            XhtmlMatchers.hasXPaths(
+                "/program/objects[count(o)=1]",
+                "/program/objects/o[@data='bytes']"
             )
         );
     }

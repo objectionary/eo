@@ -366,9 +366,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = "bytes";
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
         } else if (ctx.BOOL() != null) {
-            type = "bool";
+            type = "bytes";
             base = "bool";
-            data = Boolean.toString(Boolean.parseBoolean(text));
+            if (Boolean.parseBoolean(text)) {
+                data = XeListener.bytesToHex((byte) 0x01);
+            } else {
+                data = XeListener.bytesToHex((byte) 0x00);
+            }
         } else if (ctx.FLOAT() != null) {
             type = "float";
             base = "float";
@@ -495,7 +499,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      * @param bytes Bytes.
      * @return Hexadecimal value as string.
      */
-    private static String bytesToHex(final byte[] bytes) {
+    private static String bytesToHex(final byte... bytes) {
         final StringJoiner str = new StringJoiner(" ");
         for (final byte bty : bytes) {
             str.add(String.format("%02X", bty));

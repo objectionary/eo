@@ -31,7 +31,7 @@ SOFTWARE.
    supports only ASCII characters & text blocks.
    Make it possible to handle any unicode character and
    double-quoted strings.
-  @todo #1099:30m Add conversion from 'bytes' representation
+  @todo #1104:30m Add conversion from 'bytes' representation
    back to 'int', 'double' & the rest of types. Then proceed
    to with the parent todo.
   -->
@@ -156,6 +156,16 @@ SOFTWARE.
         </xsl:for-each>
         <xsl:value-of select="$eol"/>
         <xsl:text>"""</xsl:text>
+      </xsl:when>
+      <xsl:when test="@base='bool'">
+        <xsl:choose>
+          <xsl:when test="text() = '01'">
+            <xsl:text>TRUE</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>FALSE</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="replace(text(), ' ', '-')"/>
