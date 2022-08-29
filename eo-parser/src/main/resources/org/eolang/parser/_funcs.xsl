@@ -24,8 +24,8 @@ SOFTWARE.
 -->
 <!--
   @todo #1110:30m Implement eo:bytes-to-int
-   which will convert byte array (i.e. hexadecimal number)
-   to integer. Change idiomatic.eo to test for various
+   which will convert byte array (i.e. hexadecimal numeric value)
+   to an integer. Change idiomatic.eo to test for various
    values.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
