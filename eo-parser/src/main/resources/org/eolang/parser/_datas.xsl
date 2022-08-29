@@ -23,10 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:variable name="data-objects" as="element()*">
+  <xsl:variable name="literal-objects" as="element()*">
     <a>org.eolang.bytes</a>
     <a>org.eolang.string</a>
-    <a>org.eolang.array</a>
     <a>org.eolang.int</a>
     <a>org.eolang.float</a>
     <a>org.eolang.bool</a>

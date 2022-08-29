@@ -164,3 +164,36 @@
     $.equal-to
       list
         * 7 "six"
+
+[] > array-fluent-with
+  assert-that > @
+    ((((*).with 1).with 2).with 3)
+    $.equal-to
+      list
+        * 1 2 3
+
+[] > array-fluent-with-indented
+  (*)
+  .with 1
+  .with 2
+  .with 3 > a
+  assert-that > @
+    list a
+    $.equal-to
+      list
+        * 1 2 3
+
+[] > gets-lengths-of-empty-array-keyword
+  assert-that > @
+    array.empty.length
+    $.equal-to 0
+
+[] > array-fluent-with-indented-keyword
+  array.empty
+  .with 1
+  .with 2
+  .with 3 > a
+  assert-that > @
+    list a
+    $.equal-to
+      list (* 1 2 3)

@@ -59,18 +59,20 @@ public class EOint$EOdiv extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                new ExprReduce<>(
-                    "int.div",
+                new ExprReduce<Long>(
                     "x",
-                    Long.class,
                     (acc, x) -> acc / x,
-                    x -> {
-                        String msg = "";
-                        if (x.equals(0L)) {
-                            msg = "division by zero is infinity";
-                        }
-                        return msg;
-                    }
+                    new ExprReduce.Args(
+                        Long.class,
+                        x -> {
+                            String msg = "";
+                            if (x.equals(0L)) {
+                                msg = "division by zero is infinity";
+                            }
+                            return msg;
+                        },
+                        "int.div"
+                    )
                 )
             )
         );

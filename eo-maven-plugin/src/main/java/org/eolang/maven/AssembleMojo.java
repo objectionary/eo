@@ -134,28 +134,6 @@ public final class AssembleMojo extends SafeMojo {
     private String hash = "master";
 
     /**
-     * The path to a text file where paths of all added
-     * .class (and maybe others) files are placed.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.11.0
-     */
-    @Parameter(
-        property = "eo.placed",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/placed.csv"
-    )
-    private File placed;
-
-    /**
-     * Format of "placed" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    private String placedFormat = "csv";
-
-    /**
      * Skip artifact with the version 0.0.0.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0

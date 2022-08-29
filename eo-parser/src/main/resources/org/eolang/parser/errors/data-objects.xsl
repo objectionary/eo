@@ -28,7 +28,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[not(@data) and @base=$data-objects/text()]">
+      <xsl:for-each select="//o[not(@data) and @base=$literal-objects/text()]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>data-objects</xsl:text>

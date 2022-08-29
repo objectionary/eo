@@ -48,7 +48,7 @@ final class OyLocalTest {
             new TeeInput(
                 new InputOf(content),
                 new OutputTo(
-                    path.resolve("sources/master/org/example/main.eo")
+                    path.resolve("pulled/master/org/example/main.eo")
                 )
             )
         ).value();
