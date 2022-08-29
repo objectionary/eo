@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -378,9 +379,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = "float";
             data = Double.toString(Double.parseDouble(text));
         } else if (ctx.INT() != null) {
-            type = "int";
+            type = "bytes";
             base = "int";
-            data = Long.toString(Long.parseLong(text));
+            data = XeListener.bytesToHex(
+                ByteBuffer
+                    .allocate(Long.BYTES)
+                    .putLong(Long.parseLong(text))
+                    .array()
+            );
         } else if (ctx.HEX() != null) {
             type = "int";
             base = "int";

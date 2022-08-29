@@ -230,7 +230,9 @@ final class GmiMojoTest {
                     matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/data[text() = '%s']/text()",
-                            vertex, sub.substring(1)
+                            vertex,
+                            sub.substring(1)
+                                .replace('-', ' ')
                         )
                     ).isEmpty();
                     if (!matches) {

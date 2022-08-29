@@ -31,9 +31,14 @@ SOFTWARE.
    supports only ASCII characters & text blocks.
    Make it possible to handle any unicode character and
    double-quoted strings.
-  @todo #1104:30m Add conversion from 'bytes' representation
+  @todo #1110:30m Add conversion from 'bytes' representation
    back to 'int', 'double' & the rest of types. Then proceed
    to with the parent todo.
+  @todo #1110:30m Add XST transformation to convert
+   "$bytes.as-$type" to "$type". I.e
+   "01-.as-bool" becomes "TRUE". Remove analogous conversions
+   from this stylesheet, and only generate "$bytes.as-$type"
+   in order to covert byte-array value back to literal.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
@@ -166,6 +171,9 @@ SOFTWARE.
             <xsl:text>FALSE</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
+      </xsl:when>
+      <xsl:when test="@base='int'">
+        <xsl:value-of select="eo:bytes-to-int(replace(text(), ' ', ''))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="replace(text(), ' ', '-')"/>

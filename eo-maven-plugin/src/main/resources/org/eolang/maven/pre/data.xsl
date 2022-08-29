@@ -77,6 +77,11 @@ SOFTWARE.
                 <xsl:when test="@base='org.eolang.bytes' or @base='bytes'">
                   <xsl:value-of select="$array"/>
                 </xsl:when>
+                <xsl:when test="@base='org.eolang.int' or @base='int'">
+                  <xsl:text>java.nio.ByteBuffer.wrap(</xsl:text>
+                  <xsl:value-of select="$array"/>
+                  <xsl:text>).getLong()</xsl:text>
+                </xsl:when>
                 <xsl:otherwise>
                   <xsl:text>/** ERROR: Unsupported type: </xsl:text>
                   <xsl:value-of select="@base"/>

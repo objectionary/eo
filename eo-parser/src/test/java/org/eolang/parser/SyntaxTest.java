@@ -165,7 +165,7 @@ final class SyntaxTest {
         MatcherAssert.assertThat(
             new XMLDocument(baos.toByteArray()),
             XhtmlMatchers.hasXPaths(
-                "/program/objects/o[@base='int' and @name='x' and text()='1']"
+                "/program/objects/o[@base='int' and @name='x' and ends-with(text(), '1')]"
             )
         );
     }
@@ -224,7 +224,7 @@ final class SyntaxTest {
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-it-1']",
                 "/program/objects/o[@base='.add']",
-                "/program/objects/o/o[@data='int']",
+                "/program/objects/o/o[@base='int']",
                 "/program/objects/o/o[@base='bool']"
             )
         );

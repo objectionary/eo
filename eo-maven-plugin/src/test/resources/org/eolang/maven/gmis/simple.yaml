@@ -4,7 +4,7 @@ xpaths:
   - //v[@id='v1']/e[@to='v0' and @title='^']
 locators:
   - .simple .@ .α0 .α0 .Δ =01
-  - .simple .@ .α1 .Δ =42
+  - .simple .@ .α1 .Δ =00-00-00-00-00-00-00-2A
   - .simple .@ .α2 .hello .Δ =Jeff
 eo: |
   [] > simple
