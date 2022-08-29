@@ -66,6 +66,9 @@ import org.yaml.snakeyaml.Yaml;
  * released, you enable this test again.
  *
  * @since 0.1
+ * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
+ *  Find a way to make it reusable (i.e making it part of
+ *  VerboseProcess) and remove it from MainTest.
  */
 final class SnippetTest {
 
@@ -285,27 +288,23 @@ final class SnippetTest {
     }
 
     /**
-     * @todo #1107:30m This method is duplicated in eo-runtime.
-     *  Find a way to make it reusable (i.e making it part of
-     *  VerboseProcess) and remove it from MainTest.
-     *
-     * Locate java executable.
+     * Locate executable inside JAVA_HOME.
+     * @param name Name of executable.
      * @return Path to java executable.
      */
     private static String jdkExecutable(final String name) {
         final String result;
         final String relative = "%s/bin/%s";
         final String property = System.getProperty("java.home");
-        if (property != null) {
-            result = String.format(relative, property, name);
-        } else {
+        if (property == null) {
             final String environ = System.getenv("JAVA_HOME");
-            if (environ != null) {
+            if (environ == null) {
+                result = name;
+            } else {
                 result = String.format(relative, environ, name);
             }
-            else {
-                result = name;
-            }
+        } else {
+            result = String.format(relative, property, name);
         }
         return result;
     }
