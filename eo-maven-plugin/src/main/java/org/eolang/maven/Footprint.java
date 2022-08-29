@@ -139,7 +139,8 @@ public class Footprint {
      * @return Version tag
      */
     private String safeVer() {
-        return this.ver.replaceAll("\\*", "_");
+        return this.ver
+            .replaceAll("[* ]", "_");
     }
 
     /**
