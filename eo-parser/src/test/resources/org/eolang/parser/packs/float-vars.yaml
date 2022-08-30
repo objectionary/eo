@@ -14,7 +14,7 @@ tests:
   - //objects[count(//o[@cut='0'])=1]
   - //o[@name='aaa' and not(@cut)]
   - //o[@name='ooo' and not(@cut)]
-  - //o[@name='mm' and @data='int']
+  - //o[@name='mm' and @base='int']
   - //o[@base='mm']
 eo: |
   [] > x

@@ -35,10 +35,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class UnspileMojoTest {
+final class UnspileMojoTest {
 
     @Test
-    public void testCleaning(@TempDir final Path temp) throws Exception {
+    void testCleaning(@TempDir final Path temp) throws Exception {
         final Path generated = temp.resolve("generated");
         final Path classes = temp.resolve("classes");
         final Path foo = classes.resolve("a/b/c/foo.class");

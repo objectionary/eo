@@ -63,7 +63,7 @@ SOFTWARE.
         <xsl:text>circle</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>,label=&quot;</xsl:text>
+    <xsl:text>,label="</xsl:text>
     <xsl:choose>
       <xsl:when test="@id='ν0'">
         <xsl:text>Φ</xsl:text>
@@ -76,19 +76,19 @@ SOFTWARE.
       <xsl:text>\n</xsl:text>
       <xsl:value-of select="lambda"/>
     </xsl:if>
-    <xsl:text>&quot;</xsl:text>
+    <xsl:text>"</xsl:text>
     <xsl:text>];</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
   <xsl:template match="e[@title != '𝜎']" mode="dot">
     <xsl:variable name="e" select="."/>
     <xsl:value-of select="eo:node($e/parent::v/@id)"/>
-    <xsl:text> -> </xsl:text>
+    <xsl:text> -&gt; </xsl:text>
     <xsl:value-of select="eo:node($e/@to)"/>
     <xsl:text> [</xsl:text>
-    <xsl:text>label=&quot;</xsl:text>
+    <xsl:text>label="</xsl:text>
     <xsl:value-of select="@title"/>
-    <xsl:text>&quot;</xsl:text>
+    <xsl:text>"</xsl:text>
     <xsl:choose>
       <xsl:when test="@title = 'π'">
         <xsl:text>,style=dashed</xsl:text>

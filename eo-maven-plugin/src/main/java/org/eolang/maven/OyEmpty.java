@@ -21,25 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.maven;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import java.io.IOException;
+import org.cactoos.Input;
 
 /**
- * Test case for {@link ParsingTrain}.
+ * Fake empty HTTP Objectionary server.
  *
- * @since 0.23
+ * @since 0.1
  */
-final class ParsingTrainTest {
+public final class OyEmpty implements Objectionary {
 
-    @Test
-    void buildsList() {
-        MatcherAssert.assertThat(
-            new ParsingTrain(),
-            Matchers.iterableWithSize(Matchers.greaterThan(1))
-        );
+    @Override
+    public String toString() {
+        return "empty";
+    }
+
+    @Override
+    public Input get(final String name) throws IOException {
+        throw new IOException("Empty objectionary");
     }
 
 }

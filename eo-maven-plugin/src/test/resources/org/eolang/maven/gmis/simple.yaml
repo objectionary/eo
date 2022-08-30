@@ -1,6 +1,7 @@
+skip: true
 locators:
-  - .simple .φ .ρ .φ .𝜎 .φ .α0 .α0 Δ=bool/true
-  - .simple .φ .α1 Δ=int/42
+  - .simple .φ .ρ .φ .𝜎 .φ .α0 .α0 Δ=bool/01
+  - .simple .φ .α1 Δ=int/00-00-00-00-00-00-00-2A
 eo: |
   [] > simple
     foo > @

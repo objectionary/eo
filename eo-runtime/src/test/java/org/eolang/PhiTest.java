@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.22
  */
-public final class PhiTest {
+final class PhiTest {
 
     @Test
-    public void takesPackage() {
+    void takesPackage() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhCopy(
@@ -59,7 +59,7 @@ public final class PhiTest {
     }
 
     @Test
-    public void takesStandardPackage() {
+    void takesStandardPackage() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhCopy(
@@ -73,7 +73,7 @@ public final class PhiTest {
     }
 
     @Test
-    public void takesDirectly() {
+    void takesDirectly() {
         MatcherAssert.assertThat(
             new Dataized(
                 Phi.Φ.attr("org").get().attr("eolang").get().attr("math")
@@ -84,7 +84,7 @@ public final class PhiTest {
     }
 
     @Test
-    public void locationTest() {
+    void locationTest() {
         MatcherAssert.assertThat(
             new PhWith(
                 new PhLocated(

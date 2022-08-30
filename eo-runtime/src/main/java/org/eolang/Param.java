@@ -78,6 +78,7 @@ public final class Param {
      */
     public <T> T strong(final Class<T> type) {
         final Object ret = this.weak();
+        final Object result;
         if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
@@ -87,8 +88,10 @@ public final class Param {
                     type.getCanonicalName()
                 )
             );
+        } else {
+            result = ret;
         }
-        return type.cast(ret);
+        return type.cast(result);
     }
 
     /**

@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -98,7 +99,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     small,
                     this.outputPath,
-                    new OyRemote(full)
+                    PullMojo.remote(full)
                 ),
                 this.forceUpdate()
             );
@@ -115,6 +116,22 @@ public final class PullMojo extends SafeMojo {
                 tojos.size(), this.objectionary
             );
         }
+    }
+
+    /**
+     * Create remote repo.
+     * @param full Full Git hash
+     * @return Objectionary
+     */
+    private static Objectionary remote(final String full) {
+        Objectionary obj;
+        try {
+            InetAddress.getByName("home.objectionary.com").isReachable(1000);
+            obj = new OyRemote(full);
+        } catch (final IOException ex) {
+            obj = new OyEmpty();
+        }
+        return obj;
     }
 
     /**

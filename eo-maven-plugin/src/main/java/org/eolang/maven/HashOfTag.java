@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -39,9 +38,14 @@ import java.util.Scanner;
 final class HashOfTag {
 
     /**
-     * Static map with all hash requests.
+     * Cached map of hashes.
      */
-    private static final Map<String, String> REQUESTED_HASHES = new HashMap<>();
+    private static final Map<String, String> CACHE = HashOfTag.safeLoad();
+
+    /**
+     * The URL where the list is kept.
+     */
+    private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
      * Tag.
@@ -58,37 +62,57 @@ final class HashOfTag {
 
     /**
      * Hash of tag.
-     * The method is thread-safe.
      * @return SHA of commit
-     * @throws IOException if fails
      */
-    public String hash() throws IOException {
-        final String link = "https://home.objectionary.com/tags.txt";
-        String result = "";
-        synchronized (HashOfTag.REQUESTED_HASHES) {
-            if (REQUESTED_HASHES.containsKey(this.tag)) {
-                result = REQUESTED_HASHES.get(this.tag);
-            } else {
-                final InputStream ins = new URL(link).openStream();
-                final Scanner scanner = new Scanner(ins);
-                while (scanner.hasNextLine()) {
-                    final String line = scanner.nextLine();
-                    final String[] parts = line.split("\t");
-                    if (Objects.equals(parts[1], this.tag)) {
-                        result = parts[0];
-                        REQUESTED_HASHES.put(this.tag, result);
-                        break;
-                    }
-                }
-            }
-        }
-        if (result.isEmpty()) {
+    public String hash() {
+        final String result = HashOfTag.CACHE.get(this.tag);
+        if (result == null) {
             throw new IllegalArgumentException(
-                String.format("Tag %s doesn't exist in %s", this.tag, link)
+                String.format(
+                    "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",
+                    this.tag
+                )
             );
         }
         Logger.info(this, "Git sha of %s is %s", this.tag, result);
         return result;
+    }
+
+    /**
+     * Load all hashes and tags.
+     * @return Map of them (hash -> tag)
+     */
+    private static Map<String, String> safeLoad() {
+        Map<String, String> map;
+        try {
+            map = HashOfTag.load();
+        } catch (final IOException ex) {
+            Logger.warn(
+                HashOfTag.class,
+                "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
+                HashOfTag.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+            );
+            map = new HashMap<>(0);
+        }
+        return map;
+    }
+
+    /**
+     * Load all hashes and tags.
+     * @return Map of them (hash -> tag)
+     * @throws IOException if fails
+     */
+    private static Map<String, String> load() throws IOException {
+        final InputStream ins = new URL(HashOfTag.HOME).openStream();
+        try (Scanner scanner = new Scanner(ins)) {
+            final Map<String, String> map = new HashMap<>(0);
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+                final String[] parts = line.split("\t");
+                map.put(parts[1], parts[0]);
+            }
+            return map;
+        }
     }
 
 }

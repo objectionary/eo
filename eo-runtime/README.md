@@ -22,15 +22,8 @@ _test\resources\logback.xml_:
 ```
 After that, dataization will be logged up until nesting level 3.
 If for some reason deeper dataization log is required it can be
-achieved by temporarily amending condition within `Dataized.take()`
-method:
-```
-&& Dataized.LEVEL.get() < N+1
-```
+achieved by jvm property `-Dmax.dataization.log=<N>`
 where `N` is an integer representing desired nesting level to log.
-
-__Please note__ that logging level changes for dataization should not be committed back into
-repository.
 
 ## How to run tests
 You can run tests just like this:

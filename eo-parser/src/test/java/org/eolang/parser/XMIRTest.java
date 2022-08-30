@@ -50,11 +50,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 0.5
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-public final class XMIRTest {
+final class XMIRTest {
 
     @ParameterizedTest
     @MethodSource("samples")
-    public void printsToEO(final String sample) throws Exception {
+    void printsToEO(final String sample) throws Exception {
         final String src = new TextOf(
             new ResourceOf(sample)
         ).asString();
@@ -65,9 +65,16 @@ public final class XMIRTest {
         Logger.debug(this, "EOLANG:%n%s", eolang);
         final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
         Logger.debug(this, "Second:%n%s", second);
+        final String ignore = "data=\"\\S+\"";
         MatcherAssert.assertThat(
-            first.toString(),
-            Matchers.equalTo(second.toString())
+            first
+                .toString()
+                .replaceAll(ignore, ""),
+            Matchers.equalTo(
+                second
+                    .toString()
+                    .replaceAll(ignore, "")
+            )
         );
     }
 
