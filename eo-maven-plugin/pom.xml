@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.26.0</version>
+      <version>0.27.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -81,6 +81,11 @@ SOFTWARE.
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-maven-slf4j</artifactId>
       <version>0.12.2</version>
+      <!-- We need it to be in compile scope, because we call
+      StaticLoggerBinder.getSingleton().setMavenLog() of this
+      package, in order to initiate Slf4j forwarding to Maven
+      logging system. -->
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
