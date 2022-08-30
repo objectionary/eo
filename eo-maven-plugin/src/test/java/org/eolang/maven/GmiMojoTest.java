@@ -171,7 +171,7 @@ final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        Logger.info(
+        Logger.debug(
             GmiMojoTest.class, "GMIs:\n  %s",
             new String(
                 Files.readAllBytes(
