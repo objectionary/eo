@@ -31,12 +31,12 @@ import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 
 /**
- * Program footprint in EO compilation process.
- * The footprint consists of file in the {@link #main} folder and optionally cached
+ * Program footprint of EO compilation process.
+ * <p/>The footprint consists of file in {@link #main} folder and optionally cached
  * file in {@link #cache} folder.
  * Caching is applied if {@link #ver} represents true version in terms of
  * {@link #versioned(String)} method.
- * <br/>Usage example:
+ * <p/>Usage example:
  * <code>
  *  <pre>
  *    final Footprint footprint = new Footprint(
@@ -44,6 +44,8 @@ import org.cactoos.text.TextOf;
  *      targetRoot,
  *      cacheRoot
  *    ).save(program, ext);
+ *
+ *    String content = footprint.content(program, ext);
  *  </pre>
  * </code>
  * @since 1.0
@@ -77,9 +79,9 @@ public class Footprint {
     }
 
     /**
-     * Get content of the program.
+     * Get program content of a specific type.
      * @param program Program name
-     * @param ext File extension
+     * @param ext File extension which defines the type
      * @return Content of a file
      * @throws IOException In case of IO issue.
      */
@@ -139,8 +141,7 @@ public class Footprint {
      * @return Version tag
      */
     private String safeVer() {
-        return this.ver
-            .replaceAll("[* ]", "_");
+        return this.ver.replaceAll("[* ]", "_");
     }
 
     /**
@@ -148,7 +149,6 @@ public class Footprint {
      * @param ver Version to check
      * @return True if version has meaningful value and false otherwise
      */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     private static boolean versioned(final String ver) {
         final String trimmed = ver.trim();
         return !trimmed.isEmpty()
