@@ -34,9 +34,7 @@ SOFTWARE.
         </xsl:element>
       </xsl:if>
       <xsl:if test="@data!='array'">
-        <xsl:attribute name="primitive">
-          <xsl:value-of select="@data"/>
-        </xsl:attribute>
+        <xsl:attribute name="primitive" select="@data"/>
         <xsl:element name="value">
           <xsl:attribute name="java-type">
             <xsl:choose>

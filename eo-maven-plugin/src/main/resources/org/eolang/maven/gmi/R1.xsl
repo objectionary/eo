@@ -25,7 +25,8 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
   <!--
   Here we find ADD all objects to the graph and BIND them to
-  their parents.
+  their parents, using their names as edge labels or just \alpha
+  if no names provided.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>

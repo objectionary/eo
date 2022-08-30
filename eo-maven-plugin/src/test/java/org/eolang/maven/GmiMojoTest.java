@@ -28,6 +28,10 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -42,6 +46,7 @@ import org.cactoos.text.UncheckedText;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xembly.Directives;
@@ -66,17 +71,33 @@ public final class GmiMojoTest {
                 )
             ).asString()
         );
+        Assumptions.assumeTrue(
+            map.get("skip") == null,
+            String.format("%s is skipped", pack)
+        );
         final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
-        final XML graph = new XMLDocument(
+        final XML pre = new XMLDocument(
             new Xembler(
                 new Directives()
+                    .add("test")
                     .add("graph")
                     .add("v")
                     .attr("id", "ν0")
                     .append(new Directives(xembly))
             ).domQuietly()
         );
-        Logger.info(this, "Graph:\n%s", graph);
+        Logger.info(this, "Graph:\n%s", pre);
+        final XML graph = new Xsline(
+            new TrLogged(
+                new TrClasspath<>(
+                    new TrDefault<>(),
+                    "/org/eolang/maven/gmi-graph/verify-edges.xsl",
+                    "/org/eolang/maven/gmi-graph/to-dot.xsl"
+                ).back(),
+                GmiMojo.class
+            )
+        ).pass(pre);
+        Logger.info(this, "Dot:\n%s", graph.xpath("//dot/text()").get(0));
         for (final String loc : (Iterable<String>) map.get("locators")) {
             MatcherAssert.assertThat(
                 loc, new GmiMojoTest.ExistsIn(graph)
@@ -214,8 +235,7 @@ public final class GmiMojoTest {
                     }
                     vertex = opts.get(0);
                     continue;
-                }
-                if (sub.startsWith("Δ=")) {
+                } else if (sub.startsWith("Δ=")) {
                     matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/data[text() = '%s']/text()",
@@ -229,21 +249,38 @@ public final class GmiMojoTest {
                         );
                         break;
                     }
-                }
-                if (sub.startsWith("λ=")) {
+                } else if (sub.startsWith("λ=")) {
+                    final String expr = sub.substring(2);
                     matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/lambda[text() = '%s']/text()",
-                            vertex, sub.substring(2)
+                            vertex, expr
                         )
                     ).isEmpty();
                     if (!matches) {
                         this.failure = String.format(
                             "Can't find lambda '%s' while staying at %s",
-                            sub, vertex
+                            expr, vertex
                         );
                         break;
                     }
+                } else if (sub.startsWith("ν=")) {
+                    final String expected = sub.substring(2);
+                    matches = vertex.equals(expected);
+                    if (!matches) {
+                        this.failure = String.format(
+                            "Current vertex '%s' is not '%s', as expected",
+                            vertex, expected
+                        );
+                        break;
+                    }
+                } else {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Can't understand path element '%s' in '%s'",
+                            sub, item
+                        )
+                    );
                 }
             }
             return matches;

@@ -33,9 +33,7 @@ SOFTWARE.
     <xsl:copy>
       <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
       <xsl:variable name="body" select="replace(., '^[a-z]+:', '')"/>
-      <xsl:attribute name="prefix">
-        <xsl:value-of select="$prefix"/>
-      </xsl:attribute>
+      <xsl:attribute name="prefix" select="$prefix"/>
       <xsl:choose>
         <xsl:when test="$prefix = 'vertex'">
           <xsl:text>ν</xsl:text>

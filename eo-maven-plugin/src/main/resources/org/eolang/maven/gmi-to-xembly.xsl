@@ -35,10 +35,10 @@ SOFTWARE.
     <xsl:apply-templates select="i"/>
   </xsl:template>
   <xsl:template match="i[@name='ADD']">
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "0"; </xsl:text>
-    <xsl:text>XPATH "/graph"; </xsl:text>
+    <xsl:text>XPATH "//graph"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "v"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -48,16 +48,16 @@ SOFTWARE.
     <xsl:value-of select="$EOL"/>
   </xsl:template>
   <xsl:template match="i[@name='BIND']">
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[3]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:text>XPATH "//v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "0"; </xsl:text>
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -76,11 +76,14 @@ SOFTWARE.
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
+  <!-- DATA(V1, BYTES) -->
   <xsl:template match="i[@name='DATA']">
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <!-- Validate the presence of vertex V1: -->
+    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
+    <!-- Set Bytes to V1: -->
     <xsl:text>ADD "data"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>SET "</xsl:text>
@@ -88,16 +91,67 @@ SOFTWARE.
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
+  <!-- ATOM(V1, LAMBDA) -->
   <xsl:template match="i[@name='ATOM']">
-    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <!-- Validate the presence of vertex V1: -->
+    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
+    <!-- Set Lambda to V1: -->
     <xsl:text>ADD "lambda"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>SET "</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <!-- COPY(E1, V1, E2) -->
+  <xsl:template match="i[@name='COPY']">
+    <!-- Validate the absence of the vertex V1: -->
+    <xsl:text>XPATH "//v[@id='</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>']"; STRICT "0"; </xsl:text>
+    <!-- Validate the presence of the edge E1: -->
+    <xsl:text>XPATH "//v/e[@id='</xsl:text>
+    <xsl:value-of select="a[3]"/>
+    <xsl:text>']"; STRICT "0"; </xsl:text>
+    <!-- Add new vertex V1: -->
+    <xsl:text>XPATH "//graph"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>ADD "v"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>ATTR "id", "</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <!-- Add pi-edge E2 from V1 to existing vertex: -->
+    <xsl:text>ADD "e"; </xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>ATTR "id", "</xsl:text>
+    <xsl:value-of select="a[3]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>XATTR "to", "//graph/v/e[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']/@to";</xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <xsl:text>ATTR "title", "π";</xsl:text>
+    <xsl:value-of select="$TAB"/>
+    <!-- Redirect edge E1 to V1: -->
+    <xsl:text>XPATH "//graph/v/e[@id='</xsl:text>
+    <xsl:value-of select="a[1]"/>
+    <xsl:text>']"; STRICT "1"; </xsl:text>
+    <xsl:text>ATTR "to", "</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$TAB"/>
+  </xsl:template>
+  <xsl:template match="i">
+    <xsl:message terminate="yes">
+      <xsl:text>Unknown GMI '</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>'</xsl:text>
+    </xsl:message>
   </xsl:template>
 </xsl:stylesheet>
