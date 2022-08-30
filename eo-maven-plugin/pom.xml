@@ -78,16 +78,6 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
-      <groupId>com.jcabi</groupId>
-      <artifactId>jcabi-maven-slf4j</artifactId>
-      <version>0.12.2</version>
-      <!-- We need it to be in compile scope, because we call
-      StaticLoggerBinder.getSingleton().setMavenLog() of this
-      package, in order to initiate Slf4j forwarding to Maven
-      logging system. -->
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>3.8.6</version>
@@ -193,6 +183,24 @@ SOFTWARE.
       <artifactId>commons-lang3</artifactId>
       <version>3.12.0</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-reload4j</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      to enable configurable Log4j logging during testing -->
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-maven-slf4j</artifactId>
+      <version>0.12.2</version>
+      <!-- We need it to be in compile scope, because we call
+      StaticLoggerBinder.getSingleton().setMavenLog() of this
+      package, in order to initiate Slf4j forwarding to Maven
+      logging system. -->
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
