@@ -22,33 +22,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data-objects" version="2.0">
-  <xsl:import href="/org/eolang/parser/_datas.xsl"/>
-  <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/errors">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" version="2.0">
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:template match="o">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[not(@data) and @base=$literal-objects/text()]">
-        <xsl:element name="error">
-          <xsl:attribute name="check">
-            <xsl:text>data-objects</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute name="line">
-            <xsl:value-of select="@line"/>
-          </xsl:attribute>
-          <xsl:attribute name="severity">
-            <xsl:text>error</xsl:text>
-          </xsl:attribute>
-          <xsl:text>Data objects can't be used directly: "</xsl:text>
-          <xsl:value-of select="@base"/>
-          <xsl:text>"</xsl:text>
-        </xsl:element>
-      </xsl:for-each>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="node()|@*">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:value-of select="eo:bytes-to-int(text())"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

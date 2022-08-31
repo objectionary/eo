@@ -21,60 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package org.eolang.parser;
 
-import EOorg.EOeolang.EOerror;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
+import org.cactoos.io.InputStreamOf;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link AtNamed}.
+ * Test for {@see _func.xsl}.
  *
- * @since 0.21
+ * @since 1.0
  */
-final class AtNamedTest {
+final class FuncXslTest {
 
-    @Test
-    void rethrowsCorrectly() {
-        final Phi phi = new AtNamedTest.Dummy();
-        final EOerror.ExError error = Assertions.assertThrows(
-            EOerror.ExError.class,
-            () -> phi.attr("x").get().attr("anything").get()
-        );
+    @ParameterizedTest
+    @CsvSource({
+        "00     , 0",
+        "0000   , 0",
+        "000000 , 0",
+        "000001 , 1",
+        "000010 , 16",
+        "000100 , 256",
+        "FFFFFF , 16777215"
+    })
+    void runsXslFunction(final String bytes, final String num) {
+        final XML output = new XSLDocument(
+            new InputStreamOf(
+                new ResourceOf("org/eolang/parser/apply-func.xsl")
+            )
+        )
+            .with(new ClasspathSources())
+            .transform(new XMLDocument(String.format("<o>%s</o>", bytes)));
         MatcherAssert.assertThat(
-            new Dataized(error.enclosure()).take(String.class),
-            Matchers.allOf(
-                Matchers.containsString(
-                    "Error at \"org.eolang.AtNamedTest.Dummy#x\" attribute"
-                ),
-                Matchers.containsString("caused by intended")
+            output,
+            XhtmlMatchers.hasXPath(
+                String.format("/o[text()='%s']", num)
             )
         );
     }
-
-    /**
-     * Dummy Phi.
-     * @since 1.0
-     */
-    private static class Dummy extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        Dummy() {
-            super();
-            this.add(
-                "x",
-                new AtComposite(
-                    this,
-                    rho -> {
-                        throw new ExFailure("intended");
-                    }
-                )
-            );
-        }
-    }
-
 }

@@ -76,4 +76,41 @@ public final class EOsprintfTest {
         );
     }
 
+    @Test
+    public void printsStringWithBytes() {
+        final Phi format = new Data.ToPhi("%c");
+        final Phi num = new Data.ToPhi(new byte[] {0x49});
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOsprintf(Phi.Φ),
+                "format",
+                format
+            ),
+            "args",
+            num
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("I")
+        );
+    }
+
+    @Test
+    public void printsStringWithBytesAndEmptyFormatString() {
+        final Phi format = new Data.ToPhi("");
+        final Phi num = new Data.ToPhi(new byte[] {0x49});
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOsprintf(Phi.Φ),
+                "format",
+                format
+            ),
+            "args",
+            num
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(String.class),
+            Matchers.equalTo("")
+        );
+    }
 }

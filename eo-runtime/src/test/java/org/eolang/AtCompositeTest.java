@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-public final class AtCompositeTest {
+final class AtCompositeTest {
 
     @Test
-    public void decoratesCheckedException() {
+    void decoratesCheckedException() {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new AtComposite(
@@ -50,7 +50,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void decoratesUncheckedException() {
+    void decoratesUncheckedException() {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new AtComposite(
@@ -63,7 +63,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void passesSelfCorrectly() {
+    void passesSelfCorrectly() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
         phi.attr("φ").get();
@@ -74,7 +74,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void passesSelfCorrectlyThroughChild() {
+    void passesSelfCorrectlyThroughChild() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
         phi.attr("φ").get();
@@ -85,7 +85,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void goesThroughJustOnce() {
+    void goesThroughJustOnce() {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, "φ");
         MatcherAssert.assertThat(

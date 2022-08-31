@@ -29,24 +29,19 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test case for {@link Dataized}.
+ * Test case for dataization log level.
  *
  * @since 0.22
  */
-@Execution(ExecutionMode.SAME_THREAD)
-final class DataizedTest {
+final class DataizedLogLevelTest {
 
     @Test
-    void logsCorrectly() {
+    void shortLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -68,20 +63,30 @@ final class DataizedTest {
             }
         };
         log.addHandler(hnd);
-        new Dataized(new Data.ToPhi(1L)).take();
+        final Thread thread = new Thread(
+            () -> {
+                final String property = System.getProperty("max.dataization.log");
+                System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
+                final Phi phi = new PhiDec(Phi.Φ);
+                new Dataized(phi).take();
+                if (property != null) {
+                    System.getProperties().setProperty("max.dataization.log", property);
+                } else {
+                    System.clearProperty("max.dataization.log");
+                }
+            });
+        thread.start();
+        thread.join();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            logs.get(0).getMessage(),
-            Matchers.allOf(
-                Matchers.containsString("intν"),
-                Matchers.not(Matchers.containsString("\n"))
-            )
+            logs.size(),
+            Matchers.equalTo(1)
         );
     }
 
     @Test
-    void logsWhenException() {
+    void longLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -103,45 +108,55 @@ final class DataizedTest {
             }
         };
         log.addHandler(hnd);
-        final Phi wrong = new PhIncorrect(Phi.Φ);
-        IntStream.range(0, 5).forEach(
-            i -> Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new Dataized(wrong).take()
-            )
-        );
-        new Dataized(new Data.ToPhi(1L)).take();
+        final Thread thread = new Thread(
+            () -> {
+                final String property = System.getProperty("max.dataization.log");
+                System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
+                final Phi phi = new PhiDec(Phi.Φ);
+                new Dataized(phi).take();
+                if (property != null) {
+                    System.getProperties().setProperty("max.dataization.log", property);
+                } else {
+                    System.clearProperty("max.dataization.log");
+                }
+            });
+        thread.start();
+        thread.join();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            logs.get(0).getMessage(),
-            Matchers.allOf(
-                Matchers.containsString("intν"),
-                Matchers.not(Matchers.containsString("\n"))
-            )
+            logs.size(),
+            Matchers.greaterThan(1)
         );
     }
 
     /**
-     * Fake Phi failing when dataized.
+     * Fake Phi with decoration.
+     *
      * @since 1.0
      */
-    public static class PhIncorrect extends PhDefault {
+    public static class PhiDec extends PhDefault {
 
         /**
          * Ctor.
+         *
          * @param sigma Sigma
          */
-        PhIncorrect(final Phi sigma) {
+        PhiDec(final Phi sigma) {
             super(sigma);
             this.add(
-                "Δ",
-                new AtComposite(
-                    this,
-                    rho -> Phi.Φ
+                "φ",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> new PhWith(
+                            new PhCopy(new PhMethod(new Data.ToPhi(2L), "plus")),
+                            0,
+                            new Data.ToPhi(2L)
+                        )
+                    )
                 )
             );
         }
     }
-
 }

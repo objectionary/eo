@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-public final class PhConstTest {
+final class PhConstTest {
 
     @Test
-    public void makesObjectConstant() {
+    void makesObjectConstant() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhConst(
@@ -53,7 +53,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void caclulatesPhiOnlyOnce() {
+    void caclulatesPhiOnlyOnce() {
         final Dummy dummy = new Dummy("any");
         final Phi phi = new PhConst(dummy);
         for (int idx = 0; idx < 10; ++idx) {
@@ -69,7 +69,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void onceEvenIfCopied() {
+    void onceEvenIfCopied() {
         final Dummy dummy = new Dummy("child");
         final Phi child = new PhMethod(new PhConst(dummy), "child");
         new Dataized(child).take(Long.class);
@@ -79,7 +79,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void simpleRandomToConst() {
+    void simpleRandomToConst() {
         final Phi rnd = new PhConstTest.Rnd(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(rnd).take(Double.class),
@@ -95,7 +95,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void negRandomToConst() {
+    void negRandomToConst() {
         final Phi cnst = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         final double first = new Dataized(
             cnst.attr("neg").get()
@@ -107,7 +107,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void randomToConst() {
+    void randomToConst() {
         final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         final Phi eql = rnd.attr("eq").get();
         eql.attr(0).put(rnd);
@@ -118,7 +118,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void doesntAllowAttributesOfDecorateeToBeSet() {
+    void doesntAllowAttributesOfDecorateeToBeSet() {
         final Phi phi = new Boom();
         Assertions.assertThrows(
             ExUnset.class,
@@ -127,7 +127,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void makesRhoConstToo() {
+    void makesRhoConstToo() {
         final String name = "kid";
         final Dummy dummy = new Dummy(name);
         final Phi mtd = new PhMethod(new PhConst(dummy), name);
@@ -144,7 +144,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void keepsDecorateeConst() {
+    void keepsDecorateeConst() {
         final Boom boom = new Boom();
         final Phi cnst = new PhConst(boom);
         for (int idx = 0; idx < 10; ++idx) {
@@ -156,7 +156,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void keepConstMultiLayers() {
+    void keepConstMultiLayers() {
         final Phi phi = new PhWith(
             new Envelope(Phi.Φ),
             0,
@@ -173,7 +173,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void dataizesOnlyOnceViaEnvelopes() {
+    void dataizesOnlyOnceViaEnvelopes() {
         final Dummy dummy = new Dummy("x");
         final Phi phi = new PhConst(
             new PhWith(
@@ -198,7 +198,7 @@ public final class PhConstTest {
     }
 
     @Test
-    public void dataizesOnlyOnceViaMethods() {
+    void dataizesOnlyOnceViaMethods() {
         final Dummy dummy = new Dummy("x");
         final Phi phi = new PhConst(
             new PhWith(

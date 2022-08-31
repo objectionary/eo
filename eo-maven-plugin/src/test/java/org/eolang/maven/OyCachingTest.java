@@ -53,7 +53,7 @@ final class OyCachingTest {
             Matchers.is(content)
         );
         Assertions.assertTrue(
-            path.resolve("sources/master/org/example/main.eo")
+            path.resolve("pulled/master/org/example/main.eo")
                 .toFile()
                 .exists()
         );

@@ -36,10 +36,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class MarkMojoTest {
+final class MarkMojoTest {
 
     @Test
-    public void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
+    void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         new Save(
             "hi",

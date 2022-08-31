@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class AtVarargTest {
+final class AtVarargTest {
 
     @Test
-    public void appendsElements() {
+    void appendsElements() {
         final Attr attr = new AtVararg();
         final Phi phi = new PhDefault() {
         };
@@ -48,7 +48,7 @@ public final class AtVarargTest {
     }
 
     @Test
-    public void injectsVarargs() {
+    void injectsVarargs() {
         final Phi bar = new AtVarargTest.Bar(Phi.Φ);
         bar.attr(0).put(new Data.ToPhi(1L));
         bar.attr(1).put(new Data.ToPhi(1L));
@@ -61,7 +61,7 @@ public final class AtVarargTest {
     }
 
     @Test
-    public void datarizesEOappCallingVarargsFunc() {
+    void datarizesEOappCallingVarargsFunc() {
         MatcherAssert.assertThat(
             new Dataized(
                 new AtVarargTest.Foo(Phi.Φ)

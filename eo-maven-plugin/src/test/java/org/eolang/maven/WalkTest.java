@@ -35,10 +35,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class WalkTest {
+final class WalkTest {
 
     @Test
-    public void findsFiles(@TempDir final Path temp) throws Exception {
+    void findsFiles(@TempDir final Path temp) throws Exception {
         new Save("", temp.resolve("foo/hello/0.1/EObar/x.bin")).save();
         new Save("", temp.resolve("EOxxx/bar")).save();
         MatcherAssert.assertThat(

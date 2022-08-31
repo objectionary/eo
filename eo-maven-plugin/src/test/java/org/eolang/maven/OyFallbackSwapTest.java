@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
  */
 class OyFallbackSwapTest {
     @Test
-    public void testFallbackNoSwapOy() throws Exception {
+    void testFallbackNoSwapOy() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
@@ -50,7 +50,7 @@ class OyFallbackSwapTest {
     }
 
     @Test
-    public void testFallbackSwapOyFail() throws Exception {
+    void testFallbackSwapOyFail() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
@@ -66,7 +66,7 @@ class OyFallbackSwapTest {
     }
 
     @Test
-    public void testFallbackSwapOy() throws Exception {
+    void testFallbackSwapOy() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(

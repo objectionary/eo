@@ -43,6 +43,8 @@ import org.cactoos.text.UncheckedText;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xembly.Directives;
@@ -55,11 +57,12 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class GmiMojoTest {
+final class GmiMojoTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    public void testPacks(final String pack) throws Exception {
+    @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
+    void testPacks(final String pack) throws Exception {
         final Map<String, Object> map = new Yaml().load(
             new TextOf(
                 new ResourceOf(
@@ -72,17 +75,24 @@ public final class GmiMojoTest {
             new Xembler(new Directives(xembly)).domQuietly()
         );
         Logger.info(this, "Graph:\n%s", graph);
+        final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
-            MatcherAssert.assertThat(
-                loc, new GmiMojoTest.ExistsIn(graph)
+            assertions.add(
+                () -> MatcherAssert.assertThat(
+                    loc,
+                    new ExistsIn(graph)
+                )
             );
         }
         for (final String xpath : (Iterable<String>) map.get("xpaths")) {
-            MatcherAssert.assertThat(
-                graph,
-                XhtmlMatchers.hasXPath(xpath)
+            assertions.add(
+                () -> MatcherAssert.assertThat(
+                    graph,
+                    XhtmlMatchers.hasXPath(xpath)
+                )
             );
         }
+        Assertions.assertAll(assertions);
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -220,7 +230,9 @@ public final class GmiMojoTest {
                     matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/data[text() = '%s']/text()",
-                            vertex, sub.substring(1)
+                            vertex,
+                            sub.substring(1)
+                                .replace('-', ' ')
                         )
                     ).isEmpty();
                     if (!matches) {

@@ -108,6 +108,28 @@ abstract class SafeMojo extends AbstractMojo {
     protected String scope = "compile";
 
     /**
+     * The path to a text file where paths of all added
+     * .class (and maybe others) files are placed.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        property = "eo.placed",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/placed.csv"
+    )
+    protected File placed;
+
+    /**
+     * Format of "placed" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
+    protected String placedFormat = "csv";
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
@@ -117,28 +139,54 @@ abstract class SafeMojo extends AbstractMojo {
         )
     );
 
+    /**
+     * Cached placed tojos.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
+        new Sticky<>(
+            () -> new Catalog(this.placed.toPath(), this.placedFormat).make()
+        )
+    );
+
+    /**
+     * Whether we should skip goals execution.
+     */
+    @Parameter(property = "eo.skip", defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean skip;
+
     @Override
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
-        try {
-            final long start = System.nanoTime();
-            this.exec();
-            if (Logger.isDebugEnabled(this)) {
-                Logger.debug(
-                    this,
-                    "Execution of %s took %[nano]s",
-                    this.getClass().getSimpleName(),
-                    System.nanoTime() - start
+        if (this.skip) {
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
+                    this, "Execution skipped due to eo.skip option"
                 );
             }
-        } catch (final IOException ex) {
-            throw new MojoFailureException(
-                String.format(
-                    "Failed to execute %s",
-                    this.getClass().getCanonicalName()
-                ),
-                ex
-            );
+        } else {
+            try {
+                final long start = System.nanoTime();
+                this.exec();
+                if (Logger.isDebugEnabled(this)) {
+                    Logger.debug(
+                        this,
+                        "Execution of %s took %[nano]s",
+                        this.getClass().getSimpleName(),
+                        System.nanoTime() - start
+                    );
+                }
+            } catch (final IOException ex) {
+                throw new MojoFailureException(
+                    String.format(
+                        "Failed to execute %s",
+                        this.getClass().getCanonicalName()
+                    ),
+                    ex
+                );
+            }
         }
     }
 
