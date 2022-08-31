@@ -22,13 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<!--
-  @todo #1110:30m Implement eo:bytes-to-int
-   which will convert byte array (i.e. hexadecimal numeric value)
-   to an integer. Change idiomatic.eo to test for various
-   values.
--->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
   <xsl:function name="eo:abstract" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="not(exists($o/@base)) and (exists($o/o) or $o/@atom or $o/@abstract)"/>
@@ -47,6 +41,6 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:bytes-to-int" as="xs:integer">
     <xsl:param name="bytes"/>
-    <xsl:sequence select="0"/>
+    <xsl:sequence select="if (string-length($bytes) = 0) then 0 else string-length(substring-before('0123456789ABCDEF', substring($bytes, string-length($bytes), 1))) + 16 * eo:bytes-to-int(substring($bytes, 1, string-length($bytes) - 1))"/>
   </xsl:function>
 </xsl:stylesheet>
