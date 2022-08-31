@@ -48,13 +48,13 @@ private static boolean online() {
   'target/eo/03-optimize/org/eolang/examples/app.xmir',
   'target/eo/05-pre/org/eolang/examples/app/00-pre-classes.xml',
   'target/eo/06-transpile/org/eolang/examples/app.xmir',
-].each {assert new File(basedir, it).exists()}
+].each { assert new File(basedir, it).exists() }
 
 [
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
   'target/eo/placed.csv',
   'target/eo/04-pull/org/eolang/array.eo',
-].each {assert new File(basedir, it).exists() ||  !online()}
+].each { assert new File(basedir, it).exists() ||  !online() }
 
 String log = new File(basedir, 'build.log').text
 
