@@ -21,41 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.parser;
 
-import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
+import org.cactoos.io.InputStreamOf;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test for {@link OyCaching}.
+ * Test for {@see _func.xsl}.
  *
  * @since 1.0
  */
-final class OyCachingTest {
+final class FuncXslTest {
 
-    @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
+    @ParameterizedTest
+    @CsvSource({
+        "00     , 0",
+        "0000   , 0",
+        "000000 , 0",
+        "000001 , 1",
+        "000010 , 16",
+        "000100 , 256",
+        "FFFFFF , 16777215"
+    })
+    void runsXslFunction(final String bytes, final String num) {
+        final XML output = new XSLDocument(
+            new InputStreamOf(
+                new ResourceOf("org/eolang/parser/apply-func.xsl")
+            )
+        )
+            .with(new ClasspathSources())
+            .transform(new XMLDocument(String.format("<o>%s</o>", bytes)));
         MatcherAssert.assertThat(
-            new TextOf(
-                new OyCaching(
-                    "master",
-                    path,
-                    name -> new InputOf(content)
-                ).get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
-        );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo")
-                .toFile()
-                .exists()
+            output,
+            XhtmlMatchers.hasXPath(
+                String.format("/o[text()='%s']", num)
+            )
         );
     }
 }

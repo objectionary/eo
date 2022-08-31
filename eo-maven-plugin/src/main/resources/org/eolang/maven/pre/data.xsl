@@ -22,6 +22,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
+<!--
+ @todo #1104:30m This code tests for both org.eolang.TYPE and TYPE.
+  This is unnecessary. Investigate why add-default-package.xsl
+  is not always called from eo-maven-plugin and use
+  only qualified object names.
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pre-data" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@data]">
@@ -38,39 +44,6 @@ SOFTWARE.
           <xsl:value-of select="@data"/>
         </xsl:attribute>
         <xsl:element name="value">
-          <xsl:attribute name="java-type">
-            <xsl:choose>
-              <xsl:when test="@data='bytes'">
-                <xsl:choose>
-                  <xsl:when test="@base='org.eolang.string'">
-                    <xsl:text>String</xsl:text>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:text>byte[]</xsl:text>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:when>
-              <xsl:when test="@data='string'">
-                <xsl:text>String</xsl:text>
-              </xsl:when>
-              <xsl:when test="@data='float'">
-                <xsl:text>Double</xsl:text>
-              </xsl:when>
-              <xsl:when test="@data='int'">
-                <xsl:text>Long</xsl:text>
-              </xsl:when>
-              <xsl:when test="@data='bool'">
-                <xsl:text>Boolean</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:message terminate="yes">
-                  <xsl:text>Unknown data type "</xsl:text>
-                  <xsl:value-of select="@data"/>
-                  <xsl:text>"</xsl:text>
-                </xsl:message>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:attribute>
           <xsl:choose>
             <xsl:when test="@data='bytes'">
               <xsl:variable name="array">
@@ -85,13 +58,34 @@ SOFTWARE.
                 <xsl:text>}</xsl:text>
               </xsl:variable>
               <xsl:choose>
-                <xsl:when test="@base='org.eolang.string'">
+                <xsl:when test="@base='org.eolang.string' or @base='string'">
                   <xsl:text>new String(</xsl:text>
                   <xsl:value-of select="$array"/>
+                  <xsl:text>, java.nio.charset.StandardCharsets.UTF_8</xsl:text>
                   <xsl:text>)</xsl:text>
                 </xsl:when>
-                <xsl:otherwise>
+                <xsl:when test="@base='org.eolang.bool' or @base='bool'">
+                  <xsl:choose>
+                    <xsl:when test="text() = '01'">
+                      <xsl:text>Boolean.TRUE</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:text>Boolean.FALSE</xsl:text>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:when>
+                <xsl:when test="@base='org.eolang.bytes' or @base='bytes'">
                   <xsl:value-of select="$array"/>
+                </xsl:when>
+                <xsl:when test="@base='org.eolang.int' or @base='int'">
+                  <xsl:text>java.nio.ByteBuffer.wrap(</xsl:text>
+                  <xsl:value-of select="$array"/>
+                  <xsl:text>).getLong()</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>/** ERROR: Unsupported type: </xsl:text>
+                  <xsl:value-of select="@base"/>
+                  <xsl:text>**/</xsl:text>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:when>

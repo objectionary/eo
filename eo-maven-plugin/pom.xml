@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.26.0</version>
+      <version>0.27.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -76,11 +76,6 @@ SOFTWARE.
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->
-    </dependency>
-    <dependency>
-      <groupId>com.jcabi</groupId>
-      <artifactId>jcabi-maven-slf4j</artifactId>
-      <version>0.12.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -188,6 +183,24 @@ SOFTWARE.
       <artifactId>commons-lang3</artifactId>
       <version>3.12.0</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-reload4j</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      to enable configurable Log4j logging during testing -->
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-maven-slf4j</artifactId>
+      <version>0.12.2</version>
+      <!-- We need it to be in compile scope, because we call
+      StaticLoggerBinder.getSingleton().setMavenLog() of this
+      package, in order to initiate Slf4j forwarding to Maven
+      logging system. -->
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>

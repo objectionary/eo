@@ -66,7 +66,7 @@ public final class OyHome implements Objectionary {
     public Input get(final String name) throws FileNotFoundException {
         final Path file = new Place(name).make(
             this.home
-                .resolve("sources")
+                .resolve("pulled")
                 .resolve(this.version),
             "eo"
         );
