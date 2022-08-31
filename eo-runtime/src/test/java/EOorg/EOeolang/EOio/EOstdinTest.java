@@ -80,7 +80,7 @@ public final class EOstdinTest {
         }
     }
 
-    @StdIo("this is a test input!\n")
+    @StdIo("this is a test input!")
     @Test
     public void nextLineOneLineTest(final StdIn stdin) {
         final String expected = "this is a test input!";
@@ -92,10 +92,10 @@ public final class EOstdinTest {
         );
     }
 
-    @StdIo("this is a testing input!\n")
+    @StdIo("this is a testing input!")
     @Test
     public void stdinOneLineTest(final StdIn stdin) {
-        final String expected = "this is a testing input!\n";
+        final String expected = "this is a testing input!".concat(System.lineSeparator());
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -104,7 +104,7 @@ public final class EOstdinTest {
         );
     }
 
-    @StdIo("this is a test input!\nanother line\nyet another line\n")
+    @StdIo({"this is a test input!", "nanother line", "yet another line"})
     @Test
     public void nextLineMultiLineTest(final StdIn stdin) {
         final String expected = "this is a test input!";
@@ -144,19 +144,21 @@ public final class EOstdinTest {
         );
     }
 
-    @StdIo("this is a test input!\nanother line\nyet another line\n")
+    @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
     public void stdinMultiLineTest(final StdIn stdin) {
-        final String expected = "this is a test input!\nanother line\nyet another line\n";
+        final String first = "this is a test input!".concat(System.lineSeparator());
+        final String second = "another line".concat(System.lineSeparator());
+        final String third = "yet another line".concat(System.lineSeparator());
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
             actual,
-            Matchers.equalTo(expected)
+            Matchers.equalTo(first + second + third)
         );
     }
 
-    @StdIo("first\nsecond\nthird\n")
+    @StdIo({"first", "second", "third"})
     @Test
     public void stdinfewOneLineTest(final StdIn stdin) {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
@@ -182,23 +184,7 @@ public final class EOstdinTest {
         );
     }
 
-    @StdIo("\n")
-    @Test
-    public void nextLineSeparatorTest(final StdIn stdin) {
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
-        final EOerror.ExError error = Assertions.assertThrows(
-            EOerror.ExError.class,
-            () -> new Dataized(phi).take(String.class)
-        );
-        MatcherAssert.assertThat(
-            new Dataized(error.enclosure()).take(String.class),
-            Matchers.containsString(
-                "There is no line in the standard input stream to consume"
-            )
-        );
-    }
-
-    @StdIo("first\n\nthird\n")
+    @StdIo({"first", "", "third"})
     @Test
     public void stdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
         final String first = "\u0066\u0069\u0072\u0073\u0074";

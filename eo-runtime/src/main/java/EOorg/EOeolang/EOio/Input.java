@@ -28,7 +28,6 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.Scanner;
-import org.eolang.ExFailure;
 
 /**
  * All system inputs.
@@ -44,13 +43,13 @@ public final class Input {
     /**
      * Scanner.
      */
-    private static Scanner scanner;
+    private Scanner scanner;
 
     /**
      * Ctor.
      */
     private Input() {
-        scanner = new Scanner(System.in);
+        this.scanner = new Scanner(System.in);
     }
 
     /**
@@ -68,10 +67,10 @@ public final class Input {
      * GetLine.
      * @return First read line from system input
      */
-    public static String getLine() {
-        scanner.useDelimiter(System.lineSeparator());
-        final String line = scanner.next();
-        scanner.reset();
+    public String getLine() {
+        this.scanner.useDelimiter(System.lineSeparator());
+        final String line = this.scanner.next();
+        this.scanner.reset();
         return line;
     }
 
@@ -79,12 +78,12 @@ public final class Input {
      * GetAllLines.
      * @return All read lines from system input
      */
-    public static String getAllLines() {
+    public String getAllLines() {
         final StringBuilder builder = new StringBuilder();
-        while (scanner.hasNextLine()) {
-            builder.append(scanner.nextLine()).append(System.lineSeparator());
+        while (this.scanner.hasNextLine()) {
+            builder.append(this.scanner.nextLine()).append(System.lineSeparator());
         }
-        scanner.reset();
+        this.scanner.reset();
         return builder.toString();
     }
 }

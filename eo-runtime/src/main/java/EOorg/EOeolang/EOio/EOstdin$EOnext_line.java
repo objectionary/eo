@@ -27,15 +27,11 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
