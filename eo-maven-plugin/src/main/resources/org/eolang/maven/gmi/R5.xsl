@@ -27,6 +27,7 @@ SOFTWARE.
   Here we break hard links from parents to their kids and make
   COPY of kids.
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/gmi">
@@ -35,7 +36,7 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.'))]" mode="gmi" priority="1">
+  <xsl:template match="o[not(eo:abstract(.)) and @base and not(starts-with(@base, '.')) and o]" mode="gmi" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'COPY'"/>
       <xsl:with-param name="args" as="item()*">

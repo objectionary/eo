@@ -225,74 +225,105 @@ final class GmiMojoTest {
         @Override
         public boolean matchesSafely(final String item) {
             boolean matches = true;
+            try {
+                this.matches(item);
+            } catch (IllegalArgumentException ex) {
+                matches = false;
+                this.failure = ex.getMessage();
+            }
+            return matches;
+        }
+
+        /**
+         * Check and throw if fails.
+         * @param item The path to check
+         */
+        private void matches(final String item) {
             String vertex = "ν0";
             for (final String sub : item.split(" ")) {
+                final XML node = this.graph.nodes(
+                    String.format("//v[@id='%s']", vertex)
+                ).get(0);
                 if (sub.charAt(0) == '.') {
-                    final List<String> opts = this.graph.xpath(
+                    final List<String> opts = node.xpath(
                         String.format(
-                            "//v[@id='%s']/e[@title='%s']/@to",
-                            vertex, sub.substring(1)
+                            "e[@title='%s']/@to",
+                            sub.substring(1)
                         )
                     );
                     if (opts.isEmpty()) {
-                        this.failure = String.format(
-                            "Can't find path '%s' while staying at %s",
-                            sub, vertex
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Can't find path '%s' while staying at %s",
+                                sub, vertex
+                            )
                         );
-                        matches = false;
-                        break;
                     }
                     vertex = opts.get(0);
                     continue;
-                } else if (sub.startsWith("Δ=")) {
-                    matches = !this.graph.xpath(
+                }
+                if (sub.startsWith("Δ=")) {
+                    final boolean matches = !node.xpath(
                         String.format(
-                            "//v[@id='%s']/data[text() = '%s']/text()",
-                            vertex, sub.substring(1).replace('-', ' ')
+                            "data[text() = '%s']/text()",
+                            sub.substring(1).replace('-', ' ')
                         )
                     ).isEmpty();
                     if (!matches) {
-                        this.failure = String.format(
-                            "Can't find data '%s' while staying at %s",
-                            sub, vertex
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Can't find data '%s' while staying at %s",
+                                sub, vertex
+                            )
                         );
-                        break;
                     }
-                } else if (sub.startsWith("λ=")) {
+                    continue;
+                }
+                if (sub.startsWith("λ=")) {
+                    if (node.nodes("lambda").isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no lambda at %s",
+                                vertex
+                            )
+                        );
+                    }
                     final String expr = sub.substring(2);
-                    matches = !this.graph.xpath(
+                    final boolean matches = !this.graph.xpath(
                         String.format(
                             "//v[@id='%s']/lambda[text() = '%s']/text()",
                             vertex, expr
                         )
                     ).isEmpty();
                     if (!matches) {
-                        this.failure = String.format(
-                            "Can't find lambda '%s' while staying at %s",
-                            expr, vertex
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Lambda '%s' at '%s' is not equal to '%s'",
+                                node.xpath("lambda/text()").get(0), vertex, expr
+                            )
                         );
-                        break;
                     }
-                } else if (sub.startsWith("ν=")) {
-                    final String expected = sub.substring(2);
-                    matches = vertex.equals(expected);
-                    if (!matches) {
-                        this.failure = String.format(
-                            "Current vertex '%s' is not '%s', as expected",
-                            vertex, expected
-                        );
-                        break;
-                    }
-                } else {
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "Can't understand path element '%s' in '%s'",
-                            sub, item
-                        )
-                    );
+                    continue;
                 }
+                if (sub.startsWith("ν=")) {
+                    final String expected = sub.substring(2);
+                    final boolean matches = vertex.equals(expected);
+                    if (!matches) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Current vertex '%s' is not '%s', as expected",
+                                vertex, expected
+                            )
+                        );
+                    }
+                }
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Can't understand path element '%s' in '%s'",
+                        sub, item
+                    )
+                );
             }
-            return matches;
         }
 
     }

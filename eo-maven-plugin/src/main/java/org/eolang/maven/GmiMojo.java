@@ -80,6 +80,7 @@ public final class GmiMojo extends SafeMojo {
                 new TrDefault<>(),
                 "/org/eolang/maven/gmi/R0.xsl",
                 "/org/eolang/maven/gmi/R1.xsl",
+                "/org/eolang/maven/gmi/R1.1.xsl",
                 "/org/eolang/maven/gmi/R4.xsl",
                 "/org/eolang/maven/gmi/R5.xsl",
                 "/org/eolang/maven/gmi/R6.xsl",
