@@ -57,7 +57,7 @@ public class EObool$EOwhile extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    Object last = true;
+                    Object last = false;
                     long count = 0L;
                     while (true) {
                         final Boolean term = new Param(rho).strong(Boolean.class);
