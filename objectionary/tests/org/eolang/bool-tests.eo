@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.27.2
++version 0.28.0
 
 [] > compares-two-bools
   assert-that > @
@@ -66,7 +66,7 @@
     and.
       x.write 5
       eq.
-        4
+        TRUE
         while.
           x.lt 10
           [i]
@@ -179,3 +179,25 @@
         1237
         FALSE.as-hash
     $.equal-to TRUE
+
+[] > last-while-dataization-object
+  memory 3 > x
+  assert-that > @
+    while.
+      x.lt 6
+      [i]
+        seq > @
+          x.write (x.plus i)
+          x
+    $.equal-to 6
+
+[] > last-while-dataization-object-with-false-condition
+  memory 3 > x
+  assert-that > @
+    while.
+      x.lt 1
+      [i]
+        seq > @
+          x.write (x.plus i)
+          x
+    $.equal-to FALSE
