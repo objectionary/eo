@@ -78,6 +78,11 @@ SOFTWARE.
       <artifactId>junit-jupiter-api</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <!-- version from parent POM -->
+    </dependency>    
   </dependencies>
   <build>
     <plugins>

@@ -27,48 +27,64 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
-import org.eolang.AtComposite;
-import org.eolang.Data;
 import org.eolang.ExFailure;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
 
 /**
- * Standard Input. Consumes only one line.
+ * All system inputs.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.27.0
  */
-public class EOstdin$EOnext_line extends PhDefault {
+public final class Input {
+    /**
+     * Input.
+     */
+    private static Input instance;
+
+    /**
+     * Scanner.
+     */
+    private static Scanner scanner;
+
     /**
      * Ctor.
-     * @param parent Sigma
      */
-    public EOstdin$EOnext_line(final Phi parent) {
-        super(parent);
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    try {
-                        final Input input;
-                        input = Input.getInstance();
-                        final String line = input.getLine();
-                        return new Data.ToPhi(line);
-                    } catch (final NoSuchElementException exception) {
-                        throw new ExFailure(
-                            "There is no line in the standard input stream to consume"
-                        );
-                    }
-                }
-            )
-        );
+    private Input() {
+        scanner = new Scanner(System.in);
+    }
+
+    /**
+     * GetInstance.
+     * @return The pointer to input
+     */
+    public static synchronized Input getInstance() {
+        if (instance == null) {
+            instance = new Input();
+        }
+        return instance;
+    }
+
+    /**
+     * GetLine.
+     * @return First read line from system input
+     */
+    public static String getLine() {
+        scanner.useDelimiter(System.lineSeparator());
+        final String line = scanner.next();
+        scanner.reset();
+        return line;
+    }
+
+    /**
+     * GetAllLines.
+     * @return All read lines from system input
+     */
+    public static String getAllLines() {
+        final StringBuilder builder = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            builder.append(scanner.nextLine()).append(System.lineSeparator());
+        }
+        scanner.reset();
+        return builder.toString();
     }
 }
