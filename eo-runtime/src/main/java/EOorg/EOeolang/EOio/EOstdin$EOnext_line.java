@@ -28,7 +28,6 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.ExFailure;
