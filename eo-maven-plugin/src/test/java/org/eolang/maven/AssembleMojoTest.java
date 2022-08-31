@@ -23,9 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
@@ -84,7 +81,7 @@ final class AssembleMojoTest {
                     )
                 )
             ),
-            Matchers.is(netIsAvailable())
+            Matchers.is(SafeMojo.online())
         );
     }
 
@@ -142,7 +139,7 @@ final class AssembleMojoTest {
                     )
                 )
             ),
-            Matchers.is(netIsAvailable())
+            Matchers.is(SafeMojo.online())
         );
         MatcherAssert.assertThat(
             Files.exists(
@@ -156,23 +153,4 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
     }
-
-    /**
-     * Check the internet connection.
-     *
-     * @return Is the internet connection available
-     */
-    private static boolean netIsAvailable() {
-        boolean available = true;
-        try {
-            final URL url = new URL("http://www.google.com");
-            final URLConnection conn = url.openConnection();
-            conn.connect();
-            conn.getInputStream().close();
-        } catch (final IOException ignored) {
-            available = false;
-        }
-        return available;
-    }
-
 }

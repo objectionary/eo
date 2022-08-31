@@ -27,17 +27,17 @@
  *
  * @return Is the internet connection available
  */
-private static boolean netIsAvailable() {
-    boolean available = true;
+private static boolean online() {
+    boolean online = true
     try {
-        final URL url = new URL("http://www.google.com");
-        final URLConnection conn = url.openConnection();
-        conn.connect();
-        conn.getInputStream().close();
+        final URL url = new URL("http://www.google.com")
+        final URLConnection conn = url.openConnection()
+        conn.connect()
+        conn.inputStream.close()
     } catch (final IOException ignored) {
-        available = false;
+        online = false
     }
-    return available;
+    return online
 }
 
 [
@@ -48,13 +48,13 @@ private static boolean netIsAvailable() {
   'target/eo/03-optimize/org/eolang/examples/app.xmir',
   'target/eo/05-pre/org/eolang/examples/app/00-pre-classes.xml',
   'target/eo/06-transpile/org/eolang/examples/app.xmir',
-].each { assert new File(basedir, it).exists()}
+].each {assert new File(basedir, it).exists()}
 
 [
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
   'target/eo/placed.csv',
   'target/eo/04-pull/org/eolang/array.eo',
-].each { assert new File(basedir, it).exists() ||  !netIsAvailable() }
+].each {assert new File(basedir, it).exists() ||  !online()}
 
 String log = new File(basedir, 'build.log').text
 
@@ -63,6 +63,6 @@ String log = new File(basedir, 'build.log').text
   'org.eolang unpacked to eo-runtime',
   '6th Fibonacci number is 8',
   'BUILD SUCCESS',
-].each { assert log.contains(it) || !netIsAvailable() }
+].each { assert log.contains(it) || !online() }
 
 true

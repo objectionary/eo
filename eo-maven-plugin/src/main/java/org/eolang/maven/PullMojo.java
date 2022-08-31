@@ -28,8 +28,6 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -86,7 +84,7 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (!netIsAvailable()) {
+        if (!online()) {
             Logger.warn(
                 this, "There is not internet connection. Pull skipped"
             );
@@ -178,23 +176,4 @@ public final class PullMojo extends SafeMojo {
         }
         return src;
     }
-
-    /**
-     * Check the internet connection.
-     *
-     * @return Is the internet connection available
-     */
-    private static boolean netIsAvailable() {
-        boolean available = true;
-        try {
-            final URL url = new URL("http://www.google.com");
-            final URLConnection conn = url.openConnection();
-            conn.connect();
-            conn.getInputStream().close();
-        } catch (final IOException ignored) {
-            available = false;
-        }
-        return available;
-    }
-
 }
