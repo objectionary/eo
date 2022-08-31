@@ -24,9 +24,9 @@
 
 /**
  * EO org.eolang.io package.
- * @since 0.27.0 
- * @checkstyle PackageNameCheck (4 lines)
  *
+ * @since 0.27.0
+ * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang.EOio;
 
