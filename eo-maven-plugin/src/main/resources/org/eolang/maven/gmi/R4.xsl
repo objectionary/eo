@@ -43,7 +43,7 @@ SOFTWARE.
           <xsl:value-of select="eo:vertex(.)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('text:', 'S(ξ.α0', @base, ')')"/>
+          <xsl:value-of select="concat('text:', 'S/ξ.α0', @base)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

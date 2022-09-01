@@ -63,7 +63,7 @@ SOFTWARE.
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
-          <xsl:value-of select="concat('text:', 'S(', $loc, ')')"/>
+          <xsl:value-of select="concat('text:', 'S/', $loc)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
