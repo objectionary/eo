@@ -53,8 +53,8 @@ public class EOstdin$EOnext_line extends PhDefault {
                 this,
                 rho -> {
                     try {
-                        final Input input;
-                        input = Input.getInstance();
+                        final EOinput input;
+                        input = EOinput.getInstance();
                         final String line = input.getLine();
                         return new Data.ToPhi(line);
                     } catch (final NoSuchElementException exception) {

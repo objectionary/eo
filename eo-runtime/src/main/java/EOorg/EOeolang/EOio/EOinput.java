@@ -35,13 +35,13 @@ import java.util.Scanner;
 /**
  * All system inputs.
  *
- * @since 0.27.0
+ * @since 0.28.0
  */
-public final class Input {
+public final class EOinput {
     /**
-     * Input.
+     * Default input.
      */
-    private static Input instance;
+    private static EOinput instance;
 
     /**
      * Scanner.
@@ -51,7 +51,7 @@ public final class Input {
     /**
      * Ctor.
      */
-    private Input() {
+    private EOinput() {
         this.scanner = new Scanner(System.in);
     }
 
@@ -59,9 +59,9 @@ public final class Input {
      * GetInstance.
      * @return The pointer to input
      */
-    public static synchronized Input getInstance() {
+    public static synchronized EOinput getInstance() {
         if (instance == null) {
-            instance = new Input();
+            instance = new EOinput();
         }
         return instance;
     }

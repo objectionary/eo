@@ -67,8 +67,8 @@ public final class EOstdinTest {
     @AfterEach
     @ReadsStdIo
     public void clearInput() {
-        final Input input;
-        input = Input.getInstance();
+        final EOinput input;
+        input = EOinput.getInstance();
         try {
             final Field prop = input.getClass().getDeclaredField("instance");
             prop.setAccessible(true);
