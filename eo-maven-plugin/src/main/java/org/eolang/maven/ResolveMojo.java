@@ -104,10 +104,19 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             final String coords = ResolveMojo.coords(dep);
-            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
-                .resolve(dep.getGroupId())
-                .resolve(dep.getArtifactId())
-                .resolve(dep.getVersion());
+            final Path dest;
+            if (dep.getClassifier().isEmpty()) {
+                dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
+                    .resolve(dep.getGroupId())
+                    .resolve(dep.getArtifactId())
+                    .resolve(dep.getVersion());
+            } else {
+                dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
+                    .resolve(dep.getGroupId())
+                    .resolve(dep.getArtifactId())
+                    .resolve(dep.getClassifier())
+                    .resolve(dep.getVersion());
+            }
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
@@ -252,8 +261,13 @@ public final class ResolveMojo extends SafeMojo {
             final Dependency dependency = new Dependency();
             dependency.setGroupId(parts[0]);
             dependency.setArtifactId(parts[1]);
-            dependency.setVersion(parts[2]);
-            dependency.setClassifier("");
+            if (parts.length == 3) {
+                dependency.setVersion(parts[2]);
+                dependency.setClassifier("");
+            } else {
+                dependency.setClassifier(parts[2]);
+                dependency.setVersion(parts[3]);
+            }
             dependency.setScope("transpile");
             dep = Optional.of(dependency);
         } else {
@@ -273,10 +287,19 @@ public final class ResolveMojo extends SafeMojo {
      * @return Coords
      */
     private static String coords(final Dependency dep) {
-        return String.format(
-            "%s:%s:%s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
-        );
+        String ret = "";
+        if (dep.getClassifier().isEmpty()) {
+            ret = String.format(
+                "%s:%s:%s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+            );
+        } else {
+            ret = String.format(
+                "%s:%s:%s:%s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion()
+            );
+        }
+        return ret;
     }
 
     /**

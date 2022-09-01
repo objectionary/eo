@@ -100,6 +100,7 @@ public final class Central implements BiConsumer<Dependency, Path> {
                             "artifactItem",
                             MojoExecutor.element("groupId", dep.getGroupId()),
                             MojoExecutor.element("artifactId", dep.getArtifactId()),
+                            MojoExecutor.element("classifier", dep.getClassifier()),
                             MojoExecutor.element("version", dep.getVersion()),
                             MojoExecutor.element("outputDirectory", path.toString())
                         )
@@ -115,8 +116,8 @@ public final class Central implements BiConsumer<Dependency, Path> {
             throw new IllegalStateException(ex);
         }
         Logger.info(
-            this, "%s unpacked to %s:%s:%s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
+            this, "%s unpacked to %s:%s:%s:%s",
+            dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(),
             Save.rel(path)
         );
     }
