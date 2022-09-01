@@ -36,7 +36,7 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[not(eo:abstract(.)) and @base and not(starts-with(@base, '.')) and o]" mode="gmi" priority="1">
+  <xsl:template match="o[not(eo:abstract(.)) and @base and not(starts-with(@base, '.')) and (o or @data)]" mode="gmi" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'COPY'"/>
       <xsl:with-param name="args" as="item()*">

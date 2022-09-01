@@ -41,7 +41,11 @@ SOFTWARE.
       <xsl:with-param name="name" select="'DATA'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:variable name="v">
+            <xsl:value-of select="eo:vertex(.)"/>
+            <xsl:text>.copy</xsl:text>
+          </xsl:variable>
+          <xsl:value-of select="$v"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:value-of select="concat('data:', @data, '/', text())"/>

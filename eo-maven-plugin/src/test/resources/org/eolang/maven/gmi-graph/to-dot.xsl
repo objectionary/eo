@@ -41,6 +41,8 @@ SOFTWARE.
       <xsl:element name="dot">
         <xsl:text>digraph {</xsl:text>
         <xsl:value-of select="$EOL"/>
+        <xsl:text>  node [fixedsize=true,width=1,fontname="Arial"];</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:apply-templates select="//graph/v" mode="dot"/>
         <xsl:apply-templates select="//graph/v/e" mode="dot"/>
         <xsl:text>}</xsl:text>
@@ -50,19 +52,20 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="v" mode="dot">
     <xsl:variable name="v" select="."/>
+    <xsl:text>  </xsl:text>
     <xsl:value-of select="eo:node($v/@id)"/>
     <xsl:text>[shape=</xsl:text>
     <xsl:choose>
       <xsl:when test="lambda">
         <xsl:text>doublecircle</xsl:text>
       </xsl:when>
-      <xsl:when test="data">
-        <xsl:text>square</xsl:text>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:text>circle</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="data">
+      <xsl:text>,color="#f96900"</xsl:text>
+    </xsl:if>
     <xsl:text>,label="</xsl:text>
     <xsl:choose>
       <xsl:when test="@id='ν0'">
@@ -82,6 +85,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="e[@title != '𝜎']" mode="dot">
     <xsl:variable name="e" select="."/>
+    <xsl:text>  </xsl:text>
     <xsl:value-of select="eo:node($e/parent::v/@id)"/>
     <xsl:text> -&gt; </xsl:text>
     <xsl:value-of select="eo:node($e/@to)"/>
@@ -94,7 +98,7 @@ SOFTWARE.
         <xsl:text>,style=dashed</xsl:text>
       </xsl:when>
       <xsl:when test="@title = 'ρ' or @title = '𝜎'">
-        <xsl:text>,color=gray</xsl:text>
+        <xsl:text>,color=gray,fontcolor=gray</xsl:text>
       </xsl:when>
     </xsl:choose>
     <xsl:text>];</xsl:text>

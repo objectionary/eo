@@ -62,7 +62,7 @@ SOFTWARE.
     <xsl:variable name="ret">
       <xsl:choose>
         <xsl:when test="$a = '@'">
-          <xsl:text>φ</xsl:text>
+          <xsl:text>𝜑</xsl:text>
         </xsl:when>
         <xsl:when test="$a = 'Q'">
           <xsl:text>Φ</xsl:text>

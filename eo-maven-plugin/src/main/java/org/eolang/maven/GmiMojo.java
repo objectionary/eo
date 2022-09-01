@@ -147,6 +147,7 @@ public final class GmiMojo extends SafeMojo {
      */
     private void render(final Path xmir, final Path gmi) throws IOException {
         final XML before = new XMLDocument(xmir);
+        Logger.debug(this, "XML before translating to GMI:\n%s", before);
         final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         new Save(
             new XSLDocument(

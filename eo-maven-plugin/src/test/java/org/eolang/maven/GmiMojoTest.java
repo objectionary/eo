@@ -79,6 +79,7 @@ final class GmiMojoTest {
             String.format("%s is skipped", pack)
         );
         final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
+        Logger.debug(this, "Xembly:\n%s", xembly);
         final XML pre = new XMLDocument(
             new Xembler(
                 new Directives()
@@ -263,17 +264,26 @@ final class GmiMojoTest {
                     continue;
                 }
                 if (sub.startsWith("Δ=")) {
+                    if (node.nodes("data").isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no data at %s",
+                                vertex
+                            )
+                        );
+                    }
+                    final String data = sub.substring(2).replace('-', ' ');
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '%s']/text()",
-                            sub.substring(1).replace('-', ' ')
+                            "data[text() = '%s']/text()", data
+
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Can't find data '%s' while staying at %s",
-                                sub, vertex
+                                "Data '%s' at '%s' is not equal to '%s'",
+                                node.xpath("data/text()").get(0), vertex, data
                             )
                         );
                     }
