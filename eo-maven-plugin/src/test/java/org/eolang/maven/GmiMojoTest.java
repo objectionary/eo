@@ -228,7 +228,7 @@ final class GmiMojoTest {
             boolean matches = true;
             try {
                 this.matches(item);
-            } catch (IllegalArgumentException ex) {
+            } catch (final IllegalArgumentException ex) {
                 matches = false;
                 this.failure = ex.getMessage();
             }
@@ -238,7 +238,10 @@ final class GmiMojoTest {
         /**
          * Check and throw if fails.
          * @param item The path to check
+         * @checkstyle CyclomaticComplexityCheck (10 lines)
+         * @checkstyle NPathComplexityCheck (10 lines)
          */
+        @SuppressWarnings("PMD.NPathComplexity")
         private void matches(final String item) {
             String vertex = "ν0";
             for (final String sub : item.split(" ")) {
@@ -276,7 +279,6 @@ final class GmiMojoTest {
                     final boolean matches = !node.xpath(
                         String.format(
                             "data[text() = '%s']/text()", data
-
                         )
                     ).isEmpty();
                     if (!matches) {
