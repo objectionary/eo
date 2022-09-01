@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
@@ -46,9 +45,6 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
-import org.cactoos.text.TextOf;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -70,6 +66,28 @@ public final class GmiMojo extends SafeMojo {
      * The directory where to save GMI to.
      */
     public static final String DIR = "gmi";
+
+    /**
+     * GMI to text.
+     */
+    private static final Train<Shift> TO_TEXT = new TrLogged(
+        new TrClasspath<>(
+            new TrDefault<>(),
+            "/org/eolang/maven/gmi-to-text.xsl"
+        ).back(),
+        GmiMojo.class
+    );
+
+    /**
+     * GMI to Xembly.
+     */
+    private static final Train<Shift> TO_XEMBLY = new TrLogged(
+        new TrClasspath<>(
+            new TrDefault<>(),
+            "/org/eolang/maven/gmi-to-xembly.xsl"
+        ).back(),
+        GmiMojo.class
+    );
 
     /**
      * The train that generates GMI.
@@ -150,27 +168,11 @@ public final class GmiMojo extends SafeMojo {
         Logger.debug(this, "XML before translating to GMI:\n%s", before);
         final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         new Save(
-            new XSLDocument(
-                new IoCheckedText(
-                    new TextOf(
-                        new ResourceOf(
-                            "org/eolang/maven/gmi-to-text.xsl"
-                        )
-                    )
-                ).asString()
-            ).applyTo(after),
+            new Xsline(GmiMojo.TO_TEXT).pass(after).xpath("/text/text()").get(0),
             gmi
         ).save();
         new Save(
-            new XSLDocument(
-                new IoCheckedText(
-                    new TextOf(
-                        new ResourceOf(
-                            "org/eolang/maven/gmi-to-xembly.xsl"
-                        )
-                    )
-                ).asString()
-            ).applyTo(after),
+            new Xsline(GmiMojo.TO_XEMBLY).pass(after).xpath("/xembly/text()").get(0),
             gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
         ).save();
         new Save(

@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="gmi-to-xembly" version="2.0">
-  <xsl:output encoding="UTF-8" method="text"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="EOL">
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
@@ -32,7 +32,9 @@ SOFTWARE.
     <xsl:value-of select="'  '"/>
   </xsl:variable>
   <xsl:template match="/gmi">
-    <xsl:apply-templates select="i"/>
+    <xsl:element name="xembly">
+      <xsl:apply-templates select="i"/>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="i[@name='ADD']">
     <xsl:text>XPATH "//graph/v[@id='</xsl:text>
