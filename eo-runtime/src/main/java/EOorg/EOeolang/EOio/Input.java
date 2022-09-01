@@ -25,7 +25,7 @@
 /**
  * EO org.eolang.io package.
  *
- * @since 0.27.0
+ * @since 0.28.0
  * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang.EOio;
@@ -37,11 +37,11 @@ import java.util.Scanner;
  *
  * @since 0.28.0
  */
-public final class EOinput {
+public final class Input {
     /**
      * Default input.
      */
-    private static EOinput instance;
+    private static Input instance;
 
     /**
      * Scanner.
@@ -51,7 +51,7 @@ public final class EOinput {
     /**
      * Ctor.
      */
-    private EOinput() {
+    private Input() {
         this.scanner = new Scanner(System.in);
     }
 
@@ -59,9 +59,9 @@ public final class EOinput {
      * GetInstance.
      * @return The pointer to input
      */
-    public static synchronized EOinput getInstance() {
+    public static synchronized Input getInstance() {
         if (instance == null) {
-            instance = new EOinput();
+            instance = new Input();
         }
         return instance;
     }

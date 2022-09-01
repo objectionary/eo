@@ -67,16 +67,17 @@ public final class EOstdinTest {
     @AfterEach
     @ReadsStdIo
     public void clearInput() {
-        final EOinput input;
-        input = EOinput.getInstance();
+        final Input input = Input.getInstance();
         try {
             final Field prop = input.getClass().getDeclaredField("instance");
             prop.setAccessible(true);
             prop.set(input, null);
         } catch (final NoSuchFieldException exception) {
             exception.printStackTrace();
+            throw new RuntimeException(exception);
         } catch (final IllegalAccessException exception) {
             exception.printStackTrace();
+            throw new RuntimeException(exception);
         }
     }
 
@@ -104,7 +105,7 @@ public final class EOstdinTest {
         );
     }
 
-    @StdIo({"this is a test input!", "nanother line", "yet another line"})
+    @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
     public void nextLineMultiLineTest(final StdIn stdin) {
         final String expected = "this is a test input!";

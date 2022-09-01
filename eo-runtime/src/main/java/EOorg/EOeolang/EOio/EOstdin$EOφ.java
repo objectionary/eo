@@ -59,8 +59,7 @@ public class EOstdin$EOφ extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    final EOinput input;
-                    input = EOinput.getInstance();
+                    final Input input = Input.getInstance();
                     final String line = input.getAllLines();
                     return new Data.ToPhi(line);
                 }
