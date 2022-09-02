@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOarray;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -101,4 +102,36 @@ final class PhiTest {
             Matchers.equalTo("123:56")
         );
     }
+
+    @Test
+    void emptyArrayAsData() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhCopy(
+                    new EOarray(Phi.Φ)
+                )
+            ).take(Phi[].class),
+            Matchers.emptyArray()
+        );
+    }
+
+    @Test
+    void nonEmptyArrayAsData() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhCopy(
+                            new EOarray(Phi.Φ)
+                        ),
+                        "with"
+                    ),
+                    0,
+                    new Data.Value<>(1L)
+                )
+            ).take(Phi[].class),
+            Matchers.not(Matchers.emptyArray())
+        );
+    }
 }
+

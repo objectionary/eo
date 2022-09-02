@@ -26,14 +26,7 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# @todo #1060:30min The method .empty is not nessesary.
-#  Make the create of array possible just by using
-#  the object name, i.e `array > a` and remove this
-#  method.
 [] > array
-  # Create empty array
-  [] > empty
-    (*) > @
 
   # Obtain the length of the array.
   [] > length /int

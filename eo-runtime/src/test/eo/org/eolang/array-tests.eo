@@ -185,11 +185,11 @@
 
 [] > gets-lengths-of-empty-array-keyword
   assert-that > @
-    array.empty.length
+    array.length
     $.equal-to 0
 
 [] > array-fluent-with-indented-keyword
-  array.empty
+  array
   .with 1
   .with 2
   .with 3 > a

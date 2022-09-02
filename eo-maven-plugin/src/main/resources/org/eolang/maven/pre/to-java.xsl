@@ -180,9 +180,13 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
+    <xsl:if test="$literal-objects[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree());</xsl:text>
+    </xsl:if>
+    <xsl:if test="$type='org.eolang.array'">
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>this.add("Δ", new AtFallback(new Data.Value&lt;&gt;(new Phi[]{})));</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
