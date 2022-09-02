@@ -164,7 +164,7 @@ final class ParseMojoTest {
                 .with("foreignFormat", "csv")
                 .execute()
         );
-        Assertions.assertEquals(exception.getMessage(), String.format("Failed to parse %s", src));
+        Assertions.assertEquals(String.format("Failed to parse %s", src), exception.getMessage());
     }
 
     @Test

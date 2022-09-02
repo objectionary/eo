@@ -77,6 +77,10 @@ public final class MarkMojo extends SafeMojo {
      * @param version The version of the JAR
      * @return How many registered
      * @throws IOException If fails
+     * @todo #1062:30min The mojo doesn't update program version if it exists.
+     *  This causes versions like `*.*.*` and `0.0.0` are not updated and remain
+     *  in foreign catalog. This needs to be updated: version must be overridden to
+     *  correct value.
      */
     private int scan(final Path dir, final String version) throws IOException {
         final Unplace unplace = new Unplace(dir);

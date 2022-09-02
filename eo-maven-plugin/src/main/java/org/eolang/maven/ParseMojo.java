@@ -38,6 +38,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -75,7 +76,7 @@ public final class ParseMojo extends SafeMojo {
     private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo/parsed");
 
     /**
-     * Whether we should fail on error.
+     * Whether we should fail on parsing error.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.23.0
      */
@@ -127,8 +128,14 @@ public final class ParseMojo extends SafeMojo {
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
+        final String version;
+        if (tojo.exists(AssembleMojo.ATTR_VERSION)) {
+            version = tojo.get(AssembleMojo.ATTR_VERSION);
+        } else {
+            version = ParseMojo.ZERO;
+        }
         final Footprint footprint = new Footprint(
-            ParseMojo.safeHash(ParseMojo.verSafe(tojo)),
+            version,
             this.targetDir.toPath().resolve(ParseMojo.DIR),
             this.cache
         );
@@ -138,19 +145,11 @@ public final class ParseMojo extends SafeMojo {
                 AssembleMojo.ATTR_XMIR,
                 () -> {
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    try {
-                        new Syntax(
-                            name,
-                            new InputOf(source),
-                            new OutputTo(baos)
-                        ).parse();
-                        // @checkstyle IllegalCatchCheck (1 line)
-                    } catch (final Exception ex) {
-                        throw new IllegalArgumentException(
-                            String.format("Failed to parse %s", source),
-                            ex
-                        );
-                    }
+                    new Syntax(
+                        name,
+                        new InputOf(source),
+                        new OutputTo(baos)
+                    ).parse();
                     return new XMLDocument(
                         new Xembler(
                             new Directives().xpath("/program").attr(
@@ -161,60 +160,28 @@ public final class ParseMojo extends SafeMojo {
                     ).toString();
                 }
             );
-            final Path target = new Place(name).make(
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                TranspileMojo.EXT
-            );
-            tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
-            Logger.debug(
-                this, "Parsed %s to %s",
-                Save.rel(source), Save.rel(target)
-            );
-        } catch (final IllegalArgumentException ex) {
-            if (this.failOnError || !ex.getMessage().contains("Failed to parse")) {
-                throw ex;
+        } catch (final ParsingException ex) {
+            if (this.failOnError) {
+                throw new IllegalArgumentException(
+                    String.format("Failed to parse %s", source),
+                    ex
+                );
             }
             Logger.warn(
-                this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
-                source.toString(),
+                this, "Parsing was skipped due to failOnError=false. In file %s with error: %s",
+                source,
                 ex.getMessage()
             );
+            return;
         }
-    }
-
-    /**
-     * Safely extract version attribute.
-     * @param tojo Source tojo
-     * @return Version value or empty string if attribute doesn't exist.
-     */
-    private static String verSafe(final Tojo tojo) {
-        String ver = ParseMojo.ZERO;
-        if (tojo.exists(AssembleMojo.ATTR_VERSION)) {
-            ver = tojo.get(AssembleMojo.ATTR_VERSION);
-        }
-        return ver;
-    }
-
-    /**
-     * Get hash for the version.
-     * @param ver Version to tag
-     * @return Version tag
-     * @todo #1062:30mins Lets introduce new method `HashOfTag.contains()`
-     *  and get rid of exception-driven workflow. We can use new method
-     *  to check the existence of tag to be hashed and behave accordingly.
-     */
-    private static String safeHash(final String ver) {
-        String hash;
-        try {
-            hash = new HashOfTag(ver).narrow();
-        } catch (final IllegalArgumentException ex) {
-            Logger.debug(
-                ParseMojo.class,
-                "Unable to get hash for ver %s",
-                ver
-            );
-            hash = ver;
-        }
-        return hash;
+        final Path target = new Place(name).make(
+            this.targetDir.toPath().resolve(ParseMojo.DIR),
+            TranspileMojo.EXT
+        );
+        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
+        Logger.debug(
+            this, "Parsed %s to %s",
+            Save.rel(source), Save.rel(target)
+        );
     }
 }

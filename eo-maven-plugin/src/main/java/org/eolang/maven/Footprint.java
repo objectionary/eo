@@ -26,7 +26,8 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Supplier;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 
@@ -109,7 +110,7 @@ public class Footprint {
      * @param content File content
      * @throws IOException In case of IO issues
      */
-    public void save(final String program, final String ext, final Supplier<String> content)
+    public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
         final Path cached = new Place(program).make(this.cache.resolve(this.safeVer()), ext);
         final Path target = new Place(program).make(this.main, ext);
@@ -122,7 +123,7 @@ public class Footprint {
             );
             text = this.content(program, ext);
         } else {
-            text = content.get();
+            text = new IoChecked<>(content).value();
             if (Footprint.versioned(this.ver)) {
                 new Save(
                     text,
