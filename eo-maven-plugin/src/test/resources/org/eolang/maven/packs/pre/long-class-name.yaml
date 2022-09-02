@@ -1,0 +1,94 @@
+xsls:
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EO59_58 extends PhDefault')]
+  - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EOblah2$EOblah3$EOblah4$EOblah5$EOblah6$EOblah7$EOblah8$EOblah9$EOblah10$EOblah11$EOblah12$EOblah13$EOblah14$EOblah15$EOblah16$EOblah17$EOblah18$EOblah19$EOblah20$EOblah21$EOblah22$EOblah23$EOblah24$EOblah25$EOblah26$EOblah27 extends PhDefault')]
+eo: |
+  [] > test
+    blah0 > @
+    [] > blah0
+      blah1 > @
+      [] > blah1
+        blah2 > @
+        [] > blah2
+          blah3 > @
+          [] > blah3
+            blah4 > @
+            [] > blah4
+              blah5 > @
+              [] > blah5
+                blah6 > @
+                [] > blah6
+                  blah7 > @
+                  [] > blah7
+                    blah8 > @
+                    [] > blah8
+                      blah9 > @
+                      [] > blah9
+                        blah10 > @
+                        [] > blah10
+                          blah11 > @
+                          [] > blah11
+                            blah12 > @
+                            [] > blah12
+                              blah13 > @
+                              [] > blah13
+                                blah14 > @
+                                [] > blah14
+                                  blah15 > @
+                                  [] > blah15
+                                    blah16 > @
+                                    [] > blah16
+                                      blah17 > @
+                                      [] > blah17
+                                        blah18 > @
+                                        [] > blah18
+                                          blah19 > @
+                                          [] > blah19
+                                            blah20 > @
+                                            [] > blah20
+                                              blah21 > @
+                                              [] > blah21
+                                                blah22 > @
+                                                [] > blah22
+                                                  blah23 > @
+                                                  [] > blah23
+                                                    blah24 > @
+                                                    [] > blah24
+                                                      blah25 > @
+                                                      [] > blah25
+                                                        blah26 > @
+                                                        [] > blah26
+                                                          blah27 > @
+                                                          [] > blah27
+                                                            blah28 > @
+                                                            [] > blah28
+                                                              blah29 > @
+                                                              [] > blah29
+                                                                blah30 > @
+                                                                [] > blah30
+                                                                  blah31 > @
+                                                                  [] > blah31
+                                                                    blah32 > @
+                                                                    [] > blah32
+                                                                      blah33 > @
+                                                                      [] > blah33
+                                                                        blah34 > @
+                                                                        [] > blah34
+                                                                          blah35 > @
+                                                                          [] > blah35
+                                                                            blah36 > @
+                                                                            [] > blah36
+                                                                              blah37 > @
+                                                                              [] > blah37
+                                                                                blah38 > @
+                                                                                [] > blah38
+                                                                                  blah39 > @
+                                                                                  [] > blah39
+                                                                                    TRUE > @
