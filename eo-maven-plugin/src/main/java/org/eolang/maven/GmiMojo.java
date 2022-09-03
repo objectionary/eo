@@ -214,7 +214,7 @@ public final class GmiMojo extends SafeMojo {
             new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
             gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
         ).save();
-        Logger.debug(
+        Logger.info(
             this, "GMI for %s saved to %s (%s chars)",
             Save.rel(xmir), Save.rel(gmi), Files.size(gmi)
         );
