@@ -136,6 +136,17 @@ public final class GmiMojo extends SafeMojo {
     );
 
     /**
+     * Shall we generate .xml files with GMIs?
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.generateGmiXmlFiles",
+        defaultValue = "false"
+    )
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean generateGmiXmlFiles;
+
+    /**
      * Shall we generate .xe files with Xembly instructions graph?
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -231,10 +242,12 @@ public final class GmiMojo extends SafeMojo {
             .xpath("/text/text()")
             .get(0);
         new Save(instructions, gmi).save();
-        new Save(
-            after.toString(),
-            gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
-        ).save();
+        if (this.generateGmiXmlFiles) {
+            new Save(
+                after.toString(),
+                gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
+            ).save();
+        }
         if (this.generateXemblyFiles) {
             final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
                 .pass(after)
