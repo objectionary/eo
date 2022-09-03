@@ -76,7 +76,8 @@ public final class OptimizeMojo extends SafeMojo {
         "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/optimize/fix-missed-names.xsl",
         "/org/eolang/parser/add-refs.xsl",
-        "/org/eolang/parser/errors/broken-refs.xsl"
+        "/org/eolang/parser/errors/broken-refs.xsl",
+        "/org/eolang/parser/optimize/constant-folding.xsl"
     ).back();
 
     /**
