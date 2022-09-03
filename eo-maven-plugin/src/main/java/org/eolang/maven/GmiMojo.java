@@ -43,6 +43,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -134,8 +135,51 @@ public final class GmiMojo extends SafeMojo {
         new StSchema("/org/eolang/maven/gmi/after.xsd")
     );
 
+    /**
+     * Shall we generate .xe files with Xembly instructions graph?
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.generateXemblyFiles",
+        defaultValue = "false"
+    )
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean generateXemblyFiles;
+
+    /**
+     * Shall we generate .graph files with XML graph?
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.generateGraphFiles",
+        defaultValue = "false"
+    )
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean generateGraphFiles;
+
+    /**
+     * Shall we generate .dot files with DOT language graph commands?
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.generateDotFiles",
+        defaultValue = "false"
+    )
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean generateDotFiles;
+
     @Override
     public void exec() throws IOException {
+        if (this.generateGraphFiles && !this.generateXemblyFiles) {
+            throw new IllegalStateException(
+                "Setting generateGraphFiles and not setting generateXemblyFiles has no effect because .graph files require .xe files"
+            );
+        }
+        if (this.generateDotFiles && !this.generateGraphFiles) {
+            throw new IllegalStateException(
+                "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
+            );
+        }
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
@@ -191,37 +235,53 @@ public final class GmiMojo extends SafeMojo {
             after.toString(),
             gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
         ).save();
-        final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
-            .pass(after)
-            .xpath("/xembly/text()").get(0);
-        new Save(
-            xembly,
-            gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
-        ).save();
-        final XML graph = new XMLDocument(
-            new Xembler(
-                new Directives()
-                    .add("test")
-                    .add("graph")
-                    .add("v")
-                    .attr("id", "ν0")
-                    .append(new Directives(xembly))
-            ).domQuietly()
-        );
-        new Save(
-            graph.toString(),
-            gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
-        ).save();
-        new Save(
-            new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
-            gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
-        ).save();
+        if (this.generateXemblyFiles) {
+            final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
+                .pass(after)
+                .xpath("/xembly/text()").get(0);
+            new Save(
+                xembly,
+                gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
+            ).save();
+            this.makeGraph(xembly, gmi);
+        }
         final int total = instructions.split("\n").length;
         Logger.info(
             this, "GMI for %s saved to %s (%d instructions)",
             Save.rel(xmir), Save.rel(gmi), total
         );
         return total;
+    }
+
+    /**
+     * Make graph.
+     * @param xembly The Xembly script
+     * @param gmi The path of GMI file
+     * @throws IOException If fails
+     */
+    private void makeGraph(final String xembly, final Path gmi) throws IOException {
+        if (this.generateGraphFiles) {
+            final XML graph = new XMLDocument(
+                new Xembler(
+                    new Directives()
+                        .add("test")
+                        .add("graph")
+                        .add("v")
+                        .attr("id", "ν0")
+                        .append(new Directives(xembly))
+                ).domQuietly()
+            );
+            new Save(
+                graph.toString(),
+                gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
+            ).save();
+            if (this.generateDotFiles) {
+                new Save(
+                    new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
+                    gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
+                ).save();
+            }
+        }
     }
 
     /**

@@ -136,6 +136,9 @@ final class GmiMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(GmiMojo.class)
+            .with("generateXemblyFiles", true)
+            .with("generateGraphFiles", true)
+            .with("generateDotFiles", true)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
