@@ -62,7 +62,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Identity of it (the ID of the vertex).
      */
-    protected int vertex;
+    private int vertex;
 
     /**
      * Order of their names.
@@ -275,6 +275,15 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.order.add(name);
         }
         this.attrs.put(name, attr);
+    }
+
+    /**
+     * Updates vertex.
+     *
+     * @param vrtx The updated vertex
+     */
+    protected void vertexUpdate(final int vrtx) {
+        this.vertex = vrtx;
     }
 
     /**
