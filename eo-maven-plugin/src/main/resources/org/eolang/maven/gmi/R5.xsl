@@ -22,7 +22,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R3" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R7" version="2.0">
+  <!--
+  Here we break hard links from parents to their kids and make
+  COPY of kids.
+  -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/gmi">
@@ -31,41 +36,35 @@ SOFTWARE.
       <xsl:apply-templates select="//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[ancestor::o[not(@abstract)] or @base]" mode="gmi" priority="1">
+  <xsl:template match="o[not(eo:abstract(.)) and @base and not(starts-with(@base, '.')) and (o or @data)]" mode="gmi" priority="1">
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'REF'"/>
+      <xsl:with-param name="name" select="'COPY'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:edge(ancestor::o[1], .)"/>
+          <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(ancestor::o[1])"/>
+          <xsl:variable name="v">
+            <xsl:value-of select="eo:vertex(.)"/>
+            <xsl:text>.copy</xsl:text>
+          </xsl:variable>
+          <xsl:value-of select="$v"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:choose>
-            <xsl:when test="@name">
-              <xsl:value-of select="@name"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:variable name="r">
-                <xsl:text>α</xsl:text>
-                <xsl:value-of select="count(preceding-sibling::o)"/>
-              </xsl:variable>
-              <xsl:value-of select="$r"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:variable name="e">
+            <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
+            <xsl:text>.copy</xsl:text>
+          </xsl:variable>
+          <xsl:value-of select="$e"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R3] Bound attribute</xsl:text>
+        <xsl:text>[R5] This is a copy</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
   <xsl:template match="o" mode="gmi">
-    <!-- ignore it -->
+    <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

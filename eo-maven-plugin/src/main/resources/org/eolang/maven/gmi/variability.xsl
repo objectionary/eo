@@ -22,32 +22,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="gmi-to-text" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="variability" version="2.0">
+  <!--
+  For each element <a/> that has vertex or edge absolute numbers
+  we add a dollar sign, to indicate that it's a variable.
+  -->
+  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="EOL">
-    <xsl:value-of select="'&#10;'"/>
-  </xsl:variable>
-  <xsl:template match="/gmi">
-    <xsl:element name="text">
-      <xsl:apply-templates select="i"/>
-    </xsl:element>
-  </xsl:template>
-  <xsl:template match="i">
-    <xsl:value-of select="@name"/>
-    <xsl:text>(</xsl:text>
-    <xsl:for-each select="a">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
+  <xsl:template match="/gmi/i/a[. != 'ν0' and @prefix = 'vertex' or @prefix = 'edge']">
+    <xsl:copy>
+      <xsl:apply-templates select="node() except text()|@*"/>
+      <xsl:text>$</xsl:text>
       <xsl:value-of select="."/>
-      <xsl:text>"</xsl:text>
-    </xsl:for-each>
-    <xsl:text>);</xsl:text>
-    <xsl:if test="c">
-      <xsl:text> # </xsl:text>
-      <xsl:value-of select="c"/>
-    </xsl:if>
-    <xsl:value-of select="$EOL"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*" mode="#default">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

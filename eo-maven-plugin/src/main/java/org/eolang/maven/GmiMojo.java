@@ -26,13 +26,15 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StLambda;
+import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
@@ -43,9 +45,8 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
-import org.cactoos.text.TextOf;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Convert XMIR to GMI.
@@ -66,6 +67,60 @@ public final class GmiMojo extends SafeMojo {
      */
     public static final String DIR = "gmi";
 
+    /**
+     * GMI to text.
+     */
+    private static final Train<Shift> TO_TEXT = new TrLogged(
+        new TrClasspath<>(
+            new TrDefault<>(),
+            "/org/eolang/maven/gmi-to-text.xsl"
+        ).back(),
+        GmiMojo.class
+    );
+
+    /**
+     * GMI to Xembly.
+     */
+    private static final Train<Shift> TO_XEMBLY = new TrLogged(
+        new TrClasspath<>(
+            new TrDefault<>(),
+            "/org/eolang/maven/gmi-to-xembly.xsl"
+        ).back(),
+        GmiMojo.class
+    );
+
+    /**
+     * The train that generates GMI.
+     */
+    private static final Train<Shift> TRAIN = new TrWith(
+        new TrLogged(
+            new TrClasspath<>(
+                new TrDefault<>(),
+                "/org/eolang/maven/gmi/R0.xsl",
+                "/org/eolang/maven/gmi/R1.xsl",
+                "/org/eolang/maven/gmi/R1.1.xsl",
+                "/org/eolang/maven/gmi/R4.xsl",
+                "/org/eolang/maven/gmi/R5.xsl",
+                "/org/eolang/maven/gmi/R6.xsl",
+                "/org/eolang/maven/gmi/R7.xsl",
+                "/org/eolang/maven/gmi/focus.xsl",
+                "/org/eolang/maven/gmi/rename.xsl",
+                "/org/eolang/maven/gmi/strip.xsl",
+                "/org/eolang/maven/gmi/variability.xsl"
+            ).back(),
+            GmiMojo.class
+        ),
+        new StLambda(
+            "escape-data",
+            xml -> {
+                final Node dom = xml.node();
+                GmiMojo.escape(dom);
+                return new XMLDocument(dom);
+            }
+        ),
+        new StSchema("/org/eolang/maven/gmi/after.xsd")
+    );
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
@@ -75,7 +130,7 @@ public final class GmiMojo extends SafeMojo {
         int total = 0;
         for (final Tojo tojo : tojos) {
             final Path gmi = new Place(tojo.get(Tojos.KEY)).make(home, "gmi");
-            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
@@ -109,40 +164,15 @@ public final class GmiMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void render(final Path xmir, final Path gmi) throws IOException {
-        final Train<Shift> train = new TrLogged(
-            new TrClasspath<>(
-                new TrDefault<>(),
-                "/org/eolang/maven/gmi/R0.xsl",
-                "/org/eolang/maven/gmi/R1.xsl",
-                "/org/eolang/maven/gmi/R3.xsl",
-                "/org/eolang/maven/gmi/R6.xsl"
-            ).back(),
-            GmiMojo.class
-        );
         final XML before = new XMLDocument(xmir);
-        final XML after = new Xsline(train).pass(before);
+        Logger.debug(this, "XML before translating to GMI:\n%s", before);
+        final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         new Save(
-            new XSLDocument(
-                new IoCheckedText(
-                    new TextOf(
-                        new ResourceOf(
-                            "org/eolang/maven/gmi-to-text.xsl"
-                        )
-                    )
-                ).asString()
-            ).applyTo(after),
+            new Xsline(GmiMojo.TO_TEXT).pass(after).xpath("/text/text()").get(0),
             gmi
         ).save();
         new Save(
-            new XSLDocument(
-                new IoCheckedText(
-                    new TextOf(
-                        new ResourceOf(
-                            "org/eolang/maven/gmi-to-xembly.xsl"
-                        )
-                    )
-                ).asString()
-            ).applyTo(after),
+            new Xsline(GmiMojo.TO_XEMBLY).pass(after).xpath("/xembly/text()").get(0),
             gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
         ).save();
         new Save(
@@ -153,6 +183,32 @@ public final class GmiMojo extends SafeMojo {
             this, "GMI for %s saved to %s (%s chars)",
             Save.rel(xmir), Save.rel(gmi), Files.size(gmi)
         );
+    }
+
+    /**
+     * Escape all texts in all "a" elements.
+     * @param node The node
+     */
+    private static void escape(final Node node) {
+        if ("a".equals(node.getLocalName())
+            && "data".equals(node.getAttributes().getNamedItem("prefix").getTextContent())) {
+            final String text = node.getTextContent();
+            final StringBuilder out = new StringBuilder(text.length());
+            for (final char chr : text.toCharArray()) {
+                if (chr >= ' ' && chr <= '}' && chr != '\'' && chr != '"') {
+                    out.append(chr);
+                } else {
+                    out.append("\\u").append(String.format("%04x", (int) chr));
+                }
+            }
+            node.setTextContent(out.toString());
+        }
+        if (node.hasChildNodes()) {
+            final NodeList kids = node.getChildNodes();
+            for (int idx = 0; idx < kids.getLength(); ++idx) {
+                GmiMojo.escape(kids.item(idx));
+            }
+        }
     }
 
 }

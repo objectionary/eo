@@ -22,32 +22,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="gmi-to-text" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="verify-gmi-edges" version="2.0">
+  <!--
+  Here we go through all edges and confirm that they have
+  relative vertices. We don't want to have an edge that departures
+  from a vertex but doesn't arrive anywhere.
+  -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="EOL">
-    <xsl:value-of select="'&#10;'"/>
-  </xsl:variable>
-  <xsl:template match="/gmi">
-    <xsl:element name="text">
-      <xsl:apply-templates select="i"/>
-    </xsl:element>
-  </xsl:template>
-  <xsl:template match="i">
-    <xsl:value-of select="@name"/>
-    <xsl:text>(</xsl:text>
-    <xsl:for-each select="a">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>"</xsl:text>
-    </xsl:for-each>
-    <xsl:text>);</xsl:text>
-    <xsl:if test="c">
-      <xsl:text> # </xsl:text>
-      <xsl:value-of select="c"/>
+  <xsl:template match="/graph/v/e">
+    <xsl:variable name="e" select="."/>
+    <xsl:if test="not(//v[@id=$e/@to])">
+      <xsl:message terminate="yes">
+        <xsl:text>The edge </xsl:text>
+        <xsl:value-of select="$e/@id"/>
+        <xsl:text> departs from </xsl:text>
+        <xsl:value-of select="$e/parent::v/@id"/>
+        <xsl:text> and points to the vertex </xsl:text>
+        <xsl:value-of select="$e/@to"/>
+        <xsl:text>; however the target vertex doesn't exist in the graph</xsl:text>
+      </xsl:message>
     </xsl:if>
-    <xsl:value-of select="$EOL"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*" mode="#default">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

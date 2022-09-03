@@ -24,11 +24,14 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -44,6 +47,7 @@ import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -70,25 +74,41 @@ final class GmiMojoTest {
                 )
             ).asString()
         );
-        final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
-        final XML graph = new XMLDocument(
-            new Xembler(new Directives(xembly)).domQuietly()
+        Assumptions.assumeTrue(
+            map.get("skip") == null,
+            String.format("%s is skipped", pack)
         );
-        Logger.info(this, "Graph:\n%s", graph);
+        final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
+        Logger.debug(this, "Xembly:\n%s", xembly);
+        final XML pre = new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .add("test")
+                    .add("graph")
+                    .add("v")
+                    .attr("id", "ν0")
+                    .append(new Directives(xembly))
+            ).domQuietly()
+        );
+        Logger.debug(this, "Graph:\n%s", pre);
+        final XML graph = new Xsline(
+            new TrLogged(
+                new TrClasspath<>(
+                    new TrDefault<>(),
+                    "/org/eolang/maven/gmi-graph/verify-edges.xsl",
+                    "/org/eolang/maven/gmi-graph/to-dot.xsl"
+                ).back(),
+                GmiMojo.class
+            )
+        ).pass(pre);
+        Logger.debug(this, "Dot:\n%s", graph.xpath("//dot/text()").get(0));
+        Logger.debug(this, "Graph:\n%s", graph);
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
                     loc,
                     new ExistsIn(graph)
-                )
-            );
-        }
-        for (final String xpath : (Iterable<String>) map.get("xpaths")) {
-            assertions.add(
-                () -> MatcherAssert.assertThat(
-                    graph,
-                    XhtmlMatchers.hasXPath(xpath)
                 )
             );
         }
@@ -152,7 +172,7 @@ final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        Logger.info(
+        Logger.debug(
             GmiMojoTest.class, "GMIs:\n  %s",
             new String(
                 Files.readAllBytes(
@@ -206,45 +226,116 @@ final class GmiMojoTest {
         @Override
         public boolean matchesSafely(final String item) {
             boolean matches = true;
-            String vertex = "v0";
+            try {
+                this.matches(item);
+            } catch (final IllegalArgumentException ex) {
+                matches = false;
+                this.failure = ex.getMessage();
+            }
+            return matches;
+        }
+
+        /**
+         * Check and throw if fails.
+         * @param item The path to check
+         * @checkstyle CyclomaticComplexityCheck (10 lines)
+         * @checkstyle NPathComplexityCheck (10 lines)
+         */
+        @SuppressWarnings("PMD.NPathComplexity")
+        private void matches(final String item) {
+            String vertex = "ν0";
             for (final String sub : item.split(" ")) {
+                final XML node = this.graph.nodes(
+                    String.format("//v[@id='%s']", vertex)
+                ).get(0);
                 if (sub.charAt(0) == '.') {
-                    final List<String> opts = this.graph.xpath(
+                    final List<String> opts = node.xpath(
                         String.format(
-                            "//v[@id='%s']/e[@title='%s']/@to",
-                            vertex, sub.substring(1)
+                            "e[@title='%s']/@to",
+                            sub.substring(1)
                         )
                     );
                     if (opts.isEmpty()) {
-                        this.failure = String.format(
-                            "Can't find path '%s' while staying at %s",
-                            sub, vertex
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Can't find path '%s' while staying at %s",
+                                sub, vertex
+                            )
                         );
-                        matches = false;
-                        break;
                     }
                     vertex = opts.get(0);
                     continue;
                 }
-                if (sub.charAt(0) == '=') {
-                    matches = !this.graph.xpath(
+                if (sub.startsWith("Δ=")) {
+                    if (node.nodes("data").isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no data at %s",
+                                vertex
+                            )
+                        );
+                    }
+                    final String data = sub.substring(2).replace('-', ' ');
+                    final boolean matches = !node.xpath(
                         String.format(
-                            "//v[@id='%s']/data[text() = '%s']/text()",
-                            vertex,
-                            sub.substring(1)
-                                .replace('-', ' ')
+                            "data[text() = '%s']/text()", data
                         )
                     ).isEmpty();
                     if (!matches) {
-                        this.failure = String.format(
-                            "Can't find data '%s' while staying at %s",
-                            sub, vertex
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Data '%s' at '%s' is not equal to '%s'",
+                                node.xpath("data/text()").get(0), vertex, data
+                            )
                         );
-                        break;
+                    }
+                    continue;
+                }
+                if (sub.startsWith("λ=")) {
+                    if (node.nodes("lambda").isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no lambda at %s",
+                                vertex
+                            )
+                        );
+                    }
+                    final String expr = sub.substring(2);
+                    final boolean matches = !this.graph.xpath(
+                        String.format(
+                            "//v[@id='%s']/lambda[text() = '%s']/text()",
+                            vertex, expr
+                        )
+                    ).isEmpty();
+                    if (!matches) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Lambda '%s' at '%s' is not equal to '%s'",
+                                node.xpath("lambda/text()").get(0), vertex, expr
+                            )
+                        );
+                    }
+                    continue;
+                }
+                if (sub.startsWith("ν=")) {
+                    final String expected = sub.substring(2);
+                    final boolean matches = vertex.equals(expected);
+                    if (!matches) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Current vertex '%s' is not '%s', as expected",
+                                vertex, expected
+                            )
+                        );
                     }
                 }
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Can't understand path element '%s' in '%s'",
+                        sub, item
+                    )
+                );
             }
-            return matches;
         }
 
     }
