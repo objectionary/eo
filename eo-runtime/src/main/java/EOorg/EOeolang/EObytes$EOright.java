@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -41,6 +40,10 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
+ * @todo #1142:30m This object can be reimplemented
+ *  in EO with help of bytes.left (and vice versa).
+ *  Remove either this class or EObytes$EOleft and
+ *  add a new object to bytes.eo.
  */
 @XmirObject(oname = "bytes.right")
 public class EObytes$EOright extends PhDefault {
