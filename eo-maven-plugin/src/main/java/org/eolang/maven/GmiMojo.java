@@ -47,6 +47,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Convert XMIR to GMI.
@@ -73,7 +75,7 @@ public final class GmiMojo extends SafeMojo {
     private static final Train<Shift> TO_TEXT = new TrLogged(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to-text.xsl"
+            "/org/eolang/maven/gmi-to/gmi-to-text.xsl"
         ).back(),
         GmiMojo.class
     );
@@ -84,7 +86,19 @@ public final class GmiMojo extends SafeMojo {
     private static final Train<Shift> TO_XEMBLY = new TrLogged(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to-xembly.xsl"
+            "/org/eolang/maven/gmi-to/gmi-to-xembly.xsl"
+        ).back(),
+        GmiMojo.class
+    );
+
+    /**
+     * Xembly to Dot.
+     */
+    private static final Train<Shift> TO_DOT = new TrLogged(
+        new TrClasspath<>(
+            new TrDefault<>(),
+            "/org/eolang/maven/gmi-to/verify-edges.xsl",
+            "/org/eolang/maven/gmi-to/to-dot.xsl"
         ).back(),
         GmiMojo.class
     );
@@ -172,12 +186,33 @@ public final class GmiMojo extends SafeMojo {
             gmi
         ).save();
         new Save(
-            new Xsline(GmiMojo.TO_XEMBLY).pass(after).xpath("/xembly/text()").get(0),
-            gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
-        ).save();
-        new Save(
             after.toString(),
             gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
+        ).save();
+        final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
+            .pass(after)
+            .xpath("/xembly/text()").get(0);
+        new Save(
+            xembly,
+            gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
+        ).save();
+        final XML graph = new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .add("test")
+                    .add("graph")
+                    .add("v")
+                    .attr("id", "ν0")
+                    .append(new Directives(xembly))
+            ).domQuietly()
+        );
+        new Save(
+            graph.toString(),
+            gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
+        ).save();
+        new Save(
+            new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
+            gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
         ).save();
         Logger.debug(
             this, "GMI for %s saved to %s (%s chars)",

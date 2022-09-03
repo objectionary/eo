@@ -23,17 +23,11 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Csv;
 import com.yegor256.tojos.MonoTojos;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrLogged;
-import com.yegor256.xsline.Xsline;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -51,8 +45,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -78,31 +70,7 @@ final class GmiMojoTest {
             map.get("skip") == null,
             String.format("%s is skipped", pack)
         );
-        final String xembly = GmiMojoTest.toXembly(map.get("eo").toString());
-        Logger.debug(this, "Xembly:\n%s", xembly);
-        final XML pre = new XMLDocument(
-            new Xembler(
-                new Directives()
-                    .add("test")
-                    .add("graph")
-                    .add("v")
-                    .attr("id", "ν0")
-                    .append(new Directives(xembly))
-            ).domQuietly()
-        );
-        Logger.debug(this, "Graph:\n%s", pre);
-        final XML graph = new Xsline(
-            new TrLogged(
-                new TrClasspath<>(
-                    new TrDefault<>(),
-                    "/org/eolang/maven/gmi-graph/verify-edges.xsl",
-                    "/org/eolang/maven/gmi-graph/to-dot.xsl"
-                ).back(),
-                GmiMojo.class
-            )
-        ).pass(pre);
-        Logger.debug(this, "Dot:\n%s", graph.xpath("//dot/text()").get(0));
-        Logger.debug(this, "Graph:\n%s", graph);
+        final XML graph = GmiMojoTest.toGraph(map.get("eo").toString());
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
@@ -142,12 +110,12 @@ final class GmiMojoTest {
     }
 
     /**
-     * Convert EO source to Xembly instructions.
+     * Convert EO source to Graph.
      * @param code Code in EO
-     * @return Xembly code in plain text
+     * @return The graph
      * @throws IOException If fails
      */
-    private static String toXembly(final String code) throws IOException {
+    private static XML toGraph(final String code) throws IOException {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("foo/main.eo");
         new Save(code, src).save();
@@ -172,24 +140,10 @@ final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        Logger.debug(
-            GmiMojoTest.class, "GMIs:\n  %s",
-            new String(
-                Files.readAllBytes(
-                    target.resolve(
-                        String.format("%s/foo/main.gmi", GmiMojo.DIR)
-                    )
-                ),
-                StandardCharsets.UTF_8
-            ).replace("\n", "\n  ")
-        );
-        return new String(
-            Files.readAllBytes(
-                target.resolve(
-                    String.format("%s/foo/main.gmi.xe", GmiMojo.DIR)
-                )
-            ),
-            StandardCharsets.UTF_8
+        return new XMLDocument(
+            target.resolve(
+                String.format("%s/foo/main.gmi.graph", GmiMojo.DIR)
+            )
         );
     }
 
