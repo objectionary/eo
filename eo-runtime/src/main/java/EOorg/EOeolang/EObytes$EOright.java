@@ -39,7 +39,7 @@ import org.eolang.XmirObject;
  * BYTES.RIGHT.
  *
  * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @checkstyle TypeNameCheck (15 lines)
  * @todo #1142:30m This object can be reimplemented
  *  in EO with help of bytes.left (and vice versa).
  *  Remove either this class or EObytes$EOleft and
