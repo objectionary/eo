@@ -37,7 +37,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Test case for packs.
  * @since 1.0
- * @todo #415:30m Test case nyi-synthetic-attributes.yaml
+ * @todo #415:30m Test case synthetic-attributes.yaml
  *  is disable. Continue to work on that issue, until
  *  the test passes. A possible solution is to
  *  introduce aliases for objects which are produced
@@ -48,19 +48,20 @@ final class PacksTest {
     @ParameterizedTest
     @MethodSource("yamlPacks")
     void testPacks(final String pack) throws Exception {
-        if (pack.startsWith("nyi-")) {
+        final CheckPack check = new CheckPack(
+            new TextOf(
+                new ResourceOf(
+                    String.format("org/eolang/parser/packs/%s", pack)
+                )
+            ).asString()
+        );
+        if (check.skip()) {
             Assumptions.abort(
                 String.format("%s is not ready", pack)
             );
         }
         MatcherAssert.assertThat(
-            new CheckPack(
-                new TextOf(
-                    new ResourceOf(
-                        String.format("org/eolang/parser/packs/%s", pack)
-                    )
-                ).asString()
-            ).failures(),
+            check.failures(),
             Matchers.empty()
         );
     }
