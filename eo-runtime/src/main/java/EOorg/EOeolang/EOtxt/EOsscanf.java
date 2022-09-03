@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,8 @@ public class EOsscanf extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
+     * @checkstyle CyclomaticComplexityCheck (75 lines)
+     * @checkstyle NestedIfDepthCheck (75 lines)
      */
     public EOsscanf(final Phi sigma) {
         super(sigma);
@@ -74,11 +76,11 @@ public class EOsscanf extends PhDefault {
                             String val = rsc.next();
                             final boolean valid =
                                 pattern.contains(String.valueOf(Conversion.PERCENT_SIGN))
-                                && pattern.length() > 1;
+                                    && pattern.length() > 1;
                             if (valid) {
                                 final int start = pattern.indexOf(Conversion.PERCENT_SIGN);
-                                final char single = pattern.charAt(start + 1);
-                                if (!Conversion.isValid(single)) {
+                                final char chr = pattern.charAt(start + 1);
+                                if (!Conversion.isValid(chr)) {
                                     throw new ExFailure(
                                         "Can't recognize format pattern: %s",
                                         pattern
@@ -86,16 +88,20 @@ public class EOsscanf extends PhDefault {
                                 }
                                 if (pattern.length() > 2) {
                                     final int end;
-                                    end = end(pattern, start);
+                                    if (start + 1 == pattern.length() - 1) {
+                                        end = 0;
+                                    } else {
+                                        end = pattern.length() - (start + 2);
+                                    }
                                     val = val.substring(start, val.length() - end);
                                 }
-                                if (Conversion.isString(single) || Conversion.isCharacter(single)) {
+                                if (Conversion.isString(chr) || Conversion.isCharacter(chr)) {
                                     buffer.add(new Data.ToPhi(val));
-                                } else if (Conversion.isInteger(single)) {
+                                } else if (Conversion.isInteger(chr)) {
                                     buffer.add(new Data.ToPhi(Long.parseLong(val)));
-                                } else if (Conversion.isFloat(single)) {
+                                } else if (Conversion.isFloat(chr)) {
                                     buffer.add(new Data.ToPhi(Double.parseDouble(val)));
-                                } else if (Conversion.isBoolean(single)) {
+                                } else if (Conversion.isBoolean(chr)) {
                                     buffer.add(new Data.ToPhi(Boolean.parseBoolean(val)));
                                 } else {
                                     throw new ExFailure(
@@ -106,7 +112,7 @@ public class EOsscanf extends PhDefault {
                             }
                         }
                     } catch (final IllegalArgumentException
-                        | NullPointerException | NoSuchElementException ex) {
+                                   | NullPointerException | NoSuchElementException ex) {
                         throw new ExFailure(ex.getMessage());
                     }
                     return new Data.ToPhi(buffer.toArray(new Phi[0]));
@@ -116,26 +122,10 @@ public class EOsscanf extends PhDefault {
     }
 
     /**
-     * Pick end by start position.
-     *
-     * @param pattern The pattern
-     * @param start The start position
-     * @return End by position
-     */
-    private static int end(final String pattern, final int start) {
-        final int end;
-        if (start + 1 == pattern.length() - 1) {
-            end = 0;
-        } else {
-            end = pattern.length() - (start + 2);
-        }
-        return end;
-    }
-
-    /**
      * Format conversion.
      * @since 0.23
      * @checkstyle JavadocVariableCheck (70 lines)
+     * @checkstyle CyclomaticComplexityCheck (75 lines)
      */
     private static class Conversion {
         // Byte, Short, Integer, Long, BigInteger
@@ -202,77 +192,136 @@ public class EOsscanf extends PhDefault {
         static final char PERCENT_SIGN        = '%';
 
         /**
-         * Validate char.
+         * Valiate char.
          * @param character Char to validate
          * @return True if valid char, otherwise false
          */
         static boolean isValid(final char character) {
-            return isGeneral(character)
-                || isNumeric(character)
-                || isLiteral(character);
+            final boolean result;
+            switch (character) {
+                case BOOLEAN:
+                case BOOLEAN_UPPER:
+                case STRING:
+                case STRING_UPPER:
+                case HASHCODE:
+                case HASHCODE_UPPER:
+                case CHARACTER:
+                case CHARACTER_UPPER:
+                case DECIMAL_INTEGER:
+                case OCTAL_INTEGER:
+                case HEXADECIMAL_INTEGER:
+                case HEXADECIMAL_INTEGER_UPPER:
+                case SCIENTIFIC:
+                case SCIENTIFIC_UPPER:
+                case GENERAL:
+                case GENERAL_UPPER:
+                case DECIMAL_FLOAT:
+                case HEXADECIMAL_FLOAT:
+                case HEXADECIMAL_FLOAT_UPPER:
+                case LINE_SEPARATOR:
+                case PERCENT_SIGN:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
 
         /**
-         * Check for an object.
+         * Check for object.
          * @param character Char to check
-         * @return True if the Conversion is applicable to all objects
+         * @return True iff the Conversion is applicable to all objects
          */
         static boolean isGeneral(final char character) {
-            return isBoolean(character)
-                || isString(character)
-                || isCharacter(character);
-        }
-
-        /**
-         * Check for boolean.
-         * @param character Char to check
-         * @return True if the Conversion is applicable to boolean
-         */
-        static boolean isBoolean(final char character) {
-            return character == BOOLEAN
-                || character == BOOLEAN_UPPER;
+            final boolean result;
+            switch (character) {
+                case BOOLEAN:
+                case BOOLEAN_UPPER:
+                case STRING:
+                case STRING_UPPER:
+                case HASHCODE:
+                case HASHCODE_UPPER:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
 
         /**
          * Check for string.
          * @param character Char to check
-         * @return True if the Conversion is applicable to string
+         * @return True iff the Conversion is applicable to string
          */
         static boolean isString(final char character) {
-            return character == STRING
-                || character == STRING_UPPER;
+            final boolean result;
+            switch (character) {
+                case STRING:
+                case STRING_UPPER:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
+        }
+
+        /**
+         * Check for boolean.
+         * @param character Char to check
+         * @return True iff the Conversion is applicable to boolean
+         */
+        static boolean isBoolean(final char character) {
+            final boolean result;
+            switch (character) {
+                case BOOLEAN:
+                case BOOLEAN_UPPER:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
 
         /**
          * Check for character.
          * @param character Char to check
-         * @return True if the Conversion is applicable to character
+         * @return True iff the Conversion is applicable to character
          */
         static boolean isCharacter(final char character) {
-            return character == CHARACTER
-                || character == CHARACTER_UPPER;
+            final boolean result;
+            switch (character) {
+                case CHARACTER:
+                case CHARACTER_UPPER:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
 
         /**
-         * Check for numeric.
+         * Check for integer.
          * @param character Char to check
-         * @return True if the Conversion does not require an argument
-         */
-        private static boolean isNumeric(final char character) {
-            return isInteger(character)
-                || isFloat(character);
-        }
-
-        /**
-         * Check for an integer.
-         * @param character Char to check
-         * @return True if the Conversion is applicable to integer
+         * @return True iff the Conversion is applicable to integer
          */
         static boolean isInteger(final char character) {
-            return character == DECIMAL_INTEGER
-                || character == OCTAL_INTEGER
-                || character == HEXADECIMAL_INTEGER
-                || character == HEXADECIMAL_INTEGER_UPPER;
+            final boolean result;
+            switch (character) {
+                case DECIMAL_INTEGER:
+                case OCTAL_INTEGER:
+                case HEXADECIMAL_INTEGER:
+                case HEXADECIMAL_INTEGER_UPPER:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
 
         /**
@@ -281,54 +330,39 @@ public class EOsscanf extends PhDefault {
          * @return True iff the Conversion is applicable to floating-point
          */
         static boolean isFloat(final char character) {
-            return character == SCIENTIFIC
-                || character == SCIENTIFIC_UPPER
-                || character == GENERAL
-                || character == GENERAL_UPPER
-                || character == DECIMAL_FLOAT
-                || character == HEXADECIMAL_FLOAT
-                || character == HEXADECIMAL_FLOAT_UPPER;
-        }
-
-        /**
-         * Check for numeric.
-         * @param character Char to check
-         * @return True if the Conversion does not require an argument
-         */
-        private static boolean isLiteral(final char character) {
-            return isHash(character)
-                || isText(character)
-                || isDate(character);
-        }
-
-        /**
-         * Check for hash.
-         * @param character Char to check
-         * @return True if the Conversion does not require an argument
-         */
-        static boolean isHash(final char character) {
-            return character == HASHCODE
-                || character == HASHCODE_UPPER;
+            final boolean result;
+            switch (character) {
+                case SCIENTIFIC:
+                case SCIENTIFIC_UPPER:
+                case GENERAL:
+                case GENERAL_UPPER:
+                case DECIMAL_FLOAT:
+                case HEXADECIMAL_FLOAT:
+                case HEXADECIMAL_FLOAT_UPPER:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
 
         /**
          * Check for text.
          * @param character Char to check
-         * @return True if the Conversion does not require an argument
+         * @return True iff the Conversion does not require an argument
          */
         static boolean isText(final char character) {
-            return character == LINE_SEPARATOR
-                || character == PERCENT_SIGN;
-        }
-
-        /**
-         * Check for date.
-         * @param character Char to check
-         * @return True if the Conversion does not require an argument
-         */
-        private static boolean isDate(final char character) {
-            return character == DATE_TIME
-                || character == DATE_TIME_UPPER;
+            final boolean result;
+            switch (character) {
+                case LINE_SEPARATOR:
+                case PERCENT_SIGN:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+            }
+            return result;
         }
     }
 }
