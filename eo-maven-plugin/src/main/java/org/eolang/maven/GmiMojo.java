@@ -186,7 +186,7 @@ public final class GmiMojo extends SafeMojo {
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
-     * @todo #1146 At the moment we don't support pattern matching, but
+     * @todo #1146:30min At the moment we don't support pattern matching, but
      *  double-star means "everything". Let's implement proper matching,
      *  where "org.eolang.int" would be matched by "org.*.int" and by
      *  "org.**". The same is true about gmiExclude, let's fix it too.
