@@ -58,10 +58,10 @@ public class EObytes$EOright extends PhDefault {
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho)
-                        .fromBytes(BigInteger.class)
-                        .shiftRight(
+                        .asBytes()
+                        .shift(
                             new Param(rho, "x").strong(Long.class).intValue()
-                        ).toByteArray()
+                        ).take()
                 )
             )
         );
