@@ -146,7 +146,7 @@ SOFTWARE.
             <configuration>
               <excludes>
                 <exclude>checkstyle:.*</exclude>
-                <exclude>checkstyle:/src/test/.*</exclude>
+<!--                <exclude>checkstyle:/src/test/.*</exclude>-->
                 <exclude>pmd:.*</exclude>
               </excludes>
             </configuration>
