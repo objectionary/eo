@@ -70,7 +70,7 @@ SOFTWARE.
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
-    <!-- Check that: -->
+    <!-- Add edge E1: -->
     <xsl:text>ADD "e";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "id", "</xsl:text>
@@ -85,6 +85,31 @@ SOFTWARE.
     <xsl:value-of select="a[4]"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
+    <!-- Add backward ρ-edge and 𝜎-edge from V2 to V1: -->
+    <xsl:variable name="i" select="."/>
+    <xsl:for-each select="('ρ', '𝜎')">
+      <xsl:text>XPATH "//graph/v[@id='</xsl:text>
+      <xsl:value-of select="$i/a[3]"/>
+      <xsl:text>' and not(e[@title='</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>'])]";</xsl:text>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>ADD "e";</xsl:text>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>ATTR "id", "</xsl:text>
+      <xsl:value-of select="$i/a[1]"/>
+      <xsl:text>.rho</xsl:text>
+      <xsl:text>"; </xsl:text>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>ATTR "to", "</xsl:text>
+      <xsl:value-of select="$i/a[2]"/>
+      <xsl:text>"; </xsl:text>
+      <xsl:value-of select="$TAB"/>
+      <xsl:text>ATTR "title", "</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>"; </xsl:text>
+      <xsl:value-of select="$EOL"/>
+    </xsl:for-each>
   </xsl:template>
   <!-- DATA(V1, BYTES) -->
   <xsl:template match="i[@name='DATA']">

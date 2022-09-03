@@ -57,11 +57,19 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
+              <goal>gmi</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
+          <gmiIncludes>
+            <o>org.eolang.error</o>
+          </gmiIncludes>
           <trackOptimizationSteps>true</trackOptimizationSteps>
+          <generateGmiXmlFiles>true</generateGmiXmlFiles>
+          <generateGraphFiles>true</generateGraphFiles>
+          <generateXemblyFiles>true</generateXemblyFiles>
+          <generateDotFiles>true</generateDotFiles>
         </configuration>
       </plugin>
       <plugin>

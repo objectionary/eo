@@ -41,10 +41,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.set.SetOf;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xembly.Directives;
@@ -179,6 +181,28 @@ public final class GmiMojo extends SafeMojo {
     @SuppressWarnings("PMD.LongVariable")
     private boolean generateDotFiles;
 
+    /**
+     * List of object names to participate in GMI generation.
+     * @implNote {@code property} attribute is omitted for collection
+     *  properties since there is no way of passing it via command line.
+     * @checkstyle MemberNameCheck (15 lines)
+     * @todo #1146 At the moment we don't support pattern matching, but
+     *  double-star means "everything". Let's implement proper matching,
+     *  where "org.eolang.int" would be matched by "org.*.int" and by
+     *  "org.**". The same is true about gmiExclude, let's fix it too.
+     */
+    @Parameter
+    private Set<String> gmiIncludes = new SetOf<>("**");
+
+    /**
+     * List of object names to participate in GMI generation.
+     * @implNote {@code property} attribute is omitted for collection
+     *  properties since there is no way of passing it via command line.
+     * @checkstyle MemberNameCheck (15 lines)
+     */
+    @Parameter
+    private Set<String> gmiExcludes = new SetOf<>();
+
     @Override
     public void exec() throws IOException {
         if (this.generateGraphFiles && !this.generateXemblyFiles) {
@@ -198,12 +222,16 @@ public final class GmiMojo extends SafeMojo {
         int total = 0;
         int instructions = 0;
         for (final Tojo tojo : tojos) {
-            final Path gmi = new Place(tojo.get(Tojos.KEY)).make(home, "gmi");
+            final String name = tojo.get(Tojos.KEY);
+            if (this.exclude(name)) {
+                continue;
+            }
+            final Path gmi = new Place(name).make(home, "gmi");
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    tojo.get(Tojos.KEY), Save.rel(gmi)
+                    name, Save.rel(gmi)
                 );
                 continue;
             }
@@ -223,6 +251,24 @@ public final class GmiMojo extends SafeMojo {
                 total, Save.rel(home), instructions
             );
         }
+    }
+
+    /**
+     * Exclude this EO program from processing?
+     * @param name The name
+     * @return TRUE if to exclude
+     */
+    private boolean exclude(final String name) {
+        boolean exclude = false;
+        if (!this.gmiIncludes.contains(name) && !this.gmiIncludes.contains("**")) {
+            Logger.debug(this, "Excluding %s due to gmiIncludes option", name);
+            exclude = true;
+        }
+        if (this.gmiExcludes.contains(name) || this.gmiExcludes.contains("**")) {
+            Logger.debug(this, "Excluding %s due to gmiExcludes option", name);
+            exclude = true;
+        }
+        return exclude;
     }
 
     /**
