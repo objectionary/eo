@@ -235,8 +235,13 @@ public final class GmiMojo extends SafeMojo {
                 );
                 continue;
             }
-            instructions += this.render(xmir, gmi);
+            final int extra = this.render(xmir, gmi);
+            instructions += extra;
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
+            Logger.info(
+                this, "GMI for %s saved to %s (%d instructions)",
+                name, Save.rel(gmi), extra
+            );
             ++total;
         }
         if (total == 0) {
@@ -304,12 +309,7 @@ public final class GmiMojo extends SafeMojo {
             ).save();
             this.makeGraph(xembly, gmi);
         }
-        final int total = instructions.split("\n").length;
-        Logger.info(
-            this, "GMI for %s saved to %s (%d instructions)",
-            Save.rel(xmir), Save.rel(gmi), total
-        );
-        return total;
+        return instructions.split("\n").length;
     }
 
     /**
