@@ -49,20 +49,28 @@ SOFTWARE.
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
+  <!-- BIND(E1, V1, V2, A) -->
   <xsl:template match="i[@name='BIND']">
-    <xsl:text>XPATH "//graph/v[@id='</xsl:text>
-    <xsl:value-of select="a[2]"/>
-    <xsl:text>']"; STRICT "1"; </xsl:text>
+    <!-- Validate the presence of vertex V2: -->
     <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[3]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
+    <!-- Validate the absence of edge E1: -->
     <xsl:text>XPATH "//v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "0"; </xsl:text>
+    <!-- Validate the absence of V1.A edge: -->
+    <xsl:text>XPATH "//v[@id='</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>']/e[@title='</xsl:text>
+    <xsl:value-of select="a[4]"/>
+    <xsl:text>']"; STRICT "0"; </xsl:text>
+    <!-- Go to V1: -->
     <xsl:text>XPATH "//graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
+    <!-- Check that: -->
     <xsl:text>ADD "e";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "id", "</xsl:text>
