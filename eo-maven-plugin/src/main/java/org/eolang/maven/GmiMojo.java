@@ -38,7 +38,6 @@ import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -142,6 +141,7 @@ public final class GmiMojo extends SafeMojo {
         );
         final Path home = this.targetDir.toPath().resolve(GmiMojo.DIR);
         int total = 0;
+        int instructions = 0;
         for (final Tojo tojo : tojos) {
             final Path gmi = new Place(tojo.get(Tojos.KEY)).make(home, "gmi");
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
@@ -152,7 +152,7 @@ public final class GmiMojo extends SafeMojo {
                 );
                 continue;
             }
-            this.render(xmir, gmi);
+            instructions += this.render(xmir, gmi);
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
             ++total;
         }
@@ -164,8 +164,8 @@ public final class GmiMojo extends SafeMojo {
             }
         } else {
             Logger.info(
-                this, "Converted %d .xmir to GMIs, saved to %s",
-                total, Save.rel(home)
+                this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
+                total, Save.rel(home), instructions
             );
         }
     }
@@ -175,16 +175,18 @@ public final class GmiMojo extends SafeMojo {
      *
      * @param xmir Location of XMIR
      * @param gmi Location of GMI
+     * @return Total number of GMI instructions generated
      * @throws IOException If fails
      */
-    private void render(final Path xmir, final Path gmi) throws IOException {
+    private int render(final Path xmir, final Path gmi) throws IOException {
         final XML before = new XMLDocument(xmir);
         Logger.debug(this, "XML before translating to GMI:\n%s", before);
         final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
-        new Save(
-            new Xsline(GmiMojo.TO_TEXT).pass(after).xpath("/text/text()").get(0),
-            gmi
-        ).save();
+        final String instructions = new Xsline(GmiMojo.TO_TEXT)
+            .pass(after)
+            .xpath("/text/text()")
+            .get(0);
+        new Save(instructions, gmi).save();
         new Save(
             after.toString(),
             gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
@@ -214,10 +216,12 @@ public final class GmiMojo extends SafeMojo {
             new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
             gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
         ).save();
+        final int total = instructions.split("\n").length;
         Logger.info(
-            this, "GMI for %s saved to %s (%s chars)",
-            Save.rel(xmir), Save.rel(gmi), Files.size(gmi)
+            this, "GMI for %s saved to %s (%d instructions)",
+            Save.rel(xmir), Save.rel(gmi), total
         );
+        return total;
     }
 
     /**
