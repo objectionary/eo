@@ -156,7 +156,6 @@ public final class TranspileMojo extends SafeMojo {
             final Path transpiled = this.transpile(
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
-            this.transpiledTojos.value().add(tojo.get(AssembleMojo.ATTR_XMIR2)).set(AssembleMojo.ATTR_TRANSPILED, transpiled);
             final Set<String> failures = new HashSet<>(3);
             if (this.failOnWarning) {
                 failures.add(Sanitized.WARNING);
@@ -165,10 +164,16 @@ public final class TranspileMojo extends SafeMojo {
                 failures.add(Sanitized.ERROR);
             }
             new Sanitized(transpiled).sanitize(failures);
-            saved += new JavaFiles(
+            ArrayList<Path> paths = new JavaFiles(
                 transpiled,
                 this.generatedDir.toPath()
-            ).save();
+            ).saveList();
+            for (Path path : paths) {
+                this.transpiledTojos.value().add(tojo.get(AssembleMojo.ATTR_XMIR2) + ": " + path)
+                    .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2))
+                    .set(AssembleMojo.ATTR_TRANSPILED, path);
+            }
+            saved += paths.size();
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",

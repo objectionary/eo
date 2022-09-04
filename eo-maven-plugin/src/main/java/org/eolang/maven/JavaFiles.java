@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import org.cactoos.text.Joined;
 
@@ -63,8 +64,8 @@ public final class JavaFiles {
      * @return Count of saved files
      * @throws IOException In case issues with I/O
      */
-    public int save() throws IOException {
-        int total = 0;
+    public ArrayList<Path> saveList() throws IOException {
+        ArrayList<Path> total = new ArrayList<>(0);
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
@@ -74,8 +75,7 @@ public final class JavaFiles {
             );
         } else {
             for (final XML java : nodes) {
-                JavaFiles.saveJava(java, this.dest);
-                ++total;
+                total.add(JavaFiles.saveJava(java, this.dest));
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
@@ -89,9 +89,10 @@ public final class JavaFiles {
      * Save this Java file.
      * @param java The XML with Java
      * @param generated Path to all files
+     * @return Path to generated file
      * @throws IOException If fails
      */
-    private static void saveJava(final XML java, final Path generated) throws IOException {
+    private static Path saveJava(final XML java, final Path generated) throws IOException {
         final String type = java.xpath("@java-name").get(0);
         final Path dest = new Place(type).make(
             generated, "java"
@@ -103,5 +104,6 @@ public final class JavaFiles {
             ),
             dest
         ).save();
+        return dest;
     }
 }
