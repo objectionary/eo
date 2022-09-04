@@ -174,11 +174,13 @@ public final class ParseMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_EO).equals(tojo.get(AssembleMojo.ATTR_EO))
         );
-        Collection<Tojo> removable = new ArrayList<>();
-        for (Tojo exist : existed) {
-            removable.addAll(this.transpiledTojos.value().select(
+        final Collection<Tojo> removable = new ArrayList<>(0);
+        for (final Tojo exist : existed) {
+            removable.addAll(
+                this.transpiledTojos.value().select(
                     row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                        && row.get(AssembleMojo.ATTR_XMIR2).equals(exist.get(AssembleMojo.ATTR_XMIR2))
+                        && row.get(AssembleMojo.ATTR_XMIR2)
+                        .equals(exist.get(AssembleMojo.ATTR_XMIR2))
                 )
             );
         }
