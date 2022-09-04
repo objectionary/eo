@@ -36,15 +36,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.parser.ParsingTrain;
+
+import static java.nio.file.Files.deleteIfExists;
 
 /**
  * Compile.
@@ -150,9 +149,14 @@ public final class TranspileMojo extends SafeMojo {
         );
         int saved = 0;
         for (final Tojo tojo : sources) {
+            Logger.info(
+                this, "Removed %d Java files for %s file",
+                this.removeTranspiled(tojo), tojo.get(AssembleMojo.ATTR_EO)
+            );
             final Path transpiled = this.transpile(
                 Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
             );
+            this.transpiledTojos.value().add(tojo.get(AssembleMojo.ATTR_XMIR2)).set(AssembleMojo.ATTR_TRANSPILED, transpiled);
             final Set<String> failures = new HashSet<>(3);
             if (this.failOnWarning) {
                 failures.add(Sanitized.WARNING);
@@ -225,5 +229,33 @@ public final class TranspileMojo extends SafeMojo {
             new Save(out.toString(), target).saveQuietly();
         }
         return target;
+    }
+
+    /**
+     * Remove transpiled files per EO.
+     *
+     * @param tojo The tojo
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private int removeTranspiled(final Tojo tojo) throws IOException {
+        final Collection<Tojo> existed = this.tojos.value().select(
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && row.get(AssembleMojo.ATTR_EO).equals(tojo.get(AssembleMojo.ATTR_EO))
+        );
+        final Collection<Tojo> removable = new ArrayList<>(0);
+        for (final Tojo exist : existed) {
+            removable.addAll(
+                this.transpiledTojos.value().select(
+                    row -> row.get("id")
+                        .equals(exist.get(AssembleMojo.ATTR_XMIR2))
+                )
+            );
+        }
+        int count = 0;
+        for (Tojo remove : removable) {
+            System.out.println(remove.get("transpiled"));
+            count += deleteIfExists(Path.of(remove.get("transpiled"))) ? 1 : 0;
+        }
+        return count;
     }
 }
