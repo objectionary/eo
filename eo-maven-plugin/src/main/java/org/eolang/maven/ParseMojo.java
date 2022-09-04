@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -84,6 +85,7 @@ public final class ParseMojo extends SafeMojo {
         );
         int total = 0;
         for (final Tojo tojo : tojos) {
+            //this.removeTranspiled(tojo);
             if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
                 final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
                 final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
@@ -159,6 +161,28 @@ public final class ParseMojo extends SafeMojo {
             Save.rel(source), Save.rel(target)
         );
         tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
+    }
+
+    /**
+     * Remove transpiled files per EO.
+     *
+     * @param tojo The tojo
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private void removeTranspiled(final Tojo tojo) {
+        final Collection<Tojo> existed = this.tojos.value().select(
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && row.get(AssembleMojo.ATTR_EO).equals(tojo.get(AssembleMojo.ATTR_EO))
+        );
+        Collection<Tojo> removable = new ArrayList<>();
+        for (Tojo exist : existed) {
+            removable.addAll(this.transpiledTojos.value().select(
+                    row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                        && row.get(AssembleMojo.ATTR_XMIR2).equals(exist.get(AssembleMojo.ATTR_XMIR2))
+                )
+            );
+        }
+        //TODO: remove files from removable
     }
 
 }
