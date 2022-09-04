@@ -130,6 +130,27 @@ abstract class SafeMojo extends AbstractMojo {
     protected String placedFormat = "csv";
 
     /**
+     * The path to a text file where paths of generated java files per EO program.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        property = "eo.transpiled",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/transpiled.csv"
+    )
+    protected File transpiled;
+
+    /**
+     * Format of "transpiled" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
+    protected String transpiledFormat = "csv";
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
@@ -147,6 +168,17 @@ abstract class SafeMojo extends AbstractMojo {
     protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
         new Sticky<>(
             () -> new Catalog(this.placed.toPath(), this.placedFormat).make()
+        )
+    );
+
+    /**
+     * Cached transpiled tojos.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final Unchecked<Tojos> transpiledTojos = new Unchecked<>(
+        new Sticky<>(
+            () -> new Catalog(this.transpiled.toPath(), this.transpiledFormat).make()
         )
     );
 
