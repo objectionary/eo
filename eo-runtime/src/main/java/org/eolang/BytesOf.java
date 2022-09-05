@@ -31,10 +31,10 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
- * @todo #632:30min Current shift implementation
- *  does not preserve sing. Add sign-preserving
- *  shift if needed. After that, update this PDD
- *  to make changes to corresponding EObytes classes.
+ * @todo #1046:30min Use this class for operations
+ *  on byte-arrays inside eo-runtime, in classes
+ *  such as EObytes*, Param, etc. Avoid using
+ *  byte[] directly in all of them.
  */
 public final class BytesOf implements Bytes {
 
@@ -61,6 +61,14 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     * @param number Integer number.
+     */
+    public BytesOf(final int number) {
+        this(ByteBuffer.allocate(Integer.BYTES).putInt(number).array());
+    }
+
+    /**
+     * Ctor.
      * @param number Long number.
      */
     public BytesOf(final long number) {
@@ -71,7 +79,7 @@ public final class BytesOf implements Bytes {
      * Ctor.
      * @param number Double number.
      */
-    public BytesOf(final Double number) {
+    public BytesOf(final double number) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(number).array());
     }
 
@@ -119,8 +127,8 @@ public final class BytesOf implements Bytes {
         // @checkstyle MethodBodyCommentsCheck (3 lines)
         // @checkstyle NestedIfDepthCheck (40 lines)
         final byte[] bytes = this.take();
-        final int mod = Math.abs(bits) % 8;
-        final int offset = Math.abs(bits) / 8;
+        final int mod = Math.abs(bits) % Byte.SIZE;
+        final int offset = Math.abs(bits) / Byte.SIZE;
         if (bits < 0) {
             final byte carry = (byte) ((0x01 << mod) - 1);
             for (int index = 0; index < bytes.length; index += 1) {
@@ -130,13 +138,13 @@ public final class BytesOf implements Bytes {
                 } else {
                     byte dst = (byte) (bytes[source] << mod);
                     if (source + 1 < bytes.length) {
-                        dst |= bytes[source + 1] >>> (8 - mod) & carry;
+                        dst |= bytes[source + 1] >>> (Byte.SIZE - mod) & carry;
                     }
                     bytes[index] = dst;
                 }
             }
         } else {
-            final byte carry = (byte) (0xFF << (8 - mod));
+            final byte carry = (byte) (0xFF << (Byte.SIZE - mod));
             for (int index = bytes.length - 1; index >= 0; index -= 1) {
                 final int source = index - offset;
                 if (source < 0) {
@@ -144,9 +152,29 @@ public final class BytesOf implements Bytes {
                 } else {
                     byte dst = (byte) ((0xff & bytes[source]) >>> mod);
                     if (source - 1 >= 0) {
-                        dst |= bytes[source - 1] << (8 - mod) & carry;
+                        dst |= bytes[source - 1] << (Byte.SIZE - mod) & carry;
                     }
                     bytes[index] = dst;
+                }
+            }
+        }
+        return new BytesOf(bytes);
+    }
+
+    @Override
+    public Bytes sshift(final int bits) {
+        if (bits < 0) {
+            throw new UnsupportedOperationException("right sshift is NYI");
+        }
+        final byte[] bytes = this.shift(bits).take();
+        if (this.take()[0] < 0) {
+            for (int index = 0; index < bytes.length; index += 1) {
+                final int zeros = BytesOf.numberOfLeadingZeros(
+                    bytes[index]
+                );
+                bytes[index] = (byte) (bytes[index] ^ (-1 << (Byte.SIZE - zeros)));
+                if (zeros != Byte.SIZE) {
+                    break;
                 }
             }
         }
@@ -164,7 +192,7 @@ public final class BytesOf implements Bytes {
         } else if (Integer.class.equals(type)
             && ret.length == Integer.BYTES
         ) {
-            res = buf.getLong();
+            res = buf.getInt();
         } else if (Double.class.equals(type)
             && ret.length == Double.BYTES
         ) {
@@ -208,4 +236,32 @@ public final class BytesOf implements Bytes {
     public int hashCode() {
         return Arrays.hashCode(this.data);
     }
+
+    /**
+     * Count leading zero bits.
+     * @param num Byte.
+     * @return Number between 0 and 8.
+     */
+    private static byte numberOfLeadingZeros(final byte num) {
+        final byte result;
+        if (num == 0) {
+            result = (byte) Byte.SIZE;
+        } else if (num < 0) {
+            result = (byte) 0;
+        } else {
+            byte temp = num;
+            int bts = Byte.SIZE - 1;
+            if (temp >= 1 << 4) {
+                bts -= 4;
+                temp >>>= 4;
+            }
+            if (temp >= 1 << 2) {
+                bts -= 2;
+                temp >>>= 2;
+            }
+            result = (byte) (bts - (temp >>> 1));
+        }
+        return result;
+    }
+
 }

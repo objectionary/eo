@@ -23,12 +23,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="gmi-to-text" version="2.0">
-  <xsl:output encoding="UTF-8" method="text"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="EOL">
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
-  <xsl:template match="/">
-    <xsl:apply-templates select="program/gmi/i"/>
+  <xsl:template match="/gmi">
+    <xsl:element name="text">
+      <xsl:apply-templates select="i"/>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="i">
     <xsl:value-of select="@name"/>

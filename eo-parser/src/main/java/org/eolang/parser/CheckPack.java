@@ -100,4 +100,14 @@ public final class CheckPack {
         return failures;
     }
 
+    /**
+     * Is this check disabled?
+     * @return True if disabled.
+     */
+    public boolean skip() {
+        return new Yaml()
+            .<Map<String, Boolean>>load(this.script)
+            .getOrDefault("skip", Boolean.FALSE)
+            .equals(Boolean.TRUE);
+    }
 }

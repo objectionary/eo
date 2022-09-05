@@ -62,11 +62,25 @@ public interface Bytes extends Data<byte[]> {
     Bytes xor(Bytes other);
 
     /**
-     * Big-endian shift.
+     * Big-endian unsigned shift.
+     * Shifts left if value is positive, or right otherwise.
+     * Does not perform sign extension.
+     *
      * @param bits Bits to shift, negative to shift left.
      * @return Bytes.
      */
     Bytes shift(int bits);
+
+    /**
+     * Big-endian signed right shift.
+     * Performs sign extension, i.e. it will
+     * fill the top bits with 1 if the first bit is 1
+     * and with 0 otherwise.
+     *
+     * @param bits Bits to shift, negative value causes exception.
+     * @return Bytes.
+     */
+    Bytes sshift(int bits);
 
     /**
      * Convert to number.

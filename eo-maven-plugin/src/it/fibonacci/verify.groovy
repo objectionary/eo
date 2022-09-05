@@ -32,6 +32,10 @@
   'target/eo/04-pull/org/eolang/array.eo',
   'target/eo/05-pre/org/eolang/examples/app/00-pre-classes.xml',
   'target/eo/06-transpile/org/eolang/examples/app.xmir',
+  'target/eo/gmi/org/eolang/error.gmi',
+  'target/eo/gmi/org/eolang/error.gmi.xe',
+  'target/eo/gmi/org/eolang/error.gmi.graph',
+  'target/eo/gmi/org/eolang/error.gmi.dot',
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class'
 ].each { assert new File(basedir, it).exists() }
 

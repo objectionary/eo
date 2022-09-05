@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -45,16 +46,11 @@ import org.xembly.Directives;
  *
  * @since 0.1
  * @checkstyle CyclomaticComplexityCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @todo #348:30min Make changes to store INT as bytes.
  *  After that update this todo. When all data types
  *  are stored as bytes, remove data attribute from XML
  *  and XSLT templates.
- * @todo #348:30min Avoid using Java types in XSLT
- *  processing. data.xslt and to-java.xslt use
- *  java-type attribute. This attribute is redundant
- *  and can be replaced by type inference. This
- *  change will ease the task off removing data
- *  attribute above.
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class XeListener implements ProgramListener, Iterable<Directive> {
@@ -284,6 +280,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterScope(final ProgramParser.ScopeContext ctx) {
+        this.objects.alias();
+    }
+
+    @Override
+    public void exitScope(final ProgramParser.ScopeContext ctx) {
+        // This method is created by ANTLR and can't be removed
+    }
+
+    @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterHead(final ProgramParser.HeadContext ctx) {
         this.objects.start(
@@ -372,17 +378,26 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = "bytes";
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
         } else if (ctx.BOOL() != null) {
-            type = "bool";
+            type = "bytes";
             base = "bool";
-            data = Boolean.toString(Boolean.parseBoolean(text));
+            if (Boolean.parseBoolean(text)) {
+                data = XeListener.bytesToHex((byte) 0x01);
+            } else {
+                data = XeListener.bytesToHex((byte) 0x00);
+            }
         } else if (ctx.FLOAT() != null) {
             type = "float";
             base = "float";
             data = Double.toString(Double.parseDouble(text));
         } else if (ctx.INT() != null) {
-            type = "int";
+            type = "bytes";
             base = "int";
-            data = Long.toString(Long.parseLong(text));
+            data = XeListener.bytesToHex(
+                ByteBuffer
+                    .allocate(Long.BYTES)
+                    .putLong(Long.parseLong(text))
+                    .array()
+            );
         } else if (ctx.HEX() != null) {
             type = "int";
             base = "int";
@@ -501,7 +516,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      * @param bytes Bytes.
      * @return Hexadecimal value as string.
      */
-    private static String bytesToHex(final byte[] bytes) {
+    private static String bytesToHex(final byte... bytes) {
         final StringJoiner str = new StringJoiner(" ");
         for (final byte bty : bytes) {
             str.add(String.format("%02X", bty));

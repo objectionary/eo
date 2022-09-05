@@ -2,7 +2,7 @@ xsls: []
 tests:
   - //objects[count(o)=5]
   - //o[@base='.plus' and @name='a']
-  - //o[@base='int' and @name='@' and text()='5']
+  - //o[@base='int' and @name='@' and ends-with(text(), '05')]
 eo: |
   [x] (x.plus 1 > a) (5 > @)
 

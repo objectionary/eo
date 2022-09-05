@@ -61,7 +61,7 @@ public enum Ram {
      * @return Byte array.
      * @throws IOException If fails.
      */
-    public byte[] read(
+    public synchronized byte[] read(
         final Phi object,
         final int position,
         final int length
@@ -80,7 +80,7 @@ public enum Ram {
      * @param bytes Bytes to wite.
      * @throws IOException If fails.
      */
-    public void write(
+    public synchronized void write(
         final Phi object,
         final int position,
         final byte[] bytes
@@ -108,7 +108,7 @@ public enum Ram {
                                 .getName(),
                             ".mem"
                         ).toFile(),
-                        "rw"
+                        "rws"
                     );
                     file.setLength(size);
                     return file;
