@@ -22,20 +22,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="strip" version="2.0">
   <!--
-  Here we start the graph, creating a new XML element "gmi" under "program".
-  All further XSL transformations will work with "i" elements inside
-  this "gmi" one.
+  Currently each <a/> element starts with either "edge:", or "vertex:",
+  or "text:", or "data:". Here, we strip the prefixes.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program[not(gmi)]">
+  <xsl:template match="/gmi/i/a">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:element name="gmi">
-        <!-- empty one -->
-      </xsl:element>
+      <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
+      <xsl:variable name="body" select="replace(., '^[a-z]+:', '')"/>
+      <xsl:attribute name="prefix" select="$prefix"/>
+      <xsl:choose>
+        <xsl:when test="$prefix = 'vertex'">
+          <xsl:text>ν</xsl:text>
+        </xsl:when>
+        <xsl:when test="$prefix = 'edge'">
+          <xsl:text>ε</xsl:text>
+        </xsl:when>
+      </xsl:choose>
+      <xsl:value-of select="$body"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

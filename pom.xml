@@ -117,7 +117,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.10.0</version>
+        <version>0.12.0</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -183,7 +183,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
-        <version>4.10.1</version>
+        <version>4.11.1</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -218,7 +218,7 @@ SOFTWARE.
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.10.1</version>
           <configuration combine.self="override"/>
         </plugin>
         <plugin>

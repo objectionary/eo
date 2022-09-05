@@ -17,11 +17,11 @@ The object at \lref{book} may be represented as
 \begin{equation}\label{eq:book}
 \begin{split}
 \ff{book} & = \left\{\begin{matrix*}[l]
-  (\ff{isbn}, \emptyset) \\
+  (\ff{isbn}, \varnothing) \\
 \end{matrix*}\right\},
 \end{split}
 \end{equation}
-where \ff{isbn} is an identifier and $\emptyset$ is an empty
+where \ff{isbn} is an identifier and $\varnothing$ is an empty
 set, which is a proper object, according to the Def.~\ref{def:object}.
 
 \begin{eodefinition}\label{def:data}
@@ -39,7 +39,7 @@ The object at \lrefs{book2}{book2-end} may be represented as
 \begin{equation}\label{eq:book2}
 \begin{split}
 \ff{book2} & = \left\{\begin{matrix*}[l]
-  (\ff{isbn}, \emptyset) \\
+  (\ff{isbn}, \varnothing) \\
   (\ff{title}, \ff{"Object Thinking"}) \\
   (\ff{price}, \ff{memory}) \\
 \end{matrix*}\right\}, \\
@@ -53,8 +53,8 @@ and the text in double quotes is data.
 
 \begin{eodefinition}\label{def:attribute}
 In an object $x$, $a$ is a free \textbf{attribute}
-iff $(a, \emptyset) \in x$; it is a bound attribute
-iff $\exists (a, v)\in x$ and $v\not=\emptyset$.
+iff $(a, \varnothing) \in x$; it is a bound attribute
+iff $\exists (a, v)\in x$ and $v\not=\varnothing$.
 \end{eodefinition}
 
 In Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
@@ -89,7 +89,7 @@ For example, the scope of the object at Eq.~\ref{eq:book2} consists of three ide
 
 \begin{eodefinition}\label{def:abstraction}
 An object $x$ is \textbf{abstract} iff at least one of its attributes is free,
-i.e. $\exists (a, \emptyset)\in x$;
+i.e. $\exists (a, \varnothing)\in x$;
 the process of creating such an object is called \textbf{abstraction}.
 \end{eodefinition}
 
@@ -114,7 +114,7 @@ If $x$ is an abstract object and $y$ is an object
   where $\hat{y}\subseteq\hat{x}$,
   then an \textbf{application} of $y$ to $x$ is
   a \textbf{copy} of $x$, a new object that consists of pairs $(a\in\hat{x},v)$ such that
-  $v=y.a$ if $x.a=\emptyset$ and $v=x.a$ otherwise.
+  $v=y.a$ if $x.a=\varnothing$ and $v=x.a$ otherwise.
 \end{eodefinition}
 
 Application makes some free attributes of $x$ bound---by binding objects to them.
@@ -249,8 +249,8 @@ producing:
 \end{equation}
 
 Because of decoration, the expression
-$\rho$.$\varphi$.\ff{distance} in Eq.~\ref{eq:c-empty} is semantically equivalent to a shorter expression
-$\rho$.\ff{distance} in Eq.~\ref{eq:c-fin}.
+$\rho.\varphi.\ff{distance}$ in Eq.~\ref{eq:c-empty} is semantically equivalent to a shorter expression
+$\rho.\ff{distance}$ in Eq.~\ref{eq:c-fin}.
 
 The following expression makes a new object \ff{is}, which represents
 a sequence of object applications ending with a copy of \ff{lte}:
@@ -308,12 +308,11 @@ For example, the object at \lref{stdout} would be denoted as
 \end{equation}
 where $M_\texttt{stdout}$ is a $\lambda$-term defined externally.
 
-In atoms, $\lambda$-terms are bound to $\varphi$ attribute.
+In atoms, $\lambda$-terms are bound to $\lambda$ attribute.
 Thus, a more formal form of the Eq.~\ref{def:stdout} is:
 \begin{equation*}
-\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \emptyset, \varphi \mapsto \lambda s.M_\text{stdout} \rrbracket.
+\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto M_\text{stdout} \rrbracket.
 \end{equation*}
-
 
 \subsection{Locators}
 

@@ -22,23 +22,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-default-package" version="2.0">
   <!--
-  Here we start the graph, creating a new XML element "gmi" under "program".
-  All further XSL transformations will work with "i" elements inside
-  this "gmi" one.
+  Process alias attribute.
+  @todo #1145:30m This stylesheet just removes alias attribute.
+   A proper processing would be
+   1) move object one level above
+   2) add a synthetic name to its attributes
+   3) put the alias in place of actual object.
+   Continue to work on that issue,
+   until synthetic-attributes.yaml passes.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program[not(gmi)]">
+  <xsl:template match="o[@alias]">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:element name="gmi">
-        <!-- empty one -->
-      </xsl:element>
+      <xsl:apply-templates select="node()|@* except @alias"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*" mode="#default">
+  <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

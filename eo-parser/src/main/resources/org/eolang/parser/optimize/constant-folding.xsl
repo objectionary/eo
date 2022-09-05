@@ -22,23 +22,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
+<!--
+  @todo #1115:30m Add conversions for other types (
+    int, float, bytes, etc.) and values here.
+    When all simple cases are covered, add support
+    for recursive reduction.
+    Such as 01-.as-bool.as-bytes.as-bool.
+-->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="constant-folding" version="2.0">
   <!--
-  Here we start the graph, creating a new XML element "gmi" under "program".
-  All further XSL transformations will work with "i" elements inside
-  this "gmi" one.
+  Fold expressions like FF-FF.as-int to actual integer value,
+  and remove method call.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program[not(gmi)]">
+  <xsl:template match="o[@base='.as-bool' and child::o[@base='org.eolang.bytes' and not(*)]]">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:element name="gmi">
-        <!-- empty one -->
-      </xsl:element>
+      <xsl:apply-templates select="@*"/>
+      <xsl:variable name="c" select="child::o"/>
+      <xsl:attribute name="base">org.eolang.bool</xsl:attribute>
+      <xsl:attribute name="data">bytes</xsl:attribute>
+      <xsl:value-of select="$c[text()]"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*" mode="#default">
+  <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

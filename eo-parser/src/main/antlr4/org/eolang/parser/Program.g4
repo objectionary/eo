@@ -107,6 +107,13 @@ method
   )
   ;
 
+scope
+ :
+ LB
+ application
+ RB
+;
+
 application
   :
   head
@@ -116,9 +123,7 @@ application
   method
   htail?
   |
-  LB
-  application
-  RB
+  scope
   htail?
   |
   application
@@ -141,9 +146,7 @@ htail
     method
     |
     SPACE
-    LB
-    application
-    RB
+    scope
     |
     SPACE
     application

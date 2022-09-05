@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.27.2</version>
+      <version>0.28.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -180,7 +180,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
-      <version>5.6</version>
+      <version>5.7.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

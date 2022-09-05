@@ -1,0 +1,18 @@
+xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/optimize/globals-to-abstracts.xsl
+  - /org/eolang/parser/optimize/remove-refs.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/optimize/fix-missed-names.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/optimize/constant-folding.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //o[@base='org.eolang.bool' and text()='01']
+  - //o[@base='org.eolang.bool' and text()='00']
+eo: |
+  01-.as-bool
+  00-.as-bool
