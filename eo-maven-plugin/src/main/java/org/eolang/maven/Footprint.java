@@ -86,8 +86,7 @@ public class Footprint {
      * @return Content of a file
      * @throws IOException In case of IO issue.
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    public String content(final String program, final String ext) throws IOException {
+    public String load(final String program, final String ext) throws IOException {
         final Path cached = new Place(program).make(this.cache.resolve(this.safeVer()), ext);
         final Path target = new Place(program).make(this.main, ext);
         final IoCheckedText content;
@@ -121,7 +120,7 @@ public class Footprint {
                 "File found in cache: %s",
                 cached
             );
-            text = this.content(program, ext);
+            text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
             if (Footprint.versioned(this.ver)) {

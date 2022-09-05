@@ -48,7 +48,7 @@ final class FootprintTest {
             .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
             new Footprint("1.0.0", temp.resolve("target"), temp.resolve("parsed"))
-                .content("org.eolang.txt.text", "xmir"),
+                .load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
         );
     }
@@ -66,7 +66,7 @@ final class FootprintTest {
             .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
             new Footprint("*.*.*", temp.resolve("target"), temp.resolve("parsed"))
-                .content("org.eolang.txt.text", "xmir"),
+                .load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
         );
     }
