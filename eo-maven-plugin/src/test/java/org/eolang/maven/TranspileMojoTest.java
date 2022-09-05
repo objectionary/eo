@@ -112,6 +112,60 @@ final class TranspileMojoTest {
     }
 
     @Test
+    void notRecompileIfNotModified(@TempDir final Path temp)
+        throws Exception {
+        final Input source = new ResourceOf("org/eolang/maven/mess.eo");
+        final Path src = temp.resolve("foo.src.eo");
+        new Save(source, src).save();
+        final Path target = temp.resolve("target");
+        final Path generated = temp.resolve("generated");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        new MonoTojos(new Csv(foreign))
+            .add("foo.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        new Moja<>(TranspileMojo.class)
+            .with("project", new MavenProjectStub())
+            .with("targetDir", target.toFile())
+            .with("generatedDir", generated.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
+        MatcherAssert.assertThat(
+            String.format("The file \"%s\" wasn't created", java),
+            Files.exists(java),
+            Matchers.is(true)
+        );
+        Assertions.assertTrue(java.toFile().setLastModified(0L));
+        final Path xmir = target.resolve("06-transpile")
+            .resolve("foo")
+            .resolve("src.xmir");
+        Assertions.assertTrue(Files.exists(xmir));
+        new Moja<>(TranspileMojo.class)
+            .with("project", new MavenProjectStub())
+            .with("targetDir", target.toFile())
+            .with("generatedDir", generated.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .execute();
+        MatcherAssert.assertThat(
+            java.toFile().lastModified(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
     void testFailOnWarning(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo.src.eo");
         new Save(new ResourceOf("org/eolang/maven/withwarning.eo"), src).save();

@@ -150,21 +150,25 @@ public final class TranspileMojo extends SafeMojo {
         );
         int saved = 0;
         for (final Tojo tojo : sources) {
-            final Path transpiled = this.transpile(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
+            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final XML input = new XMLDocument(file);
+            final String name = input.xpath("/program/@name").get(0);
+            final Place place = new Place(name);
+            final Path target = place.make(
+                this.targetDir.toPath().resolve(TranspileMojo.DIR),
+                TranspileMojo.EXT
             );
-            final Set<String> failures = new HashSet<>(3);
-            if (this.failOnWarning) {
-                failures.add(Sanitized.WARNING);
+            if (
+                target.toFile().exists()
+                    && target.toFile().lastModified() >= file.toFile().lastModified()
+            ) {
+                Logger.info(
+                    this, "XMIR %s (%s) were already transpiled to %s",
+                    Save.rel(file), name, Save.rel(target)
+                );
+            } else {
+                saved += this.transpile(input, target);
             }
-            if (this.failOnError) {
-                failures.add(Sanitized.ERROR);
-            }
-            new Sanitized(transpiled).sanitize(failures);
-            saved += new JavaFiles(
-                transpiled,
-                this.generatedDir.toPath()
-            ).save();
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
@@ -193,37 +197,34 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Transpile.
      *
-     * @param file The path to the .xmir file
-     * @return Path to transpiled .xmir file
+     * @param input The .xmir file
+     * @param target The path to transpiled .xmir file
+     * @return Count of saved java files
      * @throws IOException If any issues with I/O
      */
-    public Path transpile(final Path file) throws IOException {
-        final XML input = new XMLDocument(file);
+    public int transpile(final XML input, final Path target) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path target = place.make(
-            this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            TranspileMojo.EXT
+        Train<Shift> trn = TranspileMojo.TRAIN;
+        trn = new SpyTrain(
+            trn, place.make(
+                this.targetDir.toPath().resolve(TranspileMojo.PRE),
+                ""
+            )
         );
-        if (
-            target.toFile().exists()
-                && target.toFile().lastModified() >= file.toFile().lastModified()
-        ) {
-            Logger.info(
-                this, "XMIR %s (%s) were already transpiled to %s",
-                Save.rel(file), name, Save.rel(target)
-            );
-        } else {
-            Train<Shift> trn = TranspileMojo.TRAIN;
-            trn = new SpyTrain(
-                trn, place.make(
-                    this.targetDir.toPath().resolve(TranspileMojo.PRE),
-                    ""
-                )
-            );
-            final XML out = new Xsline(trn).pass(input);
-            new Save(out.toString(), target).saveQuietly();
+        final XML out = new Xsline(trn).pass(input);
+        new Save(out.toString(), target).saveQuietly();
+        final Set<String> failures = new HashSet<>(3);
+        if (this.failOnWarning) {
+            failures.add(Sanitized.WARNING);
         }
-        return target;
+        if (this.failOnError) {
+            failures.add(Sanitized.ERROR);
+        }
+        new Sanitized(target).sanitize(failures);
+        return new JavaFiles(
+            target,
+            this.generatedDir.toPath()
+        ).save();
     }
 }
