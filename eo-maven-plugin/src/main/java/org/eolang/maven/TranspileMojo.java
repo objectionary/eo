@@ -205,9 +205,8 @@ public final class TranspileMojo extends SafeMojo {
     public int transpile(final XML input, final Path target) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        Train<Shift> trn = TranspileMojo.TRAIN;
-        trn = new SpyTrain(
-            trn, place.make(
+        final Train<Shift> trn = new SpyTrain(
+            TranspileMojo.TRAIN, place.make(
                 this.targetDir.toPath().resolve(TranspileMojo.PRE),
                 ""
             )
