@@ -37,11 +37,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Test case for packs.
  * @since 1.0
- * @todo #415:30m Test case synthetic-attributes.yaml
- *  is disable. Continue to work on that issue, until
- *  the test passes. A possible solution is to
- *  introduce aliases for objects which are produced
- *  by expressions in parenthesis.
  */
 final class PacksTest {
 
