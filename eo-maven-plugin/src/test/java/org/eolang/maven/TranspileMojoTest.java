@@ -65,6 +65,7 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path transpiled = temp.resolve("eo-transpiled.json");
         new MonoTojos(new Csv(foreign))
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -85,6 +86,8 @@ final class TranspileMojoTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("transpiled", transpiled.toFile())
+            .with("transpiledFormat", "csv")
             .execute();
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
@@ -104,6 +107,8 @@ final class TranspileMojoTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("transpiled", transpiled.toFile())
+            .with("transpiledFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
             java.toFile().lastModified(),
@@ -118,6 +123,7 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path transpiled = temp.resolve("eo-transpiled.json");
         new MonoTojos(new Csv(foreign))
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -145,6 +151,8 @@ final class TranspileMojoTest {
                 .with("foreign", foreign.toFile())
                 .with("foreignFormat", "csv")
                 .with("failOnWarning", true)
+                .with("transpiled", transpiled.toFile())
+                .with("transpiledFormat", "csv")
                 .execute()
         );
         MatcherAssert.assertThat(
@@ -162,6 +170,7 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path transpiled = temp.resolve("eo-transpiled.json");
         new MonoTojos(new Csv(foreign))
             .add("foo.wrong")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -188,6 +197,8 @@ final class TranspileMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .with("failOnError", false)
+            .with("transpiled", transpiled.toFile())
+            .with("transpiledFormat", "csv")
             .execute();
         final Path mess = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         final Path main = generated.resolve("EOorg/EOeolang/EOexamples/EOmainTest.java");
@@ -252,6 +263,7 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
+        final Path transpiled = temp.resolve("eo-transpiled.json");
         new MonoTojos(new Csv(foreign))
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -272,6 +284,8 @@ final class TranspileMojoTest {
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("transpiled", transpiled.toFile())
+            .with("transpiledFormat", "csv")
             .execute();
         final Path java = generated.resolve(file);
         MatcherAssert.assertThat(

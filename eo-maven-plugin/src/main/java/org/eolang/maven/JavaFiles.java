@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.cactoos.text.Joined;
 
 /**
@@ -64,8 +65,8 @@ public final class JavaFiles {
      * @return Count of saved files
      * @throws IOException In case issues with I/O
      */
-    public ArrayList<Path> saveList() throws IOException {
-        ArrayList<Path> total = new ArrayList<>(0);
+    public List<Path> saveList() throws IOException {
+        final List<Path> total = new ArrayList<>(0);
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {

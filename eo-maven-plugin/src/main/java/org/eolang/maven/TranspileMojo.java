@@ -36,14 +36,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.parser.ParsingTrain;
-
-import static java.nio.file.Files.deleteIfExists;
 
 /**
  * Compile.
@@ -149,13 +152,7 @@ public final class TranspileMojo extends SafeMojo {
         );
         int saved = 0;
         for (final Tojo tojo : sources) {
-            Logger.info(
-                this, "Removed %d Java files for %s file",
-                this.removeTranspiled(tojo), tojo.get(AssembleMojo.ATTR_EO)
-            );
-            final Path transpiled = this.transpile(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2))
-            );
+            final Path transpiled = this.transpile(tojo);
             final Set<String> failures = new HashSet<>(3);
             if (this.failOnWarning) {
                 failures.add(Sanitized.WARNING);
@@ -164,12 +161,19 @@ public final class TranspileMojo extends SafeMojo {
                 failures.add(Sanitized.ERROR);
             }
             new Sanitized(transpiled).sanitize(failures);
-            ArrayList<Path> paths = new JavaFiles(
+            final List<Path> paths = new JavaFiles(
                 transpiled,
                 this.generatedDir.toPath()
             ).saveList();
-            for (Path path : paths) {
-                this.transpiledTojos.value().add(tojo.get(AssembleMojo.ATTR_XMIR2) + ": " + path)
+            for (final Path path : paths) {
+                this.transpiledTojos.value()
+                    .add(
+                        String.format(
+                            "XMIR2:%s\nJava Path:%s",
+                            tojo.get(AssembleMojo.ATTR_XMIR2),
+                            path
+                        )
+                    )
                     .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2))
                     .set(AssembleMojo.ATTR_TRANSPILED, path);
             }
@@ -202,11 +206,12 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Transpile.
      *
-     * @param file The path to the .xmir file
+     * @param tojo The tojo.
      * @return Path to transpiled .xmir file
      * @throws IOException If any issues with I/O
      */
-    public Path transpile(final Path file) throws IOException {
+    public Path transpile(final Tojo tojo) throws IOException {
+        final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
@@ -223,6 +228,10 @@ public final class TranspileMojo extends SafeMojo {
                 Save.rel(file), name, Save.rel(target)
             );
         } else {
+            Logger.info(
+                this, "Removed %d Java files for %s file",
+                this.removeTranspiled(tojo), tojo.get(AssembleMojo.ATTR_EO)
+            );
             Train<Shift> trn = TranspileMojo.TRAIN;
             trn = new SpyTrain(
                 trn, place.make(
@@ -238,8 +247,9 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Remove transpiled files per EO.
-     *
      * @param tojo The tojo
+     * @return Count of removed files
+     * @throws IOException if failed
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private int removeTranspiled(final Tojo tojo) throws IOException {
@@ -251,15 +261,17 @@ public final class TranspileMojo extends SafeMojo {
         for (final Tojo exist : existed) {
             removable.addAll(
                 this.transpiledTojos.value().select(
-                    row -> row.get("id")
+                    row -> row.get(AssembleMojo.ATTR_XMIR2)
                         .equals(exist.get(AssembleMojo.ATTR_XMIR2))
                 )
             );
         }
         int count = 0;
-        for (Tojo remove : removable) {
-            System.out.println(remove.get("transpiled"));
-            count += deleteIfExists(Path.of(remove.get("transpiled"))) ? 1 : 0;
+        for (final Tojo remove : removable) {
+            final File file = new File(remove.get("transpiled"));
+            if (file.delete()) {
+                count += 1;
+            }
         }
         return count;
     }
