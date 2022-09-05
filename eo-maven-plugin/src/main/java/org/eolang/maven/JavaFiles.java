@@ -63,11 +63,11 @@ public final class JavaFiles {
 
     /**
      * Save java files.
-     * @return Count of saved files
+     * @return List of saved java files
      * @throws IOException In case issues with I/O
      */
-    public List<Path> saveList() throws IOException {
-        final List<Path> total = new ArrayList<>(0);
+    public List<Path> save() throws IOException {
+        final List<Path> files = new ArrayList<>(0);
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
@@ -77,14 +77,14 @@ public final class JavaFiles {
             );
         } else {
             for (final XML java : nodes) {
-                total.add(JavaFiles.saveJava(java, this.dest));
+                files.add(JavaFiles.saveJava(java, this.dest));
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
                 nodes.size(), Save.rel(this.source), Save.rel(this.dest)
             );
         }
-        return total;
+        return files;
     }
 
     /**

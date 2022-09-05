@@ -164,7 +164,7 @@ public final class TranspileMojo extends SafeMojo {
             final List<Path> paths = new JavaFiles(
                 transpiled,
                 this.generatedDir.toPath()
-            ).saveList();
+            ).save();
             for (final Path path : paths) {
                 this.transpiledTojos.value()
                     .add(
