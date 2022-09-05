@@ -33,7 +33,7 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -74,7 +74,7 @@ public final class GmiMojo extends SafeMojo {
     /**
      * GMI to text.
      */
-    private static final Train<Shift> TO_TEXT = new TrLogged(
+    private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
             "/org/eolang/maven/gmi-to/gmi-to-text.xsl"
@@ -85,7 +85,7 @@ public final class GmiMojo extends SafeMojo {
     /**
      * GMI to Xembly.
      */
-    private static final Train<Shift> TO_XEMBLY = new TrLogged(
+    private static final Train<Shift> TO_XEMBLY = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
             "/org/eolang/maven/gmi-to/gmi-to-xembly.xsl"
@@ -96,7 +96,7 @@ public final class GmiMojo extends SafeMojo {
     /**
      * Xembly to Dot.
      */
-    private static final Train<Shift> TO_DOT = new TrLogged(
+    private static final Train<Shift> TO_DOT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
             "/org/eolang/maven/gmi-to/verify-edges.xsl",
@@ -109,7 +109,7 @@ public final class GmiMojo extends SafeMojo {
      * The train that generates GMI.
      */
     private static final Train<Shift> TRAIN = new TrWith(
-        new TrLogged(
+        new TrFast(
             new TrClasspath<>(
                 new TrDefault<>(),
                 "/org/eolang/maven/gmi/R0.xsl",
