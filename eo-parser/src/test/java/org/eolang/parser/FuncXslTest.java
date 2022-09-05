@@ -21,52 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.parser;
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang.EOtxt;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
+import org.cactoos.io.InputStreamOf;
+import org.cactoos.io.ResourceOf;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * ENDS_WITH.
+ * Test for {@see _func.xsl}.
  *
- * @checkstyle TypeNameCheck (5 lines)
  * @since 1.0
  */
-@XmirObject(oname = "text.ends-with")
-public class EOtext$EOends_with extends PhDefault {
+final class FuncXslTest {
 
-    /**
-     * Ctor.
-     *
-     * @param sigma Sigma
-     */
-    public EOtext$EOends_with(final Phi sigma) {
-        super(sigma);
-        this.add("substr", new AtFree());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    final String substring = new Dataized(
-                        rho.attr("substr").get()
-                    ).take(String.class);
-                    final Phi text = rho.attr("ρ").get();
-                    final String content = new Param(text, "s").strong(String.class);
-                    return new Data.ToPhi(content.endsWith(substring));
-                }
+    @ParameterizedTest
+    @CsvSource({
+        "00     , 0",
+        "0000   , 0",
+        "000000 , 0",
+        "000001 , 1",
+        "000010 , 16",
+        "000100 , 256",
+        "FFFFFF , 16777215"
+    })
+    void runsXslFunction(final String bytes, final String num) {
+        final XML output = new XSLDocument(
+            new InputStreamOf(
+                new ResourceOf("org/eolang/parser/apply-func.xsl")
+            )
+        )
+            .with(new ClasspathSources())
+            .transform(new XMLDocument(String.format("<o>%s</o>", bytes)));
+        MatcherAssert.assertThat(
+            output,
+            XhtmlMatchers.hasXPath(
+                String.format("/o[text()='%s']", num)
             )
         );
     }
-
 }

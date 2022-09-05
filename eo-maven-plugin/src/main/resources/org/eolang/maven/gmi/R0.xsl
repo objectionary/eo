@@ -24,7 +24,9 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
   <!--
-  Here we start the graph and create the root node.
+  Here we start the graph, creating a new XML element "gmi" under "program".
+  All further XSL transformations will work with "i" elements inside
+  this "gmi" one.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -32,17 +34,7 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="gmi">
-        <xsl:call-template name="i">
-          <xsl:with-param name="name" select="'ADD'"/>
-          <xsl:with-param name="args" as="item()*">
-            <xsl:sequence>
-              <xsl:text>v0</xsl:text>
-            </xsl:sequence>
-          </xsl:with-param>
-          <xsl:with-param name="comment">
-            <xsl:text>[R0] This is root vertex</xsl:text>
-          </xsl:with-param>
-        </xsl:call-template>
+        <!-- empty one -->
       </xsl:element>
     </xsl:copy>
   </xsl:template>

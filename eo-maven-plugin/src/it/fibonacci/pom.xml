@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.60.4</version>
+    <version>0.61.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -38,7 +38,7 @@ SOFTWARE.
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.10.1</version>
         <configuration combine.self="override"/>
       </plugin>
       <plugin>
@@ -57,11 +57,19 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
+              <goal>gmi</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
+          <gmiIncludes>
+            <o>org.eolang.error</o>
+          </gmiIncludes>
           <trackOptimizationSteps>true</trackOptimizationSteps>
+          <generateGmiXmlFiles>true</generateGmiXmlFiles>
+          <generateGraphFiles>true</generateGraphFiles>
+          <generateXemblyFiles>true</generateXemblyFiles>
+          <generateDotFiles>true</generateDotFiles>
         </configuration>
       </plugin>
       <plugin>

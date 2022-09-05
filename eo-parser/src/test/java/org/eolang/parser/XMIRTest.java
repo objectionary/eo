@@ -65,9 +65,16 @@ final class XMIRTest {
         Logger.debug(this, "EOLANG:%n%s", eolang);
         final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
         Logger.debug(this, "Second:%n%s", second);
+        final String ignore = "data=\"\\S+\"";
         MatcherAssert.assertThat(
-            first.toString(),
-            Matchers.equalTo(second.toString())
+            first
+                .toString()
+                .replaceAll(ignore, ""),
+            Matchers.equalTo(
+                second
+                    .toString()
+                    .replaceAll(ignore, "")
+            )
         );
     }
 

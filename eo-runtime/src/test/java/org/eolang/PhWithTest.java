@@ -24,9 +24,13 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOtxt.EOsprintf;
+import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.llorllale.cactoos.matchers.RunsInThreads;
 
 /**
  * Test case for {@link PhWith}.
@@ -85,6 +89,44 @@ final class PhWithTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"hello", "bye", "", "привет"})
+    void runsInThreads(final String data) {
+        final String attr = "foo";
+        final Phi ref = new PhWith(new DummyWithAtFree(attr, Phi.Φ), 0, new Data.ToPhi(data));
+        final Func<Phi, Boolean> actual = phi -> {
+            MatcherAssert.assertThat(
+                new Dataized(phi.attr(attr).get()).take(String.class),
+                Matchers.is(data)
+            );
+            return true;
+        };
+        MatcherAssert.assertThat(
+            actual,
+            new RunsInThreads<>(
+                ref,
+                Runtime.getRuntime().availableProcessors() * 10
+            )
+        );
+    }
+
+    /**
+     * Dummy Phi with free attribute.
+     * @since 1.0
+     */
+    public static class DummyWithAtFree extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param attr Free attribute name
+         * @param sigma Sigma
+         */
+        DummyWithAtFree(final String attr, final Phi sigma) {
+            super(sigma);
+            this.add(attr, new AtFree());
+        }
+    }
+
     /**
      * Dummy Phi.
      * @since 1.0
@@ -100,5 +142,4 @@ final class PhWithTest {
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
     }
-
 }

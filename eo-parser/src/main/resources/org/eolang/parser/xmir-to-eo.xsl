@@ -26,6 +26,19 @@ SOFTWARE.
   <!--
   This one maps XMIR to EO original syntax. It's used
   in XMIR.java class.
+
+  @todo #1099:30m Current bytes to string conversion
+   supports only ASCII characters & text blocks.
+   Make it possible to handle any unicode character and
+   double-quoted strings.
+  @todo #1110:30m Add conversion from 'bytes' representation
+   back to 'int', 'double' & the rest of types. Then proceed
+   to with the parent todo.
+  @todo #1110:30m Add XST transformation to convert
+   "$bytes.as-$type" to "$type". I.e
+   "01-.as-bool" becomes "TRUE". Remove analogous conversions
+   from this stylesheet, and only generate "$bytes.as-$type"
+   in order to covert byte-array value back to literal.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
@@ -135,8 +148,37 @@ SOFTWARE.
   <xsl:template match="o[@data='bool']" mode="head">
     <xsl:value-of select="upper-case(text())"/>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool']" mode="head">
+  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool' and @data!='bytes']" mode="head">
     <xsl:value-of select="text()"/>
+  </xsl:template>
+  <xsl:template match="o[@data='bytes']" mode="head">
+    <xsl:choose>
+      <xsl:when test="@base='string'">
+        <xsl:text>"""</xsl:text>
+        <xsl:value-of select="$eol"/>
+        <xsl:for-each select="tokenize(text(), ' ')">
+          <xsl:value-of select="concat('\u00', .)"/>
+        </xsl:for-each>
+        <xsl:value-of select="$eol"/>
+        <xsl:text>"""</xsl:text>
+      </xsl:when>
+      <xsl:when test="@base='bool'">
+        <xsl:choose>
+          <xsl:when test="text() = '01'">
+            <xsl:text>TRUE</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>FALSE</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="@base='int'">
+        <xsl:value-of select="eo:bytes-to-int(replace(text(), ' ', ''))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="replace(text(), ' ', '-')"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

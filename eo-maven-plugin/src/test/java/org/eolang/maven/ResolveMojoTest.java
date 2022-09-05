@@ -45,7 +45,12 @@ final class ResolveMojoTest {
     void testSimpleResolve(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Save(
-            "+rt jvm org.eolang:eo-runtime:0.7.0\n\n[] > foo /int\n",
+            String.format(
+                "%s\n%s\n\n%s",
+                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.7.0",
+                "+rt jvm org.eolang:eo-sys:jar-with-dependencies:0.0.5",
+                "[] > foo /int"
+            ),
             src.resolve("foo.eo")
         ).save();
         final Path target = temp.resolve("target");
@@ -139,7 +144,7 @@ final class ResolveMojoTest {
         new Save(
             String.format(
                 "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:0.22.1",
+                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
                 "[] > foo /int"
             ),
             first
@@ -148,7 +153,7 @@ final class ResolveMojoTest {
         new Save(
             String.format(
                 "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:0.22.0",
+                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
                 "[] > foo /int"
             ),
             second

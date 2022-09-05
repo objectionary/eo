@@ -100,7 +100,7 @@
     seq
       x.write TRUE
       eq.
-        1
+        TRUE
         x.while
           [i]
             &.x.write FALSE > @

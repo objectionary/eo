@@ -180,7 +180,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$data-objects[text()=$type]">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree());</xsl:text>
     </xsl:if>
@@ -196,7 +196,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="equals-and-hashCode">
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$data-objects[text()=$type]">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:text>@Override</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
@@ -569,9 +569,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;</xsl:text>
-    <xsl:value-of select="@java-type"/>
-    <xsl:text>&gt;(</xsl:text>
+    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
