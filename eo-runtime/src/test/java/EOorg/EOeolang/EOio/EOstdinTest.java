@@ -51,6 +51,7 @@ import org.junitpioneer.jupiter.StdIo;
  */
 public final class EOstdinTest {
 
+    
     /**
      * DEFAULT_STDIN.
      */
