@@ -73,10 +73,8 @@ public final class EOstdinTest {
             prop.setAccessible(true);
             prop.set(input, null);
         } catch (final NoSuchFieldException exception) {
-            exception.printStackTrace();
             throw new RuntimeException(exception);
         } catch (final IllegalAccessException exception) {
-            exception.printStackTrace();
             throw new RuntimeException(exception);
         }
     }

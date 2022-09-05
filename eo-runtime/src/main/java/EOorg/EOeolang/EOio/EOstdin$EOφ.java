@@ -27,17 +27,8 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Scanner;
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
