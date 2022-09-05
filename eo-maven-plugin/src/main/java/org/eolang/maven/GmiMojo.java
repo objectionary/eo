@@ -77,7 +77,7 @@ public final class GmiMojo extends SafeMojo {
     private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/gmi-to-text.xsl"
+            "/org/eolang/maven/gmi-to/to-text.xsl"
         ).back(),
         GmiMojo.class
     );
@@ -88,7 +88,7 @@ public final class GmiMojo extends SafeMojo {
     private static final Train<Shift> TO_XEMBLY = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/gmi-to-xembly.xsl"
+            "/org/eolang/maven/gmi-to/to-xembly.xsl"
         ).back(),
         GmiMojo.class
     );

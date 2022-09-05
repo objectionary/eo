@@ -42,6 +42,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -54,6 +56,19 @@ import org.yaml.snakeyaml.Yaml;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class GmiMojoTest {
+
+    @Test
+    @Disabled
+    void bigSlowTest() throws Exception {
+        final StringBuilder program = new StringBuilder(1000);
+        for (int idx = 0; idx < 40; ++idx) {
+            for (int spc = 0; spc < idx; ++spc) {
+                program.append("  ");
+            }
+            program.append("[x y z] > foo\n");
+        }
+        GmiMojoTest.toGraph(program.toString());
+    }
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
