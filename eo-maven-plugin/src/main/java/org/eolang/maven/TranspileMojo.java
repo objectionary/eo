@@ -152,32 +152,38 @@ public final class TranspileMojo extends SafeMojo {
         );
         int saved = 0;
         for (final Tojo tojo : sources) {
-            final Path transpiled = this.transpile(tojo);
-            final Set<String> failures = new HashSet<>(3);
-            if (this.failOnWarning) {
-                failures.add(Sanitized.WARNING);
-            }
-            if (this.failOnError) {
-                failures.add(Sanitized.ERROR);
-            }
-            new Sanitized(transpiled).sanitize(failures);
-            final List<Path> paths = new JavaFiles(
-                transpiled,
-                this.generatedDir.toPath()
-            ).save();
-            for (final Path path : paths) {
-                this.transpiledTojos.value()
-                    .add(
-                        String.format(
-                            "XMIR2:%s\nJava Path:%s",
-                            tojo.get(AssembleMojo.ATTR_XMIR2),
-                            path
+            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final XML input = new XMLDocument(file);
+            final String name = input.xpath("/program/@name").get(0);
+            final Place place = new Place(name);
+            final Path target = place.make(
+                this.targetDir.toPath().resolve(TranspileMojo.DIR),
+                TranspileMojo.EXT
+            );
+            if (
+                target.toFile().exists()
+                    && target.toFile().lastModified() >= file.toFile().lastModified()
+            ) {
+                Logger.info(
+                    this, "XMIR %s (%s) were already transpiled to %s",
+                    Save.rel(file), name, Save.rel(target)
+                );
+            } else {
+                final List<Path> paths = this.transpile(tojo.get(AssembleMojo.ATTR_EO), input, target);
+                for (final Path path : paths) {
+                    this.transpiledTojos.value()
+                        .add(
+                            String.format(
+                                "XMIR2:%s\nJava Path:%s",
+                                tojo.get(AssembleMojo.ATTR_XMIR2),
+                                path
+                            )
                         )
-                    )
-                    .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2))
-                    .set(AssembleMojo.ATTR_TRANSPILED, path);
+                        .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2))
+                        .set(AssembleMojo.ATTR_TRANSPILED, path);
+                }
+                saved += paths.size();
             }
-            saved += paths.size();
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
@@ -206,56 +212,50 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Transpile.
      *
-     * @param tojo The tojo.
-     * @return Path to transpiled .xmir file
+     * @param input  The .xmir file
+     * @param target The path to transpiled .xmir file
+     * @return List of Paths to generated java file
      * @throws IOException If any issues with I/O
      */
-    public Path transpile(final Tojo tojo) throws IOException {
-        final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-        final XML input = new XMLDocument(file);
+    public List<Path> transpile(final String eo, final XML input, final Path target) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path target = place.make(
-            this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            TranspileMojo.EXT
+        Logger.info(
+            this, "Removed %d Java files for %s file",
+            this.removeTranspiled(eo), eo
         );
-        if (
-            target.toFile().exists()
-                && target.toFile().lastModified() >= file.toFile().lastModified()
-        ) {
-            Logger.info(
-                this, "XMIR %s (%s) were already transpiled to %s",
-                Save.rel(file), name, Save.rel(target)
-            );
-        } else {
-            Logger.info(
-                this, "Removed %d Java files for %s file",
-                this.removeTranspiled(tojo), tojo.get(AssembleMojo.ATTR_EO)
-            );
-            Train<Shift> trn = TranspileMojo.TRAIN;
-            trn = new SpyTrain(
-                trn, place.make(
-                    this.targetDir.toPath().resolve(TranspileMojo.PRE),
-                    ""
-                )
-            );
-            final XML out = new Xsline(trn).pass(input);
-            new Save(out.toString(), target).saveQuietly();
+        final Train<Shift> trn = new SpyTrain(
+            TranspileMojo.TRAIN, place.make(
+                this.targetDir.toPath().resolve(TranspileMojo.PRE),
+                ""
+            )
+        );
+        final XML out = new Xsline(trn).pass(input);
+        new Save(out.toString(), target).saveQuietly();
+        final Set<String> failures = new HashSet<>(3);
+        if (this.failOnWarning) {
+            failures.add(Sanitized.WARNING);
         }
-        return target;
+        if (this.failOnError) {
+            failures.add(Sanitized.ERROR);
+        }
+        new Sanitized(target).sanitize(failures);
+        return new JavaFiles(
+            target,
+            this.generatedDir.toPath()
+        ).save();
     }
 
     /**
      * Remove transpiled files per EO.
-     * @param tojo The tojo
+     * @param eo The eo path
      * @return Count of removed files
-     * @throws IOException if failed
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private int removeTranspiled(final Tojo tojo) throws IOException {
+    private int removeTranspiled(final String eo) {
         final Collection<Tojo> existed = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_EO).equals(tojo.get(AssembleMojo.ATTR_EO))
+                && row.get(AssembleMojo.ATTR_EO).equals(eo)
         );
         final Collection<Tojo> removable = new ArrayList<>(0);
         for (final Tojo exist : existed) {
