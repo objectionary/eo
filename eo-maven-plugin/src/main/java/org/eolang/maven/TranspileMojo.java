@@ -169,7 +169,8 @@ public final class TranspileMojo extends SafeMojo {
                     Save.rel(file), name, Save.rel(target)
                 );
             } else {
-                final List<Path> paths = this.transpile(tojo.get(AssembleMojo.ATTR_EO), input, target);
+                final String src = tojo.get(AssembleMojo.ATTR_EO);
+                final List<Path> paths = this.transpile(src, input, target);
                 for (final Path path : paths) {
                     this.transpiledTojos.value()
                         .add(
@@ -211,18 +212,20 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Transpile.
-     *
-     * @param input  The .xmir file
+     * @param src The .eo file
+     * @param input The .xmir file
      * @param target The path to transpiled .xmir file
      * @return List of Paths to generated java file
      * @throws IOException If any issues with I/O
      */
-    public List<Path> transpile(final String eo, final XML input, final Path target) throws IOException {
+    public List<Path> transpile(
+        final String src, final XML input, final Path target)
+        throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
         Logger.info(
             this, "Removed %d Java files for %s file",
-            this.removeTranspiled(eo), eo
+            this.removeTranspiled(src), src
         );
         final Train<Shift> trn = new SpyTrain(
             TranspileMojo.TRAIN, place.make(
