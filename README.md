@@ -177,10 +177,10 @@ This is how you iterate:
 This code will print this:
 
 ```
-2 x 2 = 4
-3 x 3 = 9
-4 x 4 = 16
-5 x 5 = 25
+2x2 = 4
+3x3 = 9
+4x4 = 16
+5x5 = 25
 ```
 
 Got the idea?
