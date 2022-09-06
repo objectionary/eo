@@ -33,7 +33,7 @@ SOFTWARE.
   <xsl:template match="/program/gmi">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[not(eo:abstract(.)) and @base and not(starts-with(@base, '.')) and (o or @data)]" mode="gmi" priority="1">

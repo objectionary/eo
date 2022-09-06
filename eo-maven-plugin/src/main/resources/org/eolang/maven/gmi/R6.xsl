@@ -32,7 +32,7 @@ SOFTWARE.
   <xsl:template match="/program/gmi">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
   <!-- remove this "!=array" after the fix: https://github.com/objectionary/eo/issues/1060 -->
