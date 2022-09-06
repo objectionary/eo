@@ -31,11 +31,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.Input;
 import org.cactoos.Text;
+import org.cactoos.io.CheckedInput;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
 
 /**
@@ -128,28 +125,16 @@ public final class Save {
                 Save.rel(this.path.getParent())
             );
         }
-        try {
-            final double bytes = new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        this.content,
-                        new OutputTo(this.path)
-                    )
-                )
-            ).value();
-            Logger.debug(
-                this, "File %s saved (%.0f bytes)",
-                Save.rel(this.path), bytes
-            );
-        } catch (final IOException ex) {
-            throw new IOException(
-                String.format(
-                    "Failed while trying to save to %s",
-                    Save.rel(this.path)
-                ),
-                ex
-            );
-        }
+        final long bytes = Disk.save(
+            this.path,
+            new CheckedInput<>(
+                this.content, null
+            )
+        );
+        Logger.debug(
+            this, "File %s saved (%.0f bytes)",
+            Save.rel(this.path), bytes
+        );
     }
 
     /**
