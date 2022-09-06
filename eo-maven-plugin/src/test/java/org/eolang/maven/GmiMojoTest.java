@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.Description;
@@ -67,7 +68,7 @@ final class GmiMojoTest {
             }
             program.append("[x y z] > foo\n");
         }
-        final XML graph = GmiMojoTest.toGraph(program.toString());
+        final XML graph = GmiMojoTest.toGraph(program.toString(), null);
         MatcherAssert.assertThat(
             ".foo .foo",
             new GmiMojoTest.ExistsIn(graph)
@@ -89,7 +90,12 @@ final class GmiMojoTest {
             map.get("skip") == null,
             String.format("%s is skipped", pack)
         );
-        final XML graph = GmiMojoTest.toGraph(map.get("eo").toString());
+        final Object value = map.get("inclusion");
+        String inclusion = ".*";
+        if (value != null) {
+            inclusion = value.toString().substring(1, value.toString().length() - 1);
+        }
+        final XML graph = GmiMojoTest.toGraph(map.get("eo").toString(), inclusion);
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
@@ -130,11 +136,13 @@ final class GmiMojoTest {
 
     /**
      * Convert EO source to Graph.
+     *
      * @param code Code in EO
+     * @param inclusion Value of gmiIncludes property
      * @return The graph
      * @throws IOException If fails
      */
-    private static XML toGraph(final String code) throws IOException {
+    private static XML toGraph(final String code, final String inclusion) throws IOException {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("foo/main.eo");
         new Save(code, src).save();
@@ -162,6 +170,7 @@ final class GmiMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("gmiIncludes", new SetOf<>(inclusion))
             .execute();
         return new XMLDocument(
             target.resolve(

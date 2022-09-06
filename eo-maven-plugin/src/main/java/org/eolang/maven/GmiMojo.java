@@ -44,6 +44,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -200,6 +202,7 @@ public final class GmiMojo extends SafeMojo {
 
     /**
      * List of object names to participate in GMI generation.
+     * Names must be valid regular expressions.
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
@@ -209,10 +212,16 @@ public final class GmiMojo extends SafeMojo {
      *  "org.**". The same is true about gmiExclude, let's fix it too.
      */
     @Parameter
-    private Set<String> gmiIncludes = new SetOf<>("**");
+    private Set<String> gmiIncludes = new SetOf<>(".*");
 
     /**
-     * List of object names to participate in GMI generation.
+     * List of matchers for object names to participate in GMI generation.
+     * @checkstyle MemberNameCheck (15 lines)
+     */
+    private Set<Pattern> includesMatchers = new SetOf<>();
+
+    /**
+     * List of object names which are excluded from GMI generation.
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
@@ -220,8 +229,20 @@ public final class GmiMojo extends SafeMojo {
     @Parameter
     private Set<String> gmiExcludes = new SetOf<>();
 
+    /**
+     * List of matchers for object names to exclude from GMI generation.
+     * @checkstyle MemberNameCheck (15 lines)
+     */
+    private Set<Pattern> excludesMatchers = new SetOf<>();
+
     @Override
     public void exec() throws IOException {
+        this.includesMatchers = this.gmiIncludes.stream()
+            .map(Pattern::compile)
+            .collect(Collectors.toSet());
+        this.excludesMatchers = this.gmiExcludes.stream()
+            .map(Pattern::compile)
+            .collect(Collectors.toSet());
         if (this.generateGraphFiles && !this.generateXemblyFiles) {
             throw new IllegalStateException(
                 "Setting generateGraphFiles and not setting generateXemblyFiles has no effect because .graph files require .xe files"
@@ -282,11 +303,11 @@ public final class GmiMojo extends SafeMojo {
      */
     private boolean exclude(final String name) {
         boolean exclude = false;
-        if (!this.gmiIncludes.contains(name) && !this.gmiIncludes.contains("**")) {
+        if (this.includesMatchers.stream().noneMatch(p -> p.matcher(name).matches())) {
             Logger.debug(this, "Excluding %s due to gmiIncludes option", name);
             exclude = true;
         }
-        if (this.gmiExcludes.contains(name) || this.gmiExcludes.contains("**")) {
+        if (this.excludesMatchers.stream().anyMatch(p -> p.matcher(name).matches())) {
             Logger.debug(this, "Excluding %s due to gmiExcludes option", name);
             exclude = true;
         }
