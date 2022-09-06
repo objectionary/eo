@@ -61,7 +61,6 @@ final class TranspileMojoTest {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
         new Save(source, src).save();
-        Assertions.assertTrue(src.toFile().setLastModified(0L));
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -95,22 +94,8 @@ final class TranspileMojoTest {
             Files.exists(java),
             Matchers.is(true)
         );
-        Assertions.assertTrue(src.toFile().setLastModified(1L));
         final long before = java.toFile().lastModified();
-        new MonoTojos(new Csv(foreign))
-            .add("foo.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
+        Assertions.assertTrue(src.toFile().setLastModified(before + 1));
         new Moja<>(TranspileMojo.class)
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())

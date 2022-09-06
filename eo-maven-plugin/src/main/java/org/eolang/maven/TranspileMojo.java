@@ -160,16 +160,17 @@ public final class TranspileMojo extends SafeMojo {
                 this.targetDir.toPath().resolve(TranspileMojo.DIR),
                 TranspileMojo.EXT
             );
+            final String src = tojo.get(AssembleMojo.ATTR_EO);
             if (
                 target.toFile().exists()
                     && target.toFile().lastModified() >= file.toFile().lastModified()
+                    && target.toFile().lastModified() >= Paths.get(src).toFile().lastModified()
             ) {
                 Logger.info(
                     this, "XMIR %s (%s) were already transpiled to %s",
                     Save.rel(file), name, Save.rel(target)
                 );
             } else {
-                final String src = tojo.get(AssembleMojo.ATTR_EO);
                 final List<Path> paths = this.transpile(src, input, target);
                 for (final Path path : paths) {
                     this.transpiledTojos.value()
@@ -251,14 +252,14 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Remove transpiled files per EO.
-     * @param eo The eo path
+     * @param src The eo path
      * @return Count of removed files
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private int removeTranspiled(final String eo) {
+    private int removeTranspiled(final String src) {
         final Collection<Tojo> existed = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_EO).equals(eo)
+                && row.get(AssembleMojo.ATTR_EO).equals(src)
         );
         final Collection<Tojo> removable = new ArrayList<>(0);
         for (final Tojo exist : existed) {
