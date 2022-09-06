@@ -67,7 +67,11 @@ final class GmiMojoTest {
             }
             program.append("[x y z] > foo\n");
         }
-        GmiMojoTest.toGraph(program.toString());
+        final XML graph = GmiMojoTest.toGraph(program.toString());
+        MatcherAssert.assertThat(
+            ".foo .foo",
+            new GmiMojoTest.ExistsIn(graph)
+        );
     }
 
     @ParameterizedTest
@@ -91,7 +95,7 @@ final class GmiMojoTest {
             assertions.add(
                 () -> MatcherAssert.assertThat(
                     loc,
-                    new ExistsIn(graph)
+                    new GmiMojoTest.ExistsIn(graph)
                 )
             );
         }
