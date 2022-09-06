@@ -32,6 +32,7 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
+import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
 import org.cactoos.iterable.Mapped;
@@ -92,7 +93,7 @@ public final class ParsingTrain extends TrEnvelope {
         super(
             new TrBulk<>(
                 new TrLambda(
-                    new TrLogged(new TrDefault<>()),
+                    new TrFast(new TrLogged(new TrDefault<>())),
                     shift -> new StAfter(
                         shift,
                         new StLambda(

@@ -31,13 +31,13 @@ SOFTWARE.
   <xsl:template match="/program/gmi">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and @atom]" mode="gmi" priority="1">
     <xsl:variable name="full">
-      <xsl:if test="//metas/meta[head='package']">
-        <xsl:value-of select="//metas/meta[head='package']/tail"/>
+      <xsl:if test="/program/metas/meta[head='package']">
+        <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
       <xsl:for-each select="ancestor::o[@abstract and @name]">

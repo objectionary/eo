@@ -26,14 +26,16 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
+import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -46,7 +48,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xembly.Directives;
@@ -56,6 +63,7 @@ import org.xembly.Xembler;
  * Convert XMIR to GMI.
  *
  * @since 0.27
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @Mojo(
     name = "gmi",
@@ -74,10 +82,10 @@ public final class GmiMojo extends SafeMojo {
     /**
      * GMI to text.
      */
-    private static final Train<Shift> TO_TEXT = new TrLogged(
+    private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/gmi-to-text.xsl"
+            "/org/eolang/maven/gmi-to/to-text.xsl"
         ).back(),
         GmiMojo.class
     );
@@ -85,18 +93,27 @@ public final class GmiMojo extends SafeMojo {
     /**
      * GMI to Xembly.
      */
-    private static final Train<Shift> TO_XEMBLY = new TrLogged(
-        new TrClasspath<>(
-            new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/gmi-to-xembly.xsl"
-        ).back(),
+    private static final Train<Shift> TO_XEMBLY = new TrFast(
+        new TrDefault<Shift>().with(
+            new StXSL(
+                new XSLDocument(
+                    new UncheckedText(
+                        new TextOf(
+                            new ResourceOf(
+                                "org/eolang/maven/gmi-to/to-xembly.xsl"
+                            )
+                        )
+                    ).asString()
+                ).with("testing", "no")
+            )
+        ),
         GmiMojo.class
     );
 
     /**
      * Xembly to Dot.
      */
-    private static final Train<Shift> TO_DOT = new TrLogged(
+    private static final Train<Shift> TO_DOT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
             "/org/eolang/maven/gmi-to/verify-edges.xsl",
@@ -109,7 +126,7 @@ public final class GmiMojo extends SafeMojo {
      * The train that generates GMI.
      */
     private static final Train<Shift> TRAIN = new TrWith(
-        new TrLogged(
+        new TrFast(
             new TrClasspath<>(
                 new TrDefault<>(),
                 "/org/eolang/maven/gmi/R0.xsl",
@@ -320,6 +337,11 @@ public final class GmiMojo extends SafeMojo {
      */
     private void makeGraph(final String xembly, final Path gmi) throws IOException {
         if (this.generateGraphFiles) {
+            final Directives dirs = new Directives(xembly);
+            Logger.debug(
+                this, "There are %d Xembly directives for %s",
+                new IoChecked<>(new LengthOf(dirs)).value(), gmi
+            );
             final XML graph = new XMLDocument(
                 new Xembler(
                     new Directives()
@@ -327,7 +349,7 @@ public final class GmiMojo extends SafeMojo {
                         .add("graph")
                         .add("v")
                         .attr("id", "ν0")
-                        .append(new Directives(xembly))
+                        .append(dirs)
                 ).domQuietly()
             );
             new Save(

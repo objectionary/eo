@@ -117,7 +117,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.12.0</version>
+        <version>0.12.2</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -218,6 +218,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
+          <version>4.11.1</version>
           <configuration>
             <treatWarningsAsErrors>true</treatWarningsAsErrors>
           </configuration>
