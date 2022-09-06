@@ -27,12 +27,8 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.eolang.AtComposite;
 import org.eolang.Data;
-import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
@@ -43,7 +39,6 @@ import org.eolang.Phi;
  * @checkstyle TypeNameCheck (5 lines)
  */
 public class EOstdin$EOφ extends PhDefault {
-
     /**
      * Ctor.
      * @param parent Sigma
@@ -55,22 +50,9 @@ public class EOstdin$EOφ extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    try (BufferedInputStream bis = new BufferedInputStream(System.in);
-                        ByteArrayOutputStream buf = new ByteArrayOutputStream()) {
-                        while (true) {
-                            final int data = bis.read();
-                            if (data == -1) {
-                                break;
-                            }
-                            buf.write((byte) data);
-                        }
-                        return new Data.ToPhi(buf.toString());
-                    } catch (final IOException ex) {
-                        throw new ExFailure(
-                            "Cannot read from the standard input stream: %s",
-                            ex.getMessage()
-                        );
-                    }
+                    final Input input = Input.getInstance();
+                    final String line = input.getAllLines();
+                    return new Data.ToPhi(line);
                 }
             )
         );

@@ -28,8 +28,8 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOerror;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
 import org.eolang.PhMethod;
@@ -37,8 +37,12 @@ import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ReadsStdIo;
+import org.junitpioneer.jupiter.StdIn;
+import org.junitpioneer.jupiter.StdIo;
 
 /**
  * Test case for {@link EOstdin}.
@@ -54,13 +58,31 @@ public final class EOstdinTest {
 
     @AfterAll
     public static void restoreSystemInput() {
-        System.setIn(DEFAULT_STDIN);
+        MatcherAssert.assertThat(
+            System.in,
+            Matchers.equalTo(DEFAULT_STDIN)
+        );
     }
 
+    @AfterEach
+    @ReadsStdIo
+    public void clearInput() {
+        final Input input = Input.getInstance();
+        try {
+            final Field prop = input.getClass().getDeclaredField("instance");
+            prop.setAccessible(true);
+            prop.set(input, null);
+        } catch (final NoSuchFieldException exception) {
+            throw new RuntimeException(exception);
+        } catch (final IllegalAccessException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    @StdIo("this is a test input!")
     @Test
-    public void nextLineOneLineTest() {
+    public void nextLineOneLineTest(final StdIn stdin) {
         final String expected = "this is a test input!";
-        this.mockSystemIn(String.format("%s\n", expected));
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -69,11 +91,22 @@ public final class EOstdinTest {
         );
     }
 
+    @StdIo("this is a testing input!")
     @Test
-    public void nextLineMultiLineTest() {
+    public void stdinOneLineTest(final StdIn stdin) {
+        final String expected = "this is a testing input!".concat(System.lineSeparator());
+        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
+        final String actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @StdIo({"this is a test input!", "another line", "yet another line"})
+    @Test
+    public void nextLineMultiLineTest(final StdIn stdin) {
         final String expected = "this is a test input!";
-        final String input = String.format("%s\nanother line\nyet another line", expected);
-        this.mockSystemIn(input);
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -82,10 +115,9 @@ public final class EOstdinTest {
         );
     }
 
+    @StdIo("")
     @Test
-    public void nextLineEmptyTest() {
-        final String expected = "";
-        this.mockSystemIn(expected);
+    public void nextLineEmptyTest(final StdIn stdin) {
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
@@ -99,34 +131,10 @@ public final class EOstdinTest {
         );
     }
 
+    @StdIo("")
     @Test
-    public void stdinOneLineTest() {
-        final String expected = "this is a testing input!\n";
-        this.mockSystemIn(expected);
-        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
-        final String actual = new Dataized(phi).take(String.class);
-        MatcherAssert.assertThat(
-            actual,
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @Test
-    public void stdinMultiLineTest() {
-        final String expected = "this is a test input!\nanother line\nyet another line";
-        this.mockSystemIn(expected);
-        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
-        final String actual = new Dataized(phi).take(String.class);
-        MatcherAssert.assertThat(
-            actual,
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @Test
-    public void stdinEmptyTest() {
+    public void stdinEmptyTest(final StdIn stdin) {
         final String expected = "";
-        this.mockSystemIn(expected);
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
@@ -135,7 +143,68 @@ public final class EOstdinTest {
         );
     }
 
-    private void mockSystemIn(final String text) {
-        System.setIn(new ByteArrayInputStream(text.getBytes()));
+    @StdIo({"this is a test input!", "another line", "yet another line"})
+    @Test
+    public void stdinMultiLineTest(final StdIn stdin) {
+        final String first = "this is a test input!".concat(System.lineSeparator());
+        final String second = "another line".concat(System.lineSeparator());
+        final String third = "yet another line".concat(System.lineSeparator());
+        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
+        final String actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(first + second + third)
+        );
+    }
+
+    @StdIo({"first", "second", "third"})
+    @Test
+    public void stdinfewOneLineTest(final StdIn stdin) {
+        final String first = "\u0066\u0069\u0072\u0073\u0074";
+        final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
+        final String third = "\u0074\u0068\u0069\u0072\u0064";
+        Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        String actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(first)
+        );
+        phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(second)
+        );
+        phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(third)
+        );
+    }
+
+    @StdIo({"first", "", "third"})
+    @Test
+    public void stdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
+        final String first = "\u0066\u0069\u0072\u0073\u0074";
+        final String third = "\u0074\u0068\u0069\u0072\u0064";
+        Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        String actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(first)
+        );
+        phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo("")
+        );
+        phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
+        actual = new Dataized(phi).take(String.class);
+        MatcherAssert.assertThat(
+            actual,
+            Matchers.equalTo(third)
+        );
     }
 }
