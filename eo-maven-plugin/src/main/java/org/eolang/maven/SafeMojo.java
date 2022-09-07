@@ -147,7 +147,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
+    @Parameter(property = "eo.transpiledFormat", required = true, defaultValue = "csv")
     protected String transpiledFormat = "csv";
 
     /**
