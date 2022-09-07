@@ -282,7 +282,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      *
      * @param vrtx The updated vertex
      */
-    protected void vertexUpdate(final int vrtx) {
+    protected void vertexFor(final int vrtx) {
         this.vertex = vrtx;
     }
 
