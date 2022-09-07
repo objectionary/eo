@@ -21,41 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang.maven;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.scalar.IoChecked;
+import org.cactoos.text.Randomized;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Lowest level class for saving and loading files.
+ * Test for {@link Disk}.
+ *
  * @since 0.27
- * @todo #1105:30min Add function for loading
- *  1) We should also be able to load file by path
- *  2) Unit tests for checking load function
  */
-final class Disk {
-    /**
-     * Ctor.
-     * @since 0.27
-     */
-    private Disk() { }
+final class DiskSaveTest {
 
-    /**
-     * Saving.
-     * @param path Path to file
-     * @param stream Input stream
-     * @return Saved bytes
-     * @throws IOException If fails
-     * @todo #1105:30min We need to modify function
-     *  1) Edit file names (replace bad characters)
-     *  2) Research if this way of writing is the good one.
-     */
-    static long save(final Path path, final IoChecked<InputStream> stream) throws IOException {
-        Files.write(path, stream.value().readAllBytes());
-        return stream.value().available();
+    @ValueSource(ints = {0, 100, 1_000, 10_000})
+    @ParameterizedTest
+    void saves(final int size, @TempDir final Path temp) throws IOException {
+        final Path resolve = temp.resolve("1.txt");
+        final String content = new UncheckedText(new Randomized(size)).asString();
+        Disk.save(
+            resolve,
+            new IoChecked<InputStream>(
+                () -> {
+                    final InputStream ret;
+                    ret = new ByteArrayInputStream(content.getBytes());
+                    return ret;
+                }
+        ));
+        MatcherAssert.assertThat(
+            new UncheckedText(new TextOf(resolve)).asString(),
+            Matchers.is(content)
+        );
     }
 }
