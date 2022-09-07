@@ -28,6 +28,11 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
+# @todo #1142:30m Long now can only be represented
+#  as an array of 8 bytes. This impelementation
+#  therefore is broken. Reimplement .as-hash
+#  and turn back on tests in bytes-test.eo &
+#  string-tests.eo
 [] > bytes
 
   # Equals to another object

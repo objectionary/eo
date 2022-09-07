@@ -30,6 +30,8 @@ package EOorg.EOeolang;
 import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
+import org.eolang.Bytes;
+import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -59,7 +61,7 @@ public class EObytes$EOor extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
+                    Bytes base = new Param(rho).asBytes();
                     final Phi[] args = new Param(rho, "b").strong(Phi[].class);
                     for (int index = 0; index < args.length; ++index) {
                         final Object val = new Dataized(args[index]).take();
@@ -71,9 +73,9 @@ public class EObytes$EOor extends PhDefault {
                                 )
                             );
                         }
-                        base = base.or(new BigInteger(byte[].class.cast(val)));
+                        base = base.or(new BytesOf(byte[].class.cast(val)));
                     }
-                    return new Data.ToPhi(base.toByteArray());
+                    return new Data.ToPhi(base.take());
                 }
             )
         );
