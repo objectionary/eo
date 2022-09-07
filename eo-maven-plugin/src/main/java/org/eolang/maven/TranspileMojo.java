@@ -175,14 +175,9 @@ public final class TranspileMojo extends SafeMojo {
                 for (final Path path : paths) {
                     this.transpiledTojos.value()
                         .add(
-                            String.format(
-                                "XMIR2:%s\nJava Path:%s",
-                                tojo.get(AssembleMojo.ATTR_XMIR2),
-                                path
-                            )
+                            String.valueOf(path)
                         )
-                        .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2))
-                        .set(AssembleMojo.ATTR_TRANSPILED, path);
+                        .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2));
                 }
                 saved += paths.size();
             }
@@ -272,7 +267,7 @@ public final class TranspileMojo extends SafeMojo {
         }
         int count = 0;
         for (final Tojo remove : removable) {
-            final File file = new File(remove.get("transpiled"));
+            final File file = new File(remove.get("id"));
             if (file.delete()) {
                 count += 1;
             }
