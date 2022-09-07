@@ -54,7 +54,7 @@ public class EObytes$EOas_int extends PhDefault {
             new AtComposite(
                 this,
                 rho -> new Data.ToPhi(
-                    new Param(rho).fromBytes(Long.class)
+                    new Param(rho).asBytes().asNumber(Long.class)
                 )
             )
         );

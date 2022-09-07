@@ -31,10 +31,10 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
- * @todo #1046:30min Use this class for operations
- *  on byte-arrays inside eo-runtime, in classes
- *  such as EObytes*, Param, etc. Avoid using
- *  byte[] directly in all of them.
+ * @todo #1142:30min Bytes should be easily
+ *  convertible to Phi. Add Bytes.ToPhi,
+ *  and replace all encounters of Data.ToPhi(Bytes)
+ *  with that. Avoid using byte[] directly.
  */
 public final class BytesOf implements Bytes {
 
@@ -65,6 +65,14 @@ public final class BytesOf implements Bytes {
      */
     public BytesOf(final int number) {
         this(ByteBuffer.allocate(Integer.BYTES).putInt(number).array());
+    }
+
+    /**
+     * Ctor.
+     * @param chr Character.
+     */
+    public BytesOf(final char chr) {
+        this(ByteBuffer.allocate(Character.BYTES).putChar(chr).array());
     }
 
     /**
