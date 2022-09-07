@@ -54,7 +54,11 @@ public class EObytes$EOas_float extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> new Data.ToPhi(new Param(rho).fromBytes(Double.class))
+                rho -> new Data.ToPhi(
+                    new Param(rho)
+                        .asBytes()
+                        .asNumber(Double.class)
+                )
             )
         );
     }

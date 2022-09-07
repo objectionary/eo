@@ -145,6 +145,12 @@ SOFTWARE.
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>1.7.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
         <version>1.31</version>
