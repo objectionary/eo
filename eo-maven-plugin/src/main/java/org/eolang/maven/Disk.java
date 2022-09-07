@@ -28,17 +28,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.CheckedInput;
+import org.cactoos.scalar.IoChecked;
 
 /**
  * Lowest level class for saving and loading files.
  * @since 0.27
  */
-public final class Disk {
+final class Disk {
     /**
      * Ctor.
      * @since 0.27
-     * @todo #1105:30min Implement load method.
      */
     private Disk() { }
 
@@ -50,11 +49,10 @@ public final class Disk {
      * @throws IOException If fails
      * @todo #1105:30min We need to modify function
      *  1) Edit file names (replace bad characters)
-     *  2) Research if this way ow writing is the good one.
+     *  2) Research if this way of writing is the good one.
      */
-    static long save(final Path path, final CheckedInput<IOException> stream) throws IOException {
-        final InputStream data = stream.stream();
-        Files.write(path, data.readAllBytes());
-        return data.available();
+    static long save(final Path path, final IoChecked<InputStream> stream) throws IOException {
+        Files.write(path, stream.value().readAllBytes());
+        return stream.value().available();
     }
 }
