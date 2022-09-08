@@ -94,7 +94,8 @@
           times.
             31
             a
-          b.as-int
+          as-int.
+            (0.as-bytes.and b).right 54
 
   # Concatenation of two byte sequences:
   # the current and the provided one,
