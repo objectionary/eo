@@ -37,6 +37,7 @@ import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -54,6 +55,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @Execution(ExecutionMode.CONCURRENT)
 @DisabledOnOs(OS.MAC)
+@Disabled
 final class RamTest {
     @ParameterizedTest
     @CsvSource({
