@@ -70,7 +70,8 @@
   [] > not /bytes
 
   # Calculate bitwise left shift
-  [x] > left /bytes
+  [x] > left
+    ^.right (x.neg) > @
 
   # Calculate bitwise right shift
   [x] > right /bytes
