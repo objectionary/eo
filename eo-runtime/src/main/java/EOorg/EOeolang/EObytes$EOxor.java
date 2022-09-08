@@ -27,12 +27,10 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Bytes;
 import org.eolang.BytesOf;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -69,7 +67,7 @@ public class EObytes$EOxor extends PhDefault {
                             )
                         );
                     }
-                    return new Data.ToPhi(base.take());
+                    return Bytes.toPhi(base);
                 }
             )
         );

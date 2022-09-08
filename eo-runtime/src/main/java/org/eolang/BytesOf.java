@@ -31,10 +31,6 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
- * @todo #1142:30min Bytes should be easily
- *  convertible to Phi. Add Bytes.ToPhi,
- *  and replace all encounters of Data.ToPhi(Bytes)
- *  with that. Avoid using byte[] directly.
  */
 public final class BytesOf implements Bytes {
 
