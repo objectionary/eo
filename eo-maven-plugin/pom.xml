@@ -207,6 +207,11 @@ SOFTWARE.
       logging system. -->
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>ddr</artifactId>
+      <version>0.0.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
