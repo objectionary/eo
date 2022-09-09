@@ -24,12 +24,13 @@
 
 package org.eolang.maven;
 
+import org.objectionary.ddr.launch.CombinerKt;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Perform DDR transformations
@@ -45,17 +46,20 @@ public class DdrMojo extends SafeMojo {
 
     /**
      * Shall we execute DDR tool on the program?
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
         property = "eo.executeDdr",
-        defaultValue = "false"
+        defaultValue = "true"
     )
     @SuppressWarnings("PMD.LongVariable")
     private boolean executeDdr;
 
     @Override
     void exec() throws IOException {
-
+        final Path dir = this.targetDir.toPath().resolve(ParseMojo.DIR);
+        CombinerKt.launch(String.valueOf(dir));
+        System.out.println("LAUNCHED HA");
     }
 }
