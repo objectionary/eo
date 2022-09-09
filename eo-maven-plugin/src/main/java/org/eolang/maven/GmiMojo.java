@@ -210,12 +210,6 @@ public final class GmiMojo extends SafeMojo {
     private Set<String> gmiIncludes = new SetOf<>("[A-Za-z0-9.]+?");
 
     /**
-     * List of matchers for object names to participate in GMI generation.
-     * @checkstyle MemberNameCheck (15 lines)
-     */
-    private Set<Pattern> includesMatchers = new SetOf<>();
-
-    /**
      * List of object names which are excluded from GMI generation.
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
@@ -224,20 +218,8 @@ public final class GmiMojo extends SafeMojo {
     @Parameter
     private Set<String> gmiExcludes = new SetOf<>();
 
-    /**
-     * List of matchers for object names to exclude from GMI generation.
-     * @checkstyle MemberNameCheck (15 lines)
-     */
-    private Set<Pattern> excludesMatchers = new SetOf<>();
-
     @Override
     public void exec() throws IOException {
-        this.includesMatchers = this.gmiIncludes.stream()
-            .map(i -> Pattern.compile(this.createMatcher(i)))
-            .collect(Collectors.toSet());
-        this.excludesMatchers = this.gmiExcludes.stream()
-            .map(Pattern::compile)
-            .collect(Collectors.toSet());
         if (this.generateGraphFiles && !this.generateXemblyFiles) {
             throw new IllegalStateException(
                 "Setting generateGraphFiles and not setting generateXemblyFiles has no effect because .graph files require .xe files"
@@ -254,9 +236,15 @@ public final class GmiMojo extends SafeMojo {
         final Path home = this.targetDir.toPath().resolve(GmiMojo.DIR);
         int total = 0;
         int instructions = 0;
+        final Set<Pattern> includes = this.gmiIncludes.stream()
+            .map(i -> Pattern.compile(this.createMatcher(i)))
+            .collect(Collectors.toSet());
+        final Set<Pattern> excludes = this.gmiExcludes.stream()
+            .map(Pattern::compile)
+            .collect(Collectors.toSet());
         for (final Tojo tojo : tojos) {
             final String name = tojo.get(Tojos.KEY);
-            if (this.exclude(name)) {
+            if (this.exclude(name, includes, excludes)) {
                 continue;
             }
             final Path gmi = new Place(name).make(home, "gmi");
@@ -305,15 +293,21 @@ public final class GmiMojo extends SafeMojo {
     /**
      * Exclude this EO program from processing?
      * @param name The name
+     * @param includes Patterns for gmis to be included
+     * @param excludes Patterns for gmis to be excluded
      * @return TRUE if to exclude
      */
-    private boolean exclude(final String name) {
+    private boolean exclude(
+        final String name,
+        final Set<Pattern> includes,
+        final Set<Pattern> excludes
+    ) {
         boolean exclude = false;
-        if (this.includesMatchers.stream().noneMatch(p -> p.matcher(name).matches())) {
+        if (includes.stream().noneMatch(p -> p.matcher(name).matches())) {
             Logger.debug(this, "Excluding %s due to gmiIncludes option", name);
             exclude = true;
         }
-        if (this.excludesMatchers.stream().anyMatch(p -> p.matcher(name).matches())) {
+        if (excludes.stream().anyMatch(p -> p.matcher(name).matches())) {
             Logger.debug(this, "Excluding %s due to gmiExcludes option", name);
             exclude = true;
         }
