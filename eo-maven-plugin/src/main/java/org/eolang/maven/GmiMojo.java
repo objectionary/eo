@@ -212,7 +212,7 @@ public final class GmiMojo extends SafeMojo {
      *  "org.**". The same is true about gmiExclude, let's fix it too.
      */
     @Parameter
-    private Set<String> gmiIncludes = new SetOf<>(".*");
+    private Set<String> gmiIncludes = new SetOf<>("[A-Za-z0-9.]+?");
 
     /**
      * List of matchers for object names to participate in GMI generation.
@@ -238,7 +238,7 @@ public final class GmiMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         this.includesMatchers = this.gmiIncludes.stream()
-            .map(Pattern::compile)
+            .map(i -> Pattern.compile(this.createMatcher(i)))
             .collect(Collectors.toSet());
         this.excludesMatchers = this.gmiExcludes.stream()
             .map(Pattern::compile)
@@ -294,6 +294,17 @@ public final class GmiMojo extends SafeMojo {
                 total, Save.rel(home), instructions
             );
         }
+    }
+
+    /**
+     * Creates a regular expression out of gmiInclude string.
+     * @param pattern String from gmiIncludes
+     * @return Created regular expression
+     */
+    private static String createMatcher(final String pattern) {
+        return pattern
+            .replace("**", "[A-Za-z0-9.]+?[.]+[A-Za-z0-9.]+?")
+            .replace("*", "[A-Za-z0-9]+");
     }
 
     /**

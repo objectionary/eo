@@ -1,13 +1,10 @@
 inclusion:
   - foo.*
 locators:
-  - .data .f Δ=float/3.1415926
-  - .data .b Δ=bytes/01
-  - .data .i Δ=bytes/00-00-00-00-00-01-00-00
-  - .data .s Δ=string/\u0434\u0440\u0443\u0433
+  - .a .x .α0 Δ=bytes/00-00-00-00-00-00-00-2A
+  - .b .y .α0 Δ=bytes/00-00-00-00-00-00-01-00
 eo: |
-  [] > data
-    3.1415926 > f
-    TRUE > b
-    65536 > i
-    "друг" > s
+  [f] > a
+    b 42 > x
+  [t] > b
+    a 256 > y
