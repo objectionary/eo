@@ -91,7 +91,7 @@ final class GmiMojoTest {
             String.format("%s is skipped", pack)
         );
         final Object value = map.get("inclusion");
-        String inclusion = "[A-Za-z0-9.]+?";
+        String inclusion = "**";
         if (value != null) {
             inclusion = value.toString().substring(1, value.toString().length() - 1);
         }
