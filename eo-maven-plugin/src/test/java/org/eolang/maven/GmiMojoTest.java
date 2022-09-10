@@ -68,7 +68,7 @@ final class GmiMojoTest {
             }
             program.append("[x y z] > foo\n");
         }
-        final XML graph = GmiMojoTest.toGraph(program.toString(), null);
+        final XML graph = GmiMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
             ".foo .foo",
             new GmiMojoTest.ExistsIn(graph)

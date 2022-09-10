@@ -207,7 +207,7 @@ public final class GmiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (15 lines)
      */
     @Parameter
-    private Set<String> gmiIncludes = new SetOf<>("[A-Za-z0-9.]+?");
+    private Set<String> gmiIncludes = new SetOf<>("**");
 
     /**
      * List of object names which are excluded from GMI generation.
@@ -237,10 +237,10 @@ public final class GmiMojo extends SafeMojo {
         int total = 0;
         int instructions = 0;
         final Set<Pattern> includes = this.gmiIncludes.stream()
-            .map(i -> Pattern.compile(this.createMatcher(i)))
+            .map(i -> Pattern.compile(GmiMojo.createMatcher(i)))
             .collect(Collectors.toSet());
         final Set<Pattern> excludes = this.gmiExcludes.stream()
-            .map(Pattern::compile)
+            .map(i -> Pattern.compile(GmiMojo.createMatcher(i)))
             .collect(Collectors.toSet());
         for (final Tojo tojo : tojos) {
             final String name = tojo.get(Tojos.KEY);
@@ -286,7 +286,7 @@ public final class GmiMojo extends SafeMojo {
      */
     private static String createMatcher(final String pattern) {
         return pattern
-            .replace("**", "[A-Za-z0-9.]+?[.]+[A-Za-z0-9.]+?")
+            .replace("**", "[A-Za-z0-9.]+?")
             .replace("*", "[A-Za-z0-9]+");
     }
 
