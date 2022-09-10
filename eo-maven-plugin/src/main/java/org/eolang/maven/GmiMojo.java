@@ -44,6 +44,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -203,16 +205,12 @@ public final class GmiMojo extends SafeMojo {
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
-     * @todo #1146:30min At the moment we don't support pattern matching, but
-     *  double-star means "everything". Let's implement proper matching,
-     *  where "org.eolang.int" would be matched by "org.*.int" and by
-     *  "org.**". The same is true about gmiExclude, let's fix it too.
      */
     @Parameter
     private Set<String> gmiIncludes = new SetOf<>("**");
 
     /**
-     * List of object names to participate in GMI generation.
+     * List of object names which are excluded from GMI generation.
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
@@ -238,9 +236,15 @@ public final class GmiMojo extends SafeMojo {
         final Path home = this.targetDir.toPath().resolve(GmiMojo.DIR);
         int total = 0;
         int instructions = 0;
+        final Set<Pattern> includes = this.gmiIncludes.stream()
+            .map(i -> Pattern.compile(GmiMojo.createMatcher(i)))
+            .collect(Collectors.toSet());
+        final Set<Pattern> excludes = this.gmiExcludes.stream()
+            .map(i -> Pattern.compile(GmiMojo.createMatcher(i)))
+            .collect(Collectors.toSet());
         for (final Tojo tojo : tojos) {
             final String name = tojo.get(Tojos.KEY);
-            if (this.exclude(name)) {
+            if (this.exclude(name, includes, excludes)) {
                 continue;
             }
             final Path gmi = new Place(name).make(home, "gmi");
@@ -276,17 +280,34 @@ public final class GmiMojo extends SafeMojo {
     }
 
     /**
+     * Creates a regular expression out of gmiInclude string.
+     * @param pattern String from gmiIncludes
+     * @return Created regular expression
+     */
+    private static String createMatcher(final String pattern) {
+        return pattern
+            .replace("**", "[A-Za-z0-9.]+?")
+            .replace("*", "[A-Za-z0-9]+");
+    }
+
+    /**
      * Exclude this EO program from processing?
      * @param name The name
+     * @param includes Patterns for gmis to be included
+     * @param excludes Patterns for gmis to be excluded
      * @return TRUE if to exclude
      */
-    private boolean exclude(final String name) {
+    private boolean exclude(
+        final String name,
+        final Set<Pattern> includes,
+        final Set<Pattern> excludes
+    ) {
         boolean exclude = false;
-        if (!this.gmiIncludes.contains(name) && !this.gmiIncludes.contains("**")) {
+        if (includes.stream().noneMatch(p -> p.matcher(name).matches())) {
             Logger.debug(this, "Excluding %s due to gmiIncludes option", name);
             exclude = true;
         }
-        if (this.gmiExcludes.contains(name) || this.gmiExcludes.contains("**")) {
+        if (excludes.stream().anyMatch(p -> p.matcher(name).matches())) {
             Logger.debug(this, "Excluding %s due to gmiExcludes option", name);
             exclude = true;
         }
