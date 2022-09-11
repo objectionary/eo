@@ -35,10 +35,4 @@ public class ExInterrupted extends ExAbstract {
      */
     private static final long serialVersionUID = 2377580403532765676L;
 
-    /**
-     * Ctor.
-     */
-    public ExInterrupted() {
-        super();
-    }
 }
