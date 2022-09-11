@@ -74,7 +74,7 @@ public final class AtComposite implements Attr {
         // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;
-        } catch (InterruptedException ex){
+        } catch (final InterruptedException ex) {
             System.out.println("Interrupted Exception");
             throw new ExInterrupted();
         } catch (final Throwable ex) {

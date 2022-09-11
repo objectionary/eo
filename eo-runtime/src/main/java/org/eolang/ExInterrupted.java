@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.28.3
  */
-public class ExInterrupted extends ExAbstract{
+public class ExInterrupted extends ExAbstract {
     /**
      * Serialization identifier.
      */
@@ -38,7 +38,7 @@ public class ExInterrupted extends ExAbstract{
     /**
      * Ctor.
      */
-    public ExInterrupted(){
+    public ExInterrupted() {
         super();
     }
 }
