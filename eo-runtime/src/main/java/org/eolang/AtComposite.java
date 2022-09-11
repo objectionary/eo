@@ -71,12 +71,12 @@ public final class AtComposite implements Attr {
     public Phi get() {
         try {
             return this.expr.get(this.rho);
-        // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
         } catch (final InterruptedException ex) {
             System.out.println("Interrupted Exception");
             throw new ExInterrupted();
+        // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
                 String.format(
