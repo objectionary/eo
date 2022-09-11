@@ -27,12 +27,10 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Bytes;
 import org.eolang.BytesOf;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Param;
@@ -44,7 +42,11 @@ import org.eolang.XmirObject;
  * BYTES.OR.
  *
  * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @checkstyle TypeNameCheck (15 lines)
+ * @todo #1184:30m This object is almost identical to
+ *  EOand & EOxor. Extract method for converting Phy[]
+ *  to Bytes[] to Param. And replace duplicated
+ *  part this call to this method.
  */
 @XmirObject(oname = "bytes.or")
 public class EObytes$EOor extends PhDefault {
@@ -75,7 +77,7 @@ public class EObytes$EOor extends PhDefault {
                         }
                         base = base.or(new BytesOf(byte[].class.cast(val)));
                     }
-                    return new Data.ToPhi(base.take());
+                    return Bytes.toPhi(base);
                 }
             )
         );
