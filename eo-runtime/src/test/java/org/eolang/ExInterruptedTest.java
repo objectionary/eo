@@ -36,7 +36,10 @@ public class ExInterruptedTest {
     @Test
     void rightException() {
         final EOthrow phi = new EOthrow(new Data.ToPhi(true));
-        Assertions.assertThrows(ExInterrupted.class, () -> new Dataized(phi.attr("φ").get()).take());
+        Assertions.assertThrows(
+            ExInterrupted.class,
+            () -> new Dataized(phi.attr("φ").get()).take()
+        );
     }
 
     /**
