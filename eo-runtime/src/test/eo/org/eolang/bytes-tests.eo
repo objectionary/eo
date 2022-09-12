@@ -445,3 +445,9 @@
     ((-4294967296).as-bytes.or (1.as-bytes)).as-int
     $.equal-to -4294967295
 
+[] > bytes-hashes-remain-same
+  assert-that > @
+    01-02-03-04.as-hash
+    $.equal-to
+      923521
+

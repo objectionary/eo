@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.28.1</version>
+      <version>0.28.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -142,6 +142,11 @@ SOFTWARE.
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>

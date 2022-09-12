@@ -58,8 +58,14 @@ SOFTWARE.
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="concat('EO', replace(replace(replace(replace($n, '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
   </xsl:function>
+  <xsl:function name="eo:suffix" as="xs:string">
+    <xsl:param name="s1"/>
+    <xsl:param name="s2"/>
+    <xsl:value-of select="concat(concat($s1, '_'), $s2)"/>
+  </xsl:function>
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
+    <xsl:param name="alt" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\.')"/>
     <xsl:variable name="p">
       <xsl:for-each select="$parts">
@@ -79,7 +85,15 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, eo:clean($c))"/>
+    <xsl:variable name="pre" select="concat($p, eo:clean($c))"/>
+    <xsl:choose>
+      <xsl:when test="string-length($pre)&gt;250">
+        <xsl:value-of select="concat(substring($pre, 1, 25), $alt)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$pre"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -99,10 +113,10 @@ SOFTWARE.
     <xsl:attribute name="java-name">
       <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
-        <xsl:value-of select="eo:class-name($pkg)"/>
+        <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
-      <xsl:value-of select="eo:class-name(.)"/>
+      <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
     </xsl:attribute>
   </xsl:template>
   <xsl:template match="class">
@@ -137,7 +151,7 @@ SOFTWARE.
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="ctors"/>
@@ -161,19 +175,19 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="//meta[head='junit'] and not(@parent)">
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>() {</xsl:text>
       </xsl:when>
       <xsl:when test="@ancestors">
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(final Phi sigma) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(sigma);</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(final Phi sigma) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(sigma);</xsl:text>
@@ -351,7 +365,7 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="@primitive and @base">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name(@base)"/>
+        <xsl:value-of select="eo:class-name(@base, eo:suffix(@line, @pos))"/>
         <xsl:text>(Phi.Φ)</xsl:text>
       </xsl:when>
       <xsl:when test="@base='$'">
@@ -371,7 +385,7 @@ SOFTWARE.
       </xsl:when>
       <xsl:when test="$b/@ancestors">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name($b/@name)"/>
+        <xsl:value-of select="eo:class-name($b/@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(rho)</xsl:text>
       </xsl:when>
       <xsl:when test="$b and name($b)='class'">
@@ -604,7 +618,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
     <xsl:text>Object obj = new Dataized(new </xsl:text>
-    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>()).take();</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
     <xsl:text>if (obj instanceof String) {</xsl:text>
@@ -619,7 +633,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
-    <xsl:value-of select="eo:class-name(tail)"/>
+    <xsl:value-of select="eo:class-name(tail, '')"/>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>

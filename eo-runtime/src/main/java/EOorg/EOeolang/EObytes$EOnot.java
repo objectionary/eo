@@ -56,9 +56,9 @@ public class EObytes$EOnot extends PhDefault {
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho)
-                        .fromBytes(BigInteger.class)
+                        .asBytes()
                         .not()
-                        .toByteArray()
+                        .take()
                 )
             )
         );

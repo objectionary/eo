@@ -27,10 +27,10 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
-import org.eolang.Data;
+import org.eolang.Bytes;
+import org.eolang.BytesOf;
 import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -58,13 +58,16 @@ public class EObytes$EOxor extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
+                    Bytes base = new Param(rho).asBytes();
                     final Phi[] args = new Param(rho, "b").strong(Phi[].class);
-                    for (int index = 0; index < args.length; ++index) {
-                        final byte[] arg = new Dataized(args[index]).take(byte[].class);
-                        base = base.xor(new BigInteger(arg));
+                    for (final Phi phi : args) {
+                        base = base.xor(
+                            new BytesOf(
+                                new Dataized(phi).take(byte[].class)
+                            )
+                        );
                     }
-                    return new Data.ToPhi(base.toByteArray());
+                    return Bytes.toPhi(base);
                 }
             )
         );
