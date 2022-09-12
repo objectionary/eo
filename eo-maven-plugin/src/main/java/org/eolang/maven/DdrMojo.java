@@ -24,25 +24,23 @@
 
 package org.eolang.maven;
 
-import org.objectionary.ddr.launch.CombinerKt;
+import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import java.io.IOException;
-import java.nio.file.Path;
+import org.objectionary.ddr.launch.CombinerKt;
 
 /**
- * Perform DDR transformations
+ * Perform XMIR transformations using DDR tool.
  *
  * @since 0.1
  */
 @Mojo(
     name = "ddr",
-    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    defaultPhase = LifecyclePhase.GENERATE_SOURCES
 )
-public class DdrMojo extends SafeMojo {
+public final class DdrMojo extends SafeMojo {
 
     /**
      * Shall we execute DDR tool on the program?
@@ -50,16 +48,17 @@ public class DdrMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
-        property = "eo.executeDdr",
-        defaultValue = "true"
+        property = "executeDdr",
+        required = true,
+        defaultValue = "false"
     )
-    @SuppressWarnings("PMD.LongVariable")
     private boolean executeDdr;
 
     @Override
     void exec() throws IOException {
-        final Path dir = this.targetDir.toPath().resolve(ParseMojo.DIR);
-        CombinerKt.launch(String.valueOf(dir));
-        System.out.println("LAUNCHED HA");
+        if (this.executeDdr) {
+            final Path dir = this.targetDir.toPath().resolve(ParseMojo.DIR);
+            CombinerKt.launch(String.valueOf(dir));
+        }
     }
 }
