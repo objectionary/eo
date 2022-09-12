@@ -23,8 +23,7 @@
  */
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,15 +36,7 @@ public class ExInterruptedTest {
     @Test
     void rightException() {
         final EOthrow phi = new EOthrow(new Data.ToPhi(true));
-        try {
-            new Dataized(phi.attr("φ").get()).take();
-        // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final Exception ex) {
-            MatcherAssert.assertThat(
-                ex,
-                Matchers.instanceOf(ExInterrupted.class)
-            );
-        }
+        Assertions.assertThrows(ExInterrupted.class, () -> new Dataized(phi.attr("φ").get()).take());
     }
 
     /**
