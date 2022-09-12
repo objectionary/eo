@@ -250,7 +250,6 @@ public final class TranspileMojo extends SafeMojo {
      * @param src The eo path
      * @return Count of removed files
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private int removeTranspiled(final String src) {
         final Collection<Tojo> existed = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
