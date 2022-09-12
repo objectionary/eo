@@ -88,8 +88,8 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
+        final HashOfTag tag = new HashOfTag(this.hash);
         if (this.objectionary == null) {
-            final HashOfTag tag = new HashOfTag(this.hash);
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
                     tag.narrow(),
@@ -108,6 +108,10 @@ public final class PullMojo extends SafeMojo {
                 tojo.set(
                     AssembleMojo.ATTR_EO,
                     this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
+                );
+                tojo.set(
+                    AssembleMojo.ATTR_HASH,
+                    tag.narrow()
                 );
             }
             Logger.info(

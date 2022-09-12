@@ -128,14 +128,14 @@ public final class ParseMojo extends SafeMojo {
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
-        final String version;
-        if (tojo.exists(AssembleMojo.ATTR_VERSION)) {
-            version = tojo.get(AssembleMojo.ATTR_VERSION);
+        final String hash;
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+            hash = tojo.get(AssembleMojo.ATTR_HASH);
         } else {
-            version = ParseMojo.ZERO;
+            hash = "";
         }
         final Footprint footprint = new Footprint(
-            version,
+            hash,
             this.targetDir.toPath().resolve(ParseMojo.DIR),
             this.cache
         );
@@ -144,13 +144,19 @@ public final class ParseMojo extends SafeMojo {
                 name,
                 AssembleMojo.ATTR_XMIR,
                 () -> {
+                    Logger.info(
+                        this,
+                        "Parsing program %s from source %s",
+                        name,
+                        source
+                    );
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     new Syntax(
                         name,
                         new InputOf(source),
                         new OutputTo(baos)
                     ).parse();
-                    return new XMLDocument(
+                    final String parsed = new XMLDocument(
                         new Xembler(
                             new Directives().xpath("/program").attr(
                                 "source",
@@ -158,6 +164,13 @@ public final class ParseMojo extends SafeMojo {
                             )
                         ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
                     ).toString();
+                    Logger.info(
+                        this,
+                        "Parsed program %s:\n %s",
+                        name,
+                        parsed
+                        );
+                    return parsed;
                 }
             );
         } catch (final ParsingException ex) {

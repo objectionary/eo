@@ -35,8 +35,7 @@ import org.cactoos.text.TextOf;
  * Program footprint of EO compilation process.
  * <p/>The footprint consists of file in {@link #main} folder and optionally cached
  * file in {@link #cache} folder.
- * Caching is applied if {@link #ver} represents true version in terms of
- * {@link #versioned(String)} method.
+ * Caching is applied if {@link #hash} is not empty otherwise caching is ignored.
  * <p/>Usage example:
  * <code>
  *  <pre>
@@ -60,7 +59,7 @@ public class Footprint {
     /**
      * Version tag.
      */
-    private final String ver;
+    private final String hash;
 
     /**
      * Path to cache root.
@@ -69,12 +68,12 @@ public class Footprint {
 
     /**
      * Ctor.
-     * @param ver Version tag
+     * @param hash Version tag
      * @param main Main root
      * @param cache Cache root
      */
-    public Footprint(final String ver, final Path main, final Path cache) {
-        this.ver = ver;
+    public Footprint(final String hash, final Path main, final Path cache) {
+        this.hash = hash;
         this.main = main;
         this.cache = cache;
     }
@@ -87,10 +86,10 @@ public class Footprint {
      * @throws IOException In case of IO issue.
      */
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.safeVer()), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.safeHash()), ext);
         final Path target = new Place(program).make(this.main, ext);
         final IoCheckedText content;
-        if (Footprint.versioned(this.ver) && cached.toFile().exists()) {
+        if (!this.hash.isEmpty() && cached.toFile().exists()) {
             content = new IoCheckedText(
                 new TextOf(cached)
             );
@@ -111,19 +110,26 @@ public class Footprint {
      */
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.safeVer()), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.safeHash()), ext);
         final Path target = new Place(program).make(this.main, ext);
         final String text;
-        if (Footprint.versioned(this.ver) && cached.toFile().exists()) {
+        if (!this.hash.isEmpty() && cached.toFile().exists()) {
             Logger.info(
                 this,
-                "File found in cache: %s",
+                "Program %s found in cache: %s",
+                program,
                 cached
             );
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            if (Footprint.versioned(this.ver)) {
+            Logger.info(
+                this,
+                "Parsed program %s into cache: %s",
+                program,
+                cached
+            );
+            if (!this.hash.isEmpty()) {
                 new Save(
                     text,
                     cached
@@ -137,22 +143,10 @@ public class Footprint {
     }
 
     /**
-     * Transform version for legal path.
-     * @return Version tag
+     * Transform hash for legal path.
+     * @return Hash
      */
-    private String safeVer() {
-        return this.ver.replaceAll("[* ]", "_");
-    }
-
-    /**
-     * Is it a true version?
-     * @param ver Version to check
-     * @return True if version has meaningful value and false otherwise
-     */
-    private static boolean versioned(final String ver) {
-        final String trimmed = ver.trim();
-        return !trimmed.isEmpty()
-            && !trimmed.equals("0.0.0")
-            && !trimmed.equals("*.*.*");
+    private String safeHash() {
+        return this.hash.replaceAll("[* ]", "_");
     }
 }
