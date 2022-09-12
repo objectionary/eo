@@ -72,7 +72,6 @@ public final class AtComposite implements Attr {
         try {
             return this.expr.get(this.rho);
         } catch (final InterruptedException ex) {
-            System.out.println("Interrupted Exception");
             throw new ExInterrupted();
         // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
