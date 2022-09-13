@@ -128,17 +128,18 @@ public final class ParseMojo extends SafeMojo {
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
-        final String hash;
+        final Footprint footprint;
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
-            hash = tojo.get(AssembleMojo.ATTR_HASH);
+            footprint = new FtCached(
+                tojo.get(AssembleMojo.ATTR_HASH),
+                this.targetDir.toPath().resolve(ParseMojo.DIR),
+                this.parsedCache
+            );
         } else {
-            hash = "";
+            footprint = new FtDefault(
+                this.targetDir.toPath().resolve(ParseMojo.DIR)
+            );
         }
-        final Footprint footprint = new Footprint(
-            hash,
-            this.targetDir.toPath().resolve(ParseMojo.DIR),
-            this.parsedCache
-        );
         try {
             footprint.save(
                 name,

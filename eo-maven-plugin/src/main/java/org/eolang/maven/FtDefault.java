@@ -24,30 +24,46 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
 
 /**
- * Program footprint of EO compilation process.
+ * Default implementation of a Footprint.
  * @since 1.0
  */
-public interface Footprint {
+public final class FtDefault implements Footprint {
 
     /**
-     * Get program content of a specific type.
-     * @param program Program name
-     * @param ext File extension which defines the type
-     * @return Content of a file
-     * @throws IOException In case of IO issue.
+     * Path to main location.
      */
-    String load(String program, String ext) throws IOException;
+    private final Path main;
 
     /**
-     * Save content.
-     * @param program Program name
-     * @param ext File extension
-     * @param content File content
-     * @throws IOException In case of IO issues
+     * Ctor.
+     * @param main Main location.
      */
-    void save(String program, String ext, Scalar<String> content)
-        throws IOException;
+    public FtDefault(final Path main) {
+        this.main = main;
+    }
+
+    @Override
+    public String load(final String program, final String ext) throws IOException {
+        return new IoCheckedText(
+            new TextOf(
+                new Place(program).make(this.main, ext)
+            )
+        ).asString();
+    }
+
+    @Override
+    public void save(final String program, final String ext, final Scalar<String> content)
+        throws IOException {
+        new Save(
+            new IoChecked<>(content).value(),
+            new Place(program).make(this.main, ext)
+        ).save();
+    }
 }

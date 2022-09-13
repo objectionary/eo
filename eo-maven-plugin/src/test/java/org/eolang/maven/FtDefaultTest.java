@@ -23,31 +23,31 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
-import org.cactoos.Scalar;
+import java.nio.file.Path;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Program footprint of EO compilation process.
+ * Tests for Cached.
  * @since 1.0
  */
-public interface Footprint {
-
-    /**
-     * Get program content of a specific type.
-     * @param program Program name
-     * @param ext File extension which defines the type
-     * @return Content of a file
-     * @throws IOException In case of IO issue.
-     */
-    String load(String program, String ext) throws IOException;
-
-    /**
-     * Save content.
-     * @param program Program name
-     * @param ext File extension
-     * @param content File content
-     * @throws IOException In case of IO issues
-     */
-    void save(String program, String ext, Scalar<String> content)
-        throws IOException;
+final class FtDefaultTest {
+    @Test
+    void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
+        final String content = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<program>",
+            "</program>"
+        );
+        new FtDefault(temp.resolve("target"))
+            .save("org.eolang.txt.text", "xmir", () -> content);
+        MatcherAssert.assertThat(
+            new FtDefault(temp.resolve("target"))
+                .load("org.eolang.txt.text", "xmir"),
+            Matchers.equalTo(content)
+        );
+    }
 }

@@ -89,7 +89,7 @@ final class ParseMojoTest {
             src
         ).save();
         final Path foreign = temp.resolve("eo-foreign.json");
-        new Footprint(
+        new FtCached(
             new HashOfTag("0.25.0").narrow(),
             target,
             temp.resolve("parsed")

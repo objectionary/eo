@@ -28,14 +28,12 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests for Cached.
  * @since 1.0
  */
-final class FootprintTest {
+final class FtCachedTest {
     @Test
     void testContentOfCachedFile(@TempDir final Path temp) throws Exception {
         final String content = String.join(
@@ -44,28 +42,10 @@ final class FootprintTest {
             "<program>",
             "</program>"
         );
-        new Footprint("abcde123", temp.resolve("target"), temp.resolve("parsed"))
+        new FtCached("abcde123", temp.resolve("target"), temp.resolve("parsed"))
             .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new Footprint("abcde123", temp.resolve("target"), temp.resolve("parsed"))
-                .load("org.eolang.txt.text", "xmir"),
-            Matchers.equalTo(content)
-        );
-    }
-
-    @ValueSource(strings = {"", "   "})
-    @ParameterizedTest
-    void testContentOfNoCacheFile(final String ver, @TempDir final Path temp) throws Exception {
-        final String content = String.join(
-            "\n",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-            "<program>",
-            "</program>"
-        );
-        new Footprint(ver, temp.resolve("target"), temp.resolve("parsed"))
-            .save("org.eolang.txt.text", "xmir", () -> content);
-        MatcherAssert.assertThat(
-            new Footprint("", temp.resolve("target"), temp.resolve("parsed"))
+            new FtCached("abcde123", temp.resolve("target"), temp.resolve("parsed"))
                 .load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
         );
