@@ -53,6 +53,7 @@ final class ResolveMojoTest {
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())
+            .with("parsedCache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -109,6 +110,7 @@ final class ResolveMojoTest {
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())
+            .with("parsedCache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -168,6 +170,7 @@ final class ResolveMojoTest {
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())
+            .with("parsedCache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())

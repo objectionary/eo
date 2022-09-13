@@ -73,7 +73,7 @@ public final class ParseMojo extends SafeMojo {
      */
     @Parameter(property = "eo.parsed.cache")
     @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo/parsed");
+    private Path parsedCache = Paths.get(System.getProperty("user.home")).resolve(".eo/parsed");
 
     /**
      * Whether we should fail on parsing error.
@@ -137,19 +137,13 @@ public final class ParseMojo extends SafeMojo {
         final Footprint footprint = new Footprint(
             hash,
             this.targetDir.toPath().resolve(ParseMojo.DIR),
-            this.cache
+            this.parsedCache
         );
         try {
             footprint.save(
                 name,
                 AssembleMojo.ATTR_XMIR,
                 () -> {
-                    Logger.info(
-                        this,
-                        "Parsing program %s from source %s",
-                        name,
-                        source
-                    );
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     new Syntax(
                         name,
@@ -169,7 +163,7 @@ public final class ParseMojo extends SafeMojo {
                         "Parsed program %s:\n %s",
                         name,
                         parsed
-                        );
+                    );
                     return parsed;
                 }
             );

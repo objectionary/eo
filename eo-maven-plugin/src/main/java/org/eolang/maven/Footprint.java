@@ -40,7 +40,7 @@ import org.cactoos.text.TextOf;
  * <code>
  *  <pre>
  *    final Footprint footprint = new Footprint(
- *      version,
+ *      hash,
  *      targetRoot,
  *      cacheRoot
  *    ).save(program, ext);
@@ -123,12 +123,6 @@ public class Footprint {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            Logger.info(
-                this,
-                "Parsed program %s into cache: %s",
-                program,
-                cached
-            );
             if (!this.hash.isEmpty()) {
                 new Save(
                     text,

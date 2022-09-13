@@ -44,16 +44,16 @@ final class FootprintTest {
             "<program>",
             "</program>"
         );
-        new Footprint("1.0.0", temp.resolve("target"), temp.resolve("parsed"))
+        new Footprint("abcde123", temp.resolve("target"), temp.resolve("parsed"))
             .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new Footprint("1.0.0", temp.resolve("target"), temp.resolve("parsed"))
+            new Footprint("abcde123", temp.resolve("target"), temp.resolve("parsed"))
                 .load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
         );
     }
 
-    @ValueSource(strings = {"0.0.0", "*.*.*", "", "   "})
+    @ValueSource(strings = {"", "   "})
     @ParameterizedTest
     void testContentOfNoCacheFile(final String ver, @TempDir final Path temp) throws Exception {
         final String content = String.join(
@@ -65,7 +65,7 @@ final class FootprintTest {
         new Footprint(ver, temp.resolve("target"), temp.resolve("parsed"))
             .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new Footprint("*.*.*", temp.resolve("target"), temp.resolve("parsed"))
+            new Footprint("", temp.resolve("target"), temp.resolve("parsed"))
                 .load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
         );
