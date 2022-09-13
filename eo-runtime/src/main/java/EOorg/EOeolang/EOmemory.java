@@ -73,7 +73,7 @@ public class EOmemory extends PhDefault {
                 new AtComposite(
                     this,
                     rho -> {
-                        Phi phi = new Data.ToPhi(
+                        final Phi phi = new Data.ToPhi(
                             new Dataized(
                                 rho.attr("x").get()
                             ).take()
