@@ -35,6 +35,11 @@ SOFTWARE.
   <description>EO-to-XML Parser</description>
   <dependencies>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-test</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <!-- version from parent POM -->

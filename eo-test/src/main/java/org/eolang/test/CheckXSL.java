@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.test;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
