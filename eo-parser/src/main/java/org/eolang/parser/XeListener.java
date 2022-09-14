@@ -269,6 +269,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );
+        if (ctx.COPY() != null) {
+            this.objects.prop("copy", "");
+        }
         this.objects.prop("method", "");
         this.objects.prop("base", String.format(".%s", ctx.mtd.getText()));
         this.objects.leave();

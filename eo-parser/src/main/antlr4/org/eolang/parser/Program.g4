@@ -105,6 +105,7 @@ method
     |
     VERTEX
   )
+  COPY?
   ;
 
 scope

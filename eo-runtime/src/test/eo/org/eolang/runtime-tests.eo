@@ -343,3 +343,11 @@
     assert-that
       b1.v
       $.equal-to 1
+
+[] > copy-object-with-dot
+  [] > book
+    "qwerty" > title
+  book.title' > copy-title
+  eq. > @
+    copy-title
+    "qwerty"
