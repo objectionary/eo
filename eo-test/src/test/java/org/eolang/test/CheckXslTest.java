@@ -31,14 +31,17 @@ import org.junit.jupiter.api.Test;
  * Test for {@link CheckXSL}.
  * @since 0.28
  */
-public final class TestCheckXSL {
+public final class CheckXslTest {
 
     /**
-     * Void test for CheckXSL (need to rewrite)
+     * Void test for CheckXSL (need to rewrite).
      */
     @Test
     void check() {
-        MatcherAssert.assertThat(this.getClass().toString(), Matchers.is("class org.eolang.test.TestCheckXSL"));
+        MatcherAssert.assertThat(
+            this.getClass().toString(),
+            Matchers.is("class org.eolang.test.CheckXslTest")
+        );
         MatcherAssert.assertThat(true, Matchers.is(true));
     }
 
