@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<program ms="154"
+         name="foo.x.main"
+         source="foo/x/main.eo"
+         time="2022-08-23T10:39:36.006068Z"
+         version="1.0-SNAPSHOT">
+   <listing>+package f
+
+[args] &gt; main
+  (stdout "Hello!").print
+</listing>
+   <errors/>
+   <sheets/>
+   <metas>
+      <meta line="1">
+         <head>package</head>
+         <tail>f</tail>
+         <part>f</part>
+      </meta>
+   </metas>
+   <objects>
+      <o abstract="" line="3" name="main" pos="0">
+         <o line="3" name="args" pos="1"/>
+         <o base="stdout" line="4" pos="3">
+            <o base="string" data="string" line="4" pos="10">Hello!</o>
+         </o>
+         <o base=".print" line="4" method="" pos="19"/>
+      </o>
+   </objects>
+</program>

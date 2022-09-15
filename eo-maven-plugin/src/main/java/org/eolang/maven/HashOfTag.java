@@ -79,6 +79,14 @@ final class HashOfTag {
     }
 
     /**
+     * Short version of hash.
+     * @return SHA of commit
+     */
+    public String narrow() {
+        return this.hash().substring(0, 7);
+    }
+
+    /**
      * Load all hashes and tags.
      * @return Map of them (hash -> tag)
      */

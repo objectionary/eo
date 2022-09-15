@@ -64,6 +64,7 @@ final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with(
                 "objectionary",
@@ -121,6 +122,7 @@ final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("failOnError", false)
             .with(
