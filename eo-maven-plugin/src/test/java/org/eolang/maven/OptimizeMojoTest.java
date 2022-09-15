@@ -57,6 +57,7 @@ final class OptimizeMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(OptimizeMojo.class)
@@ -96,6 +97,7 @@ final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -136,6 +138,7 @@ final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -184,6 +187,7 @@ final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())

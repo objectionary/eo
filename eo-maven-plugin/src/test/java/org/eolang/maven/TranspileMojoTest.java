@@ -72,6 +72,7 @@ final class TranspileMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(OptimizeMojo.class)
@@ -179,6 +180,7 @@ final class TranspileMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(OptimizeMojo.class)
@@ -227,6 +229,7 @@ final class TranspileMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .with("failOnError", false)
             .execute();
@@ -313,6 +316,7 @@ final class TranspileMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(OptimizeMojo.class)
