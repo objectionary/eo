@@ -61,7 +61,7 @@ final class ParseMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
-            .with("parsedCache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
@@ -109,7 +109,7 @@ final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("parsedCache", temp.resolve("parsed"))
+            .with("cache", temp.resolve("parsed"))
             .execute();
         MatcherAssert.assertThat(
             Files.exists(
@@ -142,7 +142,7 @@ final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
-                .with("parsedCache", temp.resolve("cache/parsed"))
+                .with("cache", temp.resolve("cache/parsed"))
                 .with("foreignFormat", "csv")
                 .execute()
         );
@@ -163,7 +163,7 @@ final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
-                .with("parsedCache", temp.resolve("cache/parsed"))
+                .with("cache", temp.resolve("cache/parsed"))
                 .with("foreignFormat", "csv")
                 .execute()
         );
@@ -188,7 +188,7 @@ final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("parsedCache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache/parsed"))
             .with("failOnError", false)
             .execute();
         MatcherAssert.assertThat(

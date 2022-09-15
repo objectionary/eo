@@ -179,9 +179,9 @@ public final class AssembleMojo extends SafeMojo {
      * Parsed cache directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.parsed.cache")
+    @Parameter(property = "eo.cache")
     @SuppressWarnings("PMD.ImmutableField")
-    private Path parsedCache = Paths.get(System.getProperty("user.home")).resolve(".eo/parsed");
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     @Override
     public void exec() throws IOException {

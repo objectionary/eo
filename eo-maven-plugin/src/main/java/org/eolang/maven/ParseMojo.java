@@ -68,12 +68,17 @@ public final class ParseMojo extends SafeMojo {
     public static final String DIR = "01-parse";
 
     /**
-     * Parsed cache directory.
+     * Subdirectory for parsed cache.
+     */
+    public static final String PARSED = "parsed";
+
+    /**
+     * EO cache directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.parsed.cache")
+    @Parameter(property = "eo.cache")
     @SuppressWarnings("PMD.ImmutableField")
-    private Path parsedCache = Paths.get(System.getProperty("user.home")).resolve(".eo/parsed");
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
      * Whether we should fail on parsing error.
@@ -133,7 +138,7 @@ public final class ParseMojo extends SafeMojo {
             footprint = new FtCached(
                 tojo.get(AssembleMojo.ATTR_HASH),
                 this.targetDir.toPath().resolve(ParseMojo.DIR),
-                this.parsedCache
+                this.cache.resolve(ParseMojo.PARSED)
             );
         } else {
             footprint = new FtDefault(

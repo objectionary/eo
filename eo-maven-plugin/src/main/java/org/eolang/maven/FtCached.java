@@ -80,7 +80,7 @@ public final class FtCached implements Footprint {
 
     @Override
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.safeHash()), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
         final Path target = new Place(program).make(this.main, ext);
         final IoCheckedText content;
         if (cached.toFile().exists()) {
@@ -98,7 +98,7 @@ public final class FtCached implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.safeHash()), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
         final Path target = new Place(program).make(this.main, ext);
         final String text;
         if (cached.toFile().exists()) {
@@ -114,13 +114,5 @@ public final class FtCached implements Footprint {
             new Save(text, cached).save();
         }
         new Save(text, target).save();
-    }
-
-    /**
-     * Transform hash for legal path.
-     * @return Hash
-     */
-    private String safeHash() {
-        return this.hash.replaceAll("[* ]", "_");
     }
 }
