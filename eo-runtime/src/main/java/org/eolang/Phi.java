@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.io.Serializable;
+
 /**
  * A simple object.
  *
@@ -33,7 +35,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi extends Term {
+public interface Phi extends Term, Serializable {
 
     /**
      * The global scope object, which owns all other objects.

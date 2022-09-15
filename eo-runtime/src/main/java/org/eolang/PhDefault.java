@@ -44,6 +44,8 @@ import java.util.stream.Collectors;
  */
 public abstract class PhDefault implements Phi, Cloneable {
 
+    private static final long serialVersionUID = 0;
+
     /**
      * Vertices.
      */
