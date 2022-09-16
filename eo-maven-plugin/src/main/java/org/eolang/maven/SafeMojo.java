@@ -254,5 +254,4 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
-
 }

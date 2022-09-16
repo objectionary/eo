@@ -38,6 +38,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -67,7 +68,20 @@ public final class ParseMojo extends SafeMojo {
     public static final String DIR = "01-parse";
 
     /**
-     * Whether we should fail on error.
+     * Subdirectory for parsed cache.
+     */
+    public static final String PARSED = "parsed";
+
+    /**
+     * EO cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
+    /**
+     * Whether we should fail on parsing error.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.23.0
      */
@@ -115,19 +129,51 @@ public final class ParseMojo extends SafeMojo {
      * @param tojo The tojo
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Footprint footprint;
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+            footprint = new FtCached(
+                tojo.get(AssembleMojo.ATTR_HASH),
+                this.targetDir.toPath().resolve(ParseMojo.DIR),
+                this.cache.resolve(ParseMojo.PARSED)
+            );
+        } else {
+            footprint = new FtDefault(
+                this.targetDir.toPath().resolve(ParseMojo.DIR)
+            );
+        }
         try {
-            new Syntax(
+            footprint.save(
                 name,
-                new InputOf(source),
-                new OutputTo(baos)
-            ).parse();
-        // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final RuntimeException ex) {
+                AssembleMojo.ATTR_XMIR,
+                () -> {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    new Syntax(
+                        name,
+                        new InputOf(source),
+                        new OutputTo(baos)
+                    ).parse();
+                    final String parsed = new XMLDocument(
+                        new Xembler(
+                            new Directives().xpath("/program").attr(
+                                "source",
+                                source.toAbsolutePath()
+                            )
+                        ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                    ).toString();
+                    Logger.info(
+                        this,
+                        "Parsed program %s:\n %s",
+                        name,
+                        parsed
+                    );
+                    return parsed;
+                }
+            );
+        } catch (final ParsingException ex) {
             if (this.failOnError) {
                 throw new IllegalArgumentException(
                     String.format("Failed to parse %s", source),
@@ -135,30 +181,20 @@ public final class ParseMojo extends SafeMojo {
                 );
             }
             Logger.warn(
-                this, "Parse was skipped due to failOnError=false. In file %s with error: %s",
-                source.toString(),
+                this, "Parsing was skipped due to failOnError=false. In file %s with error: %s",
+                source,
                 ex.getMessage()
             );
             return;
         }
         final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR), TranspileMojo.EXT
+            this.targetDir.toPath().resolve(ParseMojo.DIR),
+            TranspileMojo.EXT
         );
-        new Save(
-            new XMLDocument(
-                new Xembler(
-                    new Directives().xpath("/program").attr(
-                        "source", source.toAbsolutePath()
-                    )
-                ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
-            ).toString(),
-            target
-        ).save();
+        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
         Logger.debug(
             this, "Parsed %s to %s",
             Save.rel(source), Save.rel(target)
         );
-        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
     }
-
 }

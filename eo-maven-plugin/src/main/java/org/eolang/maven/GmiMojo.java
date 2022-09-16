@@ -330,6 +330,7 @@ public final class GmiMojo extends SafeMojo {
             .pass(after)
             .xpath("/text/text()")
             .get(0);
+        Logger.debug(this, "GMIs:\n%s", instructions);
         new Save(instructions, gmi).save();
         if (this.generateGmiXmlFiles) {
             new Save(
@@ -378,8 +379,11 @@ public final class GmiMojo extends SafeMojo {
                 gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
             ).save();
             if (this.generateDotFiles) {
+                final String dot = new Xsline(GmiMojo.TO_DOT)
+                    .pass(graph).xpath("//dot/text()").get(0);
+                Logger.debug(this, "Dot:\n%s", dot);
                 new Save(
-                    new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
+                    dot,
                     gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
                 ).save();
             }

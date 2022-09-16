@@ -21,69 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * MEMORY.
+ * Test case for {@link ExInterrupted}.
  *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.28.3
  */
-@XmirObject(oname = "memory")
-public class EOmemory extends PhDefault {
+public class ExInterruptedTest {
 
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOmemory(final Phi sigma) {
-        super(sigma);
-        this.add("enclosure", new AtMemoized());
-        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtComposite(this, EOmemory.Write::new));
+    @Test
+    void rightException() {
+        final EOthrow phi = new EOthrow(new Data.ToPhi(true));
+        Assertions.assertThrows(
+            ExInterrupted.class,
+            () -> new Dataized(phi.attr("φ").get()).take()
+        );
     }
 
     /**
-     * Memory write.
-     * @since 1.0
+     * Phi object that throw InterruptedException.
+     *
+     * @since 0.28.3
      */
-    @XmirObject(oname = "memory.write")
-    private final class Write extends PhDefault {
+    private static class EOthrow extends PhDefault {
         /**
-         * Ctor.
+         * CTor.
          * @param sigma Sigma
          */
-        Write(final Phi sigma) {
+        EOthrow(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
             this.add(
                 "φ",
                 new AtComposite(
                     this,
                     rho -> {
-                        final Phi phi = new Data.ToPhi(
-                            new Dataized(
-                                rho.attr("x").get()
-                            ).take()
-                        );
-                        rho.attr("σ").get().attr("enclosure").put(phi);
-                        return phi;
+                        throw new InterruptedException();
                     }
                 )
             );
         }
-    }
 
+    }
 }

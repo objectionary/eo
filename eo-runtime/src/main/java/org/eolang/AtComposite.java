@@ -71,6 +71,9 @@ public final class AtComposite implements Attr {
     public Phi get() {
         try {
             return this.expr.get(this.rho);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted();
         // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;
