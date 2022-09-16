@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.2
++version 0.28.3
 
 [] > takes-part-of-bytes
   assert-that > @
@@ -374,11 +374,11 @@
       $.equal-to
         "hello world"
 
-# [] > bytes-hashes-equals
-#   assert-that > @
-#     05-5E-78.as-hash
-#     $.equal-to
-#       05-5E-78.as-hash
+[] > bytes-hashes-equals
+  assert-that > @
+    05-5E-78.as-hash
+    $.equal-to
+      05-5E-78.as-hash
 
 [] > bytes-as-hash-value
   assert-that > @
@@ -444,4 +444,10 @@
   assert-that > @
     ((-4294967296).as-bytes.or (1.as-bytes)).as-int
     $.equal-to -4294967295
+
+[] > bytes-hashes-remain-same
+  assert-that > @
+    01-02-03-04.as-hash
+    $.equal-to
+      923521
 

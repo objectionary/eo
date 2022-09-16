@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.2
++version 0.28.3
 
 [] > understands-this-correctly
   [x] > a
@@ -104,7 +104,7 @@
         x.while
           [i]
             &.x.write FALSE > @
-    $.equal-to TRUE
+    $.equal-to FALSE
 
 [] > calculates-only-once-BROKEN
   memory 0 > x
@@ -343,3 +343,11 @@
     assert-that
       b1.v
       $.equal-to 1
+
+[] > copy-object-with-dot
+  [] > book
+    "qwerty" > title
+  book.title' > copy-title
+  eq. > @
+    copy-title
+    "qwerty"

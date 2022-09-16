@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.2
++version 0.28.3
 
 [] > writes-into-cage
   [z] > a
@@ -163,4 +163,13 @@
         cb.z
         cb.z.plus 40
 
-
+[] > infinite-loop-check
+  cage 0 > x
+  cage 0 > tmp
+  [value] > pyint
+    [y] > add
+      pyint (value.plus (y.value)) > @
+  seq > @
+    x.write (pyint 0)
+    tmp.write (x.add (pyint 1))
+    tmp.value.eq 1

@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.2
++version 0.28.3
 
 [] > calculates-length-of-spaces-only
   assert-that > @
@@ -110,11 +110,11 @@
     """
     $.equal-to "a\n b\n  c"
 
-# [] > similar-strings-generate-similar-hashes
-#   assert-that > @
-#     "hello".as-hash
-#     $.equal-to
-#       "hello".as-hash
+[] > similar-strings-generate-similar-hashes
+  assert-that > @
+    "hello".as-hash
+    $.equal-to
+      "hello".as-hash
 
 [] > compares-two-strings
   assert-that > @

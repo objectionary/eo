@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.2
++version 0.28.3
 
 [] > writes-into-memory
   memory 0 > x
@@ -73,7 +73,9 @@
     and.
       seq
         a.write 10
-        b.write 20
+        eq.
+          b.write 20
+          20
       a.eq 10
     $.equal-to TRUE
 

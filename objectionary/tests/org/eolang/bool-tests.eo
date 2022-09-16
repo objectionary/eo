@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.2
++version 0.28.3
 
 [] > compares-two-bools
   assert-that > @
@@ -64,9 +64,11 @@
   memory 0 > x
   assert-that > @
     and.
-      x.write 5
       eq.
-        TRUE
+        x.write 5
+        5
+      eq.
+        11
         while.
           x.lt 10
           [i]
@@ -99,15 +101,15 @@
     and.
       not.
         and.
-          (mFirst.write 1).not
-          mFirst.write 2
-          mFirst.write 3
+          (mFirst.write 1).eq 100
+          (mFirst.write 2).eq 2
+          (mFirst.write 3).eq 3
       not.
         and.
-          mThird.write 1
-          mThird.write 2
-          (mThird.write 3).not
-          (mThird.write 4)
+          (mThird.write 1).eq 1
+          (mThird.write 2).eq 2
+          (mThird.write 3).eq 300
+          (mThird.write 4).eq 4
       mFirst.eq 1
       mThird.eq 3
     $.equal-to TRUE
@@ -120,13 +122,13 @@
   assert-that > @
     and.
       or.
-        mFirst.write 1
+        (mFirst.write 1).eq 1
         mFirst.write 2
         mFirst.write 3
       or.
-        (mThird.write 1).not
-        (mThird.write 2).not
-        mThird.write 3
+        (mThird.write 1).eq 100
+        (mThird.write 2).eq 200
+        (mThird.write 3).eq 3
         mThird.write 4
       mFirst.eq 1
       mThird.eq 3
