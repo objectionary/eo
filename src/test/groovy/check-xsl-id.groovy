@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 
-println "Hello World!"
+println ">>> Hello World! <<<"
 
 true
