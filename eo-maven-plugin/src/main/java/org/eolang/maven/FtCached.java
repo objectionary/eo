@@ -102,11 +102,10 @@ public final class FtCached implements Footprint {
         final Path target = new Place(program).make(this.main, ext);
         final String text;
         if (cached.toFile().exists()) {
-            Logger.info(
+            Logger.debug(
                 this,
-                "Program %s found in cache: %s",
-                program,
-                cached
+                "Program %s.%s found in cache: %s",
+                program, ext, cached
             );
             text = this.load(program, ext);
         } else {

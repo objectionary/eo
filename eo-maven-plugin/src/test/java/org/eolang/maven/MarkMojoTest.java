@@ -43,7 +43,7 @@ final class MarkMojoTest {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         new Save(
             "hi",
-            bins.resolve(String.format("foo/hello/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
+            bins.resolve(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
         ).save();
         final Path foreign = temp.resolve("placed.json");
         new Moja<>(MarkMojo.class)

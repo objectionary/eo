@@ -164,7 +164,7 @@ public final class ParseMojo extends SafeMojo {
                             )
                         ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
                     ).toString();
-                    Logger.info(
+                    Logger.debug(
                         this,
                         "Parsed program %s:\n %s",
                         name,

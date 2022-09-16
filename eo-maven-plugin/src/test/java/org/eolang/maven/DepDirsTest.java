@@ -46,7 +46,7 @@ final class DepDirsTest {
         new Save("", temp.resolve("a/g")).save();
         MatcherAssert.assertThat(
             new DepDirs(temp),
-            Matchers.contains(String.format("a%sb%1$sc", File.separator))
+            Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
         );
         MatcherAssert.assertThat(
             new DepDirs(temp),

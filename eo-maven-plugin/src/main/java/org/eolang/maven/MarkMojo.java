@@ -60,7 +60,7 @@ public final class MarkMojo extends SafeMojo {
                 if (!Files.exists(sub)) {
                     continue;
                 }
-                final String ver = dep.split(Pattern.quote(File.separator))[2];
+                final String ver = dep.split(Pattern.quote(File.separator))[3];
                 found += this.scan(sub, ver);
             }
             Logger.info(
