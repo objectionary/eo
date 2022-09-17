@@ -1,0 +1,63 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2022 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.digits.int8
++alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++junit
++package org.eolang.digits
++version 0.0.0
+
+[] > brings-carry
+  assert-that > @
+    carry.
+      plus.
+        int8 FF-
+        int8 FF-
+    $.equal-to
+      01-
+
+[] > no-carry-for-low-numbers
+  assert-that > @
+    carry.
+      plus.
+        int8 02-
+        int8 08-
+    $.equal-to
+      00-
+
+[] > subtracts
+  assert-that > @
+    minus.
+      int8 05-
+      int8 02-
+    $.equal-to
+      03-
+
+[] > adds
+  assert-that > @
+    plus.
+      int8 05-
+      int8 02-
+    $.equal-to
+      07-
