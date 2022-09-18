@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.yegor256.tojos.MnCsv;
 import com.yegor256.tojos.MnJson;
+import com.yegor256.tojos.MnPostponed;
 import com.yegor256.tojos.MnSticky;
 import com.yegor256.tojos.Mono;
 import com.yegor256.tojos.TjCached;
@@ -33,6 +34,8 @@ import com.yegor256.tojos.Tojos;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * All catalogs in one place, to avoid making multiple objects.
@@ -45,6 +48,24 @@ final class Catalogs {
      * Singleton.
      */
     public static final Catalogs INSTANCE = new Catalogs();
+
+    /**
+     * Singleton.
+     */
+    private static final Unchecked<Boolean> TESTING = new Unchecked<>(
+        new Sticky<>(
+            () -> {
+                boolean tests;
+                try {
+                    Class.forName("org.junit.jupiter.api.Test");
+                    tests = true;
+                } catch (final ClassNotFoundException ex) {
+                    tests = false;
+                }
+                return tests;
+            }
+        )
+    );
 
     /**
      * All of them.
@@ -89,7 +110,7 @@ final class Catalogs {
      */
     private static Tojos build(final Path path, final String format) {
         final String fmt = format.trim().toLowerCase(Locale.ENGLISH);
-        final Mono mono;
+        Mono mono;
         if ("json".equals(fmt)) {
             mono = new MnJson(path);
         } else if ("csv".equals(fmt)) {
@@ -102,6 +123,12 @@ final class Catalogs {
                 )
             );
         }
-        return new TjCached(new TjDefault(new MnSticky(mono)));
+        if (Catalogs.TESTING.value()) {
+            mono = new MnSticky(mono);
+        } else {
+            mono = new MnPostponed(mono);
+        }
+        return new TjCached(new TjDefault(mono));
     }
+
 }

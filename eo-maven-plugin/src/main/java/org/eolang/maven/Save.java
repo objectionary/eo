@@ -137,7 +137,7 @@ public final class Save {
                     )
                 )
             ).value();
-            Logger.info(
+            Logger.debug(
                 this, "File %s saved (%.0f bytes)",
                 Save.rel(this.path), bytes
             );
