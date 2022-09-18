@@ -89,3 +89,8 @@
     or. > @
       ^.eq x
       ^.gt x
+
+  # Tests that $ ≤ x
+  [x] > lte
+    not. > @
+      ^.gt x

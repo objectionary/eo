@@ -87,3 +87,11 @@
       int8 10-
     $.equal-to
       TRUE
+
+[] > lte
+  assert-that > @
+    lte.
+      int8 01-
+      int8 10-
+    $.equal-to
+      TRUE
