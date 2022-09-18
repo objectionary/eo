@@ -111,3 +111,11 @@
       int8 10-
     $.equal-to
       TRUE
+
+[] > times
+  assert-that > @
+    times.
+      int8 05-
+      int8 02-
+    $.equal-to
+      10-
