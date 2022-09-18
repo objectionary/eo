@@ -83,3 +83,9 @@
         00-
       TRUE
       FALSE
+
+  # Tests that $ ≥ x
+  [x] > gte
+    or. > @
+      ^.eq x
+      ^.gt x

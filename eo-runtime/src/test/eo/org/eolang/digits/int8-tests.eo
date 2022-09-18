@@ -71,3 +71,19 @@
         int8 01-
     $.equal-to
       TRUE
+
+[] > gte-greater
+  assert-that > @
+    gte.
+      int8 10-
+      int8 05-
+    $.equal-to
+      TRUE
+
+[] > gte-equal
+  assert-that > @
+    gte.
+      int8 10-
+      int8 10-
+    $.equal-to
+      TRUE
