@@ -27,37 +27,45 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtVararg;
+import java.util.function.BinaryOperator;
 import org.eolang.Bytes;
-import org.eolang.PhDefault;
+import org.eolang.BytesOf;
+import org.eolang.Dataized;
+import org.eolang.Expr;
+import org.eolang.Param;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
- * BYTES.AND.
+ * Reduce on BYTES.
  *
  * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "bytes.and")
-public class EObytes$EOand extends PhDefault {
+final class ExReduceBytes implements Expr {
+    /**
+     * Reduce operation.
+     */
+    private final BinaryOperator<Bytes> oper;
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param oper Operation.
      */
-    public EObytes$EOand(final Phi sigma) {
-        super(sigma);
-        this.add("b", new AtVararg());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                new ExReduceBytes(
-                    Bytes::and
+    ExReduceBytes(final BinaryOperator<Bytes> oper) {
+        this.oper = oper;
+    }
+
+    @Override
+    public Phi get(final Phi rho) throws Exception {
+        Bytes base = new Param(rho).asBytes();
+        final Phi[] args = new Param(rho, "b").strong(Phi[].class);
+        for (final Phi phi : args) {
+            base = this.oper.apply(
+                base,
+                new BytesOf(
+                    new Dataized(phi).take(byte[].class)
                 )
-            )
-        );
+            );
+        }
+        return Bytes.toPhi(base);
     }
 }
