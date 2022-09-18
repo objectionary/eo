@@ -64,7 +64,13 @@
 
           c > carry
 
-  (int8 &.byte.not).plus 01- > neg
+  # Change the sign of the number
+  [] > neg
+    plus. > @
+      int8
+        not.
+          byte
+      01-
 
   [subrahend] > minus
     ^.plus (subrahend.neg) > @
