@@ -126,7 +126,7 @@ final class Catalogs {
         if (Catalogs.TESTING.value()) {
             mono = new MnSticky(mono);
         } else {
-            mono = new MnPostponed(mono);
+            mono = new MnPostponed(mono, 500L);
         }
         return new TjCached(new TjDefault(mono));
     }
