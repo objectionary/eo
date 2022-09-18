@@ -61,3 +61,13 @@
       int8 02-
     $.equal-to
       07-
+
+[] > gt
+  assert-that > @
+    gt.
+      int8 00-
+      minus.
+        int8 00-
+        int8 01-
+    $.equal-to
+      TRUE

@@ -74,3 +74,12 @@
 
   [subrahend] > minus
     ^.plus (subrahend.neg) > @
+
+  # Tests that $ > x
+  [x] > gt
+    if. > @
+      eq.
+        ((^.minus x).right 7).and 01-
+        00-
+      TRUE
+      FALSE
