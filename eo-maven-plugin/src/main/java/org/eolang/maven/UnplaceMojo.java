@@ -181,13 +181,19 @@ public final class UnplaceMojo extends SafeMojo {
                 remained += 1;
                 continue;
             }
-            UnplaceMojo.delete(path);
-            deleted += 1;
-            Logger.debug(
-                this,
-                "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                related, tojo.get(PlaceMojo.ATTR_ORIGIN)
-            );
+            if (UnplaceMojo.delete(path)) {
+                deleted += 1;
+                Logger.debug(
+                    this,
+                    "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
+                    related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                );
+            } else {
+                Logger.debug(
+                    this, "Binary %s of %s already deleted",
+                    Save.rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                );
+            }
         }
         Logger.info(
             this,

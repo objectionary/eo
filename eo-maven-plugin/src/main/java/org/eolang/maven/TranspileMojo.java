@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
@@ -159,11 +160,11 @@ public final class TranspileMojo extends SafeMojo {
                 this.targetDir.toPath().resolve(TranspileMojo.DIR),
                 TranspileMojo.EXT
             );
-            final String src = tojo.get(AssembleMojo.ATTR_EO);
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
             if (
                 target.toFile().exists()
                     && target.toFile().lastModified() >= file.toFile().lastModified()
-                    && target.toFile().lastModified() >= Paths.get(src).toFile().lastModified()
+                    && target.toFile().lastModified() >= src.toFile().lastModified()
             ) {
                 Logger.info(
                     this, "XMIR %s (%s) were already transpiled to %s",
@@ -173,9 +174,7 @@ public final class TranspileMojo extends SafeMojo {
                 final List<Path> paths = this.transpile(src, input, target);
                 for (final Path path : paths) {
                     this.transpiledTojos.value()
-                        .add(
-                            String.valueOf(path)
-                        )
+                        .add(String.valueOf(path))
                         .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2));
                 }
                 saved += paths.size();
@@ -186,18 +185,14 @@ public final class TranspileMojo extends SafeMojo {
             sources.size(), saved, Save.rel(this.generatedDir.toPath())
         );
         if (this.addSourcesRoot) {
-            this.project.addCompileSourceRoot(
-                this.generatedDir.getAbsolutePath()
-            );
+            this.project.addCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %s",
                 Save.rel(this.generatedDir.toPath())
             );
         }
         if (this.addTestSourcesRoot) {
-            this.project.addTestCompileSourceRoot(
-                this.generatedDir.getAbsolutePath()
-            );
+            this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
                 this, "The directory added to Maven 'test-compile-source-root': %s",
                 Save.rel(this.generatedDir.toPath())
@@ -213,15 +208,24 @@ public final class TranspileMojo extends SafeMojo {
      * @return List of Paths to generated java file
      * @throws IOException If any issues with I/O
      */
-    public List<Path> transpile(
-        final String src, final XML input, final Path target)
-        throws IOException {
+    private List<Path> transpile(final Path src, final XML input,
+        final Path target) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
+        final int removed = this.removeTranspiled(src);
+        if (removed > 0) {
+            Logger.debug(
+                this,
+                "Removed %d Java files for %s",
+                removed, Save.rel(src)
+            );
+        } else {
+            Logger.debug(
+                this,
+                "No Java files removed for %s",
+                Save.rel(src)
+            );
+        }
         final Place place = new Place(name);
-        Logger.info(
-            this, "Removed %d Java files for %s file",
-            this.removeTranspiled(src), src
-        );
         final Train<Shift> trn = new SpyTrain(
             TranspileMojo.TRAIN, place.make(
                 this.targetDir.toPath().resolve(TranspileMojo.PRE),
@@ -249,10 +253,10 @@ public final class TranspileMojo extends SafeMojo {
      * @param src The eo path
      * @return Count of removed files
      */
-    private int removeTranspiled(final String src) {
+    private int removeTranspiled(final Path src) {
         final Collection<Tojo> existed = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_EO).equals(src)
+                && row.get(AssembleMojo.ATTR_EO).equals(src.toString())
         );
         int count = 0;
         for (final Tojo exist : existed) {
@@ -261,7 +265,7 @@ public final class TranspileMojo extends SafeMojo {
                     .equals(exist.get(AssembleMojo.ATTR_XMIR2))
             );
             for (final Tojo remove : removable) {
-                final File file = new File(remove.get("id"));
+                final File file = new File(remove.get(Tojos.KEY));
                 if (file.delete()) {
                     count += 1;
                 }

@@ -89,7 +89,7 @@ public final class PlaceMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> includeBinaries = new SetOf<>("EO**", "org/eolang/**");
+    private Set<String> includeBinaries = new SetOf<>("**");
 
     /**
      * List of exclusion GLOB filters for finding class files.
@@ -111,14 +111,14 @@ public final class PlaceMojo extends SafeMojo {
                         && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
                 if (!before.isEmpty()) {
-                    Logger.info(this, "Binaries from %s have already been placed", dep);
+                    Logger.debug(this, "Binaries from %s have already been placed", dep);
                     continue;
                 }
                 copied += this.place(home, dep);
                 this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
             }
             if (copied == 0) {
-                Logger.info(
+                Logger.debug(
                     this, "No binary files placed from %d dependencies",
                     deps.size()
                 );
