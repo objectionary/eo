@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,23 +50,27 @@ final class UnplaceMojoTest {
         new Save("...", foo3).save();
         final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
         new Save("...", foo4).save();
-        final Path list = temp.resolve("placed.json");
-        new MonoTojos(new Csv(list)).add(foo.toString())
+        final Path list = temp.resolve("placed.csv");
+        Catalogs.INSTANCE.make(list)
+            .add(foo.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
             .set(PlaceMojo.ATTR_HASH, new FileHash(foo));
-        new MonoTojos(new Csv(list)).add(foo2.toString())
+        Catalogs.INSTANCE.make(list)
+            .add(foo2.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
             .set(PlaceMojo.ATTR_HASH, new FileHash(foo2));
-        new MonoTojos(new Csv(list)).add(foo3.toString())
+        Catalogs.INSTANCE.make(list)
+            .add(foo3.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
             .set(PlaceMojo.ATTR_HASH, new FileHash(foo3));
-        new MonoTojos(new Csv(list)).add(foo4.toString())
+        Catalogs.INSTANCE.make(list)
+            .add(foo4.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")

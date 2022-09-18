@@ -23,63 +23,85 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.CachedTojos;
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.Json;
+import com.yegor256.tojos.MnCsv;
+import com.yegor256.tojos.MnJson;
+import com.yegor256.tojos.MnSticky;
 import com.yegor256.tojos.Mono;
-import com.yegor256.tojos.MonoTojos;
+import com.yegor256.tojos.TjCached;
+import com.yegor256.tojos.TjDefault;
 import com.yegor256.tojos.Tojos;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Catalog with tojos, in some format.
+ * All catalogs in one place, to avoid making multiple objects.
  *
- * @since 0.22
+ * @since 0.29
  */
-final class Catalog {
+final class Catalogs {
 
     /**
-     * Path.
+     * Singleton.
      */
-    private final Path path;
+    public static final Catalogs INSTANCE = new Catalogs();
 
     /**
-     * Format.
+     * All of them.
      */
-    private final String format;
+    private final ConcurrentHashMap<Path, Tojos> all;
 
     /**
      * Ctor.
-     * @param file Path
-     * @param fmt Format
      */
-    Catalog(final Path file, final String fmt) {
-        this.path = file;
-        this.format = fmt;
+    private Catalogs() {
+        this.all = new ConcurrentHashMap<>(0);
     }
 
     /**
      * Make it.
+     * @param file The file
+     * @return The Tojos
+     */
+    public Tojos make(final Path file) {
+        return this.all.computeIfAbsent(
+            file.toAbsolutePath(), f -> Catalogs.build(f, "csv")
+        );
+    }
+
+    /**
+     * Make it.
+     * @param file The file
+     * @param fmt The format
+     * @return The Tojos
+     */
+    public Tojos make(final Path file, final String fmt) {
+        return this.all.computeIfAbsent(
+            file.toAbsolutePath(), f -> Catalogs.build(f, fmt)
+        );
+    }
+
+    /**
+     * Make it.
+     * @param path Path of the file
+     * @param format Format, like "csv" or "json"
      * @return The tojos
      */
-    public Tojos make() {
-        final String fmt = this.format.trim().toLowerCase(Locale.ENGLISH);
+    private static Tojos build(final Path path, final String format) {
+        final String fmt = format.trim().toLowerCase(Locale.ENGLISH);
         final Mono mono;
         if ("json".equals(fmt)) {
-            mono = new Json(this.path);
+            mono = new MnJson(path);
         } else if ("csv".equals(fmt)) {
-            mono = new Csv(this.path);
+            mono = new MnCsv(path);
         } else {
             throw new IllegalArgumentException(
                 String.format(
                     "Unrecognized format '%s' for the file '%s'",
-                    fmt, this.path
+                    fmt, path
                 )
             );
         }
-        return new CachedTojos(
-            new MonoTojos(mono)
-        );
+        return new TjCached(new TjDefault(new MnSticky(mono)));
     }
 }

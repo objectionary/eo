@@ -27,8 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
@@ -65,7 +63,7 @@ final class TranspileMojoTest {
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
         final Path transpiled = temp.resolve("eo-transpiled.json");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -120,8 +118,8 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
-        final Path transpiled = temp.resolve("eo-transpiled.json");
-        new MonoTojos(new Csv(foreign))
+        final Path transpiled = temp.resolve("eo-transpiled");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -181,8 +179,8 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
-        final Path transpiled = temp.resolve("eo-transpiled.json");
-        new MonoTojos(new Csv(foreign))
+        final Path transpiled = temp.resolve("eo-transpiled");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -236,8 +234,8 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
-        final Path transpiled = temp.resolve("eo-transpiled.json");
-        new MonoTojos(new Csv(foreign))
+        final Path transpiled = temp.resolve("eo-transpiled");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -284,12 +282,12 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
-        final Path transpiled = temp.resolve("eo-transpiled.json");
-        new MonoTojos(new Csv(foreign))
+        final Path transpiled = temp.resolve("eo-transpiled");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.wrong")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, wrong.toString());
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.right")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, right.toString());
@@ -378,8 +376,8 @@ final class TranspileMojoTest {
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
-        final Path transpiled = temp.resolve("eo-transpiled.json");
-        new MonoTojos(new Csv(foreign))
+        final Path transpiled = temp.resolve("eo-transpiled");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());

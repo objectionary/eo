@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -102,12 +100,12 @@ final class ResolveMojoTest {
         ).save();
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("foo1.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, first.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("foo2.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, second.toString())
@@ -161,13 +159,13 @@ final class ResolveMojoTest {
             second
         ).save();
         final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        final Path foreign = temp.resolve("eo-foreign");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo1.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, first.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign)
             .add("foo2.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, second.toString())

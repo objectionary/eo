@@ -70,13 +70,13 @@ public final class UnplaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.placed.exists()) {
-            this.placeThem();
-        } else {
+        if (this.placedTojos.value().select(r -> true).isEmpty()) {
             Logger.info(
                 this, "The list of placed binaries is absent: %s",
                 Save.rel(this.placed.toPath())
             );
+        } else {
+            this.placeThem();
         }
     }
 

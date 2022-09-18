@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -52,7 +50,7 @@ final class MarkMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            new MonoTojos(new Csv(foreign)).select(t -> true)
+            Catalogs.INSTANCE.make(foreign).select(t -> true)
                 .iterator().next()
                 .get(AssembleMojo.ATTR_VERSION),
             Matchers.equalTo("0.1.8")

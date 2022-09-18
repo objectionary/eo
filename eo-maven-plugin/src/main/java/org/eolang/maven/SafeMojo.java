@@ -156,7 +156,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final Unchecked<Tojos> tojos = new Unchecked<>(
         new Sticky<>(
-            () -> new Catalog(this.foreign.toPath(), this.foreignFormat).make()
+            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat)
         )
     );
 
@@ -167,7 +167,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
         new Sticky<>(
-            () -> new Catalog(this.placed.toPath(), this.placedFormat).make()
+            () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
         )
     );
 
@@ -178,7 +178,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final Unchecked<Tojos> transpiledTojos = new Unchecked<>(
         new Sticky<>(
-            () -> new Catalog(this.transpiled.toPath(), this.transpiledFormat).make()
+            () -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat)
         )
     );
 

@@ -23,9 +23,7 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
-import com.yegor256.tojos.SmartTojos;
+import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
@@ -53,8 +51,8 @@ final class ParseMojoTest {
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
             src
         ).save();
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -73,8 +71,8 @@ final class ParseMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new SmartTojos(
-                new MonoTojos(new Csv(foreign))
+            new TjSmart(
+                Catalogs.INSTANCE.make(foreign)
             ).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
@@ -88,7 +86,7 @@ final class ParseMojoTest {
             "invalid content",
             src
         ).save();
-        final Path foreign = temp.resolve("eo-foreign.json");
+        final Path foreign = temp.resolve("eo-foreign.csv");
         new FtCached(
             new HashOfTag("0.25.0").narrow(),
             target,
@@ -100,7 +98,7 @@ final class ParseMojoTest {
                 new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
             ).asString()
         );
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString())
@@ -120,8 +118,8 @@ final class ParseMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new SmartTojos(
-                new MonoTojos(new Csv(foreign))
+            new TjSmart(
+                Catalogs.INSTANCE.make(foreign)
             ).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
@@ -132,8 +130,8 @@ final class ParseMojoTest {
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
-        final Path foreign = temp.resolve("foreign-1.json");
-        new MonoTojos(new Csv(foreign))
+        final Path foreign = temp.resolve("foreign-1");
+        Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -153,8 +151,8 @@ final class ParseMojoTest {
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
         new Save("something < is wrong here", src).save();
-        final Path foreign = temp.resolve("foreign-1.json");
-        new MonoTojos(new Csv(foreign))
+        final Path foreign = temp.resolve("foreign-1");
+        Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -179,8 +177,8 @@ final class ParseMojoTest {
             "something < is wrong here",
             src
         ).save();
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        final Path foreign = temp.resolve("eo-foreign");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
