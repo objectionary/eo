@@ -95,3 +95,19 @@
       int8 10-
     $.equal-to
       TRUE
+
+[] > lt-for-equal
+  assert-that > @
+    lt.
+      int8 05-
+      int8 05-
+    $.equal-to
+      FALSE
+
+[] > lt
+  assert-that > @
+    lt.
+      int8 05-
+      int8 10-
+    $.equal-to
+      TRUE

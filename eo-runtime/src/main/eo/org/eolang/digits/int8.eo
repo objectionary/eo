@@ -94,3 +94,10 @@
   [x] > lte
     not. > @
       ^.gt x
+
+  # Tests that $ < x
+  [x] > lt
+    and. > @
+      ^.lte x
+      not.
+        ^.eq x
