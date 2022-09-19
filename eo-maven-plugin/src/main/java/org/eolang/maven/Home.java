@@ -42,7 +42,8 @@ import org.cactoos.scalar.LengthOf;
  *
  * @since 0.27
  * @todo #1105:30min create load function (it has to be able read by path)
- *  and add new unit test for added load function
+ *  It should be able to load data from file
+ *  We also need to add new unit test
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public class Home {
@@ -72,11 +73,10 @@ public class Home {
     /**
      * Saving input.
      * @param input Input
-     * @param path Path
-     * @return Saved bytes
+     * @param path Path to file
      * @throws IOException If fails
      */
-    public long save(final Input input, final Path path) throws IOException {
+    public void save(final Input input, final Path path) throws IOException {
         final File dir = path.toFile().getParentFile();
         if (dir.mkdirs()) {
             Logger.debug(
@@ -97,7 +97,6 @@ public class Home {
                 Home.class, "File %s saved (%.0f bytes)",
                 this.rel(path), bytes
             );
-            return bytes;
         } catch (final IOException ex) {
             throw new IOException(
                 String.format(
@@ -112,58 +111,53 @@ public class Home {
     /**
      * Saving string.
      * @param str String
-     * @param path Path
-     * @return Saved bytes
+     * @param path Path to file
      * @throws IOException If fails
      */
-    public long save(final String str, final Path path) throws IOException {
-        return this.save(new InputOf(str), path);
+    public void save(final String str, final Path path) throws IOException {
+        this.save(new InputOf(str), path);
     }
 
     /**
      * Saving text.
      * @param txt Text
-     * @param path Path
-     * @return Saved bytes
+     * @param path Path to file
      * @throws IOException If fails
      */
-    public long save(final Text txt, final Path path) throws IOException {
-        return this.save(new InputOf(txt), path);
+    public void save(final Text txt, final Path path) throws IOException {
+        this.save(new InputOf(txt), path);
     }
 
     /**
      * Saving stream.
      * @param stream Input stream
-     * @param path Path
-     * @return Saved bytes
+     * @param path Path to file
      * @throws IOException If fails
      */
-    public long save(final InputStream stream, final Path path) throws IOException {
-        return this.save(new InputOf(stream), path);
+    public void save(final InputStream stream, final Path path) throws IOException {
+        this.save(new InputOf(stream), path);
     }
 
     /**
      * Saving bytes.
      * @param bytes Byte array
-     * @param path Path
-     * @return Saved bytes
+     * @param path Path to file
      * @throws IOException If fails
      */
-    public long save(final byte[] bytes, final Path path) throws IOException {
-        return this.save(new InputOf(bytes), path);
+    public void save(final byte[] bytes, final Path path) throws IOException {
+        this.save(new InputOf(bytes), path);
     }
 
     /**
      * Saving string.
      * @param str String
-     * @param path Path
-     * @return Saved bytes
+     * @param path Path to file
      * @todo #1105:30min We should remove this function and get rid of using it
      *  because it is not really better than simple save
      */
-    public long saveQuietly(final String str, final Path path) {
+    public void saveQuietly(final String str, final Path path) {
         try {
-            return this.save(new InputOf(str), path);
+            this.save(new InputOf(str), path);
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
