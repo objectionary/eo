@@ -158,7 +158,7 @@ public class Home {
      * @param str String
      * @param path Path
      * @return Saved bytes
-     * @todo We should remove this function and get rid of using it
+     * @todo #1105:30min We should remove this function and get rid of using it
      *  because it is not really better than simple save
      */
     public long saveQuietly(final String str, final Path path) {
