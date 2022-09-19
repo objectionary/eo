@@ -63,9 +63,13 @@ public class EOheap$EOmalloc extends PhDefault {
                     final int size = new Param(rho, "s").strong(Long.class).intValue();
                     final int ptr = Heaps.INSTANCE.malloc(heap, size);
                     return new PhWith(
-                        new PhCopy(new PhMethod(heap, "pointer")),
-                        0,
-                        new Data.ToPhi((long) ptr)
+                        new PhWith(
+                            new PhCopy(new PhMethod(heap, "pointer")),
+                            0,
+                            new Data.ToPhi((long) ptr)
+                        ),
+                        1,
+                        new Data.ToPhi((long) size)
                     );
                 }
             )
