@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -218,6 +219,16 @@ abstract class SafeMojo extends AbstractMojo {
                     ),
                     ex
                 );
+            } finally {
+                if (this.foreign != null) {
+                    SafeMojo.closeTojos(this.tojos.value());
+                }
+                if (this.placed != null) {
+                    SafeMojo.closeTojos(this.placedTojos.value());
+                }
+                if (this.transpiled != null) {
+                    SafeMojo.closeTojos(this.transpiledTojos.value());
+                }
             }
         }
     }
@@ -225,10 +236,16 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Tojos to use, in my scope only.
      * @return Tojos to use
+     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final Tojos scopedTojos() {
         final Tojos unscoped = this.tojos.value();
         return new Tojos() {
+            @Override
+            public void close() throws IOException {
+                unscoped.close();
+            }
+
             @Override
             public Tojo add(final String name) {
                 final Tojo tojo = unscoped.add(name);
@@ -254,4 +271,18 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
+
+    /**
+     * Close it safely.
+     * @param res The resource
+     * @throws MojoFailureException If fails
+     */
+    private static void closeTojos(final Closeable res) throws MojoFailureException {
+        try {
+            res.close();
+        } catch (final IOException ex) {
+            throw new MojoFailureException(ex);
+        }
+    }
+
 }
