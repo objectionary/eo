@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
@@ -203,12 +204,12 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(ResolveMojo.class),
             new Moja<>(MarkMojo.class),
             new Moja<>(PlaceMojo.class),
+            new Moja<>(CleanMojo.class)
         };
         while (true) {
             final long start = System.nanoTime();
-            for (final Moja<?> moja : mojas) {
-                moja.copy(this).execute();
-            }
+            Arrays.stream(mojas)
+                .forEach(mj -> mj.copy(this).execute());
             final String after = this.status();
             ++cycle;
             if (Logger.isInfoEnabled(this)) {
