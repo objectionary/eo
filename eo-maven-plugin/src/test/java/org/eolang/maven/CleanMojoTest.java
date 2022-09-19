@@ -23,59 +23,40 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.stream.Stream;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Implementation of maven clean plugin,
- * just deleting target/eo directory.
+ * Test case for {@link CleanMojo}.
  *
  * @since 0.28.6
  */
-@Mojo(
-    name = "clean",
-    defaultPhase = LifecyclePhase.CLEAN,
-    threadSafe = true
-)
-public class CleanMojo extends SafeMojo {
+class CleanMojoTest {
 
-    @Override
-    final void exec() throws IOException {
-        if (!this.targetDir.exists()) {
-            Logger.info(this, "Target directory not exist.");
-            return;
-        }
-        try (Stream<Path> paths = Files.walk(this.targetDir.toPath())) {
-            paths.sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(CleanMojo::purge);
-            Logger.info(
-                this,
-                "Target deleted."
-            );
-        }
+    @Test
+    void execSuccessfully(@TempDir final Path temp) throws IOException {
+        final Path dir = Files.createDirectories(temp.resolve("target"));
+        final Path out = Files.createDirectories(dir.resolve("child"));
+        final Path small = Files.createDirectories(out.resolve("child.eo"));
+        final Path file = Files.createTempFile(dir, "some", ".eo");
+        isExist(small, true);
+        isExist(file, true);
+        new Moja<>(CleanMojo.class)
+            .with("targetDir", dir.toFile())
+            .execute();
+        isExist(small, false);
+        isExist(file, false);
     }
 
-    /**
-     * Remove single file.
-     *
-     * @param file File to purge
-     */
-    private static void purge(final File file) {
-        try {
-            Files.deleteIfExists(file.toPath());
-        } catch (final IOException ex) {
-            Logger.error(
-                CleanMojo.class,
-                ex.getMessage()
-            );
-        }
+    private static void isExist(final Path path, final boolean value) {
+        MatcherAssert.assertThat(
+            path.toFile().exists(),
+            Matchers.is(value)
+        );
     }
 }
