@@ -1,7 +1,7 @@
 architect:
   - yegor256
 docker:
-  image: yegor256/rultor-image:1.9.1
+  image: yegor256/rultor-image:1.13.0
 assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
@@ -12,6 +12,7 @@ install: |
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
+    cd paper; latexmk -pdf
 release:
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
