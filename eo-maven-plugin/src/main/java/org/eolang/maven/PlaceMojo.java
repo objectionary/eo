@@ -131,7 +131,7 @@ public final class PlaceMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",
-                Save.rel(home)
+                new Home().rel(home)
             );
         }
     }
@@ -157,7 +157,7 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "File %s is not a binary, but a source, won't place it",
-                    Save.rel(file)
+                    new Home().rel(file)
                 );
                 continue;
             }
@@ -170,7 +170,7 @@ public final class PlaceMojo extends SafeMojo {
                 throw new IllegalStateException(
                     String.format(
                         "The file %s has been placed to %s, but now it's gone",
-                        Save.rel(file), Save.rel(target)
+                        new Home().rel(file), new Home().rel(target)
                     )
                 );
             }
@@ -179,7 +179,7 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.warn(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
-                    Save.rel(file), Save.rel(target),
+                    new Home().rel(file), new Home().rel(target),
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
                 continue;
@@ -189,12 +189,12 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.warn(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                    Save.rel(file), file.toFile().length(),
-                    Save.rel(target), target.toFile().length(),
+                    new Home().rel(file), file.toFile().length(),
+                    new Home().rel(target), target.toFile().length(),
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
-            new Save(new InputOf(file), target).save();
+            new Home().save(new InputOf(file), target);
             this.placedTojos.value().add(target.toString())
                 .set(PlaceMojo.ATTR_KIND, "class")
                 .set(PlaceMojo.ATTR_HASH, new FileHash(target))

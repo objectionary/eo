@@ -41,9 +41,9 @@ final class PlaceMojoTest {
     void placesBinaries(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         final Path classes = temp.resolve("classes");
-        new Save("x1", bins.resolve("foo/hello/-/0.1/EObar/x.bin")).save();
-        new Save("x2", bins.resolve("foo/hello/-/0.1/org/eolang/f/x.a.class")).save();
-        new Save("x3", bins.resolve("foo/hello/-/0.1/org/eolang/t.txt")).save();
+        new Home().save("x1", bins.resolve("foo/hello/-/0.1/EObar/x.bin"));
+        new Home().save("x2", bins.resolve("foo/hello/-/0.1/org/eolang/f/x.a.class"));
+        new Home().save("x3", bins.resolve("foo/hello/-/0.1/org/eolang/t.txt"));
         new Moja<>(PlaceMojo.class)
             .with("targetDir", temp.toFile())
             .with("outputDir", classes.toFile())

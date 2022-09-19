@@ -252,7 +252,7 @@ public final class GmiMojo extends SafeMojo {
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    name, Save.rel(gmi)
+                    name, new Home().rel(gmi)
                 );
                 continue;
             }
@@ -261,7 +261,7 @@ public final class GmiMojo extends SafeMojo {
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
             Logger.info(
                 this, "GMI for %s saved to %s (%d instructions)",
-                name, Save.rel(gmi), extra
+                name, new Home().rel(gmi), extra
             );
             ++total;
         }
@@ -274,7 +274,7 @@ public final class GmiMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
-                total, Save.rel(home), instructions
+                total, new Home().rel(home), instructions
             );
         }
     }
@@ -331,21 +331,21 @@ public final class GmiMojo extends SafeMojo {
             .xpath("/text/text()")
             .get(0);
         Logger.debug(this, "GMIs:\n%s", instructions);
-        new Save(instructions, gmi).save();
+        new Home().save(instructions, gmi);
         if (this.generateGmiXmlFiles) {
-            new Save(
+            new Home().save(
                 after.toString(),
                 gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
-            ).save();
+            );
         }
         if (this.generateXemblyFiles) {
             final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
-            new Save(
+            new Home().save(
                 xembly,
                 gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
-            ).save();
+            );
             this.makeGraph(xembly, gmi);
         }
         return instructions.split("\n").length;
@@ -374,18 +374,18 @@ public final class GmiMojo extends SafeMojo {
                         .append(dirs)
                 ).domQuietly()
             );
-            new Save(
+            new Home().save(
                 graph.toString(),
                 gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
-            ).save();
+            );
             if (this.generateDotFiles) {
                 final String dot = new Xsline(GmiMojo.TO_DOT)
                     .pass(graph).xpath("//dot/text()").get(0);
                 Logger.debug(this, "Dot:\n%s", dot);
-                new Save(
+                new Home().save(
                     dot,
                     gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
-                ).save();
+                );
             }
         }
     }

@@ -55,12 +55,12 @@ final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^a-z0-9]", "-");
-                            new Save(
+                            new Home().saveQuietly(
                                 xml.toString(),
                                 dir.resolve(
                                     String.format("%02d-%s.xml", pos, log)
                                 )
-                            ).saveQuietly();
+                            );
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(
                                     SpyTrain.class, "Step #%d by %s:\n%s",

@@ -42,14 +42,14 @@ final class UnplaceMojoTest {
     @Test
     void testCleaning(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
-        new Save("...", foo).save();
+        new Home().save("...", foo);
         final Path pparent = foo.getParent().getParent();
         final Path foo2 = temp.resolve("a/b/c/foo2.class");
-        new Save("...", foo2).save();
+        new Home().save("...", foo2);
         final Path foo3 = temp.resolve("a/b/c/d/foo3.class");
-        new Save("...", foo3).save();
+        new Home().save("...", foo3);
         final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
-        new Save("...", foo4).save();
+        new Home().save("...", foo4);
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
             .add(foo.toString())

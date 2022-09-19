@@ -61,9 +61,9 @@ public final class FtDefault implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        new Save(
+        new Home().save(
             new IoChecked<>(content).value(),
             new Place(program).make(this.main, ext)
-        ).save();
+        );
     }
 }

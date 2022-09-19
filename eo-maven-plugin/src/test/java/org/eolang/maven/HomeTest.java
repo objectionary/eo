@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -37,18 +36,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test for {@link Save}.
+ * Test for {@link Home}.
  *
  * @since 0.22
  */
-final class SaveTest {
+final class HomeTest {
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
     void saves(final int size, @TempDir final Path temp) throws IOException {
         final Path resolve = temp.resolve("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
-        new Save(content, resolve).save();
+        new Home().save(content, resolve);
         MatcherAssert.assertThat(
             new UncheckedText(new TextOf(resolve)).asString(),
             Matchers.is(content)
@@ -56,10 +55,11 @@ final class SaveTest {
     }
 
     @Test
-    void returnsRelativePathOfCurrentWorkingDirectory() {
+    void returnsRelativePathOfCurrentWorkingDirectory(@TempDir final Path temp) {
         MatcherAssert.assertThat(
-            Save.rel(Paths.get("")),
-            Matchers.is("./")
+            new Home(temp.resolve("dir")).rel(temp.resolve("dir/file.txt")),
+            Matchers.is("./file.txt")
         );
     }
+
 }

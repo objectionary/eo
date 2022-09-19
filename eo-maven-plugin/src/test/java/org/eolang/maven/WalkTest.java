@@ -39,8 +39,8 @@ final class WalkTest {
 
     @Test
     void findsFiles(@TempDir final Path temp) throws Exception {
-        new Save("", temp.resolve("foo/hello/0.1/EObar/x.bin")).save();
-        new Save("", temp.resolve("EOxxx/bar")).save();
+        new Home().save("", temp.resolve("foo/hello/0.1/EObar/x.bin"));
+        new Home().save("", temp.resolve("EOxxx/bar"));
         MatcherAssert.assertThat(
             new Walk(temp).includes(new ListOf<>("EO**/*")),
             Matchers.iterableWithSize(1)

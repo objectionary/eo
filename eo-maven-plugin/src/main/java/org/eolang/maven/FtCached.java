@@ -110,8 +110,8 @@ public final class FtCached implements Footprint {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            new Save(text, cached).save();
+            new Home().save(text, cached);
         }
-        new Save(text, target).save();
+        new Home().save(text, target);
     }
 }
