@@ -44,16 +44,16 @@ class CleanMojoTest {
         final Path out = Files.createDirectories(dir.resolve("child"));
         final Path small = Files.createDirectories(out.resolve("child.eo"));
         final Path file = Files.createTempFile(dir, "some", ".eo");
-        isExist(small, true);
-        isExist(file, true);
+        assertExist(small, true);
+        assertExist(file, true);
         new Moja<>(CleanMojo.class)
             .with("targetDir", dir.toFile())
             .execute();
-        isExist(small, false);
-        isExist(file, false);
+        assertExist(small, false);
+        assertExist(file, false);
     }
 
-    private static void isExist(final Path path, final boolean value) {
+    private static void assertExist(final Path path, final boolean value) {
         MatcherAssert.assertThat(
             path.toFile().exists(),
             Matchers.is(value)
