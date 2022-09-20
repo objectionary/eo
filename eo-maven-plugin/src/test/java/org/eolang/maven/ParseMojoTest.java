@@ -47,10 +47,10 @@ final class ParseMojoTest {
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Save(
+        new Home().save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
             src
-        ).save();
+        );
         final Path foreign = temp.resolve("eo-foreign.csv");
         Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
@@ -82,10 +82,10 @@ final class ParseMojoTest {
     void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Save(
+        new Home().save(
             "invalid content",
             src
-        ).save();
+        );
         final Path foreign = temp.resolve("eo-foreign.csv");
         new FtCached(
             new HashOfTag("0.25.0").narrow(),
@@ -129,7 +129,7 @@ final class ParseMojoTest {
     void testCrashOnInvalidSyntax(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Save("something < is wrong here", src).save();
+        new Home().save("something < is wrong here", src);
         final Path foreign = temp.resolve("foreign-1");
         Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
@@ -150,7 +150,7 @@ final class ParseMojoTest {
     void testCrashesWithFileName(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Save("something < is wrong here", src).save();
+        new Home().save("something < is wrong here", src);
         final Path foreign = temp.resolve("foreign-1");
         Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
@@ -173,10 +173,10 @@ final class ParseMojoTest {
         throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Save(
+        new Home().save(
             "something < is wrong here",
             src
-        ).save();
+        );
         final Path foreign = temp.resolve("eo-foreign");
         Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")

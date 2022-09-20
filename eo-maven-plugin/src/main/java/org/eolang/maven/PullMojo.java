@@ -159,16 +159,16 @@ public final class PullMojo extends SafeMojo {
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, Save.rel(src)
+                name, new Home().rel(src)
             );
         } else {
-            new Save(
+            new Home().save(
                 this.objectionary.get(name),
                 src
-            ).save();
+            );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
-                name, Save.rel(src)
+                name, new Home().rel(src)
             );
         }
         return src;

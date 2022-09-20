@@ -42,9 +42,9 @@ final class UnspileMojoTest {
         final Path generated = temp.resolve("generated");
         final Path classes = temp.resolve("classes");
         final Path foo = classes.resolve("a/b/c/foo.class");
-        new Save("abc", foo).save();
-        new Save("xxx", generated.resolve("a/b/c/foo.java")).save();
-        new Save("cde", classes.resolve("foo.txt")).save();
+        new Home().save("abc", foo);
+        new Home().save("xxx", generated.resolve("a/b/c/foo.java"));
+        new Home().save("cde", classes.resolve("foo.txt"));
         new Moja<>(UnspileMojo.class)
             .with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())

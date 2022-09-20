@@ -58,7 +58,7 @@ final class TranspileMojoTest {
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
-        new Save(source, src).save();
+        new Home().save(source, src);
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -114,7 +114,7 @@ final class TranspileMojoTest {
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
-        new Save(source, src).save();
+        new Home().save(source, src);
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -175,7 +175,7 @@ final class TranspileMojoTest {
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
-        new Save(source, src).save();
+        new Home().save(source, src);
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -230,7 +230,7 @@ final class TranspileMojoTest {
     @Test
     void testFailOnWarning(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo.src.eo");
-        new Save(new ResourceOf("org/eolang/maven/withwarning.eo"), src).save();
+        new Home().save(new ResourceOf("org/eolang/maven/withwarning.eo"), src);
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -277,8 +277,8 @@ final class TranspileMojoTest {
     void testFailOnError(@TempDir final Path temp) throws Exception {
         final Path wrong = temp.resolve("foo.wrong.eo");
         final Path right = temp.resolve("foo.right.eo");
-        new Save(new ResourceOf("org/eolang/maven/witherror.eo"), wrong).save();
-        new Save(new ResourceOf("org/eolang/maven/mess.eo"), right).save();
+        new Home().save(new ResourceOf("org/eolang/maven/witherror.eo"), wrong);
+        new Home().save(new ResourceOf("org/eolang/maven/mess.eo"), right);
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -372,7 +372,7 @@ final class TranspileMojoTest {
         final String file
     ) throws Exception {
         final Path src = temp.resolve("foo.src.eo");
-        new Save(code, src).save();
+        new Home().save(code, src);
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -443,6 +443,6 @@ final class TranspileMojoTest {
                             new ResourceOf(xsl).stream()
                 )))
         ).pass(new XMLDocument(xml));
-        new Save(output.toString(), xml).save();
+        new Home().save(output.toString(), xml);
     }
 }

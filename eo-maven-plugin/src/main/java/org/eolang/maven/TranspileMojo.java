@@ -168,7 +168,7 @@ public final class TranspileMojo extends SafeMojo {
             ) {
                 Logger.info(
                     this, "XMIR %s (%s) were already transpiled to %s",
-                    Save.rel(file), name, Save.rel(target)
+                    new Home().rel(file), name, new Home().rel(target)
                 );
             } else {
                 final List<Path> paths = this.transpile(src, input, target);
@@ -182,20 +182,20 @@ public final class TranspileMojo extends SafeMojo {
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
-            sources.size(), saved, Save.rel(this.generatedDir.toPath())
+            sources.size(), saved, new Home().rel(this.generatedDir.toPath())
         );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %s",
-                Save.rel(this.generatedDir.toPath())
+                new Home().rel(this.generatedDir.toPath())
             );
         }
         if (this.addTestSourcesRoot) {
             this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
                 this, "The directory added to Maven 'test-compile-source-root': %s",
-                Save.rel(this.generatedDir.toPath())
+                new Home().rel(this.generatedDir.toPath())
             );
         }
     }
@@ -216,13 +216,13 @@ public final class TranspileMojo extends SafeMojo {
             Logger.debug(
                 this,
                 "Removed %d Java files for %s",
-                removed, Save.rel(src)
+                removed, new Home().rel(src)
             );
         } else {
             Logger.debug(
                 this,
                 "No Java files removed for %s",
-                Save.rel(src)
+                new Home().rel(src)
             );
         }
         final Place place = new Place(name);
@@ -233,7 +233,7 @@ public final class TranspileMojo extends SafeMojo {
             )
         );
         final XML out = new Xsline(trn).pass(input);
-        new Save(out.toString(), target).saveQuietly();
+        new Home().saveQuietly(out.toString(), target);
         final Set<String> failures = new HashSet<>(3);
         if (this.failOnWarning) {
             failures.add(Sanitized.WARNING);

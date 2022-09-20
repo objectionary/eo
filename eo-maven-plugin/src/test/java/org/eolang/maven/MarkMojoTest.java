@@ -39,10 +39,10 @@ final class MarkMojoTest {
     @Test
     void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
-        new Save(
+        new Home().save(
             "hi",
             bins.resolve(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
-        ).save();
+        );
         final Path foreign = temp.resolve("placed.json");
         new Moja<>(MarkMojo.class)
             .with("targetDir", temp.toFile())

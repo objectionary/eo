@@ -73,7 +73,7 @@ public final class JavaFiles {
         if (nodes.isEmpty()) {
             Logger.debug(
                 this, "No .java files generated from %s",
-                Save.rel(this.source)
+                new Home().rel(this.source)
             );
         } else {
             for (final XML java : nodes) {
@@ -81,7 +81,7 @@ public final class JavaFiles {
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
-                nodes.size(), Save.rel(this.source), Save.rel(this.dest)
+                nodes.size(), new Home().rel(this.source), new Home().rel(this.dest)
             );
         }
         return files;
@@ -100,13 +100,13 @@ public final class JavaFiles {
             final Path dest = new Place(type).make(
                 generated, "java"
             );
-            new Save(
+            new Home().save(
                 new Joined(
                     "",
                     java.xpath("java/text()")
                 ),
                 dest
-            ).save();
+            );
             return dest;
         } catch (final InvalidPathException ex) {
             throw new IOException(
