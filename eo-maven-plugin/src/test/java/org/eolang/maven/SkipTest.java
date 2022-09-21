@@ -124,10 +124,10 @@ class SkipTest {
         final boolean skip
     ) throws IOException {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             src.resolve("foo/main.eo")
-        ).save();
+        );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())

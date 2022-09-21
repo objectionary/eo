@@ -42,7 +42,7 @@ final class ResolveMojoTest {
     @Test
     void testSimpleResolve(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.7.0",
@@ -50,7 +50,7 @@ final class ResolveMojoTest {
                 "[] > foo /int"
             ),
             src.resolve("foo.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         new Moja<>(ParseMojo.class)
@@ -81,23 +81,23 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "[] > foo /int"
             ),
             first
-        ).save();
+        );
         final Path second = temp.resolve("src/foo2.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.0",
                 "[] > foo /int"
             ),
             second
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign, "json")
@@ -141,23 +141,23 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
                 "[] > foo /int"
             ),
             first
-        ).save();
+        );
         final Path second = temp.resolve("src/foo2.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
                 "[] > foo /int"
             ),
             second
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign");
         Catalogs.INSTANCE.make(foreign)

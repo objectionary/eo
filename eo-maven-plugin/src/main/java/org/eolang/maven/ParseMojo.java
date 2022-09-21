@@ -104,7 +104,7 @@ public final class ParseMojo extends SafeMojo {
                 if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
                     Logger.debug(
                         this, "Already parsed %s to %s (it's newer than the source)",
-                        tojo.get(Tojos.KEY), Save.rel(xmir)
+                        tojo.get(Tojos.KEY), new Home().rel(xmir)
                     );
                     continue;
                 }
@@ -194,7 +194,7 @@ public final class ParseMojo extends SafeMojo {
         tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
         Logger.debug(
             this, "Parsed %s to %s",
-            Save.rel(source), Save.rel(target)
+            new Home().rel(source), new Home().rel(target)
         );
     }
 }

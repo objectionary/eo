@@ -42,10 +42,10 @@ final class OptimizeMojoTest {
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Save(
+        new Home().save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
             src
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
         Catalogs.INSTANCE.make(foreign)
@@ -81,10 +81,10 @@ final class OptimizeMojoTest {
     @Test
     void optimizesIfExpired(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Save(
+        new Home().save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
             src
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
         Catalogs.INSTANCE.make(foreign)
@@ -122,10 +122,10 @@ final class OptimizeMojoTest {
     @Test
     void testSimpleOptimize(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Save(
+        new Home().save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
             src
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
         Catalogs.INSTANCE.make(foreign)
@@ -165,7 +165,7 @@ final class OptimizeMojoTest {
     @Test
     void testOptimizeWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Save(
+        new Home().save(
             String.join(
                 "\n",
                 "+package f",
@@ -174,7 +174,7 @@ final class OptimizeMojoTest {
                 "  (stdout \"Hello!\").print > @\n"
             ),
             src
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
         Catalogs.INSTANCE.make(foreign)

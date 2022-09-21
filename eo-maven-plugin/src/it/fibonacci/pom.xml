@@ -65,6 +65,10 @@ SOFTWARE.
           <gmiIncludes>
             <o>org.eolang.error</o>
           </gmiIncludes>
+          <foreign>${project.build.directory}/eo/foreign.csv</foreign>
+          <foreignFormat>csv</foreignFormat>
+          <placed>${project.build.directory}/eo/placed.json</placed>
+          <placedFormat>json</placedFormat>
           <trackOptimizationSteps>true</trackOptimizationSteps>
           <generateGmiXmlFiles>true</generateGmiXmlFiles>
           <generateGraphFiles>true</generateGraphFiles>

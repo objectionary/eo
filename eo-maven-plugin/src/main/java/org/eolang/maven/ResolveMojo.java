@@ -116,7 +116,7 @@ public final class ResolveMojo extends SafeMojo {
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, Save.rel(dest)
+                    coords, new Home().rel(dest)
                 );
                 continue;
             }
@@ -270,7 +270,7 @@ public final class ResolveMojo extends SafeMojo {
             throw new IllegalStateException(
                 String.format(
                     "Too many (%d) dependencies at %s",
-                    coords.size(), Save.rel(file)
+                    coords.size(), new Home().rel(file)
                 )
             );
         }
