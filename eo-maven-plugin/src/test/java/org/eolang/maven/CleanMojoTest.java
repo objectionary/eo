@@ -26,6 +26,8 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -53,6 +55,49 @@ class CleanMojoTest {
         MatcherAssert.assertThat(
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void fullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
+        final Path src = temp.resolve("src");
+        new Save(
+            String.join(
+                "\n",
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[x] > main\n  (stdout \"Hello!\" x).print\n"
+            ),
+            src.resolve("main.eo")
+        ).save();
+        final Path target = temp.resolve("target");
+        new Moja<>(RegisterMojo.class)
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
+            .with("sourcesDir", src.toFile())
+            .with("includeSources", new SetOf<>("**.eo"))
+            .execute();
+        new Moja<>(AssembleMojo.class)
+            .with("outputDir", temp.resolve("out").toFile())
+            .with("targetDir", target.toFile())
+            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("foreignFormat", "json")
+            .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
+            .with("skipZeroVersions", true)
+            .with(
+                "objectionary",
+                (Objectionary) input -> new InputOf(
+                    "[] > sprintf\n"
+                )
+            )
+            .execute();
+        new Moja<>(CleanMojo.class)
+            .with("targetDir", target.toFile())
+            .execute();
+        MatcherAssert.assertThat(
+            target.toFile().exists(),
+            Matchers.is(false)
         );
     }
 }

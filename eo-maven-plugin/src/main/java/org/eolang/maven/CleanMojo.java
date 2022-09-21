@@ -28,8 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -49,31 +47,53 @@ public class CleanMojo extends SafeMojo {
     @Override
     final void exec() throws IOException {
         if (!this.targetDir.exists()) {
-            Logger.info(this, "Target directory not exist.");
+            this.log("Directory %s isn't exist.", targetDir);
             return;
         }
-        try (Stream<Path> paths = Files.walk(this.targetDir.toPath())) {
-            paths.sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(CleanMojo::purge);
-            Logger.info(
-                this,
-                "Target deleted."
+        new Walk(this.targetDir.toPath())
+            .reversed()
+            .stream()
+            .map(Path::toFile)
+            .forEach(
+                dir -> {
+                    this.purge(dir);
+                    this.log("purged %s", dir);
+                }
             );
-        }
+        Logger.info(
+            this,
+            "Deleted all files in: %s",
+            this.targetDir
+        );
     }
 
     /**
-     * Remove single file.
+     * Logging.
+     *
+     * @param msg Message for logging
+     * @param dir The directory
+     */
+    private void log(final String msg, final File dir) {
+        Logger.info(
+            this,
+            msg,
+            dir.toString()
+        );
+    }
+
+    /**
+     * Remove single file if existed.
      *
      * @param file File to purge
      */
-    private static void purge(final File file) {
+    private void purge(final File file) {
         try {
             Files.deleteIfExists(file.toPath());
         } catch (final IOException ex) {
             Logger.error(
-                CleanMojo.class,
+                this,
+                "Error while deleting: %s\nmessage: %s",
+                file.toString(),
                 ex.getMessage()
             );
         }
