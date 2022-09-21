@@ -61,7 +61,7 @@ class CleanMojoTest {
     @Test
     void fullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -69,7 +69,7 @@ class CleanMojoTest {
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("main.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
