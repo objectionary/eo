@@ -74,7 +74,7 @@ public class CleanMojo extends SafeMojo {
      * @param dir The directory
      */
     private void log(final String msg, final File dir) {
-        Logger.info(
+        Logger.debug(
             this,
             msg,
             dir.toString()
@@ -92,10 +92,10 @@ public class CleanMojo extends SafeMojo {
         } catch (final IOException ex) {
             Logger.error(
                 this,
-                "Error while deleting: %s\nmessage: %s",
-                file.toString(),
-                ex.getMessage()
+                "Error while deleting: %s",
+                file.toString()
             );
+            throw new IllegalStateException(ex);
         }
     }
 }
