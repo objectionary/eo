@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -56,9 +55,9 @@ public class EObytes$EOnot extends PhDefault {
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho)
-                        .fromBytes(BigInteger.class)
+                        .asBytes()
                         .not()
-                        .toByteArray()
+                        .take()
                 )
             )
         );

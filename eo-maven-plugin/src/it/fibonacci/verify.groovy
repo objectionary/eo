@@ -24,7 +24,7 @@
 
 [
   'target/eo/foreign.csv',
-  'target/eo/placed.csv',
+  'target/eo/placed.json',
   'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
   'target/eo/01-parse/org/eolang/examples/app.xmir',
   'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
@@ -32,6 +32,10 @@
   'target/eo/04-pull/org/eolang/array.eo',
   'target/eo/05-pre/org/eolang/examples/app/00-classes.xml',
   'target/eo/06-transpile/org/eolang/examples/app.xmir',
+  'target/eo/gmi/org/eolang/error.gmi',
+  'target/eo/gmi/org/eolang/error.gmi.xe',
+  'target/eo/gmi/org/eolang/error.gmi.graph',
+  'target/eo/gmi/org/eolang/error.gmi.dot',
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class'
 ].each { assert new File(basedir, it).exists() }
 
@@ -39,7 +43,8 @@ String log = new File(basedir, 'build.log').text
 
 [
   '--- eo-maven-plugin:',
-  'org.eolang unpacked to eo-runtime',
+  'org.eolang:eo-runtime:',
+  ' unpacked to ',
   '6th Fibonacci number is 8',
   'BUILD SUCCESS',
 ].each { assert log.contains(it) }

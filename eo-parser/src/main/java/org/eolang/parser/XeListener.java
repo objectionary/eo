@@ -46,6 +46,7 @@ import org.xembly.Directives;
  *
  * @since 0.1
  * @checkstyle CyclomaticComplexityCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @todo #348:30min Make changes to store INT as bytes.
  *  After that update this todo. When all data types
  *  are stored as bytes, remove data attribute from XML
@@ -268,6 +269,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );
+        if (ctx.COPY() != null) {
+            this.objects.prop("copy", "");
+        }
         this.objects.prop("method", "");
         this.objects.prop("base", String.format(".%s", ctx.mtd.getText()));
         this.objects.leave();
@@ -275,6 +279,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitMethod(final ProgramParser.MethodContext ctx) {
+        // This method is created by ANTLR and can't be removed
+    }
+
+    @Override
+    public void enterScope(final ProgramParser.ScopeContext ctx) {
+        this.objects.alias();
+    }
+
+    @Override
+    public void exitScope(final ProgramParser.ScopeContext ctx) {
         // This method is created by ANTLR and can't be removed
     }
 

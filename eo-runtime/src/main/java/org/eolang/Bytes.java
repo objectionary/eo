@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EObytes;
+
 /**
  * Bytes.
  *
@@ -62,11 +64,25 @@ public interface Bytes extends Data<byte[]> {
     Bytes xor(Bytes other);
 
     /**
-     * Big-endian shift.
+     * Big-endian unsigned shift.
+     * Shifts left if value is positive, or right otherwise.
+     * Does not perform sign extension.
+     *
      * @param bits Bits to shift, negative to shift left.
      * @return Bytes.
      */
     Bytes shift(int bits);
+
+    /**
+     * Big-endian signed right shift.
+     * Performs sign extension, i.e. it will
+     * fill the top bits with 1 if the first bit is 1
+     * and with 0 otherwise.
+     *
+     * @param bits Bits to shift, negative value causes exception.
+     * @return Bytes.
+     */
+    Bytes sshift(int bits);
 
     /**
      * Convert to number.
@@ -75,4 +91,16 @@ public interface Bytes extends Data<byte[]> {
      * @param <T> Numeric type.
      */
     <T extends Number> T asNumber(Class<T> type);
+
+    /**
+     * Convert Bytes to Phi.
+     * @param bytes Bytes.
+     * @return Phi object.
+     */
+    static Phi toPhi(final Bytes bytes) {
+        final Phi object = new EObytes(Phi.Φ);
+        object.attr("Δ").put(new Data.Value<>(bytes.take()));
+        return new PhConst(object);
+    }
+
 }

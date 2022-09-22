@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.60.4</version>
+    <version>0.62.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -57,11 +57,23 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
+              <goal>gmi</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
+          <gmiIncludes>
+            <o>org.eolang.error</o>
+          </gmiIncludes>
+          <foreign>${project.build.directory}/eo/foreign.csv</foreign>
+          <foreignFormat>csv</foreignFormat>
+          <placed>${project.build.directory}/eo/placed.json</placed>
+          <placedFormat>json</placedFormat>
           <trackOptimizationSteps>true</trackOptimizationSteps>
+          <generateGmiXmlFiles>true</generateGmiXmlFiles>
+          <generateGraphFiles>true</generateGraphFiles>
+          <generateXemblyFiles>true</generateXemblyFiles>
+          <generateDotFiles>true</generateDotFiles>
         </configuration>
       </plugin>
       <plugin>

@@ -30,12 +30,12 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for packs.
- *
  * @since 1.0
  */
 final class PacksTest {
@@ -43,14 +43,20 @@ final class PacksTest {
     @ParameterizedTest
     @MethodSource("yamlPacks")
     void testPacks(final String pack) throws Exception {
+        final CheckPack check = new CheckPack(
+            new TextOf(
+                new ResourceOf(
+                    String.format("org/eolang/parser/packs/%s", pack)
+                )
+            ).asString()
+        );
+        if (check.skip()) {
+            Assumptions.abort(
+                String.format("%s is not ready", pack)
+            );
+        }
         MatcherAssert.assertThat(
-            new CheckPack(
-                new TextOf(
-                    new ResourceOf(
-                        String.format("org/eolang/parser/packs/%s", pack)
-                    )
-                ).asString()
-            ).failures(),
+            check.failures(),
             Matchers.empty()
         );
     }

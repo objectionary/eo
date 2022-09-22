@@ -54,7 +54,7 @@ public class EOint$EOas_bytes extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> new Data.ToPhi(new Param(rho).asBytes())
+                rho -> new Data.ToPhi(new Param(rho).asBytes().take())
             )
         );
     }

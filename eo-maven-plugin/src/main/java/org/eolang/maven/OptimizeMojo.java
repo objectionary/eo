@@ -29,6 +29,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.FileNotFoundException;
@@ -67,17 +68,20 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Parsing train with XSLs.
      */
-    private static final Train<Shift> TRAIN = new TrClasspath<>(
-        new ParsingTrain(),
-        "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
-        "/org/eolang/parser/optimize/remove-refs.xsl",
-        "/org/eolang/parser/optimize/abstracts-float-up.xsl",
-        "/org/eolang/parser/optimize/remove-levels.xsl",
-        "/org/eolang/parser/add-refs.xsl",
-        "/org/eolang/parser/optimize/fix-missed-names.xsl",
-        "/org/eolang/parser/add-refs.xsl",
-        "/org/eolang/parser/errors/broken-refs.xsl"
-    ).back();
+    private static final Train<Shift> TRAIN = new TrFast(
+        new TrClasspath<>(
+            new ParsingTrain(),
+            "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
+            "/org/eolang/parser/optimize/remove-refs.xsl",
+            "/org/eolang/parser/optimize/abstracts-float-up.xsl",
+            "/org/eolang/parser/optimize/remove-levels.xsl",
+            "/org/eolang/parser/add-refs.xsl",
+            "/org/eolang/parser/optimize/fix-missed-names.xsl",
+            "/org/eolang/parser/add-refs.xsl",
+            "/org/eolang/parser/errors/broken-refs.xsl",
+            "/org/eolang/parser/optimize/constant-folding.xsl"
+        ).back()
+    );
 
     /**
      * Track optimization steps into intermediate XML files?
@@ -112,7 +116,7 @@ public final class OptimizeMojo extends SafeMojo {
                 if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                     Logger.debug(
                         this, "Already optimized %s to %s",
-                        Save.rel(src), Save.rel(tgt)
+                        new Home().rel(src), new Home().rel(tgt)
                     );
                     continue;
                 }
@@ -151,7 +155,7 @@ public final class OptimizeMojo extends SafeMojo {
             trn = new SpyTrain(trn, dir);
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
-                Save.rel(dir)
+                new Home().rel(dir)
             );
         }
         return new Xsline(trn).pass(new XMLDocument(file));
@@ -171,10 +175,10 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), TranspileMojo.EXT
         );
-        new Save(xml.toString(), target).save();
+        new Home().save(xml.toString(), target);
         Logger.debug(
             this, "Optimized %s (program:%s) to %s",
-            Save.rel(file), name, Save.rel(target)
+            new Home().rel(file), name, new Home().rel(target)
         );
         return target;
     }

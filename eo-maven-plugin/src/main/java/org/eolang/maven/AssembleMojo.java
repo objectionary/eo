@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
@@ -93,6 +94,16 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
+
+    /**
+     * Tojo ATTR.
+     */
+    public static final String ATTR_TRANSPILED = "transpiled";
+
+    /**
+     * Tojo ATTR.
+     */
+    public static final String ATTR_HASH = "hash";
 
     /**
      * Output.
@@ -168,6 +179,14 @@ public final class AssembleMojo extends SafeMojo {
         property = "eo.failOnError",
         defaultValue = "true")
     private boolean failOnError = true;
+
+    /**
+     * Parsed cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     @Override
     public void exec() throws IOException {

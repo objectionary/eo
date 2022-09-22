@@ -40,13 +40,13 @@ final class DepDirsTest {
 
     @Test
     void findsDirs(@TempDir final Path temp) throws IOException {
-        new Save("", temp.resolve("a/b/c/f/test.txt")).save();
-        new Save("", temp.resolve("a/b/f.txt")).save();
-        new Save("", temp.resolve("test/f.txt")).save();
-        new Save("", temp.resolve("a/g")).save();
+        new Home().save("", temp.resolve("a/b/c/f/test.txt"));
+        new Home().save("", temp.resolve("a/b/f.txt"));
+        new Home().save("", temp.resolve("test/f.txt"));
+        new Home().save("", temp.resolve("a/g"));
         MatcherAssert.assertThat(
             new DepDirs(temp),
-            Matchers.contains(String.format("a%sb%1$sc", File.separator))
+            Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
         );
         MatcherAssert.assertThat(
             new DepDirs(temp),

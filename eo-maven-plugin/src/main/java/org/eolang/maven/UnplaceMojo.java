@@ -70,13 +70,13 @@ public final class UnplaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.placed.exists()) {
-            this.placeThem();
-        } else {
+        if (this.placedTojos.value().select(r -> true).isEmpty()) {
             Logger.info(
                 this, "The list of placed binaries is absent: %s",
-                Save.rel(this.placed.toPath())
+                new Home().rel(this.placed.toPath())
             );
+        } else {
+            this.placeThem();
         }
     }
 
@@ -95,22 +95,22 @@ public final class UnplaceMojo extends SafeMojo {
         if (tojos.isEmpty()) {
             Logger.info(
                 this, "No binaries were placed into %s, nothing to uplace",
-                Save.rel(this.placed.toPath())
+                new Home().rel(this.placed.toPath())
             );
         } else if (deleted == 0) {
             Logger.info(
                 this, "No binaries out of %d deleted in %s",
-                tojos.size(), Save.rel(this.placed.toPath())
+                tojos.size(), new Home().rel(this.placed.toPath())
             );
         } else if (deleted == tojos.size()) {
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",
-                tojos.size(), Save.rel(this.placed.toPath())
+                tojos.size(), new Home().rel(this.placed.toPath())
             );
         } else {
             Logger.info(
                 this, "Just %d binari(es) out of %d deleted in %s",
-                deleted, tojos.size(), Save.rel(this.placed.toPath())
+                deleted, tojos.size(), new Home().rel(this.placed.toPath())
             );
         }
     }
@@ -152,12 +152,12 @@ public final class UnplaceMojo extends SafeMojo {
                 unplaced += 1;
                 Logger.debug(
                     this, "Binary %s of %s deleted",
-                    Save.rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    new Home().rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    Save.rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    new Home().rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
         }
@@ -181,13 +181,19 @@ public final class UnplaceMojo extends SafeMojo {
                 remained += 1;
                 continue;
             }
-            UnplaceMojo.delete(path);
-            deleted += 1;
-            Logger.debug(
-                this,
-                "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                related, tojo.get(PlaceMojo.ATTR_ORIGIN)
-            );
+            if (UnplaceMojo.delete(path)) {
+                deleted += 1;
+                Logger.debug(
+                    this,
+                    "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
+                    related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                );
+            } else {
+                Logger.debug(
+                    this, "Binary %s of %s already deleted",
+                    new Home().rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                );
+            }
         }
         Logger.info(
             this,
@@ -246,7 +252,7 @@ public final class UnplaceMojo extends SafeMojo {
             Logger.debug(
                 UnplaceMojo.class,
                 "Empty directory deleted too: %s",
-                Save.rel(dir)
+                new Home().rel(dir)
             );
         }
         return deleted;

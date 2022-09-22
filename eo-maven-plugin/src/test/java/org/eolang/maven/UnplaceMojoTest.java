@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,31 +42,35 @@ final class UnplaceMojoTest {
     @Test
     void testCleaning(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
-        new Save("...", foo).save();
+        new Home().save("...", foo);
         final Path pparent = foo.getParent().getParent();
         final Path foo2 = temp.resolve("a/b/c/foo2.class");
-        new Save("...", foo2).save();
+        new Home().save("...", foo2);
         final Path foo3 = temp.resolve("a/b/c/d/foo3.class");
-        new Save("...", foo3).save();
+        new Home().save("...", foo3);
         final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
-        new Save("...", foo4).save();
-        final Path list = temp.resolve("placed.json");
-        new MonoTojos(new Csv(list)).add(foo.toString())
+        new Home().save("...", foo4);
+        final Path list = temp.resolve("placed.csv");
+        Catalogs.INSTANCE.make(list)
+            .add(foo.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
             .set(PlaceMojo.ATTR_HASH, new FileHash(foo));
-        new MonoTojos(new Csv(list)).add(foo2.toString())
+        Catalogs.INSTANCE.make(list)
+            .add(foo2.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
             .set(PlaceMojo.ATTR_HASH, new FileHash(foo2));
-        new MonoTojos(new Csv(list)).add(foo3.toString())
+        Catalogs.INSTANCE.make(list)
+            .add(foo3.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
             .set(PlaceMojo.ATTR_HASH, new FileHash(foo3));
-        new MonoTojos(new Csv(list)).add(foo4.toString())
+        Catalogs.INSTANCE.make(list)
+            .add(foo4.toString())
             .set(PlaceMojo.ATTR_KIND, "class")
             .set(PlaceMojo.ATTR_RELATED, "---")
             .set(PlaceMojo.ATTR_ORIGIN, "some.jar")

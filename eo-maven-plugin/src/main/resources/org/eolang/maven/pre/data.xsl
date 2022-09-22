@@ -22,12 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<!--
- @todo #1104:30m This code tests for both org.eolang.TYPE and TYPE.
-  This is unnecessary. Investigate why add-default-package.xsl
-  is not always called from eo-maven-plugin and use
-  only qualified object names.
--->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@data]">
@@ -40,9 +34,7 @@ SOFTWARE.
         </xsl:element>
       </xsl:if>
       <xsl:if test="@data!='array'">
-        <xsl:attribute name="primitive">
-          <xsl:value-of select="@data"/>
-        </xsl:attribute>
+        <xsl:attribute name="primitive" select="@data"/>
         <xsl:element name="value">
           <xsl:choose>
             <xsl:when test="@data='bytes'">

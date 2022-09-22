@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -130,12 +131,33 @@ abstract class SafeMojo extends AbstractMojo {
     protected String placedFormat = "csv";
 
     /**
+     * The path to a text file where paths of generated java files per EO program.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.11.0
+     */
+    @Parameter(
+        property = "eo.transpiled",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/transpiled.csv"
+    )
+    protected File transpiled;
+
+    /**
+     * Format of "transpiled" file ("json" or "csv").
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(property = "eo.transpiledFormat", required = true, defaultValue = "csv")
+    protected String transpiledFormat = "csv";
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected final Unchecked<Tojos> tojos = new Unchecked<>(
         new Sticky<>(
-            () -> new Catalog(this.foreign.toPath(), this.foreignFormat).make()
+            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat)
         )
     );
 
@@ -146,7 +168,18 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
         new Sticky<>(
-            () -> new Catalog(this.placed.toPath(), this.placedFormat).make()
+            () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
+        )
+    );
+
+    /**
+     * Cached transpiled tojos.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final Unchecked<Tojos> transpiledTojos = new Unchecked<>(
+        new Sticky<>(
+            () -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat)
         )
     );
 
@@ -186,6 +219,16 @@ abstract class SafeMojo extends AbstractMojo {
                     ),
                     ex
                 );
+            } finally {
+                if (this.foreign != null) {
+                    SafeMojo.closeTojos(this.tojos.value());
+                }
+                if (this.placed != null) {
+                    SafeMojo.closeTojos(this.placedTojos.value());
+                }
+                if (this.transpiled != null) {
+                    SafeMojo.closeTojos(this.transpiledTojos.value());
+                }
             }
         }
     }
@@ -193,10 +236,16 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Tojos to use, in my scope only.
      * @return Tojos to use
+     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final Tojos scopedTojos() {
         final Tojos unscoped = this.tojos.value();
         return new Tojos() {
+            @Override
+            public void close() throws IOException {
+                unscoped.close();
+            }
+
             @Override
             public Tojo add(final String name) {
                 final Tojo tojo = unscoped.add(name);
@@ -222,5 +271,18 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
+
+    /**
+     * Close it safely.
+     * @param res The resource
+     * @throws MojoFailureException If fails
+     */
+    private static void closeTojos(final Closeable res) throws MojoFailureException {
+        try {
+            res.close();
+        } catch (final IOException ex) {
+            throw new MojoFailureException(ex);
+        }
+    }
 
 }

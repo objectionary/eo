@@ -165,10 +165,10 @@ This is how you iterate:
         seq > @
           QQ.io.stdout
             QQ.txt.sprintf
-              "%dx%d = %d\n"
+              "%d x %d = %d\n"
               x
               x
-              x.pow 2
+              x.times x
           x.write
             x.plus 1
     TRUE

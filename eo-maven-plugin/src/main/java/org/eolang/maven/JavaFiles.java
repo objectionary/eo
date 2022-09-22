@@ -29,7 +29,9 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.cactoos.text.Joined;
 
 /**
@@ -61,50 +63,51 @@ public final class JavaFiles {
 
     /**
      * Save java files.
-     * @return Count of saved files
+     * @return List of saved java files
      * @throws IOException In case issues with I/O
      */
-    public int save() throws IOException {
-        int total = 0;
+    public List<Path> save() throws IOException {
+        final List<Path> files = new ArrayList<>(0);
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
             Logger.debug(
                 this, "No .java files generated from %s",
-                Save.rel(this.source)
+                new Home().rel(this.source)
             );
         } else {
             for (final XML java : nodes) {
-                JavaFiles.saveJava(java, this.dest);
-                ++total;
+                files.add(JavaFiles.saveJava(java, this.dest));
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
-                nodes.size(), Save.rel(this.source), Save.rel(this.dest)
+                nodes.size(), new Home().rel(this.source), new Home().rel(this.dest)
             );
         }
-        return total;
+        return files;
     }
 
     /**
      * Save this Java file.
      * @param java The XML with Java
      * @param generated Path to all files
+     * @return Path to generated file
      * @throws IOException If fails
      */
-    private static void saveJava(final XML java, final Path generated) throws IOException {
+    private static Path saveJava(final XML java, final Path generated) throws IOException {
         final String type = java.xpath("@java-name").get(0);
         try {
             final Path dest = new Place(type).make(
                 generated, "java"
             );
-            new Save(
+            new Home().save(
                 new Joined(
                     "",
                     java.xpath("java/text()")
                 ),
                 dest
-            ).save();
+            );
+            return dest;
         } catch (final InvalidPathException ex) {
             throw new IOException(
                 String.format(

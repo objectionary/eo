@@ -27,12 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Param;
+import org.eolang.Bytes;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -57,15 +54,9 @@ public class EObytes$EOxor extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> {
-                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
-                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
-                    for (int index = 0; index < args.length; ++index) {
-                        final byte[] arg = new Dataized(args[index]).take(byte[].class);
-                        base = base.xor(new BigInteger(arg));
-                    }
-                    return new Data.ToPhi(base.toByteArray());
-                }
+                new ExReduceBytes(
+                    Bytes::xor
+                )
             )
         );
     }

@@ -24,8 +24,6 @@
 
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,8 +50,8 @@ class SkipTest {
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
                         PullMojo.DIR
-                        )
                     )
+                )
             ),
             Matchers.is(true)
         );
@@ -104,7 +102,7 @@ class SkipTest {
         final boolean skip
     ) {
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
@@ -126,10 +124,10 @@ class SkipTest {
         final boolean skip
     ) throws IOException {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             src.resolve("foo/main.eo")
-        ).save();
+        );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())

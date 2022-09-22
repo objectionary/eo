@@ -23,58 +23,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R6" version="2.0">
+  <!--
+  Here we find all data objects and call DATA to set
+  the data into them.
+  -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/gmi">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and @data]" mode="gmi" priority="1">
-    <xsl:variable name="dx">
-      <xsl:value-of select="eo:vertex(.)"/>
-      <xsl:text>d</xsl:text>
-    </xsl:variable>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ADD'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="$dx"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R6] Add new data vertex</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'BIND'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:edge(., .)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="$dx"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:text>Δ</xsl:text>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R6] Data attribute of data object</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
+  <!-- remove this "!=array" after the fix: https://github.com/objectionary/eo/issues/1060 -->
+  <xsl:template match="o[@base and @data and @data != 'array']" mode="gmi" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'DATA'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="$dx"/>
+          <xsl:variable name="v">
+            <xsl:value-of select="eo:vertex(.)"/>
+            <xsl:text>.copy</xsl:text>
+          </xsl:variable>
+          <xsl:value-of select="$v"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="."/>
+          <xsl:value-of select="concat('data:', @data, '/', text())"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

@@ -29,12 +29,20 @@ package EOorg.EOeolang;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentSkipListSet;
 import org.eolang.Data;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,8 +54,9 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @checkstyle ParameterNumberCheck (17 lines)
  */
 @Execution(ExecutionMode.CONCURRENT)
+@DisabledOnOs(OS.MAC)
+@Disabled
 final class RamTest {
-    @Disabled
     @ParameterizedTest
     @CsvSource({
         "5,  0, hello, 0, 5, hello",
@@ -62,14 +71,85 @@ final class RamTest {
         final int len,
         final String result
     ) throws IOException {
-        final Phi ref = new PhWith(new EOram(Phi.Φ), 0, new Data.ToPhi(total));
+        final Phi ref = new PhWith(
+            new EOram(Phi.Φ),
+            0,
+            new Data.ToPhi(total)
+        );
         Ram.INSTANCE.write(ref, wrt, data.getBytes(StandardCharsets.UTF_8));
         final byte[] bytes = Ram.INSTANCE.read(ref, rdr, len);
         MatcherAssert.assertThat(
             new String(bytes, StandardCharsets.UTF_8),
-            Matchers.is(
-                result
-            )
+            Matchers.is(result)
         );
     }
+
+    /**
+     * Is this system multi-core?
+     * @return Boolean.
+     */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static boolean isMulticore() {
+        return Runtime.getRuntime().availableProcessors() > 2;
+    }
+
+    /**
+     * Test for concurrent access.
+     * @since 1.0
+     */
+    @Nested
+    @Execution(ExecutionMode.CONCURRENT)
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @EnabledIf("EOorg.EOeolang.RamTest#isMulticore")
+    final class ConcurrentAccessTheToSameDataTest {
+        /**
+         * Ram object reference.
+         */
+        private final Phi ref = new PhWith(
+            new EOram(Phi.Φ),
+            0,
+            new Data.ToPhi(128L)
+        );
+
+        /**
+         * Used threads.
+         */
+        private final Collection<Long> threads = new ConcurrentSkipListSet<>();
+
+        @ParameterizedTest
+        @CsvSource({
+            "hello       ,  0",
+            "bye         , 10",
+            "hello world , 20",
+            "привет      , 50"
+        })
+        void writesAndReads(
+            final String data,
+            final int position
+        ) throws IOException {
+            this.threads.add(Thread.currentThread().getId());
+            Ram.INSTANCE.write(this.ref, position, data.getBytes(StandardCharsets.UTF_8));
+            MatcherAssert.assertThat(
+                new String(
+                    Ram.INSTANCE.read(
+                        this.ref,
+                        position,
+                        data.getBytes(StandardCharsets.UTF_8).length
+                    ),
+                    StandardCharsets.UTF_8
+                ),
+                Matchers.is(data)
+            );
+        }
+
+        @AfterAll
+        void shouldBeConcurrent() {
+            MatcherAssert.assertThat(
+                "test was executed concurrently",
+                this.threads,
+                Matchers.hasSize(Matchers.greaterThan(1))
+            );
+        }
+    }
+
 }

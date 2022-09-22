@@ -1,16 +1,12 @@
-xpaths:
-  - /graph/v[@id='v0']/e[@to='v1' and @title='simple']
-  - //v[@id='v1']/e[@to='v2' and @title='@']
-  - //v[@id='v1']/e[@to='v0' and @title='^']
 locators:
-  - .simple .@ .α0 .α0 .Δ =01
-  - .simple .@ .α1 .Δ =00-00-00-00-00-00-00-2A
-  - .simple .@ .α2 .hello .Δ =Jeff
+  - .simple .𝜑 .ρ .𝜑 .𝜎 .𝜑 .α0 .α0 Δ=bytes/01
+  - .simple .𝜑 .α1 Δ=bytes/00-00-00-00-00-00-00-2A
 eo: |
+  +alias foo
+  +alias bar
+  
   [] > simple
     foo > @
       bar
         TRUE
       42
-      []
-        "Jeff" > hello

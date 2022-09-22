@@ -104,23 +104,19 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             final String coords = ResolveMojo.coords(dep);
-            final Path dest;
-            if (dep.getClassifier().isEmpty()) {
-                dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
-                    .resolve(dep.getGroupId())
-                    .resolve(dep.getArtifactId())
-                    .resolve(dep.getVersion());
-            } else {
-                dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
-                    .resolve(dep.getGroupId())
-                    .resolve(dep.getArtifactId())
-                    .resolve(dep.getClassifier())
-                    .resolve(dep.getVersion());
+            String classifier = dep.getClassifier();
+            if (classifier.isEmpty()) {
+                classifier = "-";
             }
+            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
+                .resolve(dep.getGroupId())
+                .resolve(dep.getArtifactId())
+                .resolve(classifier)
+                .resolve(dep.getVersion());
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, Save.rel(dest)
+                    coords, new Home().rel(dest)
                 );
                 continue;
             }
@@ -274,7 +270,7 @@ public final class ResolveMojo extends SafeMojo {
             throw new IllegalStateException(
                 String.format(
                     "Too many (%d) dependencies at %s",
-                    coords.size(), Save.rel(file)
+                    coords.size(), new Home().rel(file)
                 )
             );
         }

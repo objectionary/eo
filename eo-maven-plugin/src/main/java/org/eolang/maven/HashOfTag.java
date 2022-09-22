@@ -74,8 +74,16 @@ final class HashOfTag {
                 )
             );
         }
-        Logger.info(this, "Git sha of %s is %s", this.tag, result);
+        Logger.debug(this, "Git sha of %s is %s", this.tag, result);
         return result;
+    }
+
+    /**
+     * Short version of hash.
+     * @return SHA of commit
+     */
+    public String narrow() {
+        return this.hash().substring(0, 7);
     }
 
     /**

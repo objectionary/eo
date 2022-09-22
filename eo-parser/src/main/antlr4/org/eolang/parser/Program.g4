@@ -105,7 +105,15 @@ method
     |
     VERTEX
   )
+  COPY?
   ;
+
+scope
+ :
+ LB
+ application
+ RB
+;
 
 application
   :
@@ -116,9 +124,7 @@ application
   method
   htail?
   |
-  LB
-  application
-  RB
+  scope
   htail?
   |
   application
@@ -141,9 +147,7 @@ htail
     method
     |
     SPACE
-    LB
-    application
-    RB
+    scope
     |
     SPACE
     application

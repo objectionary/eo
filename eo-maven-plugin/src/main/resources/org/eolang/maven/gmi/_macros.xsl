@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="_macros" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:function name="eo:index" as="xs:string">
+  <xsl:function name="eo:index" as="xs:integer">
     <xsl:param name="o" as="node()"/>
     <xsl:variable name="ret">
       <xsl:choose>
@@ -41,7 +41,7 @@ SOFTWARE.
   <xsl:function name="eo:vertex" as="xs:string">
     <xsl:param name="o" as="node()"/>
     <xsl:variable name="ret">
-      <xsl:text>v</xsl:text>
+      <xsl:text>vertex:</xsl:text>
       <xsl:value-of select="eo:index($o)"/>
     </xsl:variable>
     <xsl:value-of select="$ret"/>
@@ -50,10 +50,33 @@ SOFTWARE.
     <xsl:param name="o1" as="node()"/>
     <xsl:param name="o2" as="node()"/>
     <xsl:variable name="ret">
-      <xsl:text>e</xsl:text>
+      <xsl:text>edge:</xsl:text>
       <xsl:value-of select="eo:index($o1)"/>
       <xsl:text>.</xsl:text>
       <xsl:value-of select="eo:index($o2)"/>
+    </xsl:variable>
+    <xsl:value-of select="$ret"/>
+  </xsl:function>
+  <xsl:function name="eo:attr" as="xs:string">
+    <xsl:param name="a" as="xs:string"/>
+    <xsl:variable name="ret">
+      <xsl:choose>
+        <xsl:when test="$a = '@'">
+          <xsl:text>𝜑</xsl:text>
+        </xsl:when>
+        <xsl:when test="$a = 'Q'">
+          <xsl:text>Φ</xsl:text>
+        </xsl:when>
+        <xsl:when test="$a = '^'">
+          <xsl:text>ρ</xsl:text>
+        </xsl:when>
+        <xsl:when test="$a = '&amp;'">
+          <xsl:text>𝜎</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$a"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>

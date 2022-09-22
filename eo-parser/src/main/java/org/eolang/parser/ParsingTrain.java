@@ -27,14 +27,14 @@ import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
-import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
+import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
-import org.cactoos.iterable.Mapped;
 
 /**
  * Train of XSL shifts.
@@ -71,6 +71,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/incorrect-architect.xsl",
         "/org/eolang/parser/expand-aliases.xsl",
         "/org/eolang/parser/resolve-aliases.xsl",
+        "/org/eolang/parser/synthetic-references.xsl",
         "/org/eolang/parser/add-default-package.xsl",
         "/org/eolang/parser/errors/broken-refs.xsl",
         "/org/eolang/parser/errors/unknown-names.xsl",
@@ -87,22 +88,30 @@ public final class ParsingTrain extends TrEnvelope {
     /**
      * Ctor.
      */
+    @SuppressWarnings("unchecked")
     public ParsingTrain() {
         super(
             new TrBulk<>(
-                new TrLambda(
-                    new TrLogged(new TrDefault<>()),
-                    shift -> new StAfter(
-                        shift,
-                        new StLambda(
-                            shift::uid,
-                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                .with("sheet", shift.uid())
-                                .transform(xml)
+                new TrClasspath<>(
+                    new TrLambda(
+                        new TrFast(
+                            new TrLogged(
+                                new TrDefault<>()
+                            )
+                        ),
+                        shift -> new StAfter(
+                            shift,
+                            new StLambda(
+                                shift::uid,
+                                (pos, xml) -> ParsingTrain.EACH.with("step", pos)
+                                    .with("sheet", shift.uid())
+                                    .transform(xml)
+                            )
                         )
-                    )
+                    ),
+                    ParsingTrain.SHEETS
                 )
-            ).with(new Mapped<>(StClasspath::new, ParsingTrain.SHEETS)).back()
+            ).back().back()
         );
     }
 

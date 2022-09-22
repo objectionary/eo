@@ -116,9 +116,9 @@ public final class Central implements BiConsumer<Dependency, Path> {
             throw new IllegalStateException(ex);
         }
         Logger.info(
-            this, "%s unpacked to %s:%s:%s:%s",
+            this, "%s:%s:%s:%s unpacked to %s",
             dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(),
-            Save.rel(path)
+            new Home().rel(path)
         );
     }
 
