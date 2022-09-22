@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
@@ -80,23 +79,23 @@ final class UnplaceMojoTest {
             .with("placedFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(foo),
+            new Home().exists(foo),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            Files.exists(foo2),
+            new Home().exists(foo2),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            Files.exists(foo3),
+            new Home().exists(foo3),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            Files.exists(foo4),
+            new Home().exists(foo4),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            Files.exists(Paths.get(String.valueOf(pparent))),
+            new Home().exists(Paths.get(String.valueOf(pparent))),
             Matchers.is(false)
         );
     }

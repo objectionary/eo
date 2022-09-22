@@ -89,7 +89,7 @@ final class TranspileMojoTest {
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            Files.exists(java),
+            new Home().exists(java),
             Matchers.is(true)
         );
         final long before = java.toFile().lastModified();
@@ -146,14 +146,14 @@ final class TranspileMojoTest {
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            Files.exists(java),
+            new Home().exists(java),
             Matchers.is(true)
         );
         Assertions.assertTrue(java.toFile().setLastModified(0L));
         final Path xmir = target.resolve("06-transpile")
             .resolve("foo")
             .resolve("src.xmir");
-        Assertions.assertTrue(Files.exists(xmir));
+        Assertions.assertTrue(new Home().exists(xmir));
         Assertions.assertTrue(xmir.toFile().setLastModified(0L));
         new Moja<>(TranspileMojo.class)
             .with("project", new MavenProjectStub())
@@ -206,14 +206,14 @@ final class TranspileMojoTest {
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            Files.exists(java),
+            new Home().exists(java),
             Matchers.is(true)
         );
         Assertions.assertTrue(java.toFile().setLastModified(0L));
         final Path xmir = target.resolve("06-transpile")
             .resolve("foo")
             .resolve("src.xmir");
-        Assertions.assertTrue(Files.exists(xmir));
+        Assertions.assertTrue(new Home().exists(xmir));
         new Moja<>(TranspileMojo.class)
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
@@ -317,7 +317,7 @@ final class TranspileMojoTest {
         final Path main = generated.resolve("EOorg/EOeolang/EOexamples/EOmainTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", mess),
-            Files.exists(mess),
+            new Home().exists(mess),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -329,7 +329,7 @@ final class TranspileMojoTest {
         final Path xmir = target.resolve("06-transpile")
             .resolve("foo")
             .resolve("right.xmir");
-        Assertions.assertTrue(Files.exists(xmir));
+        Assertions.assertTrue(new Home().exists(xmir));
     }
 
     @Test
@@ -349,7 +349,7 @@ final class TranspileMojoTest {
     void testRealCompilation(@TempDir final Path temp)
         throws Exception {
         final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo");
-        Assumptions.assumeTrue(Files.exists(src));
+        Assumptions.assumeTrue(new Home().exists(src));
         final String java = this.compile(
             temp,
             new InputOf(src),
@@ -404,7 +404,7 @@ final class TranspileMojoTest {
         final Path java = generated.resolve(file);
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            Files.exists(java),
+            new Home().exists(java),
             Matchers.is(true)
         );
         return java;

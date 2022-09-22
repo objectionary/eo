@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -50,15 +49,15 @@ final class PlaceMojoTest {
             .with("placed", temp.resolve("placed.json").toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(classes.resolve("EObar/x.bin")),
+            new Home().exists(classes.resolve("EObar/x.bin")),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(classes.resolve("org/eolang/f/x.a.class")),
+            new Home().exists(classes.resolve("org/eolang/f/x.a.class")),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(classes.resolve("org/eolang/t.txt")),
+            new Home().exists(classes.resolve("org/eolang/t.txt")),
             Matchers.is(true)
         );
     }

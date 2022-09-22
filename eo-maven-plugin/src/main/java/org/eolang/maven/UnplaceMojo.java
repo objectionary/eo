@@ -241,7 +241,7 @@ public final class UnplaceMojo extends SafeMojo {
     private static boolean delete(final Path file) throws IOException {
         Path dir = file.getParent();
         boolean deleted = false;
-        if (Files.exists(file)) {
+        if (new Home().exists(file)) {
             Files.delete(file);
             deleted = true;
         }

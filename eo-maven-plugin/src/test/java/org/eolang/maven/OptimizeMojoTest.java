@@ -145,7 +145,7 @@ final class OptimizeMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format("%s/foo/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
                 )
@@ -153,7 +153,7 @@ final class OptimizeMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
                 )

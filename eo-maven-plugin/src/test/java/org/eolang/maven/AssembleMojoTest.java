@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
@@ -74,7 +73,7 @@ final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
@@ -133,7 +132,7 @@ final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
@@ -144,7 +143,7 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/main.%s",
