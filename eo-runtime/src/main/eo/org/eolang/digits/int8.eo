@@ -101,3 +101,24 @@
       ^.lte x
       not.
         ^.eq x
+
+  [multiplier] > times
+    QQ.seq > @
+      QQ.memory 00- > s
+      QQ.memory 00- > i
+      if. > n
+        multiplier.lt (int8 00-)
+        multiplier.neg
+        multiplier
+      while.
+        (int8 i).lt n
+        [x]
+          QQ.seq > @
+            s.write ((int8 s).plus ^.^)
+            i.write ((int8 i).plus 01-)
+      []
+        int8 > @
+          if.
+            multiplier.lt (int8 00-)
+            s.neg
+            s
