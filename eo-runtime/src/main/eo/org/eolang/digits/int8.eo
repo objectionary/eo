@@ -30,7 +30,7 @@
   if. > @
     $.byte.size.eq 1
     $.byte
-    QQ.error "int8 requires underlying bytes to be only have one byte"
+    QQ.error "int8 requires underlying bytes to only have one byte"
 
   [addend] > plus
     QQ.seq > @
