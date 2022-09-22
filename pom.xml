@@ -204,6 +204,13 @@ SOFTWARE.
         <configuration>
           <source>${project.basedir}/src/test/groovy/check-xsl-id.groovy</source>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>3.0.13</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
     <pluginManagement>

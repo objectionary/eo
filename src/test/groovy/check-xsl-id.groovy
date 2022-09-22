@@ -21,7 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import groovy.xml.XmlSlurper
+import groovy.io.FileType
+import groovy.io.FileVisitResult
 
-println ">>> Hello World! <<<"
+project = new File('.')
+
+project.traverse(
+  type         : FileType.FILES,
+  preDir       : { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
+  nameFilter   : ~/.*\.xsl/
+) {
+  it ->
+    String id = new XmlSlurper().parse(it).@id
+    assert id == it.name.minus('.xsl')
+}
 
 true

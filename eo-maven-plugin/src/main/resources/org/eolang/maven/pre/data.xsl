@@ -28,7 +28,7 @@ SOFTWARE.
   is not always called from eo-maven-plugin and use
   only qualified object names.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pre-data" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@data]">
     <xsl:variable name="o" select="."/>
