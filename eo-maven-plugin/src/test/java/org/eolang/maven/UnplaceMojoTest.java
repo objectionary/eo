@@ -152,11 +152,11 @@ final class UnplaceMojoTest {
             .execute();
         MatcherAssert.assertThat(
             new Home().exists(foo),
-            Matchers.is(true)
+            Matchers.is(false)
         );
         MatcherAssert.assertThat(
             new Home().exists(Paths.get(String.valueOf(pparent))),
-            Matchers.is(true)
+            Matchers.is(false)
         );
     }
 }
