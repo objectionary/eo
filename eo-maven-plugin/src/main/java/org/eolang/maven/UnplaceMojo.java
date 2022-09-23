@@ -150,6 +150,10 @@ public final class UnplaceMojo extends SafeMojo {
                     related, tojo.get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
+            if (!this.keepBinaries.isEmpty()
+                && UnplaceMojo.inside(related, this.keepBinaries)) {
+                continue;
+            }
             if (UnplaceMojo.delete(path)) {
                 unplaced += 1;
                 Logger.debug(
