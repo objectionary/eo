@@ -21,32 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import groovy.xml.XmlSlurper
+import groovy.io.FileType
+import groovy.io.FileVisitResult
 
-[
-  'target/eo/foreign.csv',
-  'target/eo/placed.json',
-  'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
-  'target/eo/01-parse/org/eolang/examples/app.xmir',
-  'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
-  'target/eo/03-optimize/org/eolang/examples/app.xmir',
-  'target/eo/04-pull/org/eolang/array.eo',
-  'target/eo/05-pre/org/eolang/examples/app/00-classes.xml',
-  'target/eo/06-transpile/org/eolang/examples/app.xmir',
-  'target/eo/gmi/org/eolang/error.gmi',
-  'target/eo/gmi/org/eolang/error.gmi.xe',
-  'target/eo/gmi/org/eolang/error.gmi.graph',
-  'target/eo/gmi/org/eolang/error.gmi.dot',
-  'target/classes/EOorg/EOeolang/EOexamples/EOapp.class'
-].each { assert new File(basedir, it).exists() }
+project = new File('.')
 
-String log = new File(basedir, 'build.log').text
-
-[
-  '--- eo-maven-plugin:',
-  'org.eolang:eo-runtime:',
-  ' unpacked to ',
-  '6th Fibonacci number is 8',
-  'BUILD SUCCESS',
-].each { assert log.contains(it) }
+project.traverse(
+  type         : FileType.FILES,
+  preDir       : { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
+  nameFilter   : ~/.*\.xsl/
+) {
+  it ->
+    String id = new XmlSlurper().parse(it).@id
+    assert id == it.name.minus('.xsl')
+}
 
 true
