@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -197,7 +198,9 @@ public class Home {
      *  what symbols we want to replace.
      */
     private static Path path(final Path path) {
-        return path;
+        final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
+        final String string = new String(bytes, StandardCharsets.UTF_8);
+        return Paths.get(string);
     }
 
 }
