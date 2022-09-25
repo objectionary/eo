@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 public final class LatexMojo extends SafeMojo{
     public static final String latex = "eo-runtime/target/eo/latex/";
     public static final String DIR = "eo-runtime/target/eo/03-optimize/org/eolang";
-    int counter = 1;
     void rec(File[] files, String subdir) throws IOException {
         for(File child: files){
             if(child.isDirectory()) {
@@ -29,8 +28,6 @@ public final class LatexMojo extends SafeMojo{
             new File(latex + "universe.tex").createNewFile();
         }
         if(Files.exists(Paths.get(DIR))) {
-            System.out.println("We run it " + counter + " times.");
-            counter++;
             System.out.println();
             File[] files = new File(DIR).listFiles();
             rec(files,"");

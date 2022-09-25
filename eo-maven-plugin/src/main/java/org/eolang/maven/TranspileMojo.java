@@ -146,7 +146,6 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        System.out.println("Current process: ");
         final Collection<Tojo> sources = this.tojos.value().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
