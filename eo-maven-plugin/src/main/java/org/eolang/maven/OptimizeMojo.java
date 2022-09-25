@@ -41,6 +41,7 @@ import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Scalar;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -64,6 +65,21 @@ public final class OptimizeMojo extends SafeMojo {
      * The directory where to transpile to.
      */
     public static final String DIR = "03-optimize";
+
+    /**
+     * Subdirectory for parsed cache.
+     */
+    public static final String OPTIMIZED = "optimized";
+
+    /**
+     * EO cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
+    /**
 
     /**
      * Parsing train with XSLs.
@@ -122,7 +138,7 @@ public final class OptimizeMojo extends SafeMojo {
                 }
             }
             ++done;
-            final XML optimized = this.optimize(src);
+            final XML optimized = this.optimize(src, tojo);
             if (this.shouldPass(optimized)) {
                 tojo.set(
                     AssembleMojo.ATTR_XMIR2,
@@ -144,9 +160,20 @@ public final class OptimizeMojo extends SafeMojo {
      * @return The file with optimized XMIR
      * @throws FileNotFoundException If fails
      */
-    private XML optimize(final Path file) throws FileNotFoundException {
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
+    private XML optimize(final Path file, final Tojo tojo) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN;
+        final Footprint footprint;
+        if(tojo.exists(AssembleMojo.ATTR_HASH)){
+            footprint = new FtCached(
+                    tojo.get(AssembleMojo.ATTR_HASH),
+                    this.targetDir.toPath().resolve(OptimizeMojo.DIR),
+                    this.cache.resolve(OptimizeMojo.OPTIMIZED));
+        }
+        else{
+            footprint = new FtDefault(this.targetDir.toPath().resolve(OptimizeMojo.DIR));
+        }
         if (this.trackOptimizationSteps) {
             final Place place = new Place(name);
             final Path dir = place.make(
@@ -158,7 +185,15 @@ public final class OptimizeMojo extends SafeMojo {
                 new Home().rel(dir)
             );
         }
-        return new Xsline(trn).pass(new XMLDocument(file));
+        XML result = new Xsline(trn).pass(new XMLDocument(file));
+        try {
+            footprint.save(name,
+                    AssembleMojo.ATTR_XMIR,
+                    result::toString);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
     /**
