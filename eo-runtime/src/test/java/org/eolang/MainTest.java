@@ -84,6 +84,14 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void dataizationResultTest() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "org.eolang.io.stdout", "some text"),
+            Matchers.containsString("true")
+        );
+    }
+
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add(MainTest.jdkExecutable("java"));
