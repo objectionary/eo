@@ -93,9 +93,9 @@ SOFTWARE.
     <xsl:value-of select="a[4]"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
-    <!-- Add backward ρ-edge and 𝜎-edge from V2 to V1: -->
+    <!-- Add backward ρ-edge and σ-edge from V2 to V1: -->
     <xsl:variable name="i" select="."/>
-    <xsl:for-each select="('ρ', '𝜎')">
+    <xsl:for-each select="('ρ', 'σ')">
       <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
       <xsl:value-of select="$i/a[3]"/>
       <xsl:text>' and not(e[@title='</xsl:text>

@@ -56,7 +56,7 @@ SOFTWARE.
                 <xsl:text>ξ</xsl:text>
               </xsl:when>
               <xsl:when test="@base = '&amp;'">
-                <xsl:text>𝜎</xsl:text>
+                <xsl:text>σ</xsl:text>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="concat('Φ', '.', @base)"/>
