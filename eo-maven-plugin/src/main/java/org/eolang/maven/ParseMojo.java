@@ -135,15 +135,15 @@ public final class ParseMojo extends SafeMojo {
         final String name = tojo.get(Tojos.KEY);
         final Footprint footprint;
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
-            footprint = new FtCached(
-                tojo.get(AssembleMojo.ATTR_HASH),
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                this.cache.resolve(ParseMojo.PARSED)
-            );
+            footprint = new Footprints()
+                .cached()
+                .withHash(tojo.get(AssembleMojo.ATTR_HASH))
+                .withMain(this.targetDir.toPath().resolve(ParseMojo.DIR))
+                .withCache(this.cache.resolve(ParseMojo.PARSED)).build();
         } else {
-            footprint = new FtDefault(
-                this.targetDir.toPath().resolve(ParseMojo.DIR)
-            );
+            footprint = new Footprints()
+                .withMain(this.targetDir.toPath().resolve(ParseMojo.DIR))
+                .build();
         }
         try {
             footprint.save(

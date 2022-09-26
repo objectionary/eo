@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import EOorg.EOeolang.EObytes$EOas_string;
 import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -87,17 +88,19 @@ final class ParseMojoTest {
             src
         );
         final Path foreign = temp.resolve("eo-foreign.csv");
-        new FtCached(
-            new HashOfTag("0.25.0").narrow(),
-            target,
-            temp.resolve("parsed")
-        ).save(
-            "foo.x.main",
-            "xmir",
-            () -> new UncheckedText(
-                new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
-            ).asString()
-        );
+        new Footprints()
+            .cached()
+            .withHash(new HashOfTag("0.25.0").narrow())
+            .withMain(target)
+            .withCache(temp.resolve("parsed"))
+            .build()
+            .save(
+                "foo.x.main",
+                "xmir",
+                () -> new UncheckedText(
+                    new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
+                ).asString()
+            );
         Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")

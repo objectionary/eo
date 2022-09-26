@@ -35,7 +35,7 @@ import org.cactoos.text.TextOf;
  * Program footprint of EO compilation process.
  * <p/>The footprint consists of file in {@link #main} folder and optionally cached
  * file in {@link #cache} folder.
- * Caching is applied if {@link #hash} is not empty otherwise caching is ignored.
+ * Caching is applied if {@link #code} is not empty otherwise caching is ignored.
  * <p/>Usage example:
  * <code>
  *  <pre>
@@ -59,7 +59,7 @@ public final class FtCached implements Footprint {
     /**
      * Version tag.
      */
-    private final String hash;
+    private final String code;
 
     /**
      * Path to cache root.
@@ -68,19 +68,19 @@ public final class FtCached implements Footprint {
 
     /**
      * Ctor.
-     * @param hash Version tag
+     * @param labels hash and version of maven plugin
      * @param main Main root
      * @param cache Cache root
      */
-    public FtCached(final String hash, final Path main, final Path cache) {
-        this.hash = hash;
+    public FtCached(final String[] labels, final Path main, final Path cache) {
+        this.code = String.join("/", labels);
         this.main = main;
         this.cache = cache;
     }
 
     @Override
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.code), ext);
         final Path target = new Place(program).make(this.main, ext);
         final IoCheckedText content;
         if (cached.toFile().exists()) {
@@ -98,7 +98,7 @@ public final class FtCached implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
+        final Path cached = new Place(program).make(this.cache.resolve(this.code), ext);
         final Path target = new Place(program).make(this.main, ext);
         final String text;
         if (cached.toFile().exists()) {
