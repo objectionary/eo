@@ -23,21 +23,16 @@
  */
 
 /**
- * This check verifies that 'id' of XSL is in line with file name.
+ * Entry point for running validation scripts.
+ * To add new validation create new script in this folder and add it
+ * to the list below.
  */
-import groovy.xml.XmlSlurper
-import groovy.io.FileType
-import groovy.io.FileVisitResult
-
-project = new File('.')
-
-project.traverse(
-  type         : FileType.FILES,
-  preDir       : { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
-  nameFilter   : ~/.*\.xsl/
-) {
-  it ->
-    String id = new XmlSlurper().parse(it).@id
-    assert id == it.name.minus('.xsl')
+[
+  'src/test/groovy/check-xsl-id.groovy',
+  'src/test/groovy/check-xsl-version.groovy'
+].each {
+  evaluate(new File(it))
+  println String.format('Verified with %s - OK', it)
 }
-true
+
+

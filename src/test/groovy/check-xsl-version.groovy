@@ -23,7 +23,7 @@
  */
 
 /**
- * This check verifies that 'id' of XSL is in line with file name.
+ * This check verifies that version of XSL has expected value.
  */
 import groovy.xml.XmlSlurper
 import groovy.io.FileType
@@ -37,7 +37,8 @@ project.traverse(
   nameFilter   : ~/.*\.xsl/
 ) {
   it ->
-    String id = new XmlSlurper().parse(it).@id
-    assert id == it.name.minus('.xsl')
+    String version = new XmlSlurper().parse(it).@version
+    assert version == '2.0'
 }
+
 true
