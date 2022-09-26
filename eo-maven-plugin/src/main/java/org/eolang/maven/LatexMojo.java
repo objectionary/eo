@@ -32,7 +32,9 @@ import java.nio.file.Paths;
  * Writes formulas from target/eo/03-optimize in .tex form.
  *
  * @since 0.1
- * * @todo #1206:30min Add functions to LaxtexMogo to parse .xmir files to .tex
+ * @todo #1206:30min Add functions to LaxtexMogo to parse .xmir files to .tex
+ * For new we can just create all needed .tex files
+ * But we still need functionality to add phi-calculus furmulas to these .tex files
  */
 public final class LatexMojo extends SafeMojo {
 
