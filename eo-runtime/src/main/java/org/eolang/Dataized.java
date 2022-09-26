@@ -62,7 +62,7 @@ public final class Dataized {
         ThreadLocal.withInitial(() -> Integer.getInteger("max.dataization.log", 3));
 
     /**
-     * The object to datarize.
+     * The object to dataize.
      */
     private final Phi phi;
 

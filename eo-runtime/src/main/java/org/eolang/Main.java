@@ -187,11 +187,8 @@ public final class Main {
             phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr(0).put(phi);
         }
-        if (!new Dataized(app).take(Boolean.class)) {
-            throw new IllegalStateException(
-                "Runtime dataization failure"
-            );
-        }
+        final Boolean result = new Dataized(app).take(Boolean.class);
+        Main.LOGGER.info(String.format("The result of cast %s to bool is %s", app, result));
     }
 
     /**
