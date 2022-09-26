@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,20 +83,14 @@ final class HomeTest {
     }
 
     @Test
-    void pathModifyingTest() throws InvocationTargetException,
-        IllegalAccessException, NoSuchMethodException {
-        final String str = " ħstring 实验";
-        final byte[] bytes = str.getBytes(StandardCharsets.UTF_16BE);
+    void existsInDirDifferentEncryptionTest(@TempDir final Path temp) throws IOException {
+        final String filename = "文件名.txt";
+        final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
+        new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
         MatcherAssert.assertThat(
-            this.getPathMethod().invoke(null, new Path[] {Paths.get(decoded) }),
-            Matchers.is(Paths.get(str))
+            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            Matchers.is(true)
         );
-    }
-
-    private Method getPathMethod() throws NoSuchMethodException {
-        final Method method = Home.class.getDeclaredMethod("path", Path.class);
-        method.setAccessible(true);
-        return method;
     }
 }

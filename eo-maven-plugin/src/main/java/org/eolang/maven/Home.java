@@ -199,8 +199,7 @@ public class Home {
      */
     private static Path path(final Path path) {
         final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
-        final String string = new String(bytes, StandardCharsets.UTF_8);
-        return Paths.get(string);
+        return Paths.get(new String(bytes, StandardCharsets.UTF_8));
     }
 
 }
