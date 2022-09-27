@@ -38,7 +38,6 @@ import java.nio.file.Path;
  *
  * @since 0.23
  */
-@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
 final class SpyTrain extends TrEnvelope {
 
     /**
@@ -65,7 +64,7 @@ final class SpyTrain extends TrEnvelope {
                                     )
                                 );
                             } catch (final IOException exc) {
-                                throw new RuntimeException(exc);
+                                throw new IllegalStateException(exc);
                             }
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(
