@@ -22,41 +22,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R4" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-duplicate-edges" version="2.0">
   <!--
-  Here we find objects with "dot notation" in the @base
-  attribute and attach a proper ATOM to their vertices.
+  Here we go through all vertices and confirm that they don't have
+  duplicate edges (with the same label).
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/gmi">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.')]" mode="gmi" priority="1">
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ATOM'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="concat('text:', 'S/ξ.ρ', @base)"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R4] This is a dot-notation</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  <xsl:template match="o" mode="gmi">
-    <!-- ignore them -->
+  <xsl:template match="/test/graph/v/e[preceding-sibling::e/@title = @title]">
+    <xsl:variable name="e" select="."/>
+    <xsl:message terminate="yes">
+      <xsl:text>The edge </xsl:text>
+      <xsl:value-of select="$e/@id"/>
+      <xsl:text> labeled as '</xsl:text>
+      <xsl:value-of select="$e/@title"/>
+      <xsl:text>' is a duplicate of another edge with the same label</xsl:text>
+    </xsl:message>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*" mode="#current"/>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
