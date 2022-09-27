@@ -30,7 +30,6 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
-
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -39,6 +38,7 @@ import java.nio.file.Path;
  *
  * @since 0.23
  */
+@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
 final class SpyTrain extends TrEnvelope {
 
     /**
@@ -64,7 +64,7 @@ final class SpyTrain extends TrEnvelope {
                                         String.format("%02d-%s.xml", pos, log)
                                     )
                                 );
-                            } catch (IOException exc) {
+                            } catch (final IOException exc) {
                                 throw new RuntimeException(exc);
                             }
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
