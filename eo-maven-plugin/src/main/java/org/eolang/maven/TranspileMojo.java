@@ -233,7 +233,7 @@ public final class TranspileMojo extends SafeMojo {
             )
         );
         final XML out = new Xsline(trn).pass(input);
-        new Home().saveQuietly(out.toString(), target);
+        new Home().save(out.toString(), target);
         final Set<String> failures = new HashSet<>(3);
         if (this.failOnWarning) {
             failures.add(Sanitized.WARNING);

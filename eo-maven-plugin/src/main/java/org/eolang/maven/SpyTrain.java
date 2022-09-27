@@ -30,6 +30,8 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
+
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -55,12 +57,16 @@ final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^a-z0-9]", "-");
-                            new Home().saveQuietly(
-                                xml.toString(),
-                                dir.resolve(
-                                    String.format("%02d-%s.xml", pos, log)
-                                )
-                            );
+                            try {
+                                new Home().save(
+                                    xml.toString(),
+                                    dir.resolve(
+                                        String.format("%02d-%s.xml", pos, log)
+                                    )
+                                );
+                            } catch (IOException exc) {
+                                throw new RuntimeException(exc);
+                            }
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(
                                     SpyTrain.class, "Step #%d by %s:\n%s",

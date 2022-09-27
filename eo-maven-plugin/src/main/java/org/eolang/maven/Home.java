@@ -149,21 +149,6 @@ public class Home {
     }
 
     /**
-     * Saving string.
-     * @param str String
-     * @param path Path to file
-     * @todo #1105:30min We should remove this function and get rid of using it
-     *  because it is not really better than simple save
-     */
-    public void saveQuietly(final String str, final Path path) {
-        try {
-            this.save(new InputOf(str), path);
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    /**
      * Make relative name from path.
      * @param file The path of the file or dir
      * @return Relative name to CWD
