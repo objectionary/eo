@@ -255,8 +255,8 @@ final class GmiMojoTest {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no data at %s",
-                                vertex
+                                "There is no data (%s) at %s",
+                                sub, vertex
                             )
                         );
                     }
@@ -280,8 +280,8 @@ final class GmiMojoTest {
                     if (node.nodes("lambda").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no lambda at %s",
-                                vertex
+                                "There is no lambda (%s) at %s",
+                                sub, vertex
                             )
                         );
                     }

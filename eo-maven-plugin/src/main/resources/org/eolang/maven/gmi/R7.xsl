@@ -35,7 +35,7 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and @atom]" mode="gmi" priority="1">
-    <xsl:variable name="full">
+    <xsl:variable name="fqn">
       <xsl:if test="/program/metas/meta[head='package']">
         <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
         <xsl:text>.</xsl:text>
@@ -53,7 +53,7 @@ SOFTWARE.
           <xsl:value-of select="eo:vertex(.)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('text:', $full)"/>
+          <xsl:value-of select="concat('text:', $fqn)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
