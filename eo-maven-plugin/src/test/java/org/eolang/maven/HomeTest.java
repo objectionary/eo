@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
