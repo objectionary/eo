@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -97,7 +99,9 @@ final class HomeTest {
     @Test
     void existsInDirWithSpecialSymbolsTest(@TempDir final Path temp) throws IOException {
         final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
-        new Home(Paths.get("directory")).save("any content", temp.resolve(filename));
+        final byte[] bytes = filename.getBytes("CP1252");
+        final String decoded = new String(bytes, "CP1252");
+        new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
         MatcherAssert.assertThat(
             new Home(Paths.get("directory")).exists(temp.resolve(filename)),
             Matchers.is(true)
