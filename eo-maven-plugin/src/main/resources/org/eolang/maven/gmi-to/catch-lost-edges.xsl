@@ -22,16 +22,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="verify-edges" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-lost-edges" version="2.0">
   <!--
   Here we go through all edges and confirm that they have
   relative vertices. We don't want to have an edge that departures
   from a vertex but doesn't arrive anywhere.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/graph/v/e">
+  <xsl:template match="/test/graph/v/e">
     <xsl:variable name="e" select="."/>
-    <xsl:if test="not(//v[@id=$e/@to])">
+    <xsl:if test="not(/test/graph/v[@id=$e/@to])">
       <xsl:message terminate="yes">
         <xsl:text>The edge </xsl:text>
         <xsl:value-of select="$e/@id"/>

@@ -1,7 +1,13 @@
 locators:
-  - .dots .x λ=S/ξ.α0.b
-  - .dots .x .α0 λ=S/ξ.α0.a
-  - .dots .x .α0 .α0 λ=S/Φ
+  - .dots .x λ=S/ξ.ρ.not .ρ Δ=bytes/01
+  - .dots .y λ=S/ξ.ρ.b .ρ λ=S/ξ.ρ.a .ρ λ=S/Φ
+  - .dots .z λ=S/ξ.ρ.times .ρ λ=S/ξ.ρ.plus .α0 Δ=bytes/01
 eo: |
   [] > dots
-    Q.a.b > x
+    TRUE.not > x
+    Q.a.b > y
+    times. > z
+      plus.
+        42
+        TRUE
+      x

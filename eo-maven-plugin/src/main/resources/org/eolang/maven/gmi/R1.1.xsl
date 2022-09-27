@@ -56,10 +56,17 @@ SOFTWARE.
                 <xsl:text>ξ</xsl:text>
               </xsl:when>
               <xsl:when test="@base = '&amp;'">
-                <xsl:text>𝜎</xsl:text>
+                <xsl:text>σ</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="concat('Φ', '.', @base)"/>
+                <xsl:variable name="fqn">
+                  <xsl:if test="not(contains(@base, '.')) and /program/metas/meta[head='package']">
+                    <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
+                    <xsl:text>.</xsl:text>
+                  </xsl:if>
+                  <xsl:value-of select="@base"/>
+                </xsl:variable>
+                <xsl:value-of select="concat('Φ', '.', $fqn)"/>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>

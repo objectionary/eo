@@ -118,7 +118,8 @@ public final class GmiMojo extends SafeMojo {
     private static final Train<Shift> TO_DOT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/verify-edges.xsl",
+            "/org/eolang/maven/gmi-to/catch-lost-edges.xsl",
+            "/org/eolang/maven/gmi-to/catch-duplicate-edges.xsl",
             "/org/eolang/maven/gmi-to/to-dot.xsl"
         ).back(),
         GmiMojo.class
@@ -378,6 +379,7 @@ public final class GmiMojo extends SafeMojo {
                 graph.toString(),
                 gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
             );
+            Logger.debug(this, "Graph:\n%s", graph.toString());
             if (this.generateDotFiles) {
                 final String dot = new Xsline(GmiMojo.TO_DOT)
                     .pass(graph).xpath("//dot/text()").get(0);
