@@ -68,8 +68,9 @@ public final class LatexMojo extends SafeMojo {
                 final String name = file.toString().replace(LatexMojo.COM_PATT, "");
                 final String unext = name.substring(0, name.lastIndexOf('.'));
                 final String put = LatexMojo.TEX.concat(unext).concat(".tex");
-                if (unext.contains("/")) {
-                    final String subdir = unext.substring(0, name.lastIndexOf('/'));
+                final String fname = new File(file.toString()).getName();
+                if (!fname.equals(name)) {
+                    final String subdir = name.replace(fname, "");
                     final String path = LatexMojo.TEX.concat(subdir);
                     new File(path).mkdirs();
                 }
