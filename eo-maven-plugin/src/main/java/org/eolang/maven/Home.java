@@ -193,9 +193,6 @@ public class Home {
      * Path modification.
      * @param path Path
      * @return Modified path (without bad symbols)
-     * @todo #1247:30min we need to modify function. It has to change
-     *  path by replacing bad characters (not utf-8). We need to choose
-     *  what symbols we want to replace.
      */
     private static Path path(final Path path) {
         final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);

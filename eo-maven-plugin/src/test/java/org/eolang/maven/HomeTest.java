@@ -93,4 +93,14 @@ final class HomeTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void existsInDirWithSpecialSymbolsTest(@TempDir final Path temp) throws IOException {
+        final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
+        new Home(Paths.get("directory")).save("any content", temp.resolve(filename));
+        MatcherAssert.assertThat(
+            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            Matchers.is(true)
+        );
+    }
 }
