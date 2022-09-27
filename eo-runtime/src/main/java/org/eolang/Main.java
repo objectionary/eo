@@ -188,7 +188,6 @@ public final class Main {
             app.attr(0).put(phi);
         }
         if (!new Dataized(app).take(Boolean.class)) {
-            Main.LOGGER.info("");
             throw new IllegalStateException(
                 "Runtime dataization failure"
             );
