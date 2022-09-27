@@ -27,15 +27,17 @@ package org.eolang.maven;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
- * Writes formulas from target/eo/03-optimize in .tex form.
+ * Writes formulas from target/eo/03-optimize in .xmir form to .tex form.
  *
  * @since 0.1
- * @todo #1206:30min Add functions to LaxtexMogo to parse .xmir files to .tex
+ * @todo #1206:30min Add functions to LatexMojo to parse .xmir files to .tex
  * For new we can just create all needed .tex files
- * But we still need functionality to add phi-calculus furmulas to these .tex files
+ * But we still need functionality to add phi-calculus formulas to these .tex files
  */
 public final class LatexMojo extends SafeMojo {
 
@@ -50,24 +52,9 @@ public final class LatexMojo extends SafeMojo {
     public static final String DIR = "eo-runtime/target/eo/03-optimize/org/eolang";
 
     /**
-     * Recursive function to get all files from directory to move them to .tex form.
-     * @param files The list of files inside the current directory.
-     * @param subdir The name of prefix to add to .xmir files.
-     * @throws IOException Returns IOException.
+     * Common pattern for all paths to .xmir files that should be removed.
      */
-    static void rec(final File[] files, final String subdir) throws IOException {
-        for (final File child: files) {
-            if (child.isDirectory()) {
-                new File(LatexMojo.TEX.concat(subdir).concat(child.getName())).mkdirs();
-                rec(child.listFiles(), subdir.concat(child.getName()).concat("/"));
-                continue;
-            }
-            final String name = child.getName();
-            final String unext = name.substring(0, name.lastIndexOf('.'));
-            final String put = LatexMojo.TEX.concat(subdir).concat(unext).concat(".tex");
-            new File(put).createNewFile();
-        }
-    }
+    public static final String COM_PATT = "eo-runtime/target/eo/03-optimize/org/eolang/";
 
     @Override
     void exec() throws IOException {
@@ -76,8 +63,18 @@ public final class LatexMojo extends SafeMojo {
             new File(LatexMojo.TEX.concat("universe.tex")).createNewFile();
         }
         if (Files.exists(Paths.get(LatexMojo.DIR))) {
-            final File[] files = new File(LatexMojo.DIR).listFiles();
-            rec(files, "");
+            final List<Path> files = new Walk(new File(LatexMojo.DIR).toPath());
+            for (final Path file : files) {
+                final String name = file.toString().replace(LatexMojo.COM_PATT, "");
+                final String unext = name.substring(0, name.lastIndexOf('.'));
+                final String put = LatexMojo.TEX.concat(unext).concat(".tex");
+                if (unext.contains("/")) {
+                    final String subdir = unext.substring(0, name.lastIndexOf('/'));
+                    final String path = LatexMojo.TEX.concat(subdir);
+                    new File(path).mkdirs();
+                }
+                new File(put).createNewFile();
+            }
         }
     }
 }
