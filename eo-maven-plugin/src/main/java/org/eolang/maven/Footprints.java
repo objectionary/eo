@@ -57,43 +57,52 @@ public class Footprints {
 
     /**
      * Set cached mode.
-     * @return this
+     *
+     * @return This
      */
     public Footprints cached() {
         this.type = "cached";
         return this;
     }
 
-    /** Set hash.
-     * @param hash Hash of tag
-     * @return this
+    /**
+     * Set hash.
+     *
+     * @param hsh Hash of tag
+     * @return This
      */
-    public Footprints withHash(final String hash) {
-        this.hash = hash;
+    public Footprints withHash(final String hsh) {
+        this.hash = hsh;
         return this;
     }
 
-    /** Set tag.
-     * @param version Version of maven-plugin
-     * @return this
+    /**
+     * Set tag.
+     *
+     * @param ver Version of maven-plugin
+     * @return This
      */
-    public Footprints withVersion(final String version) {
-        this.version = version;
+    public Footprints withVersion(final String ver) {
+        this.version = ver;
         return this;
     }
 
-    /** Set main.
-     * @param main Main
-     * @return this
+    /**
+     * Set main.
+     *
+     * @param dir Main
+     * @return This
      */
-    public Footprints withMain(final Path main) {
-        this.main = main;
+    public Footprints withMain(final Path dir) {
+        this.main = dir;
         return this;
     }
 
-    /** Set path.
+    /**
+     * Set path.
+     *
      * @param path Path
-     * @return this
+     * @return This
      */
     public Footprints withCache(final Path path) {
         this.cache = path;
@@ -102,14 +111,17 @@ public class Footprints {
 
     /**
      * Footprint builder.
-     * @return footprint.
+     *
+     * @return Built footprint.
      */
     public Footprint build() {
-        Footprint footprint;
+        final Footprint footprint;
         if (this.type.equals("cached")) {
-            footprint = new FtCached(new String[]{this.hash, this.version}, this.main, this.cache);
-        }
-        else {
+            final String[] labels = {this.hash, this.version};
+            footprint = new FtCached(
+                labels, this.main, this.cache
+            );
+        } else {
             footprint = new FtDefault(this.main);
         }
         return footprint;

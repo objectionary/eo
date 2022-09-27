@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import EOorg.EOeolang.EObytes$EOas_string;
 import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;

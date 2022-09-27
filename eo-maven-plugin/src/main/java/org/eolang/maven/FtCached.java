@@ -68,7 +68,7 @@ public final class FtCached implements Footprint {
 
     /**
      * Ctor.
-     * @param labels hash and version of maven plugin
+     * @param labels Hash and version of maven plugin
      * @param main Main root
      * @param cache Cache root
      */
