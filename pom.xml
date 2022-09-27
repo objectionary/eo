@@ -153,7 +153,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.32</version>
+        <version>1.33</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -207,7 +207,7 @@ SOFTWARE.
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>${project.basedir}/src/test/groovy/check-xsl-id.groovy</source>
+              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
             </configuration>
           </execution>
         </executions>

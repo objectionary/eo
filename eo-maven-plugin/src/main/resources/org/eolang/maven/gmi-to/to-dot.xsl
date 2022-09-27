@@ -83,7 +83,7 @@ SOFTWARE.
     <xsl:text>];</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
-  <xsl:template match="e[@title != '𝜎']" mode="dot">
+  <xsl:template match="e[@title != 'σ']" mode="dot">
     <xsl:variable name="e" select="."/>
     <xsl:text>  </xsl:text>
     <xsl:value-of select="eo:node($e/parent::v/@id)"/>
@@ -97,7 +97,7 @@ SOFTWARE.
       <xsl:when test="@title = 'π'">
         <xsl:text>,style=dashed</xsl:text>
       </xsl:when>
-      <xsl:when test="@title = 'ρ' or @title = '𝜎'">
+      <xsl:when test="@title = 'ρ' or @title = 'σ'">
         <xsl:text>,color=gray,fontcolor=gray</xsl:text>
       </xsl:when>
     </xsl:choose>
