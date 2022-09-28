@@ -96,7 +96,7 @@ public final class MainTest {
     public void dataizationResultFalseTest() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.seq", "4"),
-            Matchers.containsString("java.lang.ClassCastException")
+            Matchers.containsString("is 4")
         );
     }
 

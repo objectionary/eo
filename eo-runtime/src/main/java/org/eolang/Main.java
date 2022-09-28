@@ -187,8 +187,8 @@ public final class Main {
             phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr(0).put(phi);
         }
-        final Boolean result = (Boolean) new Dataized(app).take();
-        Main.LOGGER.info(String.format("The result of cast %s to bool is %s", app, result));
+        final Object result = new Dataized(app).take();
+        Main.LOGGER.info(String.format("The result of %s dataization is %s", app, result));
     }
 
     /**
