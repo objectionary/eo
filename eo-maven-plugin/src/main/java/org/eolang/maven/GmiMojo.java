@@ -132,6 +132,7 @@ public final class GmiMojo extends SafeMojo {
         new TrFast(
             new TrClasspath<>(
                 new TrDefault<>(),
+                "/org/eolang/maven/gmi/remove-leveled.xsl",
                 "/org/eolang/maven/gmi/R0.xsl",
                 "/org/eolang/maven/gmi/R1.xsl",
                 "/org/eolang/maven/gmi/R1.1.xsl",
