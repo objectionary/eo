@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.Tojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -59,6 +60,32 @@ final class PlaceMojoTest {
         );
         MatcherAssert.assertThat(
             Files.exists(classes.resolve("org/eolang/t.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void placesMissing(@TempDir final Path temp) throws Exception {
+        final Path bins = temp.resolve(ResolveMojo.DIR);
+        final Path classes = temp.resolve("classes");
+        final Path placed = temp.resolve("placed.json");
+        new Home().save("x1", bins.resolve("foo/hello/-/0.1/EObar/x.bin"));
+        new Home().save("x1", classes.resolve("EObar/x.bin"));
+        new Home().save("x2", bins.resolve("foo/hello/-/0.1/org/eolang/f/x.a.class"));
+        new Moja<>(PlaceMojo.class)
+            .with("targetDir", temp.toFile())
+            .with("outputDir", classes.toFile())
+            .with("placed", placed.toFile())
+            .execute();
+        final Tojos tojos = Catalogs.INSTANCE.make(placed, "csv");
+        tojos.add("foo/hello/-/0.1/EObar/x.bin");
+        tojos.add("foo/hello/-/0.1/org/eolang/f/x.a.class");
+        MatcherAssert.assertThat(
+            Files.exists(classes.resolve("EObar/x.bin")),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.exists(classes.resolve("org/eolang/f/x.a.class")),
             Matchers.is(true)
         );
     }

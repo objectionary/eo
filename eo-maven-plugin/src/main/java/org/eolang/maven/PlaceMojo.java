@@ -111,8 +111,7 @@ public final class PlaceMojo extends SafeMojo {
                         && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
                 if (!before.isEmpty()) {
-                    Logger.debug(this, "Binaries from %s have already been placed", dep);
-                    continue;
+                    Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
                 this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
@@ -167,11 +166,11 @@ public final class PlaceMojo extends SafeMojo {
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
             if (!before.isEmpty() && !Files.exists(target)) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The file %s has been placed to %s, but now it's gone",
-                        new Home().rel(file), new Home().rel(target)
-                    )
+                Logger.info(
+                    this,
+                    "The file %s has been placed to %s, but now it's gone, re-placing",
+                    new Home().rel(file),
+                    new Home().rel(target)
                 );
             }
             if (!before.isEmpty() && Files.exists(target)
