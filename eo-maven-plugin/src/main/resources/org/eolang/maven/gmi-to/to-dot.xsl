@@ -43,8 +43,8 @@ SOFTWARE.
         <xsl:value-of select="$EOL"/>
         <xsl:text>  node [fixedsize=true,width=1,fontname="Arial"];</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:apply-templates select="/test/graph/v" mode="dot"/>
-        <xsl:apply-templates select="/test/graph/v/e" mode="dot"/>
+        <xsl:apply-templates select="/graph/v" mode="dot"/>
+        <xsl:apply-templates select="/graph/v/e" mode="dot"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
       </xsl:element>

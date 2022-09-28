@@ -29,9 +29,9 @@ SOFTWARE.
   from a vertex but doesn't arrive anywhere.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/test/graph/v/e">
+  <xsl:template match="/graph/v/e">
     <xsl:variable name="e" select="."/>
-    <xsl:if test="not(/test/graph/v[@id=$e/@to])">
+    <xsl:if test="not(/graph/v[@id=$e/@to])">
       <xsl:message terminate="yes">
         <xsl:text>The edge </xsl:text>
         <xsl:value-of select="$e/@id"/>

@@ -372,7 +372,6 @@ public final class GmiMojo extends SafeMojo {
             final XML graph = new XMLDocument(
                 new Xembler(
                     new Directives()
-                        .add("test")
                         .add("graph")
                         .add("v")
                         .attr("id", "ν0")

@@ -28,7 +28,7 @@ SOFTWARE.
   duplicate edges (with the same label).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/test/graph/v/e[preceding-sibling::e/@title = @title]">
+  <xsl:template match="/graph/v/e[preceding-sibling::e/@title = @title]">
     <xsl:variable name="e" select="."/>
     <xsl:message terminate="yes">
       <xsl:text>The edge </xsl:text>
