@@ -325,13 +325,17 @@ public final class GmiMojo extends SafeMojo {
      */
     private int render(final Path xmir, final Path gmi) throws IOException {
         final XML before = new XMLDocument(xmir);
-        Logger.debug(this, "XML before translating to GMI:\n%s", before);
+        if (Logger.isTraceEnabled(this)) {
+            Logger.trace(this, "XML before translating to GMI:\n%s", before);
+        }
         final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         final String instructions = new Xsline(GmiMojo.TO_TEXT)
             .pass(after)
             .xpath("/text/text()")
             .get(0);
-        Logger.debug(this, "GMIs:\n%s", instructions);
+        if (Logger.isTraceEnabled(this)) {
+            Logger.trace(this, "GMIs:\n%s", instructions);
+        }
         new Home().save(instructions, gmi);
         if (this.generateGmiXmlFiles) {
             new Home().save(
@@ -379,16 +383,30 @@ public final class GmiMojo extends SafeMojo {
                 graph.toString(),
                 gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
             );
-            Logger.debug(this, "Graph:\n%s", graph.toString());
-            if (this.generateDotFiles) {
-                final String dot = new Xsline(GmiMojo.TO_DOT)
-                    .pass(graph).xpath("//dot/text()").get(0);
-                Logger.debug(this, "Dot:\n%s", dot);
-                new Home().save(
-                    dot,
-                    gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
-                );
+            if (Logger.isTraceEnabled(this)) {
+                Logger.trace(this, "Graph:\n%s", graph.toString());
             }
+            this.makeDot(graph, gmi);
+        }
+    }
+
+    /**
+     * Make graph.
+     * @param graph The graph in XML
+     * @param gmi The path of GMI file
+     * @throws IOException If fails
+     */
+    private void makeDot(final XML graph, final Path gmi) throws IOException {
+        if (this.generateDotFiles) {
+            final String dot = new Xsline(GmiMojo.TO_DOT)
+                .pass(graph).xpath("//dot/text()").get(0);
+            if (Logger.isTraceEnabled(this)) {
+                Logger.trace(this, "Dot:\n%s", dot);
+            }
+            new Home().save(
+                dot,
+                gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
+            );
         }
     }
 
