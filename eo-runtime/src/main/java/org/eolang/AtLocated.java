@@ -60,7 +60,7 @@ final class AtLocated implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("<%d:%d>%s", this.line, this.position, this.origin.toString());
     }
 
     @Override
