@@ -173,7 +173,7 @@ final class GmiMojoTest {
             .execute();
         return new XMLDocument(
             target.resolve(
-                String.format("%s/foo/main.gmi.graph", GmiMojo.DIR)
+                String.format("%s/foo/main.gmi.graph.xml", GmiMojo.DIR)
             )
         );
     }

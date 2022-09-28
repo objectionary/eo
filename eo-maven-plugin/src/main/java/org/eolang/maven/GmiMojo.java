@@ -180,7 +180,7 @@ public final class GmiMojo extends SafeMojo {
     private boolean generateXemblyFiles;
 
     /**
-     * Shall we generate .graph files with XML graph?
+     * Shall we generate .graph.xml files with XML graph?
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -380,7 +380,7 @@ public final class GmiMojo extends SafeMojo {
             );
             new Home().save(
                 graph.toString(),
-                gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
+                gmi.resolveSibling(String.format("%s.graph.xml", gmi.getFileName()))
             );
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Graph:\n%s", graph.toString());
