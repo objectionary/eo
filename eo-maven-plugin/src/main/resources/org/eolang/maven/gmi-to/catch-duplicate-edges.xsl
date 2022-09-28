@@ -38,6 +38,14 @@ SOFTWARE.
       <xsl:text>' is a duplicate of another edge with the same label</xsl:text>
     </xsl:message>
   </xsl:template>
+  <xsl:template match="/graph/v/e[preceding-sibling::e/@id = @id]">
+    <xsl:variable name="e" select="."/>
+    <xsl:message terminate="yes">
+      <xsl:text>The edge </xsl:text>
+      <xsl:value-of select="$e/@id"/>
+      <xsl:text>' is a duplicate of another edge with the same @id</xsl:text>
+    </xsl:message>
+  </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

@@ -113,7 +113,7 @@ SOFTWARE.
       <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "id", "</xsl:text>
       <xsl:value-of select="$i/a[1]"/>
-      <xsl:text>.rho</xsl:text>
+      <xsl:value-of select="."/>
       <xsl:text>"; </xsl:text>
       <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "to", "</xsl:text>

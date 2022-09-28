@@ -39,6 +39,8 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="dot">
+        <xsl:text>// This file is auto-generated, don't edit it</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:text>digraph {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:text>  node [fixedsize=true,width=1,fontname="Arial"];</xsl:text>
