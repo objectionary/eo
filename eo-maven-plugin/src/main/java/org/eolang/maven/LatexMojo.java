@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -44,12 +43,12 @@ public final class LatexMojo extends SafeMojo {
     /**
      * Target directory for all .tex files.
      */
-    public static final String TEX = "eo-runtime/target/eo/latex/";
+    public static final Path TEX = new File("eo-runtime/target/eo/latex/").toPath();
 
     /**
      * Main directory with all optimized .xmir files.
      */
-    public static final String DIR = "eo-runtime/target/eo/03-optimize/org/eolang";
+    public static final Path DIR = new File("eo-runtime/target/eo/03-optimize/org/eolang").toPath();
 
     /**
      * Common pattern for all paths to .xmir files that should be removed.
@@ -58,23 +57,23 @@ public final class LatexMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        if (!Files.exists(Paths.get(LatexMojo.TEX))) {
-            new File(LatexMojo.TEX).mkdirs();
-            new File(LatexMojo.TEX.concat("universe.tex")).createNewFile();
+        if (!Files.exists(LatexMojo.TEX)) {
+            new File(LatexMojo.TEX.toString()).mkdirs();
+            new File(LatexMojo.TEX.resolve("universe.tex").toString()).createNewFile();
         }
-        if (Files.exists(Paths.get(LatexMojo.DIR))) {
-            final List<Path> files = new Walk(new File(LatexMojo.DIR).toPath());
+        if (Files.exists(LatexMojo.DIR)) {
+            final List<Path> files = new Walk(LatexMojo.DIR);
             for (final Path file : files) {
                 final String name = file.toString().replace(LatexMojo.COM_PATT, "");
-                final String unext = name.substring(0, name.lastIndexOf('.'));
-                final String put = LatexMojo.TEX.concat(unext).concat(".tex");
+                final String tex = name.replace(".xmir", ".tex");
+                final Path put = LatexMojo.TEX.resolve(tex);
                 final String fname = new File(file.toString()).getName();
                 if (!fname.equals(name)) {
                     final String subdir = name.replace(fname, "");
-                    final String path = LatexMojo.TEX.concat(subdir);
-                    new File(path).mkdirs();
+                    final Path path = LatexMojo.TEX.resolve(subdir);
+                    new File(path.toString()).mkdirs();
                 }
-                new File(put).createNewFile();
+                new File(put.toString()).createNewFile();
             }
         }
     }
