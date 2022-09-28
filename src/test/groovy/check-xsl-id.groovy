@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2022 Objectionary.com
@@ -21,36 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Path;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link UnspileMojo}.
- *
- * @since 0.1
+ * This check verifies that 'id' of XSL is in line with file name.
  */
-final class UnspileMojoTest {
+import groovy.xml.XmlSlurper
+import groovy.io.FileType
+import groovy.io.FileVisitResult
 
-    @Test
-    void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path generated = temp.resolve("generated");
-        final Path classes = temp.resolve("classes");
-        final Path foo = classes.resolve("a/b/c/foo.class");
-        new Home().save("abc", foo);
-        new Home().save("xxx", generated.resolve("a/b/c/foo.java"));
-        new Home().save("cde", classes.resolve("foo.txt"));
-        new Moja<>(UnspileMojo.class)
-            .with("generatedDir", generated.toFile())
-            .with("classesDir", classes.toFile())
-            .execute();
-        MatcherAssert.assertThat(
-            new Home().exists(foo),
-            Matchers.is(false)
-        );
-    }
+project = new File('.')
+
+project.traverse(
+  type         : FileType.FILES,
+  preDir       : { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
+  nameFilter   : ~/.*\.xsl/
+) {
+  it ->
+    String id = new XmlSlurper().parse(it).@id
+    assert id == it.name.minus('.xsl')
 }
+true

@@ -39,12 +39,14 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="dot">
+        <xsl:text>// This file is auto-generated, don't edit it</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:text>digraph {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:text>  node [fixedsize=true,width=1,fontname="Arial"];</xsl:text>
         <xsl:value-of select="$EOL"/>
-        <xsl:apply-templates select="/test/graph/v" mode="dot"/>
-        <xsl:apply-templates select="/test/graph/v/e" mode="dot"/>
+        <xsl:apply-templates select="/graph/v" mode="dot"/>
+        <xsl:apply-templates select="/graph/v/e" mode="dot"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$EOL"/>
       </xsl:element>
@@ -83,7 +85,7 @@ SOFTWARE.
     <xsl:text>];</xsl:text>
     <xsl:value-of select="$EOL"/>
   </xsl:template>
-  <xsl:template match="e[@title != '𝜎']" mode="dot">
+  <xsl:template match="e[@title != 'σ']" mode="dot">
     <xsl:variable name="e" select="."/>
     <xsl:text>  </xsl:text>
     <xsl:value-of select="eo:node($e/parent::v/@id)"/>
@@ -97,7 +99,7 @@ SOFTWARE.
       <xsl:when test="@title = 'π'">
         <xsl:text>,style=dashed</xsl:text>
       </xsl:when>
-      <xsl:when test="@title = 'ρ' or @title = '𝜎'">
+      <xsl:when test="@title = 'ρ' or @title = 'σ'">
         <xsl:text>,color=gray,fontcolor=gray</xsl:text>
       </xsl:when>
     </xsl:choose>

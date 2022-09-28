@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2022 Objectionary.com
@@ -21,36 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Path;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link UnspileMojo}.
- *
- * @since 0.1
+ * Entry point for running validation scripts.
+ * To add new validation create new script in this folder and add it
+ * to the list below.
  */
-final class UnspileMojoTest {
-
-    @Test
-    void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path generated = temp.resolve("generated");
-        final Path classes = temp.resolve("classes");
-        final Path foo = classes.resolve("a/b/c/foo.class");
-        new Home().save("abc", foo);
-        new Home().save("xxx", generated.resolve("a/b/c/foo.java"));
-        new Home().save("cde", classes.resolve("foo.txt"));
-        new Moja<>(UnspileMojo.class)
-            .with("generatedDir", generated.toFile())
-            .with("classesDir", classes.toFile())
-            .execute();
-        MatcherAssert.assertThat(
-            new Home().exists(foo),
-            Matchers.is(false)
-        );
-    }
+[
+  'src/test/groovy/check-xsl-id.groovy',
+  'src/test/groovy/check-xsl-version.groovy'
+].each {
+  evaluate(new File(it))
+  println String.format('Verified with %s - OK', it)
 }
+
+

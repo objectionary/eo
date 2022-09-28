@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -62,4 +63,21 @@ final class HomeTest {
         );
     }
 
+    @Test
+    void existsTest(@TempDir final Path temp) throws IOException {
+        new Home().save("any content", temp.resolve("file.txt"));
+        MatcherAssert.assertThat(
+            new Home().exists(temp.resolve("file.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void existsInDirTest(@TempDir final Path temp) throws IOException {
+        new Home(Paths.get("dir")).save("any content", temp.resolve("file.txt"));
+        MatcherAssert.assertThat(
+            new Home(Paths.get("dir")).exists(temp.resolve("file.txt")),
+            Matchers.is(true)
+        );
+    }
 }

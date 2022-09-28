@@ -28,7 +28,6 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -102,7 +101,7 @@ public final class PlaceMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (Files.exists(home)) {
+        if (new Home().exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
@@ -165,7 +164,7 @@ public final class PlaceMojo extends SafeMojo {
                 row -> row.get(Tojos.KEY).equals(target.toString())
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
-            if (!before.isEmpty() && !Files.exists(target)) {
+            if (!before.isEmpty() && !new Home().exists(target)) {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
@@ -173,7 +172,7 @@ public final class PlaceMojo extends SafeMojo {
                     new Home().rel(target)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() == file.toFile().length()) {
                 Logger.warn(
                     this,
@@ -183,7 +182,7 @@ public final class PlaceMojo extends SafeMojo {
                 );
                 continue;
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() != file.toFile().length()) {
                 Logger.warn(
                     this,

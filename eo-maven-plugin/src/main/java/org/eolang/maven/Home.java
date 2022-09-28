@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.Input;
@@ -62,9 +63,6 @@ public class Home {
     /**
      * Ctor.
      * @param path Path
-     * @todo #1105:30min we need to modify function. It has to change
-     *  path by replacing bad characters (not utf-8) or maybe
-     *  we can invent any other solution
      */
     Home(final Path path) {
         this.cwd = path;
@@ -94,7 +92,7 @@ public class Home {
                 )
             ).value();
             Logger.debug(
-                Home.class, "File %s saved (%.0f bytes)",
+                Home.class, "File %s saved (%d bytes)",
                 this.rel(path), bytes
             );
         } catch (final IOException ex) {
@@ -180,4 +178,26 @@ public class Home {
         }
         return path;
     }
+
+    /**
+     * Check if exists.
+     * @param path Path
+     * @return True if exists
+     */
+    public boolean exists(final Path path) {
+        return Files.exists(this.path(path));
+    }
+
+    /**
+     * Path modification.
+     * @param path Path
+     * @return Modified path (without bad symbols)
+     * @todo #1247:30min we need to modify function. It has to change
+     *  path by replacing bad characters (not utf-8). We need to choose
+     *  what symbols we want to replace.
+     */
+    private static Path path(final Path path) {
+        return path;
+    }
+
 }

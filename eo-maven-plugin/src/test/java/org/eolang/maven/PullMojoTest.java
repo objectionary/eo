@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
@@ -56,7 +55,7 @@ final class PullMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",

@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1.1" version="2.0">
   <!--
   Here we find all objects that have @base attributes that don't
   start with a dot and set them a LAMBDA to find the right place
@@ -56,10 +56,17 @@ SOFTWARE.
                 <xsl:text>ξ</xsl:text>
               </xsl:when>
               <xsl:when test="@base = '&amp;'">
-                <xsl:text>𝜎</xsl:text>
+                <xsl:text>σ</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="concat('Φ', '.', @base)"/>
+                <xsl:variable name="fqn">
+                  <xsl:if test="not(contains(@base, '.')) and /program/metas/meta[head='package']">
+                    <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
+                    <xsl:text>.</xsl:text>
+                  </xsl:if>
+                  <xsl:value-of select="@base"/>
+                </xsl:variable>
+                <xsl:value-of select="concat('Φ', '.', $fqn)"/>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
