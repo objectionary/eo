@@ -5,26 +5,6 @@
 
 This is runtime for EO.
 
-### Note on Dataization logging
-
-By default, dataization process will not log any messages since it
-produces quite extensive logs which affect performance.
-However, for debugging purposes dataization logging can be enabled.
-For that both JUL and Logback levels need to be set to `FINE`.
-For tests, it may be accomplished by amending the following two files:
-_test\resources\jul.properties_:
-```
-.level=FINE
-```
-_test\resources\logback.xml_:
-```
-<logger name="org.eolang.Dataized" level="FINE"/>
-```
-After that, dataization will be logged up until nesting level 3.
-If for some reason deeper dataization log is required it can be
-achieved by jvm property `-Dmax.dataization.log=<N>`
-where `N` is an integer representing desired nesting level to log.
-
 ## How to run tests
 You can run tests just like this:
 ```
@@ -50,3 +30,27 @@ you can run just like this:
 ```
 mvn clean test -Dtest="EOorg.EOeolang.EOprints_itselfTest"
 ```
+
+### Note on logging within tests
+
+By default, logging within tests is limited since it
+produces quite extensive logs which affect performance.
+However, for debugging/analysis purposes extended (debug) logs can be enabled.
+For that both JUL and Logback levels need to be set to `FINE`. This is 
+accomplished by amending the following two files:  
+_test\resources\jul.properties_:
+```
+.level=FINE
+```
+_test\resources\logback.xml_:
+```
+<logger name="org.eolang.Dataized" level="FINE"/>
+<logger name="org.eolang.PhDefault" level="FINE"/>
+```
+For the latter `FINE` level must be set to desired object. `Dataized` will
+produce extensive logging for dataization process and `PhDefault` for 
+attributes retrieval process.  
+By default, dataization will be logged up until nesting level 3.
+If for some reason deeper dataization log is required it can be
+achieved by jvm property `-Dmax.dataization.log=<N>`
+where `N` is an integer representing desired nesting level to log.
