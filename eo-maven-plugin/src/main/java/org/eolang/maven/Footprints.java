@@ -33,7 +33,7 @@ public class Footprints {
     /**
      * Type of Footprint.
      */
-    private String type = "default";
+    private boolean iscached;
 
     /**
      * Version.
@@ -61,7 +61,7 @@ public class Footprints {
      * @return This
      */
     public Footprints cached() {
-        this.type = "cached";
+        this.iscached = true;
         return this;
     }
 
@@ -110,13 +110,13 @@ public class Footprints {
     }
 
     /**
-     * Footprint builder.
+     * Return built instance.
      *
      * @return Built footprint.
      */
     public Footprint build() {
         final Footprint footprint;
-        if (this.type.equals("cached")) {
+        if (this.iscached) {
             final String[] labels = {this.hash, this.version};
             footprint = new FtCached(
                 labels, this.main, this.cache

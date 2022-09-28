@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -59,7 +60,7 @@ public final class FtCached implements Footprint {
     /**
      * Version tag.
      */
-    private final String code;
+    private final String[] code;
 
     /**
      * Path to cache root.
@@ -73,14 +74,17 @@ public final class FtCached implements Footprint {
      * @param cache Cache root
      */
     public FtCached(final String[] labels, final Path main, final Path cache) {
-        this.code = String.join("/", labels);
+        this.code = labels.clone();
         this.main = main;
         this.cache = cache;
     }
 
     @Override
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.code), ext);
+        final Path cached = new Place(program).make(
+            this.cache.resolve(this.path()),
+            ext
+        );
         final Path target = new Place(program).make(this.main, ext);
         final IoCheckedText content;
         if (cached.toFile().exists()) {
@@ -98,7 +102,10 @@ public final class FtCached implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.code), ext);
+        final Path cached = new Place(program).make(
+            this.cache.resolve(this.path()),
+            ext
+        );
         final Path target = new Place(program).make(this.main, ext);
         final String text;
         if (cached.toFile().exists()) {
@@ -113,5 +120,13 @@ public final class FtCached implements Footprint {
             new Home().save(text, cached);
         }
         new Home().save(text, target);
+    }
+
+    /**
+     * Get path from labels strings.
+     * @return Path
+     */
+    private Path path() {
+        return Paths.get(String.join("/", this.code));
     }
 }
