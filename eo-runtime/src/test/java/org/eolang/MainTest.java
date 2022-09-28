@@ -92,6 +92,14 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void dataizationResultFalseTest() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "org.eolang.seq", "4"),
+            Matchers.containsString("java.lang.ClassCastException")
+        );
+    }
+
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add(MainTest.jdkExecutable("java"));
