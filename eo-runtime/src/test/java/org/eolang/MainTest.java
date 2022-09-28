@@ -88,7 +88,7 @@ public final class MainTest {
     public void dataizationResultTest() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "some text"),
-            Matchers.containsString("true")
+            Matchers.containsString("java.lang.Boolean")
         );
     }
 
@@ -96,7 +96,7 @@ public final class MainTest {
     public void dataizationResultFalseTest() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.seq", "4"),
-            Matchers.containsString("is 4")
+            Matchers.containsString("java.lang.String")
         );
     }
 

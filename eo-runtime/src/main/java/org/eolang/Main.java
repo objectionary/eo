@@ -188,7 +188,9 @@ public final class Main {
             app.attr(0).put(phi);
         }
         final Object result = new Dataized(app).take();
-        Main.LOGGER.info(String.format("The result of %s dataization is %s", app, result));
+        Main.LOGGER.info(
+            String.format("The result of %s dataization is %s", app, result.getClass())
+        );
     }
 
     /**
