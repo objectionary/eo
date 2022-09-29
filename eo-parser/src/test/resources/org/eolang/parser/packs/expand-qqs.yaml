@@ -1,0 +1,9 @@
+xsls:
+  - /org/eolang/parser/expand-qqs.xsl
+tests:
+  - /program/errors[count(error)=0]
+  - //objects[count(.//o[contains(@base, 'QQ')])=0]
+eo: |
+  [] > app
+    QQ.io.stdout > @
+      "Hello, world!\n"
