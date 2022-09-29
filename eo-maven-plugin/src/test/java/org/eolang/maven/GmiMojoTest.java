@@ -173,7 +173,7 @@ final class GmiMojoTest {
             .execute();
         return new XMLDocument(
             target.resolve(
-                String.format("%s/foo/main.gmi.graph", GmiMojo.DIR)
+                String.format("%s/foo/main.gmi.graph.xml", GmiMojo.DIR)
             )
         );
     }
@@ -231,7 +231,7 @@ final class GmiMojoTest {
             String vertex = "ν0";
             for (final String sub : item.split(" ")) {
                 final XML node = this.graph.nodes(
-                    String.format("//v[@id='%s']", vertex)
+                    String.format("/graph/v[@id='%s']", vertex)
                 ).get(0);
                 if (sub.charAt(0) == '.') {
                     final List<String> opts = node.xpath(
@@ -288,7 +288,7 @@ final class GmiMojoTest {
                     final String expr = sub.substring(2);
                     final boolean matches = !this.graph.xpath(
                         String.format(
-                            "//v[@id='%s']/lambda[text() = '%s']/text()",
+                            "/graph/v[@id='%s']/lambda[text() = '%s']/text()",
                             vertex, expr
                         )
                     ).isEmpty();

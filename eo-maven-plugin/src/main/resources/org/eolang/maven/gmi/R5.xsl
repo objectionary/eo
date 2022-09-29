@@ -59,7 +59,8 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R5] This is a copy</xsl:text>
+        <xsl:text>[R5] Making a copy of </xsl:text>
+        <xsl:value-of select="eo:vertex(ancestor::*[1])"/>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

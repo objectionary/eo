@@ -92,7 +92,7 @@ public class Home {
                 )
             ).value();
             Logger.debug(
-                Home.class, "File %s saved (%.0f bytes)",
+                Home.class, "File %s saved (%d bytes)",
                 this.rel(path), bytes
             );
         } catch (final IOException ex) {

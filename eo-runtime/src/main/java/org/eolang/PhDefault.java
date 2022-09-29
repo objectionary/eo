@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected static final Vertices VTX = new Vertices();
 
     /**
+     * Logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(PhDefault.class.getName());
+
+    /**
      * Attribute name matcher.
      */
     private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
@@ -58,6 +65,11 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Terms being processed now.
      */
     private static final ThreadLocal<Set<Integer>> TERMS = new ThreadLocal<>();
+
+    /**
+     * Attributes nesting level.
+     */
+    private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**
      * Identity of it (the ID of the vertex).
@@ -221,6 +233,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final String name) {
+        NESTING.set(NESTING.get() + 1);
         Attr attr;
         if ("ν".equals(name)) {
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
@@ -253,6 +266,16 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.cached.reset();
         }
         attr = new AtSafe(attr);
+        PhDefault.debug(
+            String.format(
+                "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                padding(),
+                name,
+                this,
+                attr
+            )
+        );
+        NESTING.set(NESTING.get() - 1);
         return attr;
     }
 
@@ -313,5 +336,26 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
         }
         return txt;
+    }
+
+    /**
+     * Log debug message for PhDefault.
+     * @param msg Message to log
+     */
+    private static void debug(final String msg) {
+        if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+            PhDefault.LOGGER.log(
+                Level.FINE,
+                msg
+            );
+        }
+    }
+
+    /**
+     * Padding according to current {@link #NESTING} level.
+     * @return Padding string.
+     */
+    private static String padding() {
+        return String.join("", Collections.nCopies(NESTING.get(), "·"));
     }
 }

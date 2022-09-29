@@ -32,4 +32,5 @@ SOFTWARE.
     <appender-ref ref="STDOUT"/>
   </root>
   <logger name="org.eolang.Dataized" level="FINE"/>
+  <logger name="org.eolang.PhDefault" level="FINE"/>
 </configuration>
