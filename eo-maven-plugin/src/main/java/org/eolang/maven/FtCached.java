@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -36,7 +37,7 @@ import org.cactoos.text.TextOf;
  * Program footprint of EO compilation process.
  * <p/>The footprint consists of file in {@link #main} folder and optionally cached
  * file in {@link #cache} folder.
- * Caching is applied if {@link #code} is not empty otherwise caching is ignored.
+ * Caching is applied if {@link #labels} is not empty otherwise caching is ignored.
  * <p/>Usage example:
  * <code>
  *  <pre>
@@ -58,9 +59,9 @@ public final class FtCached implements Footprint {
     private final Path main;
 
     /**
-     * Version tag.
+     * Hash and version of maven-plugin.
      */
-    private final String[] code;
+    private final String[] labels;
 
     /**
      * Path to cache root.
@@ -74,7 +75,7 @@ public final class FtCached implements Footprint {
      * @param cache Cache root
      */
     public FtCached(final String[] labels, final Path main, final Path cache) {
-        this.code = labels.clone();
+        this.labels = Arrays.copyOf(labels, labels.length);
         this.main = main;
         this.cache = cache;
     }
@@ -127,6 +128,6 @@ public final class FtCached implements Footprint {
      * @return Path
      */
     private Path path() {
-        return Paths.get(String.join("/", this.code));
+        return Paths.get(String.join("/", this.labels));
     }
 }
