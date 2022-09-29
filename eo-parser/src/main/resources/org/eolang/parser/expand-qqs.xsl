@@ -27,8 +27,19 @@ SOFTWARE.
   For all objects replace 'QQ' to 'org.eolang'
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o/@base[.='QQ']">
-    <xsl:attribute name="base">Q.org.eolang</xsl:attribute>
+  <xsl:template match="o[@base='QQ']">
+    <xsl:copy>
+      <xsl:attribute name="base">.eolang</xsl:attribute>
+      <xsl:copy-of select="@*[name()!='base']"/>
+      <xsl:element name="o">
+        <xsl:attribute name="base">.org</xsl:attribute>
+        <xsl:copy-of select="@*[name()!='base']"/>
+        <xsl:element name="o">
+          <xsl:attribute name="base">Q</xsl:attribute>
+          <xsl:copy-of select="@*[name()!='base']"/>
+        </xsl:element>
+      </xsl:element>
+    </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
