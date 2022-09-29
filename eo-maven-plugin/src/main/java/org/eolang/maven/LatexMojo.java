@@ -93,6 +93,12 @@ public final class LatexMojo extends SafeMojo {
                 files.size(),
                 target
             );
+        } else {
+            Logger.info(
+                this,
+                "%s directory doesn't exist",
+                source
+            );
         }
     }
 }
