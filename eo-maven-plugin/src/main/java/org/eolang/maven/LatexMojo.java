@@ -24,11 +24,14 @@
 
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Writes formulas from target/eo/03-optimize in .xmir form to .tex form.
@@ -38,43 +41,58 @@ import java.util.List;
  * For new we can just create all needed .tex files
  * But we still need functionality to add phi-calculus formulas to these .tex files
  */
+@Mojo(
+    name = "latex",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
+)
 public final class LatexMojo extends SafeMojo {
 
     /**
      * Target directory for all .tex files.
      */
-    public static final Path TEX = new File("eo-runtime/target/eo/latex/").toPath();
+    public static final Path TEX = new File("latex").toPath();
 
     /**
      * Main directory with all optimized .xmir files.
      */
-    public static final Path DIR = new File("eo-runtime/target/eo/03-optimize/org/eolang").toPath();
-
-    /**
-     * Common pattern for all paths to .xmir files that should be removed.
-     */
-    public static final String COM_PATT = "eo-runtime/target/eo/03-optimize/org/eolang/";
+    public static final Path SOURCE = new File("03-optimize/org/eolang").toPath();
 
     @Override
     void exec() throws IOException {
-        if (!Files.exists(LatexMojo.TEX)) {
-            new File(LatexMojo.TEX.toString()).mkdirs();
-            new File(LatexMojo.TEX.resolve("universe.tex").toString()).createNewFile();
+        final Path target = this.targetDir.toPath().resolve(LatexMojo.TEX);
+        final Path source = this.targetDir.toPath().resolve(LatexMojo.SOURCE);
+        final String pattern = LatexMojo.SOURCE.toString();
+        if (!Files.exists(target)) {
+            new File(target.toString()).mkdirs();
+            new File(target.resolve("universe.tex").toString()).createNewFile();
+            Logger.info(
+                this,
+                "Created %s directory",
+                target
+            );
         }
-        if (Files.exists(LatexMojo.DIR)) {
-            final List<Path> files = new Walk(LatexMojo.DIR);
+        if (Files.exists(source)) {
+            final List<Path> files = new Walk(source);
             for (final Path file : files) {
-                final String name = file.toString().replace(LatexMojo.COM_PATT, "");
+                final int start = file.toString().indexOf(pattern) + pattern.length() + 1;
+                final String name = file.toString().substring(start);
                 final String tex = name.replace(".xmir", ".tex");
-                final Path put = LatexMojo.TEX.resolve(tex);
+                final Path put = target.resolve(tex);
                 final String fname = new File(file.toString()).getName();
                 if (!fname.equals(name)) {
                     final String subdir = name.replace(fname, "");
-                    final Path path = LatexMojo.TEX.resolve(subdir);
+                    final Path path = target.resolve(subdir);
                     new File(path.toString()).mkdirs();
                 }
                 new File(put.toString()).createNewFile();
             }
+            Logger.info(
+                this,
+                "%d .xmir files are translated to .tex files in %s directory",
+                files.size(),
+                target
+            );
         }
     }
 }
