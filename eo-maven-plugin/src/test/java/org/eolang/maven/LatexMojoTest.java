@@ -23,12 +23,12 @@
  */
 package org.eolang.maven;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link LatexMojo}.
@@ -37,8 +37,7 @@ import org.junit.jupiter.api.Test;
  */
 final class LatexMojoTest {
     @Test
-    void testDirectoryAndFileExistence() throws IOException {
-        final Path temp = Files.createTempDirectory("eo");
+    void testDirectoryAndFileExistence(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         new Moja<>(LatexMojo.class)
             .with("targetDir", target.toFile())
@@ -47,8 +46,7 @@ final class LatexMojoTest {
     }
 
     @Test
-    void testTranslatedFilesExistence() throws IOException {
-        final Path temp = Files.createTempDirectory("eo");
+    void testTranslatedFilesExistence(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Path source = target.resolve("03-optimize/org/eolang");
         this.addFilesToDir(source);
@@ -68,15 +66,12 @@ final class LatexMojoTest {
      * @throws IOException If fails
      */
     void addFilesToDir(final Path dir) throws IOException {
-        new File(dir.toString()).mkdirs();
-        new File(dir.resolve("a").toString()).mkdirs();
-        new File(dir.resolve("c/d").toString()).mkdirs();
         final Path zero = dir.resolve("main.xmir");
         final Path one = dir.resolve("a/main.xmir");
         final Path two = dir.resolve("c/d/main.xmir");
-        new File(zero.toString()).createNewFile();
-        new File(one.toString()).createNewFile();
-        new File(two.toString()).createNewFile();
+        new Home(dir).save("", zero);
+        new Home(dir).save("", one);
+        new Home(dir).save("", two);
     }
 
 }

@@ -63,15 +63,7 @@ public final class LatexMojo extends SafeMojo {
         final Path target = this.targetDir.toPath().resolve(LatexMojo.TEX);
         final Path source = this.targetDir.toPath().resolve(LatexMojo.SOURCE);
         final String pattern = LatexMojo.SOURCE.toString();
-        if (!Files.exists(target)) {
-            new File(target.toString()).mkdirs();
-            new File(target.resolve("universe.tex").toString()).createNewFile();
-            Logger.info(
-                this,
-                "Created %s directory",
-                target
-            );
-        }
+        new Home().save("", target.resolve("universe.tex"));
         if (Files.exists(source)) {
             final List<Path> files = new Walk(source);
             for (final Path file : files) {
@@ -79,13 +71,7 @@ public final class LatexMojo extends SafeMojo {
                 final String name = file.toString().substring(start);
                 final String tex = name.replace(".xmir", ".tex");
                 final Path put = target.resolve(tex);
-                final String fname = new File(file.toString()).getName();
-                if (!fname.equals(name)) {
-                    final String subdir = name.replace(fname, "");
-                    final Path path = target.resolve(subdir);
-                    new File(path.toString()).mkdirs();
-                }
-                new File(put.toString()).createNewFile();
+                new Home().save("", put);
             }
             Logger.info(
                 this,
