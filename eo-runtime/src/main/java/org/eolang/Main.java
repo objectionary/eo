@@ -192,7 +192,7 @@ public final class Main {
             String.format(
                 "The result of %s dataization is %s. It's value is %s",
                 app,
-                result.getClass(),
+                result.getClass().getName(),
                 result
             )
         );
