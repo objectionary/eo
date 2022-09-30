@@ -45,6 +45,10 @@ final class SpyTrain extends TrEnvelope {
      *
      * @param train Original one
      * @param dir The dir to save
+     * @todo #1248:30min we need to implement StLambdaQuiet in
+     *  yegor256/xsline. It will be similar to StLambda
+     *  but it will also catch checked exceptions. Then we should
+     *  change code below
      */
     SpyTrain(final Train<Shift> train, final Path dir) {
         super(
