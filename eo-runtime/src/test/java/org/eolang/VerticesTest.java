@@ -23,12 +23,13 @@
  */
 package org.eolang;
 
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -59,25 +60,16 @@ final class VerticesTest {
     }
 
     @Test
-    void vtxThreadTest() throws InterruptedException {
-        final int threads = 8;
+    void vtxThreadTest() {
         final Set<Integer> hashes = ConcurrentHashMap.newKeySet();
-        final ExecutorService executor = Executors.newFixedThreadPool(threads);
-        final CountDownLatch latch = new CountDownLatch(1);
         final Vertices vtx = new Vertices();
-        for (long index = 0; index < threads; ++index) {
-            final long thread = index;
-            executor.submit(
-                () -> {
-                    latch.await();
-                    final int hash = vtx.best(thread);
-                    hashes.add(hash);
-                    return hash;
-                }
-            );
-        }
-        latch.countDown();
-        executor.awaitTermination(1, TimeUnit.SECONDS);
+        final int threads = 8;
+        new Threads<>(
+            threads,
+            Stream.generate(
+                () -> (Scalar<Integer>) () -> vtx.best(new Random().nextLong())
+            ).limit(threads).collect(Collectors.toList())
+        ).forEach(hashes::add);
         MatcherAssert.assertThat(
             hashes.size(),
             Matchers.equalTo(threads)
