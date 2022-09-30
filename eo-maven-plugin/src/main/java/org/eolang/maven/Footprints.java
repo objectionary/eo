@@ -117,9 +117,8 @@ public class Footprints {
     public Footprint build() {
         final Footprint footprint;
         if (this.iscached) {
-            final String[] labels = {this.hash, this.version};
             footprint = new FtCached(
-                labels, this.main, this.cache
+                new String[]{this.hash, this.version}, this.main, this.cache
             );
         } else {
             footprint = new FtDefault(this.main);
