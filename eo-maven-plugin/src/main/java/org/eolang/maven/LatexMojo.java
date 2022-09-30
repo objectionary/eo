@@ -27,7 +27,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -64,7 +63,7 @@ public final class LatexMojo extends SafeMojo {
         final Path source = this.targetDir.toPath().resolve(LatexMojo.SOURCE);
         final String pattern = LatexMojo.SOURCE.toString();
         new Home().save("", target.resolve("universe.tex"));
-        if (Files.exists(source)) {
+        if (new Home().exists(source)) {
             final List<Path> files = new Walk(source);
             for (final Path file : files) {
                 final int start = file.toString().indexOf(pattern) + pattern.length() + 1;
