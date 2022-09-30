@@ -30,6 +30,7 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -44,6 +45,10 @@ final class SpyTrain extends TrEnvelope {
      *
      * @param train Original one
      * @param dir The dir to save
+     * @todo #1248:30min we need to implement StLambdaQuiet in
+     *  yegor256/xsline. It will be similar to StLambda
+     *  but it will also catch checked exceptions. Then we should
+     *  change code below
      */
     SpyTrain(final Train<Shift> train, final Path dir) {
         super(
@@ -55,12 +60,16 @@ final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^a-z0-9]", "-");
-                            new Home().saveQuietly(
-                                xml.toString(),
-                                dir.resolve(
-                                    String.format("%02d-%s.xml", pos, log)
-                                )
-                            );
+                            try {
+                                new Home().save(
+                                    xml.toString(),
+                                    dir.resolve(
+                                        String.format("%02d-%s.xml", pos, log)
+                                    )
+                                );
+                            } catch (final IOException exc) {
+                                throw new IllegalStateException(exc);
+                            }
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(
                                     SpyTrain.class, "Step #%d by %s:\n%s",
