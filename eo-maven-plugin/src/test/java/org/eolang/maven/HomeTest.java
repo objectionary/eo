@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
@@ -77,6 +78,30 @@ final class HomeTest {
         new Home(Paths.get("dir")).save("any content", temp.resolve("file.txt"));
         MatcherAssert.assertThat(
             new Home(Paths.get("dir")).exists(temp.resolve("file.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void existsInDirDifferentEncryptionTest(@TempDir final Path temp) throws IOException {
+        final String filename = "文件名.txt";
+        final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
+        final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
+        new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
+        MatcherAssert.assertThat(
+            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void existsInDirWithSpecialSymbolsTest(@TempDir final Path temp) throws IOException {
+        final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
+        final byte[] bytes = filename.getBytes("CP1252");
+        final String decoded = new String(bytes, "CP1252");
+        new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
+        MatcherAssert.assertThat(
+            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
             Matchers.is(true)
         );
     }

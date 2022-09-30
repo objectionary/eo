@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -192,12 +193,10 @@ public class Home {
      * Path modification.
      * @param path Path
      * @return Modified path (without bad symbols)
-     * @todo #1247:30min we need to modify function. It has to change
-     *  path by replacing bad characters (not utf-8). We need to choose
-     *  what symbols we want to replace.
      */
     private static Path path(final Path path) {
-        return path;
+        final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
+        return Paths.get(new String(bytes, StandardCharsets.UTF_8));
     }
 
 }
