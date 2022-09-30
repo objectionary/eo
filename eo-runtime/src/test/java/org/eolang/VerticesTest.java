@@ -23,6 +23,12 @@
  */
 package org.eolang;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -52,4 +58,29 @@ final class VerticesTest {
         );
     }
 
+    @Test
+    void vtxThreadTest() throws InterruptedException {
+        final int threads = 8;
+        final Set<Integer> hashes = ConcurrentHashMap.newKeySet();
+        final ExecutorService executor = Executors.newFixedThreadPool(threads);
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Vertices vtx = new Vertices();
+        for (long index = 0; index < threads; ++index) {
+            final long thread = index;
+            executor.submit(
+                () -> {
+                    latch.await();
+                    final int hash = vtx.best(thread);
+                    hashes.add(hash);
+                    return hash;
+                }
+            );
+        }
+        latch.countDown();
+        executor.awaitTermination(1, TimeUnit.SECONDS);
+        MatcherAssert.assertThat(
+            hashes.size(),
+            Matchers.equalTo(threads)
+        );
+    }
 }
