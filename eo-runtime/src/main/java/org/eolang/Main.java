@@ -190,7 +190,7 @@ public final class Main {
         final Object result = new Dataized(app).take();
         Main.LOGGER.info(
             String.format(
-                "The result of %s dataization is %s. It's value is %s",
+                "The result of %s dataization is %s. Its value is %s",
                 app,
                 result.getClass().getName(),
                 result
