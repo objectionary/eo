@@ -188,10 +188,11 @@ public final class Main {
             app.attr(0).put(phi);
         }
         final Object result = new Dataized(app).take();
+        final String[] packages = app.toString().split("\\.");
         Main.LOGGER.info(
             String.format(
                 "The result of %s dataization is %s. Its value is %s",
-                app,
+                packages[packages.length - 1],
                 result.getClass().getName(),
                 result
             )
