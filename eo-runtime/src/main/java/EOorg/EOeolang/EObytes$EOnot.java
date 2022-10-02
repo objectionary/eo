@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;

@@ -24,10 +24,7 @@
 
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
@@ -47,13 +44,13 @@ class SkipTest {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
                         PullMojo.DIR
-                        )
                     )
+                )
             ),
             Matchers.is(true)
         );
@@ -64,7 +61,7 @@ class SkipTest {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, true);
         MatcherAssert.assertThat(
-            !Files.exists(
+            !new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -82,7 +79,7 @@ class SkipTest {
         this.executeCopyMojo(temp, classes, true);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            !Files.exists(out),
+            !new Home().exists(out),
             Matchers.is(true)
         );
     }
@@ -93,7 +90,7 @@ class SkipTest {
         this.executeCopyMojo(temp, classes, false);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            Files.exists(out),
+            new Home().exists(out),
             Matchers.is(true)
         );
     }
@@ -104,7 +101,7 @@ class SkipTest {
         final boolean skip
     ) {
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
@@ -126,10 +123,10 @@ class SkipTest {
         final boolean skip
     ) throws IOException {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             src.resolve("foo/main.eo")
-        ).save();
+        );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())

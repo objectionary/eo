@@ -25,41 +25,45 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.text.Randomized;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test for {@link Save}.
- *
- * @since 0.22
+ * Default implementation of a Footprint.
+ * @since 1.0
  */
-final class SaveTest {
+public final class FtDefault implements Footprint {
 
-    @ValueSource(ints = {0, 100, 1_000, 10_000})
-    @ParameterizedTest
-    void saves(final int size, @TempDir final Path temp) throws IOException {
-        final Path resolve = temp.resolve("1.txt");
-        final String content = new UncheckedText(new Randomized(size)).asString();
-        new Save(content, resolve).save();
-        MatcherAssert.assertThat(
-            new UncheckedText(new TextOf(resolve)).asString(),
-            Matchers.is(content)
-        );
+    /**
+     * Path to main location.
+     */
+    private final Path main;
+
+    /**
+     * Ctor.
+     * @param main Main location.
+     */
+    public FtDefault(final Path main) {
+        this.main = main;
     }
 
-    @Test
-    void returnsRelativePathOfCurrentWorkingDirectory() {
-        MatcherAssert.assertThat(
-            Save.rel(Paths.get("")),
-            Matchers.is("./")
+    @Override
+    public String load(final String program, final String ext) throws IOException {
+        return new IoCheckedText(
+            new TextOf(
+                new Place(program).make(this.main, ext)
+            )
+        ).asString();
+    }
+
+    @Override
+    public void save(final String program, final String ext, final Scalar<String> content)
+        throws IOException {
+        new Home().save(
+            new IoChecked<>(content).value(),
+            new Place(program).make(this.main, ext)
         );
     }
 }

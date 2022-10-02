@@ -30,10 +30,6 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Bytes;
-import org.eolang.BytesOf;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -43,16 +39,13 @@ import org.eolang.XmirObject;
  *
  * @since 1.0
  * @checkstyle TypeNameCheck (15 lines)
- * @todo #1184:30m This object is almost identical to
- *  EOand & EOxor. Extract method for converting Phy[]
- *  to Bytes[] to Param. And replace duplicated
- *  part this call to this method.
  */
 @XmirObject(oname = "bytes.or")
 public class EObytes$EOor extends PhDefault {
 
     /**
      * Ctor.
+     *
      * @param sigma Sigma
      */
     public EObytes$EOor(final Phi sigma) {
@@ -62,25 +55,11 @@ public class EObytes$EOor extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> {
-                    Bytes base = new Param(rho).asBytes();
-                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
-                    for (int index = 0; index < args.length; ++index) {
-                        final Object val = new Dataized(args[index]).take();
-                        if (!(val instanceof byte[])) {
-                            throw new ExFailure(
-                                String.format(
-                                    "The %dth argument of 'and' is of type %s, not bytes",
-                                    index, val.getClass().getCanonicalName()
-                                )
-                            );
-                        }
-                        base = base.or(new BytesOf(byte[].class.cast(val)));
-                    }
-                    return Bytes.toPhi(base);
-                }
+                new ExReduceBytes(
+                    Bytes::or
+                )
             )
         );
     }
-
 }
+

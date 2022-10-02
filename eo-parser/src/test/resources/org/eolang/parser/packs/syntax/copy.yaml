@@ -1,0 +1,12 @@
+xsls: []
+tests:
+  - //objects[count(o)=1]
+  - //objects[count(.//o[@copy=''])=1]
+eo: |
+  [] > test
+    [] > book
+      "qwerty" > title
+    book.title' > copy-title
+    eq. > @
+      copy-title
+      "qwerty"

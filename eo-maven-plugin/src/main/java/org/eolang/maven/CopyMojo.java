@@ -97,7 +97,7 @@ public final class CopyMojo extends SafeMojo {
         final Path target = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
         for (final Path src : sources) {
-            new Save(
+            new Home().save(
                 CopyMojo.REPLACE
                     .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),
@@ -106,18 +106,18 @@ public final class CopyMojo extends SafeMojo {
                         this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1
                     )
                 )
-            ).save();
+            );
         }
         if (sources.isEmpty()) {
             Logger.warn(
                 this, "No sources copied from %s to %s",
-                Save.rel(this.sourcesDir.toPath()), Save.rel(target)
+                new Home().rel(this.sourcesDir.toPath()), new Home().rel(target)
             );
         } else {
             Logger.info(
                 this, "%d source(s) copied from %s to %s",
-                sources.size(), Save.rel(this.sourcesDir.toPath()),
-                Save.rel(target)
+                sources.size(), new Home().rel(this.sourcesDir.toPath()),
+                new Home().rel(target)
             );
         }
     }

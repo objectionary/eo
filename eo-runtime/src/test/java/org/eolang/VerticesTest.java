@@ -23,6 +23,13 @@
  */
 package org.eolang;
 
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -52,4 +59,20 @@ final class VerticesTest {
         );
     }
 
+    @Test
+    void vtxThreadTest() {
+        final Set<Integer> hashes = ConcurrentHashMap.newKeySet();
+        final Vertices vtx = new Vertices();
+        final int threads = 8;
+        new Threads<>(
+            threads,
+            Stream.generate(
+                () -> (Scalar<Integer>) () -> vtx.best(new Random().nextLong())
+            ).limit(threads).collect(Collectors.toList())
+        ).forEach(hashes::add);
+        MatcherAssert.assertThat(
+            hashes.size(),
+            Matchers.equalTo(threads)
+        );
+    }
 }

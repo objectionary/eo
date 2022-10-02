@@ -118,7 +118,8 @@ public final class GmiMojo extends SafeMojo {
     private static final Train<Shift> TO_DOT = new TrFast(
         new TrClasspath<>(
             new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/verify-edges.xsl",
+            "/org/eolang/maven/gmi-to/catch-lost-edges.xsl",
+            "/org/eolang/maven/gmi-to/catch-duplicate-edges.xsl",
             "/org/eolang/maven/gmi-to/to-dot.xsl"
         ).back(),
         GmiMojo.class
@@ -131,6 +132,7 @@ public final class GmiMojo extends SafeMojo {
         new TrFast(
             new TrClasspath<>(
                 new TrDefault<>(),
+                "/org/eolang/maven/gmi/remove-leveled.xsl",
                 "/org/eolang/maven/gmi/R0.xsl",
                 "/org/eolang/maven/gmi/R1.xsl",
                 "/org/eolang/maven/gmi/R1.1.xsl",
@@ -179,7 +181,7 @@ public final class GmiMojo extends SafeMojo {
     private boolean generateXemblyFiles;
 
     /**
-     * Shall we generate .graph files with XML graph?
+     * Shall we generate .graph.xml files with XML graph?
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -252,7 +254,7 @@ public final class GmiMojo extends SafeMojo {
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    name, Save.rel(gmi)
+                    name, new Home().rel(gmi)
                 );
                 continue;
             }
@@ -261,7 +263,7 @@ public final class GmiMojo extends SafeMojo {
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
             Logger.info(
                 this, "GMI for %s saved to %s (%d instructions)",
-                name, Save.rel(gmi), extra
+                name, new Home().rel(gmi), extra
             );
             ++total;
         }
@@ -274,7 +276,7 @@ public final class GmiMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
-                total, Save.rel(home), instructions
+                total, new Home().rel(home), instructions
             );
         }
     }
@@ -324,27 +326,32 @@ public final class GmiMojo extends SafeMojo {
      */
     private int render(final Path xmir, final Path gmi) throws IOException {
         final XML before = new XMLDocument(xmir);
-        Logger.debug(this, "XML before translating to GMI:\n%s", before);
+        if (Logger.isTraceEnabled(this)) {
+            Logger.trace(this, "XML before translating to GMI:\n%s", before);
+        }
         final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         final String instructions = new Xsline(GmiMojo.TO_TEXT)
             .pass(after)
             .xpath("/text/text()")
             .get(0);
-        new Save(instructions, gmi).save();
+        if (Logger.isTraceEnabled(this)) {
+            Logger.trace(this, "GMIs:\n%s", instructions);
+        }
+        new Home().save(instructions, gmi);
         if (this.generateGmiXmlFiles) {
-            new Save(
+            new Home().save(
                 after.toString(),
                 gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
-            ).save();
+            );
         }
         if (this.generateXemblyFiles) {
             final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
-            new Save(
+            new Home().save(
                 xembly,
                 gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
-            ).save();
+            );
             this.makeGraph(xembly, gmi);
         }
         return instructions.split("\n").length;
@@ -366,23 +373,41 @@ public final class GmiMojo extends SafeMojo {
             final XML graph = new XMLDocument(
                 new Xembler(
                     new Directives()
-                        .add("test")
+                        .comment("This file is auto-generated, don't edit it")
                         .add("graph")
                         .add("v")
                         .attr("id", "ν0")
                         .append(dirs)
                 ).domQuietly()
             );
-            new Save(
+            new Home().save(
                 graph.toString(),
-                gmi.resolveSibling(String.format("%s.graph", gmi.getFileName()))
-            ).save();
-            if (this.generateDotFiles) {
-                new Save(
-                    new Xsline(GmiMojo.TO_DOT).pass(graph).xpath("//dot/text()").get(0),
-                    gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
-                ).save();
+                gmi.resolveSibling(String.format("%s.graph.xml", gmi.getFileName()))
+            );
+            if (Logger.isTraceEnabled(this)) {
+                Logger.trace(this, "Graph:\n%s", graph.toString());
             }
+            this.makeDot(graph, gmi);
+        }
+    }
+
+    /**
+     * Make graph.
+     * @param graph The graph in XML
+     * @param gmi The path of GMI file
+     * @throws IOException If fails
+     */
+    private void makeDot(final XML graph, final Path gmi) throws IOException {
+        if (this.generateDotFiles) {
+            final String dot = new Xsline(GmiMojo.TO_DOT)
+                .pass(graph).xpath("//dot/text()").get(0);
+            if (Logger.isTraceEnabled(this)) {
+                Logger.trace(this, "Dot:\n%s", dot);
+            }
+            new Home().save(
+                dot,
+                gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
+            );
         }
     }
 

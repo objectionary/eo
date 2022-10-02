@@ -23,9 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
@@ -44,7 +41,7 @@ final class PullMojoTest {
     void testSimplePull(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
@@ -58,7 +55,7 @@ final class PullMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",

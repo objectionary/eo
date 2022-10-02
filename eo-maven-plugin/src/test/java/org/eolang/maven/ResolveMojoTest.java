@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -44,7 +42,7 @@ final class ResolveMojoTest {
     @Test
     void testSimpleResolve(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.7.0",
@@ -52,12 +50,13 @@ final class ResolveMojoTest {
                 "[] > foo /int"
             ),
             src.resolve("foo.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -82,31 +81,31 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "[] > foo /int"
             ),
             first
-        ).save();
+        );
         final Path second = temp.resolve("src/foo2.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.0",
                 "[] > foo /int"
             ),
             second
-        ).save();
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("foo1.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, first.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("foo2.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, second.toString())
@@ -114,6 +113,7 @@ final class ResolveMojoTest {
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -141,31 +141,31 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
                 "[] > foo /int"
             ),
             first
-        ).save();
+        );
         final Path second = temp.resolve("src/foo2.src");
-        new Save(
+        new Home().save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
                 "[] > foo /int"
             ),
             second
-        ).save();
+        );
         final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        final Path foreign = temp.resolve("eo-foreign");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo1.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, first.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign)
             .add("foo2.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, second.toString())
@@ -173,6 +173,7 @@ final class ResolveMojoTest {
         new Moja<>(ParseMojo.class)
             .with("foreign", foreign.toFile())
             .with("targetDir", target.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())

@@ -42,10 +42,10 @@ final class CopyMojoTest {
     void copiesSources(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
-        new Save(
+        new Home().save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             src.resolve("foo/main.eo")
-        ).save();
+        );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())
@@ -54,7 +54,7 @@ final class CopyMojoTest {
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            Files.exists(out),
+            new Home().exists(out),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(

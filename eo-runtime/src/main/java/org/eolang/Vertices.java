@@ -81,7 +81,7 @@ final class Vertices {
      * @param obj The object to find
      * @return Next vertex available or previously registered in non-phi instance
      */
-    private int bestNonPhi(final Object obj) {
+    private synchronized int bestNonPhi(final Object obj) {
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");

@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
@@ -42,7 +41,7 @@ final class AssembleMojoTest {
     @Test
     void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -50,7 +49,7 @@ final class AssembleMojoTest {
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("main.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
@@ -64,6 +63,7 @@ final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with(
                 "objectionary",
@@ -73,7 +73,7 @@ final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
@@ -88,7 +88,7 @@ final class AssembleMojoTest {
     @Test
     void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -97,8 +97,8 @@ final class AssembleMojoTest {
                 "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("wrong.eo")
-        ).save();
-        new Save(
+        );
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -107,7 +107,7 @@ final class AssembleMojoTest {
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("main.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
@@ -121,6 +121,7 @@ final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("failOnError", false)
             .with(
@@ -131,7 +132,7 @@ final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
@@ -142,7 +143,7 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/main.%s",

@@ -58,7 +58,7 @@ public final class OyHome implements Objectionary {
     public String toString() {
         return String.format(
             "%s (%s)",
-            Save.rel(this.home), this.version
+            new Home().rel(this.home), this.version
         );
     }
 

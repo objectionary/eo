@@ -28,7 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -104,23 +103,19 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             final String coords = ResolveMojo.coords(dep);
-            final Path dest;
-            if (dep.getClassifier().isEmpty()) {
-                dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
-                    .resolve(dep.getGroupId())
-                    .resolve(dep.getArtifactId())
-                    .resolve(dep.getVersion());
-            } else {
-                dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
-                    .resolve(dep.getGroupId())
-                    .resolve(dep.getArtifactId())
-                    .resolve(dep.getClassifier())
-                    .resolve(dep.getVersion());
+            String classifier = dep.getClassifier();
+            if (classifier.isEmpty()) {
+                classifier = "-";
             }
-            if (Files.exists(dest)) {
+            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
+                .resolve(dep.getGroupId())
+                .resolve(dep.getArtifactId())
+                .resolve(classifier)
+                .resolve(dep.getVersion());
+            if (new Home().exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, Save.rel(dest)
+                    coords, new Home().rel(dest)
                 );
                 continue;
             }
@@ -274,7 +269,7 @@ public final class ResolveMojo extends SafeMojo {
             throw new IllegalStateException(
                 String.format(
                     "Too many (%d) dependencies at %s",
-                    coords.size(), Save.rel(file)
+                    coords.size(), new Home().rel(file)
                 )
             );
         }

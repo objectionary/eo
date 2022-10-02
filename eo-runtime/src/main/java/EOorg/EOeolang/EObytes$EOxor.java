@@ -30,9 +30,6 @@ package EOorg.EOeolang;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
 import org.eolang.Bytes;
-import org.eolang.BytesOf;
-import org.eolang.Dataized;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -57,18 +54,9 @@ public class EObytes$EOxor extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> {
-                    Bytes base = new Param(rho).asBytes();
-                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
-                    for (final Phi phi : args) {
-                        base = base.xor(
-                            new BytesOf(
-                                new Dataized(phi).take(byte[].class)
-                            )
-                        );
-                    }
-                    return Bytes.toPhi(base);
-                }
+                new ExReduceBytes(
+                    Bytes::xor
+                )
             )
         );
     }

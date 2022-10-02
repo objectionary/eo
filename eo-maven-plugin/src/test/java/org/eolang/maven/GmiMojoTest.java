@@ -25,8 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -145,16 +143,17 @@ final class GmiMojoTest {
     private static XML toGraph(final String code, final String inclusion) throws IOException {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("foo/main.eo");
-        new Save(code, src).save();
+        new Home().save(code, src);
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(OptimizeMojo.class)
@@ -174,7 +173,7 @@ final class GmiMojoTest {
             .execute();
         return new XMLDocument(
             target.resolve(
-                String.format("%s/foo/main.gmi.graph", GmiMojo.DIR)
+                String.format("%s/foo/main.gmi.graph.xml", GmiMojo.DIR)
             )
         );
     }
@@ -232,7 +231,7 @@ final class GmiMojoTest {
             String vertex = "ν0";
             for (final String sub : item.split(" ")) {
                 final XML node = this.graph.nodes(
-                    String.format("//v[@id='%s']", vertex)
+                    String.format("/graph/v[@id='%s']", vertex)
                 ).get(0);
                 if (sub.charAt(0) == '.') {
                     final List<String> opts = node.xpath(
@@ -256,8 +255,8 @@ final class GmiMojoTest {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no data at %s",
-                                vertex
+                                "There is no data (%s) at %s",
+                                sub, vertex
                             )
                         );
                     }
@@ -281,15 +280,15 @@ final class GmiMojoTest {
                     if (node.nodes("lambda").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no lambda at %s",
-                                vertex
+                                "There is no lambda (%s) at %s",
+                                sub, vertex
                             )
                         );
                     }
                     final String expr = sub.substring(2);
                     final boolean matches = !this.graph.xpath(
                         String.format(
-                            "//v[@id='%s']/lambda[text() = '%s']/text()",
+                            "/graph/v[@id='%s']/lambda[text() = '%s']/text()",
                             vertex, expr
                         )
                     ).isEmpty();

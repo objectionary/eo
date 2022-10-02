@@ -73,14 +73,13 @@ public class EOmemory extends PhDefault {
                 new AtComposite(
                     this,
                     rho -> {
-                        rho.attr("σ").get().attr("enclosure").put(
-                            new Data.ToPhi(
-                                new Dataized(
-                                    rho.attr("x").get()
-                                ).take()
-                            )
+                        final Phi phi = new Data.ToPhi(
+                            new Dataized(
+                                rho.attr("x").get()
+                            ).take()
                         );
-                        return new Data.ToPhi(true);
+                        rho.attr("σ").get().attr("enclosure").put(phi);
+                        return phi;
                     }
                 )
             );

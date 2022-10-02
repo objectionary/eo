@@ -23,11 +23,12 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
-import com.yegor256.tojos.SmartTojos;
+import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -39,28 +40,30 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ParseMojoTest {
 
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Save(
+        new Home().save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
             src
-        ).save();
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        );
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
@@ -68,8 +71,55 @@ final class ParseMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new SmartTojos(
-                new MonoTojos(new Csv(foreign))
+            new TjSmart(
+                Catalogs.INSTANCE.make(foreign)
+            ).getById("foo.x.main").exists("xmir"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
+        final Path target = temp.resolve("target");
+        new Home().save(
+            "invalid content",
+            src
+        );
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new FtCached(
+            new HashOfTag("0.25.0").narrow(),
+            target,
+            temp.resolve("parsed")
+        ).save(
+            "foo.x.main",
+            "xmir",
+            () -> new UncheckedText(
+                new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
+            ).asString()
+        );
+        Catalogs.INSTANCE.make(foreign)
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString())
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("parsed"))
+            .execute();
+        MatcherAssert.assertThat(
+            new Home().exists(
+                target.resolve(
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new TjSmart(
+                Catalogs.INSTANCE.make(foreign)
             ).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
@@ -79,9 +129,9 @@ final class ParseMojoTest {
     void testCrashOnInvalidSyntax(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Save("something < is wrong here", src).save();
-        final Path foreign = temp.resolve("foreign-1.json");
-        new MonoTojos(new Csv(foreign))
+        new Home().save("something < is wrong here", src);
+        final Path foreign = temp.resolve("foreign-1");
+        Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -90,6 +140,7 @@ final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
+                .with("cache", temp.resolve("cache/parsed"))
                 .with("foreignFormat", "csv")
                 .execute()
         );
@@ -99,9 +150,9 @@ final class ParseMojoTest {
     void testCrashesWithFileName(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Save("something < is wrong here", src).save();
-        final Path foreign = temp.resolve("foreign-1.json");
-        new MonoTojos(new Csv(foreign))
+        new Home().save("something < is wrong here", src);
+        final Path foreign = temp.resolve("foreign-1");
+        Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -110,10 +161,11 @@ final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
+                .with("cache", temp.resolve("cache/parsed"))
                 .with("foreignFormat", "csv")
                 .execute()
         );
-        Assertions.assertEquals(exception.getMessage(), String.format("Failed to parse %s", src));
+        Assertions.assertEquals(String.format("Failed to parse %s", src), exception.getMessage());
     }
 
     @Test
@@ -121,12 +173,12 @@ final class ParseMojoTest {
         throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Save(
+        new Home().save(
             "something < is wrong here",
             src
-        ).save();
-        final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Csv(foreign))
+        );
+        final Path foreign = temp.resolve("eo-foreign");
+        Catalogs.INSTANCE.make(foreign)
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
@@ -134,6 +186,7 @@ final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache/parsed"))
             .with("failOnError", false)
             .execute();
         MatcherAssert.assertThat(

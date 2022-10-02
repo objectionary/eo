@@ -2,7 +2,7 @@
 
 [![make](https://github.com/objectionary/eo/actions/workflows/latexmk.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/latexmk.yml)
 
-This is a more or less formal description of EOLANG and 𝜑-calculus.
+This is a more or less formal description of EOLANG and φ-calculus.
 
 To build it, just run:
 

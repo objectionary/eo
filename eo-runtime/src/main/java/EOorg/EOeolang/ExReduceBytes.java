@@ -21,65 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
 
-import com.yegor256.tojos.CachedTojos;
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.Mono;
-import com.yegor256.tojos.MonoTojos;
-import com.yegor256.tojos.Tojos;
-import java.nio.file.Path;
-import java.util.Locale;
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
+package EOorg.EOeolang;
+
+import java.util.function.BinaryOperator;
+import org.eolang.Bytes;
+import org.eolang.BytesOf;
+import org.eolang.Dataized;
+import org.eolang.Expr;
+import org.eolang.Param;
+import org.eolang.Phi;
 
 /**
- * Catalog with tojos, in some format.
+ * Reduce on BYTES.
  *
- * @since 0.22
+ * @since 1.0
  */
-final class Catalog {
-
+final class ExReduceBytes implements Expr {
     /**
-     * Path.
+     * Reduce operation.
      */
-    private final Path path;
-
-    /**
-     * Format.
-     */
-    private final String format;
+    private final BinaryOperator<Bytes> oper;
 
     /**
      * Ctor.
-     * @param file Path
-     * @param fmt Format
+     * @param oper Operation.
      */
-    Catalog(final Path file, final String fmt) {
-        this.path = file;
-        this.format = fmt;
+    ExReduceBytes(final BinaryOperator<Bytes> oper) {
+        this.oper = oper;
     }
 
-    /**
-     * Make it.
-     * @return The tojos
-     */
-    public Tojos make() {
-        final String fmt = this.format.trim().toLowerCase(Locale.ENGLISH);
-        final Mono mono;
-        if ("json".equals(fmt)) {
-            mono = new Json(this.path);
-        } else if ("csv".equals(fmt)) {
-            mono = new Csv(this.path);
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unrecognized format '%s' for the file '%s'",
-                    fmt, this.path
+    @Override
+    public Phi get(final Phi rho) throws Exception {
+        Bytes base = new Param(rho).asBytes();
+        final Phi[] args = new Param(rho, "b").strong(Phi[].class);
+        for (final Phi phi : args) {
+            base = this.oper.apply(
+                base,
+                new BytesOf(
+                    new Dataized(phi).take(byte[].class)
                 )
             );
         }
-        return new CachedTojos(
-            new MonoTojos(mono)
-        );
+        return Bytes.toPhi(base);
     }
 }
