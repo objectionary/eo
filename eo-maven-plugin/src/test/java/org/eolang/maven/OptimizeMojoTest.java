@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -163,6 +164,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
+    @Disabled
     void testOptimizeWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Home().save(
@@ -193,14 +195,14 @@ final class OptimizeMojoTest {
             .with("foreignFormat", "csv")
             .with("failOnError", false)
             .execute();
-        /*MatcherAssert.assertThat(
+        MatcherAssert.assertThat(
             Files.notExists(
                 target.resolve(
                     String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
                 )
             ),
             Matchers.is(true)
-        );*/
+        );
     }
 
 }

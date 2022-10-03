@@ -32,7 +32,6 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +41,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.parser.ParsingTrain;
-import org.cactoos.Scalar;
+
 /**
  * Optimize XML files.
  *
@@ -69,14 +68,6 @@ public final class OptimizeMojo extends SafeMojo {
      * Subdirectory for parsed cache.
      */
     public static final String OPTIMIZED = "optimized";
-
-    /**
-     * EO cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
      * Parsing train with XSLs.
@@ -116,6 +107,14 @@ public final class OptimizeMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * EO cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
@@ -154,21 +153,22 @@ public final class OptimizeMojo extends SafeMojo {
      * Optimize XML file after parsing.
      *
      * @param file EO file
+     * @param tojo Source tojo
      * @return The file with optimized XMIR
-     * @throws FileNotFoundException If fails
+     * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
-    private XML optimize(final Path file, final Tojo tojo) throws FileNotFoundException {
+    private XML optimize(final Path file, final Tojo tojo) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN;
         final Footprint footprint;
-        if(tojo.exists(AssembleMojo.ATTR_HASH)){
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
             footprint = new FtCached(
-                    tojo.get(AssembleMojo.ATTR_HASH),
-                    this.targetDir.toPath().resolve(OptimizeMojo.DIR),
-                    this.cache.resolve(OptimizeMojo.OPTIMIZED));
-        }
-        else{
+                tojo.get(AssembleMojo.ATTR_HASH),
+                this.targetDir.toPath().resolve(OptimizeMojo.DIR),
+                this.cache.resolve(OptimizeMojo.OPTIMIZED)
+            );
+        } else {
             footprint = new FtDefault(this.targetDir.toPath().resolve(OptimizeMojo.DIR));
         }
         if (this.trackOptimizationSteps) {
@@ -182,14 +182,12 @@ public final class OptimizeMojo extends SafeMojo {
                 new Home().rel(dir)
             );
         }
-        XML result = new Xsline(trn).pass(new XMLDocument(file));
-        try {
-            footprint.save(name,
-                    AssembleMojo.ATTR_XMIR,
-                    result::toString);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        final XML result = new Xsline(trn).pass(new XMLDocument(file));
+        footprint.save(
+            name,
+            AssembleMojo.ATTR_XMIR,
+            result::toString
+        );
         return result;
     }
 
