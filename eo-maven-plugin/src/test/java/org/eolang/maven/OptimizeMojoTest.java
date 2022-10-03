@@ -23,9 +23,13 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -56,7 +60,7 @@ final class OptimizeMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache"))
             .with("foreignFormat", "csv")
             .execute();
         new Moja<>(OptimizeMojo.class)
@@ -96,7 +100,7 @@ final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -137,7 +141,7 @@ final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())
@@ -159,6 +163,59 @@ final class OptimizeMojoTest {
                     String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
                 )
             ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
+        final Path target = temp.resolve("target");
+        new Home().save(
+            "invalid content",
+            src
+        );
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        new FtCached(
+            new HashOfTag("0.28.0").narrow(),
+            target,
+            temp.resolve("optimized")
+        ).save(
+            "foo.x.main",
+            "xmir",
+            () -> new UncheckedText(
+                new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
+            ).asString()
+        );
+        Catalogs.INSTANCE.make(foreign)
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString())
+            .set(AssembleMojo.ATTR_VERSION, "0.28.0");
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache"))
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache"))
+            .execute();
+        MatcherAssert.assertThat(
+            new Home().exists(
+                target.resolve(
+                    String.format("%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new TjSmart(
+                Catalogs.INSTANCE.make(foreign)
+            ).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
     }
@@ -187,7 +244,7 @@ final class OptimizeMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache"))
             .execute();
         new Moja<>(OptimizeMojo.class)
             .with("targetDir", target.toFile())

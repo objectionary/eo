@@ -29,6 +29,8 @@ import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
@@ -182,6 +184,14 @@ abstract class SafeMojo extends AbstractMojo {
             () -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat)
         )
     );
+
+    /**
+     * EO cache directory.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    protected Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
      * Whether we should skip goals execution.

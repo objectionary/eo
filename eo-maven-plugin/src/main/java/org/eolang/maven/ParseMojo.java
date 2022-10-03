@@ -73,14 +73,6 @@ public final class ParseMojo extends SafeMojo {
     public static final String PARSED = "parsed";
 
     /**
-     * EO cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
-
-    /**
      * Whether we should fail on parsing error.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.23.0

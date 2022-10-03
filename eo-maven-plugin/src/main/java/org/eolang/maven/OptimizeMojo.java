@@ -107,14 +107,6 @@ public final class OptimizeMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
-    /**
-     * EO cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
-
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
@@ -134,7 +126,7 @@ public final class OptimizeMojo extends SafeMojo {
                 }
             }
             ++done;
-            final XML optimized = this.optimize(src, tojo);
+            final XML optimized = this.optimize(tojo);
             if (this.shouldPass(optimized)) {
                 tojo.set(
                     AssembleMojo.ATTR_XMIR2,
@@ -152,13 +144,13 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Optimize XML file after parsing.
      *
-     * @param file EO file
      * @param tojo Source tojo
      * @return The file with optimized XMIR
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
-    private XML optimize(final Path file, final Tojo tojo) throws IOException {
+    private XML optimize(final Tojo tojo) throws IOException {
+        final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN;
         final Footprint footprint;

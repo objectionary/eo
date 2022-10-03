@@ -59,7 +59,7 @@ final class ParseMojoTest {
         new Moja<>(ParseMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache"))
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
@@ -140,7 +140,7 @@ final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
-                .with("cache", temp.resolve("cache/parsed"))
+                .with("cache", temp.resolve("cache"))
                 .with("foreignFormat", "csv")
                 .execute()
         );
@@ -161,7 +161,7 @@ final class ParseMojoTest {
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
-                .with("cache", temp.resolve("cache/parsed"))
+                .with("cache", temp.resolve("cache"))
                 .with("foreignFormat", "csv")
                 .execute()
         );
@@ -186,7 +186,7 @@ final class ParseMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache"))
             .with("failOnError", false)
             .execute();
         MatcherAssert.assertThat(
