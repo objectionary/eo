@@ -46,8 +46,8 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Abstract Mojo for all others.
- * @todo #1223:30m TooManyFields checkstyle suppressed
- * SafeMojo needs to be refactored to remove this checkstyle
+ * @todo #1223:30m Too Many Fields checkstyle suppressed in here but,
+ * SafeMojo needs to be refactored in some way to remove this checkstyle.
  * @since 0.1
  */
 @SuppressWarnings("PMD.TooManyFields")
