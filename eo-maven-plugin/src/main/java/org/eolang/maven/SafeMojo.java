@@ -48,6 +48,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
+ * @checkstyle TooManyFields (300 lines)
  */
 abstract class SafeMojo extends AbstractMojo {
 
