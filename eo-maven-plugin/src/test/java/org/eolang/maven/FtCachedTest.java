@@ -58,4 +58,33 @@ final class FtCachedTest {
             Matchers.equalTo(content)
         );
     }
+
+    @Test
+    void testContentOfCachedFileWithVersionAndHash(@TempDir final Path temp) throws Exception {
+        final String content = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<program>",
+            "</program>"
+        );
+        new Footprints().cached()
+            .withHash("abcde123")
+            .withMain(temp.resolve("target"))
+            .withCache(temp.resolve("parsed"))
+            .withVersion("version123")
+            .withHash("as987asdg32d")
+            .build()
+            .save("org.eolang.txt.text", "xmir", () -> content);
+        MatcherAssert.assertThat(
+            new Footprints().cached()
+                .withHash("abcde123")
+                .withMain(temp.resolve("target"))
+                .withCache(temp.resolve("parsed"))
+                .withVersion("version123")
+                .withHash("as987asdg32d")
+                .build()
+                .load("org.eolang.txt.text", "xmir"),
+            Matchers.equalTo(content)
+        );
+    }
 }
