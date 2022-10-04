@@ -78,7 +78,7 @@ You will need Java 8+.
 ## How it Works?
 
 The entire process of turning an `.eo` program into an executable
-binary code constists of a few steps, which must be done
+binary code consists of a few high-level steps, which must be done
 one after another:
 
   * **Parsing**.
@@ -100,8 +100,8 @@ one after another:
     The output of each transformation you can find in the `target/eo/optimize` directory.
 
   * **Compilation**.
-    The class `org.eolang.maven.CompileMojo` in the `eo-maven-plugin` module is responsible
-    for putting parsing and optimization steps together and then transforming
+    The class `org.eolang.maven.TranspileMojo` in the `eo-maven-plugin` module is responsible
+    for taking parsed and optimized XMIRs and then transforming
     the XML document into a collection of `.java` files. There are a number
     of transformations that do this, they all exist in `.xsl` files.
     The output of this step you can find in the `target/generated-sources` directory.
@@ -111,11 +111,11 @@ for most popular and important objects that any of you will need in order
 to write even a simple EO program. There are objects like `string`, `int`, `sprintf`,
 `stdout`, and so on. By the way, you may want to contribute there by creating new objects.
 
-## Bypassing object cache
+## Objectionary objects cache
 
+If any external object is used in EO program it will be pulled from [Objectionary home](https://github.com/objectionary/home).
 By default, during compilation the plugin will check local cache (`~/.eo`) for required objects
-and only download (and cache) them from [Objectionary home](https://github.com/objectionary/home)
-in case they are not found locally.
+and only download (and cache) them in case they are not found locally.
 
 This behaviour can be changed to always download objects from remote by providing 
 Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
