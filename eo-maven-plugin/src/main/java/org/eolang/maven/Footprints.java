@@ -29,7 +29,7 @@ import java.nio.file.Path;
  * Class for building footprint.
  * @since 0.28
  */
-public class Footprints {
+public final class Footprints {
     /**
      * Type of Footprint.
      */
