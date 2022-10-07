@@ -148,7 +148,6 @@ public final class OptimizeMojo extends SafeMojo {
      * @return The file with optimized XMIR
      * @throws IOException If fails
      */
-    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private XML optimize(final Tojo tojo) throws IOException {
         final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
