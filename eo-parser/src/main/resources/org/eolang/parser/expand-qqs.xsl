@@ -41,6 +41,11 @@ SOFTWARE.
       </xsl:element>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="meta/*[text()[contains(., 'QQ')]]">
+    <xsl:copy>
+      <xsl:value-of select="replace(./text(), 'QQ', 'Q.org.eolang')"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
