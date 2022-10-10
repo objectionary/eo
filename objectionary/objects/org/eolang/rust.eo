@@ -22,8 +22,16 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.io
++package org.eolang
 +rt jvm org.eolang:eo-runtime:0.28.10
 +version 0.28.10
 
-[text] > stdout /bool
+# @todo #1161:30min Complete implementation of this
+#  object in Java. This object should load and
+#  execute *.so file. Only one function is stored
+#  in *.so file. The signature will be always the
+#  same.
+[code params] > rust
+  * > @
+    code
+    params
