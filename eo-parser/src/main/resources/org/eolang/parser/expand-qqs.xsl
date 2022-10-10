@@ -24,7 +24,9 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="expand-qqs" version="2.0">
   <!--
-  For all objects replace 'QQ' to 'org.eolang'
+  Replace 'QQ' to 'org.eolang' for:
+  - @base attribute for all objects;
+  - child elements' text of all metas
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base='QQ']">
@@ -41,9 +43,9 @@ SOFTWARE.
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="meta/*[text()[contains(., 'QQ')]]">
+  <xsl:template match="meta/*[text()[matches(., '^QQ\..*')]]">
     <xsl:copy>
-      <xsl:value-of select="replace(./text(), 'QQ', 'Q.org.eolang')"/>
+      <xsl:value-of select="replace(./text(), '^QQ\.', 'Q.org.eolang.')"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
