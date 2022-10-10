@@ -96,7 +96,7 @@ public final class UnplaceMojo extends SafeMojo {
         deleted += this.killThem(tojos);
         if (tojos.isEmpty()) {
             Logger.info(
-                this, "No binaries were placed into %s, nothing to uplace",
+                this, "No binaries were placed into %s, nothing to unplace",
                 new Home().rel(this.placed.toPath())
             );
         } else if (deleted == 0) {
@@ -122,6 +122,8 @@ public final class UnplaceMojo extends SafeMojo {
      * @param tojos All binaries found
      * @return Number of files deleted
      * @throws IOException If fails
+     * @todo #1265:30min If all .class files for a dependency are removed then
+     *  unplaced attribute should be set to `true` for a dependency jar entry as well.
      */
     private int killThem(final Iterable<Tojo> tojos) throws IOException {
         int unplaced = 0;
@@ -156,6 +158,7 @@ public final class UnplaceMojo extends SafeMojo {
             }
             if (UnplaceMojo.delete(path)) {
                 unplaced += 1;
+                tojo.set(PlaceMojo.ATTR_UNPLACED, "true");
                 Logger.debug(
                     this, "Binary %s of %s deleted",
                     new Home().rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)

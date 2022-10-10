@@ -67,6 +67,11 @@ public final class PlaceMojo extends SafeMojo {
     public static final String ATTR_HASH = "hash";
 
     /**
+     * Attr in CSV.
+     */
+    public static final String ATTR_UNPLACED = "unplaced";
+
+    /**
      * Where the binary is coming from (JAR name).
      */
     public static final String ATTR_ORIGIN = "dependency";
@@ -202,7 +207,8 @@ public final class PlaceMojo extends SafeMojo {
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set(PlaceMojo.ATTR_ORIGIN, dep);
+                .set(PlaceMojo.ATTR_ORIGIN, dep)
+                .set(PlaceMojo.ATTR_UNPLACED, "false");
             ++copied;
         }
         if (copied > 0) {

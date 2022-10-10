@@ -64,6 +64,14 @@ final class PlaceMojoTest {
         );
     }
 
+    /**
+     * Test.
+     * @param temp Path to temp directory.
+     * @todo #1265:30min Why do we need lines 85-87 in this test?
+     *  They don't check anything and the test passes if these lines are commented out anyway.
+     *  Either the test is written incorrectly and assumes that
+     *  these lines affect its behaviour or they can be removed.
+     */
     @Test
     void placesMissing(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
