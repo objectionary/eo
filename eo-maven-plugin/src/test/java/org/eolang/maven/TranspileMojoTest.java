@@ -249,6 +249,7 @@ final class TranspileMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("failOnError", false)
             .execute();
         this.applyXsl(
             "org/eolang/maven/set-warning-severity.xsl",

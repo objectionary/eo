@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -203,4 +204,38 @@ final class OptimizeMojoTest {
         );
     }
 
+    @Test
+    void testOptimizedFail(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Home().save(
+            String.join(
+                "\n",
+                "+package f",
+                "\n+alias THIS-IS-WRONG org.eolang.io.stdout",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @\n"
+            ),
+            src
+        );
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        Catalogs.INSTANCE.make(foreign)
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache/parsed"))
+            .execute();
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Moja<>(OptimizeMojo.class)
+                .with("targetDir", target.toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .execute()
+        );
+    }
 }

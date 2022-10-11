@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
@@ -143,6 +144,8 @@ public final class OptimizeMojo extends SafeMojo {
      * @param file EO file
      * @return The file with optimized XMIR
      * @throws FileNotFoundException If fails
+     * @throws IllegalArgumentException If error is detected within XMIR and
+     *  fail on error is enabled.
      */
     private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
@@ -156,6 +159,25 @@ public final class OptimizeMojo extends SafeMojo {
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
                 new Home().rel(dir)
+            );
+        }
+        if (this.failOnError) {
+            trn = trn.with(
+                new StLambda(
+                    xml -> {
+                        final List<String> errors = xml.xpath("//error[@severity='error']/text()");
+                        if (!errors.isEmpty()) {
+                            throw new IllegalStateException(
+                                String.format(
+                                    "Errors detected for %s:\n%s",
+                                    file,
+                                    errors
+                                )
+                            );
+                        }
+                        return xml;
+                    }
+                )
             );
         }
         return new Xsline(trn).pass(new XMLDocument(file));
