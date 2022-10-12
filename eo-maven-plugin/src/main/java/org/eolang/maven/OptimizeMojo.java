@@ -28,7 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StLambda;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
@@ -68,6 +68,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * Parsing train with XSLs.
+     * @implNote The list of applied XSLs is adjusted during execution
      */
     private static final Train<Shift> TRAIN = new TrFast(
         new TrClasspath<>(
@@ -150,6 +151,9 @@ public final class OptimizeMojo extends SafeMojo {
     private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN;
+        if (this.failOnError) {
+            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-errors.xsl"));
+        }
         if (this.trackOptimizationSteps) {
             final Place place = new Place(name);
             final Path dir = place.make(
@@ -159,25 +163,6 @@ public final class OptimizeMojo extends SafeMojo {
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
                 new Home().rel(dir)
-            );
-        }
-        if (this.failOnError) {
-            trn = trn.with(
-                new StLambda(
-                    xml -> {
-                        final List<String> errors = xml.xpath("//error[@severity='error']/text()");
-                        if (!errors.isEmpty()) {
-                            throw new IllegalStateException(
-                                String.format(
-                                    "Errors detected for %s:\n%s",
-                                    file,
-                                    errors
-                                )
-                            );
-                        }
-                        return xml;
-                    }
-                )
             );
         }
         return new Xsline(trn).pass(new XMLDocument(file));
