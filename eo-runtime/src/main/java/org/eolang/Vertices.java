@@ -114,6 +114,8 @@ final class Vertices {
             label = Pattern.class.cast(obj).pattern();
         } else if (obj instanceof byte[]) {
             label = Arrays.toString(byte[].class.cast(obj));
+        } else if (obj instanceof Long) {
+            label = Long.toString(Long.class.cast(obj));
         } else {
             throw new IllegalArgumentException(
                 String.format(
