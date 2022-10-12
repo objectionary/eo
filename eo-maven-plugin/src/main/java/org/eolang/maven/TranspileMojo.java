@@ -39,9 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -104,28 +102,6 @@ public final class TranspileMojo extends SafeMojo {
         defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
-
-    /**
-     * Whether we should fail on warn.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        property = "eo.failOnWarning",
-        required = true,
-        defaultValue = "false"
-    )
-    private boolean failOnWarning;
-
-    /**
-     * Whether we should fail on error.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
 
     /**
      * Add to source root.
@@ -234,14 +210,6 @@ public final class TranspileMojo extends SafeMojo {
         );
         final XML out = new Xsline(trn).pass(input);
         new Home().save(out.toString(), target);
-        final Set<String> failures = new HashSet<>(3);
-        if (this.failOnWarning) {
-            failures.add(Sanitized.WARNING);
-        }
-        if (this.failOnError) {
-            failures.add(Sanitized.ERROR);
-        }
-        new Sanitized(target).sanitize(failures);
         return new JavaFiles(
             target,
             this.generatedDir.toPath()

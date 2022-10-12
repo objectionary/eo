@@ -105,6 +105,18 @@ public final class OptimizeMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
@@ -151,6 +163,9 @@ public final class OptimizeMojo extends SafeMojo {
     private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN;
+        if (this.failOnWarning) {
+            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-warnings.xsl"));
+        }
         if (this.failOnError) {
             trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-errors.xsl"));
         }

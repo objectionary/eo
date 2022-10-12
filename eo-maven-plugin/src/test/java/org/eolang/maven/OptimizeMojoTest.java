@@ -23,9 +23,17 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StXSL;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -237,5 +245,54 @@ final class OptimizeMojoTest {
                 .with("foreignFormat", "csv")
                 .execute()
         );
+    }
+
+    @Test
+    void testFailOnWarning(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo.src.eo");
+        new Home().save(new ResourceOf("org/eolang/maven/withwarning.eo"), src);
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        Catalogs.INSTANCE.make(foreign)
+            .add("foo.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("cache", temp.resolve("cache/parsed"))
+            .with("foreignFormat", "csv")
+            .execute();
+        this.applyXsl(
+            "org/eolang/maven/set-warning-severity.xsl",
+            target.resolve("01-parse/foo/src.xmir")
+        );
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .with("failOnWarning", true)
+            .execute()
+        );
+    }
+
+    /**
+     * Apply XSL transformation.
+     * @param xsl Path to XSL within classpath
+     * @param xml Path to XML to be tranformed
+     */
+    private void applyXsl(final String xsl, final Path xml) throws Exception {
+        final XML output = new Xsline(
+            new TrDefault<Shift>()
+                .with(
+                    new StXSL(
+                        new XSLDocument(
+                            new ResourceOf(xsl).stream()
+                        )))
+        ).pass(new XMLDocument(xml));
+        new Home().save(output.toString(), xml);
     }
 }
