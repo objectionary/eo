@@ -28,6 +28,10 @@ import com.yegor256.tojos.Tojo;
 /**
  * Thread-safe version of tojo. Synchronizes on global single lock within JVM.
  * @since 1.0
+ * @todo #1230:30min Replace this custom {@link SynchronizedTojo} with
+ *  implementation from Tojo framework once completed in
+ *  <a href="https://github.com/yegor256/tojos/issues/16">#16</a>. This class
+ *  should be removed and all usages updated accordingly.
  */
 final class SynchronizedTojo implements Tojo {
     /**
