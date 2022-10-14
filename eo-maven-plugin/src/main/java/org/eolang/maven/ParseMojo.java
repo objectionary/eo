@@ -53,8 +53,12 @@ import org.xembly.Xembler;
  * Parse EO to XML.
  *
  * @since 0.1
- * @todo #1230:30min Make number of threads in parsing executor configurable
- *  via mojo parameter. Default value should be 4.
+ * @todo #1230:30min Make number of threads used in thread executor within {@link #exec()} method
+ *  configurable via mojo parameter `threads`. Default value should be 4.
+ * @todo #1230:30min Replace usage of custom {@link SynchronizedTojo} with
+ *  implementation from Tojo framework once completed in
+ *  <a href="https://github.com/yegor256/tojos/issues/16">#16</a>. Custom implementation
+ *  can be removed after replacement.
  */
 @Mojo(
     name = "parse",
