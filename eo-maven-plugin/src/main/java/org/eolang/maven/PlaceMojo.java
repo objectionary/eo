@@ -174,7 +174,7 @@ public final class PlaceMojo extends SafeMojo {
             }
             if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() == file.toFile().length()) {
-                Logger.warn(
+                Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Home().rel(file), new Home().rel(target),
@@ -184,7 +184,7 @@ public final class PlaceMojo extends SafeMojo {
             }
             if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() != file.toFile().length()) {
-                Logger.warn(
+                Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Home().rel(file), file.toFile().length(),

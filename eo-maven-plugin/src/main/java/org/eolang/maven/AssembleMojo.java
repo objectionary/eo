@@ -181,6 +181,18 @@ public final class AssembleMojo extends SafeMojo {
     private boolean failOnError = true;
 
     /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
+    /**
      * Parsed cache directory.
      * @checkstyle MemberNameCheck (7 lines)
      */

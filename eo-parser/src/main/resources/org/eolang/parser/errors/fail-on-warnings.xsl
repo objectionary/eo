@@ -22,15 +22,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="set-warning-severity" version="2.0">
-  <xsl:template match="@*|node()">
+<!--
+Raise an error if warnings are found within program
+-->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="fail-on-warnings" version="2.0">
+  <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:template match="/program/errors/error[@severity='warning']">
+    <xsl:message terminate="yes">
+      <xsl:text>Warnings identified: </xsl:text>
+      <xsl:for-each select="/program/errors/error[@severity='warning']">
+        <xsl:value-of select="concat(text(), '; ')"/>
+      </xsl:for-each>
+    </xsl:message>
     <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/program/errors">
+  <xsl:template match="node()|@*">
     <xsl:copy>
-      <error check="check" line="1" severity="warning">A_WARNING</error>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
