@@ -21,30 +21,109 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
++alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
 +version 0.0.0
 
-[] > single-dataization-less-than-test
-  memory 0 > counter
+[] > single-dataization-float-less-than-test
+  memory 0.0 > counter
   assert-that > @
     seq
       counter.write
-        counter.plus 1
+        counter.plus 1.0
       counter
-    $.all-of
-      $.less-than 2
-      $.equal-to 1
+    $.less-than 10.0
 
-[] > single-dataization-greater-than-test
+[] > single-dataization-float-greater-than-test
+  memory 0.0 > counter
+  assert-that > @
+    seq
+      counter.write
+        counter.plus 1.0
+      counter
+    $.greater-than 0.0
+
+[] > single-dataization-int-less-than-test
   memory 0 > counter
   assert-that > @
     seq
       counter.write
         counter.plus 1
       counter
-    $.all-of
-      $.greater-than 0
-      $.equal-to 1
+    $.less-than 10
+
+[] > single-dataization-int-greater-than-test
+  memory 0 > counter
+  assert-that > @
+    seq
+      counter.write
+        counter.plus 1
+      counter
+    $.greater-than 0
+
+[] > single-dataization-stdout-int-lt-test
+  seq > val
+    stdout "Message about int lt., should be shown once.\n"
+    0
+  lt. > @
+    val
+    1
+
+[] > single-dataization-stdout-int-lte-test
+  seq > val
+    stdout "Message about int lte., should be shown once.\n"
+    0
+  lte. > @
+    val
+    1
+
+[] > single-dataization-stdout-int-gt-test
+  seq > val
+    stdout "Message about int gt., should be shown once.\n"
+    1
+  gt. > @
+    val
+    0
+
+[] > single-dataization-stdout-int-gte-test
+  seq > val
+    stdout "Message about int gte., should be shown once.\n"
+    1
+  gte. > @
+    val
+    0
+
+[] > single-dataization-stdout-float-lt-test
+  seq > val
+    stdout "Message about float lt., should be shown once.\n"
+    0.0
+  lt. > @
+    val
+    1.0
+
+[] > single-dataization-stdout-float-lte-test
+  seq > val
+    stdout "Message about float lte., should be shown once.\n"
+    0.0
+  lte. > @
+    val
+    1.0
+
+[] > single-dataization-stdout-float-gt-test
+  seq > val
+    stdout "Message about float gt., should be shown once.\n"
+    1.0
+  gt. > @
+    val
+    0.0
+
+[] > single-dataization-stdout-float-gte-test
+  seq > val
+    stdout "Message about float gte., should be shown once.\n"
+    1.0
+  gte. > @
+    val
+    0.0
