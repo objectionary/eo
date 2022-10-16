@@ -35,7 +35,7 @@
       counter.write
         counter.plus 1.0
       counter
-    $.less-than 10.0
+    $.less-than 2.0
 
 [] > single-dataization-float-greater-than-test
   memory 0.0 > counter
@@ -53,7 +53,7 @@
       counter.write
         counter.plus 1
       counter
-    $.less-than 10
+    $.less-than 2
 
 [] > single-dataization-int-greater-than-test
   memory 0 > counter
