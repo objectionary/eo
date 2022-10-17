@@ -352,13 +352,22 @@
     copy-title
     "qwerty"
 
-[] > parent-test
+[] > parent-vertical-notation
   memory 5 > m
   [] > value
     [] > @
       m. > @
         ^.
           ^
+  eq. > @
+    value
+    5
+
+[] > parent-horizontal-notation
+  memory 5 > m
+  [] > value
+    [] > @
+      ^.^.m > @
   eq. > @
     value
     5
