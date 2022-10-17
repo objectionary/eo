@@ -351,3 +351,14 @@
   eq. > @
     copy-title
     "qwerty"
+
+[] > parent-test
+  memory 5 > m
+  [] > value
+    [] > @
+      m. > @
+        ^.
+          ^
+  eq. > @
+    value
+    5

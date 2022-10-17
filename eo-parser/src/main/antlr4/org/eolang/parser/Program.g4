@@ -173,6 +173,7 @@ head
     AT
     |
     RHO
+    DOT?
     |
     XI
     |

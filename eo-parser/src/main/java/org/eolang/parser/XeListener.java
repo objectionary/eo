@@ -317,6 +317,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             this.objects.prop("data", "array");
         } else if (ctx.RHO() != null) {
             base = "^";
+            if (ctx.DOT() != null) {
+                base = String.format(".%s", base);
+            }
         } else if (ctx.ROOT() != null) {
             base = "Q";
         } else if (ctx.HOME() != null) {
