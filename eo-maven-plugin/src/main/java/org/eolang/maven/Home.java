@@ -193,7 +193,6 @@ public class Home {
         return new BytesOf(Files.readAllBytes(path(path)));
     }
 
-
     /**
      * Path modification.
      *
@@ -204,6 +203,4 @@ public class Home {
         final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
         return Paths.get(new String(bytes, StandardCharsets.UTF_8));
     }
-
-
 }
