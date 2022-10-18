@@ -33,8 +33,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
+import org.cactoos.bytes.BytesOf;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -185,6 +187,17 @@ public class Home {
     }
 
     /**
+     * Load bytes from file by path.
+     *
+     * @param path Path to the file
+     * @return Bytes of file
+     */
+    public Bytes load(final Path path) throws IOException {
+        return new BytesOf(Files.readAllBytes(path(path)));
+    }
+
+
+    /**
      * Path modification.
      *
      * @param path Path
@@ -194,5 +207,6 @@ public class Home {
         final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
         return Paths.get(new String(bytes, StandardCharsets.UTF_8));
     }
+
 
 }
