@@ -171,11 +171,13 @@ head
     HOME
     |
     AT
+    DOT?
     |
     RHO
     DOT?
     |
     XI
+    DOT?
     |
     SIGMA
     |
