@@ -352,7 +352,7 @@
     copy-title
     "qwerty"
 
-[] > parent-vertical-notation
+[] > parent-in-vertical-notation
   memory 5 > m
   [] > value
     [] > @
@@ -363,7 +363,7 @@
     value
     5
 
-[] > parent-horizontal-notation
+[] > parent-in-horizontal-notation
   memory 5 > m
   [] > value
     [] > @
@@ -371,3 +371,21 @@
   eq. > @
     value
     5
+
+[] > phi-in-vertical-notation
+  [] > value
+    [] > @
+      100 > @
+  eq. > @
+    @.
+      value
+    100
+
+[] > phi-in-horizontal-notation
+  [] > value
+    [] > @
+      100 > @
+  eq. > @
+    value.@
+    100
+
