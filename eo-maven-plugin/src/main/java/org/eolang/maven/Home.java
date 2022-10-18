@@ -46,9 +46,6 @@ import org.cactoos.scalar.LengthOf;
 /**
  * Class for saving and loading files.
  *
- * @todo #1105:30min create load function (it has to be able read by path)
- * It should be able to load data from file
- * We also need to add new unit test
  * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
