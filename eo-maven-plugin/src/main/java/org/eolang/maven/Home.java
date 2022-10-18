@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.cactoos.Input;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
@@ -42,10 +44,10 @@ import org.cactoos.scalar.LengthOf;
 /**
  * Class for saving and loading files.
  *
- * @since 0.27
  * @todo #1105:30min create load function (it has to be able read by path)
- *  It should be able to load data from file
- *  We also need to add new unit test
+ * It should be able to load data from file
+ * We also need to add new unit test
+ * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public class Home {
@@ -63,6 +65,7 @@ public class Home {
 
     /**
      * Ctor.
+     *
      * @param path Path
      */
     Home(final Path path) {
@@ -71,45 +74,47 @@ public class Home {
 
     /**
      * Saving input.
+     *
      * @param input Input
-     * @param path Path to file
+     * @param path  Path to file
      * @throws IOException If fails
      */
     public void save(final Input input, final Path path) throws IOException {
         final File dir = path.toFile().getParentFile();
         if (dir.mkdirs()) {
             Logger.debug(
-                this, "Directory created: %s",
-                this.rel(path.getParent())
+                    this, "Directory created: %s",
+                    this.rel(path.getParent())
             );
         }
         try {
             final long bytes = new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        input,
-                        new OutputTo(path)
+                    new LengthOf(
+                            new TeeInput(
+                                    input,
+                                    new OutputTo(path)
+                            )
                     )
-                )
             ).value();
             Logger.debug(
-                Home.class, "File %s saved (%d bytes)",
-                this.rel(path), bytes
+                    Home.class, "File %s saved (%d bytes)",
+                    this.rel(path), bytes
             );
         } catch (final IOException ex) {
             throw new IOException(
-                String.format(
-                    "Failed while trying to save to %s",
-                    this.rel(path)
-                ),
-                ex
+                    String.format(
+                            "Failed while trying to save to %s",
+                            this.rel(path)
+                    ),
+                    ex
             );
         }
     }
 
     /**
      * Saving string.
-     * @param str String
+     *
+     * @param str  String
      * @param path Path to file
      * @throws IOException If fails
      */
@@ -119,7 +124,8 @@ public class Home {
 
     /**
      * Saving text.
-     * @param txt Text
+     *
+     * @param txt  Text
      * @param path Path to file
      * @throws IOException If fails
      */
@@ -129,8 +135,9 @@ public class Home {
 
     /**
      * Saving stream.
+     *
      * @param stream Input stream
-     * @param path Path to file
+     * @param path   Path to file
      * @throws IOException If fails
      */
     public void save(final InputStream stream, final Path path) throws IOException {
@@ -139,8 +146,9 @@ public class Home {
 
     /**
      * Saving bytes.
+     *
      * @param bytes Byte array
-     * @param path Path to file
+     * @param path  Path to file
      * @throws IOException If fails
      */
     public void save(final byte[] bytes, final Path path) throws IOException {
@@ -149,6 +157,7 @@ public class Home {
 
     /**
      * Make relative name from path.
+     *
      * @param file The path of the file or dir
      * @return Relative name to CWD
      */
@@ -158,8 +167,8 @@ public class Home {
             path = "./";
         } else if (path.startsWith(this.cwd.toString())) {
             path = String.format(
-                "./%s",
-                path.substring(this.cwd.toString().length() + 1)
+                    "./%s",
+                    path.substring(this.cwd.toString().length() + 1)
             );
         }
         return path;
@@ -167,15 +176,17 @@ public class Home {
 
     /**
      * Check if exists.
+     *
      * @param path Path
      * @return True if exists
      */
     public boolean exists(final Path path) {
-        return Files.exists(this.path(path));
+        return Files.exists(path(path));
     }
 
     /**
      * Path modification.
+     *
      * @param path Path
      * @return Modified path (without bad symbols)
      */
