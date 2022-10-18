@@ -137,6 +137,4 @@ final class HomeTest {
             MatcherAssert.assertThat(actual, Matchers.equalTo(absentFile.toString()));
         }
     }
-
-
 }
