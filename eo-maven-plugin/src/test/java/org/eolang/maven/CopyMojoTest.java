@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ final class CopyMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new String(Files.readAllBytes(out), StandardCharsets.UTF_8),
+            new TextOf(new Home().load(out)).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),
