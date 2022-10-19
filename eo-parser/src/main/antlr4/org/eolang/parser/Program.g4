@@ -170,16 +170,16 @@ head
     |
     HOME
     |
-    AT
+    (
+      AT
+      |
+      RHO
+      |
+      XI
+      |
+      SIGMA
+    )
     DOT?
-    |
-    RHO
-    DOT?
-    |
-    XI
-    DOT?
-    |
-    SIGMA
     |
     STAR
     |
