@@ -73,7 +73,7 @@ public class Home {
      * Saving input.
      *
      * @param input Input
-     * @param path  Path to file
+     * @param path Path to file
      * @throws IOException If fails
      */
     public void save(final Input input, final Path path) throws IOException {
@@ -111,7 +111,7 @@ public class Home {
     /**
      * Saving string.
      *
-     * @param str  String
+     * @param str String
      * @param path Path to file
      * @throws IOException If fails
      */
@@ -122,7 +122,7 @@ public class Home {
     /**
      * Saving text.
      *
-     * @param txt  Text
+     * @param txt Text
      * @param path Path to file
      * @throws IOException If fails
      */
@@ -134,7 +134,7 @@ public class Home {
      * Saving stream.
      *
      * @param stream Input stream
-     * @param path   Path to file
+     * @param path Path to file
      * @throws IOException If fails
      */
     public void save(final InputStream stream, final Path path) throws IOException {
@@ -145,7 +145,7 @@ public class Home {
      * Saving bytes.
      *
      * @param bytes Byte array
-     * @param path  Path to file
+     * @param path Path to file
      * @throws IOException If fails
      */
     public void save(final byte[] bytes, final Path path) throws IOException {
@@ -187,10 +187,10 @@ public class Home {
      * @param path Path to the file
      * @return Bytes of file
      * @throws IOException if method can't find the file by path or
-     *                     if some exception happens during reading the file
+     *  if some exception happens during reading the file
      */
     public Bytes load(final Path path) throws IOException {
-        return new BytesOf(Files.readAllBytes(path(path)));
+        return new BytesOf(Files.readAllBytes(this.path(path)));
     }
 
     /**
