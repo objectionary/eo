@@ -57,8 +57,7 @@ public class CleanMojo extends SafeMojo {
         Logger.info(
             this,
             new FormattedText("Deleted all files in: %s", targetDir)
-                .toString(),
-            this.targetDir
+                .toString()
         );
     }
 }
