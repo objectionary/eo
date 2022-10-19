@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.cactoos.Bytes;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;

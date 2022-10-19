@@ -180,7 +180,7 @@ public class Home {
      * @return True if exists
      */
     public boolean exists(final Path path) {
-        return Files.exists(path(path));
+        return Files.exists(this.path(path));
     }
 
     /**
@@ -188,6 +188,8 @@ public class Home {
      *
      * @param path Path to the file
      * @return Bytes of file
+     * @throws IOException if method can't find the file by path or
+     *                     if some exception happens during reading the file
      */
     public Bytes load(final Path path) throws IOException {
         return new BytesOf(Files.readAllBytes(path(path)));
