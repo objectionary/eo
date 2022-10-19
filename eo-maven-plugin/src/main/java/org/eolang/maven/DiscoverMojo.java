@@ -111,7 +111,6 @@ public final class DiscoverMojo extends SafeMojo {
                             "//o[",
                             "not(starts-with(@base,'.'))",
                             " and @base != 'Q'",
-                            " and @base != 'QQ'",
                             " and @base != '^'",
                             " and @base != '$'",
                             " and @base != '&'",

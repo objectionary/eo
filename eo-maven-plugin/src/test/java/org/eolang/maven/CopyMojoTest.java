@@ -54,7 +54,7 @@ final class CopyMojoTest {
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            Files.exists(out),
+            new Home().exists(out),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(

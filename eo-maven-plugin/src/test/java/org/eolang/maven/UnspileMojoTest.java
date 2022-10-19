@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -50,7 +49,7 @@ final class UnspileMojoTest {
             .with("classesDir", classes.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(foo),
+            new Home().exists(foo),
             Matchers.is(false)
         );
     }

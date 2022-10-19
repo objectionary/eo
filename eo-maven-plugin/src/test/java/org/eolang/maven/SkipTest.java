@@ -25,7 +25,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
@@ -45,7 +44,7 @@ class SkipTest {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -62,7 +61,7 @@ class SkipTest {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, true);
         MatcherAssert.assertThat(
-            !Files.exists(
+            !new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -80,7 +79,7 @@ class SkipTest {
         this.executeCopyMojo(temp, classes, true);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            !Files.exists(out),
+            !new Home().exists(out),
             Matchers.is(true)
         );
     }
@@ -91,7 +90,7 @@ class SkipTest {
         this.executeCopyMojo(temp, classes, false);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            Files.exists(out),
+            new Home().exists(out),
             Matchers.is(true)
         );
     }

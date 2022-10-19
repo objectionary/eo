@@ -41,12 +41,12 @@ SOFTWARE.
   <xsl:template match="i[@name='ADD']">
     <xsl:if test="$testing = 'yes'">
       <!-- Validate the absence of vertex V1: -->
-      <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
       <xsl:value-of select="a[1]"/>
       <xsl:text>']"; STRICT "0"; </xsl:text>
     </xsl:if>
     <!-- Add vertex V1: -->
-    <xsl:text>XPATH "/test/graph"; </xsl:text>
+    <xsl:text>XPATH "/graph"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "v"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -59,22 +59,29 @@ SOFTWARE.
   <xsl:template match="i[@name='BIND']">
     <xsl:if test="$testing = 'yes'">
       <!-- Validate the presence of vertex V2: -->
-      <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
       <xsl:value-of select="a[3]"/>
       <xsl:text>']"; STRICT "1"; </xsl:text>
       <!-- Validate the absence of edge E1: -->
-      <xsl:text>XPATH "/test/graph/v/e[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v/e[@id='</xsl:text>
       <xsl:value-of select="a[1]"/>
       <xsl:text>']"; STRICT "0"; </xsl:text>
       <!-- Validate the absence of V1.A edge: -->
-      <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
       <xsl:value-of select="a[2]"/>
       <xsl:text>']/e[@title='</xsl:text>
       <xsl:value-of select="a[4]"/>
       <xsl:text>']"; STRICT "0"; </xsl:text>
     </xsl:if>
+    <!-- Delete A-edge at V1 if it already exists: -->
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
+    <xsl:value-of select="a[2]"/>
+    <xsl:text>']/e[@title='</xsl:text>
+    <xsl:value-of select="a[4]"/>
+    <xsl:text>']"; REMOVE; </xsl:text>
+    <xsl:value-of select="$TAB"/>
     <!-- Go to V1: -->
-    <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -93,10 +100,10 @@ SOFTWARE.
     <xsl:value-of select="a[4]"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$EOL"/>
-    <!-- Add backward ρ-edge and 𝜎-edge from V2 to V1: -->
+    <!-- Add backward ρ-edge and σ-edge from V2 to V1: -->
     <xsl:variable name="i" select="."/>
-    <xsl:for-each select="('ρ', '𝜎')">
-      <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+    <xsl:for-each select="('ρ', 'σ')">
+      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
       <xsl:value-of select="$i/a[3]"/>
       <xsl:text>' and not(e[@title='</xsl:text>
       <xsl:value-of select="."/>
@@ -106,7 +113,7 @@ SOFTWARE.
       <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "id", "</xsl:text>
       <xsl:value-of select="$i/a[1]"/>
-      <xsl:text>.rho</xsl:text>
+      <xsl:value-of select="."/>
       <xsl:text>"; </xsl:text>
       <xsl:value-of select="$TAB"/>
       <xsl:text>ATTR "to", "</xsl:text>
@@ -122,7 +129,7 @@ SOFTWARE.
   <!-- DATA(V1, BYTES) -->
   <xsl:template match="i[@name='DATA']">
     <!-- Go to vertex V1: -->
-    <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -137,7 +144,7 @@ SOFTWARE.
   <!-- ATOM(V1, LAMBDA) -->
   <xsl:template match="i[@name='ATOM']">
     <!-- Go to vertex V1: -->
-    <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -154,21 +161,21 @@ SOFTWARE.
   <xsl:template match="i[@name='COPY']">
     <xsl:if test="$testing = 'yes'">
       <!-- Validate the presence of the edge E1: -->
-      <xsl:text>XPATH "/test/graph/v/e[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v/e[@id='</xsl:text>
       <xsl:value-of select="a[1]"/>
       <xsl:text>']"; STRICT "1"; </xsl:text>
       <!-- Validate the absence of the vertex V3: -->
-      <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v[@id='</xsl:text>
       <xsl:value-of select="a[2]"/>
       <xsl:text>']"; STRICT "0"; </xsl:text>
       <!-- Validate the absence of the edge E2: -->
-      <xsl:text>XPATH "/test/graph/v/e[@id='</xsl:text>
+      <xsl:text>XPATH "/graph/v/e[@id='</xsl:text>
       <xsl:value-of select="a[3]"/>
       <xsl:text>']"; STRICT "0"; </xsl:text>
       <xsl:value-of select="$TAB"/>
     </xsl:if>
     <!-- Rename V2 to V3: -->
-    <xsl:text>XPATH "/test/graph/v[@id=/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id=/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@to]"; STRICT "1";</xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -177,7 +184,7 @@ SOFTWARE.
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <!-- Add edge E2 from V1 to V3: -->
-    <xsl:text>XPATH "/test/graph/v[e[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']]"; STRICT "1";</xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -191,41 +198,41 @@ SOFTWARE.
     <xsl:value-of select="a[2]"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$TAB"/>
-    <xsl:text>XATTR "title", "/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XATTR "title", "/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@title</xsl:text>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <!-- Add new vertex V2: -->
-    <xsl:text>XPATH "/test/graph"; </xsl:text>
+    <xsl:text>XPATH "/graph"; </xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "v"; </xsl:text>
     <xsl:value-of select="$TAB"/>
-    <xsl:text>XATTR "id", "/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XATTR "id", "/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@to";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <!-- Move lambda from V3 to V2: -->
-    <xsl:text>XPATH "/test/graph/v[@id=/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id=/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@to]"; STRICT "1";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ADD "lambda";</xsl:text>
     <xsl:value-of select="$TAB"/>
-    <xsl:text>XSET "/test/graph/v[@id='</xsl:text>
+    <xsl:text>XSET "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']/lambda";</xsl:text>
     <xsl:value-of select="$TAB"/>
-    <xsl:text>XPATH "/test/graph/v[@id=/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id=/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@to]/lambda[.='']"; REMOVE;</xsl:text>
-    <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']/lambda"; REMOVE;</xsl:text>
     <!-- Redirect all edges going to V2 to V3: -->
-    <xsl:text>XPATH "/test/graph/v/e[@id != '</xsl:text>
+    <xsl:text>XPATH "/graph/v/e[@id != '</xsl:text>
     <xsl:value-of select="a[1]"/>
-    <xsl:text>' and @to=/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>' and @to=/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@to]";</xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -234,7 +241,7 @@ SOFTWARE.
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <!-- Add pi-edge from V3 to V2: -->
-    <xsl:text>XPATH "/test/graph/v[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v[@id='</xsl:text>
     <xsl:value-of select="a[2]"/>
     <xsl:text>']"; STRICT "1";</xsl:text>
     <xsl:value-of select="$TAB"/>
@@ -244,14 +251,14 @@ SOFTWARE.
     <xsl:value-of select="a[3]"/>
     <xsl:text>.pi";</xsl:text>
     <xsl:value-of select="$TAB"/>
-    <xsl:text>XATTR "to", "/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XATTR "to", "/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']/@to";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <xsl:text>ATTR "title", "π";</xsl:text>
     <xsl:value-of select="$TAB"/>
     <!-- Remove edge E1: -->
-    <xsl:text>XPATH "/test/graph/v/e[@id='</xsl:text>
+    <xsl:text>XPATH "/graph/v/e[@id='</xsl:text>
     <xsl:value-of select="a[1]"/>
     <xsl:text>']"; STRICT "1"; </xsl:text>
     <xsl:text>REMOVE;</xsl:text>

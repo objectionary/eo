@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
@@ -67,6 +68,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * Parsing train with XSLs.
+     * @implNote The list of applied XSLs is adjusted during execution
      */
     private static final Train<Shift> TRAIN = new TrFast(
         new TrClasspath<>(
@@ -102,6 +104,18 @@ public final class OptimizeMojo extends SafeMojo {
         property = "eo.failOnError",
         defaultValue = "true")
     private boolean failOnError = true;
+
+    /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
 
     @Override
     public void exec() throws IOException {
@@ -143,10 +157,18 @@ public final class OptimizeMojo extends SafeMojo {
      * @param file EO file
      * @return The file with optimized XMIR
      * @throws FileNotFoundException If fails
+     * @throws IllegalArgumentException If error is detected within XMIR and
+     *  fail on error is enabled.
      */
     private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN;
+        if (this.failOnWarning) {
+            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-warnings.xsl"));
+        }
+        if (this.failOnError) {
+            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-errors.xsl"));
+        }
         if (this.trackOptimizationSteps) {
             final Place place = new Place(name);
             final Path dir = place.make(

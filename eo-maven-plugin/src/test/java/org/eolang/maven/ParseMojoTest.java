@@ -63,7 +63,7 @@ final class ParseMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
@@ -110,7 +110,7 @@ final class ParseMojoTest {
             .with("cache", temp.resolve("parsed"))
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )

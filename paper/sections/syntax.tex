@@ -544,7 +544,7 @@ it is not defined as explicitly as \ff{say}. Anywhere a new
 name shows up after the \ff{>} symbol, it is a declaration of a new
 attribute in the nearest object abstraction.
 
-\subsection{Explicit Copies}
+\subsection{Explicit Shallow Copies}
 
 There may be a need to make a copy of an object without giving any
 parameters to it. This may be done with an apostrophe suffix:
@@ -564,6 +564,9 @@ for example:
 circle
   point' 3 a'
 \end{ffcode}
+
+Making a copy of \ff{circle} will not lead to making a copy of \ff{point},
+which is encapsulated by \ff{circle}.
 
 \subsection{Object Identity}
 

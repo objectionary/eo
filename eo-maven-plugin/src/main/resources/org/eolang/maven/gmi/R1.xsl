@@ -78,8 +78,24 @@ SOFTWARE.
                 <xsl:value-of select="@name"/>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>α</xsl:text>
-                <xsl:value-of select="count(preceding-sibling::o)"/>
+                <xsl:variable name="order" select="count(preceding-sibling::o)"/>
+                <xsl:choose>
+                  <xsl:when test="starts-with(ancestor::*[1]/@base, '.')">
+                    <xsl:choose>
+                      <xsl:when test="$order = 0">
+                        <xsl:text>ρ</xsl:text>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:text>α</xsl:text>
+                        <xsl:value-of select="$order - 1"/>
+                      </xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:text>α</xsl:text>
+                    <xsl:value-of select="$order"/>
+                  </xsl:otherwise>
+                </xsl:choose>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>

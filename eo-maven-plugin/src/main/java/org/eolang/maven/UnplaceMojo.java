@@ -55,6 +55,7 @@ public final class UnplaceMojo extends SafeMojo {
     /**
      * List of inclusion GLOB filters for unplacing (these files will be removed for sure).
      * @since 0.24
+     * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -63,6 +64,7 @@ public final class UnplaceMojo extends SafeMojo {
     /**
      * List of inclusion GLOB filters for placing (ONLY these files will stay).
      * @since 0.24
+     * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -147,6 +149,10 @@ public final class UnplaceMojo extends SafeMojo {
                     "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
                     related, tojo.get(PlaceMojo.ATTR_ORIGIN)
                 );
+            }
+            if (UnplaceMojo.inside(related, this.keepBinaries)
+                && !UnplaceMojo.inside(related, this.removeBinaries)) {
+                continue;
             }
             if (UnplaceMojo.delete(path)) {
                 unplaced += 1;
@@ -241,7 +247,7 @@ public final class UnplaceMojo extends SafeMojo {
     private static boolean delete(final Path file) throws IOException {
         Path dir = file.getParent();
         boolean deleted = false;
-        if (Files.exists(file)) {
+        if (new Home().exists(file)) {
             Files.delete(file);
             deleted = true;
         }

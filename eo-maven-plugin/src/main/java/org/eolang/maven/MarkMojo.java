@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -51,13 +50,13 @@ public final class MarkMojo extends SafeMojo {
     @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (Files.exists(home)) {
+        if (new Home().exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int found = 0;
             for (final String dep : deps) {
                 final Path dir = home.resolve(dep);
                 final Path sub = dir.resolve(CopyMojo.DIR);
-                if (!Files.exists(sub)) {
+                if (!new Home().exists(sub)) {
                     continue;
                 }
                 final String ver = dep.split(Pattern.quote(File.separator))[3];

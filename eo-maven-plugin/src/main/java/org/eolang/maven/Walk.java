@@ -136,7 +136,7 @@ final class Walk extends ListEnvelope<Path> {
      */
     private static List<Path> list(final Path dir) throws IOException {
         final List<Path> files = new LinkedList<>();
-        if (Files.exists(dir)) {
+        if (new Home().exists(dir)) {
             files.addAll(
                 Files.walk(dir)
                     .filter(file -> !file.toFile().isDirectory())

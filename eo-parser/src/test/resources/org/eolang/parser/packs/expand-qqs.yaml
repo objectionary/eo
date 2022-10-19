@@ -1,0 +1,18 @@
+xsls:
+  - /org/eolang/parser/expand-qqs.xsl
+tests:
+  - /program/errors[count(error)=0]
+  - //objects[count(.//o[starts-with(@base, 'QQ')])=0]
+  - //objects[count(.//o[starts-with(@base, 'Q')])=1]
+  - //objects[count(.//o[contains(@base, '.org')])=1]
+  - //objects[count(.//o[contains(@base, '.eolang')])=1]
+  - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'QQ')]])=0]
+  - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
+eo: |
+  +alias QQ.txt.sprintfQQ
+  
+  [] > app
+    QQ.io.stdout > @
+      "Hello, world!\n"
+    sprintfQQ > a
+      "Hello again"

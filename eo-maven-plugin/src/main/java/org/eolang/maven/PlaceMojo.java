@@ -28,7 +28,6 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -102,7 +101,7 @@ public final class PlaceMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (Files.exists(home)) {
+        if (new Home().exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
@@ -111,8 +110,7 @@ public final class PlaceMojo extends SafeMojo {
                         && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
                 if (!before.isEmpty()) {
-                    Logger.debug(this, "Binaries from %s have already been placed", dep);
-                    continue;
+                    Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
                 this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
@@ -166,17 +164,17 @@ public final class PlaceMojo extends SafeMojo {
                 row -> row.get(Tojos.KEY).equals(target.toString())
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
-            if (!before.isEmpty() && !Files.exists(target)) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The file %s has been placed to %s, but now it's gone",
-                        new Home().rel(file), new Home().rel(target)
-                    )
+            if (!before.isEmpty() && !new Home().exists(target)) {
+                Logger.info(
+                    this,
+                    "The file %s has been placed to %s, but now it's gone, re-placing",
+                    new Home().rel(file),
+                    new Home().rel(target)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() == file.toFile().length()) {
-                Logger.warn(
+                Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Home().rel(file), new Home().rel(target),
@@ -184,9 +182,9 @@ public final class PlaceMojo extends SafeMojo {
                 );
                 continue;
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() != file.toFile().length()) {
-                Logger.warn(
+                Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Home().rel(file), file.toFile().length(),
