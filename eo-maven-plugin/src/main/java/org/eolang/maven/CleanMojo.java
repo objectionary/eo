@@ -52,7 +52,7 @@ public class CleanMojo extends SafeMojo {
             );
             return;
         }
-        if (this.purge(targetDir)) {
+        if (this.purge(this.targetDir)) {
             Logger.info(
                 this,
                 "Deleted all files in: '%s'",
@@ -69,7 +69,7 @@ public class CleanMojo extends SafeMojo {
      */
     private boolean purge(final File dir) {
         final File[] contents = dir.listFiles();
-        if (contents != null) {
+        if (null != contents) {
             for (final File file : contents) {
                 this.purge(file);
             }
