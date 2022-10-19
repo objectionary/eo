@@ -83,9 +83,10 @@ public final class OptimizeMojo extends SafeMojo {
      *  <br>Separate instance of the train is used of each optimization
      *  thread since {@link com.jcabi.xml.XSLDocument}, which is used under
      *  the hood in {@link TrClasspath}, is not thread-safe.
-     * @todo #1336:30min Replace creation of new `Train` instances to a single
-     *   `Train&gtShift&lt TRAIN` once <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>
-     *   is solved.
+     * @todo #1336:30min Replace creation of new `Train` instances for each
+     *   parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
+     *   is thread-safe (solved by
+     *   <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
      */
     private static final Unchecked<Train<Shift>> TRAIN = new Unchecked<>(
         () -> new TrFast(
