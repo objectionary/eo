@@ -34,6 +34,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -124,13 +125,6 @@ final class HomeTest {
     void loadFromAbsentFile(@TempDir final Path temp) {
         final Home home = new Home();
         final Path absent = temp.resolve("nonexistent");
-        try {
-            home.load(absent);
-        } catch (final NoSuchFileException ex) {
-            final String actual = ex.getMessage();
-            MatcherAssert.assertThat(actual, Matchers.equalTo(absent.toString()));
-        } catch (final IOException ex) {
-            throw new IllegalStateException("Expected NoSuchFileException but was IOException", ex);
-        }
+        Assertions.assertThrows(NoSuchFileException.class, () -> home.load(absent));
     }
 }
