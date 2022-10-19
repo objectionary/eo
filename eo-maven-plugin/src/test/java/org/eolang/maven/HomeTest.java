@@ -111,14 +111,13 @@ final class HomeTest {
     @Test
     void loadsBytesFromExistedFile(@TempDir final Path temp) throws IOException {
         final Home home = new Home();
-        final String fileName = "foo";
+        final String filename = "foo";
         final String content = "bar";
-        final Path subfolder = temp.resolve("subfolder").resolve(fileName);
+        final Path subfolder = temp.resolve("subfolder").resolve(filename);
         home.save(content, subfolder);
         final Bytes bytes = home.load(subfolder);
-        final TextOf actualText = new TextOf(bytes);
-        final TextOf expectedContent = new TextOf(content);
-        MatcherAssert.assertThat(actualText, Matchers.equalTo(expectedContent));
+        final TextOf text = new TextOf(bytes);
+        MatcherAssert.assertThat(text, Matchers.equalTo(new TextOf(content)));
     }
 
     @Test
@@ -127,11 +126,11 @@ final class HomeTest {
         final Path absentFile = temp.resolve("nonexistent");
         try {
             home.load(absentFile);
-        } catch (NoSuchFileException e) {
-            final String actual = e.getMessage();
+        } catch (NoSuchFileException ex) {
+            final String actual = ex.getMessage();
             MatcherAssert.assertThat(actual, Matchers.equalTo(absentFile.toString()));
-        } catch (IOException e) {
-            throw new IllegalStateException("Expected NoSuchFileException but was IOException", e);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Expected NoSuchFileException but was IOException", ex);
         }
     }
 }
