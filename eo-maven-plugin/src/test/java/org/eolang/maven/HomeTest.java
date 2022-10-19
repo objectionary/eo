@@ -113,8 +113,7 @@ final class HomeTest {
         final Home home = new Home();
         final String fileName = "foo";
         final String content = "bar";
-        final Path subfolder = temp.resolve("subfolder")
-                                   .resolve(fileName);
+        final Path subfolder = temp.resolve("subfolder").resolve(fileName);
         home.save(content, subfolder);
 
         final Bytes bytes = home.load(subfolder);
