@@ -48,16 +48,16 @@ public class CleanMojo extends SafeMojo {
         if (!this.targetDir.exists()) {
             Logger.debug(
                 this,
-                new FormattedText("Directory %s isn't exist.", targetDir)
-                    .toString()
+                "Directory '%s' doesn't exist",
+                new Home().rel(this.targetDir.toPath())
             );
             return;
         }
         if (this.purge(targetDir)) {
             Logger.info(
                 this,
-                new FormattedText("Deleted all files in: %s", targetDir)
-                    .toString()
+                "Deleted all files in: '%s'",
+                new Home().rel(this.targetDir.toPath())
             );
         }
     }
@@ -79,7 +79,8 @@ public class CleanMojo extends SafeMojo {
         if (state) {
             Logger.debug(
                 this,
-                new FormattedText("%s purged", dir.toString()).toString()
+                "'%s' purged",
+                new Home().rel(dir.toPath())
             );
         }
         return state;
