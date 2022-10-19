@@ -24,10 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.text.FormattedText;
@@ -55,36 +53,12 @@ public class CleanMojo extends SafeMojo {
             );
             return;
         }
-        new Walk(this.targetDir.toPath())
-            .reversed()
-            .stream()
-            .map(Path::toFile)
-            .forEach(
-                dir -> {
-                    this.purge(dir);
-                    Logger.debug(
-                        this,
-                        new FormattedText("purged %s", dir).toString()
-                    );
-                }
-            );
+        FileUtils.deleteDirectory(targetDir);
         Logger.info(
             this,
-            "Deleted all files in: %s",
+            new FormattedText("Deleted all files in: %s", targetDir)
+                .toString(),
             this.targetDir
         );
-    }
-
-    /**
-     * Remove single file if existed.
-     *
-     * @param file File to purge
-     */
-    private void purge(final File file) {
-        try {
-            Files.deleteIfExists(file.toPath());
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
     }
 }
