@@ -66,7 +66,7 @@ public class CleanMojo extends SafeMojo {
      * Recursive deletion.
      *
      * @param dir Directory to be deleted
-     * @return True if deleted
+     * @return True if deleted, false otherwise
      */
     private boolean purge(final File dir) {
         final File[] contents = dir.listFiles();
