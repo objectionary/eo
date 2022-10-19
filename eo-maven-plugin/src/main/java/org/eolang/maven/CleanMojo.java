@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.cactoos.text.FormattedText;
 
 /**
  * Implementation of maven clean plugin,
@@ -47,7 +48,11 @@ public class CleanMojo extends SafeMojo {
     @Override
     final void exec() throws IOException {
         if (!this.targetDir.exists()) {
-            this.log("Directory %s isn't exist.", targetDir);
+            Logger.debug(
+                this,
+                new FormattedText("Directory %s isn't exist.", targetDir)
+                    .toString()
+            );
             return;
         }
         new Walk(this.targetDir.toPath())
@@ -57,27 +62,16 @@ public class CleanMojo extends SafeMojo {
             .forEach(
                 dir -> {
                     this.purge(dir);
-                    this.log("purged %s", dir);
+                    Logger.debug(
+                        this,
+                        new FormattedText("purged %s", dir).toString()
+                    );
                 }
             );
         Logger.info(
             this,
             "Deleted all files in: %s",
             this.targetDir
-        );
-    }
-
-    /**
-     * Logging.
-     *
-     * @param msg Message for logging
-     * @param dir The directory
-     */
-    private void log(final String msg, final File dir) {
-        Logger.debug(
-            this,
-            msg,
-            dir.toString()
         );
     }
 
@@ -90,11 +84,6 @@ public class CleanMojo extends SafeMojo {
         try {
             Files.deleteIfExists(file.toPath());
         } catch (final IOException ex) {
-            Logger.error(
-                this,
-                "Error while deleting: %s",
-                file.toString()
-            );
             throw new IllegalStateException(ex);
         }
     }

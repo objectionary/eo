@@ -45,22 +45,22 @@ import org.cactoos.list.ListOf;
  */
 final class Moja<T extends AbstractMojo> {
 
-    /**
-     * The type of mojo.
-     */
-    private final Class<T> type;
+/**
+ * The type of mojo.
+ */
+private final Class<T> type;
 
-    /**
-     * All attributes.
-     */
-    private final Map<String, Object> attrs;
+/**
+ * All attributes.
+ */
+private final Map<String, Object> attrs;
 
-    /**
-     * Ctor.
-     *
-     * @param tpe The type
-     */
-    Moja(final Class<T> tpe) {
+/**
+ * Ctor.
+ *
+ * @param tpe The type
+ */
+Moja(final Class<T> tpe) {
         this.type = tpe;
         this.attrs = new HashMap<>(0);
     }
