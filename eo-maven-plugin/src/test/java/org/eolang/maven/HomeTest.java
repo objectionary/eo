@@ -115,9 +115,7 @@ final class HomeTest {
         final String content = "bar";
         final Path subfolder = temp.resolve("subfolder").resolve(fileName);
         home.save(content, subfolder);
-
         final Bytes bytes = home.load(subfolder);
-
         final TextOf actualText = new TextOf(bytes);
         final TextOf expectedContent = new TextOf(content);
         MatcherAssert.assertThat(actualText, Matchers.equalTo(expectedContent));
