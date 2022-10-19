@@ -24,8 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.text.FormattedText;
@@ -53,11 +53,35 @@ public class CleanMojo extends SafeMojo {
             );
             return;
         }
-        FileUtils.deleteDirectory(targetDir);
-        Logger.info(
-            this,
-            new FormattedText("Deleted all files in: %s", targetDir)
-                .toString()
-        );
+        if (this.purge(targetDir)) {
+            Logger.info(
+                this,
+                new FormattedText("Deleted all files in: %s", targetDir)
+                    .toString()
+            );
+        }
+    }
+
+    /**
+     * Recursive deletion.
+     *
+     * @param dir Directory to be deleted
+     * @return True if deleted
+     */
+    private boolean purge(final File dir) {
+        final File[] contents = dir.listFiles();
+        if (contents != null) {
+            for (final File file : contents) {
+                this.purge(file);
+            }
+        }
+        final boolean state = dir.delete();
+        if (state) {
+            Logger.debug(
+                this,
+                new FormattedText("%s purged", dir.toString()).toString()
+            );
+        }
+        return state;
     }
 }
