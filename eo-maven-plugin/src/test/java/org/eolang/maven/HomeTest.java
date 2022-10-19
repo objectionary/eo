@@ -109,7 +109,7 @@ final class HomeTest {
     }
 
     @Test
-    void loadsBytesFromExistedFile(@TempDir final Path temp) throws IOException {
+    void loadBytesFromExistingFile(@TempDir final Path temp) throws IOException {
         final Home home = new Home();
         final String filename = "foo";
         final String content = "bar";
