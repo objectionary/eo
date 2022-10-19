@@ -131,10 +131,11 @@ final class HomeTest {
         final Path absentFile = temp.resolve("nonexistent");
         try {
             home.load(absentFile);
-        } catch (IOException e) {
+        } catch (NoSuchFileException e) {
             final String actual = e.getMessage();
-            MatcherAssert.assertThat(e instanceof NoSuchFileException, Matchers.is(true));
             MatcherAssert.assertThat(actual, Matchers.equalTo(absentFile.toString()));
+        } catch (IOException e) {
+            throw new IllegalStateException("Expected NoSuchFileException but was IOException", e);
         }
     }
 }
