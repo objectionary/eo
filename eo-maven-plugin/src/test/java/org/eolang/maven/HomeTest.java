@@ -53,16 +53,16 @@ final class HomeTest {
         final String content = new UncheckedText(new Randomized(size)).asString();
         new Home().save(content, resolve);
         MatcherAssert.assertThat(
-                new UncheckedText(new TextOf(resolve)).asString(),
-                Matchers.is(content)
+            new UncheckedText(new TextOf(resolve)).asString(),
+            Matchers.is(content)
         );
     }
 
     @Test
     void returnsRelativePathOfCurrentWorkingDirectory(@TempDir final Path temp) {
         MatcherAssert.assertThat(
-                new Home(temp.resolve("dir")).rel(temp.resolve("dir/file.txt")),
-                Matchers.is("./file.txt")
+            new Home(temp.resolve("dir")).rel(temp.resolve("dir/file.txt")),
+            Matchers.is("./file.txt")
         );
     }
 
@@ -70,8 +70,8 @@ final class HomeTest {
     void existsTest(@TempDir final Path temp) throws IOException {
         new Home().save("any content", temp.resolve("file.txt"));
         MatcherAssert.assertThat(
-                new Home().exists(temp.resolve("file.txt")),
-                Matchers.is(true)
+            new Home().exists(temp.resolve("file.txt")),
+            Matchers.is(true)
         );
     }
 
@@ -79,8 +79,8 @@ final class HomeTest {
     void existsInDirTest(@TempDir final Path temp) throws IOException {
         new Home(Paths.get("dir")).save("any content", temp.resolve("file.txt"));
         MatcherAssert.assertThat(
-                new Home(Paths.get("dir")).exists(temp.resolve("file.txt")),
-                Matchers.is(true)
+            new Home(Paths.get("dir")).exists(temp.resolve("file.txt")),
+            Matchers.is(true)
         );
     }
 
@@ -91,8 +91,8 @@ final class HomeTest {
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
         new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
         MatcherAssert.assertThat(
-                new Home(Paths.get("directory")).exists(temp.resolve(filename)),
-                Matchers.is(true)
+            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            Matchers.is(true)
         );
     }
 
@@ -103,8 +103,8 @@ final class HomeTest {
         final String decoded = new String(bytes, "CP1252");
         new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
         MatcherAssert.assertThat(
-                new Home(Paths.get("directory")).exists(temp.resolve(filename)),
-                Matchers.is(true)
+            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            Matchers.is(true)
         );
     }
 

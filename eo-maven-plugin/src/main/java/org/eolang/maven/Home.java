@@ -80,30 +80,30 @@ public class Home {
         final File dir = path.toFile().getParentFile();
         if (dir.mkdirs()) {
             Logger.debug(
-                    this, "Directory created: %s",
-                    this.rel(path.getParent())
+                this, "Directory created: %s",
+                this.rel(path.getParent())
             );
         }
         try {
             final long bytes = new IoChecked<>(
-                    new LengthOf(
-                            new TeeInput(
-                                    input,
-                                    new OutputTo(path)
-                            )
+                new LengthOf(
+                    new TeeInput(
+                        input,
+                        new OutputTo(path)
                     )
+                )
             ).value();
             Logger.debug(
-                    Home.class, "File %s saved (%d bytes)",
-                    this.rel(path), bytes
+                Home.class, "File %s saved (%d bytes)",
+                this.rel(path), bytes
             );
         } catch (final IOException ex) {
             throw new IOException(
-                    String.format(
-                            "Failed while trying to save to %s",
-                            this.rel(path)
-                    ),
-                    ex
+                String.format(
+                    "Failed while trying to save to %s",
+                    this.rel(path)
+                ),
+                ex
             );
         }
     }
@@ -164,8 +164,8 @@ public class Home {
             path = "./";
         } else if (path.startsWith(this.cwd.toString())) {
             path = String.format(
-                    "./%s",
-                    path.substring(this.cwd.toString().length() + 1)
+                "./%s",
+                path.substring(this.cwd.toString().length() + 1)
             );
         }
         return path;
