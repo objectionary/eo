@@ -94,4 +94,5 @@ public final class EOseqTest {
             Matchers.equalTo(2L)
         );
     }
+
 }
