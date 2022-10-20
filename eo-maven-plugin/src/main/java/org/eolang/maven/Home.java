@@ -48,7 +48,7 @@ import org.cactoos.scalar.LengthOf;
  *  We also need to add new unit test
  */
 @SuppressWarnings("PMD.TooManyMethods")
-class Home {
+final class Home {
     /**
      * Current working directory.
      */
