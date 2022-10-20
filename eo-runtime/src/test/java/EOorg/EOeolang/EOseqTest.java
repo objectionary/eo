@@ -30,33 +30,34 @@ package EOorg.EOeolang;
 import EOorg.EOeolang.EOio.EOstdout;
 import EOorg.EOeolang.EOtxt.EOsprintf;
 import java.io.ByteArrayOutputStream;
+import java.io.Console;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 /**
  * Test case for {@link EOseq}.
  *
  * @since 0.16
  */
+@ExtendWith(OutputCaptureExtension.class)
 public final class EOseqTest {
-    /**
-     * REDIRECTED_STDOUT.
-     */
-    private ByteArrayOutputStream redirected = new ByteArrayOutputStream();
-
-    /**
-     * DEFAULT_STDOUT.
-     */
-    private final PrintStream original = System.out;
 
     @Test
     public void calculatesAndReturns() {
@@ -111,29 +112,34 @@ public final class EOseqTest {
     }
 
     @Test
-    public void singleDataizationChecking() {
-        System.setOut(new PrintStream(this.redirected));
+    public void singleGtDataizationChecking(final CapturedOutput captured) {
         final String message = "祝你有美好的一天";
-        final Phi output = new PhWith(
+        final String doubled = message.concat(message);
+        final Phi msg = new PhWith(
             new PhCopy(new EOstdout(Phi.Φ)),
             "text",
             new Data.ToPhi(message)
         );
-        final Phi left = new Data.ToPhi(0L);
-        final Phi right = new Data.ToPhi(1L);
-        final Phi less = left.attr("lt").get();
+        final Phi left = new Data.ToPhi(1L);
+        final Phi right = new Data.ToPhi(0L);
+        final Phi less = left.attr("gt").get();
         less.attr(0).put(right);
         final Phi sequence = new EOseq(Phi.Φ);
-        sequence.attr(0).put(output);
+        sequence.attr(0).put(msg);
         sequence.attr(1).put(less);
+        Boolean result = false;
+        result = new Dataized(sequence).take(Boolean.class);
         MatcherAssert.assertThat(
-            new Dataized(sequence).take(Boolean.class),
+            result,
             Matchers.equalTo(true)
         );
         MatcherAssert.assertThat(
-            this.redirected.toString(),
-            Matchers.equalTo(message)
+            captured.getOut().contains(message),
+            Matchers.equalTo(true)
         );
-        System.setOut(this.original);
+        MatcherAssert.assertThat(
+            captured.getOut().contains(doubled),
+            Matchers.equalTo(false)
+        );
     }
 }
