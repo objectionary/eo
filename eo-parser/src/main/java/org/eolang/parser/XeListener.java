@@ -305,9 +305,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         String base = "";
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-            if (ctx.DOT() != null) {
-                base = String.format(".%s", base);
-            }
         } else if (ctx.AT() != null) {
             base = "@";
         } else if (ctx.XI() != null) {
@@ -323,6 +320,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = "QQ";
         } else if (ctx.SIGMA() != null) {
             base = "&";
+        }
+        if (ctx.DOT() != null) {
+            base = String.format(".%s", base);
         }
         if (!base.isEmpty()) {
             this.objects.prop("base", base);

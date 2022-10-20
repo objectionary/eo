@@ -30,7 +30,7 @@ import org.cactoos.Scalar;
  * Program footprint of EO compilation process.
  * @since 1.0
  */
-public interface Footprint {
+interface Footprint {
 
     /**
      * Get program content of a specific type.

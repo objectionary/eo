@@ -31,8 +31,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
+import org.cactoos.bytes.BytesOf;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -43,12 +45,9 @@ import org.cactoos.scalar.LengthOf;
  * Class for saving and loading files.
  *
  * @since 0.27
- * @todo #1105:30min create load function (it has to be able read by path)
- *  It should be able to load data from file
- *  We also need to add new unit test
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public class Home {
+final class Home {
     /**
      * Current working directory.
      */
@@ -63,6 +62,7 @@ public class Home {
 
     /**
      * Ctor.
+     *
      * @param path Path
      */
     Home(final Path path) {
@@ -71,6 +71,7 @@ public class Home {
 
     /**
      * Saving input.
+     *
      * @param input Input
      * @param path Path to file
      * @throws IOException If fails
@@ -109,6 +110,7 @@ public class Home {
 
     /**
      * Saving string.
+     *
      * @param str String
      * @param path Path to file
      * @throws IOException If fails
@@ -119,6 +121,7 @@ public class Home {
 
     /**
      * Saving text.
+     *
      * @param txt Text
      * @param path Path to file
      * @throws IOException If fails
@@ -129,6 +132,7 @@ public class Home {
 
     /**
      * Saving stream.
+     *
      * @param stream Input stream
      * @param path Path to file
      * @throws IOException If fails
@@ -139,6 +143,7 @@ public class Home {
 
     /**
      * Saving bytes.
+     *
      * @param bytes Byte array
      * @param path Path to file
      * @throws IOException If fails
@@ -149,6 +154,7 @@ public class Home {
 
     /**
      * Make relative name from path.
+     *
      * @param file The path of the file or dir
      * @return Relative name to CWD
      */
@@ -167,6 +173,7 @@ public class Home {
 
     /**
      * Check if exists.
+     *
      * @param path Path
      * @return True if exists
      */
@@ -175,7 +182,20 @@ public class Home {
     }
 
     /**
+     * Load bytes from file by path.
+     *
+     * @param path Path to the file
+     * @return Bytes of file
+     * @throws IOException if method can't find the file by path or
+     *  if some exception happens during reading the file
+     */
+    public Bytes load(final Path path) throws IOException {
+        return new BytesOf(Files.readAllBytes(this.path(path)));
+    }
+
+    /**
      * Path modification.
+     *
      * @param path Path
      * @return Modified path (without bad symbols)
      */
@@ -183,5 +203,4 @@ public class Home {
         final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
         return Paths.get(new String(bytes, StandardCharsets.UTF_8));
     }
-
 }
