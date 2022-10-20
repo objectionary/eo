@@ -27,13 +27,19 @@
  */
 package EOorg.EOeolang;
 
+import EOorg.EOeolang.EOio.EOstdout;
 import EOorg.EOeolang.EOtxt.EOsprintf;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhCopy;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -42,6 +48,15 @@ import org.junit.jupiter.api.Test;
  * @since 0.16
  */
 public final class EOseqTest {
+    /**
+     * REDIRECTED_STDOUT.
+     */
+    private ByteArrayOutputStream redirected = new ByteArrayOutputStream();
+
+    /**
+     * DEFAULT_STDOUT.
+     */
+    private final PrintStream original = System.out;
 
     @Test
     public void calculatesAndReturns() {
@@ -95,4 +110,30 @@ public final class EOseqTest {
         );
     }
 
+    @Test
+    public void singleDataizationChecking() {
+        System.setOut(new PrintStream(this.redirected));
+        final String message = "祝你有美好的一天";
+        final Phi output = new PhWith(
+            new PhCopy(new EOstdout(Phi.Φ)),
+            "text",
+            new Data.ToPhi(message)
+        );
+        final Phi left = new Data.ToPhi(0L);
+        final Phi right = new Data.ToPhi(1L);
+        final Phi less = left.attr("lt").get();
+        less.attr(0).put(right);
+        final Phi sequence = new EOseq(Phi.Φ);
+        sequence.attr(0).put(output);
+        sequence.attr(1).put(less);
+        MatcherAssert.assertThat(
+            new Dataized(sequence).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+        MatcherAssert.assertThat(
+            this.redirected.toString(),
+            Matchers.equalTo(message)
+        );
+        System.setOut(this.original);
+    }
 }
