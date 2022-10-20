@@ -21,13 +21,16 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
 +version 0.0.0
 
+# @todo #1299:60min Implement test that will
+# check output of stdout. That should proove
+# that there is no double printage, when 
+# methods lt., gt., lte., gte. are called.
 [] > single-dataization-float-less-than-test
   memory 0.0 > counter
   assert-that > @
@@ -44,7 +47,8 @@
       counter.write
         counter.plus 1.0
       counter
-    $.greater-than 0.0
+    $.not
+      $.greater-than 1.1
 
 [] > single-dataization-int-less-than-test
   memory 0 > counter
@@ -62,68 +66,5 @@
       counter.write
         counter.plus 1
       counter
-    $.greater-than 0
-
-[] > single-dataization-stdout-int-lt-test
-  seq > val
-    stdout "Message about int lt., should be shown once.\n"
-    0
-  lt. > @
-    val
-    1
-
-[] > single-dataization-stdout-int-lte-test
-  seq > val
-    stdout "Message about int lte., should be shown once.\n"
-    0
-  lte. > @
-    val
-    1
-
-[] > single-dataization-stdout-int-gt-test
-  seq > val
-    stdout "Message about int gt., should be shown once.\n"
-    1
-  gt. > @
-    val
-    0
-
-[] > single-dataization-stdout-int-gte-test
-  seq > val
-    stdout "Message about int gte., should be shown once.\n"
-    1
-  gte. > @
-    val
-    0
-
-[] > single-dataization-stdout-float-lt-test
-  seq > val
-    stdout "Message about float lt., should be shown once.\n"
-    0.0
-  lt. > @
-    val
-    1.0
-
-[] > single-dataization-stdout-float-lte-test
-  seq > val
-    stdout "Message about float lte., should be shown once.\n"
-    0.0
-  lte. > @
-    val
-    1.0
-
-[] > single-dataization-stdout-float-gt-test
-  seq > val
-    stdout "Message about float gt., should be shown once.\n"
-    1.0
-  gt. > @
-    val
-    0.0
-
-[] > single-dataization-stdout-float-gte-test
-  seq > val
-    stdout "Message about float gte., should be shown once.\n"
-    1.0
-  gte. > @
-    val
-    0.0
+    $.not
+      $.greater-than 1
