@@ -65,6 +65,7 @@ final class AssembleMojoTest {
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
+            .with("central", Central.EMPTY)
             .with(
                 "objectionary",
                 (Objectionary) input -> new InputOf(
@@ -124,6 +125,7 @@ final class AssembleMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("failOnError", false)
+            .with("central", Central.EMPTY)
             .with(
                 "objectionary",
                 (Objectionary) input -> new InputOf(
