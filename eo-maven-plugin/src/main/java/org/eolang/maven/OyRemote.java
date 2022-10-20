@@ -35,7 +35,7 @@ import org.cactoos.io.InputOf;
  *
  * @since 0.1
  */
-public final class OyRemote implements Objectionary {
+final class OyRemote implements Objectionary {
 
     /**
      * The address template.
@@ -47,7 +47,7 @@ public final class OyRemote implements Objectionary {
      * @param tag Tag
      * @throws IOException if fails.
      */
-    public OyRemote(final String tag) throws IOException {
+    OyRemote(final String tag) throws IOException {
         this.template = String.format(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
             tag

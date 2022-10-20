@@ -34,7 +34,7 @@ import org.cactoos.text.TextOf;
  * Default implementation of a Footprint.
  * @since 1.0
  */
-public final class FtDefault implements Footprint {
+final class FtDefault implements Footprint {
 
     /**
      * Path to main location.
@@ -45,7 +45,7 @@ public final class FtDefault implements Footprint {
      * Ctor.
      * @param main Main location.
      */
-    public FtDefault(final Path main) {
+    FtDefault(final Path main) {
         this.main = main;
     }
 

@@ -47,7 +47,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public class Home {
+final class Home {
     /**
      * Current working directory.
      */
