@@ -25,13 +25,16 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.Bytes;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -104,5 +107,24 @@ final class HomeTest {
             new Home(Paths.get("directory")).exists(temp.resolve(filename)),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void loadBytesFromExistingFile(@TempDir final Path temp) throws IOException {
+        final Home home = new Home();
+        final String filename = "foo";
+        final String content = "bar";
+        final Path subfolder = temp.resolve("subfolder").resolve(filename);
+        home.save(content, subfolder);
+        final Bytes bytes = home.load(subfolder);
+        final TextOf text = new TextOf(bytes);
+        MatcherAssert.assertThat(text, Matchers.equalTo(new TextOf(content)));
+    }
+
+    @Test
+    void loadFromAbsentFile(@TempDir final Path temp) {
+        final Home home = new Home();
+        final Path absent = temp.resolve("nonexistent");
+        Assertions.assertThrows(NoSuchFileException.class, () -> home.load(absent));
     }
 }

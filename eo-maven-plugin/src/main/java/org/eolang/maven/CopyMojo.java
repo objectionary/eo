@@ -65,6 +65,7 @@ public final class CopyMojo extends SafeMojo {
 
     /**
      * Directory in which .eo files are located.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -76,6 +77,7 @@ public final class CopyMojo extends SafeMojo {
 
     /**
      * Target directory with resources to be packaged in JAR.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -87,6 +89,7 @@ public final class CopyMojo extends SafeMojo {
 
     /**
      * The version to use for 0.0.0 replacements.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.version", required = true, defaultValue = "${project.version}")
