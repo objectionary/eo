@@ -46,7 +46,7 @@ import org.cactoos.scalar.Unchecked;
  * </pre>
  * @since 1.0
  */
-public final class OyFallbackSwap implements Objectionary {
+final class OyFallbackSwap implements Objectionary {
     /**
      * Swapped Oy.
      */
@@ -58,7 +58,7 @@ public final class OyFallbackSwap implements Objectionary {
      * @param second Initial secondary
      * @param swap Whether to swap
      */
-    public OyFallbackSwap(
+    OyFallbackSwap(
         final Objectionary first,
         final Objectionary second,
         final boolean swap

@@ -38,7 +38,7 @@ import org.cactoos.text.Joined;
  * Java files from XMIR.
  * @since 1.0
  */
-public final class JavaFiles {
+final class JavaFiles {
 
     /**
      * Path to XMIR file.
@@ -56,7 +56,7 @@ public final class JavaFiles {
      * @param src XML with java code
      * @param target Base destination path
      */
-    public JavaFiles(final Path src, final Path target) {
+    JavaFiles(final Path src, final Path target) {
         this.source = src;
         this.dest = target;
     }
