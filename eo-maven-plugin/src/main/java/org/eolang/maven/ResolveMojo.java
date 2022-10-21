@@ -213,18 +213,10 @@ public final class ResolveMojo extends SafeMojo {
      *  or from config files.
      */
     private static void addRuntimeDependency(final Collection<Dependency> deps) {
-        if (deps.stream().noneMatch(ResolveMojo::isRuntimeDependency)) {
-            deps.add(new EoRuntimeDependency().dependency());
+        final EoRuntimeDependency runtime = new EoRuntimeDependency();
+        if (deps.stream().noneMatch(runtime::same)) {
+            deps.add(runtime.dependency());
         }
-    }
-
-    /**
-     * Check if dependency is runtime dependency.
-     * @param dependency Dependency
-     * @return True if dependency is runtime dependency
-     */
-    private static boolean isRuntimeDependency(final Dependency dependency) {
-        return new EoRuntimeDependency().same(dependency);
     }
 
     /**
