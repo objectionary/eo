@@ -194,7 +194,7 @@ public final class ResolveMojo extends SafeMojo {
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
         this.checkConflicts(deps);
-        addRuntimeDependency(deps);
+        ResolveMojo.addRuntimeDependency(deps);
         return deps.stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
@@ -206,15 +206,15 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Check if runtime dependency is absent.
      * @param deps Dependencies
-     *  fixme: We are using hardcoded version of RuntimeDependency.
-     *  See the RuntimeDependency constructor for more info.
+     *  fixme: We are using hardcoded version of EoRuntimeDependency.
+     *  See the EoRuntimeDependency constructor for more info.
      *  It's much better to determine the version of the runtime library
      *  dynamically. For example, we can fetch the latest version by http
      *  or from config files.
      */
     private static void addRuntimeDependency(final Collection<Dependency> deps) {
         if (deps.stream().noneMatch(ResolveMojo::isRuntimeDependency)) {
-            deps.add(new RuntimeDependency().toDependency());
+            deps.add(new EoRuntimeDependency().dependency());
         }
     }
 
@@ -224,7 +224,7 @@ public final class ResolveMojo extends SafeMojo {
      * @return True if dependency is runtime dependency
      */
     private static boolean isRuntimeDependency(final Dependency dependency) {
-        return new RuntimeDependency().theSameAs(dependency);
+        return new EoRuntimeDependency().same(dependency);
     }
 
     /**

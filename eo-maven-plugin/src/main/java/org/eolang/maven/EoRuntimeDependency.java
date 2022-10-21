@@ -30,7 +30,7 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.28.11
  */
-final class RuntimeDependency {
+final class EoRuntimeDependency {
     /**
      * EO runtime dependency group.
      */
@@ -49,7 +49,7 @@ final class RuntimeDependency {
     /**
      * Default constructor.
      */
-    RuntimeDependency() {
+    EoRuntimeDependency() {
         this("0.28.10");
     }
 
@@ -58,7 +58,7 @@ final class RuntimeDependency {
      *
      * @param version Version of the eo-runtime library
      */
-    RuntimeDependency(final String version) {
+    EoRuntimeDependency(final String version) {
         this("org.eolang", "eo-runtime", version);
     }
 
@@ -69,7 +69,7 @@ final class RuntimeDependency {
      * @param artifact Dependency artifact name
      * @param version Dependency version
      */
-    RuntimeDependency(final String group, final String artifact, final String version) {
+    EoRuntimeDependency(final String group, final String artifact, final String version) {
         this.group = group;
         this.artifact = artifact;
         this.version = version;
@@ -81,17 +81,17 @@ final class RuntimeDependency {
      * @param other Other dependency
      * @return True if other dependency is the eo-runtime dependency
      */
-    boolean theSameAs(final Dependency other) {
+    boolean same(final Dependency other) {
         return this.group.equals(other.getGroupId())
             && this.artifact.equals(other.getArtifactId());
     }
 
     /**
-     * Converts RuntimeDependency to Maven Dependency.
+     * Converts EoRuntimeDependency to Maven Dependency.
      *
      * @return Maven Dependency
      */
-    Dependency toDependency() {
+    Dependency dependency() {
         final Dependency dependency = new Dependency();
         dependency.setGroupId(this.group);
         dependency.setArtifactId(this.artifact);
