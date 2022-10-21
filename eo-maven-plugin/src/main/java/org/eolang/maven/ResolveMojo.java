@@ -206,7 +206,7 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Check if runtime dependency is absent.
      * @param deps Dependencies
-     *  fixme: We are using hardcoded version of EoRuntimeDependency.
+     * @todo #1361 Hardcoded version of EoRuntimeDependency.
      *  See the EoRuntimeDependency constructor for more info.
      *  It's much better to determine the version of the runtime library
      *  dynamically. For example, we can fetch the latest version by http
