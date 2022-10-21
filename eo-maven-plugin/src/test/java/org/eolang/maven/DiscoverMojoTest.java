@@ -33,11 +33,13 @@ import org.cactoos.Input;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test case for {@link DiscoverMojo}.
@@ -84,12 +86,14 @@ final class DiscoverMojoTest {
     @Disabled
     void executeDiscoveryPhaseWithoutProgram() {
         // todo: add logic after logger will become non-static
+        Assertions.fail();
     }
 
     @Test
     @Disabled
     void executeDiscoveryPhaseWithAlreadyCheckedPrograms() {
         // todo: add logic after logger will become non-static
+        Assertions.fail();
     }
 
     private Deque<Map<String, String>> discoveredJsonEntries(final Path tmp) {
