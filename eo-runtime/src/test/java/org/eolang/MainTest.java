@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +86,7 @@ public final class MainTest {
 
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
-        args.add("java");
+        args.add(MainTest.jdkExecutable("java"));
         args.add("-Dfile.encoding=utf-8");
         args.add("-cp");
         args.add(System.getProperty("java.class.path"));
@@ -106,6 +106,28 @@ public final class MainTest {
         }
         return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
             .replaceFirst("Picked up .*\n", "");
+    }
+
+    /**
+     * Locate executable inside JAVA_HOME.
+     * @param name Name of executable.
+     * @return Path to java executable.
+     */
+    private static String jdkExecutable(final String name) {
+        final String result;
+        final String relative = "%s/bin/%s";
+        final String property = System.getProperty("java.home");
+        if (property == null) {
+            final String environ = System.getenv("JAVA_HOME");
+            if (environ == null) {
+                result = name;
+            } else {
+                result = String.format(relative, environ, name);
+            }
+        } else {
+            result = String.format(relative, property, name);
+        }
+        return result;
     }
 
 }

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Yegor Bugayenko
+# Copyright (c) 2016-2022 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
-+version 0.0.0
-+alias org.eolang.txt.sprintf
++alias org.eolang.hamcrest.assert-that
 +alias org.eolang.math.number
 +alias org.eolang.math.random
-+alias org.eolang.hamcrest.assert-that
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
 +junit
++package org.eolang
++version 0.0.0
 
 [] > understands-this-correctly
   [x] > a
@@ -99,11 +100,11 @@
     seq
       x.write TRUE
       eq.
-        1
+        TRUE
         x.while
           [i]
             &.x.write FALSE > @
-    $.equal-to TRUE
+    $.equal-to FALSE
 
 [] > calculates-only-once-BROKEN
   memory 0 > x
@@ -342,3 +343,49 @@
     assert-that
       b1.v
       $.equal-to 1
+
+[] > copy-object-with-dot
+  [] > book
+    "qwerty" > title
+  book.title' > copy-title
+  eq. > @
+    copy-title
+    "qwerty"
+
+[] > parent-in-vertical-notation
+  memory 5 > m
+  [] > value
+    [] > @
+      m. > @
+        ^.
+          ^
+  eq. > @
+    value
+    5
+
+[] > parent-in-horizontal-notation
+  memory 5 > m
+  [] > value
+    [] > @
+      ^.^.m > @
+  eq. > @
+    value
+    5
+
+[] > phi-in-vertical-notation
+  [] > value
+    [] > @
+      100 > @
+  eq. > @
+    @.
+      value
+    100
+
+[] > phi-in-horizontal-notation
+  [] > value
+    [] > @
+      100 > @
+  eq. > @
+    value.@
+    100
+

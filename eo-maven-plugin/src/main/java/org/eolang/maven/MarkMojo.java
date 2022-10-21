@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -51,16 +50,16 @@ public final class MarkMojo extends SafeMojo {
     @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (Files.exists(home)) {
+        if (new Home().exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int found = 0;
             for (final String dep : deps) {
                 final Path dir = home.resolve(dep);
                 final Path sub = dir.resolve(CopyMojo.DIR);
-                if (!Files.exists(sub)) {
+                if (!new Home().exists(sub)) {
                     continue;
                 }
-                final String ver = dep.split(Pattern.quote(File.separator))[2];
+                final String ver = dep.split(Pattern.quote(File.separator))[3];
                 found += this.scan(sub, ver);
             }
             Logger.info(
@@ -77,6 +76,10 @@ public final class MarkMojo extends SafeMojo {
      * @param version The version of the JAR
      * @return How many registered
      * @throws IOException If fails
+     * @todo #1062:30min The mojo doesn't update program version if it exists.
+     *  This causes versions like `*.*.*` and `0.0.0` are not updated and remain
+     *  in foreign catalog. This needs to be updated: version must be overridden to
+     *  correct value.
      */
     private int scan(final Path dir, final String version) throws IOException {
         final Unplace unplace = new Unplace(dir);
@@ -93,7 +96,7 @@ public final class MarkMojo extends SafeMojo {
         }
         Logger.info(
             this, "Found %d sources in %s, %d program(s) registered with version %s",
-            sources.size(), Save.rel(dir), done, version
+            sources.size(), new Home().rel(dir), done, version
         );
         return done;
     }

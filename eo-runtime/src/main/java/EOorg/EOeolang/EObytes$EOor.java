@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,13 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import java.math.BigInteger;
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.Param;
+import org.eolang.Bytes;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -42,13 +38,14 @@ import org.eolang.XmirObject;
  * BYTES.OR.
  *
  * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @checkstyle TypeNameCheck (15 lines)
  */
 @XmirObject(oname = "bytes.or")
 public class EObytes$EOor extends PhDefault {
 
     /**
      * Ctor.
+     *
      * @param sigma Sigma
      */
     public EObytes$EOor(final Phi sigma) {
@@ -58,25 +55,11 @@ public class EObytes$EOor extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> {
-                    BigInteger base = new Param(rho).fromBytes(BigInteger.class);
-                    final Phi[] args = new Param(rho, "b").strong(Phi[].class);
-                    for (int index = 0; index < args.length; ++index) {
-                        final Object val = new Dataized(args[index]).take();
-                        if (!(val instanceof byte[])) {
-                            throw new ExFailure(
-                                String.format(
-                                    "The %dth argument of 'and' is of type %s, not bytes",
-                                    index, val.getClass().getCanonicalName()
-                                )
-                            );
-                        }
-                        base = base.or(new BigInteger(byte[].class.cast(val)));
-                    }
-                    return new Data.ToPhi(base.toByteArray());
-                }
+                new ExReduceBytes(
+                    Bytes::or
+                )
             )
         );
     }
-
 }
+

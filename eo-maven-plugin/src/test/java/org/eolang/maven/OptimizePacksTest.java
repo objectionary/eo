@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,11 +39,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 1.0
  */
-public final class OptimizePacksTest {
+final class OptimizePacksTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    public void testPacks(final String pack) throws Exception {
+    void testPacks(final String pack) throws Exception {
         MatcherAssert.assertThat(
             new CheckPack(
                 new TextOf(

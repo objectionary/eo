@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-public final class AtCompositeTest {
+final class AtCompositeTest {
 
     @Test
-    public void decoratesCheckedException() {
+    void decoratesCheckedException() {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new AtComposite(
@@ -50,7 +50,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void decoratesUncheckedException() {
+    void decoratesUncheckedException() {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new AtComposite(
@@ -63,7 +63,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void passesSelfCorrectly() {
+    void passesSelfCorrectly() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
         phi.attr("φ").get();
@@ -74,7 +74,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void passesSelfCorrectlyThroughChild() {
+    void passesSelfCorrectlyThroughChild() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
         phi.attr("φ").get();
@@ -85,7 +85,7 @@ public final class AtCompositeTest {
     }
 
     @Test
-    public void goesThroughJustOnce() {
+    void goesThroughJustOnce() {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, "φ");
         MatcherAssert.assertThat(
@@ -96,23 +96,51 @@ public final class AtCompositeTest {
         );
     }
 
+    /**
+     * Dummy phi.
+     * @since 1.0
+     */
     private static class Dummy extends PhDefault {
-        public Phi self;
+        /**
+         * Self.
+         */
+        private Phi self;
+
+        /**
+         * Ctor.
+         */
         Dummy() {
             super();
-            this.add("φ", new AtComposite(this, rho -> {
-                this.self = rho;
-                return new Data.ToPhi(1L);
-            }));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        this.self = rho;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
         }
     }
 
+    /**
+     * Rnd.
+     * @since 1.0
+     */
     private static class Rnd extends PhDefault {
+        /**
+         * Ctor.
+         */
         Rnd() {
             super();
-            this.add("φ", new AtComposite(this,
-                rho -> new Data.ToPhi(new SecureRandom().nextDouble())
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+                )
+            );
         }
     }
 }

@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ SOFTWARE.
   are missed/broken due to abstracts floating up. We find
   them and fix them.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(@ref)]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -73,14 +73,13 @@ public class EOmemory extends PhDefault {
                 new AtComposite(
                     this,
                     rho -> {
-                        rho.attr("σ").get().attr("enclosure").put(
-                            new Data.ToPhi(
-                                new Dataized(
-                                    rho.attr("x").get()
-                                ).take()
-                            )
+                        final Phi phi = new Data.ToPhi(
+                            new Dataized(
+                                rho.attr("x").get()
+                            ).take()
                         );
-                        return new Data.ToPhi(true);
+                        rho.attr("σ").get().attr("enclosure").put(phi);
+                        return phi;
                     }
                 )
             );

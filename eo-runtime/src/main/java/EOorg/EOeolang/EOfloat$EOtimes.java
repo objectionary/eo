@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,12 +54,15 @@ public class EOfloat$EOtimes extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                new ExprReduce<>(
-                    "float.times",
-                    "x",
-                    Double.class,
-                    (acc, x) -> acc * x
-                )
+                    new ExprReduce<Double>(
+                        "x",
+                        (acc, x) -> acc * x,
+                        new ExprReduce.Args(
+                            Double.class,
+                            x -> "",
+                            "float.times"
+                        )
+                    )
             )
         );
     }

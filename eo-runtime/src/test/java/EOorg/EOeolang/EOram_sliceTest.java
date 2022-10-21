@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -33,13 +39,12 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 /**
  * Test case for {@link EOram$EOram_slice}.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (4 lines)
+ * @checkstyle ParameterNumberCheck (20 lines)
  */
 public final class EOram_sliceTest {
 
@@ -69,7 +74,6 @@ public final class EOram_sliceTest {
             "size",
             new Data.ToPhi((long) len)
         );
-
         final byte[] bytes = new Dataized(phi).take(byte[].class);
         MatcherAssert.assertThat(
             new String(bytes, StandardCharsets.UTF_8),

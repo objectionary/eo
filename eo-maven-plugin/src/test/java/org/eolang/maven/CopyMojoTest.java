@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,8 @@
  */
 package org.eolang.maven;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,16 +35,16 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class CopyMojoTest {
+final class CopyMojoTest {
 
     @Test
-    public void copiesSources(@TempDir final Path temp) throws Exception {
+    void copiesSources(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
-        new Save(
+        new Home().save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             src.resolve("foo/main.eo")
-        ).save();
+        );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())
@@ -54,11 +53,11 @@ public final class CopyMojoTest {
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            Files.exists(out),
+            new Home().exists(out),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new String(Files.readAllBytes(out), StandardCharsets.UTF_8),
+            new TextOf(new Home().load(out)).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),

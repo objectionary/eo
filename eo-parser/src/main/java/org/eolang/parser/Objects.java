@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,10 @@
  */
 package org.eolang.parser;
 
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -64,6 +67,11 @@ interface Objects extends Iterable<Directive> {
     void leave();
 
     /**
+     * Mark next object for aliasing.
+     */
+    void alias();
+
+    /**
      * Xembly object tree.
      * @since 0.1
      */
@@ -74,11 +82,24 @@ interface Objects extends Iterable<Directive> {
          */
         private final Directives dirs = new Directives();
 
+        /**
+         * Generated aliases.
+         */
+        private final Deque<Integer> aliases = new LinkedList<>();
+
+        /**
+         * Counter of aliases.
+         */
+        private final AtomicInteger counter = new AtomicInteger();
+
         @Override
         public void start(final int line, final int pos) {
             this.dirs.add("o");
             this.prop("line", line);
             this.prop("pos", pos);
+            if (!this.aliases.isEmpty()) {
+                this.prop("alias", this.aliases.pop());
+            }
         }
 
         @Override
@@ -99,6 +120,13 @@ interface Objects extends Iterable<Directive> {
         @Override
         public void leave() {
             this.dirs.up();
+        }
+
+        @Override
+        public void alias() {
+            this.aliases.push(
+                this.counter.incrementAndGet()
+            );
         }
 
         @Override

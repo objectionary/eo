@@ -13,5 +13,9 @@ eo: |
     QQ.io.stdout > @
       QQ.txt.sprintf
         "%d is %s than zero\n"
-        (QQ.math.number (args.get 0)).as-int > num
+        at. > num
+          QQ.txt.sscanf
+            "%d"
+            args.at 0
+          0
         f num

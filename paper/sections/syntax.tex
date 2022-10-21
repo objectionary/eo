@@ -72,16 +72,13 @@ Java-notation is used for numbers and strings.
   \> \alt \T{application} \V{␣} \T{application} \\
 \T{head} \df \opt{\V{...}} \grp{ \T{name} \opt{\V{'}} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
   \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \alt \V{Q} \alt \V{QQ} } \\
-\T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \\
-  \> \alt \T{float} \alt \T{regex} \\
+\T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \alt \T{float} \\
 \T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \alt \V{-{}-} \\
 \T{bool} \df \V{TRUE} \alt \V{FALSE} \\
 \T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
 \T{string} \df \RE{"[\^{}"]*"} \\
 \T{integer} \df \RE{[+-]?\textbackslash{}d+|0x[a-f\textbackslash{}d]+} \\
-\T{regex} \df \RE{/.+/[a-z]*} \\
-\T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{\T{exp}} \\
-\T{exp} \df \RE{e(+|-)?\textbackslash{}d+} \\
+\T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{ \RE{e(+|-)?\textbackslash{}d+} } \\
 \end{tabbing}
 \end{multicols}
 \figcap{The full syntax of \eo{} in BNF.
@@ -165,8 +162,8 @@ second line and the \ff{>} symbol, while two spaces will break the syntax):
 [dx dy] > vector |$\label{ln:vector}$|
   sqrt. > length |$\label{ln:length}$|
     plus.
-      dx.pow 2
-      dy.pow 2 |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
+      dx.times dx
+      dy.timex dy |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
 \end{ffcode*}
 
 The code at \lref{comment} is a \emph{comment}.
@@ -181,7 +178,7 @@ The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
 can be written in one line, using \emph{dot notation}:
 
 \begin{ffcode}
-((dx.pow 2).plus (dy.pow 2)).sqrt > length
+((dx.times dx).plus (dy.timex dy)).sqrt > length
 \end{ffcode}
 
 An \emph{inverse} dot notation is used in order to simplify
@@ -192,14 +189,14 @@ this expression in multiple lines without the usage of
 inverse notation, but it will look less readable:
 
 \begin{ffcode}
-dx.pow 2 |$\label{ln:dx-pow}$|
+dx.times dx |$\label{ln:dx-pow}$|
 .plus
-  dy.pow 2 |$\label{ln:dx-pow-2}$|
+  dy.timex dy |$\label{ln:dx-pow-2}$|
 .sqrt > length |$\label{ln:dx-pow-3}$|
 \end{ffcode}
 
-Here, \lref{dx-pow} is the application of the object \ff{dx.pow} with
-a new argument \ff{2}. Then, the next line is the object \ff{plus} taken
+Here, \lref{dx-pow} is the application of the object \ff{dx.times} with
+a new argument \ff{dx}. Then, the next line is the object \ff{plus} taken
 from the object created at the first line, using the dot notation. Then,
 \lref{dx-pow-2} is the argument passed to the object \ff{plus}.
 The code at \lref{dx-pow-3} takes the object \ff{sqrt} from the object constructed
@@ -251,13 +248,13 @@ this XML tree of elements and attributes:
   <o name="dy"/>
   <o name="length" base=".sqrt">
     <o base=".plus">
-      <o base=".pow">
+      <o base=".times">
         <o base="dx"/>
-        <o base="int" data="int">2</>
+        <o base="dx"/>
       </o>
-      <o base=".pow">
+      <o base=".times">
         <o base="dy"/>
-        <o base="int" data="int">2</>
+        <o base="dy"/>
       </o>
     </o>
   </o>
@@ -547,7 +544,7 @@ it is not defined as explicitly as \ff{say}. Anywhere a new
 name shows up after the \ff{>} symbol, it is a declaration of a new
 attribute in the nearest object abstraction.
 
-\subsection{Explicit Copies}
+\subsection{Explicit Shallow Copies}
 
 There may be a need to make a copy of an object without giving any
 parameters to it. This may be done with an apostrophe suffix:
@@ -567,6 +564,9 @@ for example:
 circle
   point' 3 a'
 \end{ffcode}
+
+Making a copy of \ff{circle} will not lead to making a copy of \ff{point},
+which is encapsulated by \ff{circle}.
 
 \subsection{Object Identity}
 

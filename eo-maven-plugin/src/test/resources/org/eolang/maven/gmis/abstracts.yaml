@@ -1,0 +1,12 @@
+locators:
+  - .a .x .α0 Δ=bytes/00-00-00-00-00-00-00-2A
+  - .b .y .α0 Δ=bytes/00-00-00-00-00-00-01-00
+  - .a .x .α0 .π λ=S/Φ.org.eolang.int
+  - .a .x .π λ=S/Φ.foo.bar.b
+eo: |
+  +package foo.bar
+  
+  [f] > a
+    b 42 > x
+  [t] > b
+    a 256 > y

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,15 @@
  */
 package org.eolang;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -32,18 +41,18 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.18
  */
-public final class VerticesTest {
+final class VerticesTest {
 
     @Test
-    public void makesNext() {
+    void makesNext() {
         MatcherAssert.assertThat(
             new Vertices().next(),
-            Matchers.equalTo(1)
+            Matchers.greaterThan(0)
         );
     }
 
     @Test
-    public void makesSameNumber() {
+    void makesSameNumber() {
         final Vertices vtx = new Vertices();
         vtx.next();
         MatcherAssert.assertThat(
@@ -52,4 +61,34 @@ public final class VerticesTest {
         );
     }
 
+    /**
+     * Test that {@link Vertices#best(Object)} and {@link Vertices#next()}
+     * works correctly in multithreaded environment, i.e. produces non-repeatable
+     * values.
+     */
+    @Test
+    void vtxConcurrencyTest() {
+        final Set<Integer> hashes = ConcurrentHashMap.newKeySet();
+        final Vertices vtx = new Vertices();
+        final int threads = 1000;
+        final List<Scalar<Integer>> tasks = new ArrayList<>(threads);
+        tasks.addAll(
+            Stream.generate(() -> (Scalar<Integer>) vtx::next)
+                .limit(threads / 2)
+                .collect(Collectors.toList())
+        );
+        tasks.addAll(
+            Stream.generate(() -> (Scalar<Integer>) () -> vtx.best(new Random().nextLong()))
+                .limit(threads / 2)
+                .collect(Collectors.toList())
+        );
+        new Threads<>(
+            threads,
+            tasks
+        ).forEach(hashes::add);
+        MatcherAssert.assertThat(
+            hashes.size(),
+            Matchers.equalTo(threads)
+        );
+    }
 }

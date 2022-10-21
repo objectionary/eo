@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,12 +55,12 @@ final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^a-z0-9]", "-");
-                            new Save(
+                            new Home().save(
                                 xml.toString(),
                                 dir.resolve(
                                     String.format("%02d-%s.xml", pos, log)
                                 )
-                            ).saveQuietly();
+                            );
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(
                                     SpyTrain.class, "Step #%d by %s:\n%s",

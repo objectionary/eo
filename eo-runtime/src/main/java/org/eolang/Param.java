@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -78,6 +78,7 @@ public final class Param {
      */
     public <T> T strong(final Class<T> type) {
         final Object ret = this.weak();
+        final Object result;
         if (!type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
@@ -87,8 +88,10 @@ public final class Param {
                     type.getCanonicalName()
                 )
             );
+        } else {
+            result = ret;
         }
-        return type.cast(ret);
+        return type.cast(result);
     }
 
     /**
@@ -102,62 +105,26 @@ public final class Param {
     }
 
     /**
-     * Fetch BYTES as type.
-     * @param type The type
-     * @param <T> The type
-     * @return The object
-     */
-    public <T> T fromBytes(final Class<T> type) {
-        final byte[] ret = this.strong(byte[].class);
-        final Object res;
-        if (BigInteger.class.equals(type)) {
-            res = new BigInteger(ret);
-        } else if (Long.class.equals(type)) {
-            if (ret.length == 1) {
-                res = (long) ret[0];
-            } else {
-                final byte[] cpy = new byte[Long.BYTES];
-                int posx = cpy.length;
-                int posy = ret.length;
-                while (posy > 0 && posx > 0) {
-                    posy -= 1;
-                    posx -= 1;
-                    cpy[posx] = ret[posy];
-                }
-                while (ret[0] < 0 && posx > 0) {
-                    posx -= 1;
-                    cpy[posx] = -1;
-                }
-                res = ByteBuffer.wrap(cpy).getLong();
-            }
-        } else if (Character.class.equals(type)) {
-            res = ByteBuffer.wrap(ret).getChar();
-        } else if (Double.class.equals(type)) {
-            res = ByteBuffer.wrap(ret).getDouble();
-        } else {
-            throw new ExFailure(
-                String.format(
-                    "Unsupported type: '%s'",
-                    type
-                )
-            );
-        }
-        return type.cast(res);
-    }
-
-    /**
      * Fetch BYTES of any type.
-     * @return The bytes.
+     * @return Bytes.
      */
-    public byte[] asBytes() {
+    public Bytes asBytes() {
         final Object ret = this.weak();
-        final byte[] res;
+        final Bytes res;
         if (Long.class.isInstance(ret)) {
-            res = ByteBuffer.allocate(Long.BYTES).putLong((long) ret).array();
+            res = new BytesOf((long) ret);
         } else if (Character.class.isInstance(ret)) {
-            res = ByteBuffer.allocate(Character.BYTES).putChar((char) ret).array();
+            res = new BytesOf((char) ret);
         } else if (Double.class.isInstance(ret)) {
-            res = ByteBuffer.allocate(Double.BYTES).putDouble((double) ret).array();
+            final double adjusted;
+            if (ret.equals(0.0)) {
+                adjusted = -0.0;
+            } else {
+                adjusted = (double) ret;
+            }
+            res = new BytesOf(adjusted);
+        } else if (byte[].class.isInstance(ret)) {
+            res = new BytesOf((byte[]) ret);
         } else {
             throw new ExFailure(
                 String.format(

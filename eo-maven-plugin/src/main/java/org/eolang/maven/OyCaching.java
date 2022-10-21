@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import org.cactoos.io.TeeInput;
  *
  * @since 1.0
  */
-public final class OyCaching implements Objectionary {
+final class OyCaching implements Objectionary {
 
     /**
      * Cache location.
@@ -56,7 +56,7 @@ public final class OyCaching implements Objectionary {
      * @param cache Cache directory.
      * @param primary Primary objectionary.
      */
-    public OyCaching(
+    OyCaching(
         final String ver,
         final Path cache,
         final Objectionary primary
@@ -80,7 +80,7 @@ public final class OyCaching implements Objectionary {
             this.primary.get(name),
             new Place(name).make(
                 this.cache
-                    .resolve("sources")
+                    .resolve("pulled")
                     .resolve(this.version),
                 "eo"
             )

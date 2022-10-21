@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,18 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.cactoos.text.Joined;
 
 /**
  * Java files from XMIR.
  * @since 1.0
  */
-public final class JavaFiles {
+final class JavaFiles {
 
     /**
      * Path to XMIR file.
@@ -53,55 +56,66 @@ public final class JavaFiles {
      * @param src XML with java code
      * @param target Base destination path
      */
-    public JavaFiles(final Path src, final Path target) {
+    JavaFiles(final Path src, final Path target) {
         this.source = src;
         this.dest = target;
     }
 
     /**
      * Save java files.
-     * @return Count of saved files
+     * @return List of saved java files
      * @throws IOException In case issues with I/O
      */
-    public int save() throws IOException {
-        int total = 0;
+    public List<Path> save() throws IOException {
+        final List<Path> files = new ArrayList<>(0);
         final XML xml = new XMLDocument(this.source);
         final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
         if (nodes.isEmpty()) {
-            Logger.info(
+            Logger.debug(
                 this, "No .java files generated from %s",
-                Save.rel(this.source)
+                new Home().rel(this.source)
             );
         } else {
             for (final XML java : nodes) {
-                JavaFiles.saveJava(java, this.dest);
-                ++total;
+                files.add(JavaFiles.saveJava(java, this.dest));
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
-                nodes.size(), Save.rel(this.source), Save.rel(this.dest)
+                nodes.size(), new Home().rel(this.source), new Home().rel(this.dest)
             );
         }
-        return total;
+        return files;
     }
 
     /**
      * Save this Java file.
      * @param java The XML with Java
      * @param generated Path to all files
+     * @return Path to generated file
      * @throws IOException If fails
      */
-    private static void saveJava(final XML java, final Path generated) throws IOException {
+    private static Path saveJava(final XML java, final Path generated) throws IOException {
         final String type = java.xpath("@java-name").get(0);
-        final Path dest = new Place(type).make(
-            generated, "java"
-        );
-        new Save(
-            new Joined(
-                "",
-                java.xpath("java/text()")
-            ),
-            dest
-        ).save();
+        try {
+            final Path dest = new Place(type).make(
+                generated, "java"
+            );
+            new Home().save(
+                new Joined(
+                    "",
+                    java.xpath("java/text()")
+                ),
+                dest
+            );
+            return dest;
+        } catch (final InvalidPathException ex) {
+            throw new IOException(
+                String.format(
+                    "Unable to save Java class `%s`. Check you system encoding. Expected `UTF-8`",
+                    type
+                ),
+                ex
+            );
+        }
     }
 }

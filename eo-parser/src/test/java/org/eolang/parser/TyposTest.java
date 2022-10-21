@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,11 +44,11 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 1.0
  */
-public final class TyposTest {
+final class TyposTest {
 
     @ParameterizedTest
     @MethodSource("yamlTypos")
-    public void testPacks(final String yml) throws Exception {
+    void testPacks(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             new TextOf(

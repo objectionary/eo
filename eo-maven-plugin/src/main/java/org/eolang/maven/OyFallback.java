@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import org.cactoos.func.IoCheckedFunc;
  *
  * @since 1.0
  */
-public final class OyFallback implements Objectionary {
+final class OyFallback implements Objectionary {
 
     /**
      * Primary Objectionary.
@@ -51,7 +51,7 @@ public final class OyFallback implements Objectionary {
      * @param primary Primary source.
      * @param secondary Secondary source.
      */
-    public OyFallback(final Objectionary primary, final Objectionary secondary) {
+    OyFallback(final Objectionary primary, final Objectionary secondary) {
         this.first = primary;
         this.second = secondary;
     }

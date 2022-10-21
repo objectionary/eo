@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.11
  */
-public final class UnplaceTest {
+final class UnplaceTest {
 
     @Test
-    public void makesName() {
+    void makesName() {
         MatcherAssert.assertThat(
             new Unplace(Paths.get("/tmp/foo/bar")).make(
                 Paths.get("/tmp/foo/bar/a/b/c.eo")

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public final class DemandMojo extends SafeMojo {
         }
         Logger.info(
             this, "Added %d objects to foreign catalog at %s",
-            this.objects.size(), Save.rel(this.foreign.toPath())
+            this.objects.size(), new Home().rel(this.foreign.toPath())
         );
     }
 

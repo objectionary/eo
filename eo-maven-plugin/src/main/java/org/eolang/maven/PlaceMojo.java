@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -84,33 +83,12 @@ public final class PlaceMojo extends SafeMojo {
     private File outputDir;
 
     /**
-     * The path to a text file where paths of all added
-     * .class (and maybe others) files are placed.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.11.0
-     */
-    @Parameter(
-        property = "eo.placed",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/placed.csv"
-    )
-    private File placed;
-
-    /**
-     * Format of "placed" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    private String placedFormat = "csv";
-
-    /**
      * List of inclusion GLOB filters for finding class files.
      * @since 0.15
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> includeBinaries = new SetOf<>("EO**", "org/eolang/**");
+    private Set<String> includeBinaries = new SetOf<>("**");
 
     /**
      * List of exclusion GLOB filters for finding class files.
@@ -123,23 +101,22 @@ public final class PlaceMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (Files.exists(home)) {
+        if (new Home().exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.catalog().select(
+                final Collection<Tojo> before = this.placedTojos.value().select(
                     row -> row.get(Tojos.KEY).equals(dep)
                         && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
                 );
                 if (!before.isEmpty()) {
-                    Logger.info(this, "Binaries from %s have already been placed", dep);
-                    continue;
+                    Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.catalog().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
+                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
             }
             if (copied == 0) {
-                Logger.info(
+                Logger.debug(
                     this, "No binary files placed from %d dependencies",
                     deps.size()
                 );
@@ -152,7 +129,7 @@ public final class PlaceMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",
-                Save.rel(home)
+                new Home().rel(home)
             );
         }
     }
@@ -178,45 +155,45 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "File %s is not a binary, but a source, won't place it",
-                    Save.rel(file)
+                    new Home().rel(file)
                 );
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<Tojo> before = this.catalog().select(
+            final Collection<Tojo> before = this.placedTojos.value().select(
                 row -> row.get(Tojos.KEY).equals(target.toString())
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
-            if (!before.isEmpty() && !Files.exists(target)) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The file %s has been placed to %s, but now it's gone",
-                        Save.rel(file), Save.rel(target)
-                    )
+            if (!before.isEmpty() && !new Home().exists(target)) {
+                Logger.info(
+                    this,
+                    "The file %s has been placed to %s, but now it's gone, re-placing",
+                    new Home().rel(file),
+                    new Home().rel(target)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() == file.toFile().length()) {
-                Logger.warn(
+                Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
-                    Save.rel(file), Save.rel(target),
+                    new Home().rel(file), new Home().rel(target),
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
                 continue;
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (!before.isEmpty() && new Home().exists(target)
                 && target.toFile().length() != file.toFile().length()) {
-                Logger.warn(
+                Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                    Save.rel(file), file.toFile().length(),
-                    Save.rel(target), target.toFile().length(),
+                    new Home().rel(file), file.toFile().length(),
+                    new Home().rel(target), target.toFile().length(),
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
-            new Save(new InputOf(file), target).save();
-            this.catalog().add(target.toString())
+            new Home().save(new InputOf(file), target);
+            this.placedTojos.value().add(target.toString())
                 .set(PlaceMojo.ATTR_KIND, "class")
                 .set(PlaceMojo.ATTR_HASH, new FileHash(target))
                 .set(
@@ -241,13 +218,4 @@ public final class PlaceMojo extends SafeMojo {
         }
         return copied;
     }
-
-    /**
-     * Get catalog.
-     * @return Tojos
-     */
-    private Tojos catalog() {
-        return new Catalog(this.placed.toPath(), this.placedFormat).make();
-    }
-
 }

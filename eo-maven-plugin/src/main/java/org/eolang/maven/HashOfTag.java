@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,25 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
  * Hash of tag.
  * @since 0.26
  */
-public class HashOfTag {
+final class HashOfTag {
+
+    /**
+     * Cached map of hashes.
+     */
+    private static final Map<String, String> CACHE = HashOfTag.safeLoad();
+
+    /**
+     * The URL where the list is kept.
+     */
+    private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
      * Tag.
@@ -43,32 +54,73 @@ public class HashOfTag {
 
     /**
      * Constructor.
-     * @param tag Tag
+     * @param hash Tag
      */
-    public HashOfTag(final String tag) {
-        this.tag = tag;
+    HashOfTag(final String hash) {
+        this.tag = hash;
     }
 
     /**
      * Hash of tag.
      * @return SHA of commit
+     */
+    public String hash() {
+        final String result = HashOfTag.CACHE.get(this.tag);
+        if (result == null) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",
+                    this.tag
+                )
+            );
+        }
+        Logger.debug(this, "Git sha of %s is %s", this.tag, result);
+        return result;
+    }
+
+    /**
+     * Short version of hash.
+     * @return SHA of commit
+     */
+    public String narrow() {
+        return this.hash().substring(0, 7);
+    }
+
+    /**
+     * Load all hashes and tags.
+     * @return Map of them (hash -> tag)
+     */
+    private static Map<String, String> safeLoad() {
+        Map<String, String> map;
+        try {
+            map = HashOfTag.load();
+        } catch (final IOException ex) {
+            Logger.warn(
+                HashOfTag.class,
+                "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
+                HashOfTag.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+            );
+            map = new HashMap<>(0);
+        }
+        return map;
+    }
+
+    /**
+     * Load all hashes and tags.
+     * @return Map of them (hash -> tag)
      * @throws IOException if fails
      */
-    public String hash() throws IOException {
-        final String link = "https://home.objectionary.com/tags.txt";
-        final InputStream ins = new URL(link).openStream();
-        final Scanner scanner = new Scanner(ins);
-        while (scanner.hasNextLine()) {
-            final String line = scanner.nextLine();
-            final String[] parts = line.split("\t");
-            if (Objects.equals(parts[1], this.tag)) {
-                Logger.info(this, "Git sha of %s is %s", this.tag, parts[0]);
-                return parts[0];
+    private static Map<String, String> load() throws IOException {
+        final InputStream ins = new URL(HashOfTag.HOME).openStream();
+        try (Scanner scanner = new Scanner(ins)) {
+            final Map<String, String> map = new HashMap<>(0);
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+                final String[] parts = line.split("\t");
+                map.put(parts[1], parts[0]);
             }
+            return map;
         }
-        throw new IllegalArgumentException(
-            String.format("Tag %s doesn't exist", this.tag)
-        );
     }
 
 }

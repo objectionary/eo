@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -100,6 +100,7 @@ public final class Central implements BiConsumer<Dependency, Path> {
                             "artifactItem",
                             MojoExecutor.element("groupId", dep.getGroupId()),
                             MojoExecutor.element("artifactId", dep.getArtifactId()),
+                            MojoExecutor.element("classifier", dep.getClassifier()),
                             MojoExecutor.element("version", dep.getVersion()),
                             MojoExecutor.element("outputDirectory", path.toString())
                         )
@@ -115,9 +116,9 @@ public final class Central implements BiConsumer<Dependency, Path> {
             throw new IllegalStateException(ex);
         }
         Logger.info(
-            this, "%s unpacked to %s:%s:%s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-            Save.rel(path)
+            this, "%s:%s:%s:%s unpacked to %s",
+            dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(),
+            new Home().rel(path)
         );
     }
 

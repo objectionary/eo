@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ final class AtLocated implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format("<%d:%d>%s", this.line, this.position, this.origin.toString());
     }
 
     @Override

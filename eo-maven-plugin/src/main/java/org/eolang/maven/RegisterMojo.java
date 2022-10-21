@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +94,7 @@ public final class RegisterMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final int before = this.tojos().select(t -> true).size();
+        final int before = this.tojos.value().select(t -> true).size();
         if (before > 0) {
             Logger.info(this, "There are %d EO sources registered already", before);
         }
@@ -116,8 +116,8 @@ public final class RegisterMojo extends SafeMojo {
         }
         Logger.info(
             this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
-            sources.size(), Save.rel(this.sourcesDir.toPath()),
-            Save.rel(this.foreign.toPath()),
+            sources.size(), new Home().rel(this.sourcesDir.toPath()),
+            new Home().rel(this.foreign.toPath()),
             this.includeSources, this.excludeSources
         );
     }

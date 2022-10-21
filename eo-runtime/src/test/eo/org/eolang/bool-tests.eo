@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Yegor Bugayenko
+# Copyright (c) 2016-2022 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
-+version 0.0.0
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-+alias org.eolang.math.number
 +alias org.eolang.hamcrest.assert-that
++alias org.eolang.io.stdout
++alias org.eolang.math.number
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
 +junit
++package org.eolang
++version 0.0.0
 
 [] > compares-two-bools
   assert-that > @
@@ -63,9 +64,11 @@
   memory 0 > x
   assert-that > @
     and.
-      x.write 5
       eq.
-        4
+        x.write 5
+        5
+      eq.
+        11
         while.
           x.lt 10
           [i]
@@ -98,15 +101,15 @@
     and.
       not.
         and.
-          (mFirst.write 1).not
-          mFirst.write 2
-          mFirst.write 3
+          (mFirst.write 1).eq 100
+          (mFirst.write 2).eq 2
+          (mFirst.write 3).eq 3
       not.
         and.
-          mThird.write 1
-          mThird.write 2
-          (mThird.write 3).not
-          (mThird.write 4)
+          (mThird.write 1).eq 1
+          (mThird.write 2).eq 2
+          (mThird.write 3).eq 300
+          (mThird.write 4).eq 4
       mFirst.eq 1
       mThird.eq 3
     $.equal-to TRUE
@@ -119,13 +122,13 @@
   assert-that > @
     and.
       or.
-        mFirst.write 1
+        (mFirst.write 1).eq 1
         mFirst.write 2
         mFirst.write 3
       or.
-        (mThird.write 1).not
-        (mThird.write 2).not
-        mThird.write 3
+        (mThird.write 1).eq 100
+        (mThird.write 2).eq 200
+        (mThird.write 3).eq 3
         mThird.write 4
       mFirst.eq 1
       mThird.eq 3
@@ -178,3 +181,25 @@
         1237
         FALSE.as-hash
     $.equal-to TRUE
+
+[] > last-while-dataization-object
+  memory 3 > x
+  assert-that > @
+    while.
+      x.lt 6
+      [i]
+        seq > @
+          x.write (x.plus i)
+          x
+    $.equal-to 6
+
+[] > last-while-dataization-object-with-false-condition
+  memory 3 > x
+  assert-that > @
+    while.
+      x.lt 1
+      [i]
+        seq > @
+          x.write (x.plus i)
+          x
+    $.equal-to FALSE

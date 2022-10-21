@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Yegor Bugayenko
+# Copyright (c) 2016-2022 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
 +alias org.eolang.collections.bytes-as-array
 +alias org.eolang.collections.list
-+version 0.0.0
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
++version 0.0.0
 
+# @todo #1142:30m Long now can only be represented
+#  as an array of 8 bytes. This impelementation
+#  therefore is broken. Reimplement .as-hash
+#  and turn back on tests in bytes-test.eo &
+#  string-tests.eo
 [] > bytes
 
   # Equals to another object
@@ -64,7 +70,8 @@
   [] > not /bytes
 
   # Calculate bitwise left shift
-  [x] > left /bytes
+  [x] > left
+    ^.right (x.neg) > @
 
   # Calculate bitwise right shift
   [x] > right /bytes
@@ -79,7 +86,7 @@
 
   # Converts this to hash
   [] > as-hash
-    reduce. > @
+    reduced. > @
       list
         bytes-as-array ^
       1
@@ -88,7 +95,8 @@
           times.
             31
             a
-          b.as-int
+          as-int.
+            (0.as-bytes.and b).right 54
 
   # Concatenation of two byte sequences:
   # the current and the provided one,

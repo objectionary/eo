@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,27 +30,33 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for packs.
- *
  * @since 1.0
  */
-public final class PacksTest {
+final class PacksTest {
 
     @ParameterizedTest
     @MethodSource("yamlPacks")
-    public void testPacks(final String pack) throws Exception {
+    void testPacks(final String pack) throws Exception {
+        final CheckPack check = new CheckPack(
+            new TextOf(
+                new ResourceOf(
+                    String.format("org/eolang/parser/packs/%s", pack)
+                )
+            ).asString()
+        );
+        if (check.skip()) {
+            Assumptions.abort(
+                String.format("%s is not ready", pack)
+            );
+        }
         MatcherAssert.assertThat(
-            new CheckPack(
-                new TextOf(
-                    new ResourceOf(
-                        String.format("org/eolang/parser/packs/%s", pack)
-                    )
-                ).asString()
-            ).failures(),
+            check.failures(),
             Matchers.empty()
         );
     }

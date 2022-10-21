@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -111,7 +111,6 @@ public final class DiscoverMojo extends SafeMojo {
                             "//o[",
                             "not(starts-with(@base,'.'))",
                             " and @base != 'Q'",
-                            " and @base != 'QQ'",
                             " and @base != '^'",
                             " and @base != '$'",
                             " and @base != '&'",
@@ -128,12 +127,12 @@ public final class DiscoverMojo extends SafeMojo {
         if (names.isEmpty()) {
             Logger.debug(
                 this, "Didn't find any foreign objects in %s",
-                Save.rel(file)
+                new Home().rel(file)
             );
         } else {
             Logger.debug(
                 this, "Found %d foreign objects in %s: %s",
-                names.size(), Save.rel(file), names
+                names.size(), new Home().rel(file), names
             );
         }
         return names;

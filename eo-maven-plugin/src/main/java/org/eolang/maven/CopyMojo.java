@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,6 +65,7 @@ public final class CopyMojo extends SafeMojo {
 
     /**
      * Directory in which .eo files are located.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -76,6 +77,7 @@ public final class CopyMojo extends SafeMojo {
 
     /**
      * Target directory with resources to be packaged in JAR.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
@@ -87,6 +89,7 @@ public final class CopyMojo extends SafeMojo {
 
     /**
      * The version to use for 0.0.0 replacements.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.version", required = true, defaultValue = "${project.version}")
@@ -97,7 +100,7 @@ public final class CopyMojo extends SafeMojo {
         final Path target = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
         for (final Path src : sources) {
-            new Save(
+            new Home().save(
                 CopyMojo.REPLACE
                     .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),
@@ -106,18 +109,18 @@ public final class CopyMojo extends SafeMojo {
                         this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1
                     )
                 )
-            ).save();
+            );
         }
         if (sources.isEmpty()) {
             Logger.warn(
                 this, "No sources copied from %s to %s",
-                Save.rel(this.sourcesDir.toPath()), Save.rel(target)
+                new Home().rel(this.sourcesDir.toPath()), new Home().rel(target)
             );
         } else {
             Logger.info(
                 this, "%d source(s) copied from %s to %s",
-                sources.size(), Save.rel(this.sourcesDir.toPath()),
-                Save.rel(target)
+                sources.size(), new Home().rel(this.sourcesDir.toPath()),
+                new Home().rel(target)
             );
         }
     }

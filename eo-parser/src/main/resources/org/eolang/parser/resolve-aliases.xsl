@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@ SOFTWARE.
 
   If some alias is badly formatted, a runtime error is issued.
   -->
-  <xsl:output encoding="UTF-8"/>
-  <xsl:template match="o[not(@ref) and @base and not(starts-with(@base, '.')) and not(contains(@base, '.'))]">
+  <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:template match="o[not(@ref) and @base and not(contains(@base, '.'))]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
@@ -50,7 +50,7 @@ SOFTWARE.
                 <xsl:value-of select="$meta/@line"/>
               </xsl:message>
             </xsl:if>
-            <xsl:value-of select="$tail"/>
+            <xsl:value-of select="$tail[1]"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$o/@base"/>

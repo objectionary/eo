@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,8 @@ import org.cactoos.list.ListEnvelope;
 
 /**
  * Walk through directories in a directory and find dep names. Each
- * dep is a sub-directory of the third level,
- * for example "org.eolang/eo-runtime/0.10.0".
+ * dep is a subdirectory of the FOURTH level,
+ * for example "org.eolang/eo-runtime/jar-with-dependencies/0.10.0".
  *
  * @since 0.13
  */
@@ -60,15 +60,15 @@ final class DepDirs extends ListEnvelope<String> {
      */
     private static List<String> list(final Path dir) throws IOException {
         final List<String> names = new LinkedList<>();
-        if (Files.exists(dir)) {
+        if (new Home().exists(dir)) {
             final String home = dir.toAbsolutePath().toString();
             names.addAll(
-                Files.find(dir, 3, (t, u) -> true)
+                Files.find(dir, 4, (t, u) -> true)
                     .filter(file -> file.toFile().isDirectory())
                     .map(file -> file.toAbsolutePath().toString())
                     .filter(name -> !name.equals(home))
                     .map(name -> name.substring(home.length() + 1))
-                    .filter(name -> name.split(Pattern.quote(File.separator)).length == 3)
+                    .filter(name -> name.split(Pattern.quote(File.separator)).length == 4)
                     .collect(Collectors.toList())
             );
         }

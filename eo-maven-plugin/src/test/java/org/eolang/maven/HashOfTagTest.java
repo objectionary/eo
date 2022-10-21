@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,34 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link OyRemote}.
  * @since 0.26
  */
-public class HashOfTagTest {
+final class HashOfTagTest {
+
+    @BeforeEach
+    void weAreOnline() throws IOException {
+        try {
+            Assumptions.assumeTrue(
+                InetAddress.getByName("home.objectionary.com").isReachable(1000)
+            );
+        } catch (final UnknownHostException ex) {
+            Assumptions.assumeTrue(false);
+        }
+    }
+
     @Test
-    public void testCommitHashTag() throws IOException {
+    void testCommitHashTag() throws IOException {
         final String hash = new HashOfTag("0.26.0").hash();
         MatcherAssert.assertThat(
             hash,
@@ -45,7 +61,7 @@ public class HashOfTagTest {
     }
 
     @Test
-    public void testCommitHashOldTag() throws IOException {
+    void testCommitHashOldTag() throws IOException {
         final String hash = new HashOfTag("0.23.19").hash();
         MatcherAssert.assertThat(
             hash,
@@ -54,7 +70,7 @@ public class HashOfTagTest {
     }
 
     @Test
-    public void testCommitHashException() {
+    void testCommitHashException() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new HashOfTag("nonsense").hash()

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,7 @@ public class EObool$EOwhile extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
+                    Object last = false;
                     long count = 0L;
                     while (true) {
                         final Boolean term = new Param(rho).strong(Boolean.class);
@@ -66,10 +67,10 @@ public class EObool$EOwhile extends PhDefault {
                         final Phi body = rho.attr("f").get().copy();
                         body.move(rho);
                         body.attr(0).put(new Data.ToPhi(count));
-                        new Dataized(body).take();
+                        last = new Dataized(body).take();
                         ++count;
                     }
-                    return new Data.ToPhi(count);
+                    return new Data.ToPhi(last);
                 }
             )
         );

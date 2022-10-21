@@ -1,0 +1,12 @@
+locators:
+  - .simple .φ .ρ .φ .σ .φ .α0 .α0 Δ=bytes/01
+  - .simple .φ .α1 Δ=bytes/00-00-00-00-00-00-00-2A
+eo: |
+  +alias foo
+  +alias bar
+  
+  [] > simple
+    foo > @
+      bar
+        TRUE
+      42

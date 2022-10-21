@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ final class Vertices {
     public int next() {
         return this.seen.computeIfAbsent(
             String.format("next:%d", this.count.addAndGet(1)),
-            key -> this.seen.size() + 1
+            key -> this.count.addAndGet(1)
         );
     }
 
@@ -81,7 +81,7 @@ final class Vertices {
      * @param obj The object to find
      * @return Next vertex available or previously registered in non-phi instance
      */
-    private int bestNonPhi(final Object obj) {
+    private synchronized int bestNonPhi(final Object obj) {
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -97,7 +97,7 @@ final class Vertices {
         );
         final String hash = new String(digest.digest());
         return this.seen.computeIfAbsent(
-            hash, key -> this.seen.size() + 1
+            hash, key -> this.count.addAndGet(1)
         );
     }
 

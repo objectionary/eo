@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,6 @@ import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -103,7 +102,7 @@ public interface Data<T> {
             final T data = this.ref.get();
             String txt = this.blank.get();
             if (txt.isEmpty()) {
-                txt = this.src.take().toString();
+                txt = this.take().toString();
             } else if (data != null) {
                 txt = data.toString();
             }
@@ -112,10 +111,19 @@ public interface Data<T> {
 
         @Override
         public T take() {
-            if (this.ref.get() == null) {
-                this.ref.set(this.src.take());
+            synchronized (this.ref) {
+                return this.ref.updateAndGet(
+                    t -> {
+                        final T result;
+                        if (t == null) {
+                            result = Once.this.src.take();
+                        } else {
+                            result = t;
+                        }
+                        return result;
+                    }
+                );
             }
-            return this.ref.get();
         }
     }
 
@@ -303,7 +311,7 @@ public interface Data<T> {
                 }
                 txt = out.toString();
             } else if (this.val.getClass().isArray()) {
-                txt = Arrays.toString((Object[]) this.val);
+                txt = String.format("array[%d]", ((Object[]) this.val).length);
             } else {
                 txt = this.val.toString();
             }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -110,6 +110,7 @@ final class Heaps {
      * Free it.
      * @param heap The heap
      * @param ptr The pointer
+     * @checkstyle NonStaticMethodCheck (5 lines)
      */
     public void free(final Phi heap, final int ptr) {
         // Nothing yet

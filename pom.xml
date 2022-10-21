@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.59.0</version>
+    <version>0.63.2</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -97,12 +97,17 @@ SOFTWARE.
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.52.0</version>
+        <version>0.54.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
         <artifactId>xembly</artifactId>
-        <version>0.26.2</version>
+        <version>0.28.1</version>
+      </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>1.4.01</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -112,37 +117,63 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.5.3</version>
+        <version>0.15.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.9.1</version>
+        <type>pom</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.9.1</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.6.2</version>
+        <version>5.9.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>1.7.1</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.30</version>
+        <version>1.33</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-log</artifactId>
-        <version>0.20.1</version>
+        <version>0.22.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.23.2</version>
+        <version>0.25.4</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-matchers</artifactId>
-        <version>1.5.3</version>
+        <version>1.6.0</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>2.0.0-alpha5</version>
+        <artifactId>slf4j-reload4j</artifactId>
+        <version>2.0.3</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -152,7 +183,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
-        <version>4.9.2</version>
+        <version>4.11.1</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -163,8 +194,54 @@ SOFTWARE.
     </dependencies>
   </dependencyManagement>
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <execution>
+            <id>project-validate</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>3.0.13</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.1.0</version>
+          <executions>
+            <execution>
+              <id>enforce-java</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireJavaVersion>
+                    <version>[11,)</version>
+                  </requireJavaVersion>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
@@ -173,6 +250,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
+          <version>4.11.1</version>
           <configuration>
             <treatWarningsAsErrors>true</treatWarningsAsErrors>
           </configuration>
@@ -203,7 +281,7 @@ SOFTWARE.
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.21.0</version>
+            <version>0.22.0</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>

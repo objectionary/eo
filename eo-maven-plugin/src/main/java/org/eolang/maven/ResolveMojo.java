@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -104,14 +103,19 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             final String coords = ResolveMojo.coords(dep);
+            String classifier = dep.getClassifier();
+            if (classifier.isEmpty()) {
+                classifier = "-";
+            }
             final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
                 .resolve(dep.getGroupId())
                 .resolve(dep.getArtifactId())
+                .resolve(classifier)
                 .resolve(dep.getVersion());
-            if (Files.exists(dest)) {
+            if (new Home().exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, Save.rel(dest)
+                    coords, new Home().rel(dest)
                 );
                 continue;
             }
@@ -252,15 +256,20 @@ public final class ResolveMojo extends SafeMojo {
             final Dependency dependency = new Dependency();
             dependency.setGroupId(parts[0]);
             dependency.setArtifactId(parts[1]);
-            dependency.setVersion(parts[2]);
-            dependency.setClassifier("");
+            if (parts.length == 3) {
+                dependency.setVersion(parts[2]);
+                dependency.setClassifier("");
+            } else {
+                dependency.setClassifier(parts[2]);
+                dependency.setVersion(parts[3]);
+            }
             dependency.setScope("transpile");
             dep = Optional.of(dependency);
         } else {
             throw new IllegalStateException(
                 String.format(
                     "Too many (%d) dependencies at %s",
-                    coords.size(), Save.rel(file)
+                    coords.size(), new Home().rel(file)
                 )
             );
         }
@@ -273,10 +282,19 @@ public final class ResolveMojo extends SafeMojo {
      * @return Coords
      */
     private static String coords(final Dependency dep) {
-        return String.format(
-            "%s:%s:%s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
-        );
+        String ret = "";
+        if (dep.getClassifier().isEmpty()) {
+            ret = String.format(
+                "%s:%s:%s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+            );
+        } else {
+            ret = String.format(
+                "%s:%s:%s:%s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion()
+            );
+        }
+        return ret;
     }
 
     /**

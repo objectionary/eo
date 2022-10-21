@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ SOFTWARE.
   </o>
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@method]" mode="#all" priority="0">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>
     <xsl:copy>

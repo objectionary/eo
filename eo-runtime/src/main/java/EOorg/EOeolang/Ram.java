@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,8 @@ import java.io.RandomAccessFile;
 import java.io.UncheckedIOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 
@@ -51,7 +51,7 @@ public enum Ram {
     /**
      * Phi to File mapping.
      */
-    private final Map<Phi, RandomAccessFile> addresses = new HashMap<>();
+    private final Map<Phi, RandomAccessFile> addresses = new ConcurrentHashMap<>();
 
     /**
      * Read.
@@ -61,7 +61,7 @@ public enum Ram {
      * @return Byte array.
      * @throws IOException If fails.
      */
-    public byte[] read(
+    public synchronized byte[] read(
         final Phi object,
         final int position,
         final int length
@@ -80,7 +80,7 @@ public enum Ram {
      * @param bytes Bytes to wite.
      * @throws IOException If fails.
      */
-    public void write(
+    public synchronized void write(
         final Phi object,
         final int position,
         final byte[] bytes
@@ -108,7 +108,7 @@ public enum Ram {
                                 .getName(),
                             ".mem"
                         ).toFile(),
-                        "rw"
+                        "rws"
                     );
                     file.setLength(size);
                     return file;

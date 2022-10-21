@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class DataTest {
+final class DataTest {
 
     @Test
-    public void makesString() {
+    void makesString() {
         MatcherAssert.assertThat(
             Data.Value.class.cast(new Data.ToPhi("Hello,\nдруг!").attr("Δ").get()).take(),
             Matchers.hasToString("Hello,\nдруг!")
@@ -44,7 +44,7 @@ public final class DataTest {
     }
 
     @Test
-    public void printsByteArray() {
+    void printsByteArray() {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[] {(byte) 0x01, (byte) 0xf2}).toString(),
             Matchers.containsString("01-F2")
@@ -52,7 +52,7 @@ public final class DataTest {
     }
 
     @Test
-    public void printsEmptyByteArray() {
+    void printsEmptyByteArray() {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[0]).toString(),
             Matchers.containsString("=-")
@@ -60,7 +60,7 @@ public final class DataTest {
     }
 
     @Test
-    public void printsString() {
+    void printsString() {
         MatcherAssert.assertThat(
             new Data.ToPhi("Hello,\nдруг!").toString(),
             Matchers.containsString("Hello,\\nдруг!")
@@ -68,7 +68,7 @@ public final class DataTest {
     }
 
     @Test
-    public void getsVertex() {
+    void getsVertex() {
         MatcherAssert.assertThat(
             new Dataized(new Data.ToPhi(1L).attr("ν").get()).take(Long.class),
             Matchers.greaterThan(0L)
@@ -76,7 +76,7 @@ public final class DataTest {
     }
 
     @Test
-    public void comparesVertex() {
+    void comparesVertex() {
         MatcherAssert.assertThat(
             new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class),
             Matchers.equalTo(
@@ -86,7 +86,7 @@ public final class DataTest {
     }
 
     @Test
-    public void comparesTwoDatas() {
+    void comparesTwoDatas() {
         MatcherAssert.assertThat(
             new Data.ToPhi(1L),
             Matchers.equalTo(new Data.ToPhi(1L))
@@ -110,7 +110,7 @@ public final class DataTest {
     }
 
     @Test
-    public void comparesTwoSimpleValues() {
+    void comparesTwoSimpleValues() {
         MatcherAssert.assertThat(
             new Data.Value<>(1L),
             Matchers.equalTo(new Data.Value<>(1L))
@@ -154,7 +154,7 @@ public final class DataTest {
     }
 
     @Test
-    public void comparesTwoByteArrays() {
+    void comparesTwoByteArrays() {
         MatcherAssert.assertThat(
             new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
             Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}))
@@ -166,12 +166,12 @@ public final class DataTest {
     }
 
     @Test
-    public void comparesTwoPhiArrays() {
+    void comparesTwoPhiArrays() {
         MatcherAssert.assertThat(
             new Data.Value<>(
                 new Phi[] {
                     new Data.ToPhi("foo"),
-                    new Data.ToPhi(1L)
+                    new Data.ToPhi(1L),
                 }
             ),
             Matchers.not(
@@ -179,7 +179,7 @@ public final class DataTest {
                     new Data.Value<>(
                         new Phi[] {
                             new Data.ToPhi("foo"),
-                            new Data.ToPhi(1L)
+                            new Data.ToPhi(1L),
                         }
                     )
                 )

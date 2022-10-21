@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,17 +98,17 @@ public final class UnspileMojo extends SafeMojo {
         if (all.isEmpty()) {
             Logger.warn(
                 this, "No .class files in %s including %s, nothing to unspile",
-                Save.rel(this.classesDir.toPath()), this.includes
+                new Home().rel(this.classesDir.toPath()), this.includes
             );
         } else if (unspiled == 0) {
             Logger.info(
                 this, "No .class files out of %d deleted in %s including %s",
-                all.size(), Save.rel(this.classesDir.toPath()), this.includes
+                all.size(), new Home().rel(this.classesDir.toPath()), this.includes
             );
         } else {
             Logger.info(
                 this, "Deleted %d .class files out of %d in %s",
-                unspiled, all.size(), Save.rel(this.classesDir.toPath())
+                unspiled, all.size(), new Home().rel(this.classesDir.toPath())
             );
         }
     }
@@ -137,17 +137,17 @@ public final class UnspileMojo extends SafeMojo {
             name.replaceAll("\\.class$", ".java")
         );
         boolean deleted = false;
-        if (Files.exists(java)) {
+        if (new Home().exists(java)) {
             Files.delete(file);
             Logger.debug(
                 this, "Deleted %s since %s is present",
-                Save.rel(file), Save.rel(java)
+                new Home().rel(file), new Home().rel(java)
             );
             deleted = true;
         } else {
             Logger.debug(
                 this, "Not deleted %s since %s is absent",
-                Save.rel(file), Save.rel(java)
+                new Home().rel(file), new Home().rel(java)
             );
         }
         return deleted;

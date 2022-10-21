@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
-public final class CachedPhiTest {
+final class CachedPhiTest {
 
     @Test
-    public void simpleCaching() {
+    void simpleCaching() {
         final AtomicInteger count = new AtomicInteger(0);
         final CachedPhi cphi = new CachedPhi();
         final Supplier<Phi> sup = () -> {
@@ -54,19 +54,21 @@ public final class CachedPhiTest {
     }
 
     @Test
-    public void recursiveCaching() {
+    void recursiveCaching() {
         final AtomicInteger count = new AtomicInteger(3);
         final CachedPhi cphi = new CachedPhi();
         final AtomicReference<Supplier<Phi>> sup = new AtomicReference<>();
         sup.set(
             () -> {
+                final Phi result;
                 if (count.decrementAndGet() == 0) {
-                    return new Data.ToPhi(42L);
+                    result = new Data.ToPhi(42L);
+                } else {
+                    result = cphi.get("x", sup.get());
                 }
-                return cphi.get("x", sup.get());
+                return result;
             }
         );
-        ;
         MatcherAssert.assertThat(
             new Dataized(cphi.get("x", sup.get())).take(Long.class),
             Matchers.equalTo(42L)

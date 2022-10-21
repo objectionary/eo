@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.21
  */
-public final class AtNamedTest {
+final class AtNamedTest {
 
     @Test
-    public void rethrowsCorrectly() {
+    void rethrowsCorrectly() {
         final Phi phi = new AtNamedTest.Dummy();
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
@@ -54,12 +54,26 @@ public final class AtNamedTest {
         );
     }
 
+    /**
+     * Dummy Phi.
+     * @since 1.0
+     */
     private static class Dummy extends PhDefault {
+
+        /**
+         * Ctor.
+         */
         Dummy() {
             super();
-            this.add("x", new AtComposite(this, rho -> {
-                throw new ExFailure("intended");
-            }));
+            this.add(
+                "x",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        throw new ExFailure("intended");
+                    }
+                )
+            );
         }
     }
 

@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
@@ -58,8 +58,14 @@ SOFTWARE.
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="concat('EO', replace(replace(replace(replace($n, '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
   </xsl:function>
+  <xsl:function name="eo:suffix" as="xs:string">
+    <xsl:param name="s1"/>
+    <xsl:param name="s2"/>
+    <xsl:value-of select="concat(concat($s1, '_'), $s2)"/>
+  </xsl:function>
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
+    <xsl:param name="alt" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\.')"/>
     <xsl:variable name="p">
       <xsl:for-each select="$parts">
@@ -79,7 +85,15 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="concat($p, eo:clean($c))"/>
+    <xsl:variable name="pre" select="concat($p, eo:clean($c))"/>
+    <xsl:choose>
+      <xsl:when test="string-length($pre)&gt;250">
+        <xsl:value-of select="concat(substring($pre, 1, 25), $alt)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$pre"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -99,10 +113,10 @@ SOFTWARE.
     <xsl:attribute name="java-name">
       <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
-        <xsl:value-of select="eo:class-name($pkg)"/>
+        <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
-      <xsl:value-of select="eo:class-name(.)"/>
+      <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
     </xsl:attribute>
   </xsl:template>
   <xsl:template match="class">
@@ -137,7 +151,7 @@ SOFTWARE.
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="ctors"/>
@@ -161,26 +175,26 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="//meta[head='junit'] and not(@parent)">
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>() {</xsl:text>
       </xsl:when>
       <xsl:when test="@ancestors">
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(final Phi sigma) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(sigma);</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name)"/>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(final Phi sigma) {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(sigma);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$data-objects[text()=$type]">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree());</xsl:text>
     </xsl:if>
@@ -196,7 +210,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="equals-and-hashCode">
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$data-objects[text()=$type]">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:text>@Override</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
@@ -351,7 +365,7 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="@primitive and @base">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name(@base)"/>
+        <xsl:value-of select="eo:class-name(@base, eo:suffix(@line, @pos))"/>
         <xsl:text>(Phi.Φ)</xsl:text>
       </xsl:when>
       <xsl:when test="@base='$'">
@@ -359,9 +373,6 @@ SOFTWARE.
       </xsl:when>
       <xsl:when test="@base='Q'">
         <xsl:text>Phi.Φ</xsl:text>
-      </xsl:when>
-      <xsl:when test="@base='QQ'">
-        <xsl:text>Phi.Φ.attr("org").get().attr("eolang").get()</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
         <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
@@ -371,7 +382,7 @@ SOFTWARE.
       </xsl:when>
       <xsl:when test="$b/@ancestors">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name($b/@name)"/>
+        <xsl:value-of select="eo:class-name($b/@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(rho)</xsl:text>
       </xsl:when>
       <xsl:when test="$b and name($b)='class'">
@@ -569,9 +580,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;</xsl:text>
-    <xsl:value-of select="@java-type"/>
-    <xsl:text>&gt;(</xsl:text>
+    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -606,7 +615,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
     <xsl:text>Object obj = new Dataized(new </xsl:text>
-    <xsl:value-of select="eo:class-name(@name)"/>
+    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>()).take();</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
     <xsl:text>if (obj instanceof String) {</xsl:text>
@@ -621,7 +630,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
-    <xsl:value-of select="eo:class-name(tail)"/>
+    <xsl:value-of select="eo:class-name(tail, '')"/>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>

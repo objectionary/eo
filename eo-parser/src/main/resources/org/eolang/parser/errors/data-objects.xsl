@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data-objects" version="2.0">
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[not(@data) and @base=$data-objects/text()]">
+      <xsl:for-each select="//o[not(@data) and @base=$literal-objects/text()]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>data-objects</xsl:text>

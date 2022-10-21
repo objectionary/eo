@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -35,22 +34,22 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class UnspileMojoTest {
+final class UnspileMojoTest {
 
     @Test
-    public void testCleaning(@TempDir final Path temp) throws Exception {
+    void testCleaning(@TempDir final Path temp) throws Exception {
         final Path generated = temp.resolve("generated");
         final Path classes = temp.resolve("classes");
         final Path foo = classes.resolve("a/b/c/foo.class");
-        new Save("abc", foo).save();
-        new Save("xxx", generated.resolve("a/b/c/foo.java")).save();
-        new Save("cde", classes.resolve("foo.txt")).save();
+        new Home().save("abc", foo);
+        new Home().save("xxx", generated.resolve("a/b/c/foo.java"));
+        new Home().save("cde", classes.resolve("foo.txt"));
         new Moja<>(UnspileMojo.class)
             .with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(foo),
+            new Home().exists(foo),
             Matchers.is(false)
         );
     }

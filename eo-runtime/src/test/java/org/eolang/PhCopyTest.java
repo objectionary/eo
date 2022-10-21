@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-public final class PhCopyTest {
+final class PhCopyTest {
 
     @Test
-    public void makesObjectCopy() {
+    void makesObjectCopy() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhCopy(new Data.ToPhi(1L))

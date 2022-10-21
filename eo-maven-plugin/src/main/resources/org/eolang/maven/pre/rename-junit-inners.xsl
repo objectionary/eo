@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ SOFTWARE.
   into junit objects by junit.xsl. Without this cleaning there
   could be too long class names.
   -->
-  <xsl:output encoding="UTF-8"/>
+  <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="junit" select="exists(//meta[head='junit'])"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="class" as="node()"/>

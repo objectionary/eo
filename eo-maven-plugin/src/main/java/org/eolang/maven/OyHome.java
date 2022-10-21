@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import org.cactoos.io.InputOf;
  *
  * @since 1.0
  */
-public final class OyHome implements Objectionary {
+final class OyHome implements Objectionary {
     /**
      * Local storage.
      */
@@ -49,7 +49,7 @@ public final class OyHome implements Objectionary {
      * @param ver Version.
      * @param path Root.
      */
-    public OyHome(final String ver, final Path path) {
+    OyHome(final String ver, final Path path) {
         this.version = ver;
         this.home = path;
     }
@@ -58,7 +58,7 @@ public final class OyHome implements Objectionary {
     public String toString() {
         return String.format(
             "%s (%s)",
-            Save.rel(this.home), this.version
+            new Home().rel(this.home), this.version
         );
     }
 
@@ -66,7 +66,7 @@ public final class OyHome implements Objectionary {
     public Input get(final String name) throws FileNotFoundException {
         final Path file = new Place(name).make(
             this.home
-                .resolve("sources")
+                .resolve("pulled")
                 .resolve(this.version),
             "eo"
         );

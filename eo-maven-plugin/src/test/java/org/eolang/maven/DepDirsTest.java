@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,17 +36,17 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class DepDirsTest {
+final class DepDirsTest {
 
     @Test
-    public void findsDirs(@TempDir final Path temp) throws IOException {
-        new Save("", temp.resolve("a/b/c/f/test.txt")).save();
-        new Save("", temp.resolve("a/b/f.txt")).save();
-        new Save("", temp.resolve("test/f.txt")).save();
-        new Save("", temp.resolve("a/g")).save();
+    void findsDirs(@TempDir final Path temp) throws IOException {
+        new Home().save("", temp.resolve("a/b/c/f/test.txt"));
+        new Home().save("", temp.resolve("a/b/f.txt"));
+        new Home().save("", temp.resolve("test/f.txt"));
+        new Home().save("", temp.resolve("a/g"));
         MatcherAssert.assertThat(
             new DepDirs(temp),
-            Matchers.contains(String.format("a%sb%1$sc", File.separator))
+            Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
         );
         MatcherAssert.assertThat(
             new DepDirs(temp),

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,11 @@ public class EObytes$EOas_float extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> new Data.ToPhi(new Param(rho).fromBytes(Double.class))
+                rho -> new Data.ToPhi(
+                    new Param(rho)
+                        .asBytes()
+                        .asNumber(Double.class)
+                )
             )
         );
     }

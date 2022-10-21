@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,23 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOtxt.EOsprintf;
+import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.llorllale.cactoos.matchers.RunsInThreads;
 
 /**
  * Test case for {@link PhWith}.
  *
  * @since 0.16
  */
-public final class PhWithTest {
+final class PhWithTest {
 
     @Test
-    public void comparesTwoObjects() {
+    void comparesTwoObjects() {
         final Phi dummy = new PhWith(
             new PhMethod(new PhWithTest.Dummy(Phi.Φ), "plus"),
             0, new Data.ToPhi(1L)
@@ -47,7 +51,7 @@ public final class PhWithTest {
     }
 
     @Test
-    public void takesMethod() {
+    void takesMethod() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -60,7 +64,7 @@ public final class PhWithTest {
     }
 
     @Test
-    public void passesToSubObject() {
+    void passesToSubObject() {
         final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(
@@ -74,7 +78,7 @@ public final class PhWithTest {
     }
 
     @Test
-    public void printsToString() {
+    void printsToString() {
         final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
         MatcherAssert.assertThat(
             new PhWith(
@@ -85,11 +89,57 @@ public final class PhWithTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"hello", "bye", "", "привет"})
+    void runsInThreads(final String data) {
+        final String attr = "foo";
+        final Phi ref = new PhWith(new DummyWithAtFree(attr, Phi.Φ), 0, new Data.ToPhi(data));
+        final Func<Phi, Boolean> actual = phi -> {
+            MatcherAssert.assertThat(
+                new Dataized(phi.attr(attr).get()).take(String.class),
+                Matchers.is(data)
+            );
+            return true;
+        };
+        MatcherAssert.assertThat(
+            actual,
+            new RunsInThreads<>(
+                ref,
+                Runtime.getRuntime().availableProcessors() * 10
+            )
+        );
+    }
+
+    /**
+     * Dummy Phi with free attribute.
+     * @since 1.0
+     */
+    public static class DummyWithAtFree extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param attr Free attribute name
+         * @param sigma Sigma
+         */
+        DummyWithAtFree(final String attr, final Phi sigma) {
+            super(sigma);
+            this.add(attr, new AtFree());
+        }
+    }
+
+    /**
+     * Dummy Phi.
+     * @since 1.0
+     */
     public static class Dummy extends PhDefault {
-        public Dummy(final Phi sigma) {
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        Dummy(final Phi sigma) {
             super(sigma);
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
     }
-
 }

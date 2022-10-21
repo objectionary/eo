@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Json;
-import com.yegor256.tojos.MonoTojos;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
@@ -38,13 +35,13 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class PullMojoTest {
+final class PullMojoTest {
 
     @Test
-    public void testSimplePull(@TempDir final Path temp) {
+    void testSimplePull(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new MonoTojos(new Json(foreign))
+        Catalogs.INSTANCE.make(foreign, "json")
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
@@ -58,7 +55,7 @@ public final class PullMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -69,5 +66,4 @@ public final class PullMojoTest {
             Matchers.is(true)
         );
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -38,11 +39,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Pull EO XML files from Objectionary and parse them into XML.
  *
  * @since 0.1
- * @todo #561:30min Add a parameter to bypass/overwrite cache
- *  for combination of Local and Caching and Remote.
- *  It was suggested by @yegor256 to rely on -U parameter of Maven
- *  (https://github.com/objectionary/eo/issues/561#issuecomment-1007128430).
- *  If it is possible to access it from the plugin.
  */
 @Mojo(
     name = "pull",
@@ -92,17 +88,19 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
+        final HashOfTag tag = new HashOfTag(this.hash);
         if (this.objectionary == null) {
-            this.objectionary = new OyFallback(
+            this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    this.hash,
+                    tag.narrow(),
                     this.outputPath
                 ),
                 new OyCaching(
-                    this.hash,
+                    tag.narrow(),
                     this.outputPath,
-                    new OyRemote(this.hash)
-                )
+                    PullMojo.remote(tag.hash())
+                ),
+                this.forceUpdate()
             );
         }
         if (!tojos.isEmpty()) {
@@ -111,12 +109,40 @@ public final class PullMojo extends SafeMojo {
                     AssembleMojo.ATTR_EO,
                     this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
                 );
+                tojo.set(
+                    AssembleMojo.ATTR_HASH,
+                    tag.narrow()
+                );
             }
             Logger.info(
                 this, "%d program(s) pulled from %s",
                 tojos.size(), this.objectionary
             );
         }
+    }
+
+    /**
+     * Create remote repo.
+     * @param full Full Git hash
+     * @return Objectionary
+     */
+    private static Objectionary remote(final String full) {
+        Objectionary obj;
+        try {
+            InetAddress.getByName("home.objectionary.com").isReachable(1000);
+            obj = new OyRemote(full);
+        } catch (final IOException ex) {
+            obj = new OyEmpty();
+        }
+        return obj;
+    }
+
+    /**
+     * Is force update option enabled.
+     * @return True if option enabled and false otherwise
+     */
+    private boolean forceUpdate() {
+        return this.session.getRequest().isUpdateSnapshots();
     }
 
     /**
@@ -133,16 +159,16 @@ public final class PullMojo extends SafeMojo {
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, Save.rel(src)
+                name, new Home().rel(src)
             );
         } else {
-            new Save(
+            new Home().save(
                 this.objectionary.get(name),
                 src
-            ).save();
+            );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
-                name, Save.rel(src)
+                name, new Home().rel(src)
             );
         }
         return src;

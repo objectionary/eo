@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,8 +66,11 @@ import org.yaml.snakeyaml.Yaml;
  * released, you enable this test again.
  *
  * @since 0.1
+ * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
+ *  Find a way to make it reusable (i.e making it part of
+ *  VerboseProcess) and remove it from MainTest.
  */
-public final class SnippetTest {
+final class SnippetTest {
 
     /**
      * Temp dir.
@@ -80,7 +83,7 @@ public final class SnippetTest {
     @ParameterizedTest
     @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
-    public void testFullRun(final String yml) throws Exception {
+    void testFullRun(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(
             new TextOf(
@@ -97,10 +100,14 @@ public final class SnippetTest {
             new InputOf(map.get("in").toString()),
             new OutputTo(stdout)
         );
-        MatcherAssert.assertThat(result, Matchers.equalTo(map.get("exit")));
+        MatcherAssert.assertThat(
+            String.format("'%s' returned wrong exit code", yml),
+            result, Matchers.equalTo(map.get("exit"))
+        );
         Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
+                String.format("'%s' printed something wrong", yml),
                 new String(stdout.toByteArray(), StandardCharsets.UTF_8),
                 Matchers.matchesPattern(
                     Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
@@ -133,7 +140,7 @@ public final class SnippetTest {
     private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");
-        new Save(code, src.resolve("code.eo")).save();
+        new Home().save(code, src.resolve("code.eo"));
         final Path target = tmp.resolve("target");
         final Path foreign = target.resolve("eo-foreign.json");
         new Moja<>(RegisterMojo.class)
@@ -196,7 +203,8 @@ public final class SnippetTest {
         );
         SnippetTest.exec(
             String.format(
-                "javac -encoding utf-8 %s -d %s -cp %s",
+                "%s -encoding utf-8 %s -d %s -cp %s",
+                SnippetTest.jdkExecutable("javac"),
                 new Walk(generated).stream()
                     .map(Path::toAbsolutePath)
                     .map(Path::toString)
@@ -211,7 +219,7 @@ public final class SnippetTest {
                 " ",
                 new Joined<String>(
                     new ListOf<>(
-                        "java",
+                        SnippetTest.jdkExecutable("java"),
                         "-Dfile.encoding=utf-8",
                         "-cp",
                         cpath,
@@ -277,6 +285,28 @@ public final class SnippetTest {
         } catch (final Exception ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    /**
+     * Locate executable inside JAVA_HOME.
+     * @param name Name of executable.
+     * @return Path to java executable.
+     */
+    private static String jdkExecutable(final String name) {
+        final String result;
+        final String relative = "%s/bin/%s";
+        final String property = System.getProperty("java.home");
+        if (property == null) {
+            final String environ = System.getenv("JAVA_HOME");
+            if (environ == null) {
+                result = name;
+            } else {
+                result = String.format(relative, environ, name);
+            }
+        } else {
+            result = String.format(relative, property, name);
+        }
+        return result;
     }
 
 }

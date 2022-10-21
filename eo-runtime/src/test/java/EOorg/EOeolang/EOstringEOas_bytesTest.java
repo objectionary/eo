@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.Data;
@@ -34,6 +38,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOstring}.
  *
  * @since 0.17
+ * @checkstyle TypeNameCheck (4 lines)
  */
 public final class EOstringEOas_bytesTest {
 

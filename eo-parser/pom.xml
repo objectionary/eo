@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Yegor Bugayenko
+Copyright (c) 2016-2022 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,11 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
       <!-- version from parent POM -->
@@ -58,7 +63,7 @@ SOFTWARE.
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
-      <version>9.8.0-5</version>
+      <version>11.4</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -100,9 +105,18 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
@@ -111,7 +125,7 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <artifactId>slf4j-reload4j</artifactId>
       <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
@@ -120,6 +134,11 @@ SOFTWARE.
       <artifactId>log4j</artifactId>
       <!-- version from parent POM -->
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.10.0</version>
     </dependency>
   </dependencies>
   <build>
@@ -134,6 +153,16 @@ SOFTWARE.
             </manifestEntries>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>project-validate</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,26 +27,38 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.parser.ParsingTrain;
 
 /**
  * Optimize XML files.
  *
  * @since 0.1
+ *
+ * @todo #1336:30min Make a number of threads in `exec()` method configurable
+ *   via mojo parameter `threads`. Default value should be set to 4.
  */
 @Mojo(
     name = "optimize",
@@ -64,6 +76,34 @@ public final class OptimizeMojo extends SafeMojo {
      * The directory where to transpile to.
      */
     public static final String DIR = "03-optimize";
+
+    /**
+     * Parsing train with XSLs.
+     * @implNote The list of applied XSLs is adjusted during execution.
+     *  <br>Separate instance of the train is used of each optimization
+     *  thread since {@link com.jcabi.xml.XSLDocument}, which is used under
+     *  the hood in {@link TrClasspath}, is not thread-safe.
+     * @todo #1336:30min Replace creation of new `Train` instances for each
+     *   parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
+     *   is thread-safe (solved by
+     *   <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
+     */
+    private static final Unchecked<Train<Shift>> TRAIN = new Unchecked<>(
+        () -> new TrFast(
+            new TrClasspath<>(
+                new ParsingTrain(),
+                "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                "/org/eolang/parser/optimize/remove-refs.xsl",
+                "/org/eolang/parser/optimize/abstracts-float-up.xsl",
+                "/org/eolang/parser/optimize/remove-levels.xsl",
+                "/org/eolang/parser/add-refs.xsl",
+                "/org/eolang/parser/optimize/fix-missed-names.xsl",
+                "/org/eolang/parser/add-refs.xsl",
+                "/org/eolang/parser/errors/broken-refs.xsl",
+                "/org/eolang/parser/optimize/constant-folding.xsl"
+            ).back()
+        )
+    );
 
     /**
      * Track optimization steps into intermediate XML files?
@@ -85,35 +125,103 @@ public final class OptimizeMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        int done = 0;
-        for (final Tojo tojo : sources) {
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-            if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
-                final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-                if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                    Logger.debug(
-                        this, "Already optimized %s to %s",
-                        Save.rel(src), Save.rel(tgt)
+        final Set<Callable<Object>> tasks = new HashSet<>(0);
+        final AtomicInteger done = new AtomicInteger(0);
+        sources.stream()
+            .map(SynchronizedTojo::new)
+            .forEach(
+                tojo -> {
+                    final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+                    if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
+                        final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+                        if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                            Logger.debug(
+                                this, "Already optimized %s to %s",
+                                new Home().rel(src), new Home().rel(tgt)
+                            );
+                            return;
+                        }
+                    }
+                    Logger.info(
+                        this, "Adding optimization task for %s",
+                        src
                     );
-                    continue;
+                    tasks.add(
+                        Executors.callable(
+                            () -> {
+                                try {
+                                    final XML optimized = this.optimize(src);
+                                    done.incrementAndGet();
+                                    if (this.shouldPass(optimized)) {
+                                        tojo.set(
+                                            AssembleMojo.ATTR_XMIR2,
+                                            this.make(optimized, src).toAbsolutePath().toString()
+                                        );
+                                    }
+                                } catch (final IOException exception) {
+                                    throw new IllegalStateException(
+                                        String.format(
+                                            "Unable to optimize %s",
+                                            tojo.get(Tojos.KEY)
+                                        ),
+                                        exception
+                                    );
+                                }
+                            }
+                        )
+                    );
                 }
-            }
-            ++done;
-            final XML optimized = this.optimize(src);
-            if (this.shouldPass(optimized)) {
-                tojo.set(
-                    AssembleMojo.ATTR_XMIR2,
-                    this.make(optimized, src).toAbsolutePath().toString()
+            );
+        try {
+            Logger.info(
+                this, "Running %s optimizations in parallel",
+                tasks.size()
+            );
+            Executors.newFixedThreadPool(4)
+                .invokeAll(tasks)
+                .forEach(
+                    completed -> {
+                        try {
+                            completed.get();
+                        } catch (final InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        } catch (final ExecutionException ex) {
+                            throw new IllegalArgumentException(
+                                ex.getCause().getMessage(),
+                                ex
+                            );
+                        }
+                    }
                 );
-            }
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                String.format(
+                    "Interrupted while waiting for %d optimizations to finish",
+                    done.get()
+                ),
+                ex
+            );
         }
-        if (done > 0) {
-            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
+        if (done.get() > 0) {
+            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done.get(), sources.size());
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
@@ -124,34 +232,31 @@ public final class OptimizeMojo extends SafeMojo {
      *
      * @param file EO file
      * @return The file with optimized XMIR
-     * @throws IOException If fails
+     * @throws FileNotFoundException If fails
+     * @throws IllegalArgumentException If error is detected within XMIR and
+     *  fail on error is enabled.
      */
-    private XML optimize(final Path file) throws IOException {
+    private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
-        final Place place = new Place(name);
-        Train<Shift> train = new TrBulk<>(new TrClasspath<>(new ParsingTrain())).with(
-            Arrays.asList(
-                "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                "/org/eolang/parser/optimize/remove-refs.xsl",
-                "/org/eolang/parser/optimize/abstracts-float-up.xsl",
-                "/org/eolang/parser/optimize/remove-levels.xsl",
-                "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/optimize/fix-missed-names.xsl",
-                "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/errors/broken-refs.xsl"
-            )
-        ).back().back();
+        Train<Shift> trn = OptimizeMojo.TRAIN.value();
+        if (this.failOnWarning) {
+            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-warnings.xsl"));
+        }
+        if (this.failOnError) {
+            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-errors.xsl"));
+        }
         if (this.trackOptimizationSteps) {
+            final Place place = new Place(name);
             final Path dir = place.make(
                 this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
             );
-            train = new SpyTrain(train, dir);
+            trn = new SpyTrain(trn, dir);
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
-                Save.rel(dir)
+                new Home().rel(dir)
             );
         }
-        return new Xsline(train).pass(new XMLDocument(file));
+        return new Xsline(trn).pass(new XMLDocument(file));
     }
 
     /**
@@ -166,12 +271,12 @@ public final class OptimizeMojo extends SafeMojo {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Path target = place.make(
-            this.targetDir.toPath().resolve(OptimizeMojo.DIR), Transpiler.EXT
+            this.targetDir.toPath().resolve(OptimizeMojo.DIR), TranspileMojo.EXT
         );
-        new Save(xml.toString(), target).save();
+        new Home().save(xml.toString(), target);
         Logger.debug(
             this, "Optimized %s (program:%s) to %s",
-            Save.rel(file), name, Save.rel(target)
+            new Home().rel(file), name, new Home().rel(target)
         );
         return target;
     }

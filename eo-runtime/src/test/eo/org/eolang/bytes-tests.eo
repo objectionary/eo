@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Yegor Bugayenko
+# Copyright (c) 2016-2022 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+package org.eolang
-+home https://github.com/objectionary/eo
-+version 0.0.0
 +alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
 +junit
++package org.eolang
++version 0.0.0
 
 [] > takes-part-of-bytes
   assert-that > @
@@ -443,4 +444,10 @@
   assert-that > @
     ((-4294967296).as-bytes.or (1.as-bytes)).as-int
     $.equal-to -4294967295
+
+[] > bytes-hashes-remain-same
+  assert-that > @
+    01-02-03-04.as-hash
+    $.equal-to
+      923521
 

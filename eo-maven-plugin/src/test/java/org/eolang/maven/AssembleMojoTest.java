@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
@@ -37,12 +36,12 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-public final class AssembleMojoTest {
+final class AssembleMojoTest {
 
     @Test
-    public void assemblesTogether(@TempDir final Path temp) throws Exception {
+    void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -50,7 +49,7 @@ public final class AssembleMojoTest {
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("main.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
@@ -64,6 +63,7 @@ public final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with(
                 "objectionary",
@@ -73,11 +73,11 @@ public final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, Transpiler.EXT
+                        ParseMojo.DIR, TranspileMojo.EXT
                     )
                 )
             ),
@@ -86,26 +86,28 @@ public final class AssembleMojoTest {
     }
 
     @Test
-    public void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
+    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Save(
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+package test",
                 "",
                 "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("wrong.eo")
-        ).save();
-        new Save(
+        );
+        new Home().save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+package test",
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
             src.resolve("main.eo")
-        ).save();
+        );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
@@ -119,6 +121,7 @@ public final class AssembleMojoTest {
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
+            .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("failOnError", false)
             .with(
@@ -129,22 +132,22 @@ public final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, Transpiler.EXT
+                        ParseMojo.DIR, TranspileMojo.EXT
                     )
                 )
             ),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(
+            new Home().exists(
                 target.resolve(
                     String.format(
                         "%s/main.%s",
-                        ParseMojo.DIR, Transpiler.EXT
+                        ParseMojo.DIR, TranspileMojo.EXT
                     )
                 )
             ),

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,12 +35,12 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class WalkTest {
+final class WalkTest {
 
     @Test
-    public void findsFiles(@TempDir final Path temp) throws Exception {
-        new Save("", temp.resolve("foo/hello/0.1/EObar/x.bin")).save();
-        new Save("", temp.resolve("EOxxx/bar")).save();
+    void findsFiles(@TempDir final Path temp) throws Exception {
+        new Home().save("", temp.resolve("foo/hello/0.1/EObar/x.bin"));
+        new Home().save("", temp.resolve("EOxxx/bar"));
         MatcherAssert.assertThat(
             new Walk(temp).includes(new ListOf<>("EO**/*")),
             Matchers.iterableWithSize(1)

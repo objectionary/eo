@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Csv;
-import com.yegor256.tojos.MonoTojos;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,15 +34,15 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
-public final class MarkMojoTest {
+final class MarkMojoTest {
 
     @Test
-    public void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
+    void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
-        new Save(
+        new Home().save(
             "hi",
-            bins.resolve(String.format("foo/hello/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
-        ).save();
+            bins.resolve(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
+        );
         final Path foreign = temp.resolve("placed.json");
         new Moja<>(MarkMojo.class)
             .with("targetDir", temp.toFile())
@@ -52,7 +50,7 @@ public final class MarkMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            new MonoTojos(new Csv(foreign)).select(t -> true)
+            Catalogs.INSTANCE.make(foreign).select(t -> true)
                 .iterator().next()
                 .get(AssembleMojo.ATTR_VERSION),
             Matchers.equalTo("0.1.8")

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,11 +35,14 @@ import org.junit.jupiter.api.Test;
 class ExprReduceTest {
     @Test
     void exprTest() throws Exception {
-        final ExprReduce<Long> expr = new ExprReduce<>(
-            "plus",
+        final ExprReduce expr = new ExprReduce<Long>(
             "x",
-            Long.class,
-            Long::sum
+            Long::sum,
+            new ExprReduce.Args(
+                Long.class,
+                x -> "",
+                "plus"
+            )
         );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();
@@ -54,11 +57,14 @@ class ExprReduceTest {
 
     @Test
     void wrongTypeTest() {
-        final ExprReduce<Long> expr = new ExprReduce<>(
-            "plus",
+        final ExprReduce expr = new ExprReduce<Long>(
             "x",
-            Long.class,
-            Long::sum
+            Long::sum,
+            new ExprReduce.Args(
+                Long.class,
+                x -> "",
+                "plus"
+            )
         );
         Phi phi = new Data.ToPhi(100L);
         phi = phi.attr("plus").get();

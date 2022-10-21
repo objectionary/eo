@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,21 +33,21 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.11
  */
-public final class PlaceTest {
+final class PlaceTest {
 
     @Test
-    public void makesPath() {
+    void makesPath() {
         MatcherAssert.assertThat(
             new Place("hello.foo.bar")
-                .make(Paths.get("/tmp/test"), Transpiler.EXT)
+                .make(Paths.get("/tmp/test"), TranspileMojo.EXT)
                 .toString()
                 .replace("\\", "/"),
-            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", Transpiler.EXT))
+            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", TranspileMojo.EXT))
         );
     }
 
     @Test
-    public void makesSimplePath() {
+    void makesSimplePath() {
         MatcherAssert.assertThat(
             new Place("hey")
                 .make(Paths.get("/tmp"), "xml")

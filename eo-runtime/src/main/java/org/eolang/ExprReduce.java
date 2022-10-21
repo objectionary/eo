@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,27 @@
  */
 package org.eolang;
 
-import java.util.function.BiFunction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 /**
  * Builds a phi performing reduction operation on varargs parameter.
- * <br/>The expression iterates over varargs (including rho)
- * one by one performing provided reduction operation.
- * Type checking is done for each vararg.
  * <p/>Definition example:
  * <code><pre>
  *     final VarargExpr&lt;Long&gt; expr = new VarargExpr<>(
- *         "plus",
  *         "x",
- *         Long.class,
- *         Long::sum,
+ *         new ExrpReduce.Args(
+ *             "plus",
+ *             Long.class,
+ *             Long::sum,
+ *             x -> ""
+ *         )
  *     );
  * </pre></code>
- * @param <T> Type of arguments
+ * @param <T> Type of arguments that are going to be reduced
  * @since 1.0
  */
 public final class ExprReduce<T> implements Expr {
@@ -51,92 +54,123 @@ public final class ExprReduce<T> implements Expr {
     private final String param;
 
     /**
-     * Varargs type.
-     */
-    private final Class<T> type;
-
-    /**
      * Reduction.
      */
-    private final BiFunction<T, T, T> reduction;
+    private final BinaryOperator<T> reduction;
 
     /**
-     * Validation.
+     * Arguments parsing class.
      */
-    private final Function<T, String> validation;
-
-    /**
-     * Operation name.
-     */
-    private final String oper;
+    private final Args<T> arguments;
 
     /**
      * Ctor.
      *
-     * @param oper Operation name
      * @param param Name of parameter with varargs
-     * @param type Type of varargs
      * @param reduction Reduction operation on consecutive varags
-     * @param validation Validation function
+     * @param arguments Arguments storing and parsing object
+     * @since 1.0
      */
     public ExprReduce(
-        final String oper,
         final String param,
-        final Class<T> type,
-        final BiFunction<T, T, T> reduction,
-        final Function<T, String> validation
+        final BinaryOperator<T> reduction,
+        final Args<T> arguments
     ) {
         this.param = param;
-        this.type = type;
         this.reduction = reduction;
-        this.oper = oper;
-        this.validation = validation;
-    }
-
-    /**
-     * Ctor.
-     * @param oper Peration name
-     * @param param Name of parameter with varargs
-     * @param type Type of varargs
-     * @param reduction Reduction operation on consecutive varargs
-     */
-    public ExprReduce(
-        final String oper,
-        final String param,
-        final Class<T> type,
-        final BiFunction<T, T, T> reduction
-    ) {
-        this(
-            oper,
-            param,
-            type,
-            reduction,
-            x -> ""
-        );
+        this.arguments = arguments;
     }
 
     @Override
     public Phi get(final Phi rho) {
-        T acc = new Param(rho).strong(this.type);
-        final Phi[] args = new Param(rho, this.param).strong(Phi[].class);
-        for (int idx = 0; idx < args.length; ++idx) {
-            final Object val = new Dataized(args[idx]).take();
-            if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
-                throw new ExFailure(
-                    "The %dth argument of '%s' is not a(n) %s: %s",
-                    idx + 1, this.oper, this.type.getSimpleName(), val
-                );
-            }
-            final T typed = this.type.cast(val);
-            final String msg = this.validation.apply(typed);
-            if (!msg.isEmpty()) {
-                throw new ExFailure(
-                    "The %dth argument of '%s' is invalid: %s",
-                    idx + 1, this.oper, msg
-                );
-            }
-            acc = this.reduction.apply(acc, typed);
+        final Optional<T> acc = this.arguments.get(rho, this.param).stream().reduce(this.reduction);
+        return new Data.ToPhi(acc.get());
+    }
+
+    /**
+     * Extracts and validates args.
+     * <br/>The expression iterates over varargs (including rho)
+     * one by one performing provided reduction operation.
+     * Type checking is done for each vararg.
+     * <p/>Definition example:
+     * <code><pre>
+     *     final VarargExpr&lt;Long&gt; args = new Args<>(
+     *         "plus",
+     *         Long.class,
+     *         Long::sum,
+     *         x -> ""
+     *
+     *     );
+     * </pre></code>
+     * @param <T> Type of arguments that are going to be reduced
+     * @since 1.0
+     */
+    public static final class Args<T> {
+
+        /**
+         * Varargs type.
+         */
+        private final Class<T> type;
+
+        /**
+         * Validation.
+         */
+        private final Function<T, String> validation;
+
+        /**
+         * Operation name.
+         */
+        private final String oper;
+
+        /**
+         * Ctor.
+         *
+         * @param type Type of parameter with varargs
+         * @param validation Validation operation on varargs
+         * @param oper Operation that that should be used with varargs
+         */
+        public Args(
+            final Class<T> type,
+            final Function<T, String> validation,
+            final String oper
+        ) {
+            this.type = type;
+            this.validation = validation;
+            this.oper = oper;
         }
-        return new Data.ToPhi(acc);
+
+        /**
+         * Ctor.
+         *
+         * @param rho Rho argument that is parsed
+         * @param param Name of parameter with varargs
+         * @return Returns the list of parsed and validated values
+         */
+        public List<T> get(final Phi rho, final String param) {
+            final T acc = new Param(rho).strong(this.type);
+            final Phi[] args = new Param(rho, param).strong(Phi[].class);
+            final List<T> list = new ArrayList<>(args.length + 1);
+            list.add(acc);
+            for (int idx = 0; idx < args.length; ++idx) {
+                final Object val = new Dataized(args[idx]).take();
+                if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
+                    throw new ExFailure(
+                        "The %dth argument of '%s' is not a(n) %s: %s",
+                        idx + 1, this.oper, this.type.getSimpleName(), val
+                    );
+                }
+                final T typed = this.type.cast(val);
+                final String msg = this.validation.apply(typed);
+                if (!msg.isEmpty()) {
+                    throw new ExFailure(
+                        "The %dth argument of '%s' is invalid: %s",
+                        idx + 1, this.oper, msg
+                    );
+                }
+                list.add(typed);
+            }
+            return list;
+        }
+
     }
 }

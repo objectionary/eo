@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
@@ -69,6 +70,11 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
+     * Absolute location of GMI file.
+     */
+    public static final String ATTR_GMI = "gmi";
+
+    /**
      * Tojo ATTR.
      */
     public static final String ATTR_JAR = "jar";
@@ -88,6 +94,16 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
+
+    /**
+     * Tojo ATTR.
+     */
+    public static final String ATTR_TRANSPILED = "transpiled";
+
+    /**
+     * Tojo ATTR.
+     */
+    public static final String ATTR_HASH = "hash";
 
     /**
      * Output.
@@ -129,28 +145,6 @@ public final class AssembleMojo extends SafeMojo {
     private String hash = "master";
 
     /**
-     * The path to a text file where paths of all added
-     * .class (and maybe others) files are placed.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.11.0
-     */
-    @Parameter(
-        property = "eo.placed",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/placed.csv"
-    )
-    private File placed;
-
-    /**
-     * Format of "placed" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    private String placedFormat = "csv";
-
-    /**
      * Skip artifact with the version 0.0.0.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
@@ -186,6 +180,26 @@ public final class AssembleMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
+    /**
+     * Parsed cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
@@ -203,15 +217,18 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(PlaceMojo.class),
         };
         while (true) {
+            final long start = System.nanoTime();
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
             final String after = this.status();
             ++cycle;
-            Logger.info(
-                this, "Assemble cycle #%d (%s -> %s)",
-                cycle, before, after
-            );
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
+                    this, "Assemble cycle #%d (%s -> %s), took %[nano]s",
+                    cycle, before, after, System.nanoTime() - start
+                );
+            }
             if (after.equals(before)) {
                 break;
             }

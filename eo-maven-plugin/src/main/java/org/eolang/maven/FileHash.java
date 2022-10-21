@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import org.cactoos.bytes.BytesOf;
@@ -54,7 +53,7 @@ final class FileHash {
     @Override
     public String toString() {
         final String hash;
-        if (Files.exists(this.file)) {
+        if (new Home().exists(this.file)) {
             hash = Arrays.toString(
                 new UncheckedBytes(
                     new Md5DigestOf(new InputOf(new BytesOf(this.file)))

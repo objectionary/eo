@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Free attribute.
  *
@@ -41,7 +43,7 @@ public final class AtFree implements Attr {
     /**
      * If this is set.
      */
-    private Boolean set;
+    private final AtomicBoolean set;
 
     /**
      * Ctor.
@@ -72,6 +74,15 @@ public final class AtFree implements Attr {
      * @param used If the attribute is set
      */
     public AtFree(final Attr attr, final boolean used) {
+        this(attr, new AtomicBoolean(used));
+    }
+
+    /**
+     * Ctor.
+     * @param attr Attribute
+     * @param used If the attribute is set
+     */
+    public AtFree(final Attr attr, final AtomicBoolean used) {
         this.origin = attr;
         this.set = used;
     }
@@ -84,7 +95,7 @@ public final class AtFree implements Attr {
     @Override
     public String φTerm() {
         final String term;
-        if (this.set) {
+        if (this.set.get()) {
             term = this.origin.φTerm();
         } else {
             term = "Ø";
@@ -94,7 +105,7 @@ public final class AtFree implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtFree(this.origin.copy(self), this.set);
+        return new AtFree(this.origin.copy(self), new AtomicBoolean(this.set.get()));
     }
 
     @Override
@@ -110,13 +121,13 @@ public final class AtFree implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        if (this.set) {
+        if (this.set.compareAndSet(false, true)) {
+            this.origin.put(phi);
+        } else {
             throw new ExReadOnly(
                 "This free attribute is already set, can't reset"
             );
         }
-        this.origin.put(phi);
-        this.set = true;
     }
 
 }

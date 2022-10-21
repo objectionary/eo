@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
  */
 package EOorg.EOeolang;
 
@@ -89,32 +93,62 @@ public final class EOboolEOwhileTest {
         ).take();
     }
 
+    /**
+     * Parent Phi.
+     * @since 1.0
+     */
     public static class Parent extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         public Parent(final Phi sigma) {
             super(sigma);
-            this.add("toggle", new AtComposite(
-                this, self -> new EOmemory(self)
-            ));
+            this.add(
+                "toggle",
+                new AtComposite(
+                    this,
+                    self -> new EOmemory(self)
+                )
+            );
         }
     }
 
+    /**
+     * Kid Phi.
+     * @since 1.0
+     */
     public static class Kid extends PhDefault {
+        /**
+         * Toggle.
+         */
         private final Phi toggle;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         * @param tgl Toggle
+         */
         public Kid(final Phi sigma, final Phi tgl) {
             super(sigma);
             this.toggle = tgl;
             this.add("x", new AtFree());
-            this.add("φ", new AtComposite(
-                this, rho -> {
-                    new Dataized(
-                        new PhWith(
-                            new PhMethod(this.toggle, "write"),
-                            0, new Data.ToPhi(false)
-                        )
-                    ).take();
-                    return new Data.ToPhi(1L);
-                }
-            ));
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> {
+                        new Dataized(
+                            new PhWith(
+                                new PhMethod(this.toggle, "write"),
+                                0,
+                                new Data.ToPhi(false)
+                            )
+                        ).take();
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
         }
     }
 }

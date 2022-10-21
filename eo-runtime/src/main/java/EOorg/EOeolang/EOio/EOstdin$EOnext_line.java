@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Yegor Bugayenko
+ * Copyright (c) 2016-2022 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.util.Scanner;
+import java.util.NoSuchElementException;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.ExFailure;
@@ -41,7 +41,6 @@ import org.eolang.Phi;
  * @checkstyle TypeNameCheck (5 lines)
  */
 public class EOstdin$EOnext_line extends PhDefault {
-
     /**
      * Ctor.
      * @param parent Sigma
@@ -53,13 +52,14 @@ public class EOstdin$EOnext_line extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    try (Scanner sc = new Scanner(System.in)) {
-                        if (!sc.hasNextLine()) {
-                            throw new ExFailure(
-                                "There is no line in the standard input stream to consume"
-                            );
-                        }
-                        return new Data.ToPhi(sc.nextLine());
+                    try {
+                        final Input input = Input.getInstance();
+                        final String line = input.getLine();
+                        return new Data.ToPhi(line);
+                    } catch (final NoSuchElementException exception) {
+                        throw new ExFailure(
+                            "There is no line in the standard input stream to consume"
+                        );
                     }
                 }
             )
