@@ -213,9 +213,14 @@ public final class ResolveMojo extends SafeMojo {
      *  or from config files.
      */
     private static void addRuntimeDependency(final Collection<Dependency> deps) {
-        final EoRuntimeDependency runtime = new EoRuntimeDependency();
-        if (deps.stream().noneMatch(runtime::same)) {
-            deps.add(runtime.dependency());
+        final RuntimeDependencyEquality runtime = new RuntimeDependencyEquality();
+        if (deps.stream().noneMatch(runtime)) {
+            final Dependency dependency = new Dependency();
+            dependency.setGroupId("org.eolang");
+            dependency.setArtifactId("eo-runtime");
+            dependency.setVersion("0.28.10");
+            dependency.setClassifier("");
+            deps.add(dependency);
         }
     }
 

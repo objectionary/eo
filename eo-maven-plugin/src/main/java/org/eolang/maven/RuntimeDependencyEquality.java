@@ -23,14 +23,16 @@
  */
 package org.eolang.maven;
 
+import java.util.function.Predicate;
 import org.apache.maven.model.Dependency;
 
 /**
- * RuntimeDependency is a class for keeping and getting the last eo-runtime dependency.
+ * RuntimeDependencyEquality is a class for checking if dependency is a runtime dependency.
  *
  * @since 0.28.11
  */
-final class EoRuntimeDependency {
+final class RuntimeDependencyEquality implements Predicate<Dependency> {
+
     /**
      * EO runtime dependency group.
      */
@@ -42,24 +44,10 @@ final class EoRuntimeDependency {
     private final String artifact;
 
     /**
-     * EO runtime dependency version.
-     */
-    private final String version;
-
-    /**
      * Default constructor.
      */
-    EoRuntimeDependency() {
-        this("0.28.10");
-    }
-
-    /**
-     * Constructor with version.
-     *
-     * @param version Version of the eo-runtime library
-     */
-    EoRuntimeDependency(final String version) {
-        this("org.eolang", "eo-runtime", version);
+    RuntimeDependencyEquality() {
+        this("org.eolang", "eo-runtime");
     }
 
     /**
@@ -67,36 +55,15 @@ final class EoRuntimeDependency {
      *
      * @param group Dependency group
      * @param artifact Dependency artifact name
-     * @param version Dependency version
      */
-    EoRuntimeDependency(final String group, final String artifact, final String version) {
+    RuntimeDependencyEquality(final String group, final String artifact) {
         this.group = group;
         this.artifact = artifact;
-        this.version = version;
     }
 
-    /**
-     * Compares current dependency with other dependency.
-     *
-     * @param other Other dependency
-     * @return True if other dependency is the eo-runtime dependency
-     */
-    boolean same(final Dependency other) {
+    @Override
+    public boolean test(final Dependency other) {
         return this.group.equals(other.getGroupId())
             && this.artifact.equals(other.getArtifactId());
-    }
-
-    /**
-     * Converts EoRuntimeDependency to Maven Dependency.
-     *
-     * @return Maven Dependency
-     */
-    Dependency dependency() {
-        final Dependency dependency = new Dependency();
-        dependency.setGroupId(this.group);
-        dependency.setArtifactId(this.artifact);
-        dependency.setVersion(this.version);
-        dependency.setClassifier("");
-        return dependency;
     }
 }
