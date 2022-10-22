@@ -25,43 +25,37 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.util.Deque;
-import java.util.function.BiConsumer;
-import org.apache.maven.model.Dependency;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
- * The class for emulating of Maven Central repository.
+ * Hamcrest matcher for checking the last path.
  *
  * @since 0.28.11
  */
-final class MockMavenCentral implements BiConsumer<Dependency, Path> {
+final class LastPathSame extends TypeSafeMatcher<Path> {
 
     /**
-     * All saved dependencies.
+     * All paths.
      */
-    private final Deque<Dependency> dependencies;
-
-    /**
-     * All paths where dependencies were saved.
-     */
-    private final Deque<Path> paths;
+    private final Deque<Path> all;
 
     /**
      * The main constructor.
      *
-     * @param dependencies Dependencies container
-     * @param paths Paths container
+     * @param all Paths that were saved previously.
      */
-    MockMavenCentral(
-        final Deque<Dependency> dependencies,
-        final Deque<Path> paths
-    ) {
-        this.dependencies = dependencies;
-        this.paths = paths;
+    LastPathSame(final Deque<Path> all) {
+        this.all = all;
     }
 
     @Override
-    public void accept(final Dependency dependency, final Path path) {
-        this.dependencies.addLast(dependency);
-        this.paths.addLast(path);
+    public void describeTo(final Description description) {
+        description.appendText("The last path is different");
+    }
+
+    @Override
+    public boolean matchesSafely(final Path item) {
+        return this.all.getLast().equals(item);
     }
 }

@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import org.apache.maven.model.Dependency;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,7 +59,9 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_EO, foo.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
-        final MockMavenCentral central = new MockMavenCentral();
+        final LinkedList<Dependency> dependencies = new LinkedList<>();
+        final LinkedList<Path> paths = new LinkedList<>();
+        final MockMavenCentral central = new MockMavenCentral(dependencies, paths);
         this.resolve(central, foreign, target);
         final Dependency dependency = this.expectedDependency(
             "org.eolang",
@@ -66,8 +69,10 @@ final class ResolveMojoTest {
             "0.7.0"
         );
         final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.7.0");
-        MatcherAssert.assertThat(central.isNotEmpty(), Matchers.is(true));
-        central.assertLastDownloadedDependencyAndPathEquals(dependency, path);
+        MatcherAssert.assertThat(dependencies, Matchers.not(Matchers.empty()));
+        MatcherAssert.assertThat(paths, Matchers.not(Matchers.empty()));
+        MatcherAssert.assertThat(dependency, Matchers.is(new LastDependencySame(dependencies)));
+        MatcherAssert.assertThat(path, Matchers.is(new LastPathSame(paths)));
     }
 
     @Test
@@ -85,7 +90,9 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_EO, foo.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
-        final MockMavenCentral central = new MockMavenCentral();
+        final LinkedList<Dependency> dependencies = new LinkedList<>();
+        final LinkedList<Path> paths = new LinkedList<>();
+        final MockMavenCentral central = new MockMavenCentral(dependencies, paths);
         this.resolve(central, foreign, target);
         final Dependency dependency = this.expectedDependency(
             "org.eolang",
@@ -93,8 +100,10 @@ final class ResolveMojoTest {
             "0.28.10"
         );
         final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.28.10");
-        MatcherAssert.assertThat(central.isNotEmpty(), Matchers.is(true));
-        central.assertLastDownloadedDependencyAndPathEquals(dependency, path);
+        MatcherAssert.assertThat(dependencies, Matchers.not(Matchers.empty()));
+        MatcherAssert.assertThat(paths, Matchers.not(Matchers.empty()));
+        MatcherAssert.assertThat(dependency, Matchers.is(new LastDependencySame(dependencies)));
+        MatcherAssert.assertThat(path, Matchers.is(new LastPathSame(paths)));
     }
 
     /**
