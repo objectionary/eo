@@ -31,7 +31,7 @@
 #  check output of stdout. That should proove
 #  that there is no double printage, when 
 #  methods lt., gt., lte., gte. are called.
-[] > single-dataization-float-less-than-test
+[] > seq-single-dataization-float-less-than-test
   memory 0.0 > counter
   assert-that > @
     seq
@@ -40,7 +40,7 @@
       counter
     $.less-than 2.0
 
-[] > single-dataization-float-greater-than-test
+[] > seq-single-dataization-float-greater-than-test
   memory 0.0 > counter
   assert-that > @
     seq
@@ -50,7 +50,7 @@
     $.not
       $.greater-than 1.1
 
-[] > single-dataization-int-less-than-test
+[] > seq-single-dataization-int-less-than-test
   memory 0 > counter
   assert-that > @
     seq
@@ -59,7 +59,7 @@
       counter
     $.less-than 2
 
-[] > single-dataization-int-greater-than-test
+[] > seq-single-dataization-int-greater-than-test
   memory 0 > counter
   assert-that > @
     seq
