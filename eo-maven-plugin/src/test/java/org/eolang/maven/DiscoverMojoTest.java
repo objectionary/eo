@@ -75,25 +75,6 @@ final class DiscoverMojoTest {
         );
     }
 
-    /*
-     * @todo #1360:30min Make logger inside DiscoveryMojo non-static.
-     *  Using logger as a field we will able to test and check different
-     *  test-cases like
-     *  - Discovery phase without program inside DiscoveryMojo
-     *  - Discovery phase with already checked programs inside DiscoveryMojo
-     */
-    @Test
-    @Disabled
-    void executeDiscoveryPhaseWithoutProgram() {
-        Assertions.fail();
-    }
-
-    @Test
-    @Disabled
-    void executeDiscoveryPhaseWithAlreadyCheckedPrograms() {
-        Assertions.fail();
-    }
-
     private Deque<Map<String, String>> discoveredJsonEntries(final Path tmp) {
         return new LinkedList<>(
             new MnJson(
