@@ -25,10 +25,9 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.LinkedList;
-import org.apache.maven.model.Dependency;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -59,20 +58,13 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_EO, foo.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
-        final LinkedList<Dependency> dependencies = new LinkedList<>();
-        final LinkedList<Path> paths = new LinkedList<>();
-        final MockMavenCentral central = new MockMavenCentral(dependencies, paths);
-        this.resolve(central, foreign, target);
-        final Dependency dependency = this.expectedDependency(
-            "org.eolang",
-            "eo-runtime",
-            "0.7.0"
-        );
+        this.resolve(new DummyCentral(), foreign, target);
         final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.7.0");
-        MatcherAssert.assertThat(dependencies, Matchers.not(Matchers.empty()));
-        MatcherAssert.assertThat(paths, Matchers.not(Matchers.empty()));
-        MatcherAssert.assertThat(dependency, Matchers.is(new LastDependencySame(dependencies)));
-        MatcherAssert.assertThat(path, Matchers.is(new LastPathSame(paths)));
+        MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
+        MatcherAssert.assertThat(
+            path.resolve("eo-runtime-0.7.0.jar").toFile(),
+            FileMatchers.anExistingFile()
+        );
     }
 
     @Test
@@ -90,20 +82,13 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_EO, foo.toString())
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
-        final LinkedList<Dependency> dependencies = new LinkedList<>();
-        final LinkedList<Path> paths = new LinkedList<>();
-        final MockMavenCentral central = new MockMavenCentral(dependencies, paths);
-        this.resolve(central, foreign, target);
-        final Dependency dependency = this.expectedDependency(
-            "org.eolang",
-            "eo-runtime",
-            "0.28.10"
-        );
+        this.resolve(new DummyCentral(), foreign, target);
         final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.28.10");
-        MatcherAssert.assertThat(dependencies, Matchers.not(Matchers.empty()));
-        MatcherAssert.assertThat(paths, Matchers.not(Matchers.empty()));
-        MatcherAssert.assertThat(dependency, Matchers.is(new LastDependencySame(dependencies)));
-        MatcherAssert.assertThat(path, Matchers.is(new LastPathSame(paths)));
+        MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
+        MatcherAssert.assertThat(
+            path.resolve("eo-runtime-0.28.10.jar").toFile(),
+            FileMatchers.anExistingFile()
+        );
     }
 
     /**
@@ -230,7 +215,7 @@ final class ResolveMojoTest {
     }
 
     private void resolve(
-        final MockMavenCentral central,
+        final DummyCentral central,
         final Path foreign,
         final Path target
     ) {
@@ -250,19 +235,5 @@ final class ResolveMojoTest {
             .with("discoverSelf", false)
             .with("ignoreVersionConflicts", false)
             .execute();
-    }
-
-    private Dependency expectedDependency(
-        final String group,
-        final String artifact,
-        final String version
-    ) {
-        final Dependency dependency = new Dependency();
-        dependency.setGroupId(group);
-        dependency.setArtifactId(artifact);
-        dependency.setVersion(version);
-        dependency.setType("jar");
-        dependency.setClassifier("");
-        return dependency;
     }
 }

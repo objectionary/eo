@@ -23,45 +23,37 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Deque;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 
 /**
  * The class for emulating of Maven Central repository.
+ * DummyCentral creates an empty dependency jar file under the path.
  *
  * @since 0.28.11
  */
-final class MockMavenCentral implements BiConsumer<Dependency, Path> {
-
-    /**
-     * All saved dependencies.
-     */
-    private final Deque<Dependency> dependencies;
-
-    /**
-     * All paths where dependencies were saved.
-     */
-    private final Deque<Path> paths;
-
-    /**
-     * The main constructor.
-     *
-     * @param dependencies Dependencies container
-     * @param paths Paths container
-     */
-    MockMavenCentral(
-        final Deque<Dependency> dependencies,
-        final Deque<Path> paths
-    ) {
-        this.dependencies = dependencies;
-        this.paths = paths;
-    }
+final class DummyCentral implements BiConsumer<Dependency, Path> {
 
     @Override
-    public void accept(final Dependency dependency, final Path path) {
-        this.dependencies.addLast(dependency);
-        this.paths.addLast(path);
+    public void accept(
+        final Dependency dependency,
+        final Path path
+    ) {
+        try {
+            Files.createDirectories(path);
+            Files.createFile(
+                path.resolve(
+                    String.format("%s-%s.jar", dependency.getArtifactId(), dependency.getVersion())
+                )
+            );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                String.format("DummyCentral can't save dependency %s by path %s", dependency, path),
+                ex
+            );
+        }
     }
 }
