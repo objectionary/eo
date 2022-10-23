@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.MnJson;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Deque;
@@ -67,11 +68,11 @@ final class DiscoverMojoTest {
         this.discover(tmp);
         final Deque<Map<String, String>> json = this.discoveredJsonEntries(tmp);
         final Map<String, String> first = json.removeFirst();
+        MatcherAssert.assertThat(dependencies, Matchers.equalTo(json.size()));
         MatcherAssert.assertThat(
             String.valueOf(dependencies),
             Matchers.equalTo(first.get("discovered"))
         );
-        MatcherAssert.assertThat(dependencies, Matchers.equalTo(json.size()));
     }
 
     /*
@@ -104,27 +105,26 @@ final class DiscoverMojoTest {
     private void saveProgram(final Path temp, final Input code) throws IOException {
         final Path program = temp.resolve("program.eo");
         new Home().save(code, program);
-        final Path foreign = temp.resolve(DiscoverMojoTest.EO_FOREIGN);
-        Catalogs.INSTANCE.make(foreign, "json")
+        Catalogs.INSTANCE.make(temp.resolve(DiscoverMojoTest.EO_FOREIGN), "json")
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, program.toString());
     }
 
     private void discover(final Path temp) {
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve(DiscoverMojoTest.EO_FOREIGN);
+        final File target = temp.resolve("target").toFile();
+        final File foreign = temp.resolve(DiscoverMojoTest.EO_FOREIGN).toFile();
         new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
+            .with("targetDir", target)
+            .with("foreign", foreign)
             .execute();
         new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
+            .with("targetDir", target)
+            .with("foreign", foreign)
             .execute();
         new Moja<>(DiscoverMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
+            .with("targetDir", target)
+            .with("foreign", foreign)
             .execute();
     }
 }
