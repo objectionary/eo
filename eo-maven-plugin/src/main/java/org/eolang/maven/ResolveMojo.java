@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -45,7 +46,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Find all required runtime dependencies, download
  * them from Maven Central, unpack and place to target/eo.
- *
+ * <p>
  * The motivation for this mojo is simple: Maven doesn't have
  * a mechanism of adding .JAR files to transpile/test classpath in
  * runtime.
@@ -66,6 +67,7 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Skip artifact with the version 0.0.0.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
      */
@@ -74,6 +76,7 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.12.0
      */
@@ -82,8 +85,9 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Fail resolution process on conflicting dependencies.
-     * @since 1.0
+     *
      * @checkstyle MemberNameCheck (7 lines)
+     * @since 1.0
      */
     @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
     @SuppressWarnings("PMD.LongVariable")
@@ -178,7 +182,8 @@ public final class ResolveMojo extends SafeMojo {
             }
             final Dependency one = dep.get();
             final String coords = ResolveMojo.coords(one);
-            if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
+            if (this.skipZeroVersions
+                && ParseMojo.ZERO.equals(one.getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s/%s skipped: %s",
                     tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
@@ -193,69 +198,10 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
-        this.checkConflicts(deps);
-        ResolveMojo.addRuntimeDependency(deps);
-        return deps.stream()
-            .map(ResolveMojo.Wrap::new)
-            .sorted()
-            .distinct()
-            .map(ResolveMojo.Wrap::dep)
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Check if runtime dependency is absent.
-     * @param deps Dependencies
-     * @todo #1361:90min Hardcoded version of EoRuntimeDependency.
-     *  See the EoRuntimeDependency constructor for more info.
-     *  It's much better to determine the version of the runtime library
-     *  dynamically. For example, we can fetch the latest version by http
-     *  or from config files.
-     */
-    private static void addRuntimeDependency(final Collection<Dependency> deps) {
-        if (deps.stream().noneMatch(new RuntimeDependencyEquality())) {
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId("org.eolang");
-            dependency.setArtifactId("eo-runtime");
-            dependency.setVersion("0.28.10");
-            dependency.setClassifier("");
-            deps.add(dependency);
-        }
-    }
-
-    /**
-     * Check dependencies for conflicts.
-     * @param deps Dependencies
-     */
-    private void checkConflicts(final Collection<Dependency> deps) {
-        final Map<String, Set<String>> conflicts = deps.stream()
-            .collect(
-                Collectors.groupingBy(
-                    Dependency::getManagementKey,
-                    Collectors.mapping(
-                        Dependency::getVersion,
-                        Collectors.toSet()
-                    )
-                )
-            ).entrySet().stream()
-            .filter(e -> e.getValue().size() > 1)
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue
-                )
-            );
-        if (!conflicts.isEmpty()) {
-            final String msg = String.format(
-                "%d conflicting dependencies are found: %s",
-                conflicts.size(),
-                conflicts
-            );
-            Logger.warn(ResolveMojo.class, msg);
-            if (!this.ignoreVersionConflicts) {
-                throw new IllegalStateException(msg);
-            }
-        }
+        return new AllDependencies(deps, this.ignoreVersionConflicts)
+            .withoutConflicts()
+            .withRuntimeDependency()
+            .toList();
     }
 
     /**
@@ -299,6 +245,7 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Dep to coords.
+     *
      * @param dep The dependency
      * @return Coords
      */
@@ -319,6 +266,138 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
+     * Class that encapsulates all maven dependencies.
+     *
+     * @since 0.28.11
+     */
+    private static final class AllDependencies {
+        /**
+         * All found dependencies.
+         */
+        private final Collection<Dependency> all;
+
+        /**
+         * Fail resolution process on conflicting dependencies.
+         *
+         * @checkstyle MemberNameCheck (7 lines)
+         * @since 0.28.11
+         */
+        @SuppressWarnings("PMD.LongVariable")
+        private final boolean ignoreVersionConflicts;
+
+        /**
+         * The main constructor.
+         *
+         * @checkstyle ParameterNameCheck (20 lines)
+         * @param all Maven dependencies
+         * @param ignoreVersionConflicts Skip duplicates
+         */
+        @SuppressWarnings("PMD.LongVariable")
+        private AllDependencies(
+            final Collection<Dependency> all,
+            final boolean ignoreVersionConflicts) {
+            this.all = all;
+            this.ignoreVersionConflicts = ignoreVersionConflicts;
+        }
+
+        /**
+         * Check if duplicate dependencies are present.
+         *
+         * @return UniqueDependencies
+         * @throws java.lang.IllegalStateException if conflict is found
+         */
+        private UniqueDependencies withoutConflicts() {
+            final Map<String, Set<String>> conflicts = this.all.stream()
+                .collect(
+                    Collectors.groupingBy(
+                        Dependency::getManagementKey,
+                        Collectors.mapping(
+                            Dependency::getVersion,
+                            Collectors.toSet()
+                        )
+                    )
+                ).entrySet().stream()
+                .filter(e -> e.getValue().size() > 1)
+                .collect(
+                    Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                    )
+                );
+            if (!conflicts.isEmpty()) {
+                final String msg = String.format(
+                    "%d conflicting dependencies are found: %s",
+                    conflicts.size(),
+                    conflicts
+                );
+                Logger.warn(ResolveMojo.class, msg);
+                if (!this.ignoreVersionConflicts) {
+                    throw new IllegalStateException(msg);
+                }
+            }
+            return new UniqueDependencies(this.all);
+        }
+    }
+
+    /**
+     * The class with unique dependencies.
+     *
+     * @since 0.28.11
+     */
+    private static final class UniqueDependencies {
+        /**
+         * All dependencies.
+         */
+        private final Collection<Dependency> all;
+
+        /**
+         * The main constructor.
+         *
+         * @param all Maven dependencies
+         */
+        private UniqueDependencies(
+            final Collection<Dependency> all) {
+            this.all = all;
+        }
+
+        /**
+         * Add runtime dependency if it is absent.
+         *
+         * @return UniqueDependencies with runtime dependency.
+         * @todo #1361:90min Hardcoded version of EoRuntimeDependency.
+         *  See the EoRuntimeDependency constructor for more info.
+         *  It's much better to determine the version of the runtime library
+         *  dynamically. For example, we can fetch the latest version by http
+         *  or from config files.
+         */
+        private UniqueDependencies withRuntimeDependency() {
+            if (this.all.stream().noneMatch(new RuntimeDependencyEquality())) {
+                final Dependency dependency = new Dependency();
+                dependency.setGroupId("org.eolang");
+                dependency.setArtifactId("eo-runtime");
+                dependency.setVersion("0.28.10");
+                dependency.setClassifier("");
+                this.all.add(dependency);
+            }
+            return this;
+        }
+
+        /**
+         * Dependencies list.
+         *
+         * @return List of maven dependencies.
+         */
+        private List<Dependency> toList() {
+            return this.all.stream()
+                .map(ResolveMojo.Wrap::new)
+                .sorted()
+                .distinct()
+                .map(ResolveMojo.Wrap::dep)
+                .collect(Collectors.toList());
+        }
+    }
+
+    /**
      * Wrapper for comparing.
      *
      * @since 0.1
@@ -331,6 +410,7 @@ public final class ResolveMojo extends SafeMojo {
 
         /**
          * Ctor.
+         *
          * @param dep Dependency
          */
         private Wrap(final Dependency dep) {
@@ -339,6 +419,7 @@ public final class ResolveMojo extends SafeMojo {
 
         /**
          * Return it.
+         *
          * @return The dep
          */
         public Dependency dep() {
@@ -368,6 +449,7 @@ public final class ResolveMojo extends SafeMojo {
 
         /**
          * Convert it to string.
+         *
          * @param dep The dep
          * @return The text
          */
