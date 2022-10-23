@@ -56,7 +56,7 @@ final class DiscoverMojoTest {
         "org/eolang/maven/sum.eo, 0",
         "org/eolang/maven/withwarning.eo, 1"
     })
-    void executeDiscoveryPhaseForEoCorrectPrograms(
+    void executesDiscoveryPhaseForCorrectEoPrograms(
         final String program,
         final int dependencies,
         final @TempDir Path tmp
