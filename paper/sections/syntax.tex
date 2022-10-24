@@ -484,9 +484,8 @@ making a copy of it, for example:
 
 \begin{ffcode}
 (dir "/tmp").walk
-  *
-    [f]
-      f.is-dir > @
+  [f]
+    f.is-dir > @
 \end{ffcode}
 
 Here the object \ff{walk} is copied with a single argument:
