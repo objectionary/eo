@@ -502,7 +502,7 @@ The syntax may be simplified and the abstract object may be inlined
 
 \begin{ffcode}
 (dir "/tmp").walk
-  * ([f] (f.is-dir > @))
+  [f] (f.is-dir > @)
 \end{ffcode}
 
 An anonymous abstract object may have multiple attributes:
