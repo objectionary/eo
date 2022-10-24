@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
@@ -41,14 +42,14 @@ final class AssembleMojoTest {
     @Test
     void assemblesTogether(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Home().save(
+        new Home(src).save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
-            src.resolve("main.eo")
+            Paths.get("main.eo")
         );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
@@ -73,8 +74,8 @@ final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
                         ParseMojo.DIR, TranspileMojo.EXT
@@ -88,7 +89,7 @@ final class AssembleMojoTest {
     @Test
     void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Home().save(
+        new Home(src).save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -96,9 +97,9 @@ final class AssembleMojoTest {
                 "",
                 "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
             ),
-            src.resolve("wrong.eo")
+            Paths.get("wrong.eo")
         );
-        new Home().save(
+        new Home(src).save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
@@ -106,7 +107,7 @@ final class AssembleMojoTest {
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
-            src.resolve("main.eo")
+            Paths.get("main.eo")
         );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
@@ -132,8 +133,8 @@ final class AssembleMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.%s",
                         ParseMojo.DIR, TranspileMojo.EXT
@@ -143,8 +144,8 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/main.%s",
                         ParseMojo.DIR, TranspileMojo.EXT

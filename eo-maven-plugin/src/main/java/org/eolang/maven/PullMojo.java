@@ -153,8 +153,9 @@ public final class PullMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private Path pull(final String name) throws IOException {
+        final Path dir = this.targetDir.toPath().resolve(PullMojo.DIR);
         final Path src = new Place(name).make(
-            this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
+            dir, "eo"
         );
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
@@ -162,9 +163,9 @@ public final class PullMojo extends SafeMojo {
                 name, new Home().rel(src)
             );
         } else {
-            new Home().save(
+            new Home(dir).save(
                 this.objectionary.get(name),
-                src
+                dir.relativize(src)
             );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",

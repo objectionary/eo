@@ -23,7 +23,9 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -38,18 +40,18 @@ final class UnspileMojoTest {
 
     @Test
     void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path generated = temp.resolve("generated");
-        final Path classes = temp.resolve("classes");
-        final Path foo = classes.resolve("a/b/c/foo.class");
-        new Home().save("abc", foo);
-        new Home().save("xxx", generated.resolve("a/b/c/foo.java"));
-        new Home().save("cde", classes.resolve("foo.txt"));
+        final Path generated = Paths.get("generated");
+        final Path classes = Paths.get("classes");
+        final Path foo = Paths.get("a/b/c/foo.class");
+        new Home(temp).save("abc", foo);
+        new Home(temp).save("xxx", generated.resolve("a/b/c/foo.java"));
+        new Home(temp).save("cde", classes.resolve("foo.txt"));
         new Moja<>(UnspileMojo.class)
             .with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(foo),
+            Files.exists(foo),
             Matchers.is(false)
         );
     }

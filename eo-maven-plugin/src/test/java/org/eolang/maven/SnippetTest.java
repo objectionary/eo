@@ -140,7 +140,7 @@ final class SnippetTest {
     private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");
-        new Home().save(code, src.resolve("code.eo"));
+        new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
         final Path foreign = target.resolve("eo-foreign.json");
         new Moja<>(RegisterMojo.class)

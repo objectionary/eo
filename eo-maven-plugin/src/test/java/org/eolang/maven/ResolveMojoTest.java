@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -42,14 +43,14 @@ final class ResolveMojoTest {
     @Test
     void testSimpleResolve(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
-        new Home().save(
+        new Home(src).save(
             String.format(
                 "%s\n%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.7.0",
                 "+rt jvm org.eolang:eo-sys:jar-with-dependencies:0.0.5",
                 "[] > foo /int"
             ),
-            src.resolve("foo.eo")
+            Paths.get("foo.eo")
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -81,22 +82,22 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "[] > foo /int"
             ),
-            first
+            temp.relativize(first)
         );
         final Path second = temp.resolve("src/foo2.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.0",
                 "[] > foo /int"
             ),
-            second
+            temp.relativize(second)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -141,22 +142,22 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
                 "[] > foo /int"
             ),
-            first
+            temp.relativize(first)
         );
         final Path second = temp.resolve("src/foo2.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
                 "[] > foo /int"
             ),
-            second
+            temp.relativize(second)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign");

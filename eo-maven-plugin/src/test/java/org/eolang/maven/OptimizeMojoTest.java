@@ -32,6 +32,7 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
@@ -51,9 +52,9 @@ final class OptimizeMojoTest {
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Home().save(
+        new Home(temp).save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
+            temp.relativize(src)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
@@ -90,9 +91,9 @@ final class OptimizeMojoTest {
     @Test
     void optimizesIfExpired(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Home().save(
+        new Home(temp).save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
+            temp.relativize(src)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
@@ -131,9 +132,9 @@ final class OptimizeMojoTest {
     @Test
     void testSimpleOptimize(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Home().save(
+        new Home(temp).save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
+            temp.relativize(src)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
@@ -154,16 +155,16 @@ final class OptimizeMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format("%s/foo/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
                 )
             ),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
                 )
             ),
@@ -174,7 +175,7 @@ final class OptimizeMojoTest {
     @Test
     void testOptimizeWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Home().save(
+        new Home(temp).save(
             String.join(
                 "\n",
                 "+package f",
@@ -182,7 +183,7 @@ final class OptimizeMojoTest {
                 "[args] > main",
                 "  (stdout \"Hello!\").print > @\n"
             ),
-            src
+            temp.relativize(src)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
@@ -215,7 +216,7 @@ final class OptimizeMojoTest {
     @Test
     void testOptimizedFail(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
-        new Home().save(
+        new Home(temp).save(
             String.join(
                 "\n",
                 "+package f",
@@ -223,7 +224,7 @@ final class OptimizeMojoTest {
                 "[args] > main",
                 "  (stdout \"Hello!\").print > @\n"
             ),
-            src
+            temp.relativize(src)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
@@ -250,7 +251,10 @@ final class OptimizeMojoTest {
     @Test
     void testFailOnWarning(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo.src.eo");
-        new Home().save(new ResourceOf("org/eolang/maven/withwarning.eo"), src);
+        new Home(temp).save(
+            new ResourceOf("org/eolang/maven/withwarning.eo"),
+            temp.relativize(src)
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign)
@@ -293,6 +297,6 @@ final class OptimizeMojoTest {
                             new ResourceOf(xsl).stream()
                         )))
         ).pass(new XMLDocument(xml));
-        new Home().save(output.toString(), xml);
+        new Home(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
     }
 }

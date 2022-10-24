@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,9 @@ final class MarkMojoTest {
     @Test
     void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
-        new Home().save(
+        new Home(bins).save(
             "hi",
-            bins.resolve(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
+            Paths.get(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
         );
         final Path foreign = temp.resolve("placed.json");
         new Moja<>(MarkMojo.class)

@@ -137,7 +137,7 @@ public final class UnspileMojo extends SafeMojo {
             name.replaceAll("\\.class$", ".java")
         );
         boolean deleted = false;
-        if (new Home().exists(java)) {
+        if (Files.exists(java)) {
             Files.delete(file);
             Logger.debug(
                 this, "Deleted %s since %s is present",

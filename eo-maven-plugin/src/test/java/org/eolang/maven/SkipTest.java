@@ -26,6 +26,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,8 +45,8 @@ class SkipTest {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
                         PullMojo.DIR
@@ -61,8 +62,8 @@ class SkipTest {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, true);
         MatcherAssert.assertThat(
-            !new Home().exists(
-                target.resolve(
+            !new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
                         PullMojo.DIR
@@ -79,7 +80,7 @@ class SkipTest {
         this.executeCopyMojo(temp, classes, true);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            !new Home().exists(out),
+            !new Home(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
     }
@@ -90,7 +91,7 @@ class SkipTest {
         this.executeCopyMojo(temp, classes, false);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            new Home().exists(out),
+            new Home(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
     }
@@ -123,9 +124,9 @@ class SkipTest {
         final boolean skip
     ) throws IOException {
         final Path src = temp.resolve("src");
-        new Home().save(
+        new Home(src).save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
-            src.resolve("foo/main.eo")
+            Paths.get("foo/main.eo")
         );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
