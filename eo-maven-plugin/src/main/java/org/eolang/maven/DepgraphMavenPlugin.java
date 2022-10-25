@@ -8,7 +8,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
-public class DepgraphMavenPlugin {
+public class DepgraphMavenPlugin implements DependenciesPlugin {
 
     /**
      * Maven project.
@@ -39,9 +39,10 @@ public class DepgraphMavenPlugin {
         this.dir = dir;
     }
 
-    public Path dependenciesJsonFile(final Dependency origin) {
+    @Override
+    public Path dependenciesFile(final Dependency origin) {
         try {
-            final Path path = dir.resolve(DepgraphMavenPlugin.fileName(origin));
+            final String name = DepgraphMavenPlugin.fileName(origin);
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
                     MojoExecutor.groupId("com.github.ferstl"),
@@ -53,7 +54,9 @@ public class DepgraphMavenPlugin {
                     MojoExecutor.element("groupId", origin.getGroupId()),
                     MojoExecutor.element("artifactId", origin.getArtifactId()),
                     MojoExecutor.element("version", origin.getVersion()),
-                    MojoExecutor.element("outputDirectory", path.toString())
+                    MojoExecutor.element("graphFormat", "json"),
+                    MojoExecutor.element("outputDirectory", dir.toString()),
+                    MojoExecutor.element("outputFileName", name)
                 ),
                 MojoExecutor.executionEnvironment(
                     this.project,
@@ -61,13 +64,18 @@ public class DepgraphMavenPlugin {
                     this.manager
                 )
             );
-            return path;
+            return dir.resolve(name);
         } catch (MojoExecutionException e) {
             throw new IllegalStateException(e);
         }
     }
 
     private static String fileName(final Dependency dependency) {
-        return String.format(dependency.getClassifier(), ".json");
+        return String.format("%s_%s_%s%s",
+            dependency.getGroupId(),
+            dependency.getArtifactId(),
+            dependency.getVersion(),
+            ".json"
+        );
     }
 }

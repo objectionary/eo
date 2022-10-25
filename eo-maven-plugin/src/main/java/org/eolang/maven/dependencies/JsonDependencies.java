@@ -1,9 +1,11 @@
 package org.eolang.maven.dependencies;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -24,6 +26,10 @@ public class JsonDependencies implements Dependencies {
     public List<Dependency> toList() {
         final JsonReader reader;
         try {
+            if (!Files.exists(file)) {
+                return Collections.emptyList();
+            }
+            Logger.info(this, String.format("Dependencies file: %s", file));
             reader = Json.createReader(Files.newBufferedReader(file));
             final JsonArray artifacts = reader.readObject()
                 .getJsonArray("artifacts");

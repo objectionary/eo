@@ -32,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -100,7 +99,7 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
-    private DepgraphMavenPlugin plugin;
+    private DependenciesPlugin plugin;
 
     @Override
     public void exec() throws IOException {
@@ -227,7 +226,7 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     private boolean hasTransitiveDependencies(final Dependency dep) {
-        return !new ArtifactDependencies(plugin.dependenciesJsonFile(dep), dep)
+        return !new ArtifactDependencies(plugin.dependenciesFile(dep), dep)
             .toList().isEmpty();
     }
 
