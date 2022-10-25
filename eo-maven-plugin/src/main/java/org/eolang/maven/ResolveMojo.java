@@ -98,6 +98,10 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
+    /**
+     * Plugin to download dependencies info.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
     private DependenciesPlugin plugin;
 
     @Override
@@ -216,17 +220,30 @@ public final class ResolveMojo extends SafeMojo {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Check if all dependencies have transitive dependencies.
+     *
+     * @param deps Dependencies
+     * @throws java.lang.IllegalStateException if a transitive dependency is found
+     */
     private void checkTransitive(final Collection<Dependency> deps) {
         for (final Dependency dep : deps) {
-            if (hasTransitiveDependencies(dep)) {
+            if (this.hasTransitiveDependencies(dep)) {
                 throw new IllegalStateException(
-                    String.format("%s contains transitive dependencies", dep));
+                    String.format("%s contains transitive dependencies", dep)
+                );
             }
         }
     }
 
+    /**
+     * Check if dependency has transitive dependencies.
+     *
+     * @param dep Dependency
+     * @return True if has transitice dependencies
+     */
     private boolean hasTransitiveDependencies(final Dependency dep) {
-        return !new ArtifactDependencies(plugin.dependenciesFile(dep), dep)
+        return !new TransitiveDependencies(this.plugin.dependenciesFile(dep), dep)
             .toList().isEmpty();
     }
 

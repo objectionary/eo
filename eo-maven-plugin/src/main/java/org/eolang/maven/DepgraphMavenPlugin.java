@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2022 Objectionary.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.eolang.maven;
 
 import java.nio.file.Path;
@@ -8,7 +31,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
-public class DepgraphMavenPlugin implements DependenciesPlugin {
+/**
+ * Plugin for uploading transitive dependencies.
+ * You can read more <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
+ *
+ * @since 0.28.11
+ */
+final class DepgraphMavenPlugin implements DependenciesPlugin {
 
     /**
      * Maven project.
@@ -25,9 +54,21 @@ public class DepgraphMavenPlugin implements DependenciesPlugin {
      */
     private final BuildPluginManager manager;
 
+    /**
+     * Directory to save all transitive dependencies files.
+     */
     private final Path dir;
 
-    public DepgraphMavenPlugin(
+    /**
+     * The main contructor.
+     *
+     * @param project Maven project
+     * @param session Maven session
+     * @param manager Maven plugin manager
+     * @param dir Directory to save all transitive dependencies files
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    DepgraphMavenPlugin(
         final MavenProject project,
         final MavenSession session,
         final BuildPluginManager manager,
@@ -55,7 +96,7 @@ public class DepgraphMavenPlugin implements DependenciesPlugin {
                     MojoExecutor.element("artifactId", origin.getArtifactId()),
                     MojoExecutor.element("version", origin.getVersion()),
                     MojoExecutor.element("graphFormat", "json"),
-                    MojoExecutor.element("outputDirectory", dir.toString()),
+                    MojoExecutor.element("outputDirectory", this.dir.toString()),
                     MojoExecutor.element("outputFileName", name)
                 ),
                 MojoExecutor.executionEnvironment(
@@ -64,14 +105,21 @@ public class DepgraphMavenPlugin implements DependenciesPlugin {
                     this.manager
                 )
             );
-            return dir.resolve(name);
-        } catch (MojoExecutionException e) {
-            throw new IllegalStateException(e);
+            return this.dir.resolve(name);
+        } catch (final MojoExecutionException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
+    /**
+     * Creates filename for transitive dependencies file.
+     *
+     * @param dependency Dependency
+     * @return Filename
+     */
     private static String fileName(final Dependency dependency) {
-        return String.format("%s_%s_%s%s",
+        return String.format(
+            "%s_%s_%s%s",
             dependency.getGroupId(),
             dependency.getArtifactId(),
             dependency.getVersion(),
