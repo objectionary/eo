@@ -1,0 +1,104 @@
+{
+  "graphName" : "eo-math",
+  "artifacts" : [ {
+    "id" : "org.eolang:eo-math:jar",
+    "numericId" : 1,
+    "groupId" : "org.eolang",
+    "artifactId" : "eo-math",
+    "version" : "0.2.3",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eolang:eo-runtime:jar",
+    "numericId" : 2,
+    "groupId" : "org.eolang",
+    "artifactId" : "eo-runtime",
+    "version" : "0.28.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.junit.jupiter:junit-jupiter-api:jar",
+    "numericId" : 3,
+    "groupId" : "org.junit.jupiter",
+    "artifactId" : "junit-jupiter-api",
+    "version" : "5.9.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.opentest4j:opentest4j:jar",
+    "numericId" : 4,
+    "groupId" : "org.opentest4j",
+    "artifactId" : "opentest4j",
+    "version" : "1.2.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.junit.platform:junit-platform-commons:jar",
+    "numericId" : 5,
+    "groupId" : "org.junit.platform",
+    "artifactId" : "junit-platform-commons",
+    "version" : "1.9.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apiguardian:apiguardian-api:jar",
+    "numericId" : 6,
+    "groupId" : "org.apiguardian",
+    "artifactId" : "apiguardian-api",
+    "version" : "1.1.2",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.junit.jupiter:junit-jupiter-params:jar",
+    "numericId" : 7,
+    "groupId" : "org.junit.jupiter",
+    "artifactId" : "junit-jupiter-params",
+    "version" : "5.9.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  } ],
+  "dependencies" : [ {
+    "from" : "org.eolang:eo-math:jar",
+    "to" : "org.eolang:eo-runtime:jar",
+    "numericFrom" : 0,
+    "numericTo" : 1,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.junit.jupiter:junit-jupiter-api:jar",
+    "to" : "org.opentest4j:opentest4j:jar",
+    "numericFrom" : 2,
+    "numericTo" : 3,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.junit.jupiter:junit-jupiter-api:jar",
+    "to" : "org.junit.platform:junit-platform-commons:jar",
+    "numericFrom" : 2,
+    "numericTo" : 4,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.junit.jupiter:junit-jupiter-api:jar",
+    "to" : "org.apiguardian:apiguardian-api:jar",
+    "numericFrom" : 2,
+    "numericTo" : 5,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eolang:eo-math:jar",
+    "to" : "org.junit.jupiter:junit-jupiter-api:jar",
+    "numericFrom" : 0,
+    "numericTo" : 2,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eolang:eo-math:jar",
+    "to" : "org.junit.jupiter:junit-jupiter-params:jar",
+    "numericFrom" : 0,
+    "numericTo" : 6,
+    "resolution" : "INCLUDED"
+  } ]
+}

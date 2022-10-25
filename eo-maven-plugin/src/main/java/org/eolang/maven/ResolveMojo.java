@@ -95,10 +95,19 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
+    private DependencyTree transitive;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
+        }
+        if(this.transitive == null){
+            this.transitive = new MavenDependencyTree(
+                this.project,
+                this.session,
+                this.manager
+            );
         }
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
