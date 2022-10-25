@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.dependencies.ArtifactDependencies;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;

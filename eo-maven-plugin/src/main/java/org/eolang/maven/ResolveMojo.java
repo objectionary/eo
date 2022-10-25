@@ -41,7 +41,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.dependencies.ArtifactDependencies;
 
 /**
  * Find all required runtime dependencies, download
