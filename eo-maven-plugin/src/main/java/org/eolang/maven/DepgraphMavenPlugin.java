@@ -8,7 +8,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
-public class MavenDependencyTree implements DependencyTree {
+public class DepgraphMavenPlugin {
 
     /**
      * Maven project.
@@ -25,20 +25,23 @@ public class MavenDependencyTree implements DependencyTree {
      */
     private final BuildPluginManager manager;
 
-    public MavenDependencyTree(
+    private final Path dir;
+
+    public DepgraphMavenPlugin(
         final MavenProject project,
         final MavenSession session,
-        final BuildPluginManager manager
+        final BuildPluginManager manager,
+        final Path dir
     ) {
         this.project = project;
         this.session = session;
         this.manager = manager;
+        this.dir = dir;
     }
 
-    @Override
-    public Path save(final Dependency origin, final Path dir) {
+    public Path dependenciesJsonFile(final Dependency origin) {
         try {
-            final Path path = dir.resolve(MavenDependencyTree.fileName(origin));
+            final Path path = dir.resolve(DepgraphMavenPlugin.fileName(origin));
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
                     MojoExecutor.groupId("com.github.ferstl"),

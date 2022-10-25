@@ -2,8 +2,10 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.dependencies.ArtifactDependencies;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -14,23 +16,15 @@ class TransitiveDependenciesTest {
     @Test
     void hasDependencies(@TempDir final Path tmp) {
         final Path saved = saveFailedDependencyJson(tmp);
-        final TransitiveDependencies dependencies = new TransitiveDependencies(
-            new DummyDependencyTree(saved),
-            saved
-        );
-        final boolean res = dependencies.hasDependencies(dependency());
-        MatcherAssert.assertThat(res, Matchers.is(true));
+        final List<Dependency> all = new ArtifactDependencies(saved, dependency()).toList();
+        MatcherAssert.assertThat(all.isEmpty(), Matchers.is(false));
     }
 
     @Test
     void hasNotDependencies(@TempDir final Path tmp) {
         final Path saved = saveDependencyJson(tmp);
-        final TransitiveDependencies dependencies = new TransitiveDependencies(
-            new DummyDependencyTree(saved),
-            saved
-        );
-        final boolean res = dependencies.hasDependencies(dependency());
-        MatcherAssert.assertThat(res, Matchers.is(false));
+        final List<Dependency> all = new ArtifactDependencies(saved, dependency()).toList();
+        MatcherAssert.assertThat(all.isEmpty(), Matchers.is(true));
     }
 
     private Dependency dependency() {
@@ -43,7 +37,7 @@ class TransitiveDependenciesTest {
 
     private Path saveFailedDependencyJson(final Path tmp) {
         try {
-            final Path res = tmp.resolve("eo-math-dependencies-without-foreign.json");
+            final Path res = tmp.resolve("eo-math-dependencies-transient-dependency.json");
             new Home().save(
                 new ResourceOf(
                     "org/eolang/maven/dependencies/eo-math-dependencies-transient-dependency.json"),

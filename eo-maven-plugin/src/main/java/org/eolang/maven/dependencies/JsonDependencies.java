@@ -1,11 +1,10 @@
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -13,22 +12,19 @@ import javax.json.JsonReader;
 import javax.json.JsonValue;
 import org.apache.maven.model.Dependency;
 
-public class TransitiveDependencies {
+public class JsonDependencies implements Dependencies {
 
-    private final DependencyTree tree;
-    private final Path path;
+    private final Path file;
 
-    public TransitiveDependencies(
-        final DependencyTree tree,
-        final Path path
-    ) {
-        this.tree = tree;
-        this.path = path;
+    public JsonDependencies(final Path file) {
+        this.file = file;
     }
 
-    boolean hasDependencies(final Dependency origin) {
+    @Override
+    public List<Dependency> toList() {
+        final JsonReader reader;
         try {
-            final JsonReader reader = Json.createReader(Files.newBufferedReader(path));
+            reader = Json.createReader(Files.newBufferedReader(file));
             final JsonArray artifacts = reader.readObject()
                 .getJsonArray("artifacts");
             List<Dependency> all = new ArrayList<>();
@@ -41,37 +37,10 @@ public class TransitiveDependencies {
                     JsonValue::toString).findFirst().orElseThrow(IllegalStateException::new);
                 all.add(dependency(groupId, artifactId, version, scope));
             }
-            List<Dependency> remains = filter(origin, all);
-            return !remains.isEmpty();
+            return all;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private List<Dependency> filter(final Dependency original, final List<Dependency> all) {
-        return all.stream()
-            .filter(this::isNotRuntimeDependency)
-            .filter(this::isRequiredScope)
-            .filter(d -> isNotTheSameDependency(original, d))
-            .collect(Collectors.toList());
-    }
-
-    private boolean isRequiredScope(final Dependency dependency) {
-        final String scope = dependency.getScope();
-        return !scope.contains("test");
-    }
-
-    private boolean isNotTheSameDependency(
-        final Dependency origin,
-        final Dependency dependency
-    ) {
-        return !(dependency.getGroupId().equals(origin.getGroupId()) &&
-                     dependency.getArtifactId().equals(origin.getArtifactId()));
-    }
-
-    private boolean isNotRuntimeDependency(final Dependency dependency) {
-        return !(dependency.getGroupId().equals("org.eolang") &&
-                     dependency.getArtifactId().equals("eo-runtime"));
     }
 
     private static Dependency dependency(
