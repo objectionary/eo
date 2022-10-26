@@ -141,7 +141,12 @@ interface Dependencies {
                         final String scope = obj.getJsonArray("scopes").stream()
                             .map(JsonValue::toString)
                             .findFirst().orElseThrow(IllegalStateException::new);
-                        all.add(dependency(group, id, version, scope));
+                        final Dependency dependency = new Dependency();
+                        dependency.setGroupId(group);
+                        dependency.setArtifactId(id);
+                        dependency.setVersion(version);
+                        dependency.setScope(scope);
+                        all.add(dependency);
                     }
                 }
                 return all;
@@ -155,31 +160,6 @@ interface Dependencies {
                     ex
                 );
             }
-        }
-
-        /**
-         * Factory method.
-         *
-         * @param group Dependency group id
-         * @param artifact Dependency artifact id
-         * @param version Dependency version
-         * @param scope Dependency scope
-         * @return Maven dependency
-         * @checkstyle ParameterNumberCheck (10 lines)
-         */
-        @SuppressWarnings("PMD.UseObjectForClearerAPI")
-        private static Dependency dependency(
-            final String group,
-            final String artifact,
-            final String version,
-            final String scope
-        ) {
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId(group);
-            dependency.setArtifactId(artifact);
-            dependency.setVersion(version);
-            dependency.setScope(scope);
-            return dependency;
         }
     }
 }
