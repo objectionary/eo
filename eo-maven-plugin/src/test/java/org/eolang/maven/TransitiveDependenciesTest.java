@@ -42,8 +42,8 @@ class TransitiveDependenciesTest {
 
     @ParameterizedTest
     @CsvSource({
-        "eo-math-dependencies-transient-dependency.json, false",
-        "eo-math-dependencies-without-foreign.json, true"
+        "eo-math-dependencies-transient-dependency.json, true",
+        "eo-math-dependencies-without-foreign.json, false"
 
     })
     void selectsOnlyNonTestNonRuntimeNonSameDependencies(
