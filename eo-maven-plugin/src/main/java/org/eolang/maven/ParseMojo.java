@@ -99,6 +99,15 @@ public final class ParseMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * Default threads number.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.threads", defaultValue = "4")
+    private int threads = 4;
+
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
@@ -142,7 +151,7 @@ public final class ParseMojo extends SafeMojo {
                 }
             );
         try {
-            Executors.newFixedThreadPool(4)
+            Executors.newFixedThreadPool(this.threads)
                 .invokeAll(tasks)
                 .forEach(
                     completed -> {
