@@ -72,7 +72,7 @@ final class DcsTransitive {
      * @return True if Dependencies not empty.
      */
     public boolean exists() {
-        return !this.dependencies.toList().isEmpty();
+        return !this.dependencies.all().isEmpty();
     }
 
     /**

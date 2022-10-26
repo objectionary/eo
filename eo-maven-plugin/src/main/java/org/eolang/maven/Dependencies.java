@@ -51,7 +51,7 @@ interface Dependencies {
      *
      * @return List of Maven Dependencies
      */
-    Collection<Dependency> toList();
+    Collection<Dependency> all();
 
     /**
      * Filtered dependencies.
@@ -85,8 +85,8 @@ interface Dependencies {
         }
 
         @Override
-        public Collection<Dependency> toList() {
-            return this.dependencies.toList()
+        public Collection<Dependency> all() {
+            return this.dependencies.all()
                 .stream()
                 .filter(this::filter)
                 .collect(Collectors.toList());
@@ -125,7 +125,7 @@ interface Dependencies {
         }
 
         @Override
-        public Collection<Dependency> toList() {
+        public Collection<Dependency> all() {
             try {
                 final List<Dependency> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
