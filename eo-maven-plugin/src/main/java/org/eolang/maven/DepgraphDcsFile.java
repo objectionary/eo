@@ -32,7 +32,7 @@ import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
- * Plugin for uploading transitive dependencies.
+ * Json File retrieved using the plugin for uploading transitive dependencies.
  * You can read more <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
  *
  * @since 0.28.11
@@ -81,7 +81,7 @@ final class DepgraphDcsFile implements DependenciesFile {
     }
 
     @Override
-    public Path dependencies(final Dependency origin) {
+    public Path file(final Dependency origin) {
         try {
             final String name = DepgraphDcsFile.fileName(origin);
             MojoExecutor.executeMojo(

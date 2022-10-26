@@ -28,19 +28,19 @@ import java.nio.file.Paths;
 import org.apache.maven.model.Dependency;
 
 /**
- * Plugin saves all transitive dependencies to a file.
+ * File with the list of dependencies.
  *
  * @since 0.28.11
  */
 interface DependenciesFile {
 
     /**
-     * Uploads and saves file with list of dependencies.
+     * Returns the link to the file with the list of dependencies.
      *
      * @param origin Dependency which transitive dependencies we are interested of
      * @return File with dependencies
      */
-    Path dependencies(Dependency origin);
+    Path file(Dependency origin);
 
     /**
      * Class for testing.
@@ -50,7 +50,7 @@ interface DependenciesFile {
     final class Dummy implements DependenciesFile {
 
         @Override
-        public Path dependencies(final Dependency origin) {
+        public Path file(final Dependency origin) {
             return Paths.get("non-existent");
         }
     }

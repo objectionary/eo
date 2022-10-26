@@ -228,7 +228,7 @@ public final class ResolveMojo extends SafeMojo {
      */
     private void checkTransitive(final Collection<Dependency> deps) {
         for (final Dependency dep : deps) {
-            if (new DcsTransitive(this.dependencies.dependencies(dep), dep).exists()) {
+            if (new TransitiveDependencies(this.dependencies.file(dep), dep).exists()) {
                 throw new IllegalStateException(
                     String.format("%s contains transitive dependencies", dep)
                 );
