@@ -23,14 +23,12 @@
  */
 package org.eolang.maven;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -71,7 +69,7 @@ final class HomeTest {
 
     @Test
     void existsTest(@TempDir final Path temp) throws IOException {
-        HomeTest.write(temp.resolve("file.txt"), "any content");
+        Files.write(temp.resolve("file.txt"), "any content".getBytes());
         MatcherAssert.assertThat(
             new Home(temp).exists(Paths.get("file.txt")),
             Matchers.is(true)
@@ -82,7 +80,7 @@ final class HomeTest {
     void existsInDirTest(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("dir/subdir/file.txt");
         target.getParent().toFile().mkdirs();
-        HomeTest.write(target, "any content");
+        Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
             new Home(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
@@ -143,21 +141,5 @@ final class HomeTest {
             new TextOf(home.load(subfolder)),
             Matchers.equalTo(new TextOf(content))
         );
-    }
-
-    /**
-     * Write file content.
-     * @param target Path to a file
-     * @param content Content
-     * @throws IOException In case I/O exceptions.
-     */
-    private static void write(final Path target, final String content) throws IOException {
-        final BufferedWriter file = Files.newBufferedWriter(
-            target,
-            StandardOpenOption.CREATE,
-            StandardOpenOption.WRITE
-        );
-        file.write(content);
-        file.close();
     }
 }
