@@ -103,10 +103,8 @@ public final class ParseMojo extends SafeMojo {
      * Number of parallel threads.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.threads", defaultValue = "4")
     private int threads = 4;
-
 
     @Override
     public void exec() throws IOException {
