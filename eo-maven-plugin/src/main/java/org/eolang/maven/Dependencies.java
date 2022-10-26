@@ -129,7 +129,7 @@ interface Dependencies {
             try {
                 final List<Dependency> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
-                    Logger.info(this, String.format("Dependencies file: %s", this.file));
+                    Logger.debug(this, String.format("Dependencies file: %s", this.file));
                     final JsonReader reader = Json.createReader(Files.newBufferedReader(this.file));
                     final JsonArray artifacts = reader.readObject()
                         .getJsonArray("artifacts");
