@@ -58,7 +58,7 @@ interface Dependencies {
      *
      * @since 0.28.11
      */
-    class FilteredDependencies implements Dependencies {
+    class DcsFiltered implements Dependencies {
 
         /**
          * Decorated.
@@ -76,7 +76,7 @@ interface Dependencies {
          * @param dependencies Decorated
          * @param filters All fiters
          */
-        FilteredDependencies(
+        DcsFiltered(
             final Dependencies dependencies,
             final Collection<Predicate<Dependency>> filters
         ) {
@@ -108,7 +108,7 @@ interface Dependencies {
      *
      * @since 0.28.11
      */
-    class JsonDependencies implements Dependencies {
+    class DcsJson implements Dependencies {
 
         /**
          * File path.
@@ -120,7 +120,7 @@ interface Dependencies {
          *
          * @param file File path
          */
-        JsonDependencies(final Path file) {
+        DcsJson(final Path file) {
             this.file = file;
         }
 

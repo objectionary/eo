@@ -37,7 +37,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.28.11
  */
-final class DepgraphMavenPlugin implements DependenciesPlugin {
+final class DepgraphDcsFile implements DcsFile {
 
     /**
      * Maven project.
@@ -68,7 +68,7 @@ final class DepgraphMavenPlugin implements DependenciesPlugin {
      * @param dir Directory to save all transitive dependencies files
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    DepgraphMavenPlugin(
+    DepgraphDcsFile(
         final MavenProject project,
         final MavenSession session,
         final BuildPluginManager manager,
@@ -83,7 +83,7 @@ final class DepgraphMavenPlugin implements DependenciesPlugin {
     @Override
     public Path dependencies(final Dependency origin) {
         try {
-            final String name = DepgraphMavenPlugin.fileName(origin);
+            final String name = DepgraphDcsFile.fileName(origin);
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
                     MojoExecutor.groupId("com.github.ferstl"),

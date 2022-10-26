@@ -102,15 +102,15 @@ public final class ResolveMojo extends SafeMojo {
      * Plugin to download dependencies info.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private DependenciesPlugin plugin;
+    private DcsFile dependencies;
 
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        if (this.plugin == null) {
-            this.plugin = new DepgraphMavenPlugin(
+        if (this.dependencies == null) {
+            this.dependencies = new DepgraphDcsFile(
                 this.project,
                 this.session,
                 this.manager,
@@ -228,7 +228,7 @@ public final class ResolveMojo extends SafeMojo {
      */
     private void checkTransitive(final Collection<Dependency> deps) {
         for (final Dependency dep : deps) {
-            if (new TransitiveDependencies(this.plugin.dependencies(dep), dep).exists()) {
+            if (new DcsTransitive(this.dependencies.dependencies(dep), dep).exists()) {
                 throw new IllegalStateException(
                     String.format("%s contains transitive dependencies", dep)
                 );

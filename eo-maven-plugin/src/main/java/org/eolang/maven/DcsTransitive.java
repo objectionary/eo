@@ -33,7 +33,7 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.28.11
  */
-final class TransitiveDependencies {
+final class DcsTransitive {
 
     /**
      * Decorated.
@@ -46,9 +46,9 @@ final class TransitiveDependencies {
      * @param file File with all transitive dependencies for Dependency
      * @param dependency Dependency
      */
-    TransitiveDependencies(final Path file, final Dependency dependency) {
-        this(new Dependencies.FilteredDependencies(
-            new Dependencies.JsonDependencies(file),
+    DcsTransitive(final Path file, final Dependency dependency) {
+        this(new Dependencies.DcsFiltered(
+            new Dependencies.DcsJson(file),
             Arrays.asList(
                 new NotRuntime(),
                 new NotSame(dependency),
@@ -62,7 +62,7 @@ final class TransitiveDependencies {
      *
      * @param dependencies Decorated.
      */
-    private TransitiveDependencies(final Dependencies dependencies) {
+    private DcsTransitive(final Dependencies dependencies) {
         this.dependencies = dependencies;
     }
 

@@ -34,11 +34,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link TransitiveDependencies}.
+ * Test case for {@link DcsTransitive}.
  *
  * @since 0.28.11
  */
-class TransitiveDependenciesTest {
+class DcsTransitiveTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -52,7 +52,7 @@ class TransitiveDependenciesTest {
         @TempDir final Path tmp
     ) {
         MatcherAssert.assertThat(
-            new TransitiveDependencies(this.dependenciesJson(tmp, name), this.sameDependency())
+            new DcsTransitive(this.dependenciesJson(tmp, name), this.sameDependency())
                 .exists(),
             Matchers.is(empty)
         );
