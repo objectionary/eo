@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -80,8 +79,7 @@ final class Home {
      */
     public void save(final Input input, final Path path) throws IOException {
         final Path target = this.absolute(path);
-        final File dir = target.toFile().getParentFile();
-        if (dir.mkdirs()) {
+        if (target.toFile().getParentFile().mkdirs()) {
             Logger.debug(
                 this, "Directory created: %s",
                 this.rel(target.getParent())

@@ -110,8 +110,7 @@ final class UnplaceMojoTest {
     @Test
     void testKeepBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo5.class");
-        final Home home = new Home(temp);
-        home.save("testKeepBinaries", temp.relativize(foo));
+        new Home(temp).save("testKeepBinaries", temp.relativize(foo));
         final Path pparent = foo.getParent().getParent();
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
