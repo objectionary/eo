@@ -145,8 +145,15 @@ interface Dependencies {
                     }
                 }
                 return all;
-            } catch (final IOException ex) {
-                throw new IllegalStateException(ex);
+            } catch (final IOException | IllegalStateException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Exception happens during reading the dependencies from json file %s. %s",
+                        this.file,
+                        "Probably file is absent or you have a wrong json format"
+                    ),
+                    ex
+                );
             }
         }
 
