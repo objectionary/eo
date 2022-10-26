@@ -32,7 +32,7 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.28.11
  */
-interface DcsFile {
+interface DependenciesFile {
 
     /**
      * Uploads and saves file with list of dependencies.
@@ -47,7 +47,7 @@ interface DcsFile {
      *
      * @since 0.28.11
      */
-    final class Dummy implements DcsFile {
+    final class Dummy implements DependenciesFile {
 
         @Override
         public Path dependencies(final Dependency origin) {

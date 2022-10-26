@@ -37,7 +37,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.28.11
  */
-final class DepgraphDcsFile implements DcsFile {
+final class DepgraphDcsFile implements DependenciesFile {
 
     /**
      * Maven project.

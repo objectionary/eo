@@ -102,7 +102,7 @@ public final class ResolveMojo extends SafeMojo {
      * Plugin to download dependencies info.
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private DcsFile dependencies;
+    private DependenciesFile dependencies;
 
     @Override
     public void exec() throws IOException {
