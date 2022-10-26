@@ -50,9 +50,9 @@ final class TransitiveDependencies {
         this(new Dependencies.FilteredDependencies(
             new Dependencies.JsonDependencies(file),
             Arrays.asList(
-                new NoRuntimeDependency(),
-                new NoSameDependency(dependency),
-                new NoTestingDependency()
+                new NotRuntime(),
+                new NotSame(dependency),
+                new NotTesting()
             )
         ));
     }
@@ -80,7 +80,7 @@ final class TransitiveDependencies {
      *
      * @since 0.28.11
      */
-    private static final class NoRuntimeDependency implements Predicate<Dependency> {
+    private static final class NotRuntime implements Predicate<Dependency> {
         @Override
         public boolean test(final Dependency dependency) {
             return !(
@@ -95,7 +95,7 @@ final class TransitiveDependencies {
      *
      * @since 0.28.11
      */
-    private static final class NoSameDependency implements Predicate<Dependency> {
+    private static final class NotSame implements Predicate<Dependency> {
 
         /**
          * Dependency to check.
@@ -107,7 +107,7 @@ final class TransitiveDependencies {
          *
          * @param current Dependency to check
          */
-        private NoSameDependency(final Dependency current) {
+        private NotSame(final Dependency current) {
             this.current = current;
         }
 
@@ -126,7 +126,7 @@ final class TransitiveDependencies {
      * @since 0.28.11
      */
     @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
-    private static final class NoTestingDependency implements Predicate<Dependency> {
+    private static final class NotTesting implements Predicate<Dependency> {
         @Override
         public boolean test(final Dependency dependency) {
             return !dependency.getScope().contains("test");
