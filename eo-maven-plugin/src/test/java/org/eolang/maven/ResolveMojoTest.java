@@ -189,7 +189,7 @@ final class ResolveMojoTest {
             .with("skipZeroVersions", true)
             .with("discoverSelf", false)
             .with("ignoreVersionConflicts", true)
-            .with("plugin", new DcsFile.Dummy())
+            .with("dependencies", new DcsFile.Dummy())
             .execute();
         MatcherAssert.assertThat(
             true,
