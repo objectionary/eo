@@ -23,7 +23,18 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -37,7 +48,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.28.11
  */
-final class DepgraphDcsFile implements DependenciesFile {
+final class DcsDepgraph implements Dependencies {
 
     /**
      * Maven project.
@@ -60,30 +71,42 @@ final class DepgraphDcsFile implements DependenciesFile {
     private final Path dir;
 
     /**
+     * Dependency for which we are looking transitive dependencies
+     */
+    private final Dependency dependency;
+
+    /**
      * The main contructor.
      *
      * @param project Maven project
      * @param session Maven session
      * @param manager Maven plugin manager
      * @param dir Directory to save all transitive dependencies files
+     * @param dependency Dependency
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    DepgraphDcsFile(
+    DcsDepgraph(
         final MavenProject project,
         final MavenSession session,
         final BuildPluginManager manager,
-        final Path dir
+        final Path dir,
+        final Dependency dependency
     ) {
         this.project = project;
         this.session = session;
         this.manager = manager;
         this.dir = dir;
+        this.dependency = dependency;
     }
 
     @Override
-    public Path file(final Dependency origin) {
+    public Collection<Dependency> all() {
+        return new DcsJson(file(dependency)).all();
+    }
+
+    private Path file(final Dependency origin) {
         try {
-            final String name = DepgraphDcsFile.fileName(origin);
+            final String name = DcsDepgraph.fileName(origin);
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
                     MojoExecutor.groupId("com.github.ferstl"),
@@ -125,5 +148,65 @@ final class DepgraphDcsFile implements DependenciesFile {
             dependency.getVersion(),
             ".json"
         );
+    }
+
+    /**
+     * Dependencies uploaded from json file.
+     *
+     * @since 0.28.11
+     */
+    static class DcsJson implements Dependencies {
+
+        /**
+         * File path.
+         */
+        private final Path file;
+
+        /**
+         * The main constructor.
+         *
+         * @param file File path
+         */
+        DcsJson(final Path file) {
+            this.file = file;
+        }
+
+        @Override
+        public Collection<Dependency> all() {
+            try {
+                final List<Dependency> all = new ArrayList<>(0);
+                if (Files.exists(this.file)) {
+                    Logger.debug(this, String.format("Dependencies file: %s", this.file));
+                    final JsonReader reader = Json.createReader(Files.newBufferedReader(this.file));
+                    final JsonArray artifacts = reader.readObject()
+                        .getJsonArray("artifacts");
+                    for (final JsonValue artifact : artifacts) {
+                        final JsonObject obj = artifact.asJsonObject();
+                        final String group = obj.getString("groupId");
+                        final String id = obj.getString("artifactId");
+                        final String version = obj.getString("version");
+                        final String scope = obj.getJsonArray("scopes").stream()
+                            .map(JsonValue::toString)
+                            .findFirst().orElseThrow(IllegalStateException::new);
+                        final Dependency dependency = new Dependency();
+                        dependency.setGroupId(group);
+                        dependency.setArtifactId(id);
+                        dependency.setVersion(version);
+                        dependency.setScope(scope);
+                        all.add(dependency);
+                    }
+                }
+                return all;
+            } catch (final IOException | IllegalStateException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Exception happens during reading the dependencies from json file %s. %s",
+                        this.file,
+                        "Probably file is absent or you have a wrong json format"
+                    ),
+                    ex
+                );
+            }
+        }
     }
 }

@@ -23,20 +23,7 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
 import org.apache.maven.model.Dependency;
 
 /**
@@ -47,119 +34,11 @@ import org.apache.maven.model.Dependency;
 interface Dependencies {
 
     /**
-     * Converts to a plain list.
+     * All dependencies.
      *
      * @return List of Maven Dependencies
      */
     Collection<Dependency> all();
 
-    /**
-     * Filtered dependencies.
-     *
-     * @since 0.28.11
-     */
-    class DcsFiltered implements Dependencies {
 
-        /**
-         * Decorated.
-         */
-        private final Dependencies dependencies;
-
-        /**
-         * All filters.
-         */
-        private final Collection<Predicate<Dependency>> filters;
-
-        /**
-         * The main constructor.
-         *
-         * @param dependencies Decorated
-         * @param filters All fiters
-         */
-        DcsFiltered(
-            final Dependencies dependencies,
-            final Collection<Predicate<Dependency>> filters
-        ) {
-            this.dependencies = dependencies;
-            this.filters = filters;
-        }
-
-        @Override
-        public Collection<Dependency> all() {
-            return this.dependencies.all()
-                .stream()
-                .filter(this::filter)
-                .collect(Collectors.toList());
-        }
-
-        /**
-         * Apply all filters for Dependency.
-         *
-         * @param dependency Dependency
-         * @return True if all filters were passed
-         */
-        private boolean filter(final Dependency dependency) {
-            return this.filters.stream().allMatch(f -> f.test(dependency));
-        }
-    }
-
-    /**
-     * Dependencies uploaded from json file.
-     *
-     * @since 0.28.11
-     */
-    class DcsJson implements Dependencies {
-
-        /**
-         * File path.
-         */
-        private final Path file;
-
-        /**
-         * The main constructor.
-         *
-         * @param file File path
-         */
-        DcsJson(final Path file) {
-            this.file = file;
-        }
-
-        @Override
-        public Collection<Dependency> all() {
-            try {
-                final List<Dependency> all = new ArrayList<>(0);
-                if (Files.exists(this.file)) {
-                    Logger.debug(this, String.format("Dependencies file: %s", this.file));
-                    final JsonReader reader = Json.createReader(Files.newBufferedReader(this.file));
-                    final JsonArray artifacts = reader.readObject()
-                        .getJsonArray("artifacts");
-                    for (final JsonValue artifact : artifacts) {
-                        final JsonObject obj = artifact.asJsonObject();
-                        final String group = obj.getString("groupId");
-                        final String id = obj.getString("artifactId");
-                        final String version = obj.getString("version");
-                        final String scope = obj.getJsonArray("scopes").stream()
-                            .map(JsonValue::toString)
-                            .findFirst().orElseThrow(IllegalStateException::new);
-                        final Dependency dependency = new Dependency();
-                        dependency.setGroupId(group);
-                        dependency.setArtifactId(id);
-                        dependency.setVersion(version);
-                        dependency.setScope(scope);
-                        all.add(dependency);
-                    }
-                }
-                return all;
-            } catch (final IOException | IllegalStateException ex) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Exception happens during reading the dependencies from json file %s. %s",
-                        this.file,
-                        "Probably file is absent or you have a wrong json format"
-                    ),
-                    ex
-                );
-            }
-        }
-    }
 }
