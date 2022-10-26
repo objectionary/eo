@@ -208,7 +208,8 @@ final class Home {
      * @param path Path
      * @return Clean path
      * @todo #1352:30min Move utility `clean` method out of `Home` class. Create
-     *  maybe separate class for this. Update all usages of this method.
+     *  maybe separate class for this. Consider removing this method at all as
+     *  it seems does nothing useful. Update all usages of this method.
      */
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static Path clean(final Path path) {
