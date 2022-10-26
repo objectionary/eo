@@ -100,7 +100,7 @@ public final class ParseMojo extends SafeMojo {
     private boolean failOnError = true;
 
     /**
-     * Default threads number.
+     * Number of parallel threads.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
