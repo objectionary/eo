@@ -81,7 +81,7 @@ final class DepgraphMavenPlugin implements DependenciesPlugin {
     }
 
     @Override
-    public Path dependenciesFile(final Dependency origin) {
+    public Path dependencies(final Dependency origin) {
         try {
             final String name = DepgraphMavenPlugin.fileName(origin);
             MojoExecutor.executeMojo(

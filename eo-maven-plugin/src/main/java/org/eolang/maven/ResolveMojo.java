@@ -228,23 +228,12 @@ public final class ResolveMojo extends SafeMojo {
      */
     private void checkTransitive(final Collection<Dependency> deps) {
         for (final Dependency dep : deps) {
-            if (this.hasTransitiveDependencies(dep)) {
+            if (new TransitiveDependencies(this.plugin.dependencies(dep), dep).exists()) {
                 throw new IllegalStateException(
                     String.format("%s contains transitive dependencies", dep)
                 );
             }
         }
-    }
-
-    /**
-     * Check if dependency has transitive dependencies.
-     *
-     * @param dep Dependency
-     * @return True if has transitice dependencies
-     */
-    private boolean hasTransitiveDependencies(final Dependency dep) {
-        return !new TransitiveDependencies(this.plugin.dependenciesFile(dep), dep)
-            .toList().isEmpty();
     }
 
     /**

@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
 import org.apache.maven.model.Dependency;
 
@@ -34,7 +33,7 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.28.11
  */
-final class TransitiveDependencies implements Dependencies {
+final class TransitiveDependencies {
 
     /**
      * Decorated.
@@ -48,8 +47,8 @@ final class TransitiveDependencies implements Dependencies {
      * @param dependency Dependency
      */
     TransitiveDependencies(final Path file, final Dependency dependency) {
-        this(new FilteredDependencies(
-            new JsonDependencies(file),
+        this(new Dependencies.FilteredDependencies(
+            new Dependencies.JsonDependencies(file),
             Arrays.asList(
                 new NoRuntimeDependency(),
                 new NoSameDependency(dependency),
@@ -67,9 +66,13 @@ final class TransitiveDependencies implements Dependencies {
         this.dependencies = dependencies;
     }
 
-    @Override
-    public List<Dependency> toList() {
-        return this.dependencies.toList();
+    /**
+     * Check if transitive dependencies exists.
+     *
+     * @return True if Dependencies not empty.
+     */
+    public boolean exists() {
+        return !this.dependencies.toList().isEmpty();
     }
 
     /**

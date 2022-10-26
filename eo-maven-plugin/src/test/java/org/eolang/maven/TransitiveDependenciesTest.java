@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
@@ -52,12 +51,11 @@ class TransitiveDependenciesTest {
         final boolean empty,
         @TempDir final Path tmp
     ) {
-        final Path file = this.dependenciesJson(tmp, name);
-        final List<Dependency> all = new TransitiveDependencies(
-            file,
-            this.sameDependency()
-        ).toList();
-        MatcherAssert.assertThat(all.isEmpty(), Matchers.is(empty));
+        MatcherAssert.assertThat(
+            new TransitiveDependencies(this.dependenciesJson(tmp, name), this.sameDependency())
+                .exists(),
+            Matchers.is(empty)
+        );
     }
 
     private Dependency sameDependency() {

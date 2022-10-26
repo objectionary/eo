@@ -88,7 +88,7 @@ interface Dependencies {
         public List<Dependency> toList() {
             return this.dependencies.toList()
                 .stream()
-                .filter(this::applyAllFilters)
+                .filter(this::filter)
                 .collect(Collectors.toList());
         }
 
@@ -98,7 +98,7 @@ interface Dependencies {
          * @param dependency Dependency
          * @return True if all filters were passed
          */
-        private boolean applyAllFilters(final Dependency dependency) {
+        private boolean filter(final Dependency dependency) {
             return this.filters.stream().allMatch(f -> f.test(dependency));
         }
     }

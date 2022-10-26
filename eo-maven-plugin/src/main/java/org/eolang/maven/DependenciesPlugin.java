@@ -40,7 +40,7 @@ interface DependenciesPlugin {
      * @param origin Dependency which transitive dependencies we are interested of
      * @return File with dependencies
      */
-    Path dependenciesFile(Dependency origin);
+    Path dependencies(Dependency origin);
 
     /**
      * Class for testing.
@@ -50,7 +50,7 @@ interface DependenciesPlugin {
     final class Dummy implements DependenciesPlugin {
 
         @Override
-        public Path dependenciesFile(final Dependency origin) {
+        public Path dependencies(final Dependency origin) {
             return Paths.get("non-existent");
         }
     }
