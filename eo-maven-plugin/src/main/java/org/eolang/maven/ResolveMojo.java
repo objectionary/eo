@@ -99,6 +99,12 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
+    /**
+     * Check transitive dependencies.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean checkTransitive = true;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
@@ -214,27 +220,32 @@ public final class ResolveMojo extends SafeMojo {
      * @throws java.lang.IllegalStateException if a transitive dependency is found
      */
     private void checkTransitive(final Collection<Dependency> deps) {
-        deps.forEach(dep -> {
-            if (!new DcsFiltered(
-                new DcsDepgraph(
-                    project,
-                    session,
-                    manager,
-                    this.targetDir.toPath().resolve(ResolveMojo.DIR).resolve("dependencies-info"),
-                    dep
-                ),
-                Arrays.asList(
-                    new DcsFiltered.NotRuntime(),
-                    new DcsFiltered.NotSame(dep),
-                    new DcsFiltered.NotTesting()
-                )
-            ).all().isEmpty()) {
-                throw new IllegalStateException(
-                    String.format("%s contains transitive dependencies", dep)
-                );
-            }
-        });
+        if (checkTransitive) {
+            deps.forEach(dep -> {
+                if (!new DcsFiltered(
+                    new DcsDepgraph(
+                        project,
+                        session,
+                        manager,
+                        this.targetDir.toPath()
+                            .resolve(ResolveMojo.DIR)
+                            .resolve("dependencies-info"),
+                        dep
+                    ),
+                    Arrays.asList(
+                        new DcsFiltered.NotRuntime(),
+                        new DcsFiltered.NotSame(dep),
+                        new DcsFiltered.NotTesting()
+                    )
+                ).all().isEmpty()) {
+                    throw new IllegalStateException(
+                        String.format("%s contains transitive dependencies", dep)
+                    );
+                }
+            });
+        }
     }
+
 
     /**
      * Check dependencies for conflicts.

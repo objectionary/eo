@@ -189,7 +189,7 @@ final class ResolveMojoTest {
             .with("skipZeroVersions", true)
             .with("discoverSelf", false)
             .with("ignoreVersionConflicts", true)
-            .with("dependencies", new DependenciesFile.Dummy())
+            .with("checkTransitive", false)
             .execute();
         MatcherAssert.assertThat(
             true,
