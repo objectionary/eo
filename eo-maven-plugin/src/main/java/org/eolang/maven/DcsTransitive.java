@@ -28,7 +28,7 @@ import java.util.Collection;
 import org.apache.maven.model.Dependency;
 
 /**
- * Test case for {@link org.eolang.maven.DcsTransitive}.
+ * Transitive dependencies.
  *
  * @since 0.28.11
  */
