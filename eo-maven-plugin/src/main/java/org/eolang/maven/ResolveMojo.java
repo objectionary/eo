@@ -103,8 +103,8 @@ public final class ResolveMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidFieldNameMatchingMethodName"})
-    private boolean checkTransitive = true;
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean ignoreTransitive;
 
     @Override
     public void exec() throws IOException {
@@ -221,7 +221,7 @@ public final class ResolveMojo extends SafeMojo {
      * @throws java.lang.IllegalStateException if a transitive dependency is found
      */
     private void checkTransitive(final Collection<Dependency> deps) {
-        if (this.checkTransitive) {
+        if (!this.ignoreTransitive) {
             for (final Dependency dep : deps) {
                 if (!new DcsTransitive(
                     new DcsDepgraph(
