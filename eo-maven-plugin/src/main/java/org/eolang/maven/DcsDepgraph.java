@@ -212,9 +212,8 @@ final class DcsDepgraph implements Dependencies {
             } catch (final IOException | IllegalStateException ex) {
                 throw new IllegalStateException(
                     String.format(
-                        "Exception happens during reading the dependencies from json file %s. %s",
-                        this.file,
-                        "Probably file is absent or you have a wrong json format"
+                        "Exception happens during reading the dependencies from json file %s. Probably the file is absent or you have a wrong json format",
+                        this.file
                     ),
                     ex
                 );
