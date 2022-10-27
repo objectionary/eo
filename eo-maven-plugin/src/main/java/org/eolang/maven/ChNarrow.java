@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import java.util.Objects;
+
 /**
  * Short version of hash.
  *
@@ -46,6 +48,34 @@ final class ChNarrow implements CommitHash {
 
     @Override
     public String hash() {
-        return this.full.hash().substring(0, 7);
+        return this.validHash().substring(0, 7);
+    }
+
+    /**
+     * Valid hash.
+     *
+     * @return Full valid hash.
+     */
+    private String validHash() {
+        final String hash = this.full.hash();
+        if (Objects.isNull(hash)) {
+            throw new IllegalArgumentException(
+                String.format("Hash can't be null. The delegate %s", this.full)
+            );
+        } else if (hash.isEmpty()) {
+            throw new IllegalArgumentException(
+                String.format("Hash can't empty. The delegate %s", this.full)
+            );
+        } else if (hash.length() <= 7) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "%s, but was %d, hash %s, delegate %s",
+                    "The hash size has to be grater or equals then 7",
+                    hash.length(),
+                    hash,
+                    this.full
+                ));
+        }
+        return hash;
     }
 }
