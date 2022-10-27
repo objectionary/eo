@@ -88,15 +88,15 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final HashOfTag tag = new HashOfTag(this.hash);
+        final HtRemote tag = new HtRemote(this.hash);
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    tag.narrow(),
+                    new HtNarrow(tag).hash(),
                     this.outputPath
                 ),
                 new OyCaching(
-                    tag.narrow(),
+                    new HtNarrow(tag).hash(),
                     this.outputPath,
                     PullMojo.remote(tag.hash())
                 ),
@@ -111,7 +111,7 @@ public final class PullMojo extends SafeMojo {
                 );
                 tojo.set(
                     AssembleMojo.ATTR_HASH,
-                    tag.narrow()
+                    new HtNarrow(tag).hash()
                 );
             }
             Logger.info(
