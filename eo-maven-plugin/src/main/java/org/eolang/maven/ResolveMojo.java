@@ -30,7 +30,6 @@ import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -225,7 +224,7 @@ public final class ResolveMojo extends SafeMojo {
         if (this.checkTransitive) {
             deps.forEach(
                 dep -> {
-                    if (!new DcsFiltered(
+                    if (!new DcsTransitive(
                         new DcsDepgraph(
                             project,
                             session,
@@ -235,11 +234,7 @@ public final class ResolveMojo extends SafeMojo {
                                 .resolve("dependencies-info"),
                             dep
                         ),
-                        Arrays.asList(
-                            new DcsFiltered.NotRuntime(),
-                            new DcsFiltered.NotSame(dep),
-                            new DcsFiltered.NotTesting()
-                        )
+                        dep
                     ).all().isEmpty()) {
                         throw new IllegalStateException(
                             String.format("%s contains transitive dependencies", dep)

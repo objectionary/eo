@@ -25,36 +25,39 @@ package org.eolang.maven;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import org.apache.maven.model.Dependency;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link org.eolang.maven.DcsFiltered}.
+ * Test case for {@link org.eolang.maven.DcsTransitive}.
  *
  * @since 0.28.11
  */
-class DcsFilteredTest {
+final class DcsTransitive implements Dependencies {
 
-    @Test
-    void filtersDependenciesByArtifactId() {
-        final Collection<Dependency> res = new DcsFiltered(
-            () -> Arrays.asList(dependency("eo-math"), dependency("eo-collections")),
-            Collections.singleton(d -> d.getArtifactId().equals("eo-math"))
-        ).all();
-        MatcherAssert.assertThat(res.size(), Matchers.equalTo(1));
-        MatcherAssert.assertThat(
-            res.stream().findFirst().orElseThrow(IllegalAccessError::new).getArtifactId(),
-            Matchers.equalTo(dependency("eo-math").getArtifactId())
+    /**
+     * Delegate dependencies.
+     */
+    private final Dependencies delegate;
+
+    /**
+     * The main contructor.
+     *
+     * @param delegate Delegate
+     * @param origin The dependency that transitive dependencies we are interested of
+     */
+    DcsTransitive(final Dependencies delegate, final Dependency origin) {
+        this.delegate = new DcsFiltered(
+            delegate,
+            Arrays.asList(
+                new DcsFiltered.NotSame(origin),
+                new DcsFiltered.NotRuntime(),
+                new DcsFiltered.NotTesting()
+            )
         );
     }
 
-    private static Dependency dependency(final String id) {
-        final Dependency dep = new Dependency();
-        dep.setArtifactId(id);
-        return dep;
+    @Override
+    public Collection<Dependency> all() {
+        return this.delegate.all();
     }
-
 }
