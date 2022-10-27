@@ -71,7 +71,7 @@ final class DcsDepgraph implements Dependencies {
     private final Path dir;
 
     /**
-     * Dependency for which we are looking transitive dependencies
+     * Dependency for which we are looking transitive dependencies.
      */
     private final Dependency dependency;
 
@@ -101,9 +101,15 @@ final class DcsDepgraph implements Dependencies {
 
     @Override
     public Collection<Dependency> all() {
-        return new DcsJson(file(dependency)).all();
+        return new DcsJson(this.file(this.dependency)).all();
     }
 
+    /**
+     * Receive file with dependencies jar file.
+     *
+     * @param origin Dependency
+     * @return Path to the saved json dependency file
+     */
     private Path file(final Dependency origin) {
         try {
             final String name = DcsDepgraph.fileName(origin);

@@ -39,6 +39,4 @@ interface Dependencies {
      * @return List of Maven Dependencies
      */
     Collection<Dependency> all();
-
-
 }

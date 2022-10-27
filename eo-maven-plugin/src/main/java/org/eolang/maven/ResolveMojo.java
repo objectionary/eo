@@ -101,8 +101,10 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Check transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidFieldNameMatchingMethodName"})
     private boolean checkTransitive = true;
 
     @Override
@@ -220,32 +222,32 @@ public final class ResolveMojo extends SafeMojo {
      * @throws java.lang.IllegalStateException if a transitive dependency is found
      */
     private void checkTransitive(final Collection<Dependency> deps) {
-        if (checkTransitive) {
-            deps.forEach(dep -> {
-                if (!new DcsFiltered(
-                    new DcsDepgraph(
-                        project,
-                        session,
-                        manager,
-                        this.targetDir.toPath()
-                            .resolve(ResolveMojo.DIR)
-                            .resolve("dependencies-info"),
-                        dep
-                    ),
-                    Arrays.asList(
-                        new DcsFiltered.NotRuntime(),
-                        new DcsFiltered.NotSame(dep),
-                        new DcsFiltered.NotTesting()
-                    )
-                ).all().isEmpty()) {
-                    throw new IllegalStateException(
-                        String.format("%s contains transitive dependencies", dep)
-                    );
-                }
-            });
+        if (this.checkTransitive) {
+            deps.forEach(
+                dep -> {
+                    if (!new DcsFiltered(
+                        new DcsDepgraph(
+                            project,
+                            session,
+                            manager,
+                            this.targetDir.toPath()
+                                .resolve(ResolveMojo.DIR)
+                                .resolve("dependencies-info"),
+                            dep
+                        ),
+                        Arrays.asList(
+                            new DcsFiltered.NotRuntime(),
+                            new DcsFiltered.NotSame(dep),
+                            new DcsFiltered.NotTesting()
+                        )
+                    ).all().isEmpty()) {
+                        throw new IllegalStateException(
+                            String.format("%s contains transitive dependencies", dep)
+                        );
+                    }
+                });
         }
     }
-
 
     /**
      * Check dependencies for conflicts.
