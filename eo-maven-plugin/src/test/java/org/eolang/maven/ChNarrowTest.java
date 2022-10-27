@@ -23,44 +23,41 @@
  */
 package org.eolang.maven;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 /**
- * Hash of tag.
+ * Test case for {@link org.eolang.maven.ChNarrow}.
  *
  * @since 0.28.11
  */
-public interface CommitHash {
+class ChNarrowTest {
 
-    /**
-     * SHA Hash.
-     *
-     * @return SHA of commit
-     */
-    String value();
+    @ParameterizedTest
+    @CsvSource({
+        "1234567, 1234567",
+        "12345678, 1234567",
+        "123456789, 1234567",
+        "1, 1"
+    })
+    void cutsHashCorrectly(final String input, final String output) {
+        MatcherAssert.assertThat(
+            new ChNarrow(
+                new CommitHash.ChConstant(input)
+            ).value(),
+            Matchers.equalTo(output)
+        );
+    }
 
-    /**
-     * Hardcoded commit hash.
-     *
-     * @since 0.28.11
-     */
-    final class ChConstant implements CommitHash {
-
-        /**
-         * Hardcoded value.
-         */
-        private final String hash;
-
-        /**
-         * The main constructor.
-         *
-         * @param hash Hardcoded value.
-         */
-        public ChConstant(final String hash) {
-            this.hash = hash;
-        }
-
-        @Override
-        public String value() {
-            return this.hash;
-        }
+    @Test
+    void throwsExceptionIfEmpty() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+        );
     }
 }
