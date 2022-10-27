@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Hash of tag.
+ * Hash of tag from objectionary.
  * @since 0.26
  */
 final class HtRemote implements HashOfTag {
@@ -60,10 +60,6 @@ final class HtRemote implements HashOfTag {
         this.tag = hash;
     }
 
-    /**
-     * Hash of tag.
-     * @return SHA of commit
-     */
     @Override
     public String hash() {
         final String result = HtRemote.CACHE.get(this.tag);
