@@ -88,7 +88,7 @@ final class ParseMojoTest {
         );
         final Path foreign = temp.resolve("eo-foreign.csv");
         new FtCached(
-            new ChNarrow(new ChRemote("0.25.0")).hash(),
+            new ChNarrow(new ChRemote("0.25.0")).value(),
             target,
             temp.resolve("parsed")
         ).save(

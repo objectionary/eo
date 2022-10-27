@@ -54,14 +54,14 @@ final class ChRemote implements CommitHash {
 
     /**
      * Constructor.
-     * @param hash Tag
+     * @param tag Tag
      */
-    ChRemote(final String hash) {
-        this.tag = hash;
+    ChRemote(final String tag) {
+        this.tag = tag;
     }
 
     @Override
-    public String hash() {
+    public String value() {
         final String result = ChRemote.CACHE.get(this.tag);
         if (result == null) {
             throw new IllegalArgumentException(

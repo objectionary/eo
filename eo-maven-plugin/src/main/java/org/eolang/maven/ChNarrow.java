@@ -47,7 +47,7 @@ final class ChNarrow implements CommitHash {
     }
 
     @Override
-    public String hash() {
+    public String value() {
         return this.validHash().substring(0, 7);
     }
 
@@ -57,7 +57,7 @@ final class ChNarrow implements CommitHash {
      * @return Full valid hash.
      */
     private String validHash() {
-        final String hash = this.full.hash();
+        final String hash = this.full.value();
         if (Objects.isNull(hash)) {
             throw new IllegalArgumentException(
                 String.format("Hash can't be null. The delegate %s", this.full)

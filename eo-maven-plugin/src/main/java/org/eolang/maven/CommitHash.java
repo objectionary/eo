@@ -35,5 +35,5 @@ public interface CommitHash {
      *
      * @return SHA of commit
      */
-    String hash();
+    String value();
 }

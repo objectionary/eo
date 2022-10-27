@@ -92,13 +92,13 @@ public final class PullMojo extends SafeMojo {
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    new ChNarrow(tag).hash(),
+                    new ChNarrow(tag).value(),
                     this.outputPath
                 ),
                 new OyCaching(
-                    new ChNarrow(tag).hash(),
+                    new ChNarrow(tag).value(),
                     this.outputPath,
-                    PullMojo.remote(tag.hash())
+                    PullMojo.remote(tag.value())
                 ),
                 this.forceUpdate()
             );
@@ -111,7 +111,7 @@ public final class PullMojo extends SafeMojo {
                 );
                 tojo.set(
                     AssembleMojo.ATTR_HASH,
-                    new ChNarrow(tag).hash()
+                    new ChNarrow(tag).value()
                 );
             }
             Logger.info(
