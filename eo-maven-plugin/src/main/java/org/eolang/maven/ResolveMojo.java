@@ -245,7 +245,8 @@ public final class ResolveMojo extends SafeMojo {
                             String.format("%s contains transitive dependencies", dep)
                         );
                     }
-                });
+                }
+            );
         }
     }
 
