@@ -23,9 +23,13 @@
  */
 package org.eolang.maven;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.apache.maven.model.Dependency;
+import org.cactoos.Func;
+import org.cactoos.Scalar;
+import org.cactoos.iterator.Filtered;
 
 /**
  * Transitive dependencies.
@@ -40,24 +44,95 @@ final class DcsTransitive implements Dependencies {
     private final Dependencies delegate;
 
     /**
+     * The dependency that transitive dependencies we are interested of.
+     */
+    private final Dependency origin;
+
+    /**
      * The main contructor.
      *
      * @param delegate Delegate
      * @param origin The dependency that transitive dependencies we are interested of
      */
     DcsTransitive(final Dependencies delegate, final Dependency origin) {
-        this.delegate = new DcsFiltered(
-            delegate,
-            Arrays.asList(
-                new DcsFiltered.NotSame(origin),
-                new DcsFiltered.NotRuntime(),
-                new DcsFiltered.NotTesting()
-            )
-        );
+        this.delegate = delegate;
+        this.origin = origin;
     }
 
     @Override
     public Collection<Dependency> all() {
-        return this.delegate.all();
+        return StreamSupport.stream(
+            ((Iterable<Dependency>) () -> new Filtered<>(
+                new Filtered<>(
+                    new Filtered<>(
+                        this.delegate.all().iterator(),
+                        new NotSame(this.origin)
+                    ), new NotRuntime()
+                ), new NotTesting()
+            )
+            ).spliterator(),
+                false
+            )
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Filters runtime dependency eo-runtime.
+     *
+     * @since 0.28.11
+     */
+    private static final class NotRuntime implements Func<Dependency, Scalar<Boolean>> {
+
+        @Override
+        public Scalar<Boolean> apply(final Dependency dependency) throws Exception {
+            return () -> !(
+                dependency.getGroupId().equals("org.eolang")
+                    && dependency.getArtifactId().equals("eo-runtime")
+            );
+        }
+    }
+
+    /**
+     * Filters all dependencies with the same group and artifact id.
+     *
+     * @since 0.28.11
+     */
+    private static final class NotSame implements Func<Dependency, Scalar<Boolean>> {
+
+        /**
+         * Dependency to check.
+         */
+        private final Dependency current;
+
+        /**
+         * The main constructor.
+         *
+         * @param current Dependency to check
+         */
+        NotSame(final Dependency current) {
+            this.current = current;
+        }
+
+        @Override
+        public Scalar<Boolean> apply(final Dependency dependency) throws Exception {
+            return () -> !(
+                dependency.getGroupId().equals(this.current.getGroupId())
+                    && dependency.getArtifactId().equals(this.current.getArtifactId())
+            );
+        }
+    }
+
+    /**
+     * Filters all test dependencies.
+     *
+     * @since 0.28.11
+     */
+    @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
+    private static final class NotTesting implements Func<Dependency, Scalar<Boolean>> {
+
+        @Override
+        public Scalar<Boolean> apply(final Dependency dependency) throws Exception {
+            return () -> !dependency.getScope().contains("test");
+        }
     }
 }
