@@ -222,26 +222,24 @@ public final class ResolveMojo extends SafeMojo {
      */
     private void checkTransitive(final Collection<Dependency> deps) {
         if (this.checkTransitive) {
-            deps.forEach(
-                dep -> {
-                    if (!new DcsTransitive(
-                        new DcsDepgraph(
-                            project,
-                            session,
-                            manager,
-                            this.targetDir.toPath()
-                                .resolve(ResolveMojo.DIR)
-                                .resolve("dependencies-info"),
-                            dep
-                        ),
+            for (final Dependency dep : deps) {
+                if (!new DcsTransitive(
+                    new DcsDepgraph(
+                        project,
+                        session,
+                        manager,
+                        this.targetDir.toPath()
+                            .resolve(ResolveMojo.DIR)
+                            .resolve("dependencies-info"),
                         dep
-                    ).all().isEmpty()) {
-                        throw new IllegalStateException(
-                            String.format("%s contains transitive dependencies", dep)
-                        );
-                    }
+                    ),
+                    dep
+                ).all().isEmpty()) {
+                    throw new IllegalStateException(
+                        String.format("%s contains transitive dependencies", dep)
+                    );
                 }
-            );
+            }
         }
     }
 
