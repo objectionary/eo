@@ -136,7 +136,13 @@ final class DcsDepgraph implements Dependencies {
             );
             return this.dir.resolve(name);
         } catch (final MojoExecutionException ex) {
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException(
+                String.format(
+                    "Dphgraph. Uploading of dependencies file failed for the dependency %s",
+                    origin
+                ),
+                ex
+            );
         }
     }
 
