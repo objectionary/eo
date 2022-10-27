@@ -28,7 +28,7 @@ package org.eolang.maven;
  *
  * @since 0.28.11
  */
-public interface HashOfTag {
+public interface CommitHash {
 
     /**
      * SHA Hash.

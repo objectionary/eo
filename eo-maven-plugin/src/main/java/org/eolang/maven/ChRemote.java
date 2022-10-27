@@ -35,12 +35,12 @@ import java.util.Scanner;
  * Hash of tag from objectionary.
  * @since 0.26
  */
-final class HtRemote implements HashOfTag {
+final class ChRemote implements CommitHash {
 
     /**
      * Cached map of hashes.
      */
-    private static final Map<String, String> CACHE = HtRemote.safeLoad();
+    private static final Map<String, String> CACHE = ChRemote.safeLoad();
 
     /**
      * The URL where the list is kept.
@@ -56,13 +56,13 @@ final class HtRemote implements HashOfTag {
      * Constructor.
      * @param hash Tag
      */
-    HtRemote(final String hash) {
+    ChRemote(final String hash) {
         this.tag = hash;
     }
 
     @Override
     public String hash() {
-        final String result = HtRemote.CACHE.get(this.tag);
+        final String result = ChRemote.CACHE.get(this.tag);
         if (result == null) {
             throw new IllegalArgumentException(
                 String.format(
@@ -82,12 +82,12 @@ final class HtRemote implements HashOfTag {
     private static Map<String, String> safeLoad() {
         Map<String, String> map;
         try {
-            map = HtRemote.load();
+            map = ChRemote.load();
         } catch (final IOException ex) {
             Logger.warn(
-                HtRemote.class,
+                ChRemote.class,
                 "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
-                HtRemote.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+                ChRemote.HOME, ex.getClass().getSimpleName(), ex.getMessage()
             );
             map = new HashMap<>(0);
         }
@@ -100,7 +100,7 @@ final class HtRemote implements HashOfTag {
      * @throws IOException if fails
      */
     private static Map<String, String> load() throws IOException {
-        final InputStream ins = new URL(HtRemote.HOME).openStream();
+        final InputStream ins = new URL(ChRemote.HOME).openStream();
         try (Scanner scanner = new Scanner(ins)) {
             final Map<String, String> map = new HashMap<>(0);
             while (scanner.hasNextLine()) {

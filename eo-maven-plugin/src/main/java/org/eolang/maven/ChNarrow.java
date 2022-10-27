@@ -28,19 +28,19 @@ package org.eolang.maven;
  *
  * @since 0.28.11
  */
-final class HtNarrow implements HashOfTag {
+final class ChNarrow implements CommitHash {
 
     /**
      * Delegate.
      */
-    private final HashOfTag full;
+    private final CommitHash full;
 
     /**
      * The main constructor.
      *
      * @param full Delegate
      */
-    HtNarrow(final HashOfTag full) {
+    ChNarrow(final CommitHash full) {
         this.full = full;
     }
 

@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link OyRemote}.
  * @since 0.26
  */
-final class HtRemoteTest {
+final class ChRemoteTest {
 
     @BeforeEach
     void weAreOnline() throws IOException {
@@ -53,7 +53,7 @@ final class HtRemoteTest {
 
     @Test
     void testCommitHashTag() {
-        final String hash = new HtRemote("0.26.0").hash();
+        final String hash = new ChRemote("0.26.0").hash();
         MatcherAssert.assertThat(
             hash,
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
@@ -62,7 +62,7 @@ final class HtRemoteTest {
 
     @Test
     void testCommitHashOldTag() {
-        final String hash = new HtRemote("0.23.19").hash();
+        final String hash = new ChRemote("0.23.19").hash();
         MatcherAssert.assertThat(
             hash,
             Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
@@ -73,7 +73,7 @@ final class HtRemoteTest {
     void testCommitHashException() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new HtRemote("nonsense").hash()
+            () -> new ChRemote("nonsense").hash()
         );
     }
 }
