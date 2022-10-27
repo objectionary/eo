@@ -138,7 +138,7 @@ final class DcsDepgraph implements Dependencies {
         } catch (final MojoExecutionException ex) {
             throw new IllegalStateException(
                 String.format(
-                    "Dphgraph. Uploading of dependencies file failed for the dependency %s",
+                    "Dphgraph. Creation of the dependencies file failed for the dependency %s",
                     origin
                 ),
                 ex
