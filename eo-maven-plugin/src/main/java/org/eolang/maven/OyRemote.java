@@ -44,13 +44,13 @@ final class OyRemote implements Objectionary {
 
     /**
      * Constructor.
-     * @param tag Tag
+     * @param hash Commit hash
      * @throws IOException if fails.
      */
-    OyRemote(final String tag) throws IOException {
+    OyRemote(final CommitHash hash) throws IOException {
         this.template = String.format(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            tag
+            hash.value()
         );
     }
 

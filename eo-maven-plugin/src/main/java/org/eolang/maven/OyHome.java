@@ -46,6 +46,15 @@ final class OyHome implements Objectionary {
 
     /**
      * Ctor.
+     * @param hash Commit hash.
+     * @param path Root.
+     */
+    OyHome(final CommitHash hash, final Path path) {
+        this(hash.value(), path);
+    }
+
+    /**
+     * Ctor.
      * @param ver Version.
      * @param path Root.
      */

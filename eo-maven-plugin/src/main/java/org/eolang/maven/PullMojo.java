@@ -92,13 +92,13 @@ public final class PullMojo extends SafeMojo {
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    new ChNarrow(tag).value(),
+                    new ChNarrow(tag),
                     this.outputPath
                 ),
                 new OyCaching(
-                    new ChNarrow(tag).value(),
+                    new ChNarrow(tag),
                     this.outputPath,
-                    PullMojo.remote(tag.value())
+                    PullMojo.remote(tag)
                 ),
                 this.forceUpdate()
             );
@@ -123,14 +123,14 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Create remote repo.
-     * @param full Full Git hash
+     * @param hash Full Git hash
      * @return Objectionary
      */
-    private static Objectionary remote(final String full) {
+    private static Objectionary remote(final CommitHash hash) {
         Objectionary obj;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyRemote(full);
+            obj = new OyRemote(hash);
         } catch (final IOException ex) {
             obj = new OyEmpty();
         }

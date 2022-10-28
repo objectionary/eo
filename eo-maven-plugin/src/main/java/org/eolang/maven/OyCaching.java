@@ -52,6 +52,20 @@ final class OyCaching implements Objectionary {
 
     /**
      * Ctor.
+     * @param hash Commit hash.
+     * @param cache Cache directory.
+     * @param primary Primary objectionary.
+     */
+    public OyCaching(
+        final CommitHash hash,
+        final Path cache,
+        final Objectionary primary
+    ) {
+        this(hash.value(), cache, primary);
+    }
+
+    /**
+     * Ctor.
      * @param ver Version.
      * @param cache Cache directory.
      * @param primary Primary objectionary.
