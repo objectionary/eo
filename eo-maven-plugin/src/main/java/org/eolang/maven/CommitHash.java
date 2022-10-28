@@ -30,7 +30,7 @@ package org.eolang.maven;
  * @todo It's better to move CommitHash class and all it's implementations to a separate package.
  *   For example, `org.eolang.maven.hash`
  */
-public interface CommitHash {
+interface CommitHash {
 
     /**
      * SHA Hash.
@@ -56,7 +56,7 @@ public interface CommitHash {
          *
          * @param hash Hardcoded value.
          */
-        public ChConstant(final String hash) {
+        ChConstant(final String hash) {
             this.hash = hash;
         }
 

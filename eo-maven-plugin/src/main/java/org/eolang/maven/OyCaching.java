@@ -56,7 +56,7 @@ final class OyCaching implements Objectionary {
      * @param cache Cache directory.
      * @param primary Primary objectionary.
      */
-    public OyCaching(
+    OyCaching(
         final CommitHash hash,
         final Path cache,
         final Objectionary primary
