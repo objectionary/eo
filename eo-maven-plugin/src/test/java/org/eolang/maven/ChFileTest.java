@@ -5,13 +5,14 @@ import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class ChTextTest {
+class ChFileTest {
 
     private static Path file;
 
@@ -60,5 +61,13 @@ class ChTextTest {
             ).value(),
             Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
         );
+    }
+
+    @Test
+    public void readsHashByNonExistedTag() {
+        Assertions.assertThrows(IllegalStateException.class, () -> new ChText(
+            () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
+            "non-existent-tag"
+        ).value());
     }
 }

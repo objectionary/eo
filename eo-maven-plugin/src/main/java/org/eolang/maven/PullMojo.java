@@ -34,6 +34,7 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.scalar.Ternary;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -54,6 +55,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * The Git hash to pull objects from, in objectionary.
+     *
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -62,6 +64,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Pull again even if the .eo file is already present?
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
@@ -70,6 +73,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Target directory.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.home")
@@ -77,10 +81,19 @@ public final class PullMojo extends SafeMojo {
     private Path outputPath = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
+     * Read hashes from local file.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.offlineHashFile")
+    private Path offlineHashFile;
+
+    /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
+
 
     @Override
     public void exec() throws IOException {
@@ -88,7 +101,12 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final ChRemote tag = new ChRemote(this.hash);
+        final CommitHash tag;
+        if (offlineHashFile != null) {
+            tag = new ChText(offlineHashFile, this.hash);
+        } else {
+            tag = new ChRemote(this.hash);
+        }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
@@ -123,6 +141,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Create remote repo.
+     *
      * @param hash Full Git hash
      * @return Objectionary
      */
@@ -139,6 +158,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Is force update option enabled.
+     *
      * @return True if option enabled and false otherwise
      */
     private boolean forceUpdate() {
