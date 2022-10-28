@@ -27,8 +27,8 @@ package org.eolang.maven;
  * Hash of tag.
  *
  * @since 0.28.11
- * @todo It's better to move CommitHash class and all it's implementations to a separate package.
- *   For example, `org.eolang.maven.hash`
+ * @todo #1174:90m It's better to move CommitHash class and all
+ *   it's implementations to a separate package. For example, `org.eolang.maven.hash`
  */
 interface CommitHash {
 
