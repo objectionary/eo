@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;
@@ -46,11 +47,11 @@ final class DcsJsonTest {
     })
     void readsAllDependenciesFromJsonFile(
         final String name,
-        final int number,
+        final long number,
         @TempDir final Path tmp
-    ) {
+    ) throws Exception {
         MatcherAssert.assertThat(
-            new DcsDepgraph.DcsJson(this.file(tmp, name)).all().size(),
+            new LengthOf(new DcsDepgraph.DcsJson(this.file(tmp, name))).value(),
             Matchers.equalTo(number)
         );
     }

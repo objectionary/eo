@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -100,8 +100,8 @@ final class DcsDepgraph implements Dependencies {
     }
 
     @Override
-    public Collection<Dependency> all() {
-        return new DcsJson(this.file(this.dependency)).all();
+    public Iterator<Dependency> iterator() {
+        return new DcsJson(this.file(this.dependency)).iterator();
     }
 
     /**
@@ -184,7 +184,7 @@ final class DcsDepgraph implements Dependencies {
         }
 
         @Override
-        public Collection<Dependency> all() {
+        public Iterator<Dependency> iterator() {
             try {
                 final List<Dependency> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
@@ -208,11 +208,11 @@ final class DcsDepgraph implements Dependencies {
                         all.add(dependency);
                     }
                 }
-                return all;
+                return all.iterator();
             } catch (final IOException | IllegalStateException ex) {
                 throw new IllegalStateException(
                     String.format(
-                        "Exception happens during reading the dependencies from json file %s. Probably the file is absent or you have a wrong json format",
+                        "Exception occurred during reading of the dependencies from the json file %s",
                         this.file
                     ),
                     ex

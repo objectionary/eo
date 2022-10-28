@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.model.Dependency;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;
@@ -47,18 +48,19 @@ class DcsTransitiveTest {
     })
     void findsAllTransitiveDependencies(
         final String name,
-        final int number,
+        final long number,
         @TempDir final Path tmp
-    ) {
+    ) throws Exception {
         final Dependency dependency = new Dependency();
         dependency.setGroupId("org.eolang");
         dependency.setArtifactId("eo-math");
         dependency.setVersion("0.2.3");
         MatcherAssert.assertThat(
-            new DcsTransitive(
-                new DcsDepgraph.DcsJson(this.file(tmp, name)),
-                dependency
-            ).all().size(),
+            new LengthOf(
+                new DcsTransitive(
+                    new DcsDepgraph.DcsJson(this.file(tmp, name)),
+                    dependency
+                )).value(),
             Matchers.equalTo(number)
         );
     }

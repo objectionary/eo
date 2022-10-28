@@ -41,6 +41,8 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Find all required runtime dependencies, download
@@ -223,18 +225,20 @@ public final class ResolveMojo extends SafeMojo {
     private void checkTransitive(final Collection<Dependency> deps) {
         if (!this.ignoreTransitive) {
             for (final Dependency dep : deps) {
-                if (!new DcsTransitive(
-                    new DcsDepgraph(
-                        project,
-                        session,
-                        manager,
-                        this.targetDir.toPath()
-                            .resolve(ResolveMojo.DIR)
-                            .resolve("dependencies-info"),
-                        dep
-                    ),
-                    dep
-                ).all().isEmpty()) {
+                if (new Unchecked<>(
+                    new LengthOf(
+                        new DcsTransitive(
+                            new DcsDepgraph(
+                                project,
+                                session,
+                                manager,
+                                this.targetDir.toPath()
+                                    .resolve(ResolveMojo.DIR)
+                                    .resolve("dependencies-info"),
+                                dep
+                            ),
+                            dep
+                        ))).value() != 0) {
                     throw new IllegalStateException(
                         String.format("%s contains transitive dependencies", dep)
                     );

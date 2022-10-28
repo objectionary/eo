@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.util.Collection;
 import org.apache.maven.model.Dependency;
 
 /**
@@ -31,12 +30,5 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.28.11
  */
-interface Dependencies {
-
-    /**
-     * All dependencies.
-     *
-     * @return List of Maven Dependencies
-     */
-    Collection<Dependency> all();
+interface Dependencies extends Iterable<Dependency> {
 }

@@ -23,9 +23,7 @@
  */
 package org.eolang.maven;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Iterator;
 import org.apache.maven.model.Dependency;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
@@ -60,20 +58,15 @@ final class DcsTransitive implements Dependencies {
     }
 
     @Override
-    public Collection<Dependency> all() {
-        return StreamSupport.stream(
-            ((Iterable<Dependency>) () -> new Filtered<>(
+    public Iterator<Dependency> iterator() {
+        return new Filtered<>(
+            new Filtered<>(
                 new Filtered<>(
-                    new Filtered<>(
-                        this.delegate.all().iterator(),
-                        new NotSame(this.origin)
-                    ), new NotRuntime()
-                ), new NotTesting()
-            )
-            ).spliterator(),
-                false
-            )
-            .collect(Collectors.toList());
+                    this.delegate.iterator(),
+                    new NotSame(this.origin)
+                ), new NotRuntime()
+            ), new NotTesting()
+        );
     }
 
     /**
