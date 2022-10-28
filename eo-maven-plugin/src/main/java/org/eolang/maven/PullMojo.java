@@ -34,7 +34,6 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.scalar.Ternary;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -94,7 +93,6 @@ public final class PullMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
 
-
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
@@ -102,10 +100,10 @@ public final class PullMojo extends SafeMojo {
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         final CommitHash tag;
-        if (offlineHashFile != null) {
-            tag = new ChText(offlineHashFile, this.hash);
-        } else {
+        if (this.offlineHashFile == null) {
             tag = new ChRemote(this.hash);
+        } else {
+            tag = new ChText(this.offlineHashFile, this.hash);
         }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(

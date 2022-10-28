@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2022 Objectionary.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.eolang.maven;
 
 import java.io.IOException;
@@ -12,14 +35,22 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class ChFileTest {
+/**
+ * Test case for {@link org.eolang.maven.ChText}.
+ *
+ * @since 0.28.11
+ */
+class ChTextTest {
 
+    /**
+     * Test file path in temp dir.
+     */
     private static Path file;
 
     @BeforeAll
     static void setUp(@TempDir final Path dir) throws IOException {
-        file = dir.resolve("tags.txt");
-        new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), file);
+        ChTextTest.file = dir.resolve("tags.txt");
+        new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), ChTextTest.file);
     }
 
     @ParameterizedTest
@@ -45,15 +76,15 @@ class ChFileTest {
         "5f82cc1edffad67bf4ba816610191403eb18af5d, 0.28.7",
         "be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9"
     })
-    public void readsCorrectHashByTagFromFile(
+    void readsCorrectHashByTagFromFile(
         final String hash,
         final String tag
     ) {
-        MatcherAssert.assertThat(new ChText(file, tag).value(), Matchers.equalTo(hash));
+        MatcherAssert.assertThat(new ChText(ChTextTest.file, tag).value(), Matchers.equalTo(hash));
     }
 
     @Test
-    public void readsCorrectHashByTagFromSimpleString() {
+    void readsCorrectHashByTagFromSimpleString() {
         MatcherAssert.assertThat(
             new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
@@ -64,10 +95,13 @@ class ChFileTest {
     }
 
     @Test
-    public void readsHashByNonExistedTag() {
-        Assertions.assertThrows(IllegalStateException.class, () -> new ChText(
-            () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
-            "non-existent-tag"
-        ).value());
+    void readsHashByNonExistedTag() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new ChText(
+                () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
+                "non-existent-tag"
+            ).value()
+        );
     }
 }

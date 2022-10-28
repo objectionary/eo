@@ -26,16 +26,13 @@ package org.eolang.maven;
 import com.yegor256.tojos.MnJson;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Map;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test case for {@link PullMojo}.
@@ -56,7 +53,7 @@ final class PullMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
-            .with("objectionary", dummy())
+            .with("objectionary", this.dummy())
             .execute();
         MatcherAssert.assertThat(
             new Home().exists(
@@ -73,8 +70,10 @@ final class PullMojoTest {
 
     @Test
     void pullsUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
-        Path file = temp.resolve("tags.txt");
-        new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), file);
+        new Home().save(
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            temp.resolve("tags.txt")
+        );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign, "json")
@@ -85,8 +84,8 @@ final class PullMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
-            .with("objectionary", dummy())
-            .with("offlineHashFile", file)
+            .with("objectionary", this.dummy())
+            .with("offlineHashFile", temp.resolve("tags.txt"))
             .execute();
         MatcherAssert.assertThat(
             new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
@@ -94,6 +93,11 @@ final class PullMojoTest {
         );
     }
 
+    /**
+     * Dummy Objectionary.
+     *
+     * @return Dummy Objectionary.
+     */
     private Objectionary dummy() {
         return input -> new InputOf("[] > hello\n");
     }
