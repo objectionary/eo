@@ -57,25 +57,48 @@ final class DcsTransitive implements Dependencies {
 
     @Override
     public Iterator<Dependency> iterator() {
-        return new Filtered<>(this.delegate.iterator(),
+        return new Filtered<>(
+            this.delegate.iterator(),
             dependency ->
                 () -> DcsTransitive.notRuntime(dependency)
                     && DcsTransitive.notTesting(dependency)
-                    && notSame(dependency)
+                    && this.notSame(dependency)
         );
     }
 
+    /**
+     * Check if it's not the same dependency.
+     *
+     * @param dep Checked dependency.
+     * @return True if different with this.origin.
+     */
     private boolean notSame(final Dependency dep) {
-        return !(dep.getGroupId().equals(this.origin.getGroupId())
-                     && dep.getArtifactId().equals(this.origin.getArtifactId()));
+        return !(
+            dep.getGroupId().equals(this.origin.getGroupId())
+                && dep.getArtifactId().equals(this.origin.getArtifactId())
+            );
     }
 
+    /**
+     * Check if it's not the testing dependency.
+     *
+     * @param dep Checked dependency.
+     * @return True if dependency has not test scope.
+     */
     private static boolean notTesting(final Dependency dep) {
         return !dep.getScope().contains("test");
     }
 
+    /**
+     * Check if it's not the runtime dependency.
+     *
+     * @param dep Checked dependency.
+     * @return True if it isn't a eo-runtime dependency.
+     */
     private static boolean notRuntime(final Dependency dep) {
-        return !(dep.getGroupId().equals("org.eolang")
-                     && dep.getArtifactId().equals("eo-runtime"));
+        return !(
+            dep.getGroupId().equals("org.eolang")
+                && dep.getArtifactId().equals("eo-runtime")
+            );
     }
 }
