@@ -6,11 +6,12 @@ import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class ChFileTest {
+class ChTextTest {
 
     private static Path file;
 
@@ -38,7 +39,7 @@ class ChFileTest {
         "9b883935257bd59d1ba36240f7e213d4890df7ca, 0.28.10",
         "54d83d4b1d28075ee623d58fd742eaa529febd3d, 0.28.2",
         "6c6269d1f9a1c81ffe641538f119fe4e12706cb3, 0.28.4",
-        "9c9352890b5d30e1b89c9147e7c95a90c9b8709f,0.28.5",
+        "9c9352890b5d30e1b89c9147e7c95a90c9b8709f, 0.28.5",
         "17f89293e5ae6115e9a0234b754b22918c11c602, 0.28.6",
         "5f82cc1edffad67bf4ba816610191403eb18af5d, 0.28.7",
         "be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9"
@@ -47,8 +48,17 @@ class ChFileTest {
         final String hash,
         final String tag
     ) {
-        MatcherAssert.assertThat(new ChFile(file, tag).value(), Matchers.equalTo(hash));
+        MatcherAssert.assertThat(new ChText(file, tag).value(), Matchers.equalTo(hash));
     }
 
-
+    @Test
+    public void readsCorrectHashByTagFromSimpleString() {
+        MatcherAssert.assertThat(
+            new ChText(
+                () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
+                "gh-pages"
+            ).value(),
+            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+        );
+    }
 }
