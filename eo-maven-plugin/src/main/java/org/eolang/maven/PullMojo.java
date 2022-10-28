@@ -56,10 +56,13 @@ public final class PullMojo extends SafeMojo {
      * The Git hash to pull objects from, in objectionary.
      *
      * @since 0.21.0
+     * @todo #1174:90min The wrong naming. It isn't a `hash` - it's a `tag`.
+     *   We have to rename that property. Also it's important to check if we don't break something
+     *   by such a renaming.
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";//todo - rename
+    private String hash = "master";
 
     /**
      * Pull again even if the .eo file is already present?
