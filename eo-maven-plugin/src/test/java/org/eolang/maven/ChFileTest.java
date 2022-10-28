@@ -25,7 +25,7 @@ class ChFileTest {
     @ParameterizedTest
     @CsvSource({
         "434868a411b9741fdd4f8a38a5c576e8733345c9, gh-pages",
-        "a56ee36807fae45ab3ef497451b1066bdd7704c5, master",
+        "mmmmmmm807fae45ab3ef497451b1066bdd7704c5, master",
         "db0579b48dd717ac015b7af8515f8a56ee6fd521, renovate/actions-checkout-3.x",
         "5fe5ad8d21dbe418038fa4c86e096fb037f290a9, 0.23.15",
         "15c85d7f8cffe15b0deba96e90bdac98a76293bb, 0.23.17",

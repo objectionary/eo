@@ -60,7 +60,7 @@ public final class PullMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";
+    private String hash = "master";//todo - rename
 
     /**
      * Pull again even if the .eo file is already present?
@@ -85,7 +85,7 @@ public final class PullMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.offlineHashFile")
+    @Parameter(property = "offlineHashFile")
     private Path offlineHashFile;
 
     /**
