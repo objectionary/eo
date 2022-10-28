@@ -97,7 +97,7 @@ class ChTextTest {
     @Test
     void readsHashByNonExistedTag() {
         Assertions.assertThrows(
-            IllegalStateException.class,
+            ChText.NotFound.class,
             () -> new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "non-existent-tag"

@@ -23,12 +23,16 @@
  */
 package org.eolang.maven;
 
-import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import org.cactoos.Scalar;
+import org.cactoos.Text;
 import org.cactoos.io.InputOf;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.scalar.FirstOf;
+import org.cactoos.scalar.Mapped;
 import org.cactoos.scalar.Unchecked;
+import org.cactoos.text.Flattened;
+import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
 /**
@@ -71,22 +75,29 @@ final class ChText implements CommitHash {
 
     @Override
     public String value() {
-        try {
-            return Arrays.stream(new Unchecked<>(this.source).value().split("\n"))
-                .filter(s -> s.contains(this.tag))
-                .findAny()
-                .orElseThrow(NotFound::new)
-                .split("\\s+")[0];
-        } catch (final NotFound | UncheckedIOException ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "The exception occurred during reading commit hash by tag %s from text source %s",
-                    this.tag,
-                    this.source
-                ),
-                ex
-            );
-        }
+        return new Unchecked<>(
+            new Mapped<>(
+                Text::asString,
+                new FirstOf<>(
+                    new Split(
+                        new Flattened(
+                            new FirstOf<>(
+                                new Filtered<>(
+                                    t -> t.asString().contains(this.tag),
+                                    new Split(new TextOf(this.source), "\n")
+                                ),
+                                () -> {
+                                    throw new NotFound();
+                                }
+                            )
+                        ),
+                        "\\s+"
+                    ),
+                    () -> {
+                        throw new NotFound();
+                    }
+                )
+            )).value();
     }
 
     /**
@@ -94,7 +105,7 @@ final class ChText implements CommitHash {
      *
      * @since 0.28.11
      */
-    private final class NotFound extends RuntimeException {
+    final class NotFound extends RuntimeException {
         /**
          * The main constructor.
          */
