@@ -98,6 +98,9 @@ final class ChRemote implements CommitHash {
      * Load all hashes and tags.
      * @return Map of them (hash -> tag)
      * @throws IOException if fails
+     * @todo #1174:90m The code duplication with ChText. It's better to reuse the logic
+     *  of parsing text source from ChText class. Maybe we can implement caching mechanism
+     *  in a way to avoid using map directly.
      */
     private static Map<String, String> load() throws IOException {
         final InputStream ins = new URL(ChRemote.HOME).openStream();
@@ -111,5 +114,4 @@ final class ChRemote implements CommitHash {
             return map;
         }
     }
-
 }

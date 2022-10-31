@@ -23,9 +23,13 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.MnJson;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -50,10 +54,7 @@ final class PullMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
-            .with(
-                "objectionary",
-                (Objectionary) input -> new InputOf("[] > hello\n")
-            )
+            .with("objectionary", this.dummy())
             .execute();
         MatcherAssert.assertThat(
             new Home(target).exists(
@@ -66,5 +67,39 @@ final class PullMojoTest {
             ),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void pullsUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
+        new Home().save(
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            temp.resolve("tags.txt")
+        );
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        Catalogs.INSTANCE.make(foreign, "json")
+            .add("org.eolang.io.stdout")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
+        new Moja<>(PullMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
+            .with("objectionary", this.dummy())
+            .with("offlineHashFile", temp.resolve("tags.txt"))
+            .execute();
+        MatcherAssert.assertThat(
+            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
+            Matchers.equalTo("mmmmmmm")
+        );
+    }
+
+    /**
+     * Dummy Objectionary.
+     *
+     * @return Dummy Objectionary.
+     */
+    private Objectionary dummy() {
+        return input -> new InputOf("[] > hello\n");
     }
 }

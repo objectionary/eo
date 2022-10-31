@@ -54,7 +54,11 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * The Git hash to pull objects from, in objectionary.
+     *
      * @since 0.21.0
+     * @todo #1174:90min The wrong naming. It isn't a `hash` - it's a `tag`.
+     *   We have to rename that property. Also it's important to check if we don't break something
+     *   by such a renaming.
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.hash", required = true, defaultValue = "master")
@@ -62,6 +66,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Pull again even if the .eo file is already present?
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
@@ -70,11 +75,20 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Target directory.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.home")
     @SuppressWarnings("PMD.ImmutableField")
     private Path outputPath = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
+    /**
+     * Read hashes from local file.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "offlineHashFile")
+    private Path offlineHashFile;
 
     /**
      * The objectionary.
@@ -88,7 +102,12 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final ChRemote tag = new ChRemote(this.hash);
+        final CommitHash tag;
+        if (this.offlineHashFile == null) {
+            tag = new ChRemote(this.hash);
+        } else {
+            tag = new ChText(this.offlineHashFile, this.hash);
+        }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
@@ -123,6 +142,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Create remote repo.
+     *
      * @param hash Full Git hash
      * @return Objectionary
      */
@@ -139,6 +159,7 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Is force update option enabled.
+     *
      * @return True if option enabled and false otherwise
      */
     private boolean forceUpdate() {
