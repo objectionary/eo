@@ -27,6 +27,7 @@ import com.yegor256.tojos.MnJson;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedList;
+import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
@@ -56,8 +57,8 @@ final class PullMojoTest {
             .with("objectionary", this.dummy())
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
                         PullMojo.DIR

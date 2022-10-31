@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,8 +40,8 @@ final class WalkTest {
 
     @Test
     void findsFiles(@TempDir final Path temp) throws Exception {
-        new Home().save("", temp.resolve("foo/hello/0.1/EObar/x.bin"));
-        new Home().save("", temp.resolve("EOxxx/bar"));
+        new Home(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
+        new Home(temp).save("", Paths.get("EOxxx/bar"));
         MatcherAssert.assertThat(
             new Walk(temp).includes(new ListOf<>("EO**/*")),
             Matchers.iterableWithSize(1)

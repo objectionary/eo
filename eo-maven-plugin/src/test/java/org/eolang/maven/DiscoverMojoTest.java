@@ -82,7 +82,7 @@ final class DiscoverMojoTest {
 
     private void saveProgram(final Path temp, final Input code) throws IOException {
         final Path program = temp.resolve("program.eo");
-        new Home().save(code, program);
+        new Home(temp).save(code, temp.relativize(program));
         Catalogs.INSTANCE.make(temp.resolve(DiscoverMojoTest.EO_FOREIGN), "json")
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")

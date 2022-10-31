@@ -31,6 +31,7 @@ import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Train that spies.
@@ -55,11 +56,9 @@ final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^a-z0-9]", "-");
-                            new Home().save(
+                            new Home(dir).save(
                                 xml.toString(),
-                                dir.resolve(
-                                    String.format("%02d-%s.xml", pos, log)
-                                )
+                                Paths.get(String.format("%02d-%s.xml", pos, log))
                             );
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(

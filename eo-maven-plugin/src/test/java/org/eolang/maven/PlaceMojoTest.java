@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.yegor256.tojos.Tojos;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,24 +43,24 @@ final class PlaceMojoTest {
     void placesBinaries(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         final Path classes = temp.resolve("classes");
-        new Home().save("x1", bins.resolve("foo/hello/-/0.1/EObar/x.bin"));
-        new Home().save("x2", bins.resolve("foo/hello/-/0.1/org/eolang/f/x.a.class"));
-        new Home().save("x3", bins.resolve("foo/hello/-/0.1/org/eolang/t.txt"));
+        new Home(bins).save("x1", Paths.get("foo/hello/-/0.1/EObar/x.bin"));
+        new Home(bins).save("x2", Paths.get("foo/hello/-/0.1/org/eolang/f/x.a.class"));
+        new Home(bins).save("x3", Paths.get("foo/hello/-/0.1/org/eolang/t.txt"));
         new Moja<>(PlaceMojo.class)
             .with("targetDir", temp.toFile())
             .with("outputDir", classes.toFile())
             .with("placed", temp.resolve("placed.json").toFile())
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(classes.resolve("EObar/x.bin")),
+            new Home(classes).exists(Paths.get("EObar/x.bin")),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new Home().exists(classes.resolve("org/eolang/f/x.a.class")),
+            new Home(classes).exists(classes.resolve("org/eolang/f/x.a.class")),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new Home().exists(classes.resolve("org/eolang/t.txt")),
+            new Home(classes).exists(classes.resolve("org/eolang/t.txt")),
             Matchers.is(true)
         );
     }
@@ -69,9 +70,9 @@ final class PlaceMojoTest {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         final Path classes = temp.resolve("classes");
         final Path placed = temp.resolve("placed.json");
-        new Home().save("x1", bins.resolve("foo/hello/-/0.1/EObar/x.bin"));
-        new Home().save("x1", classes.resolve("EObar/x.bin"));
-        new Home().save("x2", bins.resolve("foo/hello/-/0.1/org/eolang/f/x.a.class"));
+        new Home(bins).save("x1", Paths.get("foo/hello/-/0.1/EObar/x.bin"));
+        new Home(classes).save("x1", Paths.get("EObar/x.bin"));
+        new Home(bins).save("x2", Paths.get("foo/hello/-/0.1/org/eolang/f/x.a.class"));
         new Moja<>(PlaceMojo.class)
             .with("targetDir", temp.toFile())
             .with("outputDir", classes.toFile())

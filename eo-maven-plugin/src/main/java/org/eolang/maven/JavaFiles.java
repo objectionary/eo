@@ -100,12 +100,12 @@ final class JavaFiles {
             final Path dest = new Place(type).make(
                 generated, "java"
             );
-            new Home().save(
+            new Home(generated).save(
                 new Joined(
                     "",
                     java.xpath("java/text()")
                 ),
-                dest
+                generated.relativize(dest)
             );
             return dest;
         } catch (final InvalidPathException ex) {
