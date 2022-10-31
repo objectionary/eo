@@ -209,7 +209,9 @@ public final class TranspileMojo extends SafeMojo {
             )
         );
         final XML out = new Xsline(trn).pass(input);
-        new Home().save(out.toString(), target);
+        final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
+        new Home(dir)
+            .save(out.toString(), dir.relativize(target));
         return new JavaFiles(
             target,
             this.generatedDir.toPath()

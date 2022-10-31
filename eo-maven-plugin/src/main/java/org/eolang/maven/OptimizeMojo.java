@@ -273,7 +273,10 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = place.make(
             this.targetDir.toPath().resolve(OptimizeMojo.DIR), TranspileMojo.EXT
         );
-        new Home().save(xml.toString(), target);
+        new Home(this.targetDir.toPath()).save(
+            xml.toString(),
+            this.targetDir.toPath().relativize(target)
+        );
         Logger.debug(
             this, "Optimized %s (program:%s) to %s",
             new Home().rel(file), name, new Home().rel(target)

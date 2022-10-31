@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
@@ -46,14 +47,15 @@ final class UnplaceMojoTest {
     @Test
     void testCleaning(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
-        new Home().save("...", foo);
+        final Home home = new Home(temp);
+        home.save("...", temp.relativize(foo));
         final Path pparent = foo.getParent().getParent();
         final Path foo2 = temp.resolve("a/b/c/foo2.class");
-        new Home().save("...", foo2);
+        home.save("...", temp.relativize(foo2));
         final Path foo3 = temp.resolve("a/b/c/d/foo3.class");
-        new Home().save("...", foo3);
+        home.save("...", temp.relativize(foo3));
         final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
-        new Home().save("...", foo4);
+        home.save("...", temp.relativize(foo4));
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
             .add(foo.toString())
@@ -84,23 +86,23 @@ final class UnplaceMojoTest {
             .with("placedFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(foo),
+            Files.exists(foo),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new Home().exists(foo2),
+            Files.exists(foo2),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new Home().exists(foo3),
+            Files.exists(foo3),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new Home().exists(foo4),
+            Files.exists(foo4),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new Home().exists(Paths.get(String.valueOf(pparent))),
+            Files.exists(Paths.get(String.valueOf(pparent))),
             Matchers.is(false)
         );
     }
@@ -108,7 +110,7 @@ final class UnplaceMojoTest {
     @Test
     void testKeepBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo5.class");
-        new Home().save("testKeepBinaries", foo);
+        new Home(temp).save("testKeepBinaries", temp.relativize(foo));
         final Path pparent = foo.getParent().getParent();
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
@@ -123,11 +125,11 @@ final class UnplaceMojoTest {
             .with("keepBinaries", new SetOf<>("**foo5.class"))
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(foo),
+            Files.exists(foo),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new Home().exists(Paths.get(String.valueOf(pparent))),
+            Files.exists(Paths.get(String.valueOf(pparent))),
             Matchers.is(true)
         );
     }
@@ -135,7 +137,8 @@ final class UnplaceMojoTest {
     @Test
     void testKeepRemoveBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo6.class");
-        new Home().save("testKeepRemoveBinaries", foo);
+        final Home home = new Home(temp);
+        home.save("testKeepRemoveBinaries", temp.relativize(foo));
         final Path pparent = foo.getParent().getParent();
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
@@ -151,11 +154,11 @@ final class UnplaceMojoTest {
             .with("removeBinaries", new SetOf<>("**foo6.class"))
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(foo),
+            Files.exists(temp.relativize(foo)),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new Home().exists(Paths.get(String.valueOf(pparent))),
+            Files.exists(Paths.get(String.valueOf(pparent))),
             Matchers.is(false)
         );
     }

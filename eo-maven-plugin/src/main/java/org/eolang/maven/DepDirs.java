@@ -60,7 +60,7 @@ final class DepDirs extends ListEnvelope<String> {
      */
     private static List<String> list(final Path dir) throws IOException {
         final List<String> names = new LinkedList<>();
-        if (new Home().exists(dir)) {
+        if (Files.exists(Home.clean(dir))) {
             final String home = dir.toAbsolutePath().toString();
             names.addAll(
                 Files.find(dir, 4, (t, u) -> true)

@@ -25,10 +25,10 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.Bytes;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -52,7 +52,7 @@ final class HomeTest {
     void saves(final int size, @TempDir final Path temp) throws IOException {
         final Path resolve = temp.resolve("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
-        new Home().save(content, resolve);
+        new Home(temp).save(content, resolve);
         MatcherAssert.assertThat(
             new UncheckedText(new TextOf(resolve)).asString(),
             Matchers.is(content)
@@ -69,18 +69,20 @@ final class HomeTest {
 
     @Test
     void existsTest(@TempDir final Path temp) throws IOException {
-        new Home().save("any content", temp.resolve("file.txt"));
+        Files.write(temp.resolve("file.txt"), "any content".getBytes());
         MatcherAssert.assertThat(
-            new Home().exists(temp.resolve("file.txt")),
+            new Home(temp).exists(Paths.get("file.txt")),
             Matchers.is(true)
         );
     }
 
     @Test
     void existsInDirTest(@TempDir final Path temp) throws IOException {
-        new Home(Paths.get("dir")).save("any content", temp.resolve("file.txt"));
+        final Path target = temp.resolve("dir/subdir/file.txt");
+        target.getParent().toFile().mkdirs();
+        Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
-            new Home(Paths.get("dir")).exists(temp.resolve("file.txt")),
+            new Home(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
         );
     }
@@ -90,9 +92,9 @@ final class HomeTest {
         final String filename = "文件名.txt";
         final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
-        new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
+        new Home(Paths.get("directory")).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            new Home(Paths.get("directory")).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
@@ -102,29 +104,42 @@ final class HomeTest {
         final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
         final byte[] bytes = filename.getBytes("CP1252");
         final String decoded = new String(bytes, "CP1252");
-        new Home(Paths.get("directory")).save("any content", temp.resolve(decoded));
+        new Home(Paths.get("directory")).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            new Home(Paths.get("directory")).exists(temp.resolve(filename)),
+            new Home(Paths.get("directory")).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
 
     @Test
     void loadBytesFromExistingFile(@TempDir final Path temp) throws IOException {
-        final Home home = new Home();
-        final String filename = "foo";
+        final Home home = new Home(temp);
         final String content = "bar";
-        final Path subfolder = temp.resolve("subfolder").resolve(filename);
+        final Path subfolder = Paths.get("subfolder").resolve("foo.txt");
         home.save(content, subfolder);
-        final Bytes bytes = home.load(subfolder);
-        final TextOf text = new TextOf(bytes);
-        MatcherAssert.assertThat(text, Matchers.equalTo(new TextOf(content)));
+        MatcherAssert.assertThat(
+            new TextOf(home.load(subfolder)),
+            Matchers.equalTo(new TextOf(content))
+        );
     }
 
     @Test
     void loadFromAbsentFile(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            NoSuchFileException.class,
+            () -> new Home(temp).load(temp.resolve("nonexistent"))
+        );
+    }
+
+    @Test
+    void savesToCwd() throws IOException {
         final Home home = new Home();
-        final Path absent = temp.resolve("nonexistent");
-        Assertions.assertThrows(NoSuchFileException.class, () -> home.load(absent));
+        final String content = "bar";
+        final Path subfolder = Paths.get("subfolder").resolve("foo.txt");
+        home.save(content, subfolder);
+        MatcherAssert.assertThat(
+            new TextOf(home.load(subfolder)),
+            Matchers.equalTo(new TextOf(content))
+        );
     }
 }

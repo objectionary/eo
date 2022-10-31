@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
@@ -61,14 +62,14 @@ class CleanMojoTest {
     @Test
     void fullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
         final Path src = temp.resolve("src");
-        new Home().save(
+        new Home(src).save(
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
-            src.resolve("main.eo")
+            Paths.get("main.eo")
         );
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
