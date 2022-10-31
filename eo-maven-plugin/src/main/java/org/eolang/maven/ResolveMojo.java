@@ -47,7 +47,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Find all required runtime dependencies, download
  * them from Maven Central, unpack and place to target/eo.
- * <p>
  * The motivation for this mojo is simple: Maven doesn't have
  * a mechanism of adding .JAR files to transpile/test classpath in
  * runtime.
@@ -99,6 +98,14 @@ public final class ResolveMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
+
+    /**
+     * Check transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean ignoreTransitive;
 
     @Override
     public void exec() throws IOException {
@@ -183,8 +190,7 @@ public final class ResolveMojo extends SafeMojo {
             }
             final Dependency one = dep.get();
             final String coords = ResolveMojo.coords(one);
-            if (this.skipZeroVersions
-                && ParseMojo.ZERO.equals(one.getVersion())) {
+            if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s/%s skipped: %s",
                     tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
@@ -198,6 +204,81 @@ public final class ResolveMojo extends SafeMojo {
             );
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
+        }
+        this.checkConflicts(deps);
+        this.checkTransitive(deps);
+        return deps.stream()
+            .map(ResolveMojo.Wrap::new)
+            .sorted()
+            .distinct()
+            .map(ResolveMojo.Wrap::dep)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Check if all dependencies have transitive dependencies.
+     *
+     * @param deps Dependencies
+     * @throws java.lang.IllegalStateException if a transitive dependency is found
+     */
+    private void checkTransitive(final Collection<Dependency> deps) {
+        if (!this.ignoreTransitive) {
+            for (final Dependency dep : deps) {
+                if (new Unchecked<>(
+                    new LengthOf(
+                        new DcsTransitive(
+                            new DcsDepgraph(
+                                project,
+                                session,
+                                manager,
+                                this.targetDir.toPath()
+                                    .resolve(ResolveMojo.DIR)
+                                    .resolve("dependencies-info"),
+                                dep
+                            ),
+                            dep
+                        ))).value() != 0) {
+                    throw new IllegalStateException(
+                        String.format("%s contains transitive dependencies", dep)
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Check dependencies for conflicts.
+     *
+     * @param deps Dependencies
+     */
+    private void checkConflicts(final Collection<Dependency> deps) {
+        final Map<String, Set<String>> conflicts = deps.stream()
+            .collect(
+                Collectors.groupingBy(
+                    Dependency::getManagementKey,
+                    Collectors.mapping(
+                        Dependency::getVersion,
+                        Collectors.toSet()
+                    )
+                )
+            ).entrySet().stream()
+            .filter(e -> e.getValue().size() > 1)
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue
+                )
+            );
+        if (!conflicts.isEmpty()) {
+            final String msg = String.format(
+                "%d conflicting dependencies are found: %s",
+                conflicts.size(),
+                conflicts
+            );
+            Logger.warn(ResolveMojo.class, msg);
+            if (!this.ignoreVersionConflicts) {
+                throw new IllegalStateException(msg);
+            }
         }
         return new AllDependencies(deps, this.ignoreVersionConflicts)
             .withoutConflicts()
