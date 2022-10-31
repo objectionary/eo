@@ -50,7 +50,7 @@ import org.cactoos.text.TextOf;
  * </code>
  * @since 1.0
  */
-public final class FtCached implements Footprint {
+final class FtCached implements Footprint {
     /**
      * Path to target root.
      */
@@ -72,7 +72,7 @@ public final class FtCached implements Footprint {
      * @param main Main root
      * @param cache Cache root
      */
-    public FtCached(final String hash, final Path main, final Path cache) {
+    FtCached(final String hash, final Path main, final Path cache) {
         this.hash = hash;
         this.main = main;
         this.cache = cache;
@@ -110,8 +110,8 @@ public final class FtCached implements Footprint {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            new Home().save(text, cached);
+            new Home(this.cache).save(text, this.cache.relativize(cached));
         }
-        new Home().save(text, target);
+        new Home(this.main).save(text, this.main.relativize(target));
     }
 }

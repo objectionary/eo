@@ -34,7 +34,7 @@ import org.cactoos.func.IoCheckedFunc;
  *
  * @since 1.0
  */
-public final class OyFallback implements Objectionary {
+final class OyFallback implements Objectionary {
 
     /**
      * Primary Objectionary.
@@ -51,7 +51,7 @@ public final class OyFallback implements Objectionary {
      * @param primary Primary source.
      * @param secondary Secondary source.
      */
-    public OyFallback(final Objectionary primary, final Objectionary secondary) {
+    OyFallback(final Objectionary primary, final Objectionary secondary) {
         this.first = primary;
         this.second = secondary;
     }

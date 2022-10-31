@@ -37,24 +37,25 @@
 
   # Tests that $ < x
   [x] > lt
-    and. > @
-      (^.eq x).not
-      (^.gt x).not
+    gt. > @
+      plus.
+        x
+        neg.
+          ^
+      0
 
   # Tests that $ ≤ x
   [x] > lte
-    or. > @
-      ^.eq x
-      ^.lt x
+    not. > @
+      ^.gt x
 
   # Tests that $ > x
   [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > gte
-    or. > @
-      ^.eq x
-      ^.gt x
+    not. > @
+      ^.lt x
 
   # Change the sign of the number
   [] > neg

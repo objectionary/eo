@@ -21,59 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang.maven;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link OyRemote}.
- * @since 0.26
+ * Test case for {@link org.eolang.maven.ChNarrow}.
+ *
+ * @since 0.28.11
  */
-final class HashOfTagTest {
+class ChNarrowTest {
 
-    @BeforeEach
-    void weAreOnline() throws IOException {
-        try {
-            Assumptions.assumeTrue(
-                InetAddress.getByName("home.objectionary.com").isReachable(1000)
-            );
-        } catch (final UnknownHostException ex) {
-            Assumptions.assumeTrue(false);
-        }
-    }
-
-    @Test
-    void testCommitHashTag() throws IOException {
-        final String hash = new HashOfTag("0.26.0").hash();
+    @ParameterizedTest
+    @CsvSource({
+        "1234567, 1234567",
+        "12345678, 1234567",
+        "123456789, 1234567",
+        "1, 1"
+    })
+    void cutsHashCorrectly(final String input, final String output) {
         MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
+            new ChNarrow(
+                new CommitHash.ChConstant(input)
+            ).value(),
+            Matchers.equalTo(output)
         );
     }
 
     @Test
-    void testCommitHashOldTag() throws IOException {
-        final String hash = new HashOfTag("0.23.19").hash();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
-    }
-
-    @Test
-    void testCommitHashException() {
+    void throwsExceptionIfEmpty() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new HashOfTag("nonsense").hash()
+            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
         );
     }
 }

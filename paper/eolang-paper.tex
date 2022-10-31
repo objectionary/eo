@@ -24,6 +24,7 @@
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \usepackage[utf8]{inputenc}
 \usepackage[maxnames=1,minnames=1,maxbibnames=100,natbib=true,citestyle=authoryear,bibstyle=authoryear,doi=false,url=false,isbn=false,isbn=false,backend=biber]{biblatex}
+\addbibresource{main.bib}
 
 \ifnum\pdfshellescape=1
   \usepackage[finalizecache]{minted}
@@ -32,40 +33,27 @@
 \fi
 
 \usepackage[T2A,T1]{fontenc}
+\usepackage{stmaryrd} % for arrows, like \mapstochar
+\let\Bbbk\relax\usepackage{amssymb} % for special symbols
+\usepackage{amsmath}
 \usepackage[russian,english]{babel}
   \renewcommand\ttdefault{cmtt}
 \usepackage{csquotes}
-\usepackage{ffcode}
+\usepackage{ffcode} % for fixed-fonts
 \usepackage{phigure} % local, in this directory
-\usepackage{CJKutf8}
-\usepackage{paralist}
+\usepackage{CJKutf8} % for chinese font
+\usepackage{paralist} % for inlined lists
 \usepackage{cancel} % to enable \cancel command
 \usepackage{anyfontsize} % To get rid of font not found warnings
 \usepackage{tabularx} % for special tables
-\usepackage{amsmath}
-\usepackage{to-be-determined}
-\usepackage{href-ul}
-\usepackage{amsthm}
+\usepackage{to-be-determined} % for \tbd command
+\usepackage{href-ul} % for nicely underscored links
 \usepackage{tcolorbox} % for algorithm
   \tcbuselibrary{skins}
-\usepackage{fdsymbol} % for \mathbb
 \usepackage{algpseudocode} % for algorithms
 \usepackage{multicol} % for two cols in BNF
 \usepackage{pgffor} % to enable \foreach
-\usepackage{stmaryrd}
-\usepackage{mathtools}
-\newtheoremstyle{theorems}
-  {} % Space above
-  {} % Space below
-  {} % Theorem body font % (default is "\upshape")
-  {} % Indent amount
-  {\scshape} % Theorem head font % (default is \mdseries)
-  {.} % Punctuation after theorem head % default: no punctuation
-  { } % Space after theorem head
-  {} % Theorem head spec
-\theoremstyle{theorems}
-\newtheorem{eodefinition}{Definition}
-\newtheorem{eotheorem}{Theorem}
+\usepackage{mathtools} % for matrix* environment
 
 \tolerance=1500
 \raggedbottom
@@ -84,28 +72,18 @@
 
 \newcounter{rule}
 \renewcommand\therule{R\arabic{rule}}
-\newcommand\rr{\smalltriangleright{}}
+\newcommand\rr{\triangleright{}}
 \newcommand\rrule[1]{{\scshape\sffamily\ref{rule:#1}}}
 \newcommand{\jrule}[1]{%
   \refstepcounter{rule}\label{rule:#1}%
   \text{\textbf{\rrule{#1}}}}
 \newcommand*{\ohat}[2]{%
-  \stackrel{\textcolor{gray}{#1}}{%
-    \textcolor{gray}{%
-      \overlinesegment{\textcolor{black}{%
-        \vrule height 8pt depth 1pt width 0pt%
-        #2%
-      }}%
-    }%
-  }%
-}
+  \overbracket[0.4pt][2pt]{\textcolor{black}{#2}}^{\color{gray}#1}}
 \newenvironment{algo}
   {\newcommand\kw[1]{{\bfseries\sffamily ##1}}
   \newcommand\tab{{\hspace*{1em}}}
   \noindent}
   {}
-
-\addbibresource{main.bib}
 
 \setlength{\footskip}{13.0pt}
 

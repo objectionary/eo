@@ -23,65 +23,46 @@
  */
 package org.eolang.maven;
 
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
-
 /**
- * Objectionary stored locally.
+ * Short version of hash.
  *
- * @since 1.0
+ * @since 0.28.11
  */
-final class OyHome implements Objectionary {
-    /**
-     * Local storage.
-     */
-    private final Path home;
+final class ChNarrow implements CommitHash {
 
     /**
-     * Version.
+     * Delegate.
      */
-    private final String version;
+    private final CommitHash full;
 
     /**
-     * Ctor.
-     * @param hash Commit hash.
-     * @param path Root.
+     * The main constructor.
+     *
+     * @param full Delegate
      */
-    OyHome(final CommitHash hash, final Path path) {
-        this(hash.value(), path);
-    }
-
-    /**
-     * Ctor.
-     * @param ver Version.
-     * @param path Root.
-     */
-    OyHome(final String ver, final Path path) {
-        this.version = ver;
-        this.home = path;
+    ChNarrow(final CommitHash full) {
+        this.full = full;
     }
 
     @Override
-    public String toString() {
-        return String.format(
-            "%s (%s)",
-            new Home().rel(this.home), this.version
-        );
+    public String value() {
+        final String hash = this.validHash();
+        return hash.substring(0, Math.min(7, hash.length()));
     }
 
-    @Override
-    public Input get(final String name) throws FileNotFoundException {
-        final Path file = new Place(name).make(
-            this.home
-                .resolve("pulled")
-                .resolve(this.version),
-            "eo"
-        );
-        if (!file.toFile().exists()) {
-            throw new FileNotFoundException(name);
+    /**
+     * Valid hash.
+     *
+     * @return Full valid hash.
+     */
+    private String validHash() {
+        final String hash = this.full.value();
+        if (hash.isEmpty()) {
+            throw new IllegalArgumentException(
+                String.format("Hash can't be empty. The delegate %s", this.full)
+            );
         }
-        return new InputOf(file);
+        return hash;
     }
+
 }

@@ -31,7 +31,7 @@ import org.cactoos.Input;
  *
  * @since 1.0
  */
-public interface Objectionary {
+interface Objectionary {
     /**
      * Resolve object.
      * @param name Object name.

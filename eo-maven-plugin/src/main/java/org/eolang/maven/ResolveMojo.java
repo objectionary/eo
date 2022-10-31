@@ -28,6 +28,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -116,7 +117,7 @@ public final class ResolveMojo extends SafeMojo {
                 .resolve(dep.getArtifactId())
                 .resolve(classifier)
                 .resolve(dep.getVersion());
-            if (new Home().exists(dest)) {
+            if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
                     coords, new Home().rel(dest)

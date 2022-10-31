@@ -23,65 +23,47 @@
  */
 package org.eolang.maven;
 
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
-
 /**
- * Objectionary stored locally.
+ * Hash of tag.
  *
- * @since 1.0
+ * @since 0.28.11
+ * @todo #1174:90m It's much better to move CommitHash class and all
+ *   his implementations (including all connected classes) to a separate package.
+ *   The example of the package name: `org.eolang.maven.hash`
  */
-final class OyHome implements Objectionary {
-    /**
-     * Local storage.
-     */
-    private final Path home;
+interface CommitHash {
 
     /**
-     * Version.
+     * SHA Hash.
+     *
+     * @return SHA of commit
      */
-    private final String version;
+    String value();
 
     /**
-     * Ctor.
-     * @param hash Commit hash.
-     * @param path Root.
+     * Hardcoded commit hash.
+     *
+     * @since 0.28.11
      */
-    OyHome(final CommitHash hash, final Path path) {
-        this(hash.value(), path);
-    }
+    final class ChConstant implements CommitHash {
 
-    /**
-     * Ctor.
-     * @param ver Version.
-     * @param path Root.
-     */
-    OyHome(final String ver, final Path path) {
-        this.version = ver;
-        this.home = path;
-    }
+        /**
+         * Hardcoded value.
+         */
+        private final String hash;
 
-    @Override
-    public String toString() {
-        return String.format(
-            "%s (%s)",
-            new Home().rel(this.home), this.version
-        );
-    }
-
-    @Override
-    public Input get(final String name) throws FileNotFoundException {
-        final Path file = new Place(name).make(
-            this.home
-                .resolve("pulled")
-                .resolve(this.version),
-            "eo"
-        );
-        if (!file.toFile().exists()) {
-            throw new FileNotFoundException(name);
+        /**
+         * The main constructor.
+         *
+         * @param hash Hardcoded value.
+         */
+        ChConstant(final String hash) {
+            this.hash = hash;
         }
-        return new InputOf(file);
+
+        @Override
+        public String value() {
+            return this.hash;
+        }
     }
 }

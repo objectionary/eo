@@ -5,10 +5,10 @@ data, objects, attributes, abstraction, application, decoration, and dataization
 
 \subsection{Objects and Data}
 
-\begin{eodefinition}\label{def:object}
+\begin{definition}\label{def:object}
 An \textbf{object} is a set of ordered pairs $(a_i, v_i)$ such that
 $a_i$ is an identifier, all $a_i$ are different, and $v_i$ is an object.
-\end{eodefinition}
+\end{definition}
 
 An identifier is either $\varphi$, $\rho$, $\nu$, or, by convention, a text without
 spaces starting with a small-case English letter in typewriter font.
@@ -24,11 +24,11 @@ The object at \lref{book} may be represented as
 where \ff{isbn} is an identifier and $\varnothing$ is an empty
 set, which is a proper object, according to the Def.~\ref{def:object}.
 
-\begin{eodefinition}\label{def:data}
+\begin{definition}\label{def:data}
 An object may have properties of \textbf{data},
 which is a computation platform dependable entity and is not
 decomposable any further within the scope of \phic{}.
-\end{eodefinition}
+\end{definition}
 
 What exactly is data may depend on the
 implementation platform, but most certainly would include
@@ -51,20 +51,20 @@ and the text in double quotes is data.
 
 \subsection{Attributes}
 
-\begin{eodefinition}\label{def:attribute}
+\begin{definition}\label{def:attribute}
 In an object $x$, $a$ is a free \textbf{attribute}
 iff $(a, \varnothing) \in x$; it is a bound attribute
 iff $\exists (a, v)\in x$ and $v\not=\varnothing$.
-\end{eodefinition}
+\end{definition}
 
 In Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
 are the attributes of the object \ff{book2}.
 The attribute \ff{isbn} is free, while the other two are bound.
 
-\begin{eodefinition}\label{def:dot}
+\begin{definition}\label{def:dot}
 If $x$ is an object and $\exists (a, v) \in x$, then $v$ may be referenced as $x.a$;
 this referencing mechanism is called \textbf{dot notation}.
-\end{eodefinition}
+\end{definition}
 
 Both free and bound attributes of an object are accessible using
 the dot notation. There is no such thing as
@@ -76,22 +76,22 @@ $\ff{book2}.\ff{price}.\ff{neg}$ is a valid expression, which means
 ``taking the attribute \ff{price} from the object \ff{book2} and then
 taking the attribute \ff{neg} from it.''
 
-\begin{eodefinition}\label{def:scope}
+\begin{definition}\label{def:scope}
 If $x(a_i, v_i)$ is an object, then $\hat{x}$, a set consisting of all $a_i$,
 is its \textbf{scope} and the cardinality of $|\hat{x}|$ is
 the \textbf{arity} of $x$.
-\end{eodefinition}
+\end{definition}
 
 For example, the scope of the object at Eq.~\ref{eq:book2} consists of three identifiers:
 \ff{isbn}, \ff{title}, and \ff{price}.
 
 \subsection{Abstraction}
 
-\begin{eodefinition}\label{def:abstraction}
+\begin{definition}\label{def:abstraction}
 An object $x$ is \textbf{abstract} iff at least one of its attributes is free,
 i.e. $\exists (a, \varnothing)\in x$;
 the process of creating such an object is called \textbf{abstraction}.
-\end{eodefinition}
+\end{definition}
 
 An alternative ``arrow notation'' may be used to denote an object $x$ in a more
 compact way, where free attributes stay in the parentheses on the left side of the
@@ -109,13 +109,13 @@ Eq.~\ref{eq:book2} may be written as
 
 \subsection{Application}
 
-\begin{eodefinition}\label{def:application}
+\begin{definition}\label{def:application}
 If $x$ is an abstract object and $y$ is an object
   where $\hat{y}\subseteq\hat{x}$,
   then an \textbf{application} of $y$ to $x$ is
   a \textbf{copy} of $x$, a new object that consists of pairs $(a\in\hat{x},v)$ such that
   $v=y.a$ if $x.a=\varnothing$ and $v=x.a$ otherwise.
-\end{eodefinition}
+\end{definition}
 
 Application makes some free attributes of $x$ bound---by binding objects to them.
 The produced object has exactly the same set of attributes, but some of them,
@@ -163,10 +163,10 @@ object, a copy of \ff{p}:
 
 \subsection{Parent and Home}
 
-\begin{eodefinition}\label{def:parent}
+\begin{definition}\label{def:parent}
 If $x$ is an object, then $x.\rho$ is its \textbf{parent},
 which is the object that created $x$.
-\end{eodefinition}
+\end{definition}
 
 An object may be created either by
 abstraction or application. In case of abstraction, an object
@@ -188,10 +188,10 @@ In case of application, an object is created by the prepending object:
   \end{split}
   \end{equation}
 
-\begin{eodefinition}\label{def:home}
+\begin{definition}\label{def:home}
 If $x$ is an object, then $x.\sigma$ is its \textbf{home} object, which
 is the $\rho$ of the abstract object $x$ is a copy of.
-\end{eodefinition}
+\end{definition}
 
 For example:
 \begin{equation}
@@ -206,11 +206,11 @@ For example:
 
 \subsection{Decoration}\label{sec:decoration}
 
-\begin{eodefinition}\label{def:decorator}
+\begin{definition}\label{def:decorator}
 If $x$ and $y$ are objects and $x.\varphi = y$, then
   $\forall a (x.a = y.a)$ if $a \not\in \hat{x}$;
   this means that $x$ is \textbf{decorating} $y$.
-\end{eodefinition}
+\end{definition}
 
 Here, $\varphi$ is a special identifier denoting the object,
 known as a \emph{decoratee}, being decorated
@@ -279,11 +279,11 @@ don't belong to the scope of its decorator.
 
 \subsection{Atoms}
 
-\begin{eodefinition}\label{def:atom}
+\begin{definition}\label{def:atom}
 If $\lambda s.M$ is a function of one argument $s$ returning an object,
 then it is an abstract object called an \textbf{atom}, $M$ is its $\lambda$-term,
 and $s$ is its free attribute.
-\end{eodefinition}
+\end{definition}
 
 For example, the atom at \lref{sum-def} would be represented as
 \begin{equation}
@@ -316,10 +316,10 @@ Thus, a more formal form of the Eq.~\ref{def:stdout} is:
 
 \subsection{Locators}
 
-\begin{eodefinition}\label{def:locator}
+\begin{definition}\label{def:locator}
 Object \textbf{locator} is a unique dot-separated not-empty
 collection of identifiers prepended by either $\xi$, $\rho$, $\sigma$, or $\Phi$.
-\end{eodefinition}
+\end{definition}
 
 Locators are used to avoid ambiguity when referencing objects.
 For example, Eq.~\ref{eq:c-fin} may be refined as
@@ -364,12 +364,21 @@ the object application:
 \end{split}
 \end{equation}
 
+\subsection{Constant}
+
+\newcommand\cmapsto{\mapstochar\relbar\mathrel{\mkern-8mu}\mapsto}
+\begin{definition}\label{def:identity}
+If $x \mapsto \llbracket y \cmapsto z \rrbracket$ is an object
+then $y$ is a \emph{constant} attribute, meaning that
+the result of dataization of $x.y$ always equals to itself.
+\end{definition}
+
 \subsection{Identity}
 
-\begin{eodefinition}\label{def:identity}
+\begin{definition}\label{def:constant}
 If $x$ is an object then $x.\nu$ is a positive integer data object
 with a unique identity of $x$ in the entire runtime scope.
-\end{eodefinition}
+\end{definition}
 
 For example, without any other objects in scope it is safe
 to assume the following, however there is no guarantee that

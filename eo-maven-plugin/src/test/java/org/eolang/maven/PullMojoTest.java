@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -55,8 +56,8 @@ final class PullMojoTest {
             )
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
                         PullMojo.DIR

@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
@@ -50,7 +51,7 @@ final class TranspileMojoTest {
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
-        new Home().save(source, src);
+        new Home(temp).save(source, temp.relativize(src));
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -81,7 +82,7 @@ final class TranspileMojoTest {
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            new Home().exists(java),
+            new Home(temp).exists(temp.relativize(java)),
             Matchers.is(true)
         );
         final long before = java.toFile().lastModified();
@@ -106,7 +107,7 @@ final class TranspileMojoTest {
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
-        new Home().save(source, src);
+        new Home(temp).save(source, temp.relativize(src));
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -138,14 +139,14 @@ final class TranspileMojoTest {
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            new Home().exists(java),
+            new Home(temp).exists(temp.relativize(java)),
             Matchers.is(true)
         );
         Assertions.assertTrue(java.toFile().setLastModified(0L));
         final Path xmir = target.resolve("06-transpile")
             .resolve("foo")
             .resolve("src.xmir");
-        Assertions.assertTrue(new Home().exists(xmir));
+        Assertions.assertTrue(new Home(temp).exists(temp.relativize(xmir)));
         Assertions.assertTrue(xmir.toFile().setLastModified(0L));
         new Moja<>(TranspileMojo.class)
             .with("project", new MavenProjectStub())
@@ -167,7 +168,7 @@ final class TranspileMojoTest {
         throws Exception {
         final Input source = new ResourceOf("org/eolang/maven/mess.eo");
         final Path src = temp.resolve("foo.src.eo");
-        new Home().save(source, src);
+        new Home(temp).save(source, temp.relativize(src));
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -198,14 +199,14 @@ final class TranspileMojoTest {
         final Path java = generated.resolve("EOorg/EOeolang/EOexamples/EOmessTest.java");
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            new Home().exists(java),
+            new Home(temp).exists(temp.relativize(java)),
             Matchers.is(true)
         );
         Assertions.assertTrue(java.toFile().setLastModified(0L));
         final Path xmir = target.resolve("06-transpile")
             .resolve("foo")
             .resolve("src.xmir");
-        Assertions.assertTrue(new Home().exists(xmir));
+        Assertions.assertTrue(new Home(temp).exists(temp.relativize(xmir)));
         new Moja<>(TranspileMojo.class)
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
@@ -236,7 +237,7 @@ final class TranspileMojoTest {
     void testRealCompilation(@TempDir final Path temp)
         throws Exception {
         final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo");
-        Assumptions.assumeTrue(new Home().exists(src));
+        Assumptions.assumeTrue(Files.exists(src));
         final String java = this.compile(
             temp,
             new InputOf(src),
@@ -259,7 +260,7 @@ final class TranspileMojoTest {
         final String file
     ) throws Exception {
         final Path src = temp.resolve("foo.src.eo");
-        new Home().save(code, src);
+        new Home(temp).save(code, temp.relativize(src));
         final Path target = temp.resolve("target");
         final Path generated = temp.resolve("generated");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -291,7 +292,7 @@ final class TranspileMojoTest {
         final Path java = generated.resolve(file);
         MatcherAssert.assertThat(
             String.format("The file \"%s\" wasn't created", java),
-            new Home().exists(java),
+            Files.exists(java),
             Matchers.is(true)
         );
         return java;

@@ -21,38 +21,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang.maven;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link DepDirs}.
- *
- * @since 0.11
+ * Test case for {@link OyRemote}.
+ * @since 0.26
  */
-final class DepDirsTest {
+final class ChRemoteTest {
+
+    @BeforeEach
+    void weAreOnline() throws IOException {
+        try {
+            Assumptions.assumeTrue(
+                InetAddress.getByName("home.objectionary.com").isReachable(1000)
+            );
+        } catch (final UnknownHostException ex) {
+            Assumptions.assumeTrue(false);
+        }
+    }
 
     @Test
-    void findsDirs(@TempDir final Path temp) throws IOException {
-        new Home(temp).save("", Paths.get("a/b/c/f/test.txt"));
-        new Home(temp).save("", Paths.get("a/b/f.txt"));
-        new Home(temp).save("", Paths.get("test/f.txt"));
-        new Home(temp).save("", Paths.get("a/g"));
+    void testCommitHashTag() {
+        final String hash = new ChRemote("0.26.0").value();
         MatcherAssert.assertThat(
-            new DepDirs(temp),
-            Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
-        );
-        MatcherAssert.assertThat(
-            new DepDirs(temp),
-            Matchers.iterableWithSize(1)
+            hash,
+            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
         );
     }
 
+    @Test
+    void testCommitHashOldTag() {
+        final String hash = new ChRemote("0.23.19").value();
+        MatcherAssert.assertThat(
+            hash,
+            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
+        );
+    }
+
+    @Test
+    void testCommitHashException() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new ChRemote("nonsense").value()
+        );
+    }
 }

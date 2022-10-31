@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -47,9 +48,9 @@ final class ParseMojoTest {
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Home().save(
+        new Home(temp).save(
             "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
-            src
+            temp.relativize(src)
         );
         final Path foreign = temp.resolve("eo-foreign.csv");
         Catalogs.INSTANCE.make(foreign)
@@ -63,8 +64,8 @@ final class ParseMojoTest {
             .with("foreignFormat", "csv")
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             ),
@@ -82,13 +83,13 @@ final class ParseMojoTest {
     void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Home().save(
+        new Home(temp).save(
             "invalid content",
-            src
+            temp.relativize(src)
         );
         final Path foreign = temp.resolve("eo-foreign.csv");
         new FtCached(
-            new HashOfTag("0.25.0").narrow(),
+            new ChNarrow(new ChRemote("0.25.0")).value(),
             target,
             temp.resolve("parsed")
         ).save(
@@ -110,8 +111,8 @@ final class ParseMojoTest {
             .with("cache", temp.resolve("parsed"))
             .execute();
         MatcherAssert.assertThat(
-            new Home().exists(
-                target.resolve(
+            new Home(target).exists(
+                Paths.get(
                     String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             ),
@@ -129,7 +130,7 @@ final class ParseMojoTest {
     void testCrashOnInvalidSyntax(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Home().save("something < is wrong here", src);
+        new Home(temp).save("something < is wrong here", temp.relativize(src));
         final Path foreign = temp.resolve("foreign-1");
         Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
@@ -150,7 +151,7 @@ final class ParseMojoTest {
     void testCrashesWithFileName(@TempDir final Path temp)
         throws Exception {
         final Path src = temp.resolve("bar/src.eo");
-        new Home().save("something < is wrong here", src);
+        new Home(temp).save("something < is wrong here", temp.relativize(src));
         final Path foreign = temp.resolve("foreign-1");
         Catalogs.INSTANCE.make(foreign)
             .add("bar.src")
@@ -173,9 +174,9 @@ final class ParseMojoTest {
         throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
-        new Home().save(
+        new Home(temp).save(
             "something < is wrong here",
-            src
+            temp.relativize(src)
         );
         final Path foreign = temp.resolve("eo-foreign");
         Catalogs.INSTANCE.make(foreign)

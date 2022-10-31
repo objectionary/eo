@@ -88,17 +88,17 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final HashOfTag tag = new HashOfTag(this.hash);
+        final ChRemote tag = new ChRemote(this.hash);
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    tag.narrow(),
+                    new ChNarrow(tag),
                     this.outputPath
                 ),
                 new OyCaching(
-                    tag.narrow(),
+                    new ChNarrow(tag),
                     this.outputPath,
-                    PullMojo.remote(tag.hash())
+                    PullMojo.remote(tag)
                 ),
                 this.forceUpdate()
             );
@@ -111,7 +111,7 @@ public final class PullMojo extends SafeMojo {
                 );
                 tojo.set(
                     AssembleMojo.ATTR_HASH,
-                    tag.narrow()
+                    new ChNarrow(tag).value()
                 );
             }
             Logger.info(
@@ -123,14 +123,14 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Create remote repo.
-     * @param full Full Git hash
+     * @param hash Full Git hash
      * @return Objectionary
      */
-    private static Objectionary remote(final String full) {
+    private static Objectionary remote(final CommitHash hash) {
         Objectionary obj;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyRemote(full);
+            obj = new OyRemote(hash);
         } catch (final IOException ex) {
             obj = new OyEmpty();
         }
@@ -153,8 +153,9 @@ public final class PullMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private Path pull(final String name) throws IOException {
+        final Path dir = this.targetDir.toPath().resolve(PullMojo.DIR);
         final Path src = new Place(name).make(
-            this.targetDir.toPath().resolve(PullMojo.DIR), "eo"
+            dir, "eo"
         );
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
@@ -162,9 +163,9 @@ public final class PullMojo extends SafeMojo {
                 name, new Home().rel(src)
             );
         } else {
-            new Home().save(
+            new Home(dir).save(
                 this.objectionary.get(name),
-                src
+                dir.relativize(src)
             );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",

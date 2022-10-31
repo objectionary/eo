@@ -32,15 +32,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Hash of tag.
+ * Hash of tag from objectionary.
  * @since 0.26
  */
-final class HashOfTag {
+final class ChRemote implements CommitHash {
 
     /**
      * Cached map of hashes.
      */
-    private static final Map<String, String> CACHE = HashOfTag.safeLoad();
+    private static final Map<String, String> CACHE = ChRemote.safeLoad();
 
     /**
      * The URL where the list is kept.
@@ -54,18 +54,15 @@ final class HashOfTag {
 
     /**
      * Constructor.
-     * @param hash Tag
+     * @param tag Tag
      */
-    HashOfTag(final String hash) {
-        this.tag = hash;
+    ChRemote(final String tag) {
+        this.tag = tag;
     }
 
-    /**
-     * Hash of tag.
-     * @return SHA of commit
-     */
-    public String hash() {
-        final String result = HashOfTag.CACHE.get(this.tag);
+    @Override
+    public String value() {
+        final String result = ChRemote.CACHE.get(this.tag);
         if (result == null) {
             throw new IllegalArgumentException(
                 String.format(
@@ -79,26 +76,18 @@ final class HashOfTag {
     }
 
     /**
-     * Short version of hash.
-     * @return SHA of commit
-     */
-    public String narrow() {
-        return this.hash().substring(0, 7);
-    }
-
-    /**
      * Load all hashes and tags.
      * @return Map of them (hash -> tag)
      */
     private static Map<String, String> safeLoad() {
         Map<String, String> map;
         try {
-            map = HashOfTag.load();
+            map = ChRemote.load();
         } catch (final IOException ex) {
             Logger.warn(
-                HashOfTag.class,
+                ChRemote.class,
                 "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
-                HashOfTag.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+                ChRemote.HOME, ex.getClass().getSimpleName(), ex.getMessage()
             );
             map = new HashMap<>(0);
         }
@@ -111,7 +100,7 @@ final class HashOfTag {
      * @throws IOException if fails
      */
     private static Map<String, String> load() throws IOException {
-        final InputStream ins = new URL(HashOfTag.HOME).openStream();
+        final InputStream ins = new URL(ChRemote.HOME).openStream();
         try (Scanner scanner = new Scanner(ins)) {
             final Map<String, String> map = new HashMap<>(0);
             while (scanner.hasNextLine()) {

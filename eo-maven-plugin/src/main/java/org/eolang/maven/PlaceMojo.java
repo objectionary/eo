@@ -28,7 +28,9 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -101,7 +103,7 @@ public final class PlaceMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (new Home().exists(home)) {
+        if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
@@ -164,7 +166,7 @@ public final class PlaceMojo extends SafeMojo {
                 row -> row.get(Tojos.KEY).equals(target.toString())
                     && "class".equals(row.get(PlaceMojo.ATTR_KIND))
             );
-            if (!before.isEmpty() && !new Home().exists(target)) {
+            if (!before.isEmpty() && !Files.exists(target)) {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
@@ -172,7 +174,7 @@ public final class PlaceMojo extends SafeMojo {
                     new Home().rel(target)
                 );
             }
-            if (!before.isEmpty() && new Home().exists(target)
+            if (!before.isEmpty() && Files.exists(target)
                 && target.toFile().length() == file.toFile().length()) {
                 Logger.debug(
                     this,
@@ -182,7 +184,7 @@ public final class PlaceMojo extends SafeMojo {
                 );
                 continue;
             }
-            if (!before.isEmpty() && new Home().exists(target)
+            if (!before.isEmpty() && Files.exists(target)
                 && target.toFile().length() != file.toFile().length()) {
                 Logger.debug(
                     this,
@@ -192,7 +194,7 @@ public final class PlaceMojo extends SafeMojo {
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
-            new Home().save(new InputOf(file), target);
+            new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             this.placedTojos.value().add(target.toString())
                 .set(PlaceMojo.ATTR_KIND, "class")
                 .set(PlaceMojo.ATTR_HASH, new FileHash(target))

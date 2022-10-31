@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -100,22 +101,22 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "[] > foo /int"
             ),
-            first
+            temp.relativize(first)
         );
         final Path second = temp.resolve("src/foo2.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.0",
                 "[] > foo /int"
             ),
-            second
+            temp.relativize(second)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -152,9 +153,7 @@ final class ResolveMojoTest {
         MatcherAssert.assertThat(
             excpt.getMessage(),
             Matchers.equalTo(
-                new StringBuilder("1 conflicting dependencies are found:")
-                    .append(" {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}")
-                    .toString()
+                "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )
         );
     }
@@ -162,22 +161,22 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
                 "[] > foo /int"
             ),
-            first
+            temp.relativize(first)
         );
         final Path second = temp.resolve("src/foo2.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
                 "[] > foo /int"
             ),
-            second
+            temp.relativize(second)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign");
