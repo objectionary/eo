@@ -97,7 +97,8 @@ final class ChText implements CommitHash {
                         throw new NotFound();
                     }
                 )
-            )).value();
+            )
+        ).value();
     }
 
     /**
