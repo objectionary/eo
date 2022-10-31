@@ -33,16 +33,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.list.ListOf;
 
 /**
  * Find all required runtime dependencies, download
@@ -205,85 +203,34 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
-        this.checkConflicts(deps);
-        this.checkTransitive(deps);
-        return deps.stream()
-            .map(ResolveMojo.Wrap::new)
-            .sorted()
-            .distinct()
-            .map(ResolveMojo.Wrap::dep)
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Check if all dependencies have transitive dependencies.
-     *
-     * @param deps Dependencies
-     * @throws java.lang.IllegalStateException if a transitive dependency is found
-     */
-    private void checkTransitive(final Collection<Dependency> deps) {
-        if (!this.ignoreTransitive) {
-            for (final Dependency dep : deps) {
-                if (new Unchecked<>(
-                    new LengthOf(
-                        new DcsTransitive(
+        return new ListOf<>(
+            new DcsWithoutConflicts(
+                this.ignoreVersionConflicts,
+                new DcsWithRuntime(
+                    new DcsNoOneHasTransitive(
+                        this.ignoreTransitive,
+                        new DcsOf(deps),
+                        dep -> new DcsTransitive(
                             new DcsDepgraph(
                                 project,
                                 session,
                                 manager,
-                                this.targetDir.toPath()
+                                targetDir.toPath()
                                     .resolve(ResolveMojo.DIR)
                                     .resolve("dependencies-info"),
                                 dep
                             ),
                             dep
-                        ))).value() != 0) {
-                    throw new IllegalStateException(
-                        String.format("%s contains transitive dependencies", dep)
-                    );
-                }
-            }
-        }
-    }
-
-    /**
-     * Check dependencies for conflicts.
-     *
-     * @param deps Dependencies
-     */
-    private void checkConflicts(final Collection<Dependency> deps) {
-        final Map<String, Set<String>> conflicts = deps.stream()
-            .collect(
-                Collectors.groupingBy(
-                    Dependency::getManagementKey,
-                    Collectors.mapping(
-                        Dependency::getVersion,
-                        Collectors.toSet()
+                        )
                     )
                 )
-            ).entrySet().stream()
-            .filter(e -> e.getValue().size() > 1)
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue
-                )
-            );
-        if (!conflicts.isEmpty()) {
-            final String msg = String.format(
-                "%d conflicting dependencies are found: %s",
-                conflicts.size(),
-                conflicts
-            );
-            Logger.warn(ResolveMojo.class, msg);
-            if (!this.ignoreVersionConflicts) {
-                throw new IllegalStateException(msg);
-            }
-        }
-        return new AllDependencies(deps, this.ignoreVersionConflicts)
-            .withoutConflicts()
-            .withRuntimeDependency()
-            .toList();
+            )
+        ).stream()
+            .map(ResolveMojo.Wrap::new)
+            .sorted()
+            .distinct()
+            .map(ResolveMojo.Wrap::dep)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -345,138 +292,6 @@ public final class ResolveMojo extends SafeMojo {
             );
         }
         return ret;
-    }
-
-    /**
-     * Class that encapsulates all maven dependencies.
-     *
-     * @since 0.28.11
-     */
-    private static final class AllDependencies {
-        /**
-         * All found dependencies.
-         */
-        private final Collection<Dependency> all;
-
-        /**
-         * Fail resolution process on conflicting dependencies.
-         *
-         * @checkstyle MemberNameCheck (7 lines)
-         * @since 0.28.11
-         */
-        @SuppressWarnings("PMD.LongVariable")
-        private final boolean ignoreVersionConflicts;
-
-        /**
-         * The main constructor.
-         *
-         * @checkstyle ParameterNameCheck (20 lines)
-         * @param all Maven dependencies
-         * @param ignoreVersionConflicts Skip duplicates
-         */
-        @SuppressWarnings("PMD.LongVariable")
-        private AllDependencies(
-            final Collection<Dependency> all,
-            final boolean ignoreVersionConflicts) {
-            this.all = all;
-            this.ignoreVersionConflicts = ignoreVersionConflicts;
-        }
-
-        /**
-         * Check if duplicate dependencies are present.
-         *
-         * @return UniqueDependencies
-         * @throws java.lang.IllegalStateException if conflict is found
-         */
-        private UniqueDependencies withoutConflicts() {
-            final Map<String, Set<String>> conflicts = this.all.stream()
-                .collect(
-                    Collectors.groupingBy(
-                        Dependency::getManagementKey,
-                        Collectors.mapping(
-                            Dependency::getVersion,
-                            Collectors.toSet()
-                        )
-                    )
-                ).entrySet().stream()
-                .filter(e -> e.getValue().size() > 1)
-                .collect(
-                    Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                    )
-                );
-            if (!conflicts.isEmpty()) {
-                final String msg = String.format(
-                    "%d conflicting dependencies are found: %s",
-                    conflicts.size(),
-                    conflicts
-                );
-                Logger.warn(ResolveMojo.class, msg);
-                if (!this.ignoreVersionConflicts) {
-                    throw new IllegalStateException(msg);
-                }
-            }
-            return new UniqueDependencies(this.all);
-        }
-    }
-
-    /**
-     * The class with unique dependencies.
-     *
-     * @since 0.28.11
-     */
-    private static final class UniqueDependencies {
-        /**
-         * All dependencies.
-         */
-        private final Collection<Dependency> all;
-
-        /**
-         * The main constructor.
-         *
-         * @param all Maven dependencies
-         */
-        private UniqueDependencies(
-            final Collection<Dependency> all) {
-            this.all = all;
-        }
-
-        /**
-         * Add runtime dependency if it is absent.
-         *
-         * @return UniqueDependencies with runtime dependency.
-         * @todo #1361:90min Hardcoded version of EoRuntimeDependency.
-         *  See the EoRuntimeDependency constructor for more info.
-         *  It's much better to determine the version of the runtime library
-         *  dynamically. For example, we can fetch the latest version by http
-         *  or from config files.
-         */
-        private UniqueDependencies withRuntimeDependency() {
-            if (this.all.stream().noneMatch(new RuntimeDependencyEquality())) {
-                final Dependency dependency = new Dependency();
-                dependency.setGroupId("org.eolang");
-                dependency.setArtifactId("eo-runtime");
-                dependency.setVersion("0.28.10");
-                dependency.setClassifier("");
-                this.all.add(dependency);
-            }
-            return this;
-        }
-
-        /**
-         * Dependencies list.
-         *
-         * @return List of maven dependencies.
-         */
-        private List<Dependency> toList() {
-            return this.all.stream()
-                .map(ResolveMojo.Wrap::new)
-                .sorted()
-                .distinct()
-                .map(ResolveMojo.Wrap::dep)
-                .collect(Collectors.toList());
-        }
     }
 
     /**

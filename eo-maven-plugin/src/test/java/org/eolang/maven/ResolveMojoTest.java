@@ -147,14 +147,13 @@ final class ResolveMojoTest {
                 .with("skipZeroVersions", true)
                 .with("discoverSelf", false)
                 .with("ignoreVersionConflicts", false)
+                .with("ignoreTransitive", true)
                 .execute()
         );
         MatcherAssert.assertThat(
             excpt.getMessage(),
             Matchers.equalTo(
-                new StringBuilder("1 conflicting dependencies are found: ")
-                    .append("{org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}")
-                    .toString()
+                "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )
         );
     }
@@ -235,6 +234,7 @@ final class ResolveMojoTest {
             .with("skipZeroVersions", true)
             .with("discoverSelf", false)
             .with("ignoreVersionConflicts", false)
+            .with("ignoreTransitive", true)
             .execute();
     }
 }
