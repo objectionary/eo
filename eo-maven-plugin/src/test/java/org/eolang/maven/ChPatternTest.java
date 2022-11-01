@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -43,7 +42,6 @@ class ChPatternTest {
      * @param tag Tag
      * @param expected Expected Hash
      */
-    @Disabled
     @ParameterizedTest
     @CsvSource({
         "'0.*.*:abc2sd3', '0.0.0', abc2sd3",
