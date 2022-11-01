@@ -92,9 +92,10 @@ final class HomeTest {
         final String filename = "文件名.txt";
         final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
-        new Home(Paths.get("directory")).save("any content", Paths.get(decoded));
+        final Path directory = temp.resolve("directory");
+        new Home(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            new Home(Paths.get("directory")).exists(Paths.get(filename)),
+            new Home(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
@@ -104,9 +105,10 @@ final class HomeTest {
         final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
         final byte[] bytes = filename.getBytes("CP1252");
         final String decoded = new String(bytes, "CP1252");
-        new Home(Paths.get("directory")).save("any content", Paths.get(decoded));
+        final Path directory = temp.resolve("directory");
+        new Home(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            new Home(Paths.get("directory")).exists(Paths.get(filename)),
+            new Home(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
@@ -115,7 +117,7 @@ final class HomeTest {
     void loadBytesFromExistingFile(@TempDir final Path temp) throws IOException {
         final Home home = new Home(temp);
         final String content = "bar";
-        final Path subfolder = Paths.get("subfolder").resolve("foo.txt");
+        final Path subfolder = temp.resolve("subfolder").resolve("foo.txt");
         home.save(content, subfolder);
         MatcherAssert.assertThat(
             new TextOf(home.load(subfolder)),
@@ -128,18 +130,6 @@ final class HomeTest {
         Assertions.assertThrows(
             NoSuchFileException.class,
             () -> new Home(temp).load(temp.resolve("nonexistent"))
-        );
-    }
-
-    @Test
-    void savesToCwd() throws IOException {
-        final Home home = new Home();
-        final String content = "bar";
-        final Path subfolder = Paths.get("subfolder").resolve("foo.txt");
-        home.save(content, subfolder);
-        MatcherAssert.assertThat(
-            new TextOf(home.load(subfolder)),
-            Matchers.equalTo(new TextOf(content))
         );
     }
 }
