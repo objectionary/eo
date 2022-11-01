@@ -100,6 +100,14 @@ final class PullMojoTest {
         );
     }
 
+    /**
+     * Offline hash test.
+     *
+     * @param temp Temporary directory for test.
+     * @todo #1174:90min Add implementation for {@link org.eolang.maven.ChPattern} class.
+     *  Now it has dummy behaviour. When {@link org.eolang.maven.ChPattern} will be finished we
+     *  can remove '@Disabled' annotation from that test.
+     */
     @Test
     @Disabled
     void pullsUsingOfflineHash(@TempDir final Path temp) {
