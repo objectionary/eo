@@ -31,6 +31,11 @@ package org.eolang.maven;
  * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
  *
  * @since 0.28.11
+ * @todo #1174:90min Add implementation for {@link org.eolang.maven.ChPattern} class.
+ *   Now it has dummy behaviour. When {@link org.eolang.maven.ChPattern} will be finished we
+ *   can remove '@Disabled' annotation from the next tests:
+ *   - org.eolang.maven.PullMojoTest#pullsUsingOfflineHash(Path)
+ *   - org.eolang.maven.ChPatternTest#returnsCorrectHashByPattern(String, String, String)
  */
 final class ChPattern implements CommitHash {
 

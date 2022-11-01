@@ -42,9 +42,6 @@ class ChPatternTest {
      * @param pattern Pattern
      * @param tag Tag
      * @param expected Expected Hash
-     * @todo #1174:90min Add implementation for {@link org.eolang.maven.ChPattern} class.
-     *  Now it has dummy behaviour. When {@link org.eolang.maven.ChPattern} will be finished we
-     *  can remove '@Disabled' annotation from that test.
      */
     @Disabled
     @ParameterizedTest
