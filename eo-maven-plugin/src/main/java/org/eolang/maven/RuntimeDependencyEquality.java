@@ -27,7 +27,8 @@ import java.util.function.Predicate;
 import org.apache.maven.model.Dependency;
 
 /**
- * RuntimeDependencyEquality is a class for checking if dependency is a runtime dependency.
+ * This is a predicate that checks Dependency group and artifactId
+ * that should be equal to 'group' or 'artifact' of eo-runtime dependency.
  *
  * @since 0.28.11
  */
@@ -56,7 +57,7 @@ final class RuntimeDependencyEquality implements Predicate<Dependency> {
      * @param group Dependency group
      * @param artifact Dependency artifact name
      */
-    RuntimeDependencyEquality(final String group, final String artifact) {
+    private RuntimeDependencyEquality(final String group, final String artifact) {
         this.group = group;
         this.artifact = artifact;
     }

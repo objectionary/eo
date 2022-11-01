@@ -87,6 +87,7 @@ class CleanMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
+            .with("ignoreTransitive", true)
             .with(
                 "objectionary",
                 (Objectionary) input -> new InputOf(

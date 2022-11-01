@@ -51,7 +51,7 @@ final class DummyCentral implements BiConsumer<Dependency, Path> {
             );
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                String.format("DummyCentral can't save dependency %s by path %s", dependency, path),
+                String.format("Can't save '%s' to '%s'", dependency, path),
                 ex
             );
         }

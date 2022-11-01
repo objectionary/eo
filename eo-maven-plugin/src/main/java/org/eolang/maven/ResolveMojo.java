@@ -92,18 +92,19 @@ public final class ResolveMojo extends SafeMojo {
     private boolean ignoreVersionConflicts;
 
     /**
+     * Fail resolution process on transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean ignoreTransitive;
+
+    /**
      * The central.
      */
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
-
-    /**
-     * Check transitive dependencies.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean ignoreTransitive;
 
     @Override
     public void exec() throws IOException {
@@ -203,34 +204,62 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
-        return new ListOf<>(
-            new DcsWithoutConflicts(
-                this.ignoreVersionConflicts,
-                new DcsWithRuntime(
-                    new DcsNoOneHasTransitive(
-                        this.ignoreTransitive,
-                        new DcsOf(deps),
-                        dep -> new DcsTransitive(
-                            new DcsDepgraph(
-                                project,
-                                session,
-                                manager,
-                                targetDir.toPath()
-                                    .resolve(ResolveMojo.DIR)
-                                    .resolve("dependencies-info"),
-                                dep
-                            ),
-                            dep
-                        )
-                    )
-                )
-            )
-        ).stream()
+        return new ListOf<>(this.dependenciesOf(deps)).stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Dependencies object.
+     *
+     * @param all Dependencies as a collection
+     * @return Dependencies object with applied decorators.
+     */
+    private Dependencies dependenciesOf(final Collection<Dependency> all) {
+        final Dependencies dependencies;
+        if (this.ignoreTransitive && this.ignoreVersionConflicts) {
+            dependencies = new DcsWithRuntime(all::iterator);
+        } else if (this.ignoreTransitive) {
+            dependencies = new DcsWithoutConflicts(new DcsWithRuntime(all::iterator));
+        } else if (this.ignoreVersionConflicts) {
+            dependencies = new DcsNoOneHasTransitive(
+                new DcsWithRuntime(all::iterator),
+                dep -> new DcsTransitive(
+                    new DcsDepgraph(
+                        project,
+                        session,
+                        manager,
+                        targetDir.toPath()
+                            .resolve(ResolveMojo.DIR)
+                            .resolve("dependencies-info"),
+                        dep
+                    ),
+                    dep
+                )
+            );
+        } else {
+            dependencies = new DcsNoOneHasTransitive(
+                new DcsWithoutConflicts(
+                    new DcsWithRuntime(all::iterator)
+                ),
+                dep -> new DcsTransitive(
+                    new DcsDepgraph(
+                        project,
+                        session,
+                        manager,
+                        targetDir.toPath()
+                            .resolve(ResolveMojo.DIR)
+                            .resolve("dependencies-info"),
+                        dep
+                    ),
+                    dep
+                )
+            );
+        }
+        return dependencies;
     }
 
     /**

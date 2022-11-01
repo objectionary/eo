@@ -193,6 +193,15 @@ public final class AssembleMojo extends SafeMojo {
     private boolean failOnWarning;
 
     /**
+     * Fail resolution process on transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean ignoreTransitive;
+
+    /**
      * Parsed cache directory.
      * @checkstyle MemberNameCheck (7 lines)
      */

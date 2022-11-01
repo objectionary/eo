@@ -28,22 +28,16 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.cactoos.Func;
-import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 
 /**
  * Check if all dependencies have transitive dependencies.
-
+ *
  * @since 0.28.11
  * @todo #1361:90min The class without tests. We definitely have to write some tests
  *   in order to make the class possible for future refactoring and easy maintainance.
  */
 final class DcsNoOneHasTransitive implements Dependencies {
-
-    /**
-     * Ignore that filter if flag is true.
-     */
-    private final boolean ignore;
 
     /**
      * Source of dependencies to check.
@@ -58,16 +52,13 @@ final class DcsNoOneHasTransitive implements Dependencies {
     /**
      * The main constructor.
      *
-     * @param ignore Ignore that filter if flag is true.
      * @param delegate Source of dependencies to check
      * @param transitive The function that get all transitive dependencies for the particular one.
      */
     DcsNoOneHasTransitive(
-        final boolean ignore,
         final Dependencies delegate,
         final Func<Dependency, Dependencies> transitive
     ) {
-        this.ignore = ignore;
         this.delegate = delegate;
         this.transitive = transitive;
     }
@@ -75,17 +66,13 @@ final class DcsNoOneHasTransitive implements Dependencies {
     @Override
     public Iterator<Dependency> iterator() {
         final List<Dependency> res = new LinkedList<>();
-        if (this.ignore) {
-            res.addAll(new ListOf<>(this.delegate));
-        } else {
-            for (final Dependency dep : this.delegate) {
-                if (this.hasTransitive(dep)) {
-                    throw new IllegalStateException(
-                        String.format("%s contains transitive dependencies", dep)
-                    );
-                }
-                res.add(dep);
+        for (final Dependency dep : this.delegate) {
+            if (this.hasTransitive(dep)) {
+                throw new IllegalStateException(
+                    String.format("%s contains transitive dependencies", dep)
+                );
             }
+            res.add(dep);
         }
         return res.iterator();
     }
@@ -94,9 +81,8 @@ final class DcsNoOneHasTransitive implements Dependencies {
      * Checks if dependency dep has any transitive dependencies.
      *
      * @param dep Dependency to check.
-     * @return True if dep has transitive dependencies
-     * @throws IllegalStateException if some exception happened during getting of
-     *  transitive dependencies.
+     * @return True if dep has transitive dependencies.
+     * @throws IllegalStateException if some unexpected exception happened.
      * @checkstyle IllegalCatchCheck (10 lines)
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")

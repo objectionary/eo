@@ -45,18 +45,11 @@ final class DcsWithoutConflicts implements Dependencies {
     private final Dependencies delegate;
 
     /**
-     * Ignore conflict checks if true.
-     */
-    private final boolean ignore;
-
-    /**
      * The main constructor.
      *
-     * @param ignore Ignore conflict checks.
      * @param delegate Source of dependencies.
      */
-    DcsWithoutConflicts(final boolean ignore, final Dependencies delegate) {
-        this.ignore = ignore;
+    DcsWithoutConflicts(final Dependencies delegate) {
         this.delegate = delegate;
     }
 
@@ -87,9 +80,7 @@ final class DcsWithoutConflicts implements Dependencies {
                 conflicts
             );
             Logger.warn(ResolveMojo.class, msg);
-            if (!this.ignore) {
-                throw new IllegalStateException(msg);
-            }
+            throw new IllegalStateException(msg);
         }
         return deps.iterator();
     }
