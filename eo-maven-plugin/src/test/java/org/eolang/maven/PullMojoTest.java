@@ -32,6 +32,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -42,18 +43,23 @@ import org.junit.jupiter.api.io.TempDir;
  */
 final class PullMojoTest {
 
+    /**
+     * Default format of eo-foreign.json for all tests.
+     */
+    private static final String FOREIGN_FORMAT = "json";
+
     @Test
     void testSimplePull(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, "json")
+        Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
+            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
             .with("objectionary", this.dummy())
             .execute();
         MatcherAssert.assertThat(
@@ -77,20 +83,48 @@ final class PullMojoTest {
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, "json")
+        Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
         new Moja<>(PullMojo.class)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
+            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
             .with("objectionary", this.dummy())
             .with("offlineHashFile", temp.resolve("tags.txt"))
             .execute();
         MatcherAssert.assertThat(
             new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
             Matchers.equalTo("mmmmmmm")
+        );
+    }
+
+    /**
+     * Offline hash test.
+     *
+     * @param temp Temporary directory for test.
+     */
+    @Test
+    @Disabled
+    void pullsUsingOfflineHash(@TempDir final Path temp) {
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
+            .add("org.eolang.io.stdout")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
+        new Moja<>(PullMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
+            .with("objectionary", this.dummy())
+            .with("hash", "1.0.0")
+            .with("offlineHash", "*.*.*:abcdefg")
+            .execute();
+        MatcherAssert.assertThat(
+            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
+            Matchers.equalTo("abcdefg")
         );
     }
 
