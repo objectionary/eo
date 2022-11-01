@@ -219,32 +219,13 @@ public final class ResolveMojo extends SafeMojo {
      * @return Dependencies object with applied decorators.
      */
     private Dependencies dependenciesOf(final Collection<Dependency> all) {
-        final Dependencies dependencies;
-        if (this.ignoreTransitive && this.ignoreVersionConflicts) {
-            dependencies = new DcsWithRuntime(all::iterator);
-        } else if (this.ignoreTransitive) {
-            dependencies = new DcsWithoutConflicts(new DcsWithRuntime(all::iterator));
-        } else if (this.ignoreVersionConflicts) {
+        Dependencies dependencies = new DcsWithRuntime(all::iterator);
+        if (!this.ignoreVersionConflicts) {
+            dependencies = new DcsWithoutConflicts(dependencies);
+        }
+        if (!this.ignoreTransitive) {
             dependencies = new DcsNoOneHasTransitive(
-                new DcsWithRuntime(all::iterator),
-                dep -> new DcsTransitive(
-                    new DcsDepgraph(
-                        project,
-                        session,
-                        manager,
-                        targetDir.toPath()
-                            .resolve(ResolveMojo.DIR)
-                            .resolve("dependencies-info"),
-                        dep
-                    ),
-                    dep
-                )
-            );
-        } else {
-            dependencies = new DcsNoOneHasTransitive(
-                new DcsWithoutConflicts(
-                    new DcsWithRuntime(all::iterator)
-                ),
+                dependencies,
                 dep -> new DcsTransitive(
                     new DcsDepgraph(
                         project,

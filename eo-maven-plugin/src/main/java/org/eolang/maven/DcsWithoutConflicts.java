@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -74,13 +73,13 @@ final class DcsWithoutConflicts implements Dependencies {
                 )
             );
         if (!conflicts.isEmpty()) {
-            final String msg = String.format(
-                "%d conflicting dependencies are found: %s",
-                conflicts.size(),
-                conflicts
+            throw new IllegalStateException(
+                String.format(
+                    "%d conflicting dependencies are found: %s",
+                    conflicts.size(),
+                    conflicts
+                )
             );
-            Logger.warn(ResolveMojo.class, msg);
-            throw new IllegalStateException(msg);
         }
         return deps.iterator();
     }

@@ -28,7 +28,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.cactoos.Func;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Check if all dependencies have transitive dependencies.
@@ -47,7 +49,7 @@ final class DcsNoOneHasTransitive implements Dependencies {
     /**
      * The function that get all transitive dependencies for the particular one.
      */
-    private final Func<Dependency, Dependencies> transitive;
+    private final UncheckedFunc<Dependency, Dependencies> transitive;
 
     /**
      * The main constructor.
@@ -60,7 +62,7 @@ final class DcsNoOneHasTransitive implements Dependencies {
         final Func<Dependency, Dependencies> transitive
     ) {
         this.delegate = delegate;
-        this.transitive = transitive;
+        this.transitive = new UncheckedFunc<>(transitive);
     }
 
     @Override
@@ -82,24 +84,13 @@ final class DcsNoOneHasTransitive implements Dependencies {
      *
      * @param dep Dependency to check.
      * @return True if dep has transitive dependencies.
-     * @throws IllegalStateException if some unexpected exception happened.
-     * @checkstyle IllegalCatchCheck (10 lines)
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private boolean hasTransitive(final Dependency dep) {
-        try {
-            return new LengthOf(
+        return new Unchecked<>(
+            new LengthOf(
                 new DcsTransitive(this.transitive.apply(dep), dep)
-            ).value() != 0;
-        } catch (final Exception ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "Exception happened during uploading transitive dependencies for dependency %s by source %s",
-                    dep,
-                    this.transitive
-                ),
-                ex
-            );
-        }
+            )
+        ).value() != 0;
     }
 }

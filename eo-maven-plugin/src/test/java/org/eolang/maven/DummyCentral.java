@@ -26,6 +26,8 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 
@@ -44,16 +46,33 @@ final class DummyCentral implements BiConsumer<Dependency, Path> {
     ) {
         try {
             Files.createDirectories(path);
-            Files.createFile(
-                path.resolve(
-                    String.format("%s-%s.jar", dependency.getArtifactId(), dependency.getVersion())
-                )
-            );
+            final String other = DummyCentral.jarName(dependency);
+            Files.createFile(path.resolve(other));
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 String.format("Can't save '%s' to '%s'", dependency, path),
                 ex
             );
         }
+    }
+
+    /**
+     * Dependency jar name.
+     *
+     * @param dependency Dependency
+     * @return Jar file name
+     */
+    private static String jarName(final Dependency dependency) {
+        final List<String> parts = new ArrayList<>(3);
+        if (dependency.getArtifactId() != null && !dependency.getArtifactId().isEmpty()) {
+            parts.add(dependency.getArtifactId());
+        }
+        if (dependency.getVersion() != null && !dependency.getVersion().isEmpty()) {
+            parts.add(dependency.getVersion());
+        }
+        if (dependency.getClassifier() != null && !dependency.getClassifier().isEmpty()) {
+            parts.add(dependency.getClassifier());
+        }
+        return String.format("%s.jar", String.join("-", parts));
     }
 }
