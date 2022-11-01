@@ -55,10 +55,10 @@ public final class PullMojo extends SafeMojo {
     /**
      * The Git hash to pull objects from, in objectionary.
      *
-     * @since 0.21.0
      * @todo #1174:90min The wrong naming. It isn't a `hash` - it's a `tag`.
      *   We have to rename that property. Also it's important to check if we don't break something
      *   by such a renaming.
+     * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.hash", required = true, defaultValue = "master")
@@ -91,6 +91,16 @@ public final class PullMojo extends SafeMojo {
     private Path offlineHashFile;
 
     /**
+     * Return hash by pattern.
+     * -DofflineHash=0.*.*:abc2sd3
+     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "offlineHash")
+    private String offlineHash;
+
+    /**
      * The objectionary.
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -103,10 +113,12 @@ public final class PullMojo extends SafeMojo {
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
         final CommitHash tag;
-        if (this.offlineHashFile == null) {
+        if (this.offlineHashFile == null && this.offlineHash == null) {
             tag = new ChRemote(this.hash);
-        } else {
+        } else if (this.offlineHash == null) {
             tag = new ChText(this.offlineHashFile, this.hash);
+        } else {
+            tag = new ChPattern(this.offlineHash, this.hash);
         }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
@@ -195,5 +207,4 @@ public final class PullMojo extends SafeMojo {
         }
         return src;
     }
-
 }

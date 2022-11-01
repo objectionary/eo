@@ -32,7 +32,6 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -106,7 +105,6 @@ final class PullMojoTest {
      * @param temp Temporary directory for test.
      */
     @Test
-    @Disabled
     void pullsUsingOfflineHash(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
