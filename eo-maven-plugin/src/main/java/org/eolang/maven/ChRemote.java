@@ -27,20 +27,22 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import org.cactoos.Text;
+import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Hash of tag from objectionary.
+ *
  * @since 0.26
  */
 final class ChRemote implements CommitHash {
 
     /**
-     * Cached map of hashes.
+     * Cached text of hashes.
      */
-    private static final Map<String, String> CACHE = ChRemote.safeLoad();
+    private static final String CACHE = ChRemote.safeLoad();
 
     /**
      * The URL where the list is kept.
@@ -54,6 +56,7 @@ final class ChRemote implements CommitHash {
 
     /**
      * Constructor.
+     *
      * @param tag Tag
      */
     ChRemote(final String tag) {
@@ -62,7 +65,7 @@ final class ChRemote implements CommitHash {
 
     @Override
     public String value() {
-        final String result = ChRemote.CACHE.get(this.tag);
+        final String result = new ChText(() -> ChRemote.CACHE, this.tag).value();
         if (result == null) {
             throw new IllegalArgumentException(
                 String.format(
@@ -77,41 +80,32 @@ final class ChRemote implements CommitHash {
 
     /**
      * Load all hashes and tags.
+     *
      * @return Map of them (hash -> tag)
      */
-    private static Map<String, String> safeLoad() {
-        Map<String, String> map;
+    private static String safeLoad() {
+        String cache;
         try {
-            map = ChRemote.load();
+            cache = new UncheckedText(ChRemote.load()).asString();
         } catch (final IOException ex) {
             Logger.warn(
                 ChRemote.class,
                 "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
                 ChRemote.HOME, ex.getClass().getSimpleName(), ex.getMessage()
             );
-            map = new HashMap<>(0);
+            cache = "";
         }
-        return map;
+        return cache;
     }
 
     /**
      * Load all hashes and tags.
+     *
      * @return Map of them (hash -> tag)
      * @throws IOException if fails
-     * @todo #1174:90m The code duplication with ChText. It's better to reuse the logic
-     *  of parsing text source from ChText class. Maybe we can implement caching mechanism
-     *  in a way to avoid using map directly.
      */
-    private static Map<String, String> load() throws IOException {
+    private static Text load() throws IOException {
         final InputStream ins = new URL(ChRemote.HOME).openStream();
-        try (Scanner scanner = new Scanner(ins)) {
-            final Map<String, String> map = new HashMap<>(0);
-            while (scanner.hasNextLine()) {
-                final String line = scanner.nextLine();
-                final String[] parts = line.split("\t");
-                map.put(parts[1], parts[0]);
-            }
-            return map;
-        }
+        return new TextOf(new InputOf(ins));
     }
 }
