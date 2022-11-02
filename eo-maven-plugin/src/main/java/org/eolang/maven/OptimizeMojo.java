@@ -56,7 +56,7 @@ import org.eolang.parser.ParsingTrain;
  * Optimize XML files.
  *
  * @todo #1336:30min Make a number of threads in `exec()` method configurable
- * via mojo parameter `threads`. Default value should be set to 4.
+ *  via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
@@ -84,9 +84,9 @@ public final class OptimizeMojo extends SafeMojo {
      * thread since {@link com.jcabi.xml.XSLDocument}, which is used under
      * the hood in {@link TrClasspath}, is not thread-safe.
      * @todo #1336:30min Replace creation of new `Train` instances for each
-     * parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
-     * is thread-safe (solved by
-     * <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
+     *  parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
+     *  is thread-safe (solved by
+     *  <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
      */
     private static final Unchecked<Train<Shift>> TRAIN = new Unchecked<>(
         () -> new TrFast(
