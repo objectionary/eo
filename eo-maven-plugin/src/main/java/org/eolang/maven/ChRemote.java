@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
