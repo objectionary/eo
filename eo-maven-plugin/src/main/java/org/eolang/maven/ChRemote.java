@@ -107,6 +107,6 @@ final class ChRemote implements CommitHash {
      * @throws IOException if fails
      */
     private static Text load() throws IOException {
-        return new TextOf(new URL(ChRemote.HOME).openStream());
+        return new TextOf(new URL(ChRemote.HOME));
     }
 }
