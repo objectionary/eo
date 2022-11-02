@@ -1,0 +1,12 @@
+tests:
+  - /program/errors[count(error)=0]
+  - //metas[count(.//meta[head/text()='probe'])=7]
+eo: |
+  +package org.eolang.custom
+  
+  [] > app
+    QQ.txt.sprintf > @
+      "Hello, world!\n"
+    start. > a
+      engine.
+        QQ.car
