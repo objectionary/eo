@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.URL;
 import org.cactoos.Text;
-import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -108,6 +107,6 @@ final class ChRemote implements CommitHash {
      * @throws IOException if fails
      */
     private static Text load() throws IOException {
-        return new TextOf(new InputOf(new URL(ChRemote.HOME).openStream()));
+        return new TextOf(new URL(ChRemote.HOME).openStream());
     }
 }
