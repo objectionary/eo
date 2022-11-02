@@ -98,17 +98,17 @@ public final class UnspileMojo extends SafeMojo {
         if (all.isEmpty()) {
             Logger.warn(
                 this, "No .class files in %s including %s, nothing to unspile",
-                new Home().rel(this.classesDir.toPath()), this.includes
+                this.classesDir.toPath(), this.includes
             );
         } else if (unspiled == 0) {
             Logger.info(
                 this, "No .class files out of %d deleted in %s including %s",
-                all.size(), new Home().rel(this.classesDir.toPath()), this.includes
+                all.size(), this.classesDir.toPath(), this.includes
             );
         } else {
             Logger.info(
                 this, "Deleted %d .class files out of %d in %s",
-                unspiled, all.size(), new Home().rel(this.classesDir.toPath())
+                unspiled, all.size(), this.classesDir.toPath()
             );
         }
     }
@@ -141,13 +141,13 @@ public final class UnspileMojo extends SafeMojo {
             Files.delete(file);
             Logger.debug(
                 this, "Deleted %s since %s is present",
-                new Home().rel(file), new Home().rel(java)
+                file, java
             );
             deleted = true;
         } else {
             Logger.debug(
                 this, "Not deleted %s since %s is absent",
-                new Home().rel(file), new Home().rel(java)
+                file, java
             );
         }
         return deleted;

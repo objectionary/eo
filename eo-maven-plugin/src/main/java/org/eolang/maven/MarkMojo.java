@@ -97,7 +97,7 @@ public final class MarkMojo extends SafeMojo {
         }
         Logger.info(
             this, "Found %d sources in %s, %d program(s) registered with version %s",
-            sources.size(), new Home(targetDir.toPath()).rel(dir), done, version
+            sources.size(), dir, done, version
         );
         return done;
     }

@@ -254,7 +254,7 @@ public final class GmiMojo extends SafeMojo {
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    name, new Home().rel(gmi)
+                    name, gmi
                 );
                 continue;
             }

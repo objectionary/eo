@@ -154,22 +154,6 @@ final class Home {
     }
 
     /**
-     * Make relative name from path.
-     *
-     * @param file Absolute path to a file or dir
-     * @return Relative name to CWD
-     */
-    public String rel(final Path file) {
-        if (file.toAbsolutePath().startsWith(this.cwd.toAbsolutePath())) {
-            return String.format("./%s", this.cwd.relativize(file));
-        } else {
-            throw new IllegalArgumentException(
-                String.format("'%s' not under the '%s' folder", file, this.cwd)
-            );
-        }
-    }
-
-    /**
      * Check if exists.
      *
      * @param path Cwd-relative path to file
@@ -204,6 +188,22 @@ final class Home {
     public static Path clean(final Path path) {
         final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
         return Paths.get(new String(bytes, StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Make relative name from path.
+     *
+     * @param file Absolute path to a file or dir
+     * @return Relative name to CWD
+     */
+    String rel(final Path file) {
+        if (file.toAbsolutePath().startsWith(this.cwd.toAbsolutePath())) {
+            return String.format("./%s", this.cwd.relativize(file));
+        } else {
+            throw new IllegalArgumentException(
+                String.format("'%s' not under the '%s' folder", file, this.cwd)
+            );
+        }
     }
 
     /**

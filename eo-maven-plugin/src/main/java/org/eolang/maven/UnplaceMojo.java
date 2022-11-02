@@ -75,7 +75,7 @@ public final class UnplaceMojo extends SafeMojo {
         if (this.placedTojos.value().select(r -> true).isEmpty()) {
             Logger.info(
                 this, "The list of placed binaries is absent: %s",
-                new Home().rel(this.placed.toPath())
+                this.placed.toPath()
             );
         } else {
             this.placeThem();
@@ -197,7 +197,7 @@ public final class UnplaceMojo extends SafeMojo {
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Home().rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    path, tojo.get(PlaceMojo.ATTR_ORIGIN)
                 );
             }
         }

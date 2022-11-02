@@ -157,8 +157,8 @@ public final class OptimizeMojo extends SafeMojo {
                         if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                             Logger.debug(
                                 this, "Already optimized %s to %s",
-                                new Home(targetDir.toPath()).rel(src),
-                                new Home(targetDir.toPath()).rel(tgt)
+                                src,
+                                tgt
                             );
                             return;
                         }
@@ -257,7 +257,7 @@ public final class OptimizeMojo extends SafeMojo {
             trn = new SpyTrain(trn, dir);
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
-                new Home(targetDir.toPath()).rel(dir)
+                dir
             );
         }
         return new Xsline(trn).pass(new XMLDocument(file));
@@ -280,14 +280,14 @@ public final class OptimizeMojo extends SafeMojo {
         );
         new Home(dir).save(
             xml.toString(),
-            dir.relativize(target)
+            target
         );
         Logger.debug(
             this,
             "Optimized %s (program:%s) to %s",
-            new Home(dir).rel(file),
+            file,
             name,
-            new Home(dir).rel(target)
+            target
         );
         return target;
     }
@@ -302,5 +302,4 @@ public final class OptimizeMojo extends SafeMojo {
         final List<XML> errors = xml.nodes("/program/errors/error");
         return errors.isEmpty() || this.failOnError;
     }
-
 }
