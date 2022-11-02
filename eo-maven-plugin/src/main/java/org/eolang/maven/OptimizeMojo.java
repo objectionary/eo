@@ -55,10 +55,9 @@ import org.eolang.parser.ParsingTrain;
 /**
  * Optimize XML files.
  *
- * @since 0.1
- *
  * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *   via mojo parameter `threads`. Default value should be set to 4.
+ * via mojo parameter `threads`. Default value should be set to 4.
+ * @since 0.1
  */
 @Mojo(
     name = "optimize",
@@ -79,14 +78,15 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * Parsing train with XSLs.
+     *
      * @implNote The list of applied XSLs is adjusted during execution.
-     *  <br>Separate instance of the train is used of each optimization
-     *  thread since {@link com.jcabi.xml.XSLDocument}, which is used under
-     *  the hood in {@link TrClasspath}, is not thread-safe.
+     * <br>Separate instance of the train is used of each optimization
+     * thread since {@link com.jcabi.xml.XSLDocument}, which is used under
+     * the hood in {@link TrClasspath}, is not thread-safe.
      * @todo #1336:30min Replace creation of new `Train` instances for each
-     *   parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
-     *   is thread-safe (solved by
-     *   <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
+     * parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
+     * is thread-safe (solved by
+     * <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
      */
     private static final Unchecked<Train<Shift>> TRAIN = new Unchecked<>(
         () -> new TrFast(
@@ -107,6 +107,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * Track optimization steps into intermediate XML files?
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.24.0
      */
@@ -116,6 +117,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * Whether we should fail on error.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.23.0
      */
@@ -127,6 +129,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * Whether we should fail on warn.
+     *
      * @checkstyle MemberNameCheck (10 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -154,7 +157,8 @@ public final class OptimizeMojo extends SafeMojo {
                         if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                             Logger.debug(
                                 this, "Already optimized %s to %s",
-                                new Home().rel(src), new Home().rel(tgt)
+                                new Home(targetDir.toPath()).rel(src),
+                                new Home(targetDir.toPath()).rel(tgt)
                             );
                             return;
                         }
@@ -253,7 +257,7 @@ public final class OptimizeMojo extends SafeMojo {
             trn = new SpyTrain(trn, dir);
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
-                new Home().rel(dir)
+                new Home(targetDir.toPath()).rel(dir)
             );
         }
         return new Xsline(trn).pass(new XMLDocument(file));
@@ -270,16 +274,20 @@ public final class OptimizeMojo extends SafeMojo {
     private Path make(final XML xml, final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
+        final Path dir = this.targetDir.toPath();
         final Path target = place.make(
-            this.targetDir.toPath().resolve(OptimizeMojo.DIR), TranspileMojo.EXT
+            dir.resolve(OptimizeMojo.DIR), TranspileMojo.EXT
         );
-        new Home(this.targetDir.toPath()).save(
+        new Home(dir).save(
             xml.toString(),
-            this.targetDir.toPath().relativize(target)
+            dir.relativize(target)
         );
         Logger.debug(
-            this, "Optimized %s (program:%s) to %s",
-            new Home().rel(file), name, new Home().rel(target)
+            this,
+            "Optimized %s (program:%s) to %s",
+            new Home(dir).rel(file),
+            name,
+            new Home(dir).rel(target)
         );
         return target;
     }

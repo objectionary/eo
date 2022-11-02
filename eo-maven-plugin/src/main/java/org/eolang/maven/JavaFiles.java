@@ -73,7 +73,7 @@ final class JavaFiles {
         if (nodes.isEmpty()) {
             Logger.debug(
                 this, "No .java files generated from %s",
-                new Home().rel(this.source)
+                this.source
             );
         } else {
             for (final XML java : nodes) {
@@ -81,7 +81,7 @@ final class JavaFiles {
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
-                nodes.size(), new Home().rel(this.source), new Home().rel(this.dest)
+                nodes.size(), this.source, this.dest
             );
         }
         return files;

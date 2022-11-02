@@ -193,7 +193,7 @@ public final class PullMojo extends SafeMojo {
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, new Home().rel(src)
+                name, src
             );
         } else {
             new Home(dir).save(
@@ -202,7 +202,7 @@ public final class PullMojo extends SafeMojo {
             );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
-                name, new Home().rel(src)
+                name, src
             );
         }
         return src;

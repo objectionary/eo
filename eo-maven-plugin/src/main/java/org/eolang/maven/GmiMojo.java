@@ -263,7 +263,7 @@ public final class GmiMojo extends SafeMojo {
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
             Logger.info(
                 this, "GMI for %s saved to %s (%d instructions)",
-                name, new Home().rel(gmi), extra
+                name, gmi, extra
             );
             ++total;
         }
@@ -276,7 +276,7 @@ public final class GmiMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
-                total, new Home().rel(home), instructions
+                total, home, instructions
             );
         }
     }

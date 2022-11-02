@@ -131,7 +131,7 @@ public final class PlaceMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",
-                new Home().rel(home)
+                home
             );
         }
     }

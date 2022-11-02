@@ -158,24 +158,15 @@ final class Home {
      *
      * @param file Absolute path to a file or dir
      * @return Relative name to CWD
-     * @todo #1352:30min Make `rel` method strictly relative to base.
-     *  In most cases `rel` is used with empty `Home()` and given absolute path
-     *  which is not part of it. So it just returns absolute path.
-     *  Throw an exception in case give path is not sub-path of a base.
-     *  Along with that revise all usages of this method and replace applicable
-     *  with just `Path.relativize` or plain local vars.
      */
     public String rel(final Path file) {
-        String path = file.toAbsolutePath().toString();
-        if (path.equals(this.cwd.toString())) {
-            path = "./";
-        } else if (path.startsWith(this.cwd.toString())) {
-            path = String.format(
-                "./%s",
-                path.substring(this.cwd.toString().length() + 1)
+        if (file.toAbsolutePath().startsWith(this.cwd.toAbsolutePath())) {
+            return String.format("./%s", this.cwd.relativize(file));
+        } else {
+            throw new IllegalArgumentException(
+                String.format("'%s' not under the '%s' folder", file, this.cwd)
             );
         }
-        return path;
     }
 
     /**

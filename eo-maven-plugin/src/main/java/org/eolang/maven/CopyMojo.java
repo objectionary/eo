@@ -115,13 +115,14 @@ public final class CopyMojo extends SafeMojo {
         if (sources.isEmpty()) {
             Logger.warn(
                 this, "No sources copied from %s to %s",
-                new Home().rel(this.sourcesDir.toPath()), new Home().rel(target)
+                this.sourcesDir.toPath(),
+                target
             );
         } else {
             Logger.info(
                 this, "%d source(s) copied from %s to %s",
-                sources.size(), new Home().rel(this.sourcesDir.toPath()),
-                new Home().rel(target)
+                sources.size(), this.sourcesDir.toPath(),
+                target
             );
         }
     }
