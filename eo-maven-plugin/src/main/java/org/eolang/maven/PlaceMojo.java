@@ -44,6 +44,7 @@ import org.cactoos.set.SetOf;
  * copy to target/classes.
  *
  * @since 0.11
+ * @see <a herf="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  */
 @Mojo(
     name = "place",
