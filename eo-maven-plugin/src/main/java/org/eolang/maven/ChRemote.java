@@ -36,6 +36,10 @@ import org.cactoos.text.UncheckedText;
  * Hash of tag from objectionary.
  *
  * @since 0.26
+ * @todo #1382:90min We definitely have to split {@link org.eolang.maven.ChRemote} class to
+ *   a two different classes: ChRemote and ChCached - in that case we will able to remove
+ *   static methods and reuse ChCached somewhere else (not only in ChRemote).
+ *   After implementation of ChCached - it's important remove CACHE from ChRemote.
  */
 final class ChRemote implements CommitHash {
 
