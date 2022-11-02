@@ -38,7 +38,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
@@ -57,33 +56,6 @@ final class HomeTest {
         MatcherAssert.assertThat(
             new UncheckedText(new TextOf(resolve)).asString(),
             Matchers.is(content)
-        );
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "'file.txt', './file.txt'",
-        "'dir/file.txt', './dir/file.txt'",
-        "'long/path/to/file.txt', './long/path/to/file.txt'",
-        "'../file.txt', './../file.txt'",
-        "'./file.txt', './file.txt'"
-    })
-    void returnsRelativePathOfCurrentWorkingDirectory(
-        final String file,
-        final String expected,
-        @TempDir final Path temp
-    ) {
-        MatcherAssert.assertThat(
-            new Home(temp).rel(temp.resolve(file)),
-            Matchers.is(expected)
-        );
-    }
-
-    @Test
-    void throwsExceptionIfRelPathNotInCurrentWorkingDir(@TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new Home(temp).rel(Paths.get("/not/in/home"))
         );
     }
 
