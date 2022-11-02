@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2022 Objectionary.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.eolang.maven;
 
 import java.util.Collections;
@@ -8,13 +31,21 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test case for {@link org.eolang.maven.DcsNoOneHasTransitive}.
+ *
+ * @since 0.28.11
+ */
 class DcsNoOneHasTransitiveTest {
 
     @Test
     void checksAllDependenciesWithoutTransitive() throws Exception {
         MatcherAssert.assertThat(
             new LengthOf(
-                new DcsNoOneHasTransitive(single("eo-collections"), d -> empty())).value(),
+                new DcsNoOneHasTransitive(
+                    this.single("eo-collections"),
+                    dependency -> this.empty()
+                )).value(),
             Matchers.equalTo(1L)
         );
     }
@@ -23,7 +54,10 @@ class DcsNoOneHasTransitiveTest {
     void checksAllDependenciesWithTransitive() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            new DcsNoOneHasTransitive(single("eo-foo"), d -> single("eo-bar"))::iterator
+            new DcsNoOneHasTransitive(
+                this.single("eo-foo"),
+                dependency -> this.single("eo-bar")
+            )::iterator
         );
     }
 
@@ -32,7 +66,7 @@ class DcsNoOneHasTransitiveTest {
     }
 
     private Dependencies single(final String artifact) {
-        return () -> Collections.singletonList(dependency(artifact)).iterator();
+        return () -> Collections.singletonList(this.dependency(artifact)).iterator();
     }
 
     private Dependency dependency(final String artifact) {
