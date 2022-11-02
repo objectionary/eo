@@ -1,6 +1,13 @@
 tests:
   - /program/errors[count(error)=0]
   - //metas[count(.//meta[head/text()='probe'])=7]
+  - //meta[head/text()='probe' and tail/text()='Q.org']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.sprintf']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start']
 eo: |
   +package org.eolang.custom
   
