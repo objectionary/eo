@@ -24,7 +24,6 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="add-probes" version="2.0">
   <!--
-  !Note: This should always followed by remove-dup-probes.xsl
   For every object which starts with '.' add probe meta
   with fully qualified name of the object.
   Example:
@@ -54,26 +53,30 @@ SOFTWARE.
     </xsl:choose>
   </xsl:function>
   <xsl:template match="/program/metas">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[starts-with(@base, '.')]">
-        <xsl:element name="meta">
-          <xsl:attribute name="line">
-            <xsl:value-of select="@line"/>
-          </xsl:attribute>
-          <xsl:element name="head">
-            <xsl:text>probe</xsl:text>
+    <xsl:variable name="mts">
+      <xsl:copy>
+        <xsl:apply-templates select="node()|@*"/>
+        <xsl:for-each select="//o[starts-with(@base, '.')]">
+          <xsl:element name="meta">
+            <xsl:attribute name="line">
+              <xsl:value-of select="@line"/>
+            </xsl:attribute>
+            <xsl:element name="head">
+              <xsl:text>probe</xsl:text>
+            </xsl:element>
+            <xsl:element name="tail">
+              <xsl:value-of select="eo:qualify(.)"/>
+            </xsl:element>
+            <xsl:element name="part">
+              <xsl:value-of select="eo:qualify(.)"/>
+            </xsl:element>
           </xsl:element>
-          <xsl:element name="tail">
-            <xsl:value-of select="eo:qualify(.)"/>
-          </xsl:element>
-          <xsl:element name="part">
-            <xsl:value-of select="eo:qualify(.)"/>
-          </xsl:element>
-        </xsl:element>
-      </xsl:for-each>
-    </xsl:copy>
+        </xsl:for-each>
+      </xsl:copy>
+    </xsl:variable>
+    <xsl:apply-templates select="$mts"/>
   </xsl:template>
+  <xsl:template match="meta[head/text() = 'probe' and tail/text() = following::meta/tail/text()]"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
