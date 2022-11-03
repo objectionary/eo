@@ -114,11 +114,11 @@ public final class PullMojo extends SafeMojo {
         );
         final CommitHash tag;
         if (this.offlineHashFile == null && this.offlineHash == null) {
-            tag = new ChRemote(this.hash);
+            tag = new ChCached(new ChRemote(this.hash));
         } else if (this.offlineHash == null) {
-            tag = new ChText(this.offlineHashFile, this.hash);
+            tag = new ChCached(new ChText(this.offlineHashFile, this.hash));
         } else {
-            tag = new ChPattern(this.offlineHash, this.hash);
+            tag = new ChCached(new ChPattern(this.offlineHash, this.hash));
         }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
