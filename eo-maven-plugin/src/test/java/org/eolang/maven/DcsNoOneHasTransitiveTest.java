@@ -43,8 +43,8 @@ class DcsNoOneHasTransitiveTest {
         MatcherAssert.assertThat(
             new LengthOf(
                 new DcsNoOneHasTransitive(
-                    this.single("eo-collections"),
-                    dependency -> this.empty()
+                    DcsNoOneHasTransitiveTest.single("eo-collections"),
+                    dependency -> DcsNoOneHasTransitiveTest.empty()
                 )).value(),
             Matchers.equalTo(1L)
         );
@@ -55,21 +55,23 @@ class DcsNoOneHasTransitiveTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             new DcsNoOneHasTransitive(
-                this.single("eo-foo"),
-                dependency -> this.single("eo-bar")
+                DcsNoOneHasTransitiveTest.single("eo-foo"),
+                dependency -> DcsNoOneHasTransitiveTest.single("eo-bar")
             )::iterator
         );
     }
 
-    private Dependencies empty() {
+    private static Dependencies empty() {
         return Collections::emptyIterator;
     }
 
-    private Dependencies single(final String artifact) {
-        return () -> Collections.singletonList(this.dependency(artifact)).iterator();
+    private static Dependencies single(final String artifact) {
+        return Collections.singletonList(
+            DcsNoOneHasTransitiveTest.dependency(artifact)
+        )::iterator;
     }
 
-    private Dependency dependency(final String artifact) {
+    private static Dependency dependency(final String artifact) {
         final Dependency dependency = new Dependency();
         dependency.setGroupId("org.eolang");
         dependency.setArtifactId(artifact);
