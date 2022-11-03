@@ -33,6 +33,9 @@ SOFTWARE.
   <packaging>maven-plugin</packaging>
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
+  <properties>
+    <stack-size>256M</stack-size>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -214,6 +217,7 @@ SOFTWARE.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <argLine>-Xss${stack-size}</argLine>
           <systemPropertyVariables>
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
             <runtime.path>${project.basedir}/../eo-runtime</runtime.path>
