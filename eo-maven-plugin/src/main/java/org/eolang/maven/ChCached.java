@@ -23,8 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 

@@ -9,20 +9,19 @@ class ChCachedTest {
 
     @Test
     void cachesHashAndInvokesDelegateOnlyOnce() {
-        final Dummy delegate = new Dummy();
-        final ChCached cached = new ChCached(delegate);
-        for (int i = 0; i < 10; i++) {
-            final String actual = cached.value();
-            MatcherAssert.assertThat(actual, Matchers.equalTo("dummy"));
+        final ChMock mock = new ChMock();
+        final ChCached cached = new ChCached(mock);
+        for (int idx = 0; idx < 10; idx++) {
+            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
         }
-        MatcherAssert.assertThat(delegate.invocations(), Matchers.equalTo(1));
+        MatcherAssert.assertThat(mock.invocations(), Matchers.equalTo(1));
     }
 
-    private static class Dummy implements CommitHash {
+    private static class ChMock implements CommitHash {
 
         private final AtomicInteger invocations;
 
-        private Dummy() {
+        private ChMock() {
             this.invocations = new AtomicInteger(0);
         }
 

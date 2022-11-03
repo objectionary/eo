@@ -56,8 +56,8 @@ public final class PullMojo extends SafeMojo {
      * The Git hash to pull objects from, in objectionary.
      *
      * @todo #1174:90min The wrong naming. It isn't a `hash` - it's a `tag`.
-     *   We have to rename that property. Also it's important to check if we don't break something
-     *   by such a renaming.
+     * We have to rename that property. Also it's important to check if we don't break something
+     * by such a renaming.
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
