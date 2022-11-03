@@ -116,9 +116,8 @@ public final class RegisterMojo extends SafeMojo {
         }
         Logger.info(
             this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
-            sources.size(),
-            this.sourcesDir.toPath(),
-            this.foreign.toPath(),
+            sources.size(), new Rel(this.sourcesDir),
+            new Rel(this.foreign),
             this.includeSources, this.excludeSources
         );
     }

@@ -254,7 +254,7 @@ public final class GmiMojo extends SafeMojo {
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    name, gmi
+                    name, new Rel(gmi)
                 );
                 continue;
             }
@@ -263,7 +263,7 @@ public final class GmiMojo extends SafeMojo {
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
             Logger.info(
                 this, "GMI for %s saved to %s (%d instructions)",
-                name, gmi, extra
+                name, new Rel(gmi), extra
             );
             ++total;
         }
@@ -276,7 +276,7 @@ public final class GmiMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
-                total, home, instructions
+                total, new Rel(home), instructions
             );
         }
     }

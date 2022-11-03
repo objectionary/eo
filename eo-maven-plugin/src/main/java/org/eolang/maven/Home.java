@@ -82,7 +82,7 @@ final class Home {
         if (target.toFile().getParentFile().mkdirs()) {
             Logger.debug(
                 this, "Directory created: %s",
-                target.getParent()
+                new Rel(target.getParent())
             );
         }
         try {
