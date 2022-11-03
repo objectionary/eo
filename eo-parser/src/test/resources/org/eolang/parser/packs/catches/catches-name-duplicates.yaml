@@ -1,7 +1,7 @@
 xsls:
-  - /org/eolang/parser/errors/duplicate-names.xsl
+  - /org/eolang/parser/critical-errors/duplicate-names.xsl
 tests:
-  - /program/errors[count(error[@severity='error'])=2]
+  - /program/errors[count(error[@severity='critical'])=2]
   - /program/errors/error[@line='2']
   - /program/objects/o[@name='first']/o[@name='x']
 eo: |

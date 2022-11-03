@@ -240,10 +240,10 @@ public final class OptimizeMojo extends SafeMojo {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN.value();
         if (this.failOnWarning) {
-            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-warnings.xsl"));
+            trn = trn.with(new StClasspath("/org/eolang/parser/fail-on-warnings.xsl"));
         }
         if (this.failOnError) {
-            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-errors.xsl"));
+            trn = trn.with(new StClasspath("/org/eolang/parser/fail-on-errors.xsl"));
         }
         if (this.trackOptimizationSteps) {
             final Place place = new Place(name);
