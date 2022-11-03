@@ -32,6 +32,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link org.eolang.maven.Rel}.
+ *
+ * @since 0.28.11
  */
 class RelTest {
 
