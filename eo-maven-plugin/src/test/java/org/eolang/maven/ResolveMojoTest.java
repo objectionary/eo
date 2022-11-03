@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -42,8 +43,8 @@ final class ResolveMojoTest {
 
     @Test
     void resolveWithSingleDependency(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("src").resolve("foo.eo");
-        new Home().save(
+        final Path foo = Paths.get("src").resolve("foo.eo");
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.7.0",
@@ -55,7 +56,7 @@ final class ResolveMojoTest {
         Catalogs.INSTANCE.make(foreign, "json")
             .add("foo.eo")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, foo.toString())
+            .set(AssembleMojo.ATTR_EO, temp.resolve(foo))
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);
@@ -69,8 +70,9 @@ final class ResolveMojoTest {
 
     @Test
     void resolveWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
-        final Path foo = temp.resolve("src").resolve("sum.eo");
-        new Home().save(
+        final Path foo = Paths.get("src").resolve("sum.eo");
+        final Home home = new Home(temp);
+        home.save(
             "[a b] > sum\n  plus. > @\n    a\n    b",
             foo
         );
@@ -79,7 +81,7 @@ final class ResolveMojoTest {
             .add("sum")
             .set(AssembleMojo.ATTR_DISCOVERED, "0")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, foo.toString())
+            .set(AssembleMojo.ATTR_EO, temp.resolve(foo))
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);

@@ -144,7 +144,7 @@ public final class TranspileMojo extends SafeMojo {
             ) {
                 Logger.info(
                     this, "XMIR %s (%s) were already transpiled to %s",
-                    new Home().rel(file), name, new Home().rel(target)
+                    new Rel(file), name, new Rel(target)
                 );
             } else {
                 final List<Path> paths = this.transpile(src, input, target);
@@ -158,20 +158,20 @@ public final class TranspileMojo extends SafeMojo {
         }
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
-            sources.size(), saved, new Home().rel(this.generatedDir.toPath())
+            sources.size(), saved, new Rel(this.generatedDir)
         );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %s",
-                new Home().rel(this.generatedDir.toPath())
+                new Rel(this.generatedDir)
             );
         }
         if (this.addTestSourcesRoot) {
             this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
                 this, "The directory added to Maven 'test-compile-source-root': %s",
-                new Home().rel(this.generatedDir.toPath())
+                new Rel(this.generatedDir)
             );
         }
     }
@@ -192,13 +192,13 @@ public final class TranspileMojo extends SafeMojo {
             Logger.debug(
                 this,
                 "Removed %d Java files for %s",
-                removed, new Home().rel(src)
+                removed, new Rel(src)
             );
         } else {
             Logger.debug(
                 this,
                 "No Java files removed for %s",
-                new Home().rel(src)
+                new Rel(src)
             );
         }
         final Place place = new Place(name);

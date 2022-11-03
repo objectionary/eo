@@ -60,14 +60,6 @@ final class HomeTest {
     }
 
     @Test
-    void returnsRelativePathOfCurrentWorkingDirectory(@TempDir final Path temp) {
-        MatcherAssert.assertThat(
-            new Home(temp.resolve("dir")).rel(temp.resolve("dir/file.txt")),
-            Matchers.is("./file.txt")
-        );
-    }
-
-    @Test
     void existsTest(@TempDir final Path temp) throws IOException {
         Files.write(temp.resolve("file.txt"), "any content".getBytes());
         MatcherAssert.assertThat(

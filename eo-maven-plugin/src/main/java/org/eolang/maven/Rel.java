@@ -23,65 +23,68 @@
  */
 package org.eolang.maven;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.nio.file.Path;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+import java.nio.file.Paths;
 
 /**
- * Objectionary stored locally.
+ * Relative path.
  *
- * @since 1.0
+ * @since 0.28.11
  */
-final class OyHome implements Objectionary {
-    /**
-     * Local storage.
-     */
-    private final Path home;
+final class Rel {
 
     /**
-     * Version.
+     * Current working directory.
      */
-    private final String version;
+    private final Path base;
 
     /**
-     * Ctor.
-     * @param hash Commit hash.
-     * @param path Root.
+     * Path relative to working directory.
      */
-    OyHome(final CommitHash hash, final Path path) {
-        this(hash.value(), path);
+    private final Path other;
+
+    /**
+     * Constructor with File.
+     *
+     * @param file File relative to working directory.
+     */
+    Rel(final File file) {
+        this(file.toPath());
     }
 
     /**
-     * Ctor.
-     * @param ver Version.
-     * @param path Root.
+     * Constructor with Path.
+     *
+     * @param other Path relative to working directory.
      */
-    OyHome(final String ver, final Path path) {
-        this.version = ver;
-        this.home = path;
+    Rel(final Path other) {
+        this(Paths.get(""), other);
+    }
+
+    /**
+     * The main constructor.
+     *
+     * @param base Current working directory.
+     * @param other Path relative to working directory.
+     */
+    Rel(final Path base, final Path other) {
+        this.base = base;
+        this.other = other;
     }
 
     @Override
     public String toString() {
-        return String.format(
-            "%s (%s)",
-            new Rel(this.home), this.version
-        );
-    }
-
-    @Override
-    public Input get(final String name) throws FileNotFoundException {
-        final Path file = new Place(name).make(
-            this.home
-                .resolve("pulled")
-                .resolve(this.version),
-            "eo"
-        );
-        if (!file.toFile().exists()) {
-            throw new FileNotFoundException(name);
+        String path = this.other.toAbsolutePath().toString();
+        if (path.equals(this.base.toString())) {
+            path = String.format(".%s", File.separator);
+        } else if (path.startsWith(this.base.toString())) {
+            path = String.format(
+                ".%s%s",
+                File.separator,
+                path.substring(this.base.toString().length() + 1)
+            );
         }
-        return new InputOf(file);
+        return path;
     }
 }

@@ -224,7 +224,7 @@ final class OptimizeMojoTest {
                 "[args] > main",
                 "  (stdout \"Hello!\").print > @\n"
             ),
-            temp.relativize(src)
+            src
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.csv");
