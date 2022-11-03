@@ -31,8 +31,11 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.28.11
  */
-public class ChCached implements CommitHash {
+final class ChCached implements CommitHash {
 
+    /**
+     * Cache.
+     */
     private final Unchecked<String> delegate;
 
     /**
@@ -40,12 +43,12 @@ public class ChCached implements CommitHash {
      *
      * @param delegate Delegate
      */
-    public ChCached(final CommitHash delegate) {
+    ChCached(final CommitHash delegate) {
         this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
     }
 
     @Override
     public String value() {
-        return delegate.value();
+        return this.delegate.value();
     }
 }
