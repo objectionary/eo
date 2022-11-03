@@ -13,14 +13,15 @@ whether it's leap or not:
   [y] > leap
     or. > @
       and.
-        eq. (mod. (QQ.math.number y) 4) 0
-        not. (eq. (mod. (QQ.math.number y) 100) 0)
-      eq. (mod. (QQ.math.number y) 400) 0
+        eq. (mod. y 4) 0
+        not. (eq. (mod. y 100) 0)
+      eq. (mod. y 400) 0
   QQ.io.stdout > @
     QQ.txt.sprintf
       "%d is %sa leap year!"
-      (QQ.txt.text (args.at 0)).as-int > year!
+      (args.get 0).as-int > year!
       if. (leap year:y) "" "not "
+
 ```
 
 In order to compile this program, put it into `src/main/eo/main.eo` and then
@@ -31,14 +32,6 @@ create a file `pom.xml` with this content (it's just a sample):
   [...]
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>8</source>
-          <target>8</target>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
@@ -130,5 +123,4 @@ Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven
 ```shell
 mvn -U clean install
 ```
-
 
