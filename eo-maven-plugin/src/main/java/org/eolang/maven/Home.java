@@ -40,6 +40,8 @@ import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 
+import static java.lang.String.format;
+
 /**
  * Base location for files.
  *
@@ -197,6 +199,10 @@ final class Home {
      * @return Absolute path
      */
     private Path absolute(final Path path) {
+        if (path.isAbsolute()) {
+            throw new IllegalArgumentException(format("Absolute path %s is prohibit.", path));
+        }
+
         return this.cwd.resolve(path);
     }
 }
