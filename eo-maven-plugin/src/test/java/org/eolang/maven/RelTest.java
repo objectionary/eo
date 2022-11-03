@@ -65,7 +65,7 @@ class RelTest {
                 Paths.get("/a/b/c"),
                 Paths.get("/d/e/f")
             ).toString(),
-            Matchers.is(Paths.get("/d/e/f").toString())
+            Matchers.is(Paths.get("/d/e/f").toAbsolutePath().toString())
         );
     }
 }
