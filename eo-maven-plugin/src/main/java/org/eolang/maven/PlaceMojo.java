@@ -131,7 +131,7 @@ public final class PlaceMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",
-                new Home().rel(home)
+                new Rel(home)
             );
         }
     }
@@ -157,7 +157,7 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "File %s is not a binary, but a source, won't place it",
-                    new Home().rel(file)
+                    new Rel(file)
                 );
                 continue;
             }
@@ -170,8 +170,8 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
-                    new Home().rel(file),
-                    new Home().rel(target)
+                    new Rel(file),
+                    new Rel(target)
                 );
             }
             if (!before.isEmpty() && Files.exists(target)
@@ -179,7 +179,7 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
-                    new Home().rel(file), new Home().rel(target),
+                    new Rel(file), new Rel(target),
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
                 continue;
@@ -189,8 +189,8 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                    new Home().rel(file), file.toFile().length(),
-                    new Home().rel(target), target.toFile().length(),
+                    new Rel(file), file.toFile().length(),
+                    new Rel(target), target.toFile().length(),
                     before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
                 );
             }

@@ -154,7 +154,7 @@ public final class OptimizeMojo extends SafeMojo {
                         if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                             Logger.debug(
                                 this, "Already optimized %s to %s",
-                                new Home().rel(src), new Home().rel(tgt)
+                                new Rel(src), new Rel(tgt)
                             );
                             return;
                         }
@@ -253,7 +253,7 @@ public final class OptimizeMojo extends SafeMojo {
             trn = new SpyTrain(trn, dir);
             Logger.debug(
                 this, "Optimization steps will be tracked to %s",
-                new Home().rel(dir)
+                new Rel(dir)
             );
         }
         return new Xsline(trn).pass(new XMLDocument(file));
@@ -279,7 +279,7 @@ public final class OptimizeMojo extends SafeMojo {
         );
         Logger.debug(
             this, "Optimized %s (program:%s) to %s",
-            new Home().rel(file), name, new Home().rel(target)
+            new Rel(file), name, new Rel(target)
         );
         return target;
     }
