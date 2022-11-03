@@ -147,7 +147,7 @@ public final class UnspileMojo extends SafeMojo {
         } else {
             Logger.debug(
                 this, "Not deleted %s since %s is absent",
-                new Home().rel(file), new Home().rel(java)
+                new Rel(file), new Rel(java)
             );
         }
         return deleted;
