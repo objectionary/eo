@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;
@@ -52,7 +53,7 @@ class RelTest {
     ) {
         MatcherAssert.assertThat(
             new Rel(temp, temp.resolve(file)).toString(),
-            Matchers.is(expected)
+            Matchers.is(Paths.get(expected).toString())
         );
     }
 }

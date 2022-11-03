@@ -77,10 +77,11 @@ final class Rel {
     public String toString() {
         String path = this.other.toAbsolutePath().toString();
         if (path.equals(this.base.toString())) {
-            path = "./";
+            path = String.format(".%s", File.separator);
         } else if (path.startsWith(this.base.toString())) {
             path = String.format(
-                "./%s",
+                ".%s%s",
+                File.separator,
                 path.substring(this.base.toString().length() + 1)
             );
         }
