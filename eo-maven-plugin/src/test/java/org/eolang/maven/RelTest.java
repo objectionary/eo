@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -54,6 +55,17 @@ class RelTest {
         MatcherAssert.assertThat(
             new Rel(temp, temp.resolve(file)).toString(),
             Matchers.is(Paths.get(expected).toString())
+        );
+    }
+
+    @Test
+    void returnsAbsolutePathIfBaseAndOtherFromDifferentHierarchies() {
+        MatcherAssert.assertThat(
+            new Rel(
+                Paths.get("/a/b/c"),
+                Paths.get("/d/e/f")
+            ).toString(),
+            Matchers.is(Paths.get("/d/e/f").toString())
         );
     }
 }
