@@ -9,22 +9,17 @@ Here is a simple program that gets a year from command line and tells you
 whether it's leap or not:
 
 ```eo
-+alias org.eolang.txt.sprintf
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.text
-+alias org.eolang.math.number
-
 [args...] > main
   [y] > leap
     or. > @
       and.
-        eq. (mod. (number y) 4) 0
-        not. (eq. (mod. (number y) 100) 0)
-      eq. (mod. (number y) 400) 0
-  stdout > @
-    sprintf
+        eq. (mod. (QQ.math.number y) 4) 0
+        not. (eq. (mod. (QQ.math.number y) 100) 0)
+      eq. (mod. (QQ.math.number y) 400) 0
+  QQ.io.stdout > @
+    QQ.txt.sprintf
       "%d is %sa leap year!"
-      (text (args.at 0)).as-int > year!
+      (QQ.txt.text (args.at 0)).as-int > year!
       if. (leap year:y) "" "not "
 ```
 
