@@ -48,7 +48,7 @@ SOFTWARE.
         <xsl:value-of select="concat(eo:qualify($fco), $e/@base)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat($fco, $e/@base)"/>
+        <xsl:value-of select="$e/@base"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
