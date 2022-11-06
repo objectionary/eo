@@ -24,32 +24,18 @@
 
 package org.eolang.maven;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link OyRemote}.
  * @since 0.26
  */
+@ExtendWith(WeAreOnline.class)
 final class ChRemoteTest {
-
-    @BeforeEach
-    void weAreOnline() throws IOException {
-        try {
-            Assumptions.assumeTrue(
-                InetAddress.getByName("home.objectionary.com").isReachable(1000)
-            );
-        } catch (final UnknownHostException ex) {
-            Assumptions.assumeTrue(false);
-        }
-    }
 
     @Test
     void testCommitHashTag() {
@@ -72,7 +58,7 @@ final class ChRemoteTest {
     @Test
     void testCommitHashException() {
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            ChText.NotFound.class,
             () -> new ChRemote("nonsense").value()
         );
     }
