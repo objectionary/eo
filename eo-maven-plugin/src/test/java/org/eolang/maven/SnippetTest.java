@@ -49,6 +49,7 @@ import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -70,6 +71,7 @@ import org.yaml.snakeyaml.Yaml;
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
  */
+@ExtendWith(WeAreOnline.class)
 final class SnippetTest {
 
     /**
