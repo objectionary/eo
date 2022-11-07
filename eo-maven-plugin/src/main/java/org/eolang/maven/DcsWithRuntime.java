@@ -42,7 +42,7 @@ final class DcsWithRuntime implements Dependencies {
     /**
      * Dependency downloaded by HTTP from Maven Central.
      */
-    private static final Unchecked<Dependency> FROM_MAVEN = fromMaven();
+    private static final Unchecked<Dependency> MAVEN_DEPENDENCY = DcsWithRuntime.mavenDependency();
 
     /**
      * All dependencies.
@@ -60,7 +60,7 @@ final class DcsWithRuntime implements Dependencies {
      * @param delegate Dependencies delegate.
      */
     DcsWithRuntime(final Dependencies delegate) {
-        this(delegate, DcsWithRuntime.FROM_MAVEN);
+        this(delegate, DcsWithRuntime.MAVEN_DEPENDENCY);
     }
 
     /**
@@ -88,7 +88,7 @@ final class DcsWithRuntime implements Dependencies {
      *
      * @return Runtime dependency from Maven Central.
      */
-    private static Unchecked<Dependency> fromMaven() {
+    private static Unchecked<Dependency> mavenDependency() {
         final String url = String.format(
             "https://repo.maven.apache.org/maven2/%s/maven-metadata.xml",
             "org/eolang/eo-runtime"
