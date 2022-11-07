@@ -50,7 +50,7 @@ final class DcsWithRuntime implements Dependencies {
     private final Dependencies delegate;
 
     /**
-     * Runtime dependency source.
+     * Supplier of the eo-runtime dependency.
      */
     private final Unchecked<Dependency> supplied;
 
@@ -67,7 +67,7 @@ final class DcsWithRuntime implements Dependencies {
      * The main constructor.
      *
      * @param delegate Dependencies delegate.
-     * @param supplied Runtime dependency source.
+     * @param supplied Supplier of the eo-runtime dependency.
      */
     DcsWithRuntime(final Dependencies delegate, final Unchecked<Dependency> supplied) {
         this.delegate = delegate;
