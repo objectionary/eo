@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ class DcsWithRuntimeTest {
     void addsHardcodedVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
             dependencies(),
-            DcsWithRuntime.HARDCODED
+            new Unchecked<>(DcsWithRuntimeTest::dependency)
         );
         MatcherAssert.assertThat(
             new LengthOf(dependencies).value(),
@@ -61,12 +62,14 @@ class DcsWithRuntimeTest {
     }
 
     private static Dependencies dependencies() {
-        return () -> {
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId("org.eolang");
-            dependency.setArtifactId("eo-collections");
-            dependency.setVersion("0.1.0");
-            return Collections.singleton(dependency).iterator();
-        };
+        return Collections.singleton(dependency())::iterator;
+    }
+
+    private static Dependency dependency() {
+        final Dependency dependency = new Dependency();
+        dependency.setGroupId("org.eolang");
+        dependency.setArtifactId("eo-collections");
+        dependency.setVersion("0.1.0");
+        return dependency;
     }
 }
