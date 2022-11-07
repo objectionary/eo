@@ -52,7 +52,7 @@ final class DcsWithRuntime implements Dependencies {
     /**
      * Runtime dependency source.
      */
-    private final Unchecked<Dependency> source;
+    private final Unchecked<Dependency> supplied;
 
     /**
      * Constructor.
@@ -67,18 +67,18 @@ final class DcsWithRuntime implements Dependencies {
      * The main constructor.
      *
      * @param delegate Dependencies delegate.
-     * @param source Runtime dependency source.
+     * @param supplied Runtime dependency source.
      */
-    DcsWithRuntime(final Dependencies delegate, final Unchecked<Dependency> source) {
+    DcsWithRuntime(final Dependencies delegate, final Unchecked<Dependency> supplied) {
         this.delegate = delegate;
-        this.source = source;
+        this.supplied = supplied;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
         final ListOf<Dependency> all = new ListOf<>(this.delegate);
         if (all.stream().noneMatch(new RuntimeDependencyEquality())) {
-            all.add(this.source.value());
+            all.add(this.supplied.value());
         }
         return all.iterator();
     }
