@@ -45,7 +45,7 @@ final class WeAreOnline implements ExecutionCondition {
         final String host = "www.objectionary.com";
         final int delay = (int) TimeUnit.SECONDS.toMillis(1L);
         try {
-            if (InetAddress.getByName(host).isReachable(1000)) {
+            if (InetAddress.getByName(host).isReachable(delay)) {
                 ret = ConditionEvaluationResult.enabled(
                     "We are online!"
                 );
