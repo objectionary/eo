@@ -23,65 +23,49 @@
  */
 package org.eolang.maven;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+import java.nio.file.Paths;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Objectionary stored locally.
+ * Test case for {@link org.eolang.maven.Rel}.
  *
- * @since 1.0
+ * @since 0.28.11
  */
-final class OyHome implements Objectionary {
-    /**
-     * Local storage.
-     */
-    private final Path home;
+class RelTest {
 
-    /**
-     * Version.
-     */
-    private final String version;
-
-    /**
-     * Ctor.
-     * @param hash Commit hash.
-     * @param path Root.
-     */
-    OyHome(final CommitHash hash, final Path path) {
-        this(hash.value(), path);
-    }
-
-    /**
-     * Ctor.
-     * @param ver Version.
-     * @param path Root.
-     */
-    OyHome(final String ver, final Path path) {
-        this.version = ver;
-        this.home = path;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-            "%s (%s)",
-            new Rel(this.home), this.version
+    @ParameterizedTest
+    @CsvSource({
+        "'file.txt', './file.txt'",
+        "'dir/file.txt', './dir/file.txt'",
+        "'long/path/to/file.txt', './long/path/to/file.txt'",
+        "'../file.txt', './../file.txt'",
+        "'./file.txt', '././file.txt'"
+    })
+    void returnsRelativePathOfCurrentWorkingDirectory(
+        final String file,
+        final String expected,
+        @TempDir final Path temp
+    ) {
+        MatcherAssert.assertThat(
+            new Rel(temp, temp.resolve(file)).toString(),
+            Matchers.is(Paths.get(expected).toString())
         );
     }
 
-    @Override
-    public Input get(final String name) throws FileNotFoundException {
-        final Path file = new Place(name).make(
-            this.home
-                .resolve("pulled")
-                .resolve(this.version),
-            "eo"
+    @Test
+    void returnsAbsolutePathIfBaseAndOtherFromDifferentHierarchies() {
+        MatcherAssert.assertThat(
+            new Rel(
+                Paths.get("/a/b/c"),
+                Paths.get("/d/e/f")
+            ).toString(),
+            Matchers.is(Paths.get("/d/e/f").toAbsolutePath().toString())
         );
-        if (!file.toFile().exists()) {
-            throw new FileNotFoundException(name);
-        }
-        return new InputOf(file);
     }
 }

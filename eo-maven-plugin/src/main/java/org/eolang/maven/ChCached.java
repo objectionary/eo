@@ -23,65 +23,32 @@
  */
 package org.eolang.maven;
 
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
- * Objectionary stored locally.
+ * Cached commit hash.
  *
- * @since 1.0
+ * @since 0.28.11
  */
-final class OyHome implements Objectionary {
-    /**
-     * Local storage.
-     */
-    private final Path home;
+final class ChCached implements CommitHash {
 
     /**
-     * Version.
+     * Cache.
      */
-    private final String version;
+    private final Unchecked<String> delegate;
 
     /**
-     * Ctor.
-     * @param hash Commit hash.
-     * @param path Root.
+     * Default constructor.
+     *
+     * @param delegate Delegate
      */
-    OyHome(final CommitHash hash, final Path path) {
-        this(hash.value(), path);
-    }
-
-    /**
-     * Ctor.
-     * @param ver Version.
-     * @param path Root.
-     */
-    OyHome(final String ver, final Path path) {
-        this.version = ver;
-        this.home = path;
+    ChCached(final CommitHash delegate) {
+        this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
     }
 
     @Override
-    public String toString() {
-        return String.format(
-            "%s (%s)",
-            new Rel(this.home), this.version
-        );
-    }
-
-    @Override
-    public Input get(final String name) throws FileNotFoundException {
-        final Path file = new Place(name).make(
-            this.home
-                .resolve("pulled")
-                .resolve(this.version),
-            "eo"
-        );
-        if (!file.toFile().exists()) {
-            throw new FileNotFoundException(name);
-        }
-        return new InputOf(file);
+    public String value() {
+        return this.delegate.value();
     }
 }

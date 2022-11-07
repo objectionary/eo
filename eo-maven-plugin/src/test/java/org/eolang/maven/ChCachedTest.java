@@ -23,41 +23,30 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.util.List;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Add object names to the "foreign" registry as demanded.
+ * Test case for {@link org.eolang.maven.ChCached}.
  *
- * @since 0.1
+ * @since 0.28.11
  */
-@Mojo(
-    name = "demand-foreign",
-    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true
-)
-public final class DemandMojo extends SafeMojo {
+class ChCachedTest {
 
-    /**
-     * List of object names to add.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.17.0
-     */
-    @Parameter(required = true)
-    private List<String> objects;
-
-    @Override
-    public void exec() {
-        for (final String obj : this.objects) {
-            this.scopedTojos().add(obj);
-        }
-        Logger.info(
-            this, "Added %d objects to foreign catalog at %s",
-            this.objects.size(), new Rel(this.foreign)
+    @Test
+    void cachesHashAndInvokesDelegateOnlyOnce() {
+        final AtomicInteger invocations = new AtomicInteger(0);
+        final ChCached cached = new ChCached(
+            () -> {
+                invocations.incrementAndGet();
+                return "dummy";
+            }
         );
+        for (int idx = 0; idx < 10; ++idx) {
+            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
+        }
+        MatcherAssert.assertThat(invocations.get(), Matchers.equalTo(1));
     }
-
 }

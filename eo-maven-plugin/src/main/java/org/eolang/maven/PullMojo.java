@@ -56,8 +56,8 @@ public final class PullMojo extends SafeMojo {
      * The Git hash to pull objects from, in objectionary.
      *
      * @todo #1174:90min The wrong naming. It isn't a `hash` - it's a `tag`.
-     *   We have to rename that property. Also it's important to check if we don't break something
-     *   by such a renaming.
+     * We have to rename that property. Also it's important to check if we don't break something
+     * by such a renaming.
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -114,11 +114,11 @@ public final class PullMojo extends SafeMojo {
         );
         final CommitHash tag;
         if (this.offlineHashFile == null && this.offlineHash == null) {
-            tag = new ChRemote(this.hash);
+            tag = new ChCached(new ChRemote(this.hash));
         } else if (this.offlineHash == null) {
-            tag = new ChText(this.offlineHashFile, this.hash);
+            tag = new ChCached(new ChText(this.offlineHashFile, this.hash));
         } else {
-            tag = new ChPattern(this.offlineHash, this.hash);
+            tag = new ChCached(new ChPattern(this.offlineHash, this.hash));
         }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
@@ -193,7 +193,7 @@ public final class PullMojo extends SafeMojo {
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, new Home().rel(src)
+                name, new Rel(src)
             );
         } else {
             new Home(dir).save(
@@ -202,7 +202,7 @@ public final class PullMojo extends SafeMojo {
             );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
-                name, new Home().rel(src)
+                name, new Rel(src)
             );
         }
         return src;
