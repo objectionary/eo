@@ -40,14 +40,14 @@ import org.cactoos.scalar.Unchecked;
 final class DcsWithRuntime implements Dependencies {
 
     /**
-     * Dependency downloaded by HTTP from Maven Central.
-     */
-    static final Unchecked<Dependency> FROM_MAVEN = fromMaven();
-
-    /**
      * Hardcoded dependency.
      */
     static final Unchecked<Dependency> HARDCODED = DcsWithRuntime.dependency("0.28.10");
+
+    /**
+     * Dependency downloaded by HTTP from Maven Central.
+     */
+    private static final Unchecked<Dependency> FROM_MAVEN = fromMaven();
 
     /**
      * All dependencies.

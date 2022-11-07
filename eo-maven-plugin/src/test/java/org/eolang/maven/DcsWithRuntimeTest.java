@@ -52,8 +52,7 @@ class DcsWithRuntimeTest {
     @Test
     void addsRemoteVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
-            dependencies(),
-            DcsWithRuntime.FROM_MAVEN
+            dependencies()
         );
         MatcherAssert.assertThat(
             new LengthOf(dependencies).value(),
