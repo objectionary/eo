@@ -117,7 +117,7 @@ final class PullMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
             .with("objectionary", this.dummy())
-            .with("hash", "1.0.0")
+            .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
             .execute();
         MatcherAssert.assertThat(

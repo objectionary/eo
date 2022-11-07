@@ -1,6 +1,7 @@
 tests:
   - /program/errors[count(error)=0]
-  - //metas[count(.//meta[head/text()='probe'])=7]
+  - //metas[count(.//meta[head/text()='probe'])=8]
+  - //meta[head/text()='probe' and tail/text()='stdout.and']
   - //meta[head/text()='probe' and tail/text()='Q.org']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt']
@@ -17,3 +18,11 @@ eo: |
     start. > a
       engine.
         QQ.car
+  
+    and. > fib
+      stdout
+        sprintf
+          "%dth Fibonacci number is %d\n"
+          n
+          fibonacci n > f
+      TRUE
