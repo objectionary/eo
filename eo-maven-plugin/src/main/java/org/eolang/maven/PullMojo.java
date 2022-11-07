@@ -55,14 +55,11 @@ public final class PullMojo extends SafeMojo {
     /**
      * The Git hash to pull objects from, in objectionary.
      *
-     * @todo #1174:90min The wrong naming. It isn't a `hash` - it's a `tag`.
-     * We have to rename that property. Also it's important to check if we don't break something
-     * by such a renaming.
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    private String tag = "master";
 
     /**
      * Pull again even if the .eo file is already present?
@@ -112,24 +109,24 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final CommitHash tag;
+        final CommitHash hash;
         if (this.offlineHashFile == null && this.offlineHash == null) {
-            tag = new ChCached(new ChRemote(this.hash));
+            hash = new ChCached(new ChRemote(this.tag));
         } else if (this.offlineHash == null) {
-            tag = new ChCached(new ChText(this.offlineHashFile, this.hash));
+            hash = new ChCached(new ChText(this.offlineHashFile, this.tag));
         } else {
-            tag = new ChCached(new ChPattern(this.offlineHash, this.hash));
+            hash = new ChCached(new ChPattern(this.offlineHash, this.tag));
         }
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
-                    new ChNarrow(tag),
+                    new ChNarrow(hash),
                     this.outputPath
                 ),
                 new OyCaching(
-                    new ChNarrow(tag),
+                    new ChNarrow(hash),
                     this.outputPath,
-                    PullMojo.remote(tag)
+                    PullMojo.remote(hash)
                 ),
                 this.forceUpdate()
             );
@@ -142,7 +139,7 @@ public final class PullMojo extends SafeMojo {
                 );
                 tojo.set(
                     AssembleMojo.ATTR_HASH,
-                    new ChNarrow(tag).value()
+                    new ChNarrow(hash).value()
                 );
             }
             Logger.info(
