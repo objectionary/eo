@@ -68,7 +68,8 @@ final class ParsingTrainTest {
                 new ParsingTrain()
             ).pass(xml),
             XhtmlMatchers.hasXPaths(
-                "/program/sheets[count(sheet)=3]"
+                "/program/sheets[count(sheet)=3]",
+                "/program/errors/error[@severity='critical']"
             )
         );
     }
