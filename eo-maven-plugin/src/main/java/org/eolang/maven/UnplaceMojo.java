@@ -88,7 +88,7 @@ public final class UnplaceMojo extends SafeMojo {
      */
     public void placeThem() throws IOException {
         final Collection<Tojo> tojos =
-            this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_KIND)));
+            this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_PLD_KIND)));
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(tojos);
@@ -126,28 +126,28 @@ public final class UnplaceMojo extends SafeMojo {
     private int killThem(final Iterable<Tojo> tojos) throws IOException {
         int unplaced = 0;
         for (final Tojo tojo : tojos) {
-            final String related = tojo.get(PlaceMojo.ATTR_RELATED);
+            final String related = tojo.get(PlaceMojo.ATTR_PLD_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             final String hash = new FileHash(path).toString();
-            if (!tojo.get(PlaceMojo.ATTR_HASH).equals(hash)) {
+            if (!tojo.get(PlaceMojo.ATTR_PLD_HASH).equals(hash)) {
                 if (hash.isEmpty()) {
                     Logger.debug(
                         this, "The binary %s of %s is gone, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                        related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                     );
                     continue;
                 }
                 if (!UnplaceMojo.inside(related, this.removeBinaries)) {
                     Logger.warn(
                         this, "The binary %s of %s looks different, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                        related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                     );
                     continue;
                 }
                 Logger.info(
                     this,
                     "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
-                    related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             }
             if (UnplaceMojo.inside(related, this.keepBinaries)
@@ -158,12 +158,12 @@ public final class UnplaceMojo extends SafeMojo {
                 unplaced += 1;
                 Logger.debug(
                     this, "Binary %s of %s deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             }
         }
@@ -180,7 +180,7 @@ public final class UnplaceMojo extends SafeMojo {
         int deleted = 0;
         int remained = 0;
         for (final Tojo tojo : tojos) {
-            final String related = tojo.get(PlaceMojo.ATTR_RELATED);
+            final String related = tojo.get(PlaceMojo.ATTR_PLD_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             if (!this.keepBinaries.isEmpty()
                 && UnplaceMojo.inside(related, this.keepBinaries)) {
@@ -192,12 +192,12 @@ public final class UnplaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                    related, tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             }
         }
