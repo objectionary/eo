@@ -23,47 +23,107 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XMLDocument;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Add runtime dependency if it is absent.
  *
  * @since 0.28.11
- * @todo #1361:90min Hardcoded version of EoRuntimeDependency.
- *  See the EoRuntimeDependency constructor for more info.
- *  It's much better to determine the version of the runtime library
- *  dynamically. For example, we can fetch the latest version by http
- *  or from config files.
  */
 final class DcsWithRuntime implements Dependencies {
 
     /**
-     * The dependencies source.
+     * Dependency downloaded by HTTP from Maven Central.
+     */
+    private static final Unchecked<Dependency> MAVEN_DEPENDENCY = DcsWithRuntime.mavenDependency();
+
+    /**
+     * All dependencies.
      */
     private final Dependencies delegate;
 
     /**
-     * The main constructor.
+     * Supplier of the eo-runtime dependency.
+     */
+    private final Unchecked<Dependency> supplied;
+
+    /**
+     * Constructor.
      *
-     * @param delegate Dependencies source
+     * @param delegate Dependencies delegate.
      */
     DcsWithRuntime(final Dependencies delegate) {
+        this(delegate, DcsWithRuntime.MAVEN_DEPENDENCY);
+    }
+
+    /**
+     * The main constructor.
+     *
+     * @param delegate Dependencies delegate.
+     * @param supplied Supplier of the eo-runtime dependency.
+     */
+    DcsWithRuntime(final Dependencies delegate, final Unchecked<Dependency> supplied) {
         this.delegate = delegate;
+        this.supplied = supplied;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
         final ListOf<Dependency> all = new ListOf<>(this.delegate);
         if (all.stream().noneMatch(new RuntimeDependencyEquality())) {
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId("org.eolang");
-            dependency.setArtifactId("eo-runtime");
-            dependency.setVersion("0.28.10");
-            dependency.setClassifier("");
-            all.add(dependency);
+            all.add(this.supplied.value());
         }
         return all.iterator();
+    }
+
+    /**
+     * Runtime dependency source from Maven Central.
+     *
+     * @return Runtime dependency from Maven Central.
+     */
+    private static Unchecked<Dependency> mavenDependency() {
+        final String url = String.format(
+            "https://repo.maven.apache.org/maven2/%s/maven-metadata.xml",
+            "org/eolang/eo-runtime"
+        );
+        try {
+            return DcsWithRuntime.dependency(
+                new XMLDocument(new URL(url))
+                    .xpath("//latest/text()").get(0)
+            );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                String.format("Can't get eo-runtime dependency by url %s", url),
+                ex
+            );
+        }
+    }
+
+    /**
+     * Runtime dependency source.
+     *
+     * @param version Version of eo-runtime
+     * @return Maven Dependency.
+     */
+    private static Unchecked<Dependency> dependency(final String version) {
+        return new Unchecked<>(
+            new Sticky<>(
+                () -> {
+                    final Dependency dependency = new Dependency();
+                    dependency.setGroupId("org.eolang");
+                    dependency.setArtifactId("eo-runtime");
+                    dependency.setVersion(version);
+                    dependency.setClassifier("");
+                    return dependency;
+                }
+            )
+        );
     }
 }
