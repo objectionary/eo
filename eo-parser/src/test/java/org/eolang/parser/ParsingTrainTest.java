@@ -47,7 +47,7 @@ final class ParsingTrainTest {
     }
 
     @Test
-    void shouldStopPipeline() {
+    void stopsPipeline() {
         final XML xml = new XMLDocument(
             String.join(
                 "\n",
