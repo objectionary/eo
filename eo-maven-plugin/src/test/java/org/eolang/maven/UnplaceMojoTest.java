@@ -59,28 +59,28 @@ final class UnplaceMojoTest {
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
             .add(foo.toString())
-            .set(PlaceMojo.ATTR_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_RELATED, "---")
-            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_HASH, new FileHash(foo));
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo));
         Catalogs.INSTANCE.make(list)
             .add(foo2.toString())
-            .set(PlaceMojo.ATTR_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_RELATED, "---")
-            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_HASH, new FileHash(foo2));
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo2));
         Catalogs.INSTANCE.make(list)
             .add(foo3.toString())
-            .set(PlaceMojo.ATTR_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_RELATED, "---")
-            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_HASH, new FileHash(foo3));
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo3));
         Catalogs.INSTANCE.make(list)
             .add(foo4.toString())
-            .set(PlaceMojo.ATTR_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_RELATED, "---")
-            .set(PlaceMojo.ATTR_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_HASH, new FileHash(foo4));
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo4));
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")
@@ -115,10 +115,10 @@ final class UnplaceMojoTest {
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
             .add(foo.toString())
-            .set(PlaceMojo.ATTR_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_RELATED, "a/b/c/foo5.class")
-            .set(PlaceMojo.ATTR_ORIGIN, "some-keep.jar")
-            .set(PlaceMojo.ATTR_HASH, new FileHash(foo));
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo5.class")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo));
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")
@@ -143,10 +143,10 @@ final class UnplaceMojoTest {
         final Path list = temp.resolve("placed.csv");
         Catalogs.INSTANCE.make(list)
             .add(foo.toString())
-            .set(PlaceMojo.ATTR_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_RELATED, "a/b/c/foo6.class")
-            .set(PlaceMojo.ATTR_ORIGIN, "some-keep-remove.jar")
-            .set(PlaceMojo.ATTR_HASH, new FileHash(foo));
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo));
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")

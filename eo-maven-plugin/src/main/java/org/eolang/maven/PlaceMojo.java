@@ -57,22 +57,22 @@ public final class PlaceMojo extends SafeMojo {
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_RELATED = "related";
+    public static final String ATTR_PLD_RELATED = "related";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_KIND = "kind";
+    public static final String ATTR_PLD_KIND = "kind";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_HASH = "hash";
+    public static final String ATTR_PLD_HASH = "hash";
 
     /**
      * Where the binary is coming from (JAR name).
      */
-    public static final String ATTR_ORIGIN = "dependency";
+    public static final String ATTR_PLD_ORIGIN = "dependency";
 
     /**
      * Output.
@@ -110,13 +110,13 @@ public final class PlaceMojo extends SafeMojo {
             for (final String dep : deps) {
                 final Collection<Tojo> before = this.placedTojos.value().select(
                     row -> row.get(Tojos.KEY).equals(dep)
-                        && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
+                        && "jar".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
                 );
                 if (!before.isEmpty()) {
                     Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
+                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_PLD_KIND, "jar");
             }
             if (copied == 0) {
                 Logger.debug(
@@ -165,7 +165,7 @@ public final class PlaceMojo extends SafeMojo {
             final Path target = this.outputDir.toPath().resolve(path);
             final Collection<Tojo> before = this.placedTojos.value().select(
                 row -> row.get(Tojos.KEY).equals(target.toString())
-                    && "class".equals(row.get(PlaceMojo.ATTR_KIND))
+                    && "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
             );
             if (!before.isEmpty() && !Files.exists(target)) {
                 Logger.info(
@@ -181,7 +181,7 @@ public final class PlaceMojo extends SafeMojo {
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
                 continue;
             }
@@ -192,20 +192,20 @@ public final class PlaceMojo extends SafeMojo {
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             this.placedTojos.value().add(target.toString())
-                .set(PlaceMojo.ATTR_KIND, "class")
-                .set(PlaceMojo.ATTR_HASH, new FileHash(target))
+                .set(PlaceMojo.ATTR_PLD_KIND, "class")
+                .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(target))
                 .set(
-                    PlaceMojo.ATTR_RELATED,
+                    PlaceMojo.ATTR_PLD_RELATED,
                     target.toString().substring(
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set(PlaceMojo.ATTR_ORIGIN, dep);
+                .set(PlaceMojo.ATTR_PLD_ORIGIN, dep);
             ++copied;
         }
         if (copied > 0) {
