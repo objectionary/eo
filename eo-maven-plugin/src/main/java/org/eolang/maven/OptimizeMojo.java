@@ -77,6 +77,11 @@ public final class OptimizeMojo extends SafeMojo {
     public static final String DIR = "03-optimize";
 
     /**
+     * Subdirectory for optimized cache.
+     */
+    public static final String OPTIMIZED = "optimized";
+
+    /**
      * Parsing train with XSLs.
      *
      * @implNote The list of applied XSLs is adjusted during execution.
