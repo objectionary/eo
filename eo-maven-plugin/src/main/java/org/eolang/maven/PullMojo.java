@@ -34,6 +34,12 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChPattern;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.CommitHash;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.

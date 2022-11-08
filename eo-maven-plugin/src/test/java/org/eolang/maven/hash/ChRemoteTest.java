@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
+import org.eolang.maven.WeAreOnline;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link OyRemote}.
+ * Test case for {@link org.eolang.maven.hash.ChRemote}.
  * @since 0.26
  */
 @ExtendWith(WeAreOnline.class)

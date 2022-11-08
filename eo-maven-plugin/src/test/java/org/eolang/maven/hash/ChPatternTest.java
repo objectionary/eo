@@ -21,43 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link org.eolang.maven.ChNarrow}.
+ * Test case for {@link org.eolang.maven.hash.ChPattern}.
  *
  * @since 0.28.11
  */
-class ChNarrowTest {
+class ChPatternTest {
 
+    /**
+     * Get hash by tag using pattern test.
+     *
+     * @param pattern Pattern
+     * @param tag Tag
+     * @param expected Expected Hash
+     */
     @ParameterizedTest
     @CsvSource({
-        "1234567, 1234567",
-        "12345678, 1234567",
-        "123456789, 1234567",
-        "1, 1"
+        "'0.*.*:abc2sd3', '0.0.0', abc2sd3",
+        "'*.*.*:abc2sd3', '2.2.2', abc2sd3",
+        "'0.*.*:abc2sd3', '1.0.0', ''",
+        "'0.*.*:m23ss3h', '0.1.2', 'm23ss3h'",
+        "'0.*.*:m23ss3h,1.*.*:abc2sd3', '0.1.2', 'm23ss3h'",
+        "'0.*.*:m23ss3h, 1.*.*:abc2sd3', '0.1.2', 'm23ss3h'",
+        "'0.*.*:m23ss3h,1.*.*:abc2sd3', '1.1.2', 'abc2sd3'",
+        "'0.*.*:m23ss3h,3.*.*:abc2sd3', '2.1.2', ''",
+        "'3.*.*:m23ss3h,3.1.*:abc2sd3', '3.1.2', 'abc2sd3'",
+        "'3.1.2:m23ss3h,3.1.*:abc2sd3', '3.1.2', 'm23ss3h'",
+        "'master:m23ss3h,3.1.*:abc2sd3', 'master', 'm23ss3h'",
+        "'master:m23ss3h,composite-tag:abc2sd3', 'composite-tag', 'abc2sd3'"
     })
-    void cutsHashCorrectly(final String input, final String output) {
-        MatcherAssert.assertThat(
-            new ChNarrow(
-                new CommitHash.ChConstant(input)
-            ).value(),
-            Matchers.equalTo(output)
-        );
-    }
-
-    @Test
-    void throwsExceptionIfEmpty() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
-        );
+    void returnsCorrectHashByPattern(
+        final String pattern,
+        final String tag,
+        final String expected
+    ) {
+        MatcherAssert.assertThat(new ChPattern(pattern, tag).value(), Matchers.equalTo(expected));
     }
 }

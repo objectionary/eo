@@ -21,34 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Cached commit hash.
+ * Test case for {@link org.eolang.maven.hash.ChCached}.
  *
  * @since 0.28.11
  */
-final class ChCached implements CommitHash {
+class ChCachedTest {
 
-    /**
-     * Cache.
-     */
-    private final Unchecked<String> delegate;
-
-    /**
-     * Default constructor.
-     *
-     * @param delegate Delegate
-     */
-    ChCached(final CommitHash delegate) {
-        this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
-    }
-
-    @Override
-    public String value() {
-        return this.delegate.value();
+    @Test
+    void cachesHashAndInvokesDelegateOnlyOnce() {
+        final AtomicInteger invocations = new AtomicInteger(0);
+        final ChCached cached = new ChCached(
+            () -> {
+                invocations.incrementAndGet();
+                return "dummy";
+            }
+        );
+        for (int idx = 0; idx < 10; ++idx) {
+            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
+        }
+        MatcherAssert.assertThat(invocations.get(), Matchers.equalTo(1));
     }
 }

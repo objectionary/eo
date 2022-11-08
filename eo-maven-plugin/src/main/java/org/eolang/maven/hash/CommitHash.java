@@ -21,48 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 /**
- * Short version of hash.
+ * Hash of tag.
  *
  * @since 0.28.11
  */
-final class ChNarrow implements CommitHash {
+public interface CommitHash {
 
     /**
-     * Delegate.
-     */
-    private final CommitHash full;
-
-    /**
-     * The main constructor.
+     * SHA Hash.
      *
-     * @param full Delegate
+     * @return SHA of commit
      */
-    ChNarrow(final CommitHash full) {
-        this.full = full;
-    }
-
-    @Override
-    public String value() {
-        final String hash = this.validHash();
-        return hash.substring(0, Math.min(7, hash.length()));
-    }
+    String value();
 
     /**
-     * Valid hash.
+     * Hardcoded commit hash.
      *
-     * @return Full valid hash.
+     * @since 0.28.11
      */
-    private String validHash() {
-        final String hash = this.full.value();
-        if (hash.isEmpty()) {
-            throw new IllegalArgumentException(
-                String.format("Hash can't be empty. The delegate %s", this.full)
-            );
+    final class ChConstant implements CommitHash {
+
+        /**
+         * Hardcoded value.
+         */
+        private final String hash;
+
+        /**
+         * The main constructor.
+         *
+         * @param hash Hardcoded value.
+         */
+        ChConstant(final String hash) {
+            this.hash = hash;
         }
-        return hash;
-    }
 
+        @Override
+        public String value() {
+            return this.hash;
+        }
+    }
 }
