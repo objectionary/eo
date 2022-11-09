@@ -158,7 +158,7 @@ public final class UnplaceMojo extends SafeMojo {
             }
             if (UnplaceMojo.delete(path)) {
                 unplaced += 1;
-                tojo.set(PlaceMojo.ATTR_UNPLACED, "true");
+                tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true");
                 Logger.debug(
                     this, "Binary %s of %s deleted",
                     new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)

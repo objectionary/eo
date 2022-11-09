@@ -70,14 +70,14 @@ public final class PlaceMojo extends SafeMojo {
     public static final String ATTR_PLD_HASH = "hash";
 
     /**
-     * Attr in CSV.
-     */
-    public static final String ATTR_UNPLACED = "unplaced";
-
-    /**
      * Where the binary is coming from (JAR name).
      */
     public static final String ATTR_PLD_ORIGIN = "dependency";
+
+    /**
+     * Attr in CSV.
+     */
+    public static final String ATTR_PLD_UNPLACED = "unplaced";
 
     /**
      * Output.
@@ -211,7 +211,7 @@ public final class PlaceMojo extends SafeMojo {
                     )
                 )
                 .set(PlaceMojo.ATTR_PLD_ORIGIN, dep)
-                .set(PlaceMojo.ATTR_UNPLACED, "false");
+                .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
             ++copied;
         }
         if (copied > 0) {

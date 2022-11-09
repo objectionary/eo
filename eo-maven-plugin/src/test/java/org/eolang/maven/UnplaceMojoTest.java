@@ -175,7 +175,7 @@ final class UnplaceMojoTest {
             .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
             .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
             .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo))
-            .set(PlaceMojo.ATTR_UNPLACED, "false");
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")
@@ -203,7 +203,7 @@ final class UnplaceMojoTest {
             .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
             .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
             .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo))
-            .set(PlaceMojo.ATTR_UNPLACED, "false");
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
         new Moja<>(UnplaceMojo.class)
             .with("placed", list.toFile())
             .with("placedFormat", "csv")
