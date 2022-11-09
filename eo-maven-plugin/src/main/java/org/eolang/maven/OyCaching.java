@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.TeeInput;
+import org.eolang.maven.hash.CommitHash;
 
 /**
  * Objectionary which caches objects locally.

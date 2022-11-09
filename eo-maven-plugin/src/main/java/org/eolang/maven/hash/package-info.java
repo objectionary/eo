@@ -21,43 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 /**
- * Test case for {@link org.eolang.maven.ChNarrow}.
- *
- * @since 0.28.11
+ * Commit hash package.
+ * The {@link org.eolang.maven.hash} package contains classes which can help you to
+ * receive a commit hash from different sources:
+ * - by HTTP {@link org.eolang.maven.hash.ChRemote}
+ * - from text or a text file {@link org.eolang.maven.hash.ChText}
+ * - or by a custom pattern {@link org.eolang.maven.hash.ChPattern}
+ * Also some implementations can change the hash value itself {@link org.eolang.maven.hash.ChNarrow}
+ * or even cache invocations to improve the performance of getting a commit hash value
+ * {@link org.eolang.maven.hash.ChCached}.
  */
-class ChNarrowTest {
-
-    @ParameterizedTest
-    @CsvSource({
-        "1234567, 1234567",
-        "12345678, 1234567",
-        "123456789, 1234567",
-        "1, 1"
-    })
-    void cutsHashCorrectly(final String input, final String output) {
-        MatcherAssert.assertThat(
-            new ChNarrow(
-                new CommitHash.ChConstant(input)
-            ).value(),
-            Matchers.equalTo(output)
-        );
-    }
-
-    @Test
-    void throwsExceptionIfEmpty() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
-        );
-    }
-}
+package org.eolang.maven.hash;

@@ -35,9 +35,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -126,6 +129,105 @@ final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             tgt.toFile().lastModified(),
             Matchers.greaterThan(start)
+        );
+    }
+
+    /**
+     * Test case for #1223.
+     *
+     * @param temp Temporary test directory.
+     * @throws Exception if unexpected error happened.
+     * @todo #1223:90min Implement caching for optimization step. After implementation don't forget
+     *  to remove '@Disabled' annotation from the next tests:
+     *  - 'getsAlreadyOptimizedResultsFromCache'
+     *  - 'savesOptimizedResultsToCache'
+     */
+    @Test
+    @Disabled
+    void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Home(temp).save(
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src
+        );
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        final Path cache = temp.resolve("cache");
+        final TextOf cached = new TextOf(
+            new ResourceOf("org/eolang/maven/optimize/main.xml")
+        );
+        final String hash = "abcdef1";
+        new Home(cache).save(
+            cached,
+            Paths.get(OptimizeMojo.OPTIMIZED)
+                .resolve(hash)
+                .resolve("foo/main.xmir")
+        );
+        Catalogs.INSTANCE.make(foreign, "json")
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_HASH, hash)
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
+            .with("cache", temp.resolve("cache/parsed"))
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("trackOptimizationSteps", true)
+            .with("foreignFormat", "json")
+            .with("cache", cache)
+            .execute();
+        MatcherAssert.assertThat(
+            new XMLDocument(
+                new Home(target).load(
+                    Paths.get(
+                        String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                    )
+                ).asBytes()
+            ),
+            Matchers.is(new XMLDocument(cached.asString()))
+        );
+    }
+
+    @Test
+    @Disabled
+    void savesOptimizedResultsToCache(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Home(temp).save(
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
+            src
+        );
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.json");
+        final Path cache = temp.resolve("cache");
+        final String hash = "abcdef1";
+        Catalogs.INSTANCE.make(foreign, "json")
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_HASH, hash)
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
+            .with("cache", temp.resolve("cache/parsed"))
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("trackOptimizationSteps", true)
+            .with("foreignFormat", "json")
+            .with("cache", cache)
+            .execute();
+        MatcherAssert.assertThat(
+            cache.resolve(OptimizeMojo.OPTIMIZED)
+                .resolve(hash)
+                .resolve("foo/main.xmir").toFile(),
+            FileMatchers.anExistingFile()
         );
     }
 
@@ -274,12 +376,12 @@ final class OptimizeMojoTest {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("failOnError", false)
-            .with("failOnWarning", true)
-            .execute()
+                .with("targetDir", target.toFile())
+                .with("foreign", foreign.toFile())
+                .with("foreignFormat", "csv")
+                .with("failOnError", false)
+                .with("failOnWarning", true)
+                .execute()
         );
     }
 

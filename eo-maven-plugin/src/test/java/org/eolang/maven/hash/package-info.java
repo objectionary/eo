@@ -21,32 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link org.eolang.maven.ChCached}.
- *
- * @since 0.28.11
+ * Commit hash tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.hash.CommitHash}.
  */
-class ChCachedTest {
-
-    @Test
-    void cachesHashAndInvokesDelegateOnlyOnce() {
-        final AtomicInteger invocations = new AtomicInteger(0);
-        final ChCached cached = new ChCached(
-            () -> {
-                invocations.incrementAndGet();
-                return "dummy";
-            }
-        );
-        for (int idx = 0; idx < 10; ++idx) {
-            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
-        }
-        MatcherAssert.assertThat(invocations.get(), Matchers.equalTo(1));
-    }
-}
+package org.eolang.maven.hash;

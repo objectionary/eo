@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.26
  */
-final class ChRemote implements CommitHash {
+public final class ChRemote implements CommitHash {
 
     /**
      * Cached text of hashes.
@@ -57,7 +57,7 @@ final class ChRemote implements CommitHash {
      *
      * @param tag Tag
      */
-    ChRemote(final String tag) {
+    public ChRemote(final String tag) {
         this.tag = tag;
     }
 

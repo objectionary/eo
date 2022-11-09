@@ -21,45 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.hash;
 
-package org.eolang.maven;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
- * Test case for {@link ChRemote}.
- * @since 0.26
+ * Cached commit hash.
+ *
+ * @since 0.28.11
  */
-@ExtendWith(WeAreOnline.class)
-final class ChRemoteTest {
+public final class ChCached implements CommitHash {
 
-    @Test
-    void testCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
-        );
+    /**
+     * Cache.
+     */
+    private final Unchecked<String> delegate;
+
+    /**
+     * Default constructor.
+     *
+     * @param delegate Delegate
+     */
+    public ChCached(final CommitHash delegate) {
+        this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
     }
 
-    @Test
-    void testCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
-    }
-
-    @Test
-    void testCommitHashException() {
-        Assertions.assertThrows(
-            ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
-        );
+    @Override
+    public String value() {
+        return this.delegate.value();
     }
 }

@@ -30,6 +30,8 @@ import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChRemote;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

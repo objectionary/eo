@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.maven.hash.CommitHash;
 
 /**
  * The simple HTTP Objectionary server.

@@ -21,49 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
+package org.eolang.maven.hash;
 
 /**
- * MD5 hash of a file (its content).
+ * Hash of tag.
  *
- * @since 0.24
+ * @since 0.28.11
  */
-final class FileHash {
+public interface CommitHash {
 
     /**
-     * The file.
+     * SHA Hash.
+     *
+     * @return SHA of commit
      */
-    private final Path file;
+    String value();
 
     /**
-     * Ctor.
-     * @param path The name of the file
+     * Hardcoded commit hash.
+     *
+     * @since 0.28.11
      */
-    FileHash(final Path path) {
-        this.file = path;
-    }
+    final class ChConstant implements CommitHash {
 
-    @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
-        } else {
-            hash = "";
+        /**
+         * Hardcoded value.
+         */
+        private final String hash;
+
+        /**
+         * The main constructor.
+         *
+         * @param hash Hardcoded value.
+         */
+        ChConstant(final String hash) {
+            this.hash = hash;
         }
-        return hash;
-    }
 
+        @Override
+        public String value() {
+            return this.hash;
+        }
+    }
 }

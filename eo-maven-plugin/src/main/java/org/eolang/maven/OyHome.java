@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.maven.hash.CommitHash;
 
 /**
  * Objectionary stored locally.
