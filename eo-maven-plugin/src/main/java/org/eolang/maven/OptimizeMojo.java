@@ -187,17 +187,7 @@ public final class OptimizeMojo extends SafeMojo {
                         Executors.callable(
                             () -> {
                                 try {
-                                    final Optimization optimization;
-                                    if (tojo.exists(AssembleMojo.ATTR_HASH)) {
-                                        optimization = new OptCached(
-                                            new OptLambda(this::optimize),
-                                            cache,
-                                            tojo.get(AssembleMojo.ATTR_HASH)
-                                        );
-                                    } else {
-                                        optimization = new OptLambda(this::optimize);
-                                    }
-                                    final XML optimized = optimization.optimize(src);
+                                    final XML optimized = this.optimization(tojo).optimize(src);
                                     done.incrementAndGet();
                                     if (this.shouldPass(optimized)) {
                                         tojo.set(
@@ -255,6 +245,26 @@ public final class OptimizeMojo extends SafeMojo {
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
+    }
+
+    /**
+     * Optimization for specific tojo.
+     *
+     * @param tojo Tojp
+     * @return Optimization for specific Tojo
+     */
+    private Optimization optimization(final SynchronizedTojo tojo) {
+        final Optimization optimization;
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+            optimization = new OptCached(
+                new OptLambda(this::optimize),
+                this.cache.resolve(OptimizeMojo.OPTIMIZED)
+                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
+            );
+        } else {
+            optimization = new OptLambda(this::optimize);
+        }
+        return optimization;
     }
 
     /**

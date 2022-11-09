@@ -21,25 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.optimization;
-
-import com.jcabi.xml.XML;
-import java.nio.file.Path;
-
 /**
- * Abstraction for XML optimizations.
- *
- * @since 0.28.11
+ * Optimizations package.
+ * The main purpose of classes under the package is to provide different implementations
+ * of xml optimizations:
+ *  - {@link org.eolang.maven.optimization.OptLambda} - makes an optimization using foreign function
+ *  - {@link org.eolang.maven.optimization.OptCached} - looks for optimization in cache first
+ *  All implementations could throw an {@link org.eolang.maven.optimization.OptimizationException}
+ *  if something went wrong.
  */
-public interface Optimization {
-
-    /**
-     * Optimize XML file.
-     *
-     * @param xml Path to raw XML file.
-     * @return Optimized XML
-     * @throws OptimizationException if optimization can't be performed by any reason.
-     */
-    XML optimize(Path xml) throws OptimizationException;
-
-}
+package org.eolang.maven.optimization;
