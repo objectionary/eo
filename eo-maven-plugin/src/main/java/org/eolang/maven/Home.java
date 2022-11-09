@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -160,7 +159,7 @@ final class Home {
      * @return True if exists
      */
     public boolean exists(final Path path) {
-        return Files.exists(this.absolute(Home.clean(path)));
+        return Files.exists(this.absolute(path));
     }
 
     /**
@@ -172,22 +171,7 @@ final class Home {
      *  if some exception happens during reading the file
      */
     public Bytes load(final Path path) throws IOException {
-        return new BytesOf(Files.readAllBytes(this.absolute(Home.clean(path))));
-    }
-
-    /**
-     * Clean path.
-     *
-     * @param path Path
-     * @return Clean path
-     * @todo #1352:30min Move utility `clean` method out of `Home` class. Create
-     *  maybe separate class for this. Consider removing this method at all as
-     *  it seems does nothing useful. Update all usages of this method.
-     */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-    public static Path clean(final Path path) {
-        final byte[] bytes = path.toString().getBytes(StandardCharsets.UTF_8);
-        return Paths.get(new String(bytes, StandardCharsets.UTF_8));
+        return new BytesOf(Files.readAllBytes(this.absolute(path)));
     }
 
     /**

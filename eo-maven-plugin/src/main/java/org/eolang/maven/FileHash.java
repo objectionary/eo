@@ -54,7 +54,7 @@ final class FileHash {
     @Override
     public String toString() {
         final String hash;
-        if (Files.exists(Home.clean(this.file))) {
+        if (Files.exists(this.file)) {
             hash = Arrays.toString(
                 new UncheckedBytes(
                     new Md5DigestOf(new InputOf(new BytesOf(this.file)))
