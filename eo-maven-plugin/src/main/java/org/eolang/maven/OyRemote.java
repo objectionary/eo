@@ -61,7 +61,7 @@ final class OyRemote implements Objectionary {
 
     @Override
     public Input get(final String name) throws MalformedURLException {
-        final URL url = this.template.get(name);
+        final URL url = this.template.value(name);
         Logger.debug(
             this, "The object '%s' will be pulled from %s...",
             name, url
@@ -74,12 +74,13 @@ final class OyRemote implements Objectionary {
      *
      * @since 1.0
      */
-    public static class UrlOy {
+    static final class UrlOy {
 
         /**
          * URL template. Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
          * 2nd for program name.
+         * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
          */
         private final String template;
 
@@ -100,11 +101,11 @@ final class OyRemote implements Objectionary {
 
         /**
          * URL for the program.
-         * @param name Fully qualified EO program name
+         * @param name Fully qualified EO program name as specified by {@link Place}
          * @return URL
          * @throws MalformedURLException in case of incorrect URL
          */
-        public URL get(final String name) throws MalformedURLException {
+        public URL value(final String name) throws MalformedURLException {
             return new URL(
                 String.format(
                     this.template,

@@ -39,12 +39,11 @@ final class OyRemoteTest {
 
     @Test
     void buildsCorrectUrl() throws Exception {
-        final URL url = new OyRemote.UrlOy(
-            "https://raw/objectionary/home/%s/objects/%s.eo",
-            "abcde"
-        ).get("org.eolang.app");
         MatcherAssert.assertThat(
-            url,
+            new OyRemote.UrlOy(
+                "https://raw/objectionary/home/%s/objects/%s.eo",
+                "abcde"
+            ).value("org.eolang.app"),
             Matchers.is(
                 new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
             )
@@ -58,7 +57,7 @@ final class OyRemoteTest {
             () -> new OyRemote.UrlOy(
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
-            ).get("org.eolang.app")
+            ).value("org.eolang.app")
         );
     }
 }
