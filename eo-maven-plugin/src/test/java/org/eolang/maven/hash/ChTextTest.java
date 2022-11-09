@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +37,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link ChText}.
+ * Test case for {@link org.eolang.maven.hash.ChText}.
  *
  * @since 0.28.11
  */

@@ -21,49 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 /**
- * Hash of tag.
+ * Short version of hash.
  *
  * @since 0.28.11
- * @todo #1174:90m It's much better to move CommitHash class and all
- *   his implementations (including all connected classes) to a separate package.
- *   The example of the package name: `org.eolang.maven.hash`
  */
-interface CommitHash {
+public final class ChNarrow implements CommitHash {
 
     /**
-     * SHA Hash.
-     *
-     * @return SHA of commit
+     * Delegate.
      */
-    String value();
+    private final CommitHash full;
 
     /**
-     * Hardcoded commit hash.
+     * The main constructor.
      *
-     * @since 0.28.11
+     * @param full Delegate
      */
-    final class ChConstant implements CommitHash {
-
-        /**
-         * Hardcoded value.
-         */
-        private final String hash;
-
-        /**
-         * The main constructor.
-         *
-         * @param hash Hardcoded value.
-         */
-        ChConstant(final String hash) {
-            this.hash = hash;
-        }
-
-        @Override
-        public String value() {
-            return this.hash;
-        }
+    public ChNarrow(final CommitHash full) {
+        this.full = full;
     }
+
+    @Override
+    public String value() {
+        final String hash = this.validHash();
+        return hash.substring(0, Math.min(7, hash.length()));
+    }
+
+    /**
+     * Valid hash.
+     *
+     * @return Full valid hash.
+     */
+    private String validHash() {
+        final String hash = this.full.value();
+        if (hash.isEmpty()) {
+            throw new IllegalArgumentException(
+                String.format("Hash can't be empty. The delegate %s", this.full)
+            );
+        }
+        return hash;
+    }
+
 }

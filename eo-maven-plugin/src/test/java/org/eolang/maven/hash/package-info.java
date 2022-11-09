@@ -21,34 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
-
 /**
- * Cached commit hash.
- *
- * @since 0.28.11
+ * Commit hash tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.hash.CommitHash}.
  */
-final class ChCached implements CommitHash {
-
-    /**
-     * Cache.
-     */
-    private final Unchecked<String> delegate;
-
-    /**
-     * Default constructor.
-     *
-     * @param delegate Delegate
-     */
-    ChCached(final CommitHash delegate) {
-        this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
-    }
-
-    @Override
-    public String value() {
-        return this.delegate.value();
-    }
-}
+package org.eolang.maven.hash;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 import java.nio.file.Path;
 import org.cactoos.Scalar;
@@ -40,7 +40,7 @@ import org.cactoos.text.TextOf;
  *
  * @since 0.28.11
  */
-final class ChText implements CommitHash {
+public final class ChText implements CommitHash {
 
     /**
      * Commit Hash text source.
@@ -58,7 +58,7 @@ final class ChText implements CommitHash {
      * @param file Path to offline file with hashes and tags.
      * @param tag Lookup tag.
      */
-    ChText(final Path file, final String tag) {
+    public ChText(final Path file, final String tag) {
         this(() -> new TextOf(new InputOf(file)).asString(), tag);
     }
 

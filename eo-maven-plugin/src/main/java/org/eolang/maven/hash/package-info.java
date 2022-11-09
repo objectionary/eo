@@ -21,45 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-package org.eolang.maven;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 /**
- * Test case for {@link OyRemote}.
- * @since 0.26
+ * Commit hash package.
+ * The {@link org.eolang.maven.hash} package contains classes which can help you to
+ * receive a commit hash from different sources:
+ * - by HTTP {@link org.eolang.maven.hash.ChRemote}
+ * - from text or a text file {@link org.eolang.maven.hash.ChText}
+ * - or by a custom pattern {@link org.eolang.maven.hash.ChPattern}
+ * Also some implementations can change the hash value itself {@link org.eolang.maven.hash.ChNarrow}
+ * or even cache invocations to improve the performance of getting a commit hash value
+ * {@link org.eolang.maven.hash.ChCached}.
  */
-@ExtendWith(WeAreOnline.class)
-final class ChRemoteTest {
-
-    @Test
-    void testCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
-        );
-    }
-
-    @Test
-    void testCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
-    }
-
-    @Test
-    void testCommitHashException() {
-        Assertions.assertThrows(
-            ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
-        );
-    }
-}
+package org.eolang.maven.hash;

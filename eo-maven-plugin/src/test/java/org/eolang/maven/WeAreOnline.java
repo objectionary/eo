@@ -36,7 +36,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  *
  * @since 0.26
  */
-final class WeAreOnline implements ExecutionCondition {
+public final class WeAreOnline implements ExecutionCondition {
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(

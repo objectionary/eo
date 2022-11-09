@@ -21,55 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
-import org.eolang.maven.hash.CommitHash;
+package org.eolang.maven.hash;
 
 /**
- * The simple HTTP Objectionary server.
+ * Hash of tag.
  *
- * @since 0.1
+ * @since 0.28.11
  */
-final class OyRemote implements Objectionary {
+public interface CommitHash {
 
     /**
-     * The address template.
+     * SHA Hash.
+     *
+     * @return SHA of commit
      */
-    private final String template;
+    String value();
 
     /**
-     * Constructor.
-     * @param hash Commit hash
-     * @throws IOException if fails.
+     * Hardcoded commit hash.
+     *
+     * @since 0.28.11
      */
-    OyRemote(final CommitHash hash) throws IOException {
-        this.template = String.format(
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
-            hash.value()
-        );
-    }
+    final class ChConstant implements CommitHash {
 
-    @Override
-    public String toString() {
-        return this.template;
-    }
+        /**
+         * Hardcoded value.
+         */
+        private final String hash;
 
-    @Override
-    public Input get(final String name) throws MalformedURLException {
-        final URL url = new URL(
-            String.format(this.template, name.replace(".", "/"))
-        );
-        Logger.debug(
-            this, "The object '%s' will be pulled from %s...",
-            name, url
-        );
-        return new InputOf(url);
-    }
+        /**
+         * The main constructor.
+         *
+         * @param hash Hardcoded value.
+         */
+        ChConstant(final String hash) {
+            this.hash = hash;
+        }
 
+        @Override
+        public String value() {
+            return this.hash;
+        }
+    }
 }

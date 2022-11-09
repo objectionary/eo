@@ -21,43 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link org.eolang.maven.ChNarrow}.
+ * Test case for {@link org.eolang.maven.hash.ChCached}.
  *
  * @since 0.28.11
  */
-class ChNarrowTest {
-
-    @ParameterizedTest
-    @CsvSource({
-        "1234567, 1234567",
-        "12345678, 1234567",
-        "123456789, 1234567",
-        "1, 1"
-    })
-    void cutsHashCorrectly(final String input, final String output) {
-        MatcherAssert.assertThat(
-            new ChNarrow(
-                new CommitHash.ChConstant(input)
-            ).value(),
-            Matchers.equalTo(output)
-        );
-    }
+class ChCachedTest {
 
     @Test
-    void throwsExceptionIfEmpty() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+    void cachesHashAndInvokesDelegateOnlyOnce() {
+        final AtomicInteger invocations = new AtomicInteger(0);
+        final ChCached cached = new ChCached(
+            () -> {
+                invocations.incrementAndGet();
+                return "dummy";
+            }
         );
+        for (int idx = 0; idx < 10; ++idx) {
+            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
+        }
+        MatcherAssert.assertThat(invocations.get(), Matchers.equalTo(1));
     }
 }

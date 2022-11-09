@@ -47,7 +47,7 @@ import org.cactoos.scalar.LengthOf;
  *  Throw an exception in case absolut path is given for these methods.
  */
 @SuppressWarnings("PMD.TooManyMethods")
-final class Home {
+public final class Home {
     /**
      * Current working directory.
      */
@@ -56,7 +56,7 @@ final class Home {
     /**
      * Ctor.
      */
-    Home() {
+    public Home() {
         this(Paths.get(""));
     }
 
@@ -65,7 +65,7 @@ final class Home {
      *
      * @param path Path
      */
-    Home(final Path path) {
+    public Home(final Path path) {
         this.cwd = path;
     }
 
