@@ -276,8 +276,8 @@ public final class OptimizeMojo extends SafeMojo {
      * @throws IllegalArgumentException If error is detected within XMIR and
      *  fail on error is enabled.
      * @todo #1431:90min move that method implementation to a separate class under
-     * {@link org.eolang.maven.optimization} package. Probably, after implementation we will able
-     * to remove {@link org.eolang.maven.optimization.OptLambda}.
+     *  {@link org.eolang.maven.optimization} package. Probably, after implementation we will able
+     *  to remove {@link org.eolang.maven.optimization.OptLambda}.
      */
     private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
