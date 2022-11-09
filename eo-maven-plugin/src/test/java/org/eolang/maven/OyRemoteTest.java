@@ -21,45 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang.maven;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link ChRemote}.
- * @since 0.26
+ * Test for {@link OyRemote}.
+ *
+ * @since 1.0
  */
-@ExtendWith(WeAreOnline.class)
-final class ChRemoteTest {
+final class OyRemoteTest {
 
     @Test
-    void testCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
+    void buildsCorrectUrl() throws Exception {
+        final URL url = new OyRemote.UrlOy(
+            "https://raw/objectionary/home/%s/objects/%s.eo",
+            "abcde"
+        ).get("org.eolang.app");
         MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
+            url,
+            Matchers.is(
+                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
+            )
         );
     }
 
     @Test
-    void testCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
-    }
-
-    @Test
-    void testCommitHashException() {
+    void throwsExceptionOnInvalidUrl() {
         Assertions.assertThrows(
-            ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
+            MalformedURLException.class,
+            () -> new OyRemote.UrlOy(
+                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
+                "abcde"
+            ).get("org.eolang.app")
         );
     }
 }
