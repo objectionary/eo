@@ -137,9 +137,10 @@ final class OptimizeMojoTest {
      *
      * @param temp Temporary test directory.
      * @throws Exception if unexpected error happened.
-     * @todo #1223:90min remove '@Disabled' annotation when caching of already optimized xmir files
-     *  will be implemented. Also don't forget to remove '@Disabled' annotation from the
-     *  'savesOptimizedResultsToCache' test that is placed below.
+     * @todo #1223:90min Implement caching for optimization step. After implementation don't forget
+     *  to remove '@Disabled' annotation from the next tests:
+     *  - 'getsAlreadyOptimizedResultsFromCache'
+     *  - 'savesOptimizedResultsToCache'
      */
     @Test
     @Disabled
