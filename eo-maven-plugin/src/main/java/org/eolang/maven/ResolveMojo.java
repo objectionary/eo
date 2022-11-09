@@ -28,24 +28,23 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.list.ListOf;
 
 /**
  * Find all required runtime dependencies, download
  * them from Maven Central, unpack and place to target/eo.
- *
  * The motivation for this mojo is simple: Maven doesn't have
  * a mechanism of adding .JAR files to transpile/test classpath in
  * runtime.
@@ -66,6 +65,7 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Skip artifact with the version 0.0.0.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
      */
@@ -74,6 +74,7 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.12.0
      */
@@ -82,12 +83,22 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Fail resolution process on conflicting dependencies.
-     * @since 1.0
+     *
      * @checkstyle MemberNameCheck (7 lines)
+     * @since 1.0
      */
     @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
     @SuppressWarnings("PMD.LongVariable")
     private boolean ignoreVersionConflicts;
+
+    /**
+     * Fail resolution process on transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean ignoreTransitive;
 
     /**
      * The central.
@@ -112,10 +123,10 @@ public final class ResolveMojo extends SafeMojo {
                 .resolve(dep.getArtifactId())
                 .resolve(classifier)
                 .resolve(dep.getVersion());
-            if (new Home().exists(dest)) {
+            if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, new Home().rel(dest)
+                    coords, new Rel(dest)
                 );
                 continue;
             }
@@ -193,8 +204,7 @@ public final class ResolveMojo extends SafeMojo {
             deps.add(one);
             tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
-        this.checkConflicts(deps);
-        return deps.stream()
+        return new ListOf<>(this.dependenciesOf(deps)).stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
@@ -203,38 +213,34 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Check dependencies for conflicts.
-     * @param deps Dependencies
+     * Dependencies object.
+     *
+     * @param all Dependencies as a collection
+     * @return Dependencies object with applied decorators.
      */
-    private void checkConflicts(final Collection<Dependency> deps) {
-        final Map<String, Set<String>> conflicts = deps.stream()
-            .collect(
-                Collectors.groupingBy(
-                    Dependency::getManagementKey,
-                    Collectors.mapping(
-                        Dependency::getVersion,
-                        Collectors.toSet()
-                    )
-                )
-            ).entrySet().stream()
-            .filter(e -> e.getValue().size() > 1)
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue
-                )
-            );
-        if (!conflicts.isEmpty()) {
-            final String msg = String.format(
-                "%d conflicting dependencies are found: %s",
-                conflicts.size(),
-                conflicts
-            );
-            Logger.warn(ResolveMojo.class, msg);
-            if (!this.ignoreVersionConflicts) {
-                throw new IllegalStateException(msg);
-            }
+    private Dependencies dependenciesOf(final Collection<Dependency> all) {
+        Dependencies dependencies = new DcsWithRuntime(all::iterator);
+        if (!this.ignoreVersionConflicts) {
+            dependencies = new DcsWithoutConflicts(dependencies);
         }
+        if (!this.ignoreTransitive) {
+            dependencies = new DcsNoOneHasTransitive(
+                dependencies,
+                dep -> new DcsTransitive(
+                    new DcsDepgraph(
+                        project,
+                        session,
+                        manager,
+                        targetDir.toPath()
+                            .resolve(ResolveMojo.DIR)
+                            .resolve("dependencies-info"),
+                        dep
+                    ),
+                    dep
+                )
+            );
+        }
+        return dependencies;
     }
 
     /**
@@ -269,7 +275,7 @@ public final class ResolveMojo extends SafeMojo {
             throw new IllegalStateException(
                 String.format(
                     "Too many (%d) dependencies at %s",
-                    coords.size(), new Home().rel(file)
+                    coords.size(), new Rel(file)
                 )
             );
         }
@@ -278,6 +284,7 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Dep to coords.
+     *
      * @param dep The dependency
      * @return Coords
      */
@@ -310,6 +317,7 @@ public final class ResolveMojo extends SafeMojo {
 
         /**
          * Ctor.
+         *
          * @param dep Dependency
          */
         private Wrap(final Dependency dep) {
@@ -318,6 +326,7 @@ public final class ResolveMojo extends SafeMojo {
 
         /**
          * Return it.
+         *
          * @return The dep
          */
         public Dependency dep() {
@@ -347,6 +356,7 @@ public final class ResolveMojo extends SafeMojo {
 
         /**
          * Convert it to string.
+         *
          * @param dep The dep
          * @return The text
          */

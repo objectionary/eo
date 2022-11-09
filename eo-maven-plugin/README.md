@@ -124,4 +124,9 @@ Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven
 mvn -U clean install
 ```
 
+If you want to build your project or run your tests which use eo-maven-plugin, you can change stack size for your purposes by stack-size option:
 
+```
+mvn clean install -Pqulice -D.stack-size=1M
+```
+where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.

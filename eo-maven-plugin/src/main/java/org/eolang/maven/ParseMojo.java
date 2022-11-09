@@ -32,6 +32,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -47,6 +53,8 @@ import org.xembly.Xembler;
  * Parse EO to XML.
  *
  * @since 0.1
+ * @todo #1230:30min Make number of threads used in thread executor within {@link #exec()} method
+ *  configurable via mojo parameter `threads`. Default value should be 4.
  */
 @Mojo(
     name = "parse",
@@ -91,35 +99,90 @@ public final class ParseMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * Number of parallel threads.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.threads", defaultValue = "4")
+    private int threads = 4;
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_EO)
         );
-        int total = 0;
-        for (final Tojo tojo : tojos) {
-            if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
-                final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-                if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
-                    Logger.debug(
-                        this, "Already parsed %s to %s (it's newer than the source)",
-                        tojo.get(Tojos.KEY), new Home().rel(xmir)
+        final Set<Callable<Object>> tasks = new HashSet<>(0);
+        final AtomicInteger total = new AtomicInteger(0);
+        tojos.stream()
+            .map(SynchronizedTojo::new)
+            .forEach(
+                tojo -> {
+                    if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
+                        final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+                        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+                        if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
+                            Logger.debug(
+                                this, "Already parsed %s to %s (it's newer than the source)",
+                                tojo.get(Tojos.KEY), new Rel(xmir)
+                            );
+                            return;
+                        }
+                    }
+                    tasks.add(
+                        Executors.callable(
+                            () -> {
+                                try {
+                                    this.parse(tojo);
+                                    total.incrementAndGet();
+                                } catch (final IOException ex) {
+                                    throw new IllegalStateException(
+                                        String.format(
+                                            "Unable to parse %s",
+                                            tojo.get(Tojos.KEY)
+                                        ),
+                                        ex
+                                    );
+                                }
+                            }
+                        )
                     );
-                    continue;
                 }
-            }
-            this.parse(tojo);
-            ++total;
+            );
+        try {
+            Executors.newFixedThreadPool(this.threads)
+                .invokeAll(tasks)
+                .forEach(
+                    completed -> {
+                        try {
+                            completed.get();
+                        } catch (final InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        } catch (final ExecutionException ex) {
+                            throw new IllegalArgumentException(
+                                ex.getCause().getMessage(),
+                                ex
+                            );
+                        }
+                    }
+                );
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                String.format(
+                    "Interrupted while waiting for %d parsing to finish",
+                    total.get()
+                ),
+                ex
+            );
         }
-        if (total == 0) {
+        if (total.get() == 0) {
             if (tojos.isEmpty()) {
                 Logger.info(this, "No .eo sources need to be parsed to XMIRs");
             } else {
                 Logger.info(this, "No .eo sources parsed to XMIRs");
             }
         } else {
-            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
+            Logger.info(this, "Parsed %d .eo sources to XMIRs", total.get());
         }
     }
 
@@ -194,7 +257,7 @@ public final class ParseMojo extends SafeMojo {
         tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
         Logger.debug(
             this, "Parsed %s to %s",
-            new Home().rel(source), new Home().rel(target)
+            new Rel(source), new Rel(target)
         );
     }
 }

@@ -31,7 +31,7 @@ import org.cactoos.Input;
  *
  * @since 0.1
  */
-public final class OyEmpty implements Objectionary {
+final class OyEmpty implements Objectionary {
 
     @Override
     public String toString() {

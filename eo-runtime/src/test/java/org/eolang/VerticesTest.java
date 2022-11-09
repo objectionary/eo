@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +47,7 @@ final class VerticesTest {
     void makesNext() {
         MatcherAssert.assertThat(
             new Vertices().next(),
-            Matchers.equalTo(1)
+            Matchers.greaterThan(0)
         );
     }
 
@@ -59,16 +61,30 @@ final class VerticesTest {
         );
     }
 
+    /**
+     * Test that {@link Vertices#best(Object)} and {@link Vertices#next()}
+     * works correctly in multithreaded environment, i.e. produces non-repeatable
+     * values.
+     */
     @Test
-    void vtxThreadTest() {
+    void vtxConcurrencyTest() {
         final Set<Integer> hashes = ConcurrentHashMap.newKeySet();
         final Vertices vtx = new Vertices();
-        final int threads = 8;
+        final int threads = 1000;
+        final List<Scalar<Integer>> tasks = new ArrayList<>(threads);
+        tasks.addAll(
+            Stream.generate(() -> (Scalar<Integer>) vtx::next)
+                .limit(threads / 2)
+                .collect(Collectors.toList())
+        );
+        tasks.addAll(
+            Stream.generate(() -> (Scalar<Integer>) () -> vtx.best(new Random().nextLong()))
+                .limit(threads / 2)
+                .collect(Collectors.toList())
+        );
         new Threads<>(
             threads,
-            Stream.generate(
-                () -> (Scalar<Integer>) () -> vtx.best(new Random().nextLong())
-            ).limit(threads).collect(Collectors.toList())
+            tasks
         ).forEach(hashes::add);
         MatcherAssert.assertThat(
             hashes.size(),

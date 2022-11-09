@@ -33,7 +33,7 @@ import org.cactoos.io.TeeInput;
  *
  * @since 1.0
  */
-public final class OyCaching implements Objectionary {
+final class OyCaching implements Objectionary {
 
     /**
      * Cache location.
@@ -52,11 +52,25 @@ public final class OyCaching implements Objectionary {
 
     /**
      * Ctor.
+     * @param hash Commit hash.
+     * @param cache Cache directory.
+     * @param primary Primary objectionary.
+     */
+    OyCaching(
+        final CommitHash hash,
+        final Path cache,
+        final Objectionary primary
+    ) {
+        this(hash.value(), cache, primary);
+    }
+
+    /**
+     * Ctor.
      * @param ver Version.
      * @param cache Cache directory.
      * @param primary Primary objectionary.
      */
-    public OyCaching(
+    OyCaching(
         final String ver,
         final Path cache,
         final Objectionary primary

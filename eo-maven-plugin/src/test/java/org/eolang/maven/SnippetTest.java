@@ -49,6 +49,7 @@ import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -70,6 +71,7 @@ import org.yaml.snakeyaml.Yaml;
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
  */
+@ExtendWith(WeAreOnline.class)
 final class SnippetTest {
 
     /**
@@ -140,7 +142,7 @@ final class SnippetTest {
     private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");
-        new Home().save(code, src.resolve("code.eo"));
+        new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
         final Path foreign = target.resolve("eo-foreign.json");
         new Moja<>(RegisterMojo.class)

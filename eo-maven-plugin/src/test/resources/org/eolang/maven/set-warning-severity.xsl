@@ -28,9 +28,9 @@ SOFTWARE.
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/program/errors/error/@severity">
-    <xsl:attribute name="severity">
-      <xsl:value-of select="'warning'"/>
-    </xsl:attribute>
+  <xsl:template match="/program/errors">
+    <xsl:copy>
+      <error check="check" line="1" severity="warning">A_WARNING</error>
+    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

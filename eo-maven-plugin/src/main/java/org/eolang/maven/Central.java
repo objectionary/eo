@@ -118,7 +118,7 @@ public final class Central implements BiConsumer<Dependency, Path> {
         Logger.info(
             this, "%s:%s:%s:%s unpacked to %s",
             dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(),
-            new Home().rel(path)
+            new Rel(path)
         );
     }
 

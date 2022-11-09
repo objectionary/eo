@@ -25,22 +25,22 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import org.cactoos.Text;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
- * Hash of tag.
+ * Hash of tag from objectionary.
+ *
  * @since 0.26
  */
-final class HashOfTag {
+final class ChRemote implements CommitHash {
 
     /**
-     * Cached map of hashes.
+     * Cached text of hashes.
      */
-    private static final Map<String, String> CACHE = HashOfTag.safeLoad();
+    private static final String CACHE = ChRemote.safeLoad();
 
     /**
      * The URL where the list is kept.
@@ -54,18 +54,16 @@ final class HashOfTag {
 
     /**
      * Constructor.
-     * @param hash Tag
+     *
+     * @param tag Tag
      */
-    HashOfTag(final String hash) {
-        this.tag = hash;
+    ChRemote(final String tag) {
+        this.tag = tag;
     }
 
-    /**
-     * Hash of tag.
-     * @return SHA of commit
-     */
-    public String hash() {
-        final String result = HashOfTag.CACHE.get(this.tag);
+    @Override
+    public String value() {
+        final String result = new ChText(() -> ChRemote.CACHE, this.tag).value();
         if (result == null) {
             throw new IllegalArgumentException(
                 String.format(
@@ -79,48 +77,32 @@ final class HashOfTag {
     }
 
     /**
-     * Short version of hash.
-     * @return SHA of commit
-     */
-    public String narrow() {
-        return this.hash().substring(0, 7);
-    }
-
-    /**
      * Load all hashes and tags.
+     *
      * @return Map of them (hash -> tag)
      */
-    private static Map<String, String> safeLoad() {
-        Map<String, String> map;
+    private static String safeLoad() {
+        String cache;
         try {
-            map = HashOfTag.load();
+            cache = new UncheckedText(ChRemote.load()).asString();
         } catch (final IOException ex) {
             Logger.warn(
-                HashOfTag.class,
+                ChRemote.class,
                 "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
-                HashOfTag.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+                ChRemote.HOME, ex.getClass().getSimpleName(), ex.getMessage()
             );
-            map = new HashMap<>(0);
+            cache = "";
         }
-        return map;
+        return cache;
     }
 
     /**
      * Load all hashes and tags.
+     *
      * @return Map of them (hash -> tag)
      * @throws IOException if fails
      */
-    private static Map<String, String> load() throws IOException {
-        final InputStream ins = new URL(HashOfTag.HOME).openStream();
-        try (Scanner scanner = new Scanner(ins)) {
-            final Map<String, String> map = new HashMap<>(0);
-            while (scanner.hasNextLine()) {
-                final String line = scanner.nextLine();
-                final String[] parts = line.split("\t");
-                map.put(parts[1], parts[0]);
-            }
-            return map;
-        }
+    private static Text load() throws IOException {
+        return new TextOf(new URL(ChRemote.HOME));
     }
-
 }

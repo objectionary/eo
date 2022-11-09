@@ -38,7 +38,7 @@ import org.cactoos.text.Joined;
  * Java files from XMIR.
  * @since 1.0
  */
-public final class JavaFiles {
+final class JavaFiles {
 
     /**
      * Path to XMIR file.
@@ -56,7 +56,7 @@ public final class JavaFiles {
      * @param src XML with java code
      * @param target Base destination path
      */
-    public JavaFiles(final Path src, final Path target) {
+    JavaFiles(final Path src, final Path target) {
         this.source = src;
         this.dest = target;
     }
@@ -73,7 +73,7 @@ public final class JavaFiles {
         if (nodes.isEmpty()) {
             Logger.debug(
                 this, "No .java files generated from %s",
-                new Home().rel(this.source)
+                new Rel(this.source)
             );
         } else {
             for (final XML java : nodes) {
@@ -81,7 +81,7 @@ public final class JavaFiles {
             }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
-                nodes.size(), new Home().rel(this.source), new Home().rel(this.dest)
+                nodes.size(), new Rel(this.source), new Rel(this.dest)
             );
         }
         return files;
@@ -100,12 +100,12 @@ public final class JavaFiles {
             final Path dest = new Place(type).make(
                 generated, "java"
             );
-            new Home().save(
+            new Home(generated).save(
                 new Joined(
                     "",
                     java.xpath("java/text()")
                 ),
-                dest
+                generated.relativize(dest)
             );
             return dest;
         } catch (final InvalidPathException ex) {

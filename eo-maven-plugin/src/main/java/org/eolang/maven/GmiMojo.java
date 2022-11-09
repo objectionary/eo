@@ -254,7 +254,7 @@ public final class GmiMojo extends SafeMojo {
             if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    name, new Home().rel(gmi)
+                    name, new Rel(gmi)
                 );
                 continue;
             }
@@ -263,7 +263,7 @@ public final class GmiMojo extends SafeMojo {
             tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
             Logger.info(
                 this, "GMI for %s saved to %s (%d instructions)",
-                name, new Home().rel(gmi), extra
+                name, new Rel(gmi), extra
             );
             ++total;
         }
@@ -276,7 +276,7 @@ public final class GmiMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
-                total, new Home().rel(home), instructions
+                total, new Rel(home), instructions
             );
         }
     }
@@ -337,20 +337,22 @@ public final class GmiMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "GMIs:\n%s", instructions);
         }
-        new Home().save(instructions, gmi);
+        new Home(gmi.getParent()).save(instructions, gmi.getParent().relativize(gmi));
         if (this.generateGmiXmlFiles) {
-            new Home().save(
+            final Path sibling = gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()));
+            new Home(sibling.getParent()).save(
                 after.toString(),
-                gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()))
+                sibling.getParent().relativize(sibling)
             );
         }
         if (this.generateXemblyFiles) {
             final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
-            new Home().save(
+            final Path sibling = gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()));
+            new Home(sibling.getParent()).save(
                 xembly,
-                gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()))
+                sibling.getParent().relativize(sibling)
             );
             this.makeGraph(xembly, gmi);
         }
@@ -380,9 +382,12 @@ public final class GmiMojo extends SafeMojo {
                         .append(dirs)
                 ).domQuietly()
             );
-            new Home().save(
+            final Path sibling = gmi.resolveSibling(
+                String.format("%s.graph.xml", gmi.getFileName())
+            );
+            new Home(sibling.getParent()).save(
                 graph.toString(),
-                gmi.resolveSibling(String.format("%s.graph.xml", gmi.getFileName()))
+                sibling.getParent().relativize(sibling)
             );
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Graph:\n%s", graph.toString());
@@ -404,9 +409,10 @@ public final class GmiMojo extends SafeMojo {
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Dot:\n%s", dot);
             }
-            new Home().save(
+            final Path sibling = gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()));
+            new Home(sibling.getParent()).save(
                 dot,
-                gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()))
+                sibling.getParent().relativize(sibling)
             );
         }
     }

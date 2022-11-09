@@ -40,6 +40,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
+ * @todo #1323:30m Create `ProbeMojo` and include it into assemble cycle. It
+ *  has to be included between discover and pull steps.
+ *  New mojo needs to go through all `probe` metas in XMIRs, try to locate the
+ *  objects pointed by `probe` in Objectionary and if found register them in
+ *  `foreign.csv`.
  */
 @Mojo(
     name = "assemble",
@@ -179,6 +184,27 @@ public final class AssembleMojo extends SafeMojo {
         property = "eo.failOnError",
         defaultValue = "true")
     private boolean failOnError = true;
+
+    /**
+     * Whether we should fail on warn.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
+    /**
+     * Fail resolution process on transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean ignoreTransitive;
 
     /**
      * Parsed cache directory.

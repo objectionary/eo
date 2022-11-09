@@ -28,7 +28,9 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -42,6 +44,7 @@ import org.cactoos.set.SetOf;
  * copy to target/classes.
  *
  * @since 0.11
+ * @see <a herf="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  */
 @Mojo(
     name = "place",
@@ -54,17 +57,17 @@ public final class PlaceMojo extends SafeMojo {
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_RELATED = "related";
+    public static final String ATTR_PLD_RELATED = "related";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_KIND = "kind";
+    public static final String ATTR_PLD_KIND = "kind";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_HASH = "hash";
+    public static final String ATTR_PLD_HASH = "hash";
 
     /**
      * Attr in CSV.
@@ -74,7 +77,7 @@ public final class PlaceMojo extends SafeMojo {
     /**
      * Where the binary is coming from (JAR name).
      */
-    public static final String ATTR_ORIGIN = "dependency";
+    public static final String ATTR_PLD_ORIGIN = "dependency";
 
     /**
      * Output.
@@ -106,19 +109,19 @@ public final class PlaceMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        if (new Home().exists(home)) {
+        if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
                 final Collection<Tojo> before = this.placedTojos.value().select(
                     row -> row.get(Tojos.KEY).equals(dep)
-                        && "jar".equals(row.get(PlaceMojo.ATTR_KIND))
+                        && "jar".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
                 );
                 if (!before.isEmpty()) {
                     Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_KIND, "jar");
+                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_PLD_KIND, "jar");
             }
             if (copied == 0) {
                 Logger.debug(
@@ -134,7 +137,7 @@ public final class PlaceMojo extends SafeMojo {
         } else {
             Logger.info(
                 this, "The directory is absent, nothing to place: %s",
-                new Home().rel(home)
+                new Rel(home)
             );
         }
     }
@@ -160,54 +163,54 @@ public final class PlaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "File %s is not a binary, but a source, won't place it",
-                    new Home().rel(file)
+                    new Rel(file)
                 );
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
             final Collection<Tojo> before = this.placedTojos.value().select(
                 row -> row.get(Tojos.KEY).equals(target.toString())
-                    && "class".equals(row.get(PlaceMojo.ATTR_KIND))
+                    && "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
             );
-            if (!before.isEmpty() && !new Home().exists(target)) {
+            if (!before.isEmpty() && !Files.exists(target)) {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
-                    new Home().rel(file),
-                    new Home().rel(target)
+                    new Rel(file),
+                    new Rel(target)
                 );
             }
-            if (!before.isEmpty() && new Home().exists(target)
+            if (!before.isEmpty() && Files.exists(target)
                 && target.toFile().length() == file.toFile().length()) {
                 Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
-                    new Home().rel(file), new Home().rel(target),
-                    before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
+                    new Rel(file), new Rel(target),
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
                 continue;
             }
-            if (!before.isEmpty() && new Home().exists(target)
+            if (!before.isEmpty() && Files.exists(target)
                 && target.toFile().length() != file.toFile().length()) {
                 Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                    new Home().rel(file), file.toFile().length(),
-                    new Home().rel(target), target.toFile().length(),
-                    before.iterator().next().get(PlaceMojo.ATTR_ORIGIN)
+                    new Rel(file), file.toFile().length(),
+                    new Rel(target), target.toFile().length(),
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
                 );
             }
-            new Home().save(new InputOf(file), target);
+            new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             this.placedTojos.value().add(target.toString())
-                .set(PlaceMojo.ATTR_KIND, "class")
-                .set(PlaceMojo.ATTR_HASH, new FileHash(target))
+                .set(PlaceMojo.ATTR_PLD_KIND, "class")
+                .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(target))
                 .set(
-                    PlaceMojo.ATTR_RELATED,
+                    PlaceMojo.ATTR_PLD_RELATED,
                     target.toString().substring(
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set(PlaceMojo.ATTR_ORIGIN, dep)
+                .set(PlaceMojo.ATTR_PLD_ORIGIN, dep)
                 .set(PlaceMojo.ATTR_UNPLACED, "false");
             ++copied;
         }

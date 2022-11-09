@@ -40,7 +40,7 @@ final class FileHashTest {
     @Test
     void readsFromExistingFile(@TempDir final Path temp) throws IOException {
         final Path path = temp.resolve("1.txt");
-        new Home().save("hey, you", path);
+        new Home(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
             new FileHash(path).toString(),
             Matchers.startsWith("[-26, 1, -29, 113, ")

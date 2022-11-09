@@ -34,7 +34,7 @@ import org.cactoos.text.TextOf;
  * Default implementation of a Footprint.
  * @since 1.0
  */
-public final class FtDefault implements Footprint {
+final class FtDefault implements Footprint {
 
     /**
      * Path to main location.
@@ -45,7 +45,7 @@ public final class FtDefault implements Footprint {
      * Ctor.
      * @param main Main location.
      */
-    public FtDefault(final Path main) {
+    FtDefault(final Path main) {
         this.main = main;
     }
 
@@ -61,9 +61,9 @@ public final class FtDefault implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        new Home().save(
+        new Home(this.main).save(
             new IoChecked<>(content).value(),
-            new Place(program).make(this.main, ext)
+            this.main.relativize(new Place(program).make(this.main, ext))
         );
     }
 }

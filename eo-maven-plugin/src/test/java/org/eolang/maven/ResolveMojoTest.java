@@ -25,8 +25,10 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -40,63 +42,82 @@ import org.junit.jupiter.api.io.TempDir;
 final class ResolveMojoTest {
 
     @Test
-    void testSimpleResolve(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Home().save(
+    void resolveWithSingleDependency(@TempDir final Path temp) throws Exception {
+        final Path foo = Paths.get("src").resolve("foo.eo");
+        new Home(temp).save(
             String.format(
-                "%s\n%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.7.0",
-                "+rt jvm org.eolang:eo-sys:jar-with-dependencies:0.0.5",
+                "%s\n\n%s",
+                "+rt jvm org.eolang:eo-runtime:0.7.0",
                 "[] > foo /int"
             ),
-            src.resolve("foo.eo")
+            foo
         );
-        final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
-        new Moja<>(ParseMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .execute();
-        new Moja<>(ResolveMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("central", Central.EMPTY)
-            .execute();
+        Catalogs.INSTANCE.make(foreign, "json")
+            .add("foo.eo")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, temp.resolve(foo))
+            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
+        final Path target = temp.resolve("target");
+        this.resolve(new DummyCentral(), foreign, target);
+        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.7.0");
+        MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
-            true,
-            Matchers.is(true)
+            path.resolve("eo-runtime-0.7.0.jar").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void resolveWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
+        final Path foo = Paths.get("src").resolve("sum.eo");
+        final Home home = new Home(temp);
+        home.save(
+            "[a b] > sum\n  plus. > @\n    a\n    b",
+            foo
+        );
+        final Path foreign = temp.resolve("eo-foreign.json");
+        Catalogs.INSTANCE.make(foreign, "json")
+            .add("sum")
+            .set(AssembleMojo.ATTR_DISCOVERED, "0")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, temp.resolve(foo))
+            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
+        final Path target = temp.resolve("target");
+        this.resolve(new DummyCentral(), foreign, target);
+        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.28.10");
+        MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
+        MatcherAssert.assertThat(
+            path.resolve("eo-runtime-0.28.10.jar").toFile(),
+            FileMatchers.anExistingFile()
         );
     }
 
     /**
      * Test conflicts.
+     *
      * @param temp Temp folder
      * @throws IOException In case of I/O issues.
      */
     @Test
     void testConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "[] > foo /int"
             ),
-            first
+            temp.relativize(first)
         );
         final Path second = temp.resolve("src/foo2.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.0",
                 "[] > foo /int"
             ),
-            second
+            temp.relativize(second)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
@@ -128,6 +149,7 @@ final class ResolveMojoTest {
                 .with("skipZeroVersions", true)
                 .with("discoverSelf", false)
                 .with("ignoreVersionConflicts", false)
+                .with("ignoreTransitive", true)
                 .execute()
         );
         MatcherAssert.assertThat(
@@ -141,22 +163,22 @@ final class ResolveMojoTest {
     @Test
     void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
                 "[] > foo /int"
             ),
-            first
+            temp.relativize(first)
         );
         final Path second = temp.resolve("src/foo2.src");
-        new Home().save(
+        new Home(temp).save(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
                 "[] > foo /int"
             ),
-            second
+            temp.relativize(second)
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign");
@@ -186,10 +208,35 @@ final class ResolveMojoTest {
             .with("skipZeroVersions", true)
             .with("discoverSelf", false)
             .with("ignoreVersionConflicts", true)
+            .with("ignoreTransitive", true)
             .execute();
         MatcherAssert.assertThat(
             true,
             Matchers.equalTo(true)
         );
+    }
+
+    private void resolve(
+        final DummyCentral central,
+        final Path foreign,
+        final Path target
+    ) {
+        new Moja<>(ParseMojo.class)
+            .with("foreign", foreign.toFile())
+            .with("targetDir", target.toFile())
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("foreign", foreign.toFile())
+            .with("targetDir", target.toFile())
+            .execute();
+        new Moja<>(ResolveMojo.class)
+            .with("foreign", foreign.toFile())
+            .with("targetDir", target.toFile())
+            .with("central", central)
+            .with("skipZeroVersions", true)
+            .with("discoverSelf", false)
+            .with("ignoreVersionConflicts", false)
+            .with("ignoreTransitive", true)
+            .execute();
     }
 }

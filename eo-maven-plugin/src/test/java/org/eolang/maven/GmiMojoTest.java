@@ -143,7 +143,7 @@ final class GmiMojoTest {
     private static XML toGraph(final String code, final String inclusion) throws IOException {
         final Path temp = Files.createTempDirectory("eo");
         final Path src = temp.resolve("foo/main.eo");
-        new Home().save(code, src);
+        new Home(temp).save(code, temp.relativize(src));
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign)

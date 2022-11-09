@@ -33,7 +33,7 @@ import org.cactoos.io.InputOf;
  *
  * @since 1.0
  */
-public final class OyHome implements Objectionary {
+final class OyHome implements Objectionary {
     /**
      * Local storage.
      */
@@ -46,10 +46,19 @@ public final class OyHome implements Objectionary {
 
     /**
      * Ctor.
+     * @param hash Commit hash.
+     * @param path Root.
+     */
+    OyHome(final CommitHash hash, final Path path) {
+        this(hash.value(), path);
+    }
+
+    /**
+     * Ctor.
      * @param ver Version.
      * @param path Root.
      */
-    public OyHome(final String ver, final Path path) {
+    OyHome(final String ver, final Path path) {
         this.version = ver;
         this.home = path;
     }
@@ -58,7 +67,7 @@ public final class OyHome implements Objectionary {
     public String toString() {
         return String.format(
             "%s (%s)",
-            new Home().rel(this.home), this.version
+            new Rel(this.home), this.version
         );
     }
 

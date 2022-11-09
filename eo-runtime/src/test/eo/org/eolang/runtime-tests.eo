@@ -351,3 +351,41 @@
   eq. > @
     copy-title
     "qwerty"
+
+[] > parent-in-vertical-notation
+  memory 5 > m
+  [] > value
+    [] > @
+      m. > @
+        ^.
+          ^
+  eq. > @
+    value
+    5
+
+[] > parent-in-horizontal-notation
+  memory 5 > m
+  [] > value
+    [] > @
+      ^.^.m > @
+  eq. > @
+    value
+    5
+
+[] > phi-in-vertical-notation
+  [] > value
+    [] > @
+      100 > @
+  eq. > @
+    @.
+      value
+    100
+
+[] > phi-in-horizontal-notation
+  [] > value
+    [] > @
+      100 > @
+  eq. > @
+    value.@
+    100
+

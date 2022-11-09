@@ -23,9 +23,9 @@
  */
 package org.eolang.maven;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,9 +42,9 @@ final class CopyMojoTest {
     void copiesSources(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
-        new Home().save(
+        new Home(src).save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
-            src.resolve("foo/main.eo")
+            Paths.get("foo/main.eo")
         );
         final String ver = "1.1.1";
         new Moja<>(CopyMojo.class)
@@ -54,11 +54,11 @@ final class CopyMojoTest {
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            new Home().exists(out),
+            new Home(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new String(Files.readAllBytes(out), StandardCharsets.UTF_8),
+            new TextOf(new Home(classes).load(classes.relativize(out))).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),
