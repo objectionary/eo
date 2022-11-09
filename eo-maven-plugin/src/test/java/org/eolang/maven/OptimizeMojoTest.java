@@ -137,13 +137,8 @@ final class OptimizeMojoTest {
      *
      * @param temp Temporary test directory.
      * @throws Exception if unexpected error happened.
-     * @todo #1223:90min Implement caching for optimization step. After implementation don't forget
-     *  to remove '@Disabled' annotation from the next tests:
-     *  - 'getsAlreadyOptimizedResultsFromCache'
-     *  - 'savesOptimizedResultsToCache'
      */
     @Test
-    @Disabled
     void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Home(temp).save(
@@ -194,7 +189,6 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    @Disabled
     void savesOptimizedResultsToCache(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/main.eo");
         new Home(temp).save(

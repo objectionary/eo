@@ -50,6 +50,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.optimization.OptCached;
+import org.eolang.maven.optimization.OptLambda;
+import org.eolang.maven.optimization.Optimization;
+import org.eolang.maven.optimization.OptimizationException;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -145,6 +149,14 @@ public final class OptimizeMojo extends SafeMojo {
     )
     private boolean failOnWarning;
 
+    /**
+     * EO cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
@@ -175,7 +187,17 @@ public final class OptimizeMojo extends SafeMojo {
                         Executors.callable(
                             () -> {
                                 try {
-                                    final XML optimized = this.optimize(src);
+                                    final Optimization optimization;
+                                    if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+                                        optimization = new OptCached(
+                                            new OptLambda(this::optimize),
+                                            cache,
+                                            tojo.get(AssembleMojo.ATTR_HASH)
+                                        );
+                                    } else {
+                                        optimization = new OptLambda(this::optimize);
+                                    }
+                                    final XML optimized = optimization.optimize(src);
                                     done.incrementAndGet();
                                     if (this.shouldPass(optimized)) {
                                         tojo.set(
@@ -183,7 +205,7 @@ public final class OptimizeMojo extends SafeMojo {
                                             this.make(optimized, src).toAbsolutePath().toString()
                                         );
                                     }
-                                } catch (final IOException exception) {
+                                } catch (final IOException | OptimizationException exception) {
                                     throw new IllegalStateException(
                                         String.format(
                                             "Unable to optimize %s",
