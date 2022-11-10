@@ -12,7 +12,7 @@
 # The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EcounterPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -21,28 +21,50 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
 +version 0.28.11
 
-[] > creates-object
-  QQ.rust > r
-    """
-    use reo::universe::Universe;
-    use reo::data::Data;
-    use rand::rand;
-
-    pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {
-      let i = copy!(find!("org.eolang.int"));
-      uni.data(i, Data::from_int(random::<i64>()))?;
-      Ok(i)
-    }
-    """
-    *
-      "reo: 0.0.2"
-      "rand: 0.5.5"
+# @todo #1299:60min Implement test that will
+#  check output of stdout. That should proove
+#  that there is no double printage, when 
+#  methods lt., gt., lte., gte. are called.
+[] > seq-single-dataization-float-less-than-test
+  memory 0.0 > counter
   assert-that > @
-    r.length
-    $.equal-to
-      2
+    seq
+      counter.write
+        counter.plus 1.0
+      counter
+    $.less-than 2.0
+
+[] > seq-single-dataization-float-greater-than-test
+  memory 0.0 > counter
+  assert-that > @
+    seq
+      counter.write
+        counter.plus 1.0
+      counter
+    $.not
+      $.greater-than 1.1
+
+[] > seq-single-dataization-int-less-than-test
+  memory 0 > counter
+  assert-that > @
+    seq
+      counter.write
+        counter.plus 1
+      counter
+    $.less-than 2
+
+[] > seq-single-dataization-int-greater-than-test
+  memory 0 > counter
+  assert-that > @
+    seq
+      counter.write
+        counter.plus 1
+      counter
+    $.not
+      $.greater-than 1
