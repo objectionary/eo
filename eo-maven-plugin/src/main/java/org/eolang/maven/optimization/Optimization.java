@@ -25,20 +25,13 @@ package org.eolang.maven.optimization;
 
 import com.jcabi.xml.XML;
 import java.nio.file.Path;
+import java.util.function.Function;
 
 /**
  * Abstraction for XML optimizations.
  *
  * @since 0.28.11
  */
-public interface Optimization {
-
-    /**
-     * Optimize XML file.
-     *
-     * @param xml Path to raw XML file.
-     * @return Optimized XML
-     */
-    XML apply(Path xml);
-
+@FunctionalInterface
+public interface Optimization extends Function<Path, XML> {
 }
