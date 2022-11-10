@@ -51,7 +51,6 @@ public final class OptLambda implements Optimization {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public XML apply(final Path xml) throws OptimizationException {
         return this.delegate.apply(xml);
     }
