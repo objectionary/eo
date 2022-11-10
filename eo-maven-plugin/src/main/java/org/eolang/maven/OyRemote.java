@@ -72,6 +72,10 @@ final class OyRemote implements Objectionary {
 
     /**
      * Objectionary URL template.
+     * Assumes two placeholders in terms of
+     * {@link String#format(String, Object...)}: 1st for version hash,
+     * 2nd for program name.
+     * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
      *
      * @since 1.0
      */
