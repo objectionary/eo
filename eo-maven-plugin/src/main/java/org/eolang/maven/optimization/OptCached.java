@@ -69,7 +69,7 @@ public final class OptCached implements Optimization {
     }
 
     @Override
-    public XML apply(final Path xml) throws OptimizationException {
+    public XML apply(final Path xml) {
         try {
             final Path path = new Place(
                 new XMLDocument(xml).xpath("/program/@name").get(0)
@@ -85,7 +85,7 @@ public final class OptCached implements Optimization {
             }
             return optimized;
         } catch (final IOException ex) {
-            throw new OptimizationException(String.format("Can't optimize '%s'", xml), ex);
+            throw new IllegalStateException(String.format("Can't optimize '%s'", xml), ex);
         }
     }
 }

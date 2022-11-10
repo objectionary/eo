@@ -51,7 +51,7 @@ public final class OptLambda implements Optimization {
     }
 
     @Override
-    public XML apply(final Path xml) throws OptimizationException {
+    public XML apply(final Path xml) {
         return this.delegate.apply(xml);
     }
 }

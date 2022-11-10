@@ -27,7 +27,5 @@
  * of xml optimizations:
  *  - {@link org.eolang.maven.optimization.OptLambda} - makes an optimization using foreign function
  *  - {@link org.eolang.maven.optimization.OptCached} - looks for optimization in cache first
- *  All implementations could throw an {@link org.eolang.maven.optimization.OptimizationException}
- *  if something went wrong.
  */
 package org.eolang.maven.optimization;

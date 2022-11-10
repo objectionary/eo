@@ -38,8 +38,7 @@ public interface Optimization {
      *
      * @param xml Path to raw XML file.
      * @return Optimized XML
-     * @throws OptimizationException if optimization can't be performed by any reason.
      */
-    XML apply(Path xml) throws OptimizationException;
+    XML apply(Path xml);
 
 }

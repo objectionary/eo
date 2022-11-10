@@ -53,7 +53,6 @@ import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptLambda;
 import org.eolang.maven.optimization.Optimization;
-import org.eolang.maven.optimization.OptimizationException;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -195,7 +194,7 @@ public final class OptimizeMojo extends SafeMojo {
                                             this.make(optimized, src).toAbsolutePath().toString()
                                         );
                                     }
-                                } catch (final IOException | OptimizationException exception) {
+                                } catch (final IOException exception) {
                                     throw new IllegalStateException(
                                         String.format(
                                             "Unable to optimize %s",
