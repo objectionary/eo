@@ -31,6 +31,7 @@ import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -248,10 +249,10 @@ public final class OptimizeMojo extends SafeMojo {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         Train<Shift> trn = OptimizeMojo.TRAIN.value();
         if (this.failOnWarning) {
-            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-warnings.xsl"));
+            trn = trn.with(new StClasspath("/org/eolang/parser/fail-on-warnings.xsl"));
         }
         if (this.failOnError) {
-            trn = trn.with(new StClasspath("/org/eolang/parser/errors/fail-on-errors.xsl"));
+            trn = trn.with(new StClasspath("/org/eolang/parser/fail-on-errors.xsl"));
         }
         if (this.trackOptimizationSteps) {
             final Place place = new Place(name);
@@ -264,7 +265,10 @@ public final class OptimizeMojo extends SafeMojo {
                 new Rel(dir)
             );
         }
-        return new Xsline(trn).pass(new XMLDocument(file));
+        return new Xsline(
+            new TrDefault<Shift>()
+                .with(new StClasspath("/org/eolang/parser/fail-on-critical.xsl"))
+        ).pass(new Xsline(trn).pass(new XMLDocument(file)));
     }
 
     /**

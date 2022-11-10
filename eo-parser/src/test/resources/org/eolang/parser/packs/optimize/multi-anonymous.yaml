@@ -1,6 +1,6 @@
 xsls:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
-  - /org/eolang/parser/errors/duplicate-names.xsl
+  - /org/eolang/parser/critical-errors/duplicate-names.xsl
 tests:
   - /program/errors[count(error)=0]
 eo: |

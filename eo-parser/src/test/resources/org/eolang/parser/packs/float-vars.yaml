@@ -1,7 +1,7 @@
 xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
-  - /org/eolang/parser/errors/duplicate-names.xsl
+  - /org/eolang/parser/critical-errors/duplicate-names.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=3]
