@@ -196,7 +196,7 @@ SOFTWARE.
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
+      <scope>runtime</scope>
       <!-- This dependency must preceed jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
     </dependency>
