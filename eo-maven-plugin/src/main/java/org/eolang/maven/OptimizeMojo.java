@@ -187,7 +187,7 @@ public final class OptimizeMojo extends SafeMojo {
                         Executors.callable(
                             () -> {
                                 try {
-                                    final XML optimized = this.optimization(tojo).optimize(src);
+                                    final XML optimized = this.optimization(tojo).apply(src);
                                     done.incrementAndGet();
                                     if (this.shouldPass(optimized)) {
                                         tojo.set(

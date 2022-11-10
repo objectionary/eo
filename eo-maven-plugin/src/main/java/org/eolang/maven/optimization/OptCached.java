@@ -69,7 +69,7 @@ public final class OptCached implements Optimization {
     }
 
     @Override
-    public XML optimize(final Path xml) throws OptimizationException {
+    public XML apply(final Path xml) throws OptimizationException {
         try {
             final Path path = new Place(
                 new XMLDocument(xml).xpath("/program/@name").get(0)
@@ -78,7 +78,7 @@ public final class OptCached implements Optimization {
             if (Files.exists(path)) {
                 optimized = new XMLDocument(path);
             } else {
-                optimized = this.delegate.optimize(xml);
+                optimized = this.delegate.apply(xml);
                 Files.createDirectories(path.getParent());
                 Files.createFile(path);
                 Files.write(path, optimized.toString().getBytes(StandardCharsets.UTF_8));

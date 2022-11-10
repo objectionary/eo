@@ -40,6 +40,6 @@ public interface Optimization {
      * @return Optimized XML
      * @throws OptimizationException if optimization can't be performed by any reason.
      */
-    XML optimize(Path xml) throws OptimizationException;
+    XML apply(Path xml) throws OptimizationException;
 
 }
