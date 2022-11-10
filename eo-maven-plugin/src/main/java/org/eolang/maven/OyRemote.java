@@ -93,7 +93,7 @@ final class OyRemote implements Objectionary {
         /**
          * Ctor.
          * @param template URL template.
-         * @param hash Version hash.
+         * @param hash Objects version hash.
          */
         UrlOy(final String template, final String hash) {
             this.template = template;
