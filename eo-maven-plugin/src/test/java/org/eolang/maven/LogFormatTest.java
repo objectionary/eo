@@ -60,7 +60,7 @@ class LogFormatTest {
         MatcherAssert.assertThat(
             this.mock.lastLog(),
             Matchers.matchesPattern(
-                "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R"
+                "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R"
             )
         );
     }
