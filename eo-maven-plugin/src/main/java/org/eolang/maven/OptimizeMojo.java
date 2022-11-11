@@ -51,6 +51,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.optimization.OptCached;
+import org.eolang.maven.optimization.OptLambda;
+import org.eolang.maven.optimization.Optimization;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -146,6 +149,14 @@ public final class OptimizeMojo extends SafeMojo {
     )
     private boolean failOnWarning;
 
+    /**
+     * EO cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
@@ -176,7 +187,7 @@ public final class OptimizeMojo extends SafeMojo {
                         Executors.callable(
                             () -> {
                                 try {
-                                    final XML optimized = this.optimize(src);
+                                    final XML optimized = this.optimization(tojo).apply(src);
                                     done.incrementAndGet();
                                     if (this.shouldPass(optimized)) {
                                         tojo.set(
@@ -237,6 +248,26 @@ public final class OptimizeMojo extends SafeMojo {
     }
 
     /**
+     * Optimization for specific tojo.
+     *
+     * @param tojo Tojp
+     * @return Optimization for specific Tojo
+     */
+    private Optimization optimization(final SynchronizedTojo tojo) {
+        final Optimization optimization;
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+            optimization = new OptCached(
+                new OptLambda(this::optimize),
+                this.cache.resolve(OptimizeMojo.OPTIMIZED)
+                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
+            );
+        } else {
+            optimization = new OptLambda(this::optimize);
+        }
+        return optimization;
+    }
+
+    /**
      * Optimize XML file after parsing.
      *
      * @param file EO file
@@ -244,6 +275,9 @@ public final class OptimizeMojo extends SafeMojo {
      * @throws FileNotFoundException If fails
      * @throws IllegalArgumentException If error is detected within XMIR and
      *  fail on error is enabled.
+     * @todo #1431:90min move that method implementation to a separate class under
+     *  {@link org.eolang.maven.optimization} package. Probably, after implementation we will able
+     *  to remove {@link org.eolang.maven.optimization.OptLambda}.
      */
     private XML optimize(final Path file) throws FileNotFoundException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);

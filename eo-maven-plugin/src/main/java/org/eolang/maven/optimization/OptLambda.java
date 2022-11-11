@@ -21,44 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.optimization;
 
-import java.io.File;
+import com.jcabi.xml.XML;
 import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.func.UncheckedFunc;
 
 /**
- * Make the place for the object.
+ * Lambda optimization is adapter for custom optimization.
+ * Optimization provided by external function.
  *
- * @since 0.1
+ * @since 0.28.11
  */
-public final class Place {
+public final class OptLambda implements Optimization {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * Custom foreign optimisation.
      */
-    private final String name;
+    private final UncheckedFunc<Path, XML> delegate;
 
     /**
-     * Ctor.
-     * @param obj The name of the object
+     * The main constructor.
+     *
+     * @param delegate Custom optimization.
      */
-    public Place(final String obj) {
-        this.name = obj;
+    public OptLambda(final Func<Path, XML> delegate) {
+        this.delegate = new UncheckedFunc<>(delegate);
     }
 
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", File.separator));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
+    @Override
+    public XML apply(final Path xml) {
+        return this.delegate.apply(xml);
     }
-
 }

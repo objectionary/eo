@@ -21,44 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.io.File;
-import java.nio.file.Path;
-
 /**
- * Make the place for the object.
- *
- * @since 0.1
+ * Optimizations package.
+ * The main purpose of classes under the package is to provide different implementations
+ * of xml optimizations:
+ *  - {@link org.eolang.maven.optimization.OptLambda} - makes an optimization using foreign function
+ *  - {@link org.eolang.maven.optimization.OptCached} - looks for optimization in cache first
  */
-public final class Place {
-
-    /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
-     */
-    private final String name;
-
-    /**
-     * Ctor.
-     * @param obj The name of the object
-     */
-    public Place(final String obj) {
-        this.name = obj;
-    }
-
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", File.separator));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
-    }
-
-}
+package org.eolang.maven.optimization;
