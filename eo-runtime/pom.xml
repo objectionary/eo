@@ -35,7 +35,7 @@ SOFTWARE.
   <description>EO runtime library</description>
   <properties>
     <!--  This is required for later correct replacement of argline  -->
-    <stack-size>256M</stack-size>
+    <stack-size>3M</stack-size>
   </properties>
   <dependencies>
     <dependency>
