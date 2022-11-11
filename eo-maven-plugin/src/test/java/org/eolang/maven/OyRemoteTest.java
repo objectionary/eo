@@ -21,57 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.maven;
 
-import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.Xsline;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link ParsingTrain}.
+ * Test for {@link OyRemote}.
  *
- * @since 0.23
+ * @since 1.0
  */
-final class ParsingTrainTest {
+final class OyRemoteTest {
 
     @Test
-    void buildsList() {
+    void buildsCorrectUrl() throws Exception {
         MatcherAssert.assertThat(
-            new ParsingTrain(),
-            Matchers.iterableWithSize(Matchers.greaterThan(1))
-        );
-    }
-
-    @Test
-    void stopsPipeline() {
-        final XML xml = new XMLDocument(
-            String.join(
-                "\n",
-                "<program>",
-                "  <errors/>",
-                "  <sheets/>",
-                "  <objects>",
-                "    <o abstract=\"\" line=\"1\" name=\"main\" pos=\"0\">",
-                "      <o base=\"bool\" data=\"bytes\" line=\"2\" name=\"x\" pos=\"2\">01</o>",
-                "      <o base=\"bool\" data=\"bytes\" line=\"3\" name=\"x\" pos=\"2\">00</o>",
-                "    </o>",
-                "  </objects>",
-                "</program>"
-            )
-        );
-        MatcherAssert.assertThat(
-            new Xsline(
-                new ParsingTrain()
-            ).pass(xml),
-            XhtmlMatchers.hasXPaths(
-                "/program/sheets[count(sheet)=3]",
-                "/program/errors/error[@severity='critical']"
+            new OyRemote.UrlOy(
+                "https://raw/objectionary/home/%s/objects/%s.eo",
+                "abcde"
+            ).value("org.eolang.app"),
+            Matchers.is(
+                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
             )
         );
     }
 
+    @Test
+    void throwsExceptionOnInvalidUrl() {
+        Assertions.assertThrows(
+            MalformedURLException.class,
+            () -> new OyRemote.UrlOy(
+                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
+                "abcde"
+            ).value("org.eolang.app")
+        );
+    }
 }

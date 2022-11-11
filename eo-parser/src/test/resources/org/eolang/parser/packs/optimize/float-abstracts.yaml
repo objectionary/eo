@@ -4,7 +4,7 @@ xsls:
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/errors/same-line-names.xsl
-  - /org/eolang/parser/errors/duplicate-names.xsl
+  - /org/eolang/parser/critical-errors/duplicate-names.xsl
   - /org/eolang/parser/errors/broken-refs.xsl
 tests:
   - /program/objects[count(o)=9]

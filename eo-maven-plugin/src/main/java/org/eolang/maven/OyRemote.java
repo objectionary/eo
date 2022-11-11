@@ -41,7 +41,7 @@ final class OyRemote implements Objectionary {
     /**
      * The address template.
      */
-    private final String template;
+    private final UrlOy template;
 
     /**
      * Constructor.
@@ -49,27 +49,81 @@ final class OyRemote implements Objectionary {
      * @throws IOException if fails.
      */
     OyRemote(final CommitHash hash) throws IOException {
-        this.template = String.format(
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%%s.eo",
+        this.template = new UrlOy(
+            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash.value()
         );
     }
 
     @Override
     public String toString() {
-        return this.template;
+        return this.template.toString();
     }
 
     @Override
     public Input get(final String name) throws MalformedURLException {
-        final URL url = new URL(
-            String.format(this.template, name.replace(".", "/"))
-        );
+        final URL url = this.template.value(name);
         Logger.debug(
             this, "The object '%s' will be pulled from %s...",
             name, url
         );
         return new InputOf(url);
+    }
+
+    /**
+     * Objectionary URL template.
+     * Assumes two placeholders in terms of
+     * {@link String#format(String, Object...)}: 1st for version hash,
+     * 2nd for program name.
+     * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+     *
+     * @since 1.0
+     */
+    static final class UrlOy {
+
+        /**
+         * URL template. Expects two placeholders in terms of
+         * {@link String#format(String, Object...)}: 1st for hash,
+         * 2nd for program name.
+         * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+         */
+        private final String template;
+
+        /**
+         * Objects version hash.
+         */
+        private final String hash;
+
+        /**
+         * Ctor.
+         * @param template URL template.
+         * @param hash Objects version hash.
+         */
+        UrlOy(final String template, final String hash) {
+            this.template = template;
+            this.hash = hash;
+        }
+
+        /**
+         * URL for the program.
+         * @param name Fully qualified EO program name as specified by {@link Place}
+         * @return URL
+         * @throws MalformedURLException in case of incorrect URL
+         */
+        public URL value(final String name) throws MalformedURLException {
+            return new URL(
+                String.format(
+                    this.template,
+                    this.hash,
+                    name.replace(".", "/")
+                )
+            );
+        }
+
+        @Override
+        public String toString() {
+            return this.template;
+        }
     }
 
 }
