@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-/*
- * @checkstyle PackageNameCheck (20 lines)
- */
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * EO runtime, tests.
+ * Marker annotation for packages to make them compilable into `.class` file.
  *
- * @since 0.1
+ * @since 1.0
+ * @see <a href="https://issues.apache.org/jira/browse/MCOMPILER-205">MCOMPILER-205</a>
  */
-@PackageMarker
-package EOorg.EOeolang.EOio;
-
-import org.eolang.maven.PackageMarker;
+@Retention(RetentionPolicy.SOURCE)
+public @interface PackageMarker {
+}

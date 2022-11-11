@@ -39,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -126,6 +127,10 @@ public final class TranspileMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
+        Logger.info(
+            this, "Last modified before: %s",
+            new Date(this.generatedDir.getAbsoluteFile().lastModified())
+        );
         int saved = 0;
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
@@ -160,6 +165,10 @@ public final class TranspileMojo extends SafeMojo {
             this, "Transpiled %d XMIRs, created %d Java files in %s",
             sources.size(), saved, new Rel(this.generatedDir)
         );
+        Logger.info(
+            this, "Last modified before: %s",
+            new Date(this.generatedDir.getAbsoluteFile().lastModified())
+        );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
@@ -167,6 +176,10 @@ public final class TranspileMojo extends SafeMojo {
                 new Rel(this.generatedDir)
             );
         }
+        Logger.info(
+            this, "Last modified after: %s",
+            new Date(this.generatedDir.getAbsoluteFile().lastModified())
+        );
         if (this.addTestSourcesRoot) {
             this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
@@ -189,13 +202,13 @@ public final class TranspileMojo extends SafeMojo {
         final String name = input.xpath("/program/@name").get(0);
         final int removed = this.removeTranspiled(src);
         if (removed > 0) {
-            Logger.debug(
+            Logger.info(
                 this,
                 "Removed %d Java files for %s",
                 removed, new Rel(src)
             );
         } else {
-            Logger.debug(
+            Logger.info(
                 this,
                 "No Java files removed for %s",
                 new Rel(src)

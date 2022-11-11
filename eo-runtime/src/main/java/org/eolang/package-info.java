@@ -27,4 +27,7 @@
  *
  * @since 0.2
  */
+@PackageMarker
 package org.eolang;
+
+import org.eolang.maven.PackageMarker;
