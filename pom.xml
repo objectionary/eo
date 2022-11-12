@@ -245,7 +245,11 @@ SOFTWARE.
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
-          <configuration combine.self="override"/>
+          <configuration combine.self="override">
+            <compilerArgs>
+              <arg>-Xpkginfo:always</arg>
+            </compilerArgs>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.antlr</groupId>

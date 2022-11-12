@@ -26,7 +26,4 @@
  * The package contains different unit tests for all
  * implementations of {@link org.eolang.maven.hash.CommitHash}.
  */
-@PackageMarker
 package org.eolang.maven.hash;
-
-import org.eolang.maven.PackageMarker;

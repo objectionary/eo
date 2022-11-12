@@ -31,7 +31,4 @@
  *
  * @since 0.1
  */
-@PackageMarker
 package EOorg.EOeolang.EOio;
-
-import org.eolang.maven.PackageMarker;

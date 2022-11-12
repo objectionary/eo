@@ -28,7 +28,4 @@
  * @since 0.1
  * @checkstyle PackageNameCheck (4 lines)
  */
-@PackageMarker
 package EOorg.EOeolang.EOio;
-
-import org.eolang.maven.PackageMarker;
