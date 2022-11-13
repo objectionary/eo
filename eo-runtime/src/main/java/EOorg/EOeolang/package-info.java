@@ -32,7 +32,4 @@
  * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
  */
-@PackageMarker
 package EOorg.EOeolang;
-
-import org.eolang.maven.PackageMarker;
