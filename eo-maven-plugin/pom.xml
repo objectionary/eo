@@ -246,6 +246,11 @@ SOFTWARE.
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>
+            <arg>-Xpkginfo:always</arg>
+          </compilerArgs>
+        </configuration>
         <executions>
           <execution>
             <id>default-compile</id>
