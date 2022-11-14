@@ -46,7 +46,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class OptCachedTest {
     @Test
-    void optimizesIfXmlAlreadyInCache(final @TempDir Path tmp) {
+    void optimizesIfXmlAlreadyInCache(final @TempDir Path tmp) throws IOException {
         final XML program = OptCachedTest.program();
         MatcherAssert.assertThat(
             new OptCached(path -> program, tmp).apply(OptCachedTest.save(tmp, program)),
@@ -55,7 +55,7 @@ class OptCachedTest {
     }
 
     @Test
-    void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) {
+    void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) throws IOException {
         final XML program = OptCachedTest.program();
         final Path cache = tmp.resolve("cache");
         final XML res = new OptCached(path -> program, cache)
@@ -88,15 +88,11 @@ class OptCachedTest {
      * @param xml XML program.
      * @return Path to saved program.
      */
-    private static Path save(final Path tmp, final XML xml) {
+    private static Path save(final Path tmp, final XML xml) throws IOException {
         final Path path = Paths.get("main.xmir");
         final Path res = tmp.resolve(path);
-        try {
-            new Home(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
-            return res;
-        } catch (final IOException ex) {
-            throw new IllegalStateException(String.format("Can't save XML to '%s'", res), ex);
-        }
+        new Home(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
+        return res;
     }
 
     /**
