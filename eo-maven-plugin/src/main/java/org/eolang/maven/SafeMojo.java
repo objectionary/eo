@@ -47,6 +47,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyFields")
 abstract class SafeMojo extends AbstractMojo {
 
     /**
@@ -144,6 +145,19 @@ abstract class SafeMojo extends AbstractMojo {
     protected File transpiled;
 
     /**
+     * Mojo execution timeout in seconds.
+     * Default value is one hour.
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.28.12
+     */
+    @Parameter(
+        property = "eo.timeout",
+        required = true,
+        defaultValue = "3600"
+    )
+    protected int timeout = 3600;
+
+    /**
      * Format of "transpiled" file ("json" or "csv").
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -202,7 +216,7 @@ abstract class SafeMojo extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                this.exec();
+                this.executeWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
                         this,
@@ -260,7 +274,7 @@ abstract class SafeMojo extends AbstractMojo {
                 return unscoped.select(
                     t -> filter.test(t)
                         && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                        || "test".equals(SafeMojo.this.scope))
+                            || "test".equals(SafeMojo.this.scope))
                 );
             }
         };
@@ -285,4 +299,15 @@ abstract class SafeMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * Executes mojo in limited time interval.
+     *
+     * @throws IOException If fails.
+     */
+    private void executeWithTimeout() throws IOException {
+        final Timeout timer = new Timeout(this.timeout);
+        timer.start();
+        this.exec();
+        timer.stop();
+    }
 }

@@ -82,6 +82,31 @@ final class ParseMojoTest {
     }
 
     @Test
+    void failsOnTimeout(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/x/main.eo");
+        final Path target = temp.resolve("target");
+        new Home(temp).save(
+            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
+            temp.relativize(src)
+        );
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        Catalogs.INSTANCE.make(foreign)
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Moja<>(ParseMojo.class)
+                .with("timeout", 0)
+                .with("targetDir", target.toFile())
+                .with("foreign", foreign.toFile())
+                .with("cache", temp.resolve("cache/parsed"))
+                .with("foreignFormat", "csv")
+                .execute()
+        );
+    }
+
+    @Test
     void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("foo/x/main.eo");
         final Path target = temp.resolve("target");
