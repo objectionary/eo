@@ -35,6 +35,8 @@ SOFTWARE.
   <description>EO-to-Java Maven Plugin</description>
   <properties>
     <stack-size>256M</stack-size>
+    <!--  This is required for later correct replacement of argline  -->
+    <argLine/>
   </properties>
   <dependencies>
     <dependency>
