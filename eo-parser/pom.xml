@@ -164,14 +164,6 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs>
-            <arg>-Xpkginfo:always</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
