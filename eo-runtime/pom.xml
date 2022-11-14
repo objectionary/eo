@@ -172,6 +172,7 @@ SOFTWARE.
             <configuration>
               <excludes>
                 <exclude>pmd:.*</exclude>
+                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
               </excludes>
             </configuration>
           </plugin>
