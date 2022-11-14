@@ -189,14 +189,16 @@ public final class Main {
         }
         final Object result = new Dataized(app).take();
         final String[] packages = app.toString().split("\\.");
-        Main.LOGGER.info(
-            String.format(
-                "The result of %s dataization is %s. Its value is %s",
-                packages[packages.length - 1],
-                result.getClass().getName(),
-                result
-            )
-        );
+        if (packages.length > 0) {
+            Main.LOGGER.info(
+                String.format(
+                    "The result of %s dataization is %s. Its value is %s",
+                    packages[packages.length - 1],
+                    result.getClass().getName(),
+                    result
+                )
+            );
+        }
     }
 
     /**
