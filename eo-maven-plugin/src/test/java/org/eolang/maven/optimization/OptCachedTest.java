@@ -27,11 +27,12 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -88,9 +89,10 @@ class OptCachedTest {
      * @return Path to saved program.
      */
     private static Path save(final Path tmp, final XML xml) {
-        final Path res = tmp.resolve("main.xmir");
+        final Path path = Paths.get("main.xmir");
+        final Path res = tmp.resolve(path);
         try {
-            Files.write(res, xml.toString().getBytes(StandardCharsets.UTF_8));
+            new Home(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
             return res;
         } catch (final IOException ex) {
             throw new IllegalStateException(String.format("Can't save XML to '%s'", res), ex);
