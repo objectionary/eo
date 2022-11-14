@@ -24,7 +24,6 @@
 package org.eolang.maven.optimization;
 
 import com.jcabi.xml.XML;
-import java.nio.file.Path;
 import java.util.function.Function;
 
 /**
@@ -33,5 +32,5 @@ import java.util.function.Function;
  * @since 0.28.11
  */
 @FunctionalInterface
-public interface Optimization extends Function<Path, XML> {
+public interface Optimization extends Function<XML, XML> {
 }
