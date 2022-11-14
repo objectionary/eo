@@ -29,8 +29,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.io.UncheckedInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -101,13 +102,12 @@ class OptCachedTest {
      * @return XML representation of program.
      */
     private static XML program() {
-        final String path = "org/eolang/maven/optimize/main.xml";
-        try {
-            return new XMLDocument(
-                new UncheckedInput(new ResourceOf(path)).stream()
-            );
-        } catch (final IOException ex) {
-            throw new IllegalStateException(String.format("Can't load XML from '%s'", path), ex);
-        }
+        return new XMLDocument(
+            new UncheckedBytes(
+                new BytesOf(
+                    new ResourceOf("org/eolang/maven/optimize/main.xml")
+                )
+            ).asBytes()
+        );
     }
 }
