@@ -146,16 +146,11 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Mojo execution timeout in seconds.
-     * Default value is one hour.
      * @checkstyle VisibilityModifierCheck (10 lines)
      * @since 0.28.12
      */
-    @Parameter(
-        property = "eo.timeout",
-        required = true,
-        defaultValue = "3600"
-    )
-    protected int timeout = 3600;
+    @Parameter(property = "eo.timeout")
+    protected Integer timeout;
 
     /**
      * Format of "transpiled" file ("json" or "csv").
@@ -216,7 +211,11 @@ abstract class SafeMojo extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                this.executeWithTimeout();
+                if (this.timeout == null) {
+                    this.exec();
+                } else {
+                    this.executeWithTimeout();
+                }
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
                         this,

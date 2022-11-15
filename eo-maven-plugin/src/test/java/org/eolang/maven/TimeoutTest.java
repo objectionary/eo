@@ -39,7 +39,7 @@ final class TimeoutTest {
     void interruptsIfTimeout() {
         final Timeout timeout = new Timeout(100, TimeUnit.MILLISECONDS);
         timeout.start();
-        Assertions.assertThrows(InterruptedException.class, () -> Thread.sleep(150));
+        Assertions.assertThrows(InterruptedException.class, () -> Thread.sleep(350));
     }
 
     @Test
@@ -48,7 +48,7 @@ final class TimeoutTest {
         timeout.start();
         final boolean success = true;
         timeout.stop();
-        Thread.sleep(150);
+        Thread.sleep(350);
         MatcherAssert.assertThat(success, Matchers.is(true));
     }
 
@@ -59,7 +59,7 @@ final class TimeoutTest {
             timeout.start();
             throw new IllegalStateException("Some occasion");
         } catch (final IllegalStateException ignore) {
-            Assertions.assertThrows(InterruptedException.class, () -> Thread.sleep(150));
+            Assertions.assertThrows(InterruptedException.class, () -> Thread.sleep(350));
         }
     }
 }
