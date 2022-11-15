@@ -125,7 +125,15 @@ final class Timeout {
     private void interrupt() {
         if (!this.finish.get()) {
             this.thread.interrupt();
-            Logger.warn(this, "Timeout reached");
+            Logger.warn(
+                this,
+                String.format(
+                    "Timeout ('%d %s') is reached for thread '%s'",
+                    this.value,
+                    this.unit,
+                    this.thread
+                )
+            );
         }
     }
 }
