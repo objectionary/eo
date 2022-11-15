@@ -67,9 +67,6 @@ import org.yaml.snakeyaml.Yaml;
  * released, you enable this test again.
  *
  * @since 0.1
- * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
- *  Find a way to make it reusable (i.e making it part of
- *  VerboseProcess) and remove it from MainTest.
  */
 @ExtendWith(WeAreOnline.class)
 final class SnippetTest {
