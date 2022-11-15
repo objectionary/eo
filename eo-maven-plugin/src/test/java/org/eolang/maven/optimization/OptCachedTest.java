@@ -36,7 +36,6 @@ import org.eolang.maven.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -71,17 +70,6 @@ class OptCachedTest {
         );
         MatcherAssert.assertThat(
             res, Matchers.equalTo(program)
-        );
-    }
-
-    @Test
-    void throwsExceptionIfProgramNameIsWrong(final @TempDir Path tmp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new OptCached(p -> OptCachedTest.program(), tmp.resolve("cache"))
-                .apply(
-                    new XMLDocument("<program name=\"/\\\"><errors/><objects/></program>")
-                )
         );
     }
 
