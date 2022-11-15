@@ -329,6 +329,11 @@ public final class GmiMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "XML before translating to GMI:\n%s", before);
         }
+        //todo: remove code below
+        System.out.println(before);
+        System.out.println("VERSION: " + before.xpath("/program/@version"));
+        System.out.println("TIME: " + before.xpath("/program/@time"));
+        //todo: remove code above
         final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         final String instructions = new Xsline(GmiMojo.TO_TEXT)
             .pass(after)
