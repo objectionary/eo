@@ -21,16 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (20 lines)
- */
-
 /**
- * EO runtime classes.
- *
- * @since 0.1
- * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
- * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
+ * Test cases for {@link org.eolang.maven.optimization} package.
  */
-package EOorg.EOeolang;
+package org.eolang.maven.optimization;
