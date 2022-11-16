@@ -46,14 +46,45 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
-  <xsl:function name="eo:edge" as="xs:string">
-    <xsl:param name="o1" as="node()"/>
-    <xsl:param name="o2" as="node()"/>
+  <xsl:function name="eo:locator" as="xs:string">
+    <xsl:param name="o" as="node()"/>
     <xsl:variable name="ret">
-      <xsl:text>edge:</xsl:text>
-      <xsl:value-of select="eo:index($o1)"/>
-      <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:index($o2)"/>
+      <xsl:choose>
+        <xsl:when test="$o/parent::o">
+          <xsl:value-of select="eo:locator($o/parent::o)"/>
+          <xsl:text>.</xsl:text>
+        </xsl:when>
+      </xsl:choose>
+      <xsl:choose>
+        <xsl:when test="$o/@name">
+          <xsl:value-of select="$o/@name"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:choose>
+            <xsl:when test="name($o) = 'o'">
+              <xsl:text>α</xsl:text>
+              <xsl:value-of select="count($o/preceding-sibling::o)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>ν0</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="$ret"/>
+  </xsl:function>
+  <xsl:function name="eo:fqn" as="xs:string">
+    <xsl:param name="program" as="node()"/>
+    <xsl:param name="base" as="xs:string"/>
+    <xsl:variable name="ret">
+      <xsl:choose>
+        <xsl:when test="not(contains($base, '.')) and $program/metas/meta[head='package']">
+          <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
+          <xsl:text>.</xsl:text>
+        </xsl:when>
+      </xsl:choose>
+      <xsl:value-of select="$base"/>
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>

@@ -37,18 +37,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]" mode="sodg" priority="1">
     <xsl:variable name="o" select="."/>
-    <xsl:variable name="objects" select="/program/objects"/>
-    <xsl:variable name="fqn">
-      <xsl:if test="not(contains(@base, '.')) and /program/metas/meta[head='package']">
-        <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
-        <xsl:text>.</xsl:text>
-      </xsl:if>
-      <xsl:value-of select="@base"/>
-    </xsl:variable>
+    <xsl:variable name="fqn" select="eo:fqn(/program, @base)"/>
     <xsl:for-each select="tokenize($fqn, '\.')">
       <xsl:variable name="k" select="."/>
       <xsl:variable name="p" select="position()"/>
-      <xsl:variable name="name">
+      <xsl:variable name="locator">
         <xsl:for-each select="tokenize($fqn, '\.')">
           <xsl:if test="position() &lt;= $p">
             <xsl:if test="position() &gt; 1">
@@ -58,7 +51,7 @@ SOFTWARE.
           </xsl:if>
         </xsl:for-each>
       </xsl:variable>
-      <xsl:if test="not($o/preceding::o[@base = $name or starts-with(@base, concat($name, '.'))])">
+      <xsl:if test="not($o/preceding::o[@base = $locator or starts-with(@base, concat($locator, '.'))])">
         <xsl:variable name="parent">
           <xsl:for-each select="tokenize($fqn, '\.')">
             <xsl:if test="position() &lt; $p">
@@ -69,22 +62,11 @@ SOFTWARE.
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        <xsl:variable name="from">
-          <xsl:choose>
-            <xsl:when test="$parent = ''">
-              <xsl:text>ν0</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:variable name="f" select="($objects//o[@base = $parent or starts-with(@base, concat($parent, '.'))])[1]"/>
-              <xsl:value-of select="concat(eo:vertex($f), '.fqn', position() - 1)"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
         <xsl:call-template name="i">
           <xsl:with-param name="name" select="'ADD'"/>
           <xsl:with-param name="args" as="item()*">
             <xsl:sequence>
-              <xsl:value-of select="concat(eo:vertex($o), '.fqn', position())"/>
+              <xsl:value-of select="$locator"/>
             </xsl:sequence>
           </xsl:with-param>
           <xsl:with-param name="comment">
@@ -93,7 +75,7 @@ SOFTWARE.
             <xsl:text>th part of the '</xsl:text>
             <xsl:value-of select="$fqn"/>
             <xsl:text>' FQN, because '</xsl:text>
-            <xsl:value-of select="$name"/>
+            <xsl:value-of select="$locator"/>
             <xsl:text>' has not been seen yet</xsl:text>
           </xsl:with-param>
         </xsl:call-template>
@@ -101,10 +83,17 @@ SOFTWARE.
           <xsl:with-param name="name" select="'BIND'"/>
           <xsl:with-param name="args" as="item()*">
             <xsl:sequence>
-              <xsl:value-of select="$from"/>
+              <xsl:choose>
+                <xsl:when test="$parent = ''">
+                  <xsl:text>ν0</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$parent"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:sequence>
             <xsl:sequence>
-              <xsl:value-of select="concat(eo:vertex($o), '.fqn', position())"/>
+              <xsl:value-of select="$locator"/>
             </xsl:sequence>
             <xsl:sequence>
               <xsl:value-of select="$k"/>

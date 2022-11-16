@@ -42,13 +42,12 @@ SOFTWARE.
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
           <xsl:variable name="v">
-            <xsl:value-of select="eo:vertex(.)"/>
-            <xsl:text>.copy</xsl:text>
+            <xsl:value-of select="eo:locator(.)"/>
           </xsl:variable>
           <xsl:value-of select="$v"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('data:', @data, '/', text())"/>
+          <xsl:value-of select="concat('data:', text())"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

@@ -36,16 +36,16 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="sodg" priority="1">
+  <xsl:template match="o[not(starts-with(@base, '.'))]" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:value-of select="eo:locator(.)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R1]</xsl:text>
+        <xsl:text>[R2]</xsl:text>
         <xsl:if test="@name">
           <xsl:text> name=</xsl:text>
           <xsl:value-of select="@name"/>
@@ -63,13 +63,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
+          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(ancestor::*[1])"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:value-of select="eo:locator(.)"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:variable name="r">
@@ -103,7 +100,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R1] The object</xsl:text>
+        <xsl:text>[R2] The object</xsl:text>
         <xsl:if test="@name">
           <xsl:text> '</xsl:text>
           <xsl:value-of select="@name"/>
