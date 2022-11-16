@@ -28,15 +28,15 @@ SOFTWARE.
   their parents, using their names as edge labels or just \alpha
   if no names provided.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/gmi">
+  <xsl:template match="/program/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="gmi" priority="1">
+  <xsl:template match="o" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
@@ -113,7 +113,7 @@ SOFTWARE.
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
-  <xsl:template match="o" mode="gmi">
+  <xsl:template match="o" mode="sodg">
     <!-- ignore it -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

@@ -22,18 +22,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="variability" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="rename" version="2.0">
   <!--
-  For each element <a/> that has vertex or edge absolute numbers
-  we add a dollar sign, to indicate that it's a variable.
+  This one renames all <a/> elements that contain edges. Each element
+  currently starts with either "edge:", or "vertex:", or "text:", or "data:".
+  We rename the elements that start with "edge:", giving them new numbers.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/gmi/i/a[. != 'ν0' and @prefix = 'vertex' or @prefix = 'edge']">
+  <xsl:variable name="sorted">
+    <xsl:perform-sort select="/sodg/i/a[starts-with(., 'edge:') or starts-with(., 'vertex:') and . != 'vertex:0']">
+      <xsl:sort select="."/>
+    </xsl:perform-sort>
+  </xsl:variable>
+  <xsl:template match="/sodg/i/a[matches(., '[a-z]+:.*') and . != 'vertex:0']">
+    <xsl:variable name="a" select="."/>
+    <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
     <xsl:copy>
-      <xsl:apply-templates select="node() except text()|@*"/>
-      <xsl:text>$</xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:choose>
+        <xsl:when test="$prefix = 'edge' or $prefix = 'vertex'">
+          <xsl:value-of select="$prefix"/>
+          <xsl:text>:</xsl:text>
+          <xsl:value-of select="index-of(distinct-values($sorted/a), $a)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

@@ -22,41 +22,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R4" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="focus" version="2.0">
   <!--
-  Here we find objects with "dot notation" in the @base
-  attribute and attach a proper ATOM to their vertices.
+  Here we remove everything from the document, except the "sodg"
+  node, making it the root one.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/gmi">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.')]" mode="gmi" priority="1">
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ATOM'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="concat('text:', 'S/ξ.ρ', @base)"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R4] This is a dot-notation</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  <xsl:template match="o" mode="gmi">
-    <!-- ignore them -->
+  <xsl:template match="/">
+    <xsl:copy-of select="program/sodg"/>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*" mode="#current"/>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

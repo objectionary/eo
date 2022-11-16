@@ -22,21 +22,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1.1" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R7" version="2.0">
   <!--
-  Here we find all objects that have @base attributes that don't
-  start with a dot and set them a LAMBDA to find the right place
-  to point to.
+  Here we attach atoms to vertices using ATOM instruction.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/gmi">
+  <xsl:template match="/program/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.'))]" mode="gmi" priority="1">
+  <xsl:template match="o[@name and @atom]" mode="sodg" priority="1">
+    <xsl:variable name="fqn">
+      <xsl:if test="/program/metas/meta[head='package']">
+        <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
+        <xsl:text>.</xsl:text>
+      </xsl:if>
+      <xsl:for-each select="ancestor::o[@abstract and @name]">
+        <xsl:value-of select="@name"/>
+        <xsl:text>.</xsl:text>
+      </xsl:for-each>
+      <xsl:value-of select="@name"/>
+    </xsl:variable>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ATOM'"/>
       <xsl:with-param name="args" as="item()*">
@@ -44,42 +53,18 @@ SOFTWARE.
           <xsl:value-of select="eo:vertex(.)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:variable name="loc">
-            <xsl:choose>
-              <xsl:when test="@base = 'Q'">
-                <xsl:text>Φ</xsl:text>
-              </xsl:when>
-              <xsl:when test="@base = '^'">
-                <xsl:text>ρ</xsl:text>
-              </xsl:when>
-              <xsl:when test="@base = '$'">
-                <xsl:text>ξ</xsl:text>
-              </xsl:when>
-              <xsl:when test="@base = '&amp;'">
-                <xsl:text>σ</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:variable name="fqn">
-                  <xsl:if test="not(contains(@base, '.')) and /program/metas/meta[head='package']">
-                    <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
-                    <xsl:text>.</xsl:text>
-                  </xsl:if>
-                  <xsl:value-of select="@base"/>
-                </xsl:variable>
-                <xsl:value-of select="concat('Φ', '.', $fqn)"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
-          <xsl:value-of select="concat('text:', 'S/', $loc)"/>
+          <xsl:value-of select="concat('text:', $fqn)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R1] Point this one to the root</xsl:text>
+        <xsl:text>[R6] This is an atom returning "</xsl:text>
+        <xsl:value-of select="@atom"/>
+        <xsl:text>"</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
-  <xsl:template match="o" mode="gmi">
-    <!-- ignore it -->
+  <xsl:template match="o" mode="sodg">
+    <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

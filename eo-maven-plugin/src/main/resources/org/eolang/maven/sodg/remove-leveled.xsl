@@ -22,25 +22,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="remove-leveled" version="2.0">
   <!--
-  Here we start the graph, creating a new XML element "gmi" under "program".
-  All further XSL transformations will work with "i" elements inside
-  this "gmi" one.
+  Remove all objects that have @level set.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program[not(gmi)]">
+  <xsl:template match="/">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:element name="gmi">
-        <!-- empty one -->
-      </xsl:element>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@level]">
+    <!-- remove it -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="node()|@*" mode="#current"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

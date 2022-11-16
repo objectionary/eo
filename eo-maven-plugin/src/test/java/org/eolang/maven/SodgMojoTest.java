@@ -54,7 +54,7 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class GmiMojoTest {
+final class SodgMojoTest {
 
     @Test
     @Disabled
@@ -66,10 +66,10 @@ final class GmiMojoTest {
             }
             program.append("[x y z] > foo\n");
         }
-        final XML graph = GmiMojoTest.toGraph(program.toString(), "**");
+        final XML graph = SodgMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
             ".foo .foo",
-            new GmiMojoTest.ExistsIn(graph)
+            new SodgMojoTest.ExistsIn(graph)
         );
     }
 
@@ -80,7 +80,7 @@ final class GmiMojoTest {
         final Map<String, Object> map = new Yaml().load(
             new TextOf(
                 new ResourceOf(
-                    String.format("org/eolang/maven/gmis/%s", pack)
+                    String.format("org/eolang/maven/sodgs/%s", pack)
                 )
             ).asString()
         );
@@ -93,13 +93,13 @@ final class GmiMojoTest {
         if (value != null) {
             inclusion = value.toString().substring(1, value.toString().length() - 1);
         }
-        final XML graph = GmiMojoTest.toGraph(map.get("eo").toString(), inclusion);
+        final XML graph = SodgMojoTest.toGraph(map.get("eo").toString(), inclusion);
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
                     loc,
-                    new GmiMojoTest.ExistsIn(graph)
+                    new SodgMojoTest.ExistsIn(graph)
                 )
             );
         }
@@ -108,7 +108,7 @@ final class GmiMojoTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Collection<String> yamlPacks() {
-        return GmiMojoTest.yamls("org/eolang/maven/gmis/", "");
+        return SodgMojoTest.yamls("org/eolang/maven/sodgs/", "");
     }
 
     private static Collection<String> yamls(final String path,
@@ -122,7 +122,7 @@ final class GmiMojoTest {
                 out.add(String.format("%s%s", prefix, sub));
             } else {
                 out.addAll(
-                    GmiMojoTest.yamls(
+                    SodgMojoTest.yamls(
                         String.format("%s%s/", path, sub),
                         String.format("%s/", sub)
                     )
@@ -136,7 +136,7 @@ final class GmiMojoTest {
      * Convert EO source to Graph.
      *
      * @param code Code in EO
-     * @param inclusion Value of gmiIncludes property
+     * @param inclusion Value of sodgIncludes property
      * @return The graph
      * @throws IOException If fails
      */
@@ -161,19 +161,19 @@ final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        new Moja<>(GmiMojo.class)
-            .with("generateGmiXmlFiles", true)
+        new Moja<>(SodgMojo.class)
+            .with("generateSodgXmlFiles", true)
             .with("generateXemblyFiles", true)
             .with("generateGraphFiles", true)
             .with("generateDotFiles", true)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("gmiIncludes", new SetOf<>(inclusion))
+            .with("sodgIncludes", new SetOf<>(inclusion))
             .execute();
         return new XMLDocument(
             target.resolve(
-                String.format("%s/foo/main.gmi.graph.xml", GmiMojo.DIR)
+                String.format("%s/foo/main.sodg.graph.xml", SodgMojo.DIR)
             )
         );
     }

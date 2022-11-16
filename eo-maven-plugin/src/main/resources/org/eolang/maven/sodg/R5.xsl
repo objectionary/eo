@@ -22,48 +22,49 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R7" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R5" version="2.0">
   <!--
-  Here we attach atoms to vertices using ATOM instruction.
+  Here we break hard links from parents to their kids and make
+  COPY of kids.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/gmi">
+  <xsl:template match="/program/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="gmi"/>
+      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@name and @atom]" mode="gmi" priority="1">
-    <xsl:variable name="fqn">
-      <xsl:if test="/program/metas/meta[head='package']">
-        <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
-        <xsl:text>.</xsl:text>
-      </xsl:if>
-      <xsl:for-each select="ancestor::o[@abstract and @name]">
-        <xsl:value-of select="@name"/>
-        <xsl:text>.</xsl:text>
-      </xsl:for-each>
-      <xsl:value-of select="@name"/>
-    </xsl:variable>
+  <xsl:template match="o[not(eo:abstract(.)) and @base and not(starts-with(@base, '.')) and (o or @data)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ATOM'"/>
+      <xsl:with-param name="name" select="'COPY'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('text:', $fqn)"/>
+          <xsl:variable name="v">
+            <xsl:value-of select="eo:vertex(.)"/>
+            <xsl:text>.copy</xsl:text>
+          </xsl:variable>
+          <xsl:value-of select="$v"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:variable name="e">
+            <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
+            <xsl:text>.copy</xsl:text>
+          </xsl:variable>
+          <xsl:value-of select="$e"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R6] This is an atom returning "</xsl:text>
-        <xsl:value-of select="@atom"/>
-        <xsl:text>"</xsl:text>
+        <xsl:text>[R5] Making a copy of </xsl:text>
+        <xsl:value-of select="eo:vertex(ancestor::*[1])"/>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
-  <xsl:template match="o" mode="gmi">
+  <xsl:template match="o" mode="sodg">
     <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

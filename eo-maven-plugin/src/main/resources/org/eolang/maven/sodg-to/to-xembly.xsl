@@ -32,7 +32,7 @@ SOFTWARE.
     <xsl:value-of select="$EOL"/>
     <xsl:value-of select="'  '"/>
   </xsl:variable>
-  <xsl:template match="/gmi">
+  <xsl:template match="/sodg">
     <xsl:element name="xembly">
       <xsl:apply-templates select="i"/>
     </xsl:element>
@@ -266,7 +266,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="i">
     <xsl:message terminate="yes">
-      <xsl:text>Unknown GMI '</xsl:text>
+      <xsl:text>Unknown SODG '</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>'</xsl:text>
     </xsl:message>
