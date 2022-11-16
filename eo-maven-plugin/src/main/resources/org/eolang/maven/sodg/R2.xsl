@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
   <!--
-  Here we ADD all objects to the graph and BIND them to
+  Here we ADD all copies to the graph and BIND them to
   their parents, using their names as edge labels or just \alpha
   if no names provided.
   -->
@@ -80,6 +80,40 @@ SOFTWARE.
           <xsl:text>'</xsl:text>
         </xsl:if>
         <xsl:text> belongs to its owner</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:locator(.)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>ρ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>[R2] \rho</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:locator(.)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>σ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>[R2] \sigma</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

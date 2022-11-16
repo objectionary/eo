@@ -41,6 +41,8 @@ SOFTWARE.
       <xsl:element name="dot">
         <xsl:text>// This file is auto-generated, don't edit it</xsl:text>
         <xsl:value-of select="$EOL"/>
+        <xsl:text>// Render is here: https://dreampuf.github.io/GraphvizOnline/</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:text>digraph {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:text>  node [fixedsize=true,width=1,fontname="Arial"];</xsl:text>
