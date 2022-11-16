@@ -34,14 +34,18 @@ SOFTWARE.
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
+    <!--  This is required for later correct replacement of argline  -->
+    <argLine/>
     <stack-size>256M</stack-size>
+    <!--  This is required for later correct replacement of argline  -->
+    <argLine/>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.28.10</version>
+      <version>0.28.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -195,8 +199,16 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
-      <!-- version from parent POM -->
-      <scope>test</scope>
+      <version>2.0.3</version>
+      <scope>provided</scope>
+      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      to enable configurable Log4j logging during testing -->
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.reload4j</groupId>
+      <artifactId>reload4j</artifactId>
+      <version>1.2.22</version>
+      <scope>runtime</scope>
       <!-- This dependency must preceed jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
     </dependency>
@@ -217,7 +229,7 @@ SOFTWARE.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Xss${stack-size}</argLine>
+          <argLine>@{argLine} -Xss${stack-size}</argLine>
           <systemPropertyVariables>
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
             <runtime.path>${project.basedir}/../eo-runtime</runtime.path>

@@ -21,49 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
-
 /**
- * MD5 hash of a file (its content).
- *
- * @since 0.24
+ * Commit hash package.
+ * The {@link org.eolang.maven.hash} package contains classes which can help you to
+ * receive a commit hash from different sources:
+ * - by HTTP {@link org.eolang.maven.hash.ChRemote}
+ * - from text or a text file {@link org.eolang.maven.hash.ChText}
+ * - or by a custom pattern {@link org.eolang.maven.hash.ChPattern}
+ * Also some implementations can change the hash value itself {@link org.eolang.maven.hash.ChNarrow}
+ * or even cache invocations to improve the performance of getting a commit hash value
+ * {@link org.eolang.maven.hash.ChCached}.
  */
-final class FileHash {
-
-    /**
-     * The file.
-     */
-    private final Path file;
-
-    /**
-     * Ctor.
-     * @param path The name of the file
-     */
-    FileHash(final Path path) {
-        this.file = path;
-    }
-
-    @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
-        } else {
-            hash = "";
-        }
-        return hash;
-    }
-
-}
+package org.eolang.maven.hash;

@@ -21,49 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.optimization;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
+import com.jcabi.xml.XML;
+import java.util.function.Function;
 
 /**
- * MD5 hash of a file (its content).
+ * Abstraction for XML optimizations.
  *
- * @since 0.24
+ * @since 0.28.11
  */
-final class FileHash {
-
-    /**
-     * The file.
-     */
-    private final Path file;
-
-    /**
-     * Ctor.
-     * @param path The name of the file
-     */
-    FileHash(final Path path) {
-        this.file = path;
-    }
-
-    @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
-        } else {
-            hash = "";
-        }
-        return hash;
-    }
-
+@FunctionalInterface
+public interface Optimization extends Function<XML, XML> {
 }

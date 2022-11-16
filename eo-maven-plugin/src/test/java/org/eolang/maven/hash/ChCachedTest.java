@@ -21,48 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Short version of hash.
+ * Test case for {@link org.eolang.maven.hash.ChCached}.
  *
  * @since 0.28.11
  */
-final class ChNarrow implements CommitHash {
+class ChCachedTest {
 
-    /**
-     * Delegate.
-     */
-    private final CommitHash full;
-
-    /**
-     * The main constructor.
-     *
-     * @param full Delegate
-     */
-    ChNarrow(final CommitHash full) {
-        this.full = full;
-    }
-
-    @Override
-    public String value() {
-        final String hash = this.validHash();
-        return hash.substring(0, Math.min(7, hash.length()));
-    }
-
-    /**
-     * Valid hash.
-     *
-     * @return Full valid hash.
-     */
-    private String validHash() {
-        final String hash = this.full.value();
-        if (hash.isEmpty()) {
-            throw new IllegalArgumentException(
-                String.format("Hash can't be empty. The delegate %s", this.full)
-            );
+    @Test
+    void cachesHashAndInvokesDelegateOnlyOnce() {
+        final AtomicInteger invocations = new AtomicInteger(0);
+        final ChCached cached = new ChCached(
+            () -> {
+                invocations.incrementAndGet();
+                return "dummy";
+            }
+        );
+        for (int idx = 0; idx < 10; ++idx) {
+            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
         }
-        return hash;
+        MatcherAssert.assertThat(invocations.get(), Matchers.equalTo(1));
     }
-
 }

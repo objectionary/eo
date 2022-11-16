@@ -23,6 +23,10 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Xsline;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,6 +43,34 @@ final class ParsingTrainTest {
         MatcherAssert.assertThat(
             new ParsingTrain(),
             Matchers.iterableWithSize(Matchers.greaterThan(1))
+        );
+    }
+
+    @Test
+    void stopsPipeline() {
+        final XML xml = new XMLDocument(
+            String.join(
+                "\n",
+                "<program>",
+                "  <errors/>",
+                "  <sheets/>",
+                "  <objects>",
+                "    <o abstract=\"\" line=\"1\" name=\"main\" pos=\"0\">",
+                "      <o base=\"bool\" data=\"bytes\" line=\"2\" name=\"x\" pos=\"2\">01</o>",
+                "      <o base=\"bool\" data=\"bytes\" line=\"3\" name=\"x\" pos=\"2\">00</o>",
+                "    </o>",
+                "  </objects>",
+                "</program>"
+            )
+        );
+        MatcherAssert.assertThat(
+            new Xsline(
+                new ParsingTrain()
+            ).pass(xml),
+            XhtmlMatchers.hasXPaths(
+                "/program/sheets[count(sheet)=3]",
+                "/program/errors/error[@severity='critical']"
+            )
         );
     }
 

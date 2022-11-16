@@ -27,7 +27,7 @@
  */
 
 /**
- * EO runtime.
+ * EO runtime classes.
  *
  * @since 0.1
  * @see <a href="https://www.eolang.org">project site www.eolang.org</a>

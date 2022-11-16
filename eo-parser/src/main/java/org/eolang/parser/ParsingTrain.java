@@ -28,7 +28,7 @@ import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
-import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
@@ -56,7 +56,7 @@ public final class ParsingTrain extends TrEnvelope {
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
         "/org/eolang/parser/errors/middle-varargs.xsl",
-        "/org/eolang/parser/errors/duplicate-names.xsl",
+        "/org/eolang/parser/critical-errors/duplicate-names.xsl",
         "/org/eolang/parser/errors/many-free-attributes.xsl",
         "/org/eolang/parser/errors/broken-aliases.xsl",
         "/org/eolang/parser/errors/duplicate-aliases.xsl",
@@ -78,7 +78,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/errors/broken-refs.xsl",
         "/org/eolang/parser/errors/unknown-names.xsl",
         "/org/eolang/parser/errors/noname-attributes.xsl",
-        "/org/eolang/parser/errors/duplicate-names.xsl",
+        "/org/eolang/parser/critical-errors/duplicate-names.xsl",
         "/org/eolang/parser/warnings/duplicate-metas.xsl",
         "/org/eolang/parser/warnings/mandatory-package-meta.xsl",
         "/org/eolang/parser/warnings/correct-package-meta.xsl",
@@ -93,15 +93,20 @@ public final class ParsingTrain extends TrEnvelope {
     @SuppressWarnings("unchecked")
     public ParsingTrain() {
         super(
-            new TrBulk<>(
-                new TrClasspath<>(
-                    new TrLambda(
-                        new TrFast(
-                            new TrLogged(
-                                new TrDefault<>()
-                            )
-                        ),
-                        shift -> new StAfter(
+            new TrLambda(
+                new TrFast(
+                    new TrLogged(
+                        new TrClasspath<>(
+                            new TrDefault<>(),
+                            ParsingTrain.SHEETS
+                        ).back()
+                    )
+                ),
+                shift -> new StLambda(
+                    shift::uid,
+                    (position, out) -> new StSequence(
+                        xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
+                        new StAfter(
                             shift,
                             new StLambda(
                                 shift::uid,
@@ -110,10 +115,9 @@ public final class ParsingTrain extends TrEnvelope {
                                     .transform(xml)
                             )
                         )
-                    ),
-                    ParsingTrain.SHEETS
+                    ).apply(position, out)
                 )
-            ).back().back()
+            )
         );
     }
 

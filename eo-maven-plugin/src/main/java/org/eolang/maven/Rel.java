@@ -32,7 +32,7 @@ import java.nio.file.Paths;
  *
  * @since 0.28.11
  */
-final class Rel {
+public final class Rel {
 
     /**
      * Current working directory.
@@ -58,7 +58,7 @@ final class Rel {
      *
      * @param other Path relative to working directory.
      */
-    Rel(final Path other) {
+    public Rel(final Path other) {
         this(Paths.get(""), other);
     }
 

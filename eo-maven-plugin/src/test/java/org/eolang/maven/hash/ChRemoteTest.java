@@ -21,49 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
+package org.eolang.maven.hash;
+
+import org.eolang.maven.WeAreOnline;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * MD5 hash of a file (its content).
- *
- * @since 0.24
+ * Test case for {@link org.eolang.maven.hash.ChRemote}.
+ * @since 0.26
  */
-final class FileHash {
+@ExtendWith(WeAreOnline.class)
+final class ChRemoteTest {
 
-    /**
-     * The file.
-     */
-    private final Path file;
-
-    /**
-     * Ctor.
-     * @param path The name of the file
-     */
-    FileHash(final Path path) {
-        this.file = path;
+    @Test
+    void testCommitHashTag() {
+        final String hash = new ChRemote("0.26.0").value();
+        MatcherAssert.assertThat(
+            hash,
+            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
+        );
     }
 
-    @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
-        } else {
-            hash = "";
-        }
-        return hash;
+    @Test
+    void testCommitHashOldTag() {
+        final String hash = new ChRemote("0.23.19").value();
+        MatcherAssert.assertThat(
+            hash,
+            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
+        );
     }
 
+    @Test
+    void testCommitHashException() {
+        Assertions.assertThrows(
+            ChText.NotFound.class,
+            () -> new ChRemote("nonsense").value()
+        );
+    }
 }

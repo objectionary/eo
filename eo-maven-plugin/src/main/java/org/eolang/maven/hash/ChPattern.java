@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.hash;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -41,7 +41,7 @@ import org.cactoos.iterable.Mapped;
  *
  * @since 0.28.11
  */
-final class ChPattern implements CommitHash {
+public final class ChPattern implements CommitHash {
 
     /**
      * Pattern like *.*.* or 'master'.
@@ -59,7 +59,7 @@ final class ChPattern implements CommitHash {
      * @param pattern Pattern like *.*.* or 'master'.
      * @param tag Particular tag to match.
      */
-    ChPattern(
+    public ChPattern(
         final String pattern,
         final String tag
     ) {

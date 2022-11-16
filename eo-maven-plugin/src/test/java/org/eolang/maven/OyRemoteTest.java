@@ -23,41 +23,41 @@
  */
 package org.eolang.maven;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link org.eolang.maven.ChNarrow}.
+ * Test for {@link OyRemote}.
  *
- * @since 0.28.11
+ * @since 1.0
  */
-class ChNarrowTest {
+final class OyRemoteTest {
 
-    @ParameterizedTest
-    @CsvSource({
-        "1234567, 1234567",
-        "12345678, 1234567",
-        "123456789, 1234567",
-        "1, 1"
-    })
-    void cutsHashCorrectly(final String input, final String output) {
+    @Test
+    void buildsCorrectUrl() throws Exception {
         MatcherAssert.assertThat(
-            new ChNarrow(
-                new CommitHash.ChConstant(input)
-            ).value(),
-            Matchers.equalTo(output)
+            new OyRemote.UrlOy(
+                "https://raw/objectionary/home/%s/objects/%s.eo",
+                "abcde"
+            ).value("org.eolang.app"),
+            Matchers.is(
+                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
+            )
         );
     }
 
     @Test
-    void throwsExceptionIfEmpty() {
+    void throwsExceptionOnInvalidUrl() {
         Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+            MalformedURLException.class,
+            () -> new OyRemote.UrlOy(
+                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
+                "abcde"
+            ).value("org.eolang.app")
         );
     }
 }

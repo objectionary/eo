@@ -21,34 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.optimization;
 
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import java.nio.file.Path;
+import org.eolang.maven.Place;
+import org.eolang.maven.Rel;
+import org.eolang.maven.SpyTrain;
 
 /**
- * Cached commit hash.
- *
- * @since 0.28.11
+ * Optimization that spies.
+ * @since 0.28.12
  */
-final class ChCached implements CommitHash {
+public final class OptSpy implements Optimization {
 
     /**
-     * Cache.
+     * Where to track optimization steps.
      */
-    private final Unchecked<String> delegate;
+    private final Path target;
 
     /**
-     * Default constructor.
-     *
-     * @param delegate Delegate
+     * The main constructor.
+     * @param target Where to track optimization steps.
      */
-    ChCached(final CommitHash delegate) {
-        this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
+    public OptSpy(final Path target) {
+        this.target = target;
     }
 
     @Override
-    public String value() {
-        return this.delegate.value();
+    public XML apply(final XML xml) {
+        final Place place = new Place(xml.xpath("/program/@name").get(0));
+        final Path dir = place.make(this.target, "");
+        Logger.debug(
+            this, "Optimization steps will be tracked to %s",
+            new Rel(dir)
+        );
+        return new OptTrain(new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)).apply(xml);
     }
 }

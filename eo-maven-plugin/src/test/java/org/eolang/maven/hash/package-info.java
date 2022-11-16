@@ -21,45 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-package org.eolang.maven;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 /**
- * Test case for {@link OyRemote}.
- * @since 0.26
+ * Commit hash tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.hash.CommitHash}.
  */
-@ExtendWith(WeAreOnline.class)
-final class ChRemoteTest {
-
-    @Test
-    void testCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
-        );
-    }
-
-    @Test
-    void testCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
-    }
-
-    @Test
-    void testCommitHashException() {
-        Assertions.assertThrows(
-            ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
-        );
-    }
-}
+package org.eolang.maven.hash;
