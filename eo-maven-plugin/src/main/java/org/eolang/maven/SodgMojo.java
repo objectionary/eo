@@ -64,6 +64,16 @@ import org.xembly.Xembler;
 /**
  * Convert XMIR to SODG.
  *
+ * SODG (Surging Object DiGraph) is our own format of graph representation.
+ * It essentially is a text file that consists of instructions for a virtual
+ * machine that is capable of parsing them and building a graph. An example
+ * of such a machine can be found in
+ * <a href="https://github.com/objectionary/sodg">this repository</a>. When the
+ * graph is built by the virtual machine, it must be possible to execute
+ * a program using graph traversing algorithm. An example of such an executor
+ * of a graph can be found in
+ * <a href="https://github.com/objectionary/reo">this repository</a>.
+ *
  * @since 0.27
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
