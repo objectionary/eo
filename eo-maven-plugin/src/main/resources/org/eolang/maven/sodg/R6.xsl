@@ -38,7 +38,7 @@ SOFTWARE.
   <!-- remove this "!=array" after the fix: https://github.com/objectionary/eo/issues/1060 -->
   <xsl:template match="o[@base and @data and @data != 'array']" mode="sodg" priority="1">
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'DATA'"/>
+      <xsl:with-param name="name" select="'PUT'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
           <xsl:variable name="v">

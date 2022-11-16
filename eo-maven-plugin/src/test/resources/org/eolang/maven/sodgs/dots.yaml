@@ -1,7 +1,9 @@
 locators:
-  - .dots .x λ=S/ξ.ρ.not .ρ Δ=bytes/01
-  - .dots .y λ=S/ξ.ρ.b .ρ λ=S/ξ.ρ.a .ρ λ=S/Φ
-  - .dots .z λ=S/ξ.ρ.times .ρ λ=S/ξ.ρ.plus .α0 Δ=bytes/01
+  - .org .eolang .bool
+  - .org .eolang .int
+  - .dots .x .π/.not Δ=01 .π >bool
+  - .dots .y .π/.b .π/.a Φ
+  - .dots .z .π/.times .π/.plus Δ=2A .π >int
 eo: |
   [] > dots
     TRUE.not > x

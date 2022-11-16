@@ -22,11 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1.1" version="2.0">
   <!--
-  Here we ADD all objects to the graph and BIND them to
-  their parents, using their names as edge labels or just \alpha
-  if no names provided.
+  Here we find all objects that have @base attributes that don't
+  start with a dot and make sure they exist in the graph.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -36,82 +35,91 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o" mode="sodg" priority="1">
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ADD'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R1]</xsl:text>
-        <xsl:if test="@name">
-          <xsl:text> name=</xsl:text>
-          <xsl:value-of select="@name"/>
-        </xsl:if>
-        <xsl:if test="@abstract">
-          <xsl:text> abstract</xsl:text>
-        </xsl:if>
-        <xsl:if test="@base">
-          <xsl:text> base=</xsl:text>
-          <xsl:value-of select="@base"/>
-        </xsl:if>
-      </xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'BIND'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:edge(ancestor::*[1], .)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(ancestor::*[1])"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:variable name="r">
-            <xsl:choose>
-              <xsl:when test="@name">
-                <xsl:value-of select="@name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:variable name="order" select="count(preceding-sibling::o)"/>
-                <xsl:choose>
-                  <xsl:when test="starts-with(ancestor::*[1]/@base, '.')">
-                    <xsl:choose>
-                      <xsl:when test="$order = 0">
-                        <xsl:text>ρ</xsl:text>
-                      </xsl:when>
-                      <xsl:otherwise>
-                        <xsl:text>α</xsl:text>
-                        <xsl:value-of select="$order - 1"/>
-                      </xsl:otherwise>
-                    </xsl:choose>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:text>α</xsl:text>
-                    <xsl:value-of select="$order"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:variable>
-          <xsl:value-of select="concat('text:', eo:attr($r))"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R1] The object</xsl:text>
-        <xsl:if test="@name">
-          <xsl:text> '</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>'</xsl:text>
-        </xsl:if>
-        <xsl:text> belongs to its owner</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
+  <xsl:template match="o[@base and not(starts-with(@base, '.'))]" mode="sodg" priority="1">
+    <xsl:variable name="o" select="."/>
+    <xsl:variable name="objects" select="/program/objects"/>
+    <xsl:variable name="fqn">
+      <xsl:if test="not(contains(@base, '.')) and /program/metas/meta[head='package']">
+        <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
+        <xsl:text>.</xsl:text>
+      </xsl:if>
+      <xsl:value-of select="@base"/>
+    </xsl:variable>
+    <xsl:for-each select="tokenize($fqn, '\.')">
+      <xsl:variable name="k" select="."/>
+      <xsl:variable name="p" select="position()"/>
+      <xsl:variable name="name">
+        <xsl:for-each select="tokenize($fqn, '\.')">
+          <xsl:if test="position() &lt;= $p">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>.</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="."/>
+          </xsl:if>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:if test="not($o/preceding::o[@base = $name or starts-with(@base, concat($name, '.'))])">
+        <xsl:variable name="parent">
+          <xsl:for-each select="tokenize($fqn, '\.')">
+            <xsl:if test="position() &lt; $p">
+              <xsl:if test="position() &gt; 1">
+                <xsl:text>.</xsl:text>
+              </xsl:if>
+              <xsl:value-of select="."/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="from">
+          <xsl:choose>
+            <xsl:when test="$parent = ''">
+              <xsl:text>ν0</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:variable name="f" select="($objects//o[@base = $parent or starts-with(@base, concat($parent, '.'))])[1]"/>
+              <xsl:value-of select="concat(eo:vertex($f), '.fqn', position() - 1)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:call-template name="i">
+          <xsl:with-param name="name" select="'ADD'"/>
+          <xsl:with-param name="args" as="item()*">
+            <xsl:sequence>
+              <xsl:value-of select="concat(eo:vertex($o), '.fqn', position())"/>
+            </xsl:sequence>
+          </xsl:with-param>
+          <xsl:with-param name="comment">
+            <xsl:text>[R1] </xsl:text>
+            <xsl:value-of select="position()"/>
+            <xsl:text>th part of the '</xsl:text>
+            <xsl:value-of select="$fqn"/>
+            <xsl:text>' FQN, because '</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>' has not been seen yet</xsl:text>
+          </xsl:with-param>
+        </xsl:call-template>
+        <xsl:call-template name="i">
+          <xsl:with-param name="name" select="'BIND'"/>
+          <xsl:with-param name="args" as="item()*">
+            <xsl:sequence>
+              <xsl:value-of select="$from"/>
+            </xsl:sequence>
+            <xsl:sequence>
+              <xsl:value-of select="concat(eo:vertex($o), '.fqn', position())"/>
+            </xsl:sequence>
+            <xsl:sequence>
+              <xsl:value-of select="$k"/>
+            </xsl:sequence>
+          </xsl:with-param>
+          <xsl:with-param name="comment">
+            <xsl:text>[R1] link to the </xsl:text>
+            <xsl:value-of select="position()"/>
+            <xsl:text>th part of the '</xsl:text>
+            <xsl:value-of select="$fqn"/>
+            <xsl:text>' FQN</xsl:text>
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
     <!-- ignore it -->

@@ -88,12 +88,17 @@ final class SodgMojoTest {
             map.get("skip") == null,
             String.format("%s is skipped", pack)
         );
-        final Object value = map.get("inclusion");
-        String inclusion = "**";
-        if (value != null) {
-            inclusion = value.toString().substring(1, value.toString().length() - 1);
+        Object inclusion = map.get("inclusion");
+        if (inclusion == null) {
+            inclusion = "**";
+        } else {
+            inclusion = inclusion.toString().substring(
+                1, inclusion.toString().length() - 1
+            );
         }
-        final XML graph = SodgMojoTest.toGraph(map.get("eo").toString(), inclusion);
+        final XML graph = SodgMojoTest.toGraph(
+            map.get("eo").toString(), inclusion.toString()
+        );
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
