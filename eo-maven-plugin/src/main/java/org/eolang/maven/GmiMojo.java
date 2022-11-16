@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -52,14 +53,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -136,10 +138,8 @@ public final class GmiMojo extends SafeMojo {
             new TrClasspath<>(
                 new TrDefault<>(),
                 "/org/eolang/maven/gmi/remove-leveled.xsl",
-                "/org/eolang/maven/gmi/R0.xsl"
-                ,
-                "/org/eolang/maven/gmi/R1.xsl"
-                ,
+                "/org/eolang/maven/gmi/R0.xsl",
+                "/org/eolang/maven/gmi/R1.xsl",
                 "/org/eolang/maven/gmi/R1.1.xsl",
                 "/org/eolang/maven/gmi/R4.xsl",
                 "/org/eolang/maven/gmi/R5.xsl",
@@ -335,15 +335,7 @@ public final class GmiMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "XML before translating to GMI:\n%s", before);
         }
-        //todo: remove code below
-        System.out.println(before);
-        System.out.println("VERSION: " + before.xpath("/program/@version.xsl"));
-        System.out.println("TIME: " + before.xpath("/program/@time"));
-        //todo: remove code above
-        final XML after = new Xsline(new SpyTrain(GmiMojo.TRAIN,
-            gmi.getParent().getParent().getParent().getParent()
-        )
-        ).pass(before);
+        final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
         final String instructions = new Xsline(GmiMojo.TO_TEXT)
             .pass(after)
             .xpath("/text/text()")
@@ -381,23 +373,23 @@ public final class GmiMojo extends SafeMojo {
      */
     private void makeGraph(final String xembly, final Path gmi) throws IOException {
         if (this.generateGraphFiles) {
-            final Directives dirs = new Directives(xembly);
+            final Directives all = new Directives(xembly);
             Logger.debug(
                 this, "There are %d Xembly directives for %s",
-                new IoChecked<>(new LengthOf(dirs)).value(), gmi
+                new IoChecked<>(new LengthOf(all)).value(), gmi
             );
+            final ListOf<Directive> directives = new ListOf<>(all);
+            final Directive comment = directives.remove(0);
             final XML graph = new XMLDocument(
                 new Xembler(
                     new Directives()
-                        .comment("This file is auto-generated, don't edit it !!!")
+                        .append(Collections.singleton(comment))
                         .add("graph")
                         .add("v")
                         .attr("id", "ν0")
-                        .append(dirs)
+                        .append(directives)
                 ).domQuietly()
             );
-            System.out.println("GRAPHS");
-            System.out.println(graph);
             final Path sibling = gmi.resolveSibling(
                 String.format("%s.graph.xml", gmi.getFileName())
             );
