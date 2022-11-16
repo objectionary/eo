@@ -110,11 +110,17 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.attrs = new ExtendedAttrs(
             "ρ",
             new AtSimple(sigma),
-            new ExtendedAttrs(
-                "σ",
-                new AtSimple(sigma),
-                new HashMap<>(0)
-            ).asMap()
+            new Attrs(
+                new ExtendedAttrs(
+                    "σ",
+                    new AtSimple(sigma),
+                    new Attrs(
+                        new HashMap<>(0),
+                        this.order
+                    )
+                ).asMap(),
+                this.order
+            )
         ).asMap();
     }
 
@@ -151,7 +157,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
             PhDefault.TERMS.get().remove(this.vertex);
             Collections.sort(list);
-            txt = this.oname();
+            txt = new Oname(this).asString();
             if (!list.isEmpty()) {
                 txt = String.format(
                     "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
@@ -264,7 +270,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 attr = new AtSimple(found);
             }
         }
-        attr = new NamedAttr(attr, name).asAtNamed();
+        attr = new NamedAttr(attr, name, this).asAtNamed();
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
@@ -323,43 +329,98 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Padding according to current {@link #NESTING} level.
      * @return Padding string.
+     * @since 0.1
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
 
-    private static final class NamedAttr {
+    /**
+     * Make named attribute.
+     *
+     * @since 0.1
+     */
+    private static class NamedAttr {
 
+        /**
+         * The attr.
+         */
+        private final Attr attr;
+
+        /**
+         * The name.
+         */
         private final String name;
 
-        private final Attr origin;
+        /**
+         * The phi.
+         */
+        private final Phi phi;
 
-        private NamedAttr(final Attr origin, final String name) {
+        /**
+         * Ctor.
+         *
+         * @param attr The original attr
+         * @param name The name of attr
+         * @param phi The phi for oname instance
+         */
+        NamedAttr(final Attr attr, final String name, final Phi phi) {
+            this.attr = attr;
             this.name = name;
-            this.origin = origin;
-        }
-
-        public Attr asAtNamed() {
-            return new AtNamed(
-                String.format(
-                    "%s#%s",
-                    this.getClass().getCanonicalName(), this.name
-                ),
-                String.format(
-                    "%s.%s",
-                    this.oname(), this.name
-                ),
-                PhDefault.Φ,
-                this.origin
-            );
+            this.phi = phi;
         }
 
         /**
-         * Get its object name, as in source code.
-         * @return The name
+         * Reproduce NamedAttr as {@link AtNamed}.
+         *
+         * @return Named attr
          */
-        private String oname() {
-            String txt = this.getClass().getSimpleName();
+        public AtNamed asAtNamed() {
+            return new AtNamed(
+                String.format(
+                    "%s#%s",
+                    this.phi.getClass().getCanonicalName(),
+                    this.name
+                ),
+                String.format(
+                    "%s.%s",
+                    new Oname(this.phi).asString(),
+                    this.name
+                ),
+                this.phi,
+                this.attr
+            );
+        }
+    }
+
+    /**
+     * Get object name, as in source code.
+     *
+     * @since 0.1
+     */
+    private static final class Oname {
+
+        /**
+         * Object to get name.
+         */
+        private final Phi phi;
+
+        /**
+         * Ctor.
+         *
+         * @param phi The phi
+         */
+        Oname(final Phi phi) {
+            this.phi = phi;
+        }
+
+        /**
+         * Object source code name.
+         *
+         * @return Name as string
+         */
+        private String asString() {
+            String txt = this.phi.getClass().getSimpleName();
             final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
             if (null != xmir) {
                 txt = xmir.oname();
@@ -371,24 +432,99 @@ public abstract class PhDefault implements Phi, Cloneable {
         }
     }
 
+    /**
+     * The map of attrs which was extended.
+     *
+     * @since 0.1
+     */
     private static final class ExtendedAttrs {
 
+        /**
+         * The name of new attr.
+         */
         private final String name;
-        private final Attr attr;
-        private final Map<String, Attr> origin;
 
-        public ExtendedAttrs(final String n, final Attr a, final Map<String, Attr> o) {
-            this.name = n;
-            this.attr = a;
-            this.origin = o;
+        /**
+         * The value of new attr.
+         */
+        private final Attr attr;
+
+        /**
+         * Attrs which be extended.
+         */
+        private final Attrs attrs;
+
+        /**
+         * Ctor.
+         *
+         * @param name The name of new attr
+         * @param attr The value of new attr
+         * @param attrs Attrs which be extended
+         */
+        ExtendedAttrs(final String name, final Attr attr, final Attrs attrs) {
+            this.name = name;
+            this.attr = attr;
+            this.attrs = attrs;
         }
 
+        /**
+         * All attrs.
+         *
+         * @return Attrs as map
+         */
         public Map<String, Attr> asMap() {
             if (PhDefault.SORTABLE.matcher(this.name).matches()) {
-                this.order.add(this.name);
+                this.attrs.orderAsList().add(this.name);
             }
-            this.origin.put(this.name, this.attr);
-            return this.origin;
+            this.attrs.asMap().put(this.name, this.attr);
+            return this.attrs.asMap();
+        }
+    }
+
+    /**
+     * Multiple attrs.
+     *
+     * @since 0.1
+     */
+    private static final class Attrs {
+
+        /**
+         * The map of attrs.
+         */
+        private final Map<String, Attr> mattrs;
+
+        /**
+         * The order of attrs.
+         */
+        private final List<? super String> order;
+
+        /**
+         * Ctor.
+         *
+         * @param mattrs Attrs as map
+         * @param order Order of attrs
+         */
+        private Attrs(final Map<String, Attr> mattrs, final List<? super String> order) {
+            this.mattrs = mattrs;
+            this.order = order;
+        }
+
+        /**
+         * The value as map.
+         *
+         * @return Map of attrs
+         */
+        public Map<String, Attr> asMap() {
+            return this.mattrs;
+        }
+
+        /**
+         * Value of order.
+         *
+         * @return Order of attrs
+         */
+        public List<? super String> orderAsList() {
+            return this.order;
         }
     }
 }
