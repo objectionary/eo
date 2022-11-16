@@ -57,6 +57,11 @@ final class Timeout {
     private final AtomicBoolean finish;
 
     /**
+     * Synchronization lock.
+     */
+    private final Object lock;
+
+    /**
      * The shortest constructor with default preset for units and thread.
      *
      * @param value How long to wait before interrupt.
@@ -98,6 +103,7 @@ final class Timeout {
         this.unit = unit;
         this.thread = thread;
         this.finish = new AtomicBoolean(false);
+        this.lock = new Object();
     }
 
     /**
@@ -105,9 +111,12 @@ final class Timeout {
      * If timeout limit is reached the thread will be interrupted.
      */
     void start() {
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.schedule(this::interrupt, this.value, this.unit);
-        executor.shutdown();
+        synchronized (this.lock) {
+            final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            this.finish.set(false);
+            executor.schedule(this::interrupt, this.value, this.unit);
+            executor.shutdown();
+        }
     }
 
     /**
@@ -116,24 +125,28 @@ final class Timeout {
      * normal execution will continue.
      */
     void stop() {
-        this.finish.set(true);
+        synchronized (this.lock) {
+            this.finish.set(true);
+        }
     }
 
     /**
      * Interrupts thread if timeout wasn't sopped.
      */
     private void interrupt() {
-        if (!this.finish.get()) {
-            this.thread.interrupt();
-            Logger.warn(
-                this,
-                String.format(
-                    "Timeout ('%d %s') is reached for thread '%s'",
-                    this.value,
-                    this.unit,
-                    this.thread
-                )
-            );
+        synchronized (this.lock) {
+            if (!this.finish.get()) {
+                this.thread.interrupt();
+                Logger.warn(
+                    this,
+                    String.format(
+                        "Timeout ('%d %s') is reached for thread '%s'",
+                        this.value,
+                        this.unit,
+                        this.thread
+                    )
+                );
+            }
         }
     }
 }
