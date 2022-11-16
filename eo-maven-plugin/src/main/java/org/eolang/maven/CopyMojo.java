@@ -57,7 +57,7 @@ public final class CopyMojo extends SafeMojo {
     public static final String DIR = "EO-SOURCES";
 
     /**
-     * Replacer or version.
+     * Replacer or version.xsl.
      */
     private static final Pattern REPLACE = Pattern.compile(
         "^(\\+rt .+):0\\.0\\.0(.*)$",
@@ -89,11 +89,11 @@ public final class CopyMojo extends SafeMojo {
     private File outputDir;
 
     /**
-     * The version to use for 0.0.0 replacements.
+     * The version.xsl to use for 0.0.0 replacements.
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.version", required = true, defaultValue = "${project.version}")
+    @Parameter(property = "eo.version.xsl", required = true, defaultValue = "${project.version.xsl}")
     private String version;
 
     @Override

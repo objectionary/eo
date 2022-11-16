@@ -24,6 +24,32 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="license"
                 version="2.0">
+  <xsl:template name="license-dot">
+    <xsl:call-template name="license">
+      <xsl:with-param name="prefix">
+        <xsl:text>/*</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="line">
+        <xsl:text> * </xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="suffix">
+        <xsl:text> */</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  <xsl:template name="license-text">
+    <xsl:call-template name="license">
+      <xsl:with-param name="prefix">
+        <xsl:text>######</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="line">
+        <xsl:text># </xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="suffix">
+        <xsl:text>######</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
   <xsl:template name="license">
     <xsl:param name="prefix">
       <xsl:text>/*</xsl:text>
@@ -32,7 +58,7 @@ SOFTWARE.
       <xsl:text> * </xsl:text>
     </xsl:param>
     <xsl:param name="suffix">
-      <xsl:text>*/</xsl:text>
+      <xsl:text> */</xsl:text>
     </xsl:param>
     <xsl:value-of select="$prefix"/>
     <xsl:value-of select="$EOL"/>

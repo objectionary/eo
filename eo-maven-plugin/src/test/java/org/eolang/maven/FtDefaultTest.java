@@ -38,7 +38,7 @@ final class FtDefaultTest {
     void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
         final String content = String.join(
             "\n",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<?xml version.xsl=\"1.0\" encoding=\"UTF-8\"?>",
             "<program>",
             "</program>"
         );

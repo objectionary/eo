@@ -30,11 +30,18 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
+
+  <xsl:attribute-set name="meta">
+    <xsl:attribute name="time" select="@time"/>
+    <xsl:attribute name="version" select="@version"/>
+  </xsl:attribute-set>
+
   <xsl:template match="program[not(gmi)]">
-    <xsl:copy>
+    <xsl:copy use-attribute-sets="meta">
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="gmi">
-        <!-- empty one -->
+        <xsl:attribute name="time" select="@time"/>
+        <xsl:attribute name="version" select="@version"/>
       </xsl:element>
     </xsl:copy>
   </xsl:template>

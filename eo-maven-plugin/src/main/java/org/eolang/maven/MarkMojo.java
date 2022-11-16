@@ -74,12 +74,12 @@ public final class MarkMojo extends SafeMojo {
      * Take sources from EO-SOURCES dir and register them in the CSV.
      *
      * @param dir Where they are
-     * @param version The version of the JAR
+     * @param version The version.xsl of the JAR
      * @return How many registered
      * @throws IOException If fails
-     * @todo #1062:30min The mojo doesn't update program version if it exists.
+     * @todo #1062:30min The mojo doesn't update program version.xsl if it exists.
      *  This causes versions like `*.*.*` and `0.0.0` are not updated and remain
-     *  in foreign catalog. This needs to be updated: version must be overridden to
+     *  in foreign catalog. This needs to be updated: version.xsl must be overridden to
      *  correct value.
      */
     private int scan(final Path dir, final String version) throws IOException {
@@ -96,7 +96,7 @@ public final class MarkMojo extends SafeMojo {
             }
         }
         Logger.info(
-            this, "Found %d sources in %s, %d program(s) registered with version %s",
+            this, "Found %d sources in %s, %d program(s) registered with version.xsl %s",
             sources.size(), new Rel(dir), done, version
         );
         return done;
