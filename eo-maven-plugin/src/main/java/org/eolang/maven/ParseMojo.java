@@ -66,7 +66,7 @@ import org.xembly.Xembler;
 public final class ParseMojo extends SafeMojo {
 
     /**
-     * Zero version.xsl.
+     * Zero version.
      */
     public static final String ZERO = "0.0.0";
 

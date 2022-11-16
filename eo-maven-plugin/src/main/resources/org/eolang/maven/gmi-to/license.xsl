@@ -22,15 +22,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="license"
-                version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="license" version="2.0">
   <xsl:variable name="eol">
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
   <xsl:template name="license-xe">
     <xsl:call-template name="license">
       <xsl:with-param name="prefix">COMMENT '</xsl:with-param>
-      <xsl:with-param name="line"><xsl:text/></xsl:with-param>
+      <xsl:with-param name="line">
+        <xsl:text/>
+      </xsl:with-param>
       <xsl:with-param name="suffix">
         <xsl:text>';</xsl:text>
         <xsl:value-of select="$eol"/>
@@ -123,4 +124,3 @@ SOFTWARE.
     <xsl:value-of select="$break"/>
   </xsl:template>
 </xsl:stylesheet>
-

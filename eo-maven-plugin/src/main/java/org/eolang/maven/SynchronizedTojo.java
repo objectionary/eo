@@ -26,7 +26,7 @@ package org.eolang.maven;
 import com.yegor256.tojos.Tojo;
 
 /**
- * Thread-safe version.xsl of tojo. Synchronizes on global single lock within JVM.
+ * Thread-safe version of tojo. Synchronizes on global single lock within JVM.
  * @since 1.0
  * @todo #1230:30min Replace this custom {@link SynchronizedTojo} with
  *  implementation from Tojo framework once completed in

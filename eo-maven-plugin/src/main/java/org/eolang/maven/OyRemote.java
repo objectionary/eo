@@ -73,7 +73,7 @@ final class OyRemote implements Objectionary {
     /**
      * Objectionary URL template.
      * Assumes two placeholders in terms of
-     * {@link String#format(String, Object...)}: 1st for version.xsl hash,
+     * {@link String#format(String, Object...)}: 1st for version hash,
      * 2nd for program name.
      * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
      *
@@ -90,14 +90,14 @@ final class OyRemote implements Objectionary {
         private final String template;
 
         /**
-         * Objects version.xsl hash.
+         * Objects version hash.
          */
         private final String hash;
 
         /**
          * Ctor.
          * @param template URL template.
-         * @param hash Objects version.xsl hash.
+         * @param hash Objects version hash.
          */
         UrlOy(final String template, final String hash) {
             this.template = template;

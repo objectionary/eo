@@ -64,7 +64,7 @@ public final class ResolveMojo extends SafeMojo {
     public static final String DIR = "06-resolve";
 
     /**
-     * Skip artifact with the version.xsl 0.0.0.
+     * Skip artifact with the version 0.0.0.
      *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
@@ -172,7 +172,7 @@ public final class ResolveMojo extends SafeMojo {
             if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
                 && !this.discoverSelf) {
                 Logger.debug(
-                    this, "Program %s/%s skipped due to its zero version.xsl",
+                    this, "Program %s/%s skipped due to its zero version",
                     tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
                 );
                 continue;
@@ -191,7 +191,7 @@ public final class ResolveMojo extends SafeMojo {
             final String coords = ResolveMojo.coords(one);
             if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
                 Logger.debug(
-                    this, "Zero-version.xsl dependency for %s/%s skipped: %s",
+                    this, "Zero-version dependency for %s/%s skipped: %s",
                     tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
                     coords
                 );

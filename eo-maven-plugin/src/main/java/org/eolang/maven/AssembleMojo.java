@@ -150,7 +150,7 @@ public final class AssembleMojo extends SafeMojo {
     private String hash = "master";
 
     /**
-     * Skip artifact with the version.xsl 0.0.0.
+     * Skip artifact with the version 0.0.0.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
      */

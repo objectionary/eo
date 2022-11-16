@@ -24,7 +24,7 @@
 package org.eolang.maven.hash;
 
 /**
- * Short version.xsl of hash.
+ * Short version of hash.
  *
  * @since 0.28.11
  */

@@ -44,7 +44,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
-      <!-- This version.xsl is intentionally lower than the current version.xsl of the project -->
+      <!-- This version is intentionally lower than the current version of the project -->
       <version>0.28.11</version>
       <scope>test</scope>
     </dependency>
@@ -56,33 +56,33 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-log</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -128,43 +128,43 @@ SOFTWARE.
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <!-- version.xsl from parent POM -->
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
     <dependency>
