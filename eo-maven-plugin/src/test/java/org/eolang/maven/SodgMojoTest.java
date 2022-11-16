@@ -256,6 +256,20 @@ final class SodgMojoTest {
                     vertex = opts.get(0);
                     continue;
                 }
+                if (sub.charAt(0) == '>') {
+                    final List<XML> inputs = this.graph.nodes(
+                        String.format("/graph/v/e[@to='%s']", vertex)
+                    );
+                    if (inputs.isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no '%s' edge coming into %s",
+                                sub.substring(1), vertex
+                            )
+                        );
+                    }
+                    continue;
+                }
                 if (sub.startsWith("Δ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
@@ -276,32 +290,6 @@ final class SodgMojoTest {
                             String.format(
                                 "Data '%s' at '%s' is not equal to '%s'",
                                 node.xpath("data/text()").get(0), vertex, data
-                            )
-                        );
-                    }
-                    continue;
-                }
-                if (sub.startsWith("λ=")) {
-                    if (node.nodes("lambda").isEmpty()) {
-                        throw new IllegalArgumentException(
-                            String.format(
-                                "There is no lambda (%s) at %s",
-                                sub, vertex
-                            )
-                        );
-                    }
-                    final String expr = sub.substring(2);
-                    final boolean matches = !this.graph.xpath(
-                        String.format(
-                            "/graph/v[@id='%s']/lambda[text() = '%s']/text()",
-                            vertex, expr
-                        )
-                    ).isEmpty();
-                    if (!matches) {
-                        throw new IllegalArgumentException(
-                            String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s'",
-                                node.xpath("lambda/text()").get(0), vertex, expr
                             )
                         );
                     }
