@@ -88,6 +88,37 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
+  <xsl:function name="eo:alpha" as="xs:string">
+    <xsl:param name="o" as="node()"/>
+    <xsl:variable name="ret">
+      <xsl:choose>
+        <xsl:when test="$o/@name">
+          <xsl:value-of select="$o/@name"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="order" select="count($o/preceding-sibling::o)"/>
+          <xsl:choose>
+            <xsl:when test="starts-with($o/ancestor::*[1]/@base, '.')">
+              <xsl:choose>
+                <xsl:when test="$order = 0">
+                  <xsl:text>ρ</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>α</xsl:text>
+                  <xsl:value-of select="$order - 1"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>α</xsl:text>
+              <xsl:value-of select="$order"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="$ret"/>
+  </xsl:function>
   <xsl:function name="eo:attr" as="xs:string">
     <xsl:param name="a" as="xs:string"/>
     <xsl:variable name="ret">

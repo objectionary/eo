@@ -22,11 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R4" version="2.0">
   <!--
-  Here we ADD all objects to the graph and BIND them to
-  their parents, using their names as edge labels or just \alpha
-  if no names provided.
+  Here we add pi-edges to objects that are copies of others.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -36,55 +34,27 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[not(starts-with(@base, '.')) and (o or @data)]" mode="sodg" priority="1">
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ADD'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:locator(.)"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>[R2]</xsl:text>
-        <xsl:if test="@name">
-          <xsl:text> name=</xsl:text>
-          <xsl:value-of select="@name"/>
-        </xsl:if>
-        <xsl:if test="@abstract">
-          <xsl:text> abstract</xsl:text>
-        </xsl:if>
-        <xsl:if test="@base">
-          <xsl:text> base=</xsl:text>
-          <xsl:value-of select="@base"/>
-        </xsl:if>
-      </xsl:with-param>
-    </xsl:call-template>
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and (o or @data)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
-        </xsl:sequence>
-        <xsl:sequence>
           <xsl:value-of select="eo:locator(.)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('text:', eo:attr(eo:alpha(.)))"/>
+          <xsl:value-of select="@base"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>π</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R2] The object</xsl:text>
-        <xsl:if test="@name">
-          <xsl:text> '</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>'</xsl:text>
-        </xsl:if>
-        <xsl:text> belongs to its owner</xsl:text>
+        <xsl:text>[R3] This is a copy</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
-    <!-- ignore it -->
+    <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

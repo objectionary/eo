@@ -146,6 +146,8 @@ public final class SodgMojo extends SafeMojo {
                 "/org/eolang/maven/sodg/R0.xsl",
                 "/org/eolang/maven/sodg/R1.xsl",
                 "/org/eolang/maven/sodg/R2.xsl",
+                "/org/eolang/maven/sodg/R2.1.xsl",
+                "/org/eolang/maven/sodg/R3.xsl",
                 "/org/eolang/maven/sodg/R6.xsl",
                 "/org/eolang/maven/sodg/R7.xsl",
                 "/org/eolang/maven/sodg/focus.xsl",
