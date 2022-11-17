@@ -32,7 +32,12 @@ SOFTWARE.
       <xsl:apply-templates select="i"/>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="i">
+  <xsl:template match="i[@name='COMMENT']">
+    <xsl:text># </xsl:text>
+    <xsl:value-of select="c"/>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <xsl:template match="i[@name!='COMMENT']">
     <xsl:value-of select="@name"/>
     <xsl:text>(</xsl:text>
     <xsl:for-each select="a">
