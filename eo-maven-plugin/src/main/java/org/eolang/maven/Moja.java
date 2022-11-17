@@ -43,7 +43,7 @@ import org.cactoos.list.ListOf;
  * @param <T> Type of mojo
  * @since 0.1
  */
-final class Moja<T extends AbstractMojo> {
+public final class Moja<T extends AbstractMojo> {
 
     /**
      * The type of mojo.
@@ -60,7 +60,7 @@ final class Moja<T extends AbstractMojo> {
      *
      * @param tpe The type
      */
-    Moja(final Class<T> tpe) {
+    public Moja(final Class<T> tpe) {
         this.type = tpe;
         this.attrs = new HashMap<>(0);
     }

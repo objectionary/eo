@@ -32,6 +32,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.testapi.MwFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -48,35 +49,12 @@ final class ParseMojoTest {
 
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/x/main.eo");
-        final Path target = temp.resolve("target");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n",
-            temp.relativize(src)
-        );
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.x.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
-                )
-            ),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            new TjSmart(
-                Catalogs.INSTANCE.make(foreign)
-            ).getById("foo.x.main").exists("xmir"),
+            new MwFake(temp)
+                .program("+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n")
+                .execute(ParseMojo.class)
+                .result()
+                .xmirCompiled(),
             Matchers.is(true)
         );
     }
