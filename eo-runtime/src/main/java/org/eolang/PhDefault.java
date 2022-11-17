@@ -107,20 +107,16 @@ public abstract class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
         this.order = new ArrayList<>(0);
-        this.attrs = new Extended(
+        this.attrs = new AtsExtended(
             "ρ",
             new AtSimple(sigma),
-            new Attrs(
-                new Extended(
-                    "σ",
-                    new AtSimple(sigma),
-                    new Attrs(
-                        new HashMap<>(0),
-                        this.order
-                    )
-                ).value(),
+            new AtsExtended(
+                "σ",
+                new AtSimple(sigma),
+                new HashMap<>(0),
                 this.order
-            )
+            ).value(),
+            this.order
         ).value();
     }
 
@@ -345,7 +341,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         /**
          * The attr.
          */
-        private final Attr attr;
+        private final Attr origin;
 
         /**
          * The name.
@@ -360,12 +356,12 @@ public abstract class PhDefault implements Phi, Cloneable {
         /**
          * Ctor.
          *
-         * @param attr The original attr
+         * @param origin The original attr
          * @param name The name of attr
          * @param phi The phi for oname instance
          */
-        Named(final Attr attr, final String name, final Phi phi) {
-            this.attr = attr;
+        Named(final Attr origin, final String name, final Phi phi) {
+            this.origin = origin;
             this.name = name;
             this.phi = phi;
         }
@@ -388,7 +384,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                     this.name
                 ),
                 this.phi,
-                this.attr
+                this.origin
             );
         }
     }
@@ -425,102 +421,6 @@ public abstract class PhDefault implements Phi, Cloneable {
                 }
             }
             return txt;
-        }
-    }
-
-    /**
-     * The map of attrs which was extended.
-     *
-     * @since 0.1
-     */
-    private static final class Extended {
-
-        /**
-         * The name of new attr.
-         */
-        private final String name;
-
-        /**
-         * The value of new attr.
-         */
-        private final Attr origin;
-
-        /**
-         * Attrs which be extended.
-         */
-        private final Attrs attrs;
-
-        /**
-         * Ctor.
-         *
-         * @param name The name of new origin
-         * @param origin The value of new origin
-         * @param attrs Attrs which be extended
-         */
-        Extended(final String name, final Attr origin, final Attrs attrs) {
-            this.name = name;
-            this.origin = origin;
-            this.attrs = attrs;
-        }
-
-        /**
-         * All attrs.
-         *
-         * @return Attrs as map
-         */
-        public Map<String, Attr> value() {
-            if (PhDefault.SORTABLE.matcher(this.name).matches()) {
-                this.attrs.orderAsList().add(this.name);
-            }
-            this.attrs.asMap().put(this.name, this.origin);
-            return this.attrs.asMap();
-        }
-    }
-
-    /**
-     * Multiple attrs.
-     *
-     * @since 0.1
-     */
-    private static final class Attrs {
-
-        /**
-         * The map of attrs.
-         */
-        private final Map<String, Attr> mattrs;
-
-        /**
-         * The order of attrs.
-         */
-        private final List<? super String> order;
-
-        /**
-         * Ctor.
-         *
-         * @param mattrs Attrs as map
-         * @param order Order of attrs
-         */
-        private Attrs(final Map<String, Attr> mattrs, final List<? super String> order) {
-            this.mattrs = mattrs;
-            this.order = order;
-        }
-
-        /**
-         * The value as map.
-         *
-         * @return Map of attrs
-         */
-        public Map<String, Attr> asMap() {
-            return this.mattrs;
-        }
-
-        /**
-         * Value of order.
-         *
-         * @return Order of attrs
-         */
-        public List<? super String> orderAsList() {
-            return this.order;
         }
     }
 }
