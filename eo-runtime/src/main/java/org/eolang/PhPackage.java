@@ -81,7 +81,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public String location() {
+    public String locator() {
         return "?:?";
     }
 

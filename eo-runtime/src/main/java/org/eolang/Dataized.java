@@ -105,7 +105,7 @@ public final class Dataized {
                     String.format(
                         "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
                         String.join("", Collections.nCopies(before, "·")),
-                        this.phi.location(),
+                        this.phi.locator(),
                         this.phi.toString().replaceAll("[\n\t]", ""),
                         new Data.Value<>(data).toString().replaceAll("[\n\t]", "")
                     )

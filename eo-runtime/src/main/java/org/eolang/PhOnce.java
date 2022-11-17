@@ -97,7 +97,7 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public String location() {
-        return this.object.take().location();
+    public String locator() {
+        return this.object.take().locator();
     }
 }
