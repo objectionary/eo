@@ -107,21 +107,21 @@ public abstract class PhDefault implements Phi, Cloneable {
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
         this.order = new ArrayList<>(0);
-        this.attrs = new ExtendedAttrs(
+        this.attrs = new Extended(
             "ρ",
             new AtSimple(sigma),
             new Attrs(
-                new ExtendedAttrs(
+                new Extended(
                     "σ",
                     new AtSimple(sigma),
                     new Attrs(
                         new HashMap<>(0),
                         this.order
                     )
-                ).asMap(),
+                ).value(),
                 this.order
             )
-        ).asMap();
+        ).value();
     }
 
     @Override
@@ -157,7 +157,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
             PhDefault.TERMS.get().remove(this.vertex);
             Collections.sort(list);
-            txt = new Oname(this).asString();
+            txt = new Oname(this).toString();
             if (!list.isEmpty()) {
                 txt = String.format(
                     "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
@@ -270,7 +270,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 attr = new AtSimple(found);
             }
         }
-        attr = new NamedAttr(attr, name, this).asAtNamed();
+        attr = new Named(attr, name, this).value();
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
@@ -340,7 +340,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      *
      * @since 0.1
      */
-    private static class NamedAttr {
+    private static class Named {
 
         /**
          * The attr.
@@ -364,7 +364,7 @@ public abstract class PhDefault implements Phi, Cloneable {
          * @param name The name of attr
          * @param phi The phi for oname instance
          */
-        NamedAttr(final Attr attr, final String name, final Phi phi) {
+        Named(final Attr attr, final String name, final Phi phi) {
             this.attr = attr;
             this.name = name;
             this.phi = phi;
@@ -375,7 +375,7 @@ public abstract class PhDefault implements Phi, Cloneable {
          *
          * @return Named attr
          */
-        public AtNamed asAtNamed() {
+        public AtNamed value() {
             return new AtNamed(
                 String.format(
                     "%s#%s",
@@ -384,7 +384,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 ),
                 String.format(
                     "%s.%s",
-                    new Oname(this.phi).asString(),
+                    new Oname(this.phi),
                     this.name
                 ),
                 this.phi,
@@ -414,12 +414,8 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.phi = phi;
         }
 
-        /**
-         * Object source code name.
-         *
-         * @return Name as string
-         */
-        private String asString() {
+        @Override
+        public String toString() {
             String txt = this.phi.getClass().getSimpleName();
             final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
             if (null != xmir) {
@@ -437,7 +433,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      *
      * @since 0.1
      */
-    private static final class ExtendedAttrs {
+    private static final class Extended {
 
         /**
          * The name of new attr.
@@ -447,7 +443,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         /**
          * The value of new attr.
          */
-        private final Attr attr;
+        private final Attr origin;
 
         /**
          * Attrs which be extended.
@@ -457,13 +453,13 @@ public abstract class PhDefault implements Phi, Cloneable {
         /**
          * Ctor.
          *
-         * @param name The name of new attr
-         * @param attr The value of new attr
+         * @param name The name of new origin
+         * @param origin The value of new origin
          * @param attrs Attrs which be extended
          */
-        ExtendedAttrs(final String name, final Attr attr, final Attrs attrs) {
+        Extended(final String name, final Attr origin, final Attrs attrs) {
             this.name = name;
-            this.attr = attr;
+            this.origin = origin;
             this.attrs = attrs;
         }
 
@@ -472,11 +468,11 @@ public abstract class PhDefault implements Phi, Cloneable {
          *
          * @return Attrs as map
          */
-        public Map<String, Attr> asMap() {
+        public Map<String, Attr> value() {
             if (PhDefault.SORTABLE.matcher(this.name).matches()) {
                 this.attrs.orderAsList().add(this.name);
             }
-            this.attrs.asMap().put(this.name, this.attr);
+            this.attrs.asMap().put(this.name, this.origin);
             return this.attrs.asMap();
         }
     }
