@@ -72,8 +72,13 @@ SOFTWARE.
               <xsl:text>α</xsl:text>
               <xsl:value-of select="count($o/preceding-sibling::o)"/>
             </xsl:when>
-            <xsl:otherwise>
+            <xsl:when test="name($o) = 'objects'">
               <xsl:text>ν0</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:message terminate="yes">
+                <xsl:text>Only 'o' or 'objects' XML elements are accepted here</xsl:text>
+              </xsl:message>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
