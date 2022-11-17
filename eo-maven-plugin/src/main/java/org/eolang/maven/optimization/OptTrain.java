@@ -62,7 +62,8 @@ public final class OptTrain implements Optimization {
             "/org/eolang/parser/optimize/fix-missed-names.xsl",
             "/org/eolang/parser/add-refs.xsl",
             "/org/eolang/parser/errors/broken-refs.xsl",
-            "/org/eolang/parser/optimize/constant-folding.xsl"
+            "/org/eolang/parser/optimize/constant-folding.xsl",
+            "/org/eolang/parser/set-locators.xsl"
         ).back()
     );
 
