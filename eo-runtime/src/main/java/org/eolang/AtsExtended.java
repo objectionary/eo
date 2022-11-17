@@ -83,9 +83,4 @@ public final class AtsExtended implements Attrs {
         this.origin.put(this.name, this.attr);
         return this.origin;
     }
-
-    @Override
-    public List<? super String> order() {
-        return this.order;
-    }
 }

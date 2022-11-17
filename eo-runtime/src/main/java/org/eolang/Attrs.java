@@ -39,11 +39,5 @@ public interface Attrs {
      * @return Map paired name-value
      */
     Map<String, Attr> value();
-
-    /**
-     * The order.
-     *
-     * @return Order of attrs
-     */
-    List<? super String> order();
+    
 }
