@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,5 +38,5 @@ public interface Attrs {
      * @return Map paired name-value
      */
     Map<String, Attr> value();
-    
+
 }
