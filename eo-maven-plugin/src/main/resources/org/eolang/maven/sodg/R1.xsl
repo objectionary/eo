@@ -25,7 +25,8 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1.1" version="2.0">
   <!--
   Here we find all objects that have @base attributes that don't
-  start with a dot and make sure they exist in the graph.
+  start with a dot. Then we make sure their bases exist in the graph
+  and are bound to the root.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -70,7 +71,6 @@ SOFTWARE.
             </xsl:sequence>
           </xsl:with-param>
           <xsl:with-param name="comment">
-            <xsl:text>[R1] </xsl:text>
             <xsl:value-of select="position()"/>
             <xsl:text>th part of the '</xsl:text>
             <xsl:value-of select="$fqn"/>
@@ -100,7 +100,7 @@ SOFTWARE.
             </xsl:sequence>
           </xsl:with-param>
           <xsl:with-param name="comment">
-            <xsl:text>[R1] link to the </xsl:text>
+            <xsl:text>Link to the </xsl:text>
             <xsl:value-of select="position()"/>
             <xsl:text>th part of the '</xsl:text>
             <xsl:value-of select="$fqn"/>

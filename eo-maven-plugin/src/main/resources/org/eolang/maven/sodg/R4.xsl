@@ -47,7 +47,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R4] This is a dot-notation</xsl:text>
+        <xsl:text>This is a dot-notation</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

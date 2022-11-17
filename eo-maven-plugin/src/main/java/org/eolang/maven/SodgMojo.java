@@ -30,12 +30,16 @@ import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StBefore;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.TrMapped;
 import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -44,6 +48,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -96,7 +101,6 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
-            new TrDefault<>(),
             "/org/eolang/maven/sodg-to/to-text.xsl"
         ).back(),
         SodgMojo.class
@@ -127,7 +131,6 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TO_DOT = new TrFast(
         new TrClasspath<>(
-            new TrDefault<>(),
             "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
             "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
             "/org/eolang/maven/sodg-to/to-dot.xsl"
@@ -140,21 +143,33 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TRAIN = new TrWith(
         new TrFast(
-            new TrClasspath<>(
-                new TrDefault<>(),
-                "/org/eolang/maven/sodg/remove-leveled.xsl",
-                "/org/eolang/maven/sodg/R0.xsl",
-                "/org/eolang/maven/sodg/R1.xsl",
-                "/org/eolang/maven/sodg/R2.xsl",
-                "/org/eolang/maven/sodg/R2.1.xsl",
-                "/org/eolang/maven/sodg/R3.xsl",
-                "/org/eolang/maven/sodg/R6.xsl",
-                "/org/eolang/maven/sodg/R7.xsl",
-                "/org/eolang/maven/sodg/focus.xsl",
-                "/org/eolang/maven/sodg/rename.xsl",
-                "/org/eolang/maven/sodg/strip.xsl",
-                "/org/eolang/maven/sodg/variability.xsl"
-            ).back(),
+            new TrJoined(
+                new TrClasspath<>(
+                    "/org/eolang/maven/sodg/remove-leveled.xsl"
+                ).back(),
+                new TrMapped<>(
+                    (Function<String, Shift>) path -> new StBefore(
+                        new StClasspath(path),
+                        new StClasspath(
+                            "/org/eolang/maven/sodg/before-each.xsl",
+                            String.format("sheet %s", path)
+                        )
+                    ),
+                    "/org/eolang/maven/sodg/R0.xsl",
+                    "/org/eolang/maven/sodg/R1.xsl",
+                    "/org/eolang/maven/sodg/R2.xsl",
+                    "/org/eolang/maven/sodg/R2.1.xsl",
+                    "/org/eolang/maven/sodg/R3.xsl",
+                    "/org/eolang/maven/sodg/R6.xsl",
+                    "/org/eolang/maven/sodg/R7.xsl"
+                ).back(),
+                new TrClasspath<>(
+                    "/org/eolang/maven/sodg/focus.xsl",
+                    "/org/eolang/maven/sodg/rename.xsl",
+                    "/org/eolang/maven/sodg/strip.xsl",
+                    "/org/eolang/maven/sodg/variability.xsl"
+                ).back()
+            ),
             SodgMojo.class
         ),
         new StLambda(

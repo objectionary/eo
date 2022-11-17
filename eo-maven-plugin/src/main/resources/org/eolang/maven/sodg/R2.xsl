@@ -41,7 +41,7 @@ SOFTWARE.
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(.)"/>
+          <xsl:value-of select="eo:fqn(/program, eo:locator(.))"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
@@ -51,10 +51,10 @@ SOFTWARE.
           <xsl:value-of select="@name"/>
         </xsl:if>
         <xsl:if test="@abstract">
-          <xsl:text> abstract</xsl:text>
+          <xsl:text>, it's abstract</xsl:text>
         </xsl:if>
         <xsl:if test="@base">
-          <xsl:text> base=</xsl:text>
+          <xsl:text>, base=</xsl:text>
           <xsl:value-of select="@base"/>
         </xsl:if>
       </xsl:with-param>
@@ -63,17 +63,17 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
+          <xsl:value-of select="eo:fqn(/program, eo:locator(ancestor::*[1]))"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(.)"/>
+          <xsl:value-of select="eo:fqn(/program, eo:locator(.))"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:value-of select="concat('text:', eo:attr(eo:alpha(.)))"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R2] The object</xsl:text>
+        <xsl:text>The object</xsl:text>
         <xsl:if test="@name">
           <xsl:text> '</xsl:text>
           <xsl:value-of select="@name"/>
@@ -96,7 +96,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R2] \rho</xsl:text>
+        <xsl:text>\rho</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="i">
@@ -113,7 +113,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R2] \sigma</xsl:text>
+        <xsl:text>\sigma</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

@@ -96,10 +96,7 @@ public final class ParsingTrain extends TrEnvelope {
             new TrLambda(
                 new TrFast(
                     new TrLogged(
-                        new TrClasspath<>(
-                            new TrDefault<>(),
-                            ParsingTrain.SHEETS
-                        ).back()
+                        new TrClasspath<>(ParsingTrain.SHEETS).back()
                     )
                 ),
                 shift -> new StLambda(

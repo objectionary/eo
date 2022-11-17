@@ -50,7 +50,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R2.1] Link to existing object</xsl:text>
+        <xsl:text>Link to existing object</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

@@ -57,7 +57,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>[R6] This is an atom returning "</xsl:text>
+        <xsl:text>This is an atom returning "</xsl:text>
         <xsl:value-of select="@atom"/>
         <xsl:text>"</xsl:text>
       </xsl:with-param>
