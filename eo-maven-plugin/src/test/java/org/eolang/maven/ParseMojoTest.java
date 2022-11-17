@@ -32,7 +32,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.testapi.MwFake;
+import org.eolang.maven.testapi.FakeMaven;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -50,7 +50,7 @@ final class ParseMojoTest {
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            new MwFake(temp)
+            new FakeMaven(temp)
                 .program("+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n")
                 .execute(ParseMojo.class)
                 .result()

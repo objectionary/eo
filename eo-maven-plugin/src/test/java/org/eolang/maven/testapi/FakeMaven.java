@@ -37,7 +37,7 @@ import org.eolang.maven.Moja;
  * their behaviour and results.
  * @since 0.28.12
  */
-public final class MwFake implements MavenWorkspace {
+public final class FakeMaven {
 
     /**
      * Default eo program id.
@@ -74,33 +74,48 @@ public final class MwFake implements MavenWorkspace {
      *
      * @param workspace Test temporary directory.
      */
-    public MwFake(final Path workspace) {
+    public FakeMaven(final Path workspace) {
         this.workspace = new Home(workspace);
     }
 
-    @Override
-    public MavenWorkspace program(final String program) throws IOException {
-        final Path path = Paths.get(MwFake.PROGRAM_PATH);
+    /**
+     * Adds eo program to a workspace.
+     * @param program Program as a raw string.
+     * @return Workspace with eo program.
+     * @throws IOException If can't save eo program in workspace.
+     */
+    public FakeMaven program(final String program) throws IOException {
+        final Path path = Paths.get(FakeMaven.PROGRAM_PATH);
         this.workspace.save(program, path);
         this.prog = path;
         return this;
     }
 
-    @Override
-    public <T extends AbstractMojo> MavenWorkspace execute(final Class<T> mojo) {
+    /**
+     * Executes Mojo in the workspace.
+     *
+     * @param mojo Mojo to execute.
+     * @param <T> Template for descendants of Mojo.
+     * @return Workspace after executing Mojo.
+     */
+    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) {
         this.withEoForeign();
         new Moja<>(mojo)
             .with("targetDir", this.targetPath().toFile())
             .with("foreign", this.foreignPath().toFile())
-            .with("foreignFormat", MwFake.FOREIGN_FORMAT)
+            .with("foreignFormat", FakeMaven.FOREIGN_FORMAT)
             .execute();
         return this;
     }
 
-    @Override
+    /**
+     * Builds and returns compilation results after all manipulations.
+     *
+     * @return Compilation result.
+     */
     public CompilationResult result() {
         return new CompilationResult(
-            MwFake.PROGRAM_ID,
+            FakeMaven.PROGRAM_ID,
             new Home(this.targetPath()),
             this.foreignPath()
         );
@@ -112,7 +127,7 @@ public final class MwFake implements MavenWorkspace {
      */
     private void withEoForeign() {
         Catalogs.INSTANCE.make(this.foreignPath())
-            .add(MwFake.PROGRAM_ID)
+            .add(FakeMaven.PROGRAM_ID)
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, this.workspace.absolute(this.prog));
     }
@@ -122,7 +137,7 @@ public final class MwFake implements MavenWorkspace {
      * @return Path to eo-foreign.* file.
      */
     private Path foreignPath() {
-        return this.workspace.absolute(MwFake.FOREIGN_PATH);
+        return this.workspace.absolute(FakeMaven.FOREIGN_PATH);
     }
 
     /**
