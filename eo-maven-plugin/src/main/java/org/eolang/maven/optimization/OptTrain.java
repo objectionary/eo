@@ -110,7 +110,7 @@ public final class OptTrain implements Optimization {
      * @param delegate Optimizations that have to be done before.
      * @param shifts To apply
      */
-    private OptTrain(
+    public OptTrain(
         final Optimization delegate,
         final Train<Shift> shifts
     ) {

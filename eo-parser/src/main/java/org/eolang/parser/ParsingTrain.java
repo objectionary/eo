@@ -40,6 +40,8 @@ import com.yegor256.xsline.TrLogged;
  * Train of XSL shifts.
  *
  * @since 0.1
+ * @todo #1024:30min Need to figure out, which errors need to be
+ * "critical"---same as "duplicate-names"
  */
 public final class ParsingTrain extends TrEnvelope {
 
