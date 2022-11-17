@@ -23,20 +23,68 @@
  */
 package org.eolang;
 
-import java.util.Map;
-
 /**
- * The pack of attr as object.
+ * Make named attribute.
  *
  * @since 0.1
  */
-public interface Attrs {
+public final class AtNamedDefault implements Attr {
 
     /**
-     * The value.
-     *
-     * @return Map paired name-value
+     * The named attr.
      */
-    Map<String, Attr> value();
+    private final AtNamed named;
 
+    /**
+     * Ctor.
+     *
+     * @param origin The original attr
+     * @param name The name of attr
+     * @param phi The phi for oname instance
+     */
+    public AtNamedDefault(final Attr origin, final String name, final Phi phi) {
+        this.named = new AtNamed(
+            String.format(
+                "%s#%s",
+                phi.getClass().getCanonicalName(),
+                name
+            ),
+            String.format(
+                "%s.%s",
+                new Oname(phi),
+                name
+            ),
+            phi,
+            origin
+        );
+    }
+
+    /**
+     * Reproduce value as {@link AtNamed}.
+     *
+     * @return Named attr
+     */
+    public AtNamed value() {
+        return this.named;
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return this.named.copy(self);
+    }
+
+    @Override
+    public Phi get() {
+        return this.named.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.named.put(phi);
+    }
+
+    @Override
+    public String φTerm() {
+        return this.named.φTerm();
+    }
 }

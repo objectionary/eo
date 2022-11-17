@@ -89,6 +89,10 @@ SOFTWARE.
       <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

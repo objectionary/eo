@@ -266,7 +266,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 attr = new AtSimple(found);
             }
         }
-        attr = new Named(attr, name, this).value();
+        attr = new AtNamedDefault(attr, name, this).value();
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
@@ -329,98 +329,5 @@ public abstract class PhDefault implements Phi, Cloneable {
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
-    }
-
-    /**
-     * Make named attribute.
-     *
-     * @since 0.1
-     */
-    private static class Named {
-
-        /**
-         * The attr.
-         */
-        private final Attr origin;
-
-        /**
-         * The name.
-         */
-        private final String name;
-
-        /**
-         * The phi.
-         */
-        private final Phi phi;
-
-        /**
-         * Ctor.
-         *
-         * @param origin The original attr
-         * @param name The name of attr
-         * @param phi The phi for oname instance
-         */
-        Named(final Attr origin, final String name, final Phi phi) {
-            this.origin = origin;
-            this.name = name;
-            this.phi = phi;
-        }
-
-        /**
-         * Reproduce NamedAttr as {@link AtNamed}.
-         *
-         * @return Named attr
-         */
-        public AtNamed value() {
-            return new AtNamed(
-                String.format(
-                    "%s#%s",
-                    this.phi.getClass().getCanonicalName(),
-                    this.name
-                ),
-                String.format(
-                    "%s.%s",
-                    new Oname(this.phi),
-                    this.name
-                ),
-                this.phi,
-                this.origin
-            );
-        }
-    }
-
-    /**
-     * Get object name, as in source code.
-     *
-     * @since 0.1
-     */
-    private static final class Oname {
-
-        /**
-         * Object to get name.
-         */
-        private final Phi phi;
-
-        /**
-         * Ctor.
-         *
-         * @param phi The phi
-         */
-        Oname(final Phi phi) {
-            this.phi = phi;
-        }
-
-        @Override
-        public String toString() {
-            String txt = this.phi.getClass().getSimpleName();
-            final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
-            if (null != xmir) {
-                txt = xmir.oname();
-                if ("@".equals(txt)) {
-                    txt = "φ";
-                }
-            }
-            return txt;
-        }
     }
 }

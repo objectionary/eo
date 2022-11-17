@@ -23,65 +23,37 @@
  */
 package org.eolang;
 
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import org.cactoos.Scalar;
-
 /**
- * Attrs which was extended.
+ * Object name, as in source code.
  *
  * @since 0.1
  */
-public final class AtsExtended implements Scalar<Map<String, Attr>> {
+public final class Oname {
 
     /**
-     * The name of new attr.
+     * Object to get name.
      */
-    private final String name;
-
-    /**
-     * The value of new attr.
-     */
-    private final Attr attr;
-
-    /**
-     * Attrs which be extended.
-     */
-    private final Map<String, Attr> origin;
-
-    /**
-     * The order of attrs.
-     */
-    private final List<? super String> order;
+    private final Phi phi;
 
     /**
      * Ctor.
      *
-     * @param name The name of origin
-     * @param attr The value of origin
-     * @param origin Attrs which be extended
-     * @param order Order of attrs
-     * @checkstyle ParameterNumberCheck (11 lines)
+     * @param phi The phi
      */
-    AtsExtended(
-        final String name,
-        final Attr attr,
-        final Map<String, Attr> origin,
-        final List<? super String> order
-    ) {
-        this.name = name;
-        this.attr = attr;
-        this.origin = origin;
-        this.order = order;
+    Oname(final Phi phi) {
+        this.phi = phi;
     }
 
     @Override
-    public Map<String, Attr> value() {
-        if (Pattern.compile("^[a-z].*$").matcher(this.name).matches()) {
-            this.order.add(this.name);
+    public String toString() {
+        String txt = this.phi.getClass().getSimpleName();
+        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
+        if (null != xmir) {
+            txt = xmir.oname();
+            if ("@".equals(txt)) {
+                txt = "φ";
+            }
         }
-        this.origin.put(this.name, this.attr);
-        return this.origin;
+        return txt;
     }
 }
