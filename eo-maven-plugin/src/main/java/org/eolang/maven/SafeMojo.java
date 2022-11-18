@@ -30,6 +30,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
@@ -211,10 +212,20 @@ abstract class SafeMojo extends AbstractMojo {
             }
         } else {
             try {
-                final long start = System.nanoTime();
                 if (this.timeout != null) {
-                    SafeMojo.waitAndInterrupt(Thread.currentThread(), this.timeout);
+                    try {
+                        final CountDownLatch latch = new CountDownLatch(1);
+                        SafeMojo.waitAndInterrupt(
+                            latch,
+                            Thread.currentThread(),
+                            this.timeout
+                        );
+                        latch.await();
+                    } catch (final InterruptedException ex) {
+                        throw new MojoFailureException(ex);
+                    }
                 }
+                final long start = System.nanoTime();
                 this.exec();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
@@ -303,12 +314,18 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Interrupts thread if time limit is reached.
      *
+     * @param latch Count down latch
      * @param thread Thread to interrupt.
      * @param sec Time limit in seconds.
      */
-    private static void waitAndInterrupt(final Thread thread, final int sec) {
+    private static void waitAndInterrupt(
+        final CountDownLatch latch,
+        final Thread thread,
+        final int sec
+    ) {
         new Thread(
             () -> {
+                latch.countDown();
                 try {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
                     thread.interrupt();
