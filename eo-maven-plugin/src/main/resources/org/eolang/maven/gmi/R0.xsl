@@ -34,7 +34,8 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="gmi">
-        <!-- empty one -->
+        <xsl:attribute name="time" select="@time"/>
+        <xsl:attribute name="version" select="@version"/>
       </xsl:element>
     </xsl:copy>
   </xsl:template>

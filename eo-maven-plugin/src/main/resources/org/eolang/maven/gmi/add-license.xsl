@@ -22,34 +22,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="to-text" version="2.0">
-  <xsl:include href="/org/eolang/maven/license.xsl"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-license" version="2.0">
+  <!--
+  Here we start the graph, creating a new XML element "gmi" under "program".
+  All further XSL transformations will work with "i" elements inside
+  this "gmi" one.
+  -->
+  <xsl:import href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="EOL">
-    <xsl:value-of select="'&#10;'"/>
-  </xsl:variable>
-  <xsl:template match="/gmi">
-    <xsl:element name="text">
-      <xsl:call-template name="license-text"/>
-      <xsl:apply-templates select="i"/>
-    </xsl:element>
+  <xsl:template match="gmi">
+    <xsl:call-template name="license-xml"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
-  <xsl:template match="i">
-    <xsl:value-of select="@name"/>
-    <xsl:text>(</xsl:text>
-    <xsl:for-each select="a">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:text>"</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>"</xsl:text>
-    </xsl:for-each>
-    <xsl:text>);</xsl:text>
-    <xsl:if test="c">
-      <xsl:text> # </xsl:text>
-      <xsl:value-of select="c"/>
-    </xsl:if>
-    <xsl:value-of select="$EOL"/>
+  <xsl:template match="node()|@*" mode="#default">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
