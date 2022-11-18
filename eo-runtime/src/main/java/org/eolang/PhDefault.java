@@ -280,7 +280,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public String location() {
+    public String locator() {
         return "?";
     }
 

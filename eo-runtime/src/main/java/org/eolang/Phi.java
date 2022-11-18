@@ -87,7 +87,7 @@ public interface Phi extends Term {
         }
 
         @Override
-        public String location() {
+        public String locator() {
             return "?:?";
         }
     };
@@ -123,8 +123,8 @@ public interface Phi extends Term {
     Attr attr(String name);
 
     /**
-     * Get code location of the phi.
-     * @return String containing code location
+     * Get code locator of the phi.
+     * @return String containing code locator
      */
-    String location();
+    String locator();
 }

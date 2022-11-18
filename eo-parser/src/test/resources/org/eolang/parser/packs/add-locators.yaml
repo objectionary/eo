@@ -1,0 +1,38 @@
+tests:
+  - /program/errors[count(error)=0]
+  - //o[@name='a' and @loc='Φ.org.abc.a']
+  - //o[@base='x' and @loc='Φ.org.abc.a.φ.α0']
+  - //o[@base='org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']
+  - //o[@base='x' and @name='tt' and @loc='Φ.org.abc.tt']
+  - //o[@base='org.eolang.int' and @loc='Φ.org.abc.tt.α0']
+  - //o[@base='org.eolang.array' and @loc='Φ.org.abc.tt.α1']
+  - //o[@base='org.eolang.float' and @loc='Φ.org.abc.tt.α1.α0']
+  - //o[@base='org.eolang.float' and @loc='Φ.org.abc.tt.α1.α1']
+  - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
+  - //o[not(@base) and @name='e' and @loc='Φ.org.abc.tt.α2.e']
+  - //o[@base='.hello' and @loc='Φ.org.abc.tt.α2.φ']
+  - //o[@base='e' and @loc='Φ.org.abc.tt.α2.φ.ρ']
+  - //o[@name='q' and @base='.<' and @loc='Φ.org.abc.q']
+  - //o[@base='.p' and not(@name) and @loc='Φ.org.abc.q.ρ']
+  - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ']
+  - //o[@base='.&' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ.ρ']
+  - //o[@base='$' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ.ρ.ρ']
+eo: |
+  +alias org.abc.foo.b
+  +alias x
+  +package org.abc
+  
+  [] > a
+    b > @
+      x
+        "Hello"
+
+  x > tt
+    10
+    *
+      5.1
+      6.2
+    [e]
+      e.hello > @
+  
+  $.&.^.p.< > q

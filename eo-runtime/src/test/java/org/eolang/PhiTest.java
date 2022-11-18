@@ -97,7 +97,7 @@ final class PhiTest {
                 ),
                 "Δ",
                 new Data.Value<>("aaa")
-            ).location(),
+            ).locator(),
             Matchers.equalTo("123:56")
         );
     }

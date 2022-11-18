@@ -1,10 +1,10 @@
-xsl: org/eolang/parser/add-refs.xsl
+xsl: org/eolang/parser/set-locators.xsl
 input:
   <?xml version="1.0" encoding="UTF-8"?>
   <program>
     <objects>
-      <o name="a" line="4">
-        <o base="a"/>
+      <o name="a">
+        <o base="b"/>
       </o>
     </objects>
   </program>
@@ -12,8 +12,8 @@ output:
   <?xml version="1.0" encoding="UTF-8"?>
   <program>
     <objects>
-      <o name="a" line="4">
-        <o base="a" ref="4"/>
+      <o loc="Φ.a" name="a">
+        <o loc="Φ.a.α0" base="b"/>
       </o>
     </objects>
   </program>

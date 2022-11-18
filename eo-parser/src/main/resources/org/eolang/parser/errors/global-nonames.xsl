@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//objects/o[not(@name)]">
+      <xsl:for-each select="/program/objects/o[not(@name) and not(@method) and not(following-sibling::o[1][@method])]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>global-nonames</xsl:text>
@@ -39,6 +39,11 @@ SOFTWARE.
             <xsl:text>error</xsl:text>
           </xsl:attribute>
           <xsl:text>The global object doesn't have a name</xsl:text>
+          <xsl:if test="@base">
+            <xsl:text> (@base='</xsl:text>
+            <xsl:value-of select="@base"/>
+            <xsl:text>')</xsl:text>
+          </xsl:if>
         </xsl:element>
       </xsl:for-each>
     </xsl:copy>

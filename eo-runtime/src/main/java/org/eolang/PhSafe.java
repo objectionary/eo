@@ -100,8 +100,8 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public String location() {
-        return this.origin.location();
+    public String locator() {
+        return this.origin.locator();
     }
 
 }

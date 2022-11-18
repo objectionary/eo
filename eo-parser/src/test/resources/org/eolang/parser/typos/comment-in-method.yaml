@@ -1,0 +1,7 @@
+line: 4
+eo: |
+  [args] > app
+    stdout
+      # a comment here is prohibited
+      sprintf
+        "hello"

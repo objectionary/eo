@@ -191,8 +191,8 @@ public interface Data<T> {
         }
 
         @Override
-        public String location() {
-            return this.object.location();
+        public String locator() {
+            return this.object.locator();
         }
 
         @Override
