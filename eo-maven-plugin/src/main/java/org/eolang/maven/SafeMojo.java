@@ -30,7 +30,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
@@ -306,26 +305,25 @@ abstract class SafeMojo extends AbstractMojo {
      * @param sec Time limit in seconds.
      */
     private static void waitAndInterrupt(final Thread thread, final int sec) {
-        Executors.newSingleThreadExecutor().submit(
-            () -> {
-                try {
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
-                    synchronized (thread) {
-                        if (thread.isAlive()) {
-                            thread.interrupt();
-                        }
+        new Thread(() -> {
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
+                synchronized (thread) {
+                    if (thread.isAlive()) {
+                        thread.interrupt();
                     }
-                } catch (final InterruptedException ex) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Timeout thread '%s' [timeout='%d' sec] was interrupted",
-                            thread,
-                            sec
-                        ),
-                        ex
-                    );
                 }
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(
+                    String.format(
+                        "Timeout thread '%s' [timeout='%d' sec] was interrupted",
+                        thread,
+                        sec
+                    ),
+                    ex
+                );
             }
-        );
+        }).start();
     }
 }
