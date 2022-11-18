@@ -75,6 +75,11 @@ public final class PlaceMojo extends SafeMojo {
     public static final String ATTR_PLD_ORIGIN = "dependency";
 
     /**
+     * Attr in CSV.
+     */
+    public static final String ATTR_PLD_UNPLACED = "unplaced";
+
+    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -205,7 +210,8 @@ public final class PlaceMojo extends SafeMojo {
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set(PlaceMojo.ATTR_PLD_ORIGIN, dep);
+                .set(PlaceMojo.ATTR_PLD_ORIGIN, dep)
+                .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
             ++copied;
         }
         if (copied > 0) {
