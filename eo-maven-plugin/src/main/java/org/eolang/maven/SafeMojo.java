@@ -30,6 +30,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -211,11 +213,10 @@ abstract class SafeMojo extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                if (this.timeout == null) {
-                    this.exec();
-                } else {
-                    this.executeWithTimeout();
+                if (this.timeout != null) {
+                    SafeMojo.waitAndInterrupt(Thread.currentThread(), timeout);
                 }
+                this.exec();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
                         this,
@@ -273,7 +274,7 @@ abstract class SafeMojo extends AbstractMojo {
                 return unscoped.select(
                     t -> filter.test(t)
                         && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                            || "test".equals(SafeMojo.this.scope))
+                                || "test".equals(SafeMojo.this.scope))
                 );
             }
         };
@@ -299,14 +300,25 @@ abstract class SafeMojo extends AbstractMojo {
     }
 
     /**
-     * Executes mojo in limited time interval.
+     * Interrupts thread if time limit is reached.
      *
-     * @throws IOException If fails.
+     * @param thread Thread to interrupt.
+     * @param sec Time limit in seconds.
      */
-    private void executeWithTimeout() throws IOException {
-        final Timeout timer = new Timeout(this.timeout);
-        timer.start();
-        this.exec();
-        timer.stop();
+    private static void waitAndInterrupt(final Thread thread, final int sec) {
+        Executors.newSingleThreadExecutor().submit(
+            () -> {
+                try {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
+                    synchronized (thread) {
+                        if (thread.isAlive()) {
+                            thread.interrupt();
+                        }
+                    }
+                } catch (InterruptedException ex) {
+                    throw new IllegalStateException();//todo
+                }
+            }
+        );
     }
 }
