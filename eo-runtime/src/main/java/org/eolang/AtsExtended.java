@@ -26,7 +26,6 @@ package org.eolang;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.cactoos.Scalar;
 
 /**
  * Attrs which was extended.
