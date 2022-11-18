@@ -26,9 +26,6 @@ package org.eolang.maven.testapi;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Catalogs;
@@ -56,7 +53,6 @@ public final class FakeMaven {
      * Default eo-foreign.csv file format.
      */
     private static final String FOREIGN_FORMAT = "csv";
-
 
     /**
      * Default eo-foreign.csv file path.

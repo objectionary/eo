@@ -50,11 +50,7 @@ final class ParseMojoTest {
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.program(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print"
-            )
+        maven.program("+package f", "[args] > main", "  (stdout \"Hello!\").print")
             .execute(ParseMojo.class);
         MatcherAssert.assertThat(
             new Home(maven.targetPath()).exists(
