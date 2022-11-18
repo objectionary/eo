@@ -153,7 +153,6 @@ public final class ParseMojo extends SafeMojo {
             for (final Future<Object> completed : Executors.newFixedThreadPool(this.threads)
                 .invokeAll(tasks)) {
                 try {
-                    waitComplete(completed);
                     completed.get();
                 } catch (final ExecutionException ex) {
                     throw new IllegalArgumentException(
@@ -180,20 +179,6 @@ public final class ParseMojo extends SafeMojo {
             }
         } else {
             Logger.info(this, "Parsed %d .eo sources to XMIRs", total.get());
-        }
-    }
-
-    /**
-     * Waits complete of the future result.
-     *
-     * @param completed Future result.
-     * @throws InterruptedException if current thread was interrupted.
-     */
-    private static void waitComplete(final Future<Object> completed) throws InterruptedException {
-        while (!completed.isDone()) {
-            if (Thread.interrupted()) {
-                throw new InterruptedException("This thread was interrupted");
-            }
         }
     }
 
