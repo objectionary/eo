@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="to-xembly" version="2.0">
-  <xsl:include href="/org/eolang/maven/gmi-to/license.xsl"/>
+  <xsl:include href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:param name="testing"/>
   <xsl:variable name="EOL">

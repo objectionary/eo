@@ -28,7 +28,7 @@ SOFTWARE.
   All further XSL transformations will work with "i" elements inside
   this "gmi" one.
   -->
-  <xsl:import href="/org/eolang/maven/gmi-to/license.xsl"/>
+  <xsl:import href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="gmi">
     <xsl:call-template name="license-xml"/>
