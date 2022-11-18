@@ -32,6 +32,11 @@ SOFTWARE.
   <xsl:function name="eo:locator" as="xs:string">
     <xsl:param name="program" as="node()"/>
     <xsl:param name="o" as="node()"/>
+    <xsl:if test="name($o) != 'o'">
+      <xsl:message terminate="yes">
+        <xsl:text>Only 'o' XML elements are accepted here</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:variable name="ret">
       <xsl:choose>
         <xsl:when test="$o/parent::o">
@@ -59,24 +64,12 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="name($o) = 'o'">
-              <xsl:choose>
-                <xsl:when test="starts-with($o/parent::o/@base, '.')">
-                  <xsl:text>ρ</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:text>α</xsl:text>
-                  <xsl:value-of select="count($o/preceding-sibling::o)"/>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:when>
-            <xsl:when test="name($o) = 'objects'">
-              <xsl:text>ν0</xsl:text>
+            <xsl:when test="starts-with($o/parent::o/@base, '.')">
+              <xsl:text>ρ</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:message terminate="yes">
-                <xsl:text>Only 'o' or 'objects' XML elements are accepted here</xsl:text>
-              </xsl:message>
+              <xsl:text>α</xsl:text>
+              <xsl:value-of select="count($o/preceding-sibling::o)"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
