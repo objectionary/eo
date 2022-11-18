@@ -37,10 +37,6 @@ import org.eolang.maven.Place;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
- * @todo #1431:90min Unit test are required. We have to test different cases like:
- *   - if XML file is already in cache
- *   - if XML file is absent
- *   - if some {@link java.io.IOException} happens
  */
 public final class OptCached implements Optimization {
 
@@ -69,11 +65,10 @@ public final class OptCached implements Optimization {
     }
 
     @Override
-    public XML apply(final Path xml) {
+    public XML apply(final XML xml) {
         try {
-            final Path path = new Place(
-                new XMLDocument(xml).xpath("/program/@name").get(0)
-            ).make(this.folder, AssembleMojo.ATTR_XMIR);
+            final Path path = new Place(xml.xpath("/program/@name").get(0))
+                .make(this.folder, AssembleMojo.ATTR_XMIR);
             final XML optimized;
             if (Files.exists(path)) {
                 optimized = new XMLDocument(path);

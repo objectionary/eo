@@ -21,16 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.optimization;
-
-import com.jcabi.xml.XML;
-import java.util.function.Function;
-
 /**
- * Abstraction for XML optimizations.
- *
- * @since 0.28.11
+ * Test cases for {@link org.eolang.maven.optimization} package.
  */
-@FunctionalInterface
-public interface Optimization extends Function<XML, XML> {
-}
+package org.eolang.maven.optimization;
