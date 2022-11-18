@@ -311,18 +311,16 @@ abstract class SafeMojo extends AbstractMojo {
             () -> {
                 try {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
-                    synchronized (thread) {
-                        thread.interrupt();
-                        Logger.warn(
-                            Thread.currentThread(),
-                            String.format(
-                                "Timeout ('%d %s') is reached for thread '%s'",
-                                sec,
-                                TimeUnit.SECONDS,
-                                thread
-                            )
-                        );
-                    }
+                    thread.interrupt();
+                    Logger.warn(
+                        Thread.currentThread(),
+                        String.format(
+                            "Timeout ('%d %s') is reached for thread '%s'",
+                            sec,
+                            TimeUnit.SECONDS,
+                            thread
+                        )
+                    );
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(
