@@ -93,7 +93,7 @@ public final class OptTrain implements Optimization {
     }
 
     /**
-     * Constructor for single shift optimization.
+     * Constructor for single {@link StClasspath} optimization.
      *
      * @param delegate Optimizations that have to be done before.
      * @param xls File from classpath.

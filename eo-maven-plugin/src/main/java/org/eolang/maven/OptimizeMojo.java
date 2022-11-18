@@ -52,11 +52,7 @@ import org.eolang.parser.ParsingTrain;
  * Optimize XML files.
  *
  * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *  via mojo parameter `threads`. Default value should be set to 4.
- * @todo #1024:30min On "trackOptimizationSteps=true", in "02-steps" folder
- * there are creates full list of XSL-s, even if "critical" error found---
- * it just creates the same files. Need to stop creating new files, when
- * critical error found.
+ *   via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
