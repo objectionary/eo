@@ -214,7 +214,7 @@ abstract class SafeMojo extends AbstractMojo {
             try {
                 final long start = System.nanoTime();
                 if (this.timeout != null) {
-                    SafeMojo.waitAndInterrupt(Thread.currentThread(), timeout);
+                    SafeMojo.waitAndInterrupt(Thread.currentThread(), this.timeout);
                 }
                 this.exec();
                 if (Logger.isDebugEnabled(this)) {
@@ -274,7 +274,7 @@ abstract class SafeMojo extends AbstractMojo {
                 return unscoped.select(
                     t -> filter.test(t)
                         && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                                || "test".equals(SafeMojo.this.scope))
+                            || "test".equals(SafeMojo.this.scope))
                 );
             }
         };
@@ -315,8 +315,15 @@ abstract class SafeMojo extends AbstractMojo {
                             thread.interrupt();
                         }
                     }
-                } catch (InterruptedException ex) {
-                    throw new IllegalStateException();//todo
+                } catch (final InterruptedException ex) {
+                    throw new IllegalStateException(
+                        String.format(
+                            "Timeout thread '%s' [timeout='%d' sec] was interrupted",
+                            thread,
+                            sec
+                        ),
+                        ex
+                    );
                 }
             }
         );
