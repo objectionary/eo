@@ -54,6 +54,7 @@ public final class FakeMaven {
      */
     private static final String FOREIGN_FORMAT = "csv";
 
+
     /**
      * Default eo-foreign.csv file path.
      */
@@ -109,16 +110,19 @@ public final class FakeMaven {
     }
 
     /**
-     * Builds and returns compilation results after all manipulations.
-     *
-     * @return Compilation result.
+     * Path to compilation target directory.
+     * @return Path to target dir.
      */
-    public CompilationResult result() {
-        return new CompilationResult(
-            FakeMaven.PROGRAM_ID,
-            new Home(this.targetPath()),
-            this.foreignPath()
-        );
+    public Path targetPath() {
+        return this.workspace.absolute(Paths.get("target"));
+    }
+
+    /**
+     * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    public Path foreignPath() {
+        return this.workspace.absolute(FakeMaven.FOREIGN_PATH);
     }
 
     /**
@@ -130,21 +134,5 @@ public final class FakeMaven {
             .add(FakeMaven.PROGRAM_ID)
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, this.workspace.absolute(this.prog));
-    }
-
-    /**
-     * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
-     * @return Path to eo-foreign.* file.
-     */
-    private Path foreignPath() {
-        return this.workspace.absolute(FakeMaven.FOREIGN_PATH);
-    }
-
-    /**
-     * Path to compilation target directory.
-     * @return Path to target dir.
-     */
-    private Path targetPath() {
-        return this.workspace.absolute(Paths.get("target"));
     }
 }

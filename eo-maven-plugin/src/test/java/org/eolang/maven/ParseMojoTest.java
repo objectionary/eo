@@ -49,12 +49,21 @@ final class ParseMojoTest {
 
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.program("+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n")
+            .execute(ParseMojo.class);
         MatcherAssert.assertThat(
-            new FakeMaven(temp)
-                .program("+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n")
-                .execute(ParseMojo.class)
-                .result()
-                .xmirCompiled(),
+            new Home(maven.targetPath()).exists(
+                Paths.get(
+                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+                )
+            ),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new TjSmart(
+                Catalogs.INSTANCE.make(maven.foreignPath())
+            ).getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
     }
