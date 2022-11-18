@@ -31,7 +31,7 @@ import org.cactoos.Scalar;
 /**
  * Attrs which was extended.
  *
- * @since 0.1
+ * @since 0.28.12
  */
 public final class AtsExtended implements Scalar<Map<String, Attr>> {
 

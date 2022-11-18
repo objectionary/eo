@@ -26,7 +26,7 @@ package org.eolang;
 /**
  * Object name, as in source code.
  *
- * @since 0.1
+ * @since 0.28.12
  */
 public final class Oname {
 

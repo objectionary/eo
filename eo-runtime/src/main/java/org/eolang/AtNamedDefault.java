@@ -26,7 +26,7 @@ package org.eolang;
 /**
  * Make named attribute.
  *
- * @since 0.1
+ * @since 0.28.12
  */
 public final class AtNamedDefault implements Attr {
 
@@ -57,15 +57,6 @@ public final class AtNamedDefault implements Attr {
             phi,
             origin
         );
-    }
-
-    /**
-     * Reproduce value as {@link AtNamed}.
-     *
-     * @return Named attr
-     */
-    public AtNamed value() {
-        return this.named;
     }
 
     @Override
