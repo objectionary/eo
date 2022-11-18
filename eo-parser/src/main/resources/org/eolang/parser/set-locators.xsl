@@ -39,7 +39,7 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:text>Φ</xsl:text>
-          <xsl:if test="not(contains($o/@base, '.')) and $program/metas/meta[head='package']">
+          <xsl:if test="$program/metas/meta[head='package']">
             <xsl:text>.</xsl:text>
             <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
           </xsl:if>
@@ -52,15 +52,6 @@ SOFTWARE.
             <xsl:when test="$o/@name = '@'">
               <xsl:text>φ</xsl:text>
             </xsl:when>
-            <xsl:when test="$o/@name = '^'">
-              <xsl:text>ρ</xsl:text>
-            </xsl:when>
-            <xsl:when test="$o/@name = '$'">
-              <xsl:text>ξ</xsl:text>
-            </xsl:when>
-            <xsl:when test="$o/@name = 'Q'">
-              <xsl:text>Φ</xsl:text>
-            </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$o/@name"/>
             </xsl:otherwise>
@@ -69,8 +60,15 @@ SOFTWARE.
         <xsl:otherwise>
           <xsl:choose>
             <xsl:when test="name($o) = 'o'">
-              <xsl:text>α</xsl:text>
-              <xsl:value-of select="count($o/preceding-sibling::o)"/>
+              <xsl:choose>
+                <xsl:when test="starts-with($o/parent::o/@base, '.')">
+                  <xsl:text>ρ</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>α</xsl:text>
+                  <xsl:value-of select="count($o/preceding-sibling::o)"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:when>
             <xsl:when test="name($o) = 'objects'">
               <xsl:text>ν0</xsl:text>
@@ -87,6 +85,11 @@ SOFTWARE.
     <xsl:value-of select="$ret"/>
   </xsl:function>
   <xsl:template match="o">
+    <xsl:if test="@method">
+      <xsl:message terminate="yes">
+        <xsl:text>This transformation must be applied only after you remove @method attributes from objects, using 'wrap-method-calls.xsl'</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:copy>
       <xsl:attribute name="loc" select="eo:locator(/program, .)"/>
       <xsl:apply-templates select="node()|@* except @loc"/>
