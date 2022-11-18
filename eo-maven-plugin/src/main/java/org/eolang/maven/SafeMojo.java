@@ -272,8 +272,10 @@ abstract class SafeMojo extends AbstractMojo {
             public List<Tojo> select(final Predicate<Tojo> filter) {
                 return unscoped.select(
                     t -> filter.test(t)
-                        && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                            || "test".equals(SafeMojo.this.scope))
+                        && (
+                        t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
+                            || "test".equals(SafeMojo.this.scope)
+                    )
                 );
             }
         };
@@ -305,25 +307,27 @@ abstract class SafeMojo extends AbstractMojo {
      * @param sec Time limit in seconds.
      */
     private static void waitAndInterrupt(final Thread thread, final int sec) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
-                synchronized (thread) {
-                    if (thread.isAlive()) {
-                        thread.interrupt();
+        new Thread(
+            () -> {
+                try {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(sec));
+                    synchronized (thread) {
+                        if (thread.isAlive()) {
+                            thread.interrupt();
+                        }
                     }
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException(
+                        String.format(
+                            "Timeout thread '%s' [timeout='%d' sec] was interrupted",
+                            thread,
+                            sec
+                        ),
+                        ex
+                    );
                 }
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException(
-                    String.format(
-                        "Timeout thread '%s' [timeout='%d' sec] was interrupted",
-                        thread,
-                        sec
-                    ),
-                    ex
-                );
             }
-        }).start();
+        ).start();
     }
 }
