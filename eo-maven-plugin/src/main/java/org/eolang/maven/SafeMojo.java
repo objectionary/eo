@@ -235,10 +235,9 @@ abstract class SafeMojo extends AbstractMojo {
                 );
             } catch (final TimeoutException ex) {
                 throw new MojoExecutionException(
-                    String.format(
-                        "Timeout [%d %s] for Mojo execution is reached ",
-                        this.timeout,
-                        TimeUnit.SECONDS
+                    Logger.format(
+                        "Timeout %[ms]s for Mojo execution is reached",
+                        TimeUnit.SECONDS.toMillis(this.timeout)
                     ),
                     ex
                 );
@@ -320,10 +319,9 @@ abstract class SafeMojo extends AbstractMojo {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
-                String.format(
-                    "Timeout[%d %s] thread was interrupted",
-                    this.timeout,
-                    TimeUnit.SECONDS
+                Logger.format(
+                    "Timeout %[ms]s thread was interrupted",
+                    TimeUnit.SECONDS.toMillis(this.timeout)
                 ),
                 ex
             );
