@@ -164,7 +164,7 @@ final class ParseMojoTest {
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
@@ -184,8 +184,8 @@ final class ParseMojoTest {
             .add("bar.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, src.toString());
-        final IllegalArgumentException exception = Assertions.assertThrows(
-            IllegalArgumentException.class,
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
             () -> new Moja<>(ParseMojo.class)
                 .with("targetDir", temp.resolve("target").toFile())
                 .with("foreign", foreign.toFile())
@@ -193,7 +193,10 @@ final class ParseMojoTest {
                 .with("foreignFormat", "csv")
                 .execute()
         );
-        Assertions.assertEquals(String.format("Failed to parse %s", src), exception.getMessage());
+        MatcherAssert.assertThat(
+            exception.getCause().getCause().getMessage(),
+            Matchers.containsString(String.format("Failed to parse %s", src))
+        );
     }
 
     @Test

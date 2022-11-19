@@ -155,7 +155,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @since 0.28.12
      */
     @Parameter(property = "eo.timeout")
-    protected Integer timeout;
+    protected Integer timeout = Integer.MAX_VALUE;
 
     /**
      * Format of "transpiled" file ("json" or "csv").
@@ -311,16 +311,12 @@ abstract class SafeMojo extends AbstractMojo {
      */
     private void execWithTimeout() throws ExecutionException, TimeoutException, IOException {
         try {
-            if (this.timeout == null) {
-                this.exec();
-            } else {
-                Executors.newSingleThreadExecutor().submit(
-                    () -> {
-                        this.exec();
-                        return new Object();
-                    }
-                ).get(this.timeout, TimeUnit.SECONDS);
-            }
+            Executors.newSingleThreadExecutor().submit(
+                () -> {
+                    this.exec();
+                    return new Object();
+                }
+            ).get(this.timeout, TimeUnit.SECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
