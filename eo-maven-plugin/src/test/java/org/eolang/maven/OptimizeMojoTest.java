@@ -335,7 +335,7 @@ final class OptimizeMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .execute();
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(OptimizeMojo.class)
                 .with("targetDir", target.toFile())
                 .with("foreign", foreign.toFile())
@@ -418,7 +418,7 @@ final class OptimizeMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .execute();
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(OptimizeMojo.class)
                 .with("targetDir", target.toFile())
                 .with("foreign", foreign.toFile())
@@ -451,7 +451,7 @@ final class OptimizeMojoTest {
             target.resolve("01-parse/foo/src.xmir")
         );
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(OptimizeMojo.class)
                 .with("targetDir", target.toFile())
                 .with("foreign", foreign.toFile())

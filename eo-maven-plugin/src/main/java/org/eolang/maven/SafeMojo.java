@@ -30,10 +30,15 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -47,6 +52,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyFields")
 abstract class SafeMojo extends AbstractMojo {
 
     /**
@@ -144,6 +150,14 @@ abstract class SafeMojo extends AbstractMojo {
     protected File transpiled;
 
     /**
+     * Mojo execution timeout in seconds.
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.28.12
+     */
+    @Parameter(property = "eo.timeout")
+    protected Integer timeout = Integer.MAX_VALUE;
+
+    /**
      * Format of "transpiled" file ("json" or "csv").
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -191,7 +205,7 @@ abstract class SafeMojo extends AbstractMojo {
     private boolean skip;
 
     @Override
-    public final void execute() throws MojoFailureException {
+    public final void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
             if (Logger.isInfoEnabled(this)) {
@@ -202,7 +216,7 @@ abstract class SafeMojo extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                this.exec();
+                this.execWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
                         this,
@@ -217,6 +231,19 @@ abstract class SafeMojo extends AbstractMojo {
                         "Failed to execute %s",
                         this.getClass().getCanonicalName()
                     ),
+                    ex
+                );
+            } catch (final TimeoutException ex) {
+                throw new MojoExecutionException(
+                    Logger.format(
+                        "Timeout %[ms]s for Mojo execution is reached",
+                        TimeUnit.SECONDS.toMillis(this.timeout)
+                    ),
+                    ex
+                );
+            } catch (final ExecutionException ex) {
+                throw new MojoExecutionException(
+                    String.format("'%s' execution failed", this),
                     ex
                 );
             } finally {
@@ -259,8 +286,10 @@ abstract class SafeMojo extends AbstractMojo {
             public List<Tojo> select(final Predicate<Tojo> filter) {
                 return unscoped.select(
                     t -> filter.test(t)
-                        && (t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                        || "test".equals(SafeMojo.this.scope))
+                        && (
+                        t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
+                            || "test".equals(SafeMojo.this.scope)
+                    )
                 );
             }
         };
@@ -271,6 +300,33 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
+
+    /**
+     * Runs exec command with timeout if needed.
+     *
+     * @throws ExecutionException If unexpected exception happened during execution
+     * @throws TimeoutException If timeout limit reached
+     * @throws IOException If fails
+     */
+    private void execWithTimeout() throws ExecutionException, TimeoutException, IOException {
+        try {
+            Executors.newSingleThreadExecutor().submit(
+                () -> {
+                    this.exec();
+                    return new Object();
+                }
+            ).get(this.timeout, TimeUnit.SECONDS);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                Logger.format(
+                    "Timeout %[ms]s thread was interrupted",
+                    TimeUnit.SECONDS.toMillis(this.timeout)
+                ),
+                ex
+            );
+        }
+    }
 
     /**
      * Close it safely.
@@ -284,5 +340,4 @@ abstract class SafeMojo extends AbstractMojo {
             throw new MojoFailureException(ex);
         }
     }
-
 }

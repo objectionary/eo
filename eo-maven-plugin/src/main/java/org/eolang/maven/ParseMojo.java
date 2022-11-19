@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -149,22 +150,17 @@ public final class ParseMojo extends SafeMojo {
                 }
             );
         try {
-            Executors.newFixedThreadPool(this.threads)
-                .invokeAll(tasks)
-                .forEach(
-                    completed -> {
-                        try {
-                            completed.get();
-                        } catch (final InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        } catch (final ExecutionException ex) {
-                            throw new IllegalArgumentException(
-                                ex.getCause().getMessage(),
-                                ex
-                            );
-                        }
-                    }
-                );
+            for (final Future<Object> completed : Executors.newFixedThreadPool(this.threads)
+                .invokeAll(tasks)) {
+                try {
+                    completed.get();
+                } catch (final ExecutionException ex) {
+                    throw new IllegalArgumentException(
+                        ex.getCause().getMessage(),
+                        ex
+                    );
+                }
+            }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
