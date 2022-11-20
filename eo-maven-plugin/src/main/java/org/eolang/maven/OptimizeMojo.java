@@ -46,12 +46,13 @@ import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
+import org.eolang.parser.ParsingTrain;
 
 /**
  * Optimize XML files.
  *
  * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *  via mojo parameter `threads`. Default value should be set to 4.
+ *   via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
@@ -236,7 +237,12 @@ public final class OptimizeMojo extends SafeMojo {
                     .resolve(tojo.get(AssembleMojo.ATTR_HASH))
             );
         }
-        return new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
+        if (this.failOnError) {
+            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
+        } else {
+            opt = new OptTrain(opt, new ParsingTrain().empty());
+        }
+        return opt;
     }
 
     /**
