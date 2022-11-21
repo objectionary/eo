@@ -39,6 +39,8 @@ import org.eolang.maven.Moja;
  * Fake maven workspace that executes Mojos in order to test
  * their behaviour and results.
  * @since 0.28.12
+ * @todo #1417:90min Make `FakeMaven.exec()` return a `HashMap` with all
+ *  files created in the directory and their relative names. Then, we can assert on this hash map.
  */
 public final class FakeMaven {
 
