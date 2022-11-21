@@ -164,8 +164,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Creates eo-foreign.* file. In the future it is going to be a method for `MavenWorkspace`
-     * interface.
+     * Creates eo-foreign.* file.
      */
     private void withEoForeign() {
         final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
