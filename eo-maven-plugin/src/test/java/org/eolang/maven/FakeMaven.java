@@ -56,11 +56,6 @@ public final class FakeMaven {
     private final Map<String, Object> attributes;
 
     /**
-     * Path to a program in workspace.
-     */
-    private Path prog;
-
-    /**
      * The main constructor.
      *
      * @param workspace Test temporary directory.
@@ -116,8 +111,7 @@ public final class FakeMaven {
         final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
             .add("foo.x.main");
         tojo.set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
-            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(this.prog));
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
         for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
             tojo.set(entry.getKey(), entry.getValue());
         }
@@ -177,7 +171,7 @@ public final class FakeMaven {
      */
     private FakeMaven withProgram(final Path path, final String content) throws IOException {
         this.workspace.save(content, path);
-        this.prog = path;
+        this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
         return this;
     }
 }
