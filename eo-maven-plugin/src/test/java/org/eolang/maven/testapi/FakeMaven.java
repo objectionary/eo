@@ -91,7 +91,7 @@ public final class FakeMaven {
      */
     public FakeMaven(final Path workspace) {
         this.workspace = new Home(workspace);
-        this.params = this.defaultParams();
+        this.params = new HashMap<>();
         this.attributes = new HashMap<>();
     }
 
@@ -109,14 +109,43 @@ public final class FakeMaven {
     }
 
     /**
+     * Set default the params for all mojos.
+     *
+     * @return The same maven instance.
+     */
+    public FakeMaven withDefaults() {
+        this.params.put("targetDir", this.targetPath().toFile());
+        this.params.put("foreign", this.foreignPath().toFile());
+        this.params.put("foreignFormat", FakeMaven.FOREIGN_FORMAT);
+        return this;
+    }
+
+    /**
      * Sets parameter for execution.
      *
-     * @param key Parameter name
+     * @param param Parameter name
      * @param value Parameter value
      * @return The same maven instance.
      */
-    public FakeMaven with(final String key, final Object value) {
-        this.params.put(key, value);
+    public FakeMaven with(final String param, final Object value) {
+        this.params.put(param, value);
+        return this;
+    }
+
+    /**
+     * Creates eo-foreign.* file.
+     *
+     * @return The same maven instance.
+     */
+    public FakeMaven withEoForeign() {
+        final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
+            .add(FakeMaven.PROGRAM_ID);
+        tojo.set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
+            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(this.prog));
+        for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
+            tojo.set(entry.getKey(), entry.getValue());
+        }
         return this;
     }
 
@@ -127,8 +156,8 @@ public final class FakeMaven {
      * @param value Attribute value.
      * @return The same maven instance.
      */
-    public FakeMaven with(final TojoAttribute attribute, final Object value) {
-        this.attributes.put(attribute.toString(), value);
+    public FakeMaven withTojoAttribute(final String attribute, final Object value) {
+        this.attributes.put(attribute, value);
         return this;
     }
 
@@ -140,7 +169,6 @@ public final class FakeMaven {
      * @return Workspace after executing Mojo.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) {
-        this.withEoForeign();
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.params.entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -163,33 +191,5 @@ public final class FakeMaven {
      */
     public Path foreignPath() {
         return this.workspace.absolute(FakeMaven.FOREIGN_PATH);
-    }
-
-    /**
-     * Creates eo-foreign.* file.
-     */
-    private void withEoForeign() {
-        final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
-            .add(FakeMaven.PROGRAM_ID);
-        tojo.set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
-            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(this.prog));
-        for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
-            tojo.set(entry.getKey(), entry.getValue());
-        }
-    }
-
-    /**
-     * Creates the param map for all mojos.
-     * The params the same for each execution.
-     *
-     * @return Map of default mojo params.
-     */
-    private Map<String, Object> defaultParams() {
-        final Map<String, Object> res = new HashMap<>();
-        res.put("targetDir", this.targetPath().toFile());
-        res.put("foreign", this.foreignPath().toFile());
-        res.put("foreignFormat", FakeMaven.FOREIGN_FORMAT);
-        return res;
     }
 }

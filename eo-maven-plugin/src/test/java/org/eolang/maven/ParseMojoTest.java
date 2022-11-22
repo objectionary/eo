@@ -33,7 +33,6 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.testapi.FakeMaven;
-import org.eolang.maven.testapi.TojoAttribute;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -52,6 +51,8 @@ final class ParseMojoTest {
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         maven.forProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
+            .withDefaults()
+            .withEoForeign()
             .execute(ParseMojo.class);
         MatcherAssert.assertThat(
             new Home(maven.targetPath()).exists(
@@ -83,7 +84,9 @@ final class ParseMojoTest {
             cache.resolve(ParseMojo.PARSED)
         ).save("foo.x.main", "xmir", () -> expected);
         maven.forProgram("invalid content")
-            .with(TojoAttribute.HASH, hash)
+            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .withDefaults()
+            .withEoForeign()
             .with("cache", cache)
             .execute(ParseMojo.class);
         MatcherAssert.assertThat(
