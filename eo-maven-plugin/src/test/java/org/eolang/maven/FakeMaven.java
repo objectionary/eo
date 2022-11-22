@@ -41,11 +41,6 @@ import org.apache.maven.plugin.AbstractMojo;
 public final class FakeMaven {
 
     /**
-     * Default eo program id.
-     */
-    private static final String PROGRAM_ID = "foo.x.main";
-
-    /**
      * Default eo-foreign.csv file format.
      */
     private static final String FOREIGN_FORMAT = "csv";
@@ -99,19 +94,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Adds eo program to a workspace.
-     * @param content EO program content.
-     * @param path Relative path where to save EO program
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    private FakeMaven withProgram(final Path path, final String content) throws IOException {
-        this.workspace.save(content, path);
-        this.prog = path;
-        return this;
-    }
-
-    /**
      * Set default the params for all mojos.
      *
      * @return The same maven instance.
@@ -142,7 +124,7 @@ public final class FakeMaven {
      */
     public FakeMaven withEoForeign() {
         final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
-            .add(FakeMaven.PROGRAM_ID);
+            .add("foo.x.main");
         tojo.set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "0.25.0")
             .set(AssembleMojo.ATTR_EO, this.workspace.absolute(this.prog));
@@ -194,5 +176,18 @@ public final class FakeMaven {
      */
     public Path foreignPath() {
         return this.workspace.absolute(FakeMaven.FOREIGN_PATH);
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param path Relative path where to save EO program
+     * @param content EO program content.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    private FakeMaven withProgram(final Path path, final String content) throws IOException {
+        this.workspace.save(content, path);
+        this.prog = path;
+        return this;
     }
 }
