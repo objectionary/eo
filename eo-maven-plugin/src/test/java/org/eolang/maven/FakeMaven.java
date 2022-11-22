@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.testapi;
+package org.eolang.maven;
 
 import com.yegor256.tojos.Tojo;
 import java.io.IOException;
@@ -30,10 +30,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
-import org.eolang.maven.AssembleMojo;
-import org.eolang.maven.Catalogs;
-import org.eolang.maven.Home;
-import org.eolang.maven.Moja;
 
 /**
  * Fake maven workspace that executes Mojos in order to test
