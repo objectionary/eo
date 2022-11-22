@@ -97,7 +97,7 @@ public final class FakeMaven {
      * @return Workspace with eo program.
      * @throws IOException If can't save eo program in workspace.
      */
-    public FakeMaven forProgram(final String... program) throws IOException {
+    public FakeMaven withProgram(final String... program) throws IOException {
         final Path path = Paths.get(FakeMaven.PROGRAM_PATH);
         this.workspace.save(String.join("\n", program), path);
         this.prog = path;

@@ -49,7 +49,7 @@ final class ParseMojoTest {
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.forProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
+        maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
             .withDefaults()
             .withEoForeign()
             .execute(ParseMojo.class);
@@ -82,7 +82,7 @@ final class ParseMojoTest {
             maven.targetPath(),
             cache.resolve(ParseMojo.PARSED)
         ).save("foo.x.main", "xmir", () -> expected);
-        maven.forProgram("invalid content")
+        maven.withProgram("invalid content")
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
             .withDefaults()
             .withEoForeign()
