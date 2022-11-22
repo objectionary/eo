@@ -41,16 +41,6 @@ import org.apache.maven.plugin.AbstractMojo;
 public final class FakeMaven {
 
     /**
-     * Default eo-foreign.csv file format.
-     */
-    private static final String FOREIGN_FORMAT = "csv";
-
-    /**
-     * Default eo-foreign.csv file path.
-     */
-    private static final Path FOREIGN_PATH = Paths.get("eo-foreign.csv");
-
-    /**
      * Test workspace where we place all programs, files, compilation results, etc.
      */
     private final Home workspace;
@@ -101,7 +91,7 @@ public final class FakeMaven {
     public FakeMaven withDefaults() {
         this.params.put("targetDir", this.targetPath().toFile());
         this.params.put("foreign", this.foreignPath().toFile());
-        this.params.put("foreignFormat", FakeMaven.FOREIGN_FORMAT);
+        this.params.put("foreignFormat", "csv");
         return this;
     }
 
@@ -175,7 +165,7 @@ public final class FakeMaven {
      * @return Path to eo-foreign.* file.
      */
     public Path foreignPath() {
-        return this.workspace.absolute(FakeMaven.FOREIGN_PATH);
+        return this.workspace.absolute(Paths.get("eo-foreign.csv"));
     }
 
     /**
