@@ -180,7 +180,7 @@ public final class Home {
      * @param path Cwd-relative path to file
      * @return Absolute path
      */
-    private Path absolute(final Path path) {
+    public Path absolute(final Path path) {
         return this.cwd.resolve(path);
     }
 }
