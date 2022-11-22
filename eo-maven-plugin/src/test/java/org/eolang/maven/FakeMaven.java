@@ -46,11 +46,6 @@ public final class FakeMaven {
     private static final String PROGRAM_ID = "foo.x.main";
 
     /**
-     * Default eo program path.
-     */
-    private static final String PROGRAM_PATH = "foo/x/main.eo";
-
-    /**
      * Default eo-foreign.csv file format.
      */
     private static final String FOREIGN_FORMAT = "csv";
@@ -94,12 +89,24 @@ public final class FakeMaven {
     /**
      * Adds eo program to a workspace.
      * @param program Program as a raw string.
-     * @return Workspace with eo program.
-     * @throws IOException If can't save eo program in workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
      */
     public FakeMaven withProgram(final String... program) throws IOException {
-        final Path path = Paths.get(FakeMaven.PROGRAM_PATH);
-        this.workspace.save(String.join("\n", program), path);
+        return this.withProgram(
+            Paths.get("foo/x/main.eo"), String.join("\n", program)
+        );
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @param path Relative path where to save EO program
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    private FakeMaven withProgram(final Path path, final String content) throws IOException {
+        this.workspace.save(content, path);
         this.prog = path;
         return this;
     }
