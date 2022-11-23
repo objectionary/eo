@@ -27,6 +27,7 @@ import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -49,22 +50,20 @@ final class ParseMojoTest {
     @Test
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
-            .withDefaults()
-            .withEoForeign()
-            .execute(ParseMojo.class);
         MatcherAssert.assertThat(
-            new Home(maven.targetPath()).exists(
-                Paths.get(
-                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+            maven.withProgram(
+                    "+package f", "[args] > main",
+                    "  (stdout \"Hello!\").print"
                 )
-            ),
-            Matchers.is(true)
+                .withDefaults()
+                .withEoForeign()
+                .execute(ParseMojo.class),
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+            )
         );
         MatcherAssert.assertThat(
-            new TjSmart(
-                Catalogs.INSTANCE.make(maven.foreignPath())
-            ).getById("foo.x.main").exists("xmir"),
+            maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
     }
@@ -107,26 +106,15 @@ final class ParseMojoTest {
             maven.targetPath(),
             cache.resolve(ParseMojo.PARSED)
         ).save("foo.x.main", "xmir", () -> expected);
-        maven.withProgram("invalid content")
-            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
-            .withDefaults()
-            .withEoForeign()
-            .with("cache", cache)
-            .execute(ParseMojo.class);
-        MatcherAssert.assertThat(
-            new TjSmart(
-                Catalogs.INSTANCE.make(maven.foreignPath())
-            ).getById("foo.x.main").exists("xmir"),
-            Matchers.is(true)
-        );
         MatcherAssert.assertThat(
             new TextOf(
-                new Home(maven.targetPath())
-                    .absolute(
-                        Paths.get(
-                            String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
-                        )
-                    )
+                maven.withProgram("invalid content")
+                    .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+                    .withDefaults()
+                    .withEoForeign()
+                    .with("cache", cache)
+                    .execute(ParseMojo.class)
+                    .get(String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
             ).toString(),
             Matchers.equalTo(expected)
         );

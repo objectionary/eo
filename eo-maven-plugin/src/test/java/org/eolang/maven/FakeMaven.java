@@ -23,12 +23,17 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
@@ -137,13 +142,15 @@ public final class FakeMaven {
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
      */
-    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) {
+    public <T extends AbstractMojo> Map<String, Path> execute(
+        final Class<T> mojo
+    ) throws IOException {
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.params.entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
         }
         moja.execute();
-        return this;
+        return result();
     }
 
     /**
@@ -162,6 +169,12 @@ public final class FakeMaven {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
     }
 
+    public TjSmart foreign() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.foreignPath())
+        );
+    }
+
     /**
      * Adds eo program to a workspace.
      * @param path Relative path where to save EO program
@@ -173,5 +186,15 @@ public final class FakeMaven {
         this.workspace.save(content, path);
         this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
         return this;
+    }
+
+    private Map<String, Path> result() throws IOException {
+        final Path root = workspace.absolute(Paths.get(""));
+        return Files.walk(root)
+            .collect(Collectors.toMap(
+                p -> root.relativize(p).toString(),
+                Function.identity(),
+                (f, s) -> f
+            ));
     }
 }
