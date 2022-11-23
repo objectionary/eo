@@ -127,7 +127,7 @@
     seq
       f0.write 0
       f1.write 1
-      f2.write ((f0).plus (f1))
+      f2.write (f0.plus f1)
       f1.write f2
       TRUE
     $.equal-to TRUE
@@ -241,7 +241,7 @@
     [args...] > f
       1 > a
       2 > @
-    (f 1 2 3) > @
+    f 1 2 3 > @
   app > output
   assert-that > @
     output

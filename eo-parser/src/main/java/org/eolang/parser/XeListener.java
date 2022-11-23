@@ -52,7 +52,7 @@ import org.xembly.Directives;
  *  are stored as bytes, remove data attribute from XML
  *  and XSLT templates.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
@@ -167,7 +167,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterObject(final ProgramParser.ObjectContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        if (ctx.application() != null) {
+            ProgramParser.ApplicationContext application = ctx.application();
+            if (application.suffix() != null) {
+                application = application.application();
+            }
+            new RedundantParentheses(application.getText()).check();
+        }
     }
 
     @Override
