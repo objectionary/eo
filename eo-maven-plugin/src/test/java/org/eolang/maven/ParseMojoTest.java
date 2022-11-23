@@ -47,10 +47,7 @@ final class ParseMojoTest {
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            maven.withProgram(
-                    "+package f", "[args] > main",
-                    "  (stdout \"Hello!\").print"
-                )
+            maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
                 .withDefaults()
                 .withEoForeign()
                 .execute(ParseMojo.class),
@@ -97,7 +94,7 @@ final class ParseMojoTest {
                     .withEoForeign()
                     .with("cache", cache)
                     .execute(ParseMojo.class)
-                    .get(String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
+                    .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
             ).toString(),
             Matchers.equalTo(expected)
         );

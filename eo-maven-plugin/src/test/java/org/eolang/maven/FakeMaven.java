@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,9 +39,8 @@ import org.apache.maven.plugin.AbstractMojo;
  * Fake maven workspace that executes Mojos in order to test
  * their behaviour and results.
  * @since 0.28.12
- * @todo #1417:90min Make `FakeMaven.exec()` return a `HashMap` with all
- *  files created in the directory and their relative names. Then, we can assert on this hash map.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class FakeMaven {
 
     /**
@@ -141,6 +139,7 @@ public final class FakeMaven {
      * @param mojo Mojo to execute.
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
+     * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> Map<String, Path> execute(
         final Class<T> mojo
@@ -150,7 +149,7 @@ public final class FakeMaven {
             moja.with(entry.getKey(), entry.getValue());
         }
         moja.execute();
-        return result();
+        return this.result();
     }
 
     /**
@@ -169,6 +168,11 @@ public final class FakeMaven {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
     }
 
+    /**
+     * Tojo for eo-foreign.* file.
+     *
+     * @return TjSmart of the current eo-foreign.file.
+     */
     public TjSmart foreign() {
         return new TjSmart(
             Catalogs.INSTANCE.make(this.foreignPath())
@@ -188,13 +192,20 @@ public final class FakeMaven {
         return this;
     }
 
+    /**
+     * Creates of the result map with all files and folders that was created
+     *  or compiled during mojo execution.
+     *
+     * @return Map of "relative path" (key) - "absolute path" (value).
+     * @throws IOException If some problem with filesystem have happened.
+     */
     private Map<String, Path> result() throws IOException {
-        final Path root = workspace.absolute(Paths.get(""));
-        return Files.walk(root)
-            .collect(Collectors.toMap(
+        final Path root = this.workspace.absolute(Paths.get(""));
+        return Files.walk(root).collect(
+            Collectors.toMap(
                 p -> root.relativize(p).toString(),
-                Function.identity(),
-                (f, s) -> f
-            ));
+                Function.identity()
+            )
+        );
     }
 }
