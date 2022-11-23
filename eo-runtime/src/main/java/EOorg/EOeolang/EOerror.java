@@ -63,8 +63,9 @@ public final class EOerror extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    final Phi enclosure = rho.attr("α").get();
-                    enclosure.move(this);
+                    final Phi enclosure = new EOadopted(Phi.Φ);
+                    enclosure.attr(0).put(rho.attr("α").get());
+                    enclosure.attr(1).put(this);
                     throw new ExError(enclosure);
                 }
             )
