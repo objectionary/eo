@@ -23,11 +23,8 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.TjSmart;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -108,23 +105,14 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testCrashOnInvalidSyntax(@TempDir final Path temp)
-        throws Exception {
-        final Path src = temp.resolve("bar/src.eo");
-        new Home(temp).save("something < is wrong here", temp.relativize(src));
-        final Path foreign = temp.resolve("foreign-1");
-        Catalogs.INSTANCE.make(foreign)
-            .add("bar.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
+    void testCrashOnInvalidSyntax(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(ParseMojo.class)
-                .with("targetDir", temp.resolve("target").toFile())
-                .with("foreign", foreign.toFile())
-                .with("cache", temp.resolve("cache/parsed"))
-                .with("foreignFormat", "csv")
-                .execute()
+            () -> new FakeMaven(temp)
+                .withProgram("something < is wrong here")
+                .withEoForeign()
+                .withDefaults()
+                .execute(ParseMojo.class)
         );
     }
 
