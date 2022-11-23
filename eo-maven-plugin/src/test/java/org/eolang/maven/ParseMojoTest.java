@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -120,33 +119,19 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testDoNotCrashesWithFailOnError(@TempDir final Path temp)
-        throws Exception {
-        final Path src = temp.resolve("foo/x/main.eo");
-        final Path target = temp.resolve("target");
-        new Home(temp).save(
-            "something < is wrong here",
-            temp.relativize(src)
-        );
-        final Path foreign = temp.resolve("eo-foreign");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.x.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("failOnError", false)
-            .execute();
+    void testDoNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            Files.notExists(
-                target.resolve(
-                    String.format("%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+            new FakeMaven(temp)
+                .withProgram("something < is wrong here")
+                .withDefaults()
+                .withEoForeign()
+                .with("failOnError", false)
+                .execute(ParseMojo.class),
+            Matchers.not(
+                Matchers.hasKey(
+                    String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
-            ),
-            Matchers.is(true)
+            )
         );
     }
 }
