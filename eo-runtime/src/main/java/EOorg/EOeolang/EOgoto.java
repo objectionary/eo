@@ -57,11 +57,10 @@ public class EOgoto extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    final Phi abs = rho.attr("f").get().copy();
-                    abs.attr(0).put(new EOgoto.Token(rho));
                     final Phi body = new EOadopted(Phi.Φ);
-                    body.attr(0).put(abs);
+                    body.attr(0).put(rho.attr("f").get().copy());
                     body.attr(1).put(rho);
+                    body.attr(0).put(new EOgoto.Token(rho));
                     Phi ret;
                     while (true) {
                         try {
