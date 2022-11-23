@@ -51,7 +51,8 @@ class RedundantParenthesesTest {
         final Syntax syntax = new Syntax(
             "foo",
             new InputOf(program),
-            new OutputTo(new ByteArrayOutputStream())
+            new OutputTo(new ByteArrayOutputStream()),
+            true
         );
         if (correct) {
             syntax.parse();
