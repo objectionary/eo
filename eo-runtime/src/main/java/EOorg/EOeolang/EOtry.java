@@ -68,11 +68,14 @@ public class EOtry extends PhDefault {
                     } catch (final EOerror.ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
                         ctch.attr(0).put(ex.enclosure());
-                        ctch.move(rho);
-                        ret = new Data.ToPhi(new Dataized(ctch).take());
+                        final Phi atd = new EOadopted(Phi.Φ);
+                        atd.attr(0).put(ctch);
+                        atd.attr(1).put(rho);
+                        ret = new Data.ToPhi(new Dataized(atd).take());
                     } finally {
-                        final Phi fin = rho.attr("finally").get().copy();
-                        fin.move(rho);
+                        final Phi fin = new EOadopted(Phi.Φ);
+                        fin.attr(0).put(rho.attr("finally").get().copy());
+                        fin.attr(1).put(rho);
                         new Dataized(fin).take();
                     }
                     return ret;
