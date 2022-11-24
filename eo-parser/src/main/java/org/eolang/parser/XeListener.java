@@ -32,7 +32,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;

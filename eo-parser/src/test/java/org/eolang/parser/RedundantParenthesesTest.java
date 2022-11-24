@@ -55,7 +55,8 @@ class RedundantParenthesesTest {
             new RedundantParentheses(
                 s -> {
                     throw new IllegalStateException(
-                        String.format("%s contains redundant parentheses", s));
+                        String.format("%s contains redundant parentheses", s)
+                    );
                 }
             )
         );

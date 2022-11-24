@@ -26,9 +26,7 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * The class that checks redundant parentheses for object expression.
@@ -43,9 +41,9 @@ final class RedundantParentheses implements Consumer<String> {
     private final Consumer<String> reaction;
 
     /**
-     * Constructor with default reaction - writing warning to the log.
+     * Constructor with default reaction that writes warning to the log.
      */
-    public RedundantParentheses() {
+    RedundantParentheses() {
         this(s -> Logger.warn("%s contains redundant parentheses", s));
     }
 
@@ -59,9 +57,9 @@ final class RedundantParentheses implements Consumer<String> {
     }
 
     @Override
-    public void accept(final String s) {
-        if (RedundantParentheses.test(s)) {
-            reaction.accept(s);
+    public void accept(final String expression) {
+        if (RedundantParentheses.test(expression)) {
+            this.reaction.accept(expression);
         }
     }
 
@@ -70,11 +68,11 @@ final class RedundantParentheses implements Consumer<String> {
      *
      * @param expression Raw object expression from parser. Examples:
      *  1.plus 2 > x
-     * "Text" > y
+     *  "Text" > y
      *  (1.plus 2).plus 3
      * @return True if the expression contains redundant parentheses.
      */
-    private static boolean test(String expression) {
+    private static boolean test(final String expression) {
         final Deque<Character> stack = new ArrayDeque<>();
         boolean res = false;
         for (final char symbol : RedundantParentheses.expressionChars(expression)) {
@@ -102,7 +100,7 @@ final class RedundantParentheses implements Consumer<String> {
 
     /**
      * Clears raw expression from text literals and returns it as an array of chars.
-     *
+     * @param expression Raw experession
      * @return Expression as an array of chars.
      */
     private static char[] expressionChars(final String expression) {

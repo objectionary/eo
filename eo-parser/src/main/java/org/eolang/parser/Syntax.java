@@ -72,7 +72,7 @@ public final class Syntax {
     private final Output target;
 
     /**
-     * Checks redundant parentheses if true.
+     * Checks redundant parentheses.
      */
     private final Consumer<String> redundancy;
 
@@ -99,7 +99,7 @@ public final class Syntax {
      * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
-     * @param redundancy Flag to check redundant parentheses
+     * @param redundancy Check for redundant parentheses
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     public Syntax(
@@ -150,7 +150,7 @@ public final class Syntax {
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
         final XeListener xel;
-        xel = new XeListener(this.name, redundancy);
+        xel = new XeListener(this.name, this.redundancy);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
         new Schema(dom).check();
