@@ -93,7 +93,7 @@ final class AtConst implements Attr {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
                 final Phi phi = this.origin.get();
-                phi.move(this.rho);
+                phi.attr("ρ").put(this.rho);
                 this.cache.set(phi);
             }
         }

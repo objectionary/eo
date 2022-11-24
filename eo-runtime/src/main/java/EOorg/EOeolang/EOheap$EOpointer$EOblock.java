@@ -69,7 +69,7 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                         address, address + len
                     );
                     final Phi inverse = rho.attr("inverse").get().copy();
-                    inverse.move(rho);
+                    inverse.attr("ρ").put(rho);
                     return new PhWith(inverse, 0, new Data.ToPhi(chunk));
                 }
             )

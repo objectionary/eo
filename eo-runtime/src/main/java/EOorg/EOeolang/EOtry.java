@@ -58,20 +58,20 @@ public class EOtry extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    final Phi main = rho.attr("main").get().copy();
-                    main.move(rho);
+                    final Phi body = rho.attr("main").get().copy();
+                    body.attr("ρ").put(rho);
                     Phi ret;
                     try {
-                        final Object obj = new Dataized(main).take();
+                        final Object obj = new Dataized(body).take();
                         ret = new Data.ToPhi(obj);
                     } catch (final EOerror.ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
+                        ctch.attr("ρ").put(rho);
                         ctch.attr(0).put(ex.enclosure());
-                        ctch.move(rho);
                         ret = new Data.ToPhi(new Dataized(ctch).take());
                     } finally {
                         final Phi fin = rho.attr("finally").get().copy();
-                        fin.move(rho);
+                        fin.attr("ρ").put(rho);
                         new Dataized(fin).take();
                     }
                     return ret;

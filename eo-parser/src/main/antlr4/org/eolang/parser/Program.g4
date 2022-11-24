@@ -200,7 +200,11 @@ head
 has
   :
   COLON
-  NAME
+  (
+    NAME
+    |
+    RHO
+  )
   ;
 
 data
