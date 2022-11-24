@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -73,7 +74,7 @@ public final class Syntax {
     /**
      * Checks redundant parentheses if true.
      */
-    private final boolean redundancy;
+    private final Consumer<String> redundancy;
 
     /**
      * Ctor.
@@ -81,15 +82,15 @@ public final class Syntax {
      * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
-     * @todo #485:90min The {@link org.eolang.parser.Syntax} by default doesn't check redundant
-     *  parentheses because some objects from objectioanry already contain redundancy parentheses
-     *  in their code that causes exceptions during parsing if
+     * @todo #485:90min The {@link org.eolang.parser.Syntax} by default just write warning to the
+     *  log about redundant parentheses because some objects from objectioanry already contain
+     *  redundancy parentheses in their source code that causes exceptions during parsing if
      *  {@link org.eolang.parser.Syntax#redundancy} is true. By that reason it's important to
      *  fix all redundancy parentheses in the objectionary. Then we will be able to remove
      *  'redundancy' flag and check all eo programs for redundant parentheses by default.
      */
     public Syntax(final String nme, final Input ipt, final Output tgt) {
-        this(nme, ipt, tgt, false);
+        this(nme, ipt, tgt, new RedundantParentheses());
     }
 
     /**
@@ -105,7 +106,7 @@ public final class Syntax {
         final String nme,
         final Input ipt,
         final Output tgt,
-        final boolean redundancy
+        final Consumer<String> redundancy
     ) {
         this.name = nme;
         this.input = ipt;
@@ -149,11 +150,7 @@ public final class Syntax {
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
         final XeListener xel;
-        if (this.redundancy) {
-            xel = new XeListener(this.name, s -> new RedundantParentheses(s).check());
-        } else {
-            xel = new XeListener(this.name);
-        }
+        xel = new XeListener(this.name, redundancy);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
         new Schema(dom).check();

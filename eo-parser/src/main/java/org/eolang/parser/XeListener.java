@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -80,18 +81,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      * Redundancy checker.
      */
     private final Consumer<String> redundancy;
-
-    /**
-     * Ctor.
-     * @param name Tha name of it
-     */
-    public XeListener(final String name) {
-        this(
-            name,
-            s -> {
-            }
-        );
-    }
 
     /**
      * Ctor.

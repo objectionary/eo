@@ -23,41 +23,61 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * The class that checks redundant parentheses for object expression.
  *
  * @since 0.28.12
  */
-final class RedundantParentheses {
+final class RedundantParentheses implements Consumer<String> {
 
     /**
-     * Raw object expression from parser. Examples:
-     *  1.plus 2 > x
-     *  "Text" > y
-     *  (1.plus 2).plus 3
+     * The callback that will be called in case if redundant parentheses is found.
      */
-    private final String expression;
+    private final Consumer<String> reaction;
+
+    /**
+     * Constructor with default reaction - writing warning to the log.
+     */
+    public RedundantParentheses() {
+        this(s -> Logger.warn("%s contains redundant parentheses", s));
+    }
 
     /**
      * The main constructor.
      *
-     * @param expression Object expression.
+     * @param reaction Will be called in case if redundant parentheses is found.
      */
-    RedundantParentheses(final String expression) {
-        this.expression = expression;
+    RedundantParentheses(final Consumer<String> reaction) {
+        this.reaction = reaction;
+    }
+
+    @Override
+    public void accept(final String s) {
+        if (RedundantParentheses.test(s)) {
+            reaction.accept(s);
+        }
     }
 
     /**
      * Checks if the expression contains redundant parentheses.
-     * @throws org.eolang.parser.RedundantParentheses.RedundantParenthesesException if the
-     *  expression contains redundant parentheses.
+     *
+     * @param expression Raw object expression from parser. Examples:
+     *  1.plus 2 > x
+     * "Text" > y
+     *  (1.plus 2).plus 3
+     * @return True if the expression contains redundant parentheses.
      */
-    void check() {
+    private static boolean test(String expression) {
         final Deque<Character> stack = new ArrayDeque<>();
-        for (final char symbol : this.expressionChars()) {
+        boolean res = false;
+        for (final char symbol : RedundantParentheses.expressionChars(expression)) {
             if (symbol == ')') {
                 boolean operation = false;
                 char current = stack.pop();
@@ -68,15 +88,16 @@ final class RedundantParentheses {
                     current = stack.pop();
                 }
                 if (!operation) {
-                    throw new RedundantParenthesesException();
+                    res = true;
                 }
             } else {
                 stack.push(symbol);
             }
         }
         if (stack.isEmpty()) {
-            throw new RedundantParenthesesException();
+            res = true;
         }
+        return res;
     }
 
     /**
@@ -84,29 +105,10 @@ final class RedundantParentheses {
      *
      * @return Expression as an array of chars.
      */
-    private char[] expressionChars() {
-        return this.expression.replaceAll(
+    private static char[] expressionChars(final String expression) {
+        return expression.replaceAll(
             "\"(.|\\s)*?\"|\"\"\"(.|\\s)*?\"\"\"",
             "literal"
         ).toCharArray();
-    }
-
-    /**
-     * The exception that is thrown if redundant parentheses are found.
-     *
-     * @since 0.28.12
-     */
-    private final class RedundantParenthesesException extends IllegalStateException {
-        /**
-         * The default constructor.
-         */
-        private RedundantParenthesesException() {
-            super(
-                String.format(
-                    "%s contains redundant parentheses",
-                    RedundantParentheses.this.expression
-                )
-            );
-        }
     }
 }

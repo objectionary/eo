@@ -52,7 +52,12 @@ class RedundantParenthesesTest {
             "foo",
             new InputOf(program),
             new OutputTo(new ByteArrayOutputStream()),
-            true
+            new RedundantParentheses(
+                s -> {
+                    throw new IllegalStateException(
+                        String.format("%s contains redundant parentheses", s));
+                }
+            )
         );
         if (correct) {
             syntax.parse();
