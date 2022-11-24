@@ -24,7 +24,7 @@
 package org.eolang;
 
 /**
- * Make named attribute.
+ * Make a named attribute an instance of its class, by default.
  *
  * @since 0.28.12
  */
