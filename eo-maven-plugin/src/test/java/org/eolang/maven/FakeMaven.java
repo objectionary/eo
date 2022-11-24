@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 
@@ -196,14 +198,17 @@ public final class FakeMaven {
      * Creates of the result map with all files and folders that was created
      *  or compiled during mojo execution.
      *
-     * @return Map of "relative path" (key) - "absolute path" (value).
+     * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
      */
     private Map<String, Path> result() throws IOException {
         final Path root = this.workspace.absolute(Paths.get(""));
         return Files.walk(root).collect(
             Collectors.toMap(
-                p -> root.relativize(p).toString(),
+                p -> String.join(
+                    "/",
+                    root.relativize(p).toString().split(Pattern.quote(File.separator))
+                ),
                 Function.identity()
             )
         );
