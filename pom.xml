@@ -86,6 +86,12 @@ SOFTWARE.
       <url>https://github.com/objectionary/eo</url>
     </site>
   </distributionManagement>
+  <properties>
+    <!-- This is required for later correct replacement of argLine -->
+    <argLine/>
+    <!-- This is the size of the stack, which you can modify from command line -->
+    <stack-size>8M</stack-size>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -33,13 +33,6 @@ SOFTWARE.
   <packaging>maven-plugin</packaging>
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
-  <properties>
-    <!--  This is required for later correct replacement of argline  -->
-    <argLine/>
-    <stack-size>256M</stack-size>
-    <!--  This is required for later correct replacement of argline  -->
-    <argLine/>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
