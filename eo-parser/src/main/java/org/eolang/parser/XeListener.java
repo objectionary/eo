@@ -79,19 +79,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     /**
      * Redundancy checker.
      */
-    private final Consumer<String> redundancy;
+    private final Consumer<String> check;
 
     /**
      * Ctor.
      * @param name Tha name of it
-     * @param redundancy The strategy to check eo expressions for redundant parentheses.
+     * @param check The strategy to check eo expressions for redundant parentheses.
      */
-    public XeListener(final String name, final Consumer<String> redundancy) {
+    public XeListener(final String name, final Consumer<String> check) {
         this.name = name;
         this.dirs = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
-        this.redundancy = redundancy;
+        this.check = check;
     }
 
     @Override
@@ -180,7 +180,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             if (application.suffix() != null) {
                 application = application.application();
             }
-            this.redundancy.accept(application.getText());
+            this.check.accept(application.getText());
         }
     }
 
