@@ -57,8 +57,8 @@ public final class AtsExtended implements Scalar<Map<String, Attr>> {
     /**
      * Ctor.
      *
-     * @param name The name of origin
-     * @param attr The value of origin
+     * @param name The name of the attribute being added
+     * @param attr The value of the attribute being added
      * @param origin Attrs which be extended
      * @param order Order of attrs
      * @checkstyle ParameterNumberCheck (11 lines)
