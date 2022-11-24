@@ -22,40 +22,50 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhWith;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang;
 
 /**
- * Test case for {@link EOadopted}.
+ * Attribute that is read-only.
  *
- * @since 0.29
+ * @since 0.1
  */
-public final class EOadoptedTest {
+final class AtFixed implements Attr {
 
-    @Test
-    public void changesTheParent() {
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        new EOadopted(Phi.Φ),
-                        "x", new EObool$EOnot(Phi.Φ)
-                    ),
-                    "p", new Data.ToPhi(true)
-                )
-            ).take(Boolean.class),
-            Matchers.is(false)
-        );
+    /**
+     * Origin.
+     */
+    private final Attr origin;
+
+    /**
+     * Ctor.
+     * @param attr Attribute
+     */
+    AtFixed(final Attr attr) {
+        this.origin = attr;
     }
 
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtFixed(this.origin.copy(self));
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi src) {
+        // ignore it
+    }
 }

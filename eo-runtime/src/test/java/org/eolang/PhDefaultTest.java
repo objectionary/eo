@@ -118,7 +118,7 @@ final class PhDefaultTest {
     void changesRhoOnCopy() {
         final Phi foo = new Foo(Phi.Φ);
         final Phi kid = foo.attr("kid").get();
-        kid.move(Phi.Φ);
+        kid.attr("ρ").put(Phi.Φ);
         MatcherAssert.assertThat(
             kid.attr("ρ").get(),
             Matchers.not(Matchers.equalTo(foo))

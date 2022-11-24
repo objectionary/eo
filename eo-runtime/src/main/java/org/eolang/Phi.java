@@ -70,11 +70,6 @@ public interface Phi extends Term {
         }
 
         @Override
-        public void move(final Phi rho) {
-            throw new ExFailure("Can't #move() root object");
-        }
-
-        @Override
         public Attr attr(final int pos) {
             throw new ExFailure(
                 String.format("Can't #attr(%d) in Φ", pos)
@@ -98,13 +93,6 @@ public interface Phi extends Term {
      * @return A copy
      */
     Phi copy();
-
-    /**
-     * Move it to a new parent.
-     *
-     * @param rho New \rho to attach to
-     */
-    void move(Phi rho);
 
     /**
      * Get attribute by position.

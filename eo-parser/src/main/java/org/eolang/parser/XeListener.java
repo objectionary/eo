@@ -340,7 +340,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterHas(final ProgramParser.HasContext ctx) {
         this.objects.enter();
-        this.objects.prop("as", ctx.NAME().getText());
+        final String has;
+        if (ctx.RHO() == null) {
+            has = ctx.NAME().getText();
+        } else {
+            has = "^";
+        }
+        this.objects.prop("as", has);
     }
 
     @Override

@@ -64,9 +64,8 @@ public class EObool$EOwhile extends PhDefault {
                         if (!term) {
                             break;
                         }
-                        final Phi body = new EOadopted(Phi.Φ);
-                        body.attr(0).put(rho.attr("f").get().copy());
-                        body.attr(1).put(rho);
+                        final Phi body = rho.attr("f").get().copy();
+                        body.attr("ρ").put(rho);
                         body.attr(0).put(new Data.ToPhi(count));
                         last = new Dataized(body).take();
                         ++count;

@@ -102,6 +102,9 @@ SOFTWARE.
       <xsl:when test="$n='@'">
         <xsl:text>φ</xsl:text>
       </xsl:when>
+      <xsl:when test="$n='^'">
+        <xsl:text>ρ</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="concat('', $n)"/>
       </xsl:otherwise>
@@ -549,7 +552,7 @@ SOFTWARE.
       <xsl:choose>
         <xsl:when test="@as">
           <xsl:text>"</xsl:text>
-          <xsl:value-of select="@as"/>
+          <xsl:value-of select="eo:attr-name(@as)"/>
           <xsl:text>"</xsl:text>
         </xsl:when>
         <xsl:when test="../@base = 'org.eolang.error'">

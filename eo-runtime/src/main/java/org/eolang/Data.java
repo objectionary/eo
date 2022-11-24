@@ -176,11 +176,6 @@ public interface Data<T> {
         }
 
         @Override
-        public void move(final Phi rho) {
-            // nothing
-        }
-
-        @Override
         public Attr attr(final int pos) {
             return this.object.attr(pos);
         }
