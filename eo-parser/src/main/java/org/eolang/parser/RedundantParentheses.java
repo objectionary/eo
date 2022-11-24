@@ -65,11 +65,14 @@ final class RedundantParentheses implements Consumer<String> {
 
     /**
      * Checks if the expression contains redundant parentheses.
-     *
-     * @param expression Raw object expression from parser. Examples:
+     * Examples of expressions to check:
+     * <pre>{@code
      *  1.plus 2 > x
      *  "Text" > y
      *  (1.plus 2).plus 3
+     * }
+     * </pre>
+     * @param expression Raw object expression from parser.
      * @return True if the expression contains redundant parentheses.
      */
     private static boolean test(final String expression) {
