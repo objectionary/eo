@@ -66,6 +66,7 @@ final class ParseMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
+                .withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
                 .withEoForeign()
                 .withDefaults()
                 .with("timeout", 0)
