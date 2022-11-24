@@ -149,8 +149,7 @@ public final class Syntax {
         );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        final XeListener xel;
-        xel = new XeListener(this.name, this.redundancy);
+        final XeListener xel = new XeListener(this.name, this.redundancy);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
         new Schema(dom).check();
