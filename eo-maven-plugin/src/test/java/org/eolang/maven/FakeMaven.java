@@ -23,21 +23,26 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Fake maven workspace that executes Mojos in order to test
  * their behaviour and results.
  * @since 0.28.12
- * @todo #1417:90min Make `FakeMaven.exec()` return a `HashMap` with all
- *  files created in the directory and their relative names. Then, we can assert on this hash map.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class FakeMaven {
 
     /**
@@ -82,6 +87,9 @@ public final class FakeMaven {
      * Set default the params for all mojos.
      *
      * @return The same maven instance.
+     * @todo #1479:90min The method withDefaults() has to be called right in the exec() method.
+     *  We should set default properties only if they aren't set using `with()` method. Also
+     *  it's important to remove withDefaults() method from tests.
      */
     public FakeMaven withDefaults() {
         this.params.put("targetDir", this.targetPath().toFile());
@@ -106,6 +114,9 @@ public final class FakeMaven {
      * Creates eo-foreign.* file.
      *
      * @return The same maven instance.
+     * @todo #1479:90min The method withEoForeign() has to be deleted. We can move the logic of
+     *  creation eo-foreign.* file into exec() function directly. Also it's important to remove the
+     *  method from tests.
      */
     public FakeMaven withEoForeign() {
         final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
@@ -136,14 +147,17 @@ public final class FakeMaven {
      * @param mojo Mojo to execute.
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
+     * @throws java.io.IOException If some problem with filesystem have happened.
      */
-    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) {
+    public <T extends AbstractMojo> Map<String, Path> execute(
+        final Class<T> mojo
+    ) throws IOException {
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.params.entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
         }
         moja.execute();
-        return this;
+        return this.result();
     }
 
     /**
@@ -163,6 +177,17 @@ public final class FakeMaven {
     }
 
     /**
+     * Tojo for eo-foreign.* file.
+     *
+     * @return TjSmart of the current eo-foreign.file.
+     */
+    public TjSmart foreign() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.foreignPath())
+        );
+    }
+
+    /**
      * Adds eo program to a workspace.
      * @param path Relative path where to save EO program
      * @param content EO program content.
@@ -173,5 +198,25 @@ public final class FakeMaven {
         this.workspace.save(content, path);
         this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
         return this;
+    }
+
+    /**
+     * Creates of the result map with all files and folders that was created
+     *  or compiled during mojo execution.
+     *
+     * @return Map of "relative UNIX path" (key) - "absolute path" (value).
+     * @throws IOException If some problem with filesystem have happened.
+     */
+    private Map<String, Path> result() throws IOException {
+        final Path root = this.workspace.absolute(Paths.get(""));
+        return Files.walk(root).collect(
+            Collectors.toMap(
+                p -> String.join(
+                    "/",
+                    root.relativize(p).toString().split(Pattern.quote(File.separator))
+                ),
+                Function.identity()
+            )
+        );
     }
 }
