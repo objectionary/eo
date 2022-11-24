@@ -87,7 +87,7 @@ public final class FakeMaven {
      * Set default the params for all mojos.
      *
      * @return The same maven instance.
-     * @todo 1479:90min The method withDefaults() has to be called right in the exec() method.
+     * @todo #1479:90min The method withDefaults() has to be called right in the exec() method.
      *  We should set default properties only if they aren't set using `with()` method. Also
      *  it's important to remove withDefaults() method from tests.
      */
@@ -114,7 +114,7 @@ public final class FakeMaven {
      * Creates eo-foreign.* file.
      *
      * @return The same maven instance.
-     * @todo 1479:90min The method withEoForeign() has to be deleted. We can move the logic of
+     * @todo #1479:90min The method withEoForeign() has to be deleted. We can move the logic of
      *  creation eo-foreign.* file into exec() function directly. Also it's important to remove the
      *  method from tests.
      */
