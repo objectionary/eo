@@ -111,25 +111,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Creates eo-foreign.* file.
-     *
-     * @return The same maven instance.
-     * @todo #1479:90min The method withEoForeign() has to be deleted. We can move the logic of
-     *  creation eo-foreign.* file into exec() function directly. Also it's important to remove the
-     *  method from tests.
-     */
-    public FakeMaven withEoForeign() {
-        final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
-            .add("foo.x.main");
-        tojo.set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
-        for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
-            tojo.set(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
-
-    /**
      * Sets tojo attribute.
      *
      * @param attribute Tojo attribute.
@@ -152,6 +133,13 @@ public final class FakeMaven {
     public <T extends AbstractMojo> Map<String, Path> execute(
         final Class<T> mojo
     ) throws IOException {
+        final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
+            .add("foo.x.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
+        for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
+            tojo.set(entry.getKey(), entry.getValue());
+        }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.params.entrySet()) {
             moja.with(entry.getKey(), entry.getValue());

@@ -49,7 +49,6 @@ final class ParseMojoTest {
         MatcherAssert.assertThat(
             maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
                 .withDefaults()
-                .withEoForeign()
                 .execute(ParseMojo.class),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
@@ -67,7 +66,6 @@ final class ParseMojoTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
-                .withEoForeign()
                 .withDefaults()
                 .with("timeout", 0)
                 .execute(ParseMojo.class)
@@ -92,7 +90,6 @@ final class ParseMojoTest {
                 maven.withProgram("invalid content")
                     .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
                     .withDefaults()
-                    .withEoForeign()
                     .with("cache", cache)
                     .execute(ParseMojo.class)
                     .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
@@ -108,7 +105,6 @@ final class ParseMojoTest {
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
                     .withProgram("something < is wrong here")
-                    .withEoForeign()
                     .withDefaults()
                     .execute(ParseMojo.class)
             ).getCause().getCause().getMessage(),
@@ -122,7 +118,6 @@ final class ParseMojoTest {
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .withDefaults()
-                .withEoForeign()
                 .with("failOnError", false)
                 .execute(ParseMojo.class),
             Matchers.not(
