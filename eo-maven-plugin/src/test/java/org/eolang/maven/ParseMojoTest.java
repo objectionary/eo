@@ -48,7 +48,6 @@ final class ParseMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
-                .withDefaults()
                 .execute(ParseMojo.class),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
@@ -66,7 +65,6 @@ final class ParseMojoTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
-                .withDefaults()
                 .with("timeout", 0)
                 .execute(ParseMojo.class)
         );
@@ -89,7 +87,6 @@ final class ParseMojoTest {
             new TextOf(
                 maven.withProgram("invalid content")
                     .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
-                    .withDefaults()
                     .with("cache", cache)
                     .execute(ParseMojo.class)
                     .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
@@ -105,7 +102,6 @@ final class ParseMojoTest {
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
                     .withProgram("something < is wrong here")
-                    .withDefaults()
                     .execute(ParseMojo.class)
             ).getCause().getCause().getMessage(),
             Matchers.containsString("Failed to parse")
@@ -117,7 +113,6 @@ final class ParseMojoTest {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
-                .withDefaults()
                 .with("failOnError", false)
                 .execute(ParseMojo.class),
             Matchers.not(
