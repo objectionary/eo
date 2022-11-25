@@ -115,6 +115,11 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
+        dirs.xpath("/program/errors")
+            .push()
+            .add("error")
+            .attr("line", "10")
+            .attr("severity", "warning");
     }
 
     @Override
