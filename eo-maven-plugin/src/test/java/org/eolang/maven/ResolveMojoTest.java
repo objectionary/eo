@@ -24,18 +24,10 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -97,7 +89,7 @@ final class ResolveMojoTest {
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,
-            new ResolveMojoTest.ContainsFile("**/*.jar")
+            new ContainsFile("**/*.jar")
         );
     }
 
@@ -246,73 +238,5 @@ final class ResolveMojoTest {
             .with("ignoreVersionConflicts", false)
             .with("ignoreTransitive", true)
             .execute();
-    }
-
-    /**
-     * Asserting that path contains file matching provided glob.
-     * @since 0.28.12
-     */
-    private static final class ContainsFile extends TypeSafeMatcher<Path> {
-
-        /**
-         * Glob pattern to match against.
-         */
-        private final String glob;
-
-        /**
-         * Ctor.
-         * @param glob pattern
-         */
-        private ContainsFile(final String glob) {
-            this.glob = glob;
-        }
-
-        @Override
-        protected boolean matchesSafely(final Path item) {
-            final AtomicBoolean matched = new AtomicBoolean(false);
-            try {
-                Files.walkFileTree(
-                    item,
-                    new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(
-                            final Path file,
-                            final BasicFileAttributes attrs
-                        ) {
-                            final FileVisitResult result;
-                            if(FileSystems.getDefault()
-                                .getPathMatcher(
-                                    String.format(
-                                        "glob:%s",
-                                        ContainsFile.this.glob
-                                    )
-                                ).matches(file)
-                            ) {
-                                matched.set(true);
-                                result = FileVisitResult.TERMINATE;
-                            } else {
-                                result = FileVisitResult.CONTINUE;
-                            }
-                            return result;
-                        }
-                    }
-                );
-            } catch (final IOException e) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Error while matching glob=`%s` for %s",
-                        this.glob,
-                        item
-                    ),
-                    e
-                );
-            }
-            return matched.get();
-        }
-
-        @Override
-        public void describeTo(final Description description) {
-            description.appendText(String.format("Matching glob=`%s`", this.glob));
-        }
     }
 }
