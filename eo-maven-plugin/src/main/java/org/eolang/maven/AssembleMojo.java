@@ -98,6 +98,11 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Tojo ATTR.
      */
+    public static final String ATTR_PROBED = "probed";
+
+    /**
+     * Tojo ATTR.
+     */
     public static final String ATTR_SCOPE = "scope";
 
     /**
@@ -225,6 +230,7 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(ParseMojo.class),
             new Moja<>(OptimizeMojo.class),
             new Moja<>(DiscoverMojo.class),
+            new Moja<>(ProbeMojo.class),
             new Moja<>(PullMojo.class),
             new Moja<>(ResolveMojo.class),
             new Moja<>(MarkMojo.class),

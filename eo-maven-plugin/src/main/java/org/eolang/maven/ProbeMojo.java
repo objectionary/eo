@@ -23,17 +23,36 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.TreeSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.list.ListOf;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChPattern;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.CommitHash;
 
 /**
- *  Goes through all `probe` metas in XMIRs, try to locate the
+ *  Go through all `probe` metas in XMIR files, try to locate the
  *  objects pointed by `probe` in Objectionary and if found register them in
- *  `foreign.csv`.
+ *  catalog.
  *
  * @since 0.28.11
  */
@@ -44,21 +63,99 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class ProbeMojo extends SafeMojo {
 
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     *
+     * @since 0.28.11
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    private String tag = "master";
+
+    /**
+     * The objectionary.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private Objectionary objectionary;
+
     @Override
     public void exec() throws IOException {
-        //...
+        final Collection<Tojo> tojos = this.scopedTojos().select(
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && !row.exists(AssembleMojo.ATTR_PROBED)
+        );
+        final CommitHash hash = new ChCached(new ChRemote(this.tag));
+        if (this.objectionary == null) {
+            this.objectionary = new OyRemote(hash);
+        }
+        final Collection<String> probed = new HashSet<>(1);
+        for (final Tojo tojo : tojos) {
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final Collection<String> names = this.probe(src);
+            int count = 0;
+            for (final String name : names) {
+                if (this.objectionary.get(name).toString().isEmpty()) {
+                    continue;
+                }
+                ++count;
+                final Tojo ftojo = this.scopedTojos().add(name);
+                if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
+                    ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
+                }
+                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
+                probed.add(name);
+            }
+            tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
+        }
+        if (tojos.isEmpty()) {
+            if (this.scopedTojos().select(row -> true).isEmpty()) {
+                Logger.warn(this, "Nothing to probe, since there are no programs");
+            } else {
+                Logger.info(this, "Nothing to probe, all programs checked already");
+            }
+        } else if (probed.isEmpty()) {
+            Logger.info(
+                this, "No probes found in %d programs",
+                tojos.size()
+            );
+        } else {
+            Logger.info(
+                this, "Found %d probes in %d programs: %s",
+                probed.size(), tojos.size(), probed
+            );
+        }
     }
 
     /**
-     * Pull all deps found in the provided XML file.
+     * Pull all probes found in the provided XML file.
      *
      * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<String> discover(final Path file) {
-        //...
-        return null;
+    private Collection<String> probe(final Path file)
+        throws FileNotFoundException {
+        final XML xml = new XMLDocument(file);
+        final Collection<String> names = new TreeSet<>(
+            new ListOf<>(
+                new Filtered<>(
+                    obj -> !obj.isEmpty(),
+                    xml.xpath("//metas/meta[head/text() = 'probe']/tail/text()")
+                )
+            )
+        );
+        if (names.isEmpty()) {
+            Logger.debug(
+                this, "Didn't find any probes in %s",
+                new Rel(file)
+            );
+        } else {
+            Logger.debug(
+                this, "Found %d probes in %s: %s",
+                names.size(), new Rel(file), names
+            );
+        }
+        return names;
     }
 
 }
