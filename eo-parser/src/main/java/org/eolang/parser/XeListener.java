@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -52,7 +53,7 @@ import org.xembly.Directives;
  *  are stored as bytes, remove data attribute from XML
  *  and XSLT templates.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
@@ -76,14 +77,21 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     private final long start;
 
     /**
-     * Ctor.
-     * @param nme Tha name of it
+     * Redundancy checker.
      */
-    public XeListener(final String nme) {
-        this.name = nme;
+    private final Consumer<String> check;
+
+    /**
+     * Ctor.
+     * @param name Tha name of it
+     * @param check The strategy to check eo expressions for redundant parentheses.
+     */
+    public XeListener(final String name, final Consumer<String> check) {
+        this.name = name;
         this.dirs = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
+        this.check = check;
     }
 
     @Override
@@ -167,7 +175,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterObject(final ProgramParser.ObjectContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        if (ctx.application() != null) {
+            ProgramParser.ApplicationContext application = ctx.application();
+            if (application.suffix() != null) {
+                application = application.application();
+            }
+            this.check.accept(application.getText());
+        }
     }
 
     @Override

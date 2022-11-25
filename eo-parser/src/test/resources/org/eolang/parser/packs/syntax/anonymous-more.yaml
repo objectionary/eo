@@ -10,7 +10,7 @@ eo: |
 
   (dir "/tmp").walk
     *
-      ([f] (f.is-dir > @))
+      [f] (f.is-dir > @)
 
   (dir "/tmp").walk
-    * ([f] (f.is-dir > @))
+    * [f] (f.is-dir > @)
