@@ -84,21 +84,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Set default the params for all mojos.
-     *
-     * @return The same maven instance.
-     * @todo #1479:90min The method withDefaults() has to be called right in the exec() method.
-     *  We should set default properties only if they aren't set using `with()` method. Also
-     *  it's important to remove withDefaults() method from tests.
-     */
-    public FakeMaven withDefaults() {
-        this.params.put("targetDir", this.targetPath().toFile());
-        this.params.put("foreign", this.foreignPath().toFile());
-        this.params.put("foreignFormat", "csv");
-        return this;
-    }
-
-    /**
      * Sets parameter for execution.
      *
      * @param param Parameter name
@@ -140,6 +125,9 @@ public final class FakeMaven {
         for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
             tojo.set(entry.getKey(), entry.getValue());
         }
+        this.params.putIfAbsent("targetDir", this.targetPath().toFile());
+        this.params.putIfAbsent("foreign", this.foreignPath().toFile());
+        this.params.putIfAbsent("foreignFormat", "csv");
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.params.entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
