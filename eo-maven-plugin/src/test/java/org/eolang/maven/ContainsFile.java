@@ -25,13 +25,8 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -62,12 +57,17 @@ final class ContainsFile extends TypeSafeMatcher<Path> {
 
     @Override
     protected boolean matchesSafely(final Path item) {
-        final AtomicBoolean matched = new AtomicBoolean(false);
         try {
-            Files.walkFileTree(
-                item,
-                new ActionOnMatch(path -> matched.set(true), this.glob)
-            );
+            return Files.walk(item)
+                .anyMatch(
+                    FileSystems.getDefault()
+                        .getPathMatcher(
+                            String.format(
+                                "glob:%s",
+                                this.glob
+                            )
+                        )::matches
+                );
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 String.format(
@@ -77,53 +77,6 @@ final class ContainsFile extends TypeSafeMatcher<Path> {
                 ),
                 ex
             );
-        }
-        return matched.get();
-    }
-
-    /**
-     * Preform supplied actions on match.
-     *
-     * @since 0.28.12
-     */
-    private static class ActionOnMatch extends SimpleFileVisitor<Path> {
-        /**
-         * Action to perform.
-         */
-        private final Consumer<Path> action;
-
-        /**
-         * Glob match criteria.
-         */
-        private final String glob;
-
-        /**
-         * Ctor.
-         * @param action Action to perform.
-         * @param glob Glob to match.
-         */
-        ActionOnMatch(final Consumer<Path> action, final String glob) {
-            this.action = action;
-            this.glob = glob;
-        }
-
-        @Override
-        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
-            final FileVisitResult result;
-            if (FileSystems.getDefault()
-                .getPathMatcher(
-                    String.format(
-                        "glob:%s",
-                        this.glob
-                    )
-                ).matches(file)
-            ) {
-                this.action.accept(file);
-                result = FileVisitResult.TERMINATE;
-            } else {
-                result = FileVisitResult.CONTINUE;
-            }
-            return result;
         }
     }
 }
