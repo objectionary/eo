@@ -101,6 +101,11 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_PROBED = "probed";
 
     /**
+     * Where this object was probed.
+     */
+    public static final String ATTR_PROBED_AT = "probed-at";
+
+    /**
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
@@ -270,6 +275,7 @@ public final class AssembleMojo extends SafeMojo {
             AssembleMojo.ATTR_XMIR,
             AssembleMojo.ATTR_XMIR2,
             AssembleMojo.ATTR_DISCOVERED,
+            AssembleMojo.ATTR_PROBED
         };
         final Collection<String> parts = new LinkedList<>();
         for (final String attr : attrs) {

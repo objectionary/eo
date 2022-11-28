@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test case for {@link ProbeMojo}.
  *
@@ -30,5 +32,9 @@ package org.eolang.maven;
  */
 final class ProbeMojoTest {
 
-    //...
+    @Test
+    public void test() {
+
+    }
+
 }

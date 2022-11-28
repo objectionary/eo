@@ -102,7 +102,7 @@ public final class ProbeMojo extends SafeMojo {
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
                     ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 }
-                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
+                ftojo.set(AssembleMojo.ATTR_PROBED_AT, src);
                 probed.add(name);
             }
             tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
