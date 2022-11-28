@@ -81,11 +81,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     private final RedundantParentheses check;
 
     /**
-     * Found error directives.
-     */
-    private final Directives errors;
-
-    /**
      * Ctor.
      * @param name Tha name of it
      * @param check The strategy to check eo expressions for redundant parentheses.
@@ -93,7 +88,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public XeListener(final String name, final RedundantParentheses check) {
         this.name = name;
         this.dirs = new Directives();
-        this.errors = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
         this.check = check;
@@ -119,8 +113,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void exitProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
-            .up()
-            .append(this.errors);
+            .up();
     }
 
     @Override
@@ -188,12 +181,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             }
             final String text = application.getText();
             if (this.check.test(text)) {
-                this.errors.xpath("/program/errors")
+                this.dirs.push()
+                    .xpath("/program/errors")
                     .add("error")
                     .attr("line", ctx.getStart().getLine())
                     .attr("severity", "warning")
                     .set(String.format("'%s' contains redundant parentheses", text))
-                    .up();
+                    .pop();
             }
         }
     }
