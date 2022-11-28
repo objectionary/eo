@@ -31,7 +31,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -79,14 +78,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     /**
      * Redundancy checker.
      */
-    private final Consumer<String> check;
+    private final RedundantParentheses check;
 
     /**
      * Ctor.
      * @param name Tha name of it
      * @param check The strategy to check eo expressions for redundant parentheses.
      */
-    public XeListener(final String name, final Consumer<String> check) {
+    public XeListener(final String name, final RedundantParentheses check) {
         this.name = name;
         this.dirs = new Directives();
         this.objects = new Objects.ObjXembly();
@@ -180,7 +179,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             if (application.suffix() != null) {
                 application = application.application();
             }
-            this.check.accept(application.getText());
+            final String text = application.getText();
+            if (this.check.test(text)) {
+                this.dirs.push()
+                    .xpath("/program/errors")
+                    .add("error")
+                    .attr("line", ctx.getStart().getLine())
+                    .attr("severity", "warning")
+                    .set(String.format("'%s' contains redundant parentheses", text))
+                    .pop();
+            }
         }
     }
 

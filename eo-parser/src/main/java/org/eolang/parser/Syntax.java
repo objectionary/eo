@@ -28,7 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Consumer;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -74,7 +73,7 @@ public final class Syntax {
     /**
      * Checks redundant parentheses.
      */
-    private final Consumer<String> redundancy;
+    private final RedundantParentheses redundancy;
 
     /**
      * Ctor.
@@ -106,7 +105,7 @@ public final class Syntax {
         final String nme,
         final Input ipt,
         final Output tgt,
-        final Consumer<String> redundancy
+        final RedundantParentheses redundancy
     ) {
         this.name = nme;
         this.input = ipt;

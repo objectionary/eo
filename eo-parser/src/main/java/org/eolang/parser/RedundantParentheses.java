@@ -27,13 +27,14 @@ import com.jcabi.log.Logger;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * The class that checks redundant parentheses for object expression.
  *
  * @since 0.28.12
  */
-final class RedundantParentheses implements Consumer<String> {
+final class RedundantParentheses implements Predicate<String> {
 
     /**
      * The callback that will be called in case if redundant parentheses is found.
@@ -44,7 +45,7 @@ final class RedundantParentheses implements Consumer<String> {
      * Constructor with default reaction that writes warning to the log.
      */
     RedundantParentheses() {
-        this(s -> Logger.warn("%s contains redundant parentheses", s));
+        this(s -> Logger.warn("Redundant parentheses", s));
     }
 
     /**
@@ -54,13 +55,6 @@ final class RedundantParentheses implements Consumer<String> {
      */
     RedundantParentheses(final Consumer<String> reaction) {
         this.reaction = reaction;
-    }
-
-    @Override
-    public void accept(final String expression) {
-        if (RedundantParentheses.test(expression)) {
-            this.reaction.accept(expression);
-        }
     }
 
     /**
@@ -75,7 +69,7 @@ final class RedundantParentheses implements Consumer<String> {
      * @param expression Raw object expression from parser.
      * @return True if the expression contains redundant parentheses.
      */
-    private static boolean test(final String expression) {
+    public boolean test(final String expression) {
         final Deque<Character> stack = new ArrayDeque<>();
         boolean res = false;
         for (final char symbol : RedundantParentheses.expressionChars(expression)) {
@@ -97,6 +91,9 @@ final class RedundantParentheses implements Consumer<String> {
         }
         if (stack.isEmpty()) {
             res = true;
+        }
+        if (res) {
+            this.reaction.accept(expression);
         }
         return res;
     }
