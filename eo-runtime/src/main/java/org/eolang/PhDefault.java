@@ -106,10 +106,18 @@ public abstract class PhDefault implements Phi, Cloneable {
      */
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
-        this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("ρ", new AtSimple(sigma));
-        this.add("σ", new AtFixed(new AtSimple(sigma)));
+        this.attrs = new AtsExtended(
+            "ρ",
+            new AtSimple(sigma),
+            new AtsExtended(
+                "σ",
+                new AtFixed(new AtSimple(sigma)),
+                new HashMap<>(0),
+                new ArrayList<>(0)
+            ).get(),
+            this.order
+        ).get();
     }
 
     @Override
@@ -124,7 +132,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
-        if (PhDefault.TERMS.get() == null) {
+        if (null == PhDefault.TERMS.get()) {
             PhDefault.TERMS.set(new HashSet<>());
         }
         String txt;
@@ -145,7 +153,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
             PhDefault.TERMS.get().remove(this.vertex);
             Collections.sort(list);
-            txt = this.oname();
+            txt = new Oname(this).toString();
             if (!list.isEmpty()) {
                 txt = String.format(
                     "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
@@ -176,7 +184,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public final Phi copy() {
         try {
-            final PhDefault copy = PhDefault.class.cast(this.clone());
+            final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
@@ -192,7 +200,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final int pos) {
-        if (pos < 0) {
+        if (0 > pos) {
             throw new ExFailure(
                 String.format(
                     "Attribute position can't be negative (%d)",
@@ -228,16 +236,16 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final String name) {
-        NESTING.set(NESTING.get() + 1);
+        PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
         if ("ν".equals(name)) {
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
         } else {
             attr = this.attrs.get(name);
         }
-        if (attr == null) {
+        if (null == attr) {
             final Attr aphi = this.attrs.get("φ");
-            if (aphi == null) {
+            if (null == aphi) {
                 attr = new AtAbsent(
                     name,
                     String.format(
@@ -253,7 +261,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 attr = new AtSimple(found);
             }
         }
-        attr = this.named(attr, name);
+        attr = new AtNamedDefault(attr, name, this);
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
@@ -264,13 +272,13 @@ public abstract class PhDefault implements Phi, Cloneable {
         PhDefault.debug(
             String.format(
                 "%s\uD835\uDD38('%s' for %s) ➜ %s",
-                padding(),
+                PhDefault.padding(),
                 name,
                 this,
                 attr
             )
         );
-        NESTING.set(NESTING.get() - 1);
+        PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
         return attr;
     }
 
@@ -297,43 +305,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     /**
-     * Make named attribute.
-     * @param attr The original attr
-     * @param name The name of it
-     * @return Named one
-     */
-    private Attr named(final Attr attr, final String name) {
-        return new AtNamed(
-            String.format(
-                "%s#%s",
-                this.getClass().getCanonicalName(), name
-            ),
-            String.format(
-                "%s.%s",
-                this.oname(), name
-            ),
-            this,
-            attr
-        );
-    }
-
-    /**
-     * Get its object name, as in source code.
-     * @return The name
-     */
-    private String oname() {
-        String txt = this.getClass().getSimpleName();
-        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
-        if (xmir != null) {
-            txt = xmir.oname();
-            if ("@".equals(txt)) {
-                txt = "φ";
-            }
-        }
-        return txt;
-    }
-
-    /**
      * Log debug message for PhDefault.
      * @param msg Message to log
      */
@@ -351,6 +322,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @return Padding string.
      */
     private static String padding() {
-        return String.join("", Collections.nCopies(NESTING.get(), "·"));
+        return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
 }
