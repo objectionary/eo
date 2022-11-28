@@ -33,7 +33,6 @@ import org.hamcrest.TypeSafeMatcher;
 /**
  * Asserting that path contains a file matching provided glob.
  * @since 0.28.12
- * @checkstyle ProtectedMethodInFinalClassCheck (30 lines)
  */
 final class ContainsFile extends TypeSafeMatcher<Path> {
 
@@ -56,7 +55,7 @@ final class ContainsFile extends TypeSafeMatcher<Path> {
     }
 
     @Override
-    protected boolean matchesSafely(final Path item) {
+    public boolean matchesSafely(final Path item) {
         try {
             return Files.walk(item)
                 .anyMatch(
