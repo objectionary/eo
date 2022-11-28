@@ -24,37 +24,24 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
-
 /**
- * It catches {@link ExFailure} and
- * throws {@link EOerror.ExError}.
+ * Attribute that is read-only.
  *
- * @since 0.26
+ * @since 0.1
  */
-public final class PhSafe implements Phi {
+final class AtFixed implements Attr {
 
     /**
-     * The original.
+     * Origin.
      */
-    private final Phi origin;
+    private final Attr origin;
 
     /**
      * Ctor.
-     * @param phi The object
+     * @param attr Attribute
      */
-    public PhSafe(final Phi phi) {
-        this.origin = phi;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
+    AtFixed(final Attr attr) {
+        this.origin = attr;
     }
 
     @Override
@@ -68,35 +55,17 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public Phi copy() {
-        return new PhSafe(this.origin.copy());
+    public Attr copy(final Phi self) {
+        return new AtFixed(this.origin.copy(self));
     }
 
     @Override
-    public Attr attr(final int pos) {
-        try {
-            return this.origin.attr(pos);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
+    public Phi get() {
+        return this.origin.get();
     }
 
     @Override
-    public Attr attr(final String attr) {
-        try {
-            return this.origin.attr(attr);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
+    public void put(final Phi src) {
+        // ignore it
     }
-
-    @Override
-    public String locator() {
-        return this.origin.locator();
-    }
-
 }

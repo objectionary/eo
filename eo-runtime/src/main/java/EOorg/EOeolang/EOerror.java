@@ -64,7 +64,7 @@ public final class EOerror extends PhDefault {
                 this,
                 rho -> {
                     final Phi enclosure = rho.attr("α").get();
-                    enclosure.move(this);
+                    enclosure.attr("ρ").put(this);
                     throw new ExError(enclosure);
                 }
             )
