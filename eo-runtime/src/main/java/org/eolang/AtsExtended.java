@@ -25,6 +25,7 @@ package org.eolang;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
  *
  * @since 0.28.12
  */
-public final class AtsExtended implements Scalar<Map<String, Attr>> {
+public final class AtsExtended implements Supplier<Map<String, Attr>> {
 
     /**
      * The name of new attr.
@@ -76,7 +77,7 @@ public final class AtsExtended implements Scalar<Map<String, Attr>> {
     }
 
     @Override
-    public Map<String, Attr> value() {
+    public Map<String, Attr> get() {
         if (Pattern.compile("^[a-z].*$").matcher(this.name).matches()) {
             this.order.add(this.name);
         }
