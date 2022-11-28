@@ -23,10 +23,8 @@
  */
 package org.eolang;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 /**
  * Attrs which was extended.
@@ -51,36 +49,24 @@ public final class AtsExtended implements Supplier<Map<String, Attr>> {
     private final Map<String, Attr> origin;
 
     /**
-     * The order of attrs.
-     */
-    private final List<? super String> order;
-
-    /**
      * Ctor.
      *
      * @param name The name of the attribute being added
      * @param attr The value of the attribute being added
      * @param origin Attrs which be extended
-     * @param order Order of attrs
-     * @checkstyle ParameterNumberCheck (11 lines)
      */
-    AtsExtended(
+    public AtsExtended(
         final String name,
         final Attr attr,
-        final Map<String, Attr> origin,
-        final List<? super String> order
+        final Map<String, Attr> origin
     ) {
         this.name = name;
         this.attr = attr;
         this.origin = origin;
-        this.order = order;
     }
 
     @Override
     public Map<String, Attr> get() {
-        if (Pattern.compile("^[a-z].*$").matcher(this.name).matches()) {
-            this.order.add(this.name);
-        }
         this.origin.put(this.name, this.attr);
         return this.origin;
     }

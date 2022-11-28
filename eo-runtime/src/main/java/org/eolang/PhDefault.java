@@ -113,10 +113,8 @@ public abstract class PhDefault implements Phi, Cloneable {
             new AtsExtended(
                 "σ",
                 new AtFixed(new AtSimple(sigma)),
-                new HashMap<>(0),
-                new ArrayList<>(0)
-            ).get(),
-            this.order
+                new HashMap<>(0)
+            ).get()
         ).get();
     }
 
