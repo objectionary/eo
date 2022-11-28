@@ -1,19 +1,19 @@
 xsl: org/eolang/parser/add-refs.xsl
 input:
   <?xml version="1.0" encoding="UTF-8"?>
-  <xmir>
+  <program>
     <objects>
       <o name="a" line="4">
         <o base="a"/>
       </o>
     </objects>
-  </xmir>
+  </program>
 output:
   <?xml version="1.0" encoding="UTF-8"?>
-  <xmir>
+  <program>
     <objects>
       <o name="a" line="4">
         <o base="a" ref="4"/>
       </o>
     </objects>
-  </xmir>
+  </program>

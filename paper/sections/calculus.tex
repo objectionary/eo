@@ -53,8 +53,10 @@ and the text in double quotes is data.
 
 \begin{definition}\label{def:attribute}
 In an object $x$, $a$ is a free \textbf{attribute}
+with the \textbf{name} $a$
 iff $(a, \varnothing) \in x$; it is a bound attribute
-iff $\exists (a, v)\in x$ and $v\not=\varnothing$.
+with the \textbf{value} $v$
+iff $\exists (a, v)\in x$ and $v\not=\varnothing$;
 \end{definition}
 
 In Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
@@ -159,6 +161,20 @@ object, a copy of \ff{p}:
 & \ff{p1} \mapsto \ff{p},\\
 & \ff{p2} \mapsto \ff{p}().\\
 \end{split}
+\end{equation*}
+
+\begin{definition}\label{def:formation}
+The process of creating an object that is not a copy of another object
+is called \textbf{formation}.
+\end{definition}
+
+Syntactically, object formation is denoted by double square brackets,
+as in Eq.~\ref{eq:book2-compact}, to the contrary of object application,
+which is denoted by round brackets, as in Eq.~\ref{eq:point}.
+Object abstraction is a special case of object formation.
+The following expression is a formation of the object $x$:
+\begin{equation*}
+x \mapsto [[ y -> t ]].
 \end{equation*}
 
 \subsection{Parent and Home}

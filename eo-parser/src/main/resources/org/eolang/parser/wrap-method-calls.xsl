@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="wrap-method-calls" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-method-calls" version="2.0">
   <!--
   When we see this structure:
 
@@ -38,7 +38,6 @@ SOFTWARE.
     </o>
   </o>
   -->
-  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@method]" mode="#all" priority="0">
     <xsl:variable name="target" select="preceding-sibling::o[1]"/>

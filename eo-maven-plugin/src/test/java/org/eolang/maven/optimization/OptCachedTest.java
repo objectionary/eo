@@ -36,7 +36,6 @@ import org.eolang.maven.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -48,18 +47,19 @@ class OptCachedTest {
     @Test
     void optimizesIfXmlAlreadyInCache(final @TempDir Path tmp) throws IOException {
         final XML program = OptCachedTest.program();
+        OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            new OptCached(path -> program, tmp).apply(OptCachedTest.save(tmp, program)),
+            new OptCached(path -> program, tmp).apply(program),
             Matchers.equalTo(program)
         );
     }
 
     @Test
-    void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) throws IOException {
+    void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) {
         final XML program = OptCachedTest.program();
         final Path cache = tmp.resolve("cache");
         final XML res = new OptCached(path -> program, cache)
-            .apply(OptCachedTest.save(tmp, program));
+            .apply(program);
         MatcherAssert.assertThat(
             res,
             Matchers.equalTo(program)
@@ -70,15 +70,6 @@ class OptCachedTest {
         );
         MatcherAssert.assertThat(
             res, Matchers.equalTo(program)
-        );
-    }
-
-    @Test
-    void throwsExceptionIfCantFindProgram(final @TempDir Path tmp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new OptCached(p -> OptCachedTest.program(), tmp.resolve("cache"))
-                .apply(tmp.resolve("non-existent"))
         );
     }
 

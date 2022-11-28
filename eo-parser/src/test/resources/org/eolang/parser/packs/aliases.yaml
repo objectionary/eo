@@ -1,6 +1,6 @@
 xsls: []
 tests:
-  - //objects[count(.//o[@alias])=4]
+  - //objects[count(.//o[@alias])=2]
 eo: |
   [] > aliases
-    (a (b (c (d))))
+    a (b (c d))

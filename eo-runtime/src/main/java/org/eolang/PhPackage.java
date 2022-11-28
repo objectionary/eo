@@ -81,7 +81,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public String location() {
+    public String locator() {
         return "?:?";
     }
 
@@ -109,13 +109,6 @@ final class PhPackage implements Phi {
         );
     }
 
-    @Override
-    public void move(final Phi rho) {
-        throw new ExFailure(
-            String.format("Can't #move() package object '%s'", this.pkg)
-        );
-    }
-
     /**
      * Make a sub package.
      * @param target The name
@@ -127,7 +120,7 @@ final class PhPackage implements Phi {
             final Phi kid = Phi.class.cast(
                 Class.forName(target).getConstructor(Phi.class).newInstance(Phi.Φ)
             );
-            kid.move(this);
+            kid.attr("ρ").put(this);
             return kid;
         } catch (final NoSuchMethodException
             | InvocationTargetException | InstantiationException

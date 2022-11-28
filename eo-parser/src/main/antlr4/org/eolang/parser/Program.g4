@@ -101,6 +101,8 @@ method
     |
     RHO
     |
+    SIGMA
+    |
     AT
     |
     VERTEX
@@ -198,7 +200,11 @@ head
 has
   :
   COLON
-  NAME
+  (
+    NAME
+    |
+    RHO
+  )
   ;
 
 data

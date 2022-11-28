@@ -1,0 +1,19 @@
+xsl: org/eolang/parser/set-locators.xsl
+input:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o name="a">
+        <o base="b"/>
+      </o>
+    </objects>
+  </program>
+output:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o loc="Φ.a" name="a">
+        <o loc="Φ.a.α0" base="b"/>
+      </o>
+    </objects>
+  </program>

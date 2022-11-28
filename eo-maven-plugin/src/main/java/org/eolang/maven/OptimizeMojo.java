@@ -28,14 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrFast;
-import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,9 +42,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.optimization.OptCached;
-import org.eolang.maven.optimization.OptLambda;
+import org.eolang.maven.optimization.OptSpy;
+import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.parser.ParsingTrain;
 
@@ -60,7 +52,7 @@ import org.eolang.parser.ParsingTrain;
  * Optimize XML files.
  *
  * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *  via mojo parameter `threads`. Default value should be set to 4.
+ *   via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
@@ -84,35 +76,6 @@ public final class OptimizeMojo extends SafeMojo {
      * Subdirectory for optimized cache.
      */
     public static final String OPTIMIZED = "optimized";
-
-    /**
-     * Parsing train with XSLs.
-     *
-     * @implNote The list of applied XSLs is adjusted during execution.
-     * <br>Separate instance of the train is used of each optimization
-     * thread since {@link com.jcabi.xml.XSLDocument}, which is used under
-     * the hood in {@link TrClasspath}, is not thread-safe.
-     * @todo #1336:30min Replace creation of new `Train` instances for each
-     *  parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
-     *  is thread-safe (solved by
-     *  <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
-     */
-    private static final Unchecked<Train<Shift>> TRAIN = new Unchecked<>(
-        () -> new TrFast(
-            new TrClasspath<>(
-                new ParsingTrain(),
-                "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
-                "/org/eolang/parser/optimize/remove-refs.xsl",
-                "/org/eolang/parser/optimize/abstracts-float-up.xsl",
-                "/org/eolang/parser/optimize/remove-levels.xsl",
-                "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/optimize/fix-missed-names.xsl",
-                "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/errors/broken-refs.xsl",
-                "/org/eolang/parser/optimize/constant-folding.xsl"
-            ).back()
-        )
-    );
 
     /**
      * Track optimization steps into intermediate XML files?
@@ -187,7 +150,8 @@ public final class OptimizeMojo extends SafeMojo {
                         Executors.callable(
                             () -> {
                                 try {
-                                    final XML optimized = this.optimization(tojo).apply(src);
+                                    final XML optimized = this.optimization(tojo)
+                                        .apply(new XMLDocument(src));
                                     done.incrementAndGet();
                                     if (this.shouldPass(optimized)) {
                                         tojo.set(
@@ -254,55 +218,31 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Optimization for specific Tojo
      */
     private Optimization optimization(final SynchronizedTojo tojo) {
-        final Optimization optimization;
+        Optimization opt;
+        if (this.trackOptimizationSteps) {
+            opt = new OptSpy(targetDir.toPath().resolve(OptimizeMojo.STEPS));
+        } else {
+            opt = new OptTrain();
+        }
+        if (this.failOnError) {
+            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-errors.xsl");
+        }
+        if (this.failOnWarning) {
+            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
+        }
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
-            optimization = new OptCached(
-                new OptLambda(this::optimize),
+            opt = new OptCached(
+                opt,
                 this.cache.resolve(OptimizeMojo.OPTIMIZED)
                     .resolve(tojo.get(AssembleMojo.ATTR_HASH))
             );
-        } else {
-            optimization = new OptLambda(this::optimize);
-        }
-        return optimization;
-    }
-
-    /**
-     * Optimize XML file after parsing.
-     *
-     * @param file EO file
-     * @return The file with optimized XMIR
-     * @throws FileNotFoundException If fails
-     * @throws IllegalArgumentException If error is detected within XMIR and
-     *  fail on error is enabled.
-     * @todo #1431:90min move that method implementation to a separate class under
-     *  {@link org.eolang.maven.optimization} package. Probably, after implementation we will able
-     *  to remove {@link org.eolang.maven.optimization.OptLambda}.
-     */
-    private XML optimize(final Path file) throws FileNotFoundException {
-        final String name = new XMLDocument(file).xpath("/program/@name").get(0);
-        Train<Shift> trn = OptimizeMojo.TRAIN.value();
-        if (this.failOnWarning) {
-            trn = trn.with(new StClasspath("/org/eolang/parser/fail-on-warnings.xsl"));
         }
         if (this.failOnError) {
-            trn = trn.with(new StClasspath("/org/eolang/parser/fail-on-errors.xsl"));
+            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
+        } else {
+            opt = new OptTrain(opt, new ParsingTrain().empty());
         }
-        if (this.trackOptimizationSteps) {
-            final Place place = new Place(name);
-            final Path dir = place.make(
-                this.targetDir.toPath().resolve(OptimizeMojo.STEPS), ""
-            );
-            trn = new SpyTrain(trn, dir);
-            Logger.debug(
-                this, "Optimization steps will be tracked to %s",
-                new Rel(dir)
-            );
-        }
-        return new Xsline(
-            new TrDefault<Shift>()
-                .with(new StClasspath("/org/eolang/parser/fail-on-critical.xsl"))
-        ).pass(new Xsline(trn).pass(new XMLDocument(file)));
+        return opt;
     }
 
     /**

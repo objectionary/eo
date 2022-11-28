@@ -73,11 +73,6 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public void move(final Phi rho) {
-        this.origin.move(rho);
-    }
-
-    @Override
     public Attr attr(final int pos) {
         try {
             return this.origin.attr(pos);
@@ -100,8 +95,8 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public String location() {
-        return this.origin.location();
+    public String locator() {
+        return this.origin.locator();
     }
 
 }

@@ -65,11 +65,10 @@ public final class OptCached implements Optimization {
     }
 
     @Override
-    public XML apply(final Path xml) {
+    public XML apply(final XML xml) {
         try {
-            final Path path = new Place(
-                new XMLDocument(xml).xpath("/program/@name").get(0)
-            ).make(this.folder, AssembleMojo.ATTR_XMIR);
+            final Path path = new Place(xml.xpath("/program/@name").get(0))
+                .make(this.folder, AssembleMojo.ATTR_XMIR);
             final XML optimized;
             if (Files.exists(path)) {
                 optimized = new XMLDocument(path);

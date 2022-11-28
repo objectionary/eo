@@ -23,35 +23,40 @@
  */
 package org.eolang.maven.optimization;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.nio.file.Path;
-import org.cactoos.Func;
-import org.cactoos.func.UncheckedFunc;
+import org.eolang.maven.Place;
+import org.eolang.maven.Rel;
+import org.eolang.maven.SpyTrain;
 
 /**
- * Lambda optimization is adapter for custom optimization.
- * Optimization provided by external function.
- *
- * @since 0.28.11
+ * Optimization that spies.
+ * @since 0.28.12
  */
-public final class OptLambda implements Optimization {
+public final class OptSpy implements Optimization {
 
     /**
-     * Custom foreign optimisation.
+     * Where to track optimization steps.
      */
-    private final UncheckedFunc<Path, XML> delegate;
+    private final Path target;
 
     /**
      * The main constructor.
-     *
-     * @param delegate Custom optimization.
+     * @param target Where to track optimization steps.
      */
-    public OptLambda(final Func<Path, XML> delegate) {
-        this.delegate = new UncheckedFunc<>(delegate);
+    public OptSpy(final Path target) {
+        this.target = target;
     }
 
     @Override
-    public XML apply(final Path xml) {
-        return this.delegate.apply(xml);
+    public XML apply(final XML xml) {
+        final Place place = new Place(xml.xpath("/program/@name").get(0));
+        final Path dir = place.make(this.target, "");
+        Logger.debug(
+            this, "Optimization steps will be tracked to %s",
+            new Rel(dir)
+        );
+        return new OptTrain(new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)).apply(xml);
     }
 }

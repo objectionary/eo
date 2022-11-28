@@ -153,8 +153,8 @@ final class ResolveMojoTest {
                 .execute()
         );
         MatcherAssert.assertThat(
-            excpt.getMessage(),
-            Matchers.equalTo(
+            excpt.getCause().getCause().getMessage(),
+            Matchers.containsString(
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )
         );

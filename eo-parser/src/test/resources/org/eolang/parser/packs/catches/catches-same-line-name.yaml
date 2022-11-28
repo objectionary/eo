@@ -6,4 +6,4 @@ tests:
   - /program/objects/o[@name='first']/o[@name='x']
 eo: |
   [x] > first
-    (a > x (b > x))
+    a > x (b > x)

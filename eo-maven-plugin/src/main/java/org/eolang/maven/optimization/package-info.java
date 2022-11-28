@@ -25,7 +25,8 @@
  * Optimizations package.
  * The main purpose of classes under the package is to provide different implementations
  * of xml optimizations:
- *  - {@link org.eolang.maven.optimization.OptLambda} - makes an optimization using foreign function
  *  - {@link org.eolang.maven.optimization.OptCached} - looks for optimization in cache first
+ *  - {@link org.eolang.maven.optimization.OptSpy} - makes XLS optimizations that are tracked
+ *  - {@link org.eolang.maven.optimization.OptTrain} - makes XLS optimizations directly
  */
 package org.eolang.maven.optimization;

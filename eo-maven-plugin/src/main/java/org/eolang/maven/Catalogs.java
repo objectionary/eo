@@ -42,7 +42,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.29
  */
-final class Catalogs {
+public final class Catalogs {
 
     /**
      * Singleton.

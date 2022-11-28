@@ -81,14 +81,6 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public void move(final Phi rho) {
-        synchronized (this.cached) {
-            this.origin.move(rho);
-            this.cached.clear();
-        }
-    }
-
-    @Override
     public Attr attr(final int pos) {
         return this.origin.attr(pos);
     }
@@ -101,8 +93,8 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public String location() {
-        return this.origin.location();
+    public String locator() {
+        return this.origin.locator();
     }
 
 }

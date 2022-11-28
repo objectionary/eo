@@ -17,10 +17,10 @@ tests:
   - //o[@base='first' and @line='17' and @ref='1']
 eo: |
   [x a] > first
-    (stdout x)
+    stdout x
     second > hello
       third > x
-        (stdout "Hi")
+        stdout "Hi"
       one
         x
         two

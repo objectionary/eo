@@ -38,7 +38,7 @@ import java.nio.file.Paths;
  *
  * @since 0.23
  */
-final class SpyTrain extends TrEnvelope {
+public final class SpyTrain extends TrEnvelope {
 
     /**
      * Ctor.
@@ -46,7 +46,7 @@ final class SpyTrain extends TrEnvelope {
      * @param train Original one
      * @param dir The dir to save
      */
-    SpyTrain(final Train<Shift> train, final Path dir) {
+    public SpyTrain(final Train<Shift> train, final Path dir) {
         super(
             new TrLambda(
                 train,

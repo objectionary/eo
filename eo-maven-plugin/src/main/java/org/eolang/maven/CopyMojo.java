@@ -93,7 +93,11 @@ public final class CopyMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.version", required = true, defaultValue = "${project.version}")
+    @Parameter(
+        property = "eo.version",
+        required = true,
+        defaultValue = "${project.version}"
+    )
     private String version;
 
     @Override

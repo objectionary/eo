@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -51,6 +53,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
@@ -58,6 +61,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -105,7 +109,8 @@ public final class GmiMojo extends SafeMojo {
                                 "org/eolang/maven/gmi-to/to-xembly.xsl"
                             )
                         )
-                    ).asString()
+                    ).asString(),
+                    new ClasspathSources()
                 ).with("testing", "no")
             )
         ),
@@ -143,7 +148,8 @@ public final class GmiMojo extends SafeMojo {
                 "/org/eolang/maven/gmi/focus.xsl",
                 "/org/eolang/maven/gmi/rename.xsl",
                 "/org/eolang/maven/gmi/strip.xsl",
-                "/org/eolang/maven/gmi/variability.xsl"
+                "/org/eolang/maven/gmi/variability.xsl",
+                "/org/eolang/maven/gmi/add-license.xsl"
             ).back(),
             GmiMojo.class
         ),
@@ -367,19 +373,21 @@ public final class GmiMojo extends SafeMojo {
      */
     private void makeGraph(final String xembly, final Path gmi) throws IOException {
         if (this.generateGraphFiles) {
-            final Directives dirs = new Directives(xembly);
+            final Directives all = new Directives(xembly);
             Logger.debug(
                 this, "There are %d Xembly directives for %s",
-                new IoChecked<>(new LengthOf(dirs)).value(), gmi
+                new IoChecked<>(new LengthOf(all)).value(), gmi
             );
+            final ListOf<Directive> directives = new ListOf<>(all);
+            final Directive comment = directives.remove(0);
             final XML graph = new XMLDocument(
                 new Xembler(
                     new Directives()
-                        .comment("This file is auto-generated, don't edit it")
+                        .append(Collections.singleton(comment))
                         .add("graph")
                         .add("v")
                         .attr("id", "ν0")
-                        .append(dirs)
+                        .append(directives)
                 ).domQuietly()
             );
             final Path sibling = gmi.resolveSibling(
