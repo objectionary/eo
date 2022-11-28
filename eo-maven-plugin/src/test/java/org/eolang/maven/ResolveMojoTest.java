@@ -89,7 +89,7 @@ final class ResolveMojoTest {
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,
-            new ContainsFile("**/*.jar")
+            new ContainsFile("**/eo-runtime-*.jar")
         );
     }
 
