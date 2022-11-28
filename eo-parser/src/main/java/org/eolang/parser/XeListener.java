@@ -31,7 +31,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -79,16 +78,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     /**
      * Redundancy checker.
      */
-    private final Consumer<String> check;
+    private final RedundantParentheses check;
+
+    /**
+     * Found error directives.
+     */
+    private final Directives errors;
 
     /**
      * Ctor.
      * @param name Tha name of it
      * @param check The strategy to check eo expressions for redundant parentheses.
      */
-    public XeListener(final String name, final Consumer<String> check) {
+    public XeListener(final String name, final RedundantParentheses check) {
         this.name = name;
         this.dirs = new Directives();
+        this.errors = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
         this.check = check;
@@ -114,12 +119,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void exitProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
-            .up();
-        dirs.xpath("/program/errors")
-            .push()
-            .add("error")
-            .attr("line", "10")
-            .attr("severity", "warning");
+            .up()
+            .append(this.errors);
     }
 
     @Override
@@ -185,7 +186,15 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             if (application.suffix() != null) {
                 application = application.application();
             }
-            this.check.accept(application.getText());
+            final String text = application.getText();
+            if (this.check.test(text)) {
+                this.errors.xpath("/program/errors")
+                    .add("error")
+                    .attr("line", ctx.getStart().getLine())
+                    .attr("severity", "warning")
+                    .set(String.format("'%s' contains redundant parentheses", text))
+                    .up();
+            }
         }
     }
 

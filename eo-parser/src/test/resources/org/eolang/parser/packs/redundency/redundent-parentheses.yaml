@@ -1,0 +1,8 @@
+tests:
+  - /program/errors[count(error)=1]
+  - //error[@severity='warning' and @line=4 and text()="'(1.plus 2)' contains redundant parentheses"]
+eo: |
+  +package a.b.c
+
+  [] > x
+    (1.plus 2) > y
