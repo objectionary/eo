@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -114,9 +115,7 @@ public final class Moja<T extends AbstractMojo> {
         try {
             final AbstractMojo mojo = this.type.getConstructor().newInstance();
             for (final Map.Entry<String, Object> ent : this.attrs.entrySet()) {
-                final Field field = this.field(this.type, ent.getKey());
-                field.setAccessible(true);
-                field.set(mojo, ent.getValue());
+                this.initField(this.type, mojo, ent);
             }
             mojo.execute();
         } catch (final MojoExecutionException | MojoFailureException
@@ -149,28 +148,31 @@ public final class Moja<T extends AbstractMojo> {
     /**
      * Take a field.
      * @param mojo The class
-     * @param name Field name
-     * @return Field
+     * @param entry Field name and value
      */
-    private Field field(final Class<?> mojo, final String name) {
-        Field field;
+    private void initField(
+        final Class<?> clazz,
+        final AbstractMojo mojo,
+        final Map.Entry<String, Object> entry
+    ) throws IllegalAccessException {
+        final String name = entry.getKey();
         try {
-            field = mojo.getDeclaredField(name);
+            Field field = clazz.getDeclaredField(name);
+            field.setAccessible(true);
+            field.set(mojo, entry.getValue());
         } catch (final NoSuchFieldException ex) {
-            final Class<?> parent = mojo.getSuperclass();
+            final Class<?> parent = clazz.getSuperclass();
             if (parent == null) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't find \"%s\" in %s",
-                        name,
-                        this.type.getCanonicalName()
-                    ),
-                    ex
+                Logger.warn(
+                    this,
+                    "Can't find '%s' in '%s'",
+                    name,
+                    mojo.getClass().getCanonicalName()
                 );
+            } else {
+                this.initField(parent, mojo, entry);
             }
-            field = this.field(parent, name);
         }
-        return field;
     }
 
 }

@@ -88,7 +88,8 @@ final class OptimizeMojoTest {
             )
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class)
-            .result().get(
+            .result()
+            .get(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             );
         final long start = System.currentTimeMillis();
@@ -153,7 +154,8 @@ final class OptimizeMojoTest {
             .withProgram(
                 "+package f",
                 "[args] > main",
-                "  (stdout \"Hello!\").print > @")
+                "  (stdout \"Hello!\").print > @"
+            )
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
             .execute(ParseMojo.class)
@@ -167,45 +169,28 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void testSimpleOptimize(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
+    void optimizesSuccessfully(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Map<String, Path> res = maven.withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
             .with("trackOptimizationSteps", true)
-            .with("foreignFormat", "csv")
-            .execute();
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .result();
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format("%s/foo/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
-                )
-            ),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
+            )
         );
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-                )
-            ),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            )
         );
     }
 
