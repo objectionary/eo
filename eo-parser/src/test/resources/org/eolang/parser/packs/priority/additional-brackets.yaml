@@ -1,0 +1,8 @@
+tests:
+  - /program/errors[count(error)=0]
+  - //o[@base='.plus']/o[@base='.value']/o[contains(@base,'other')]
+eo: |
+  +package org.eolang.priority
+
+  [] > x
+    1.times 2 (1.plus other.value)
