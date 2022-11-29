@@ -217,37 +217,18 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void testOptimizedFail(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            String.join(
-                "\n",
-                "+package f",
-                "\n+alias THIS-IS-WRONG org.eolang.io.stdout",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @\n"
-            ),
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
+    void failsOptimization(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(OptimizeMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .execute()
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
+                    "[args] > main",
+                    "  (stdout \"Hello!\").print > @"
+                )
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
         );
     }
 
