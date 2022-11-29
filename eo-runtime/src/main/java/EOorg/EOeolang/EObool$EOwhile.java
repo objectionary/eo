@@ -57,20 +57,19 @@ public class EObool$EOwhile extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    Object last = false;
+                    Phi last = new Data.ToPhi(false);
                     long count = 0L;
                     while (true) {
-                        final Boolean term = new Param(rho).strong(Boolean.class);
-                        if (!term) {
+                        if (!new Param(rho).strong(Boolean.class)) {
                             break;
                         }
-                        final Phi body = rho.attr("f").get().copy();
-                        body.attr("ρ").put(rho);
-                        body.attr(0).put(new Data.ToPhi(count));
-                        last = new Dataized(body).take();
+                        new Dataized(last).take();
+                        last = rho.attr("f").get().copy();
+                        last.attr("ρ").put(rho);
+                        last.attr(0).put(new Data.ToPhi(count));
                         ++count;
                     }
-                    return new Data.ToPhi(last);
+                    return last;
                 }
             )
         );

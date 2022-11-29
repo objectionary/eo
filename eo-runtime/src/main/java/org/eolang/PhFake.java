@@ -25,49 +25,24 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package org.eolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.ExFailure;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import java.util.function.Supplier;
 
 /**
- * AT.
+ * Fake object, mostly for unit tests.
  *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.29
  */
-@XmirObject(oname = "array.at")
-public class EOarray$EOat extends PhDefault {
+public final class PhFake extends PhDefault {
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param sup The function to return the real object
      */
-    public EOarray$EOat(final Phi sigma) {
-        super(sigma);
-        this.add("i", new AtFree());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    final Phi[] array = new Param(rho).strong(Phi[].class);
-                    final int idx = new Param(rho, "i").strong(Long.class).intValue();
-                    if (array.length <= idx) {
-                        throw new ExFailure(
-                            "Can't #at(%d) the %dth element of the array, there are just %d of them",
-                            idx, idx + 1, array.length
-                        );
-                    }
-                    return array[idx];
-                }
-            )
-        );
+    public PhFake(final Supplier<Phi> sup) {
+        super(Phi.Φ);
+        this.add("args", new AtVararg());
+        this.add("φ", new AtComposite(this, rho -> sup.get()));
     }
-
 }
