@@ -34,6 +34,10 @@ import com.yegor256.xsline.Xsline;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -54,39 +58,21 @@ final class OptimizeMojoTest {
 
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            temp.relativize(src)
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            ).execute(ParseMojo.class)
+            .execute(OptimizeMojo.class);
+        final Map<String, Path> result = maven.result();
+        final Path path = result.get(
+            String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
         );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        final Path tgt = target.resolve(
-            String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-        );
-        final long mtime = tgt.toFile().lastModified();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
+        final long mtime = path.toFile().lastModified();
+        maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
-            tgt.toFile().lastModified(),
+            path.toFile().lastModified(),
             Matchers.is(mtime)
         );
     }
