@@ -34,6 +34,7 @@ SOFTWARE.
   </xsl:variable>
   <xsl:template match="/sodg">
     <xsl:element name="xembly">
+      <xsl:call-template name="license-xe"/>
       <xsl:apply-templates select="i"/>
     </xsl:element>
   </xsl:template>

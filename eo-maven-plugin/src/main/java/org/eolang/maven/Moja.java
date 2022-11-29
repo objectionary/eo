@@ -128,7 +128,7 @@ public final class Moja<T extends AbstractMojo> {
 
     @Override
     public String toString() {
-        return String.format("Moja<%s>}", this.type.getSimpleName());
+        return String.format("Moja<%s>", this.type.getSimpleName());
     }
 
     /**
