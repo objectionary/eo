@@ -31,12 +31,8 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
@@ -136,7 +132,9 @@ final class OptimizeMojoTest {
             new XMLDocument(
                 new Home(temp).load(
                     Paths.get(
-                        String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR,
+                        String.format(
+                            "target/%s/foo/x/main.%s",
+                            OptimizeMojo.DIR,
                             TranspileMojo.EXT
                         )
                     )
@@ -171,7 +169,8 @@ final class OptimizeMojoTest {
     @Test
     void optimizesSuccessfully(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
-        final Map<String, Path> res = maven.withProgram(
+        final Map<String, Path> res = maven
+            .withProgram(
                 "+package f",
                 "[args] > main",
                 "  (stdout \"Hello!\").print > @"
@@ -282,37 +281,27 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void testFailOnWarning(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo.src.eo");
-        new Home(temp).save(
-            new ResourceOf("org/eolang/maven/withwarning.eo"),
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
+    void failsOnWarning(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+architect yegor256@gmail.com",
+                "+junit",
+                "+package org.eolang.examples",
+                "[] > main",
+                "  [] > @",
+                "    hello > test"
+            );
         this.applyXsl(
             "org/eolang/maven/set-warning-severity.xsl",
-            target.resolve("01-parse/foo/src.xmir")
+            maven.execute(ParseMojo.class)
+                .result()
+                .get("target/01-parse/foo/x/main.xmir")
         );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(OptimizeMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .with("failOnError", false)
+            () -> maven.with("failOnError", false)
                 .with("failOnWarning", true)
-                .execute()
+                .execute(OptimizeMojo.class)
         );
     }
 

@@ -146,9 +146,11 @@ public final class Moja<T extends AbstractMojo> {
     }
 
     /**
-     * Take a field.
-     * @param mojo The class
+     * Init a field.
+     * @param clazz The mojo class
+     * @param mojo The mojo
      * @param entry Field name and value
+     * @throws java.lang.IllegalAccessException If can't set field.
      */
     private void initField(
         final Class<?> clazz,
@@ -157,7 +159,7 @@ public final class Moja<T extends AbstractMojo> {
     ) throws IllegalAccessException {
         final String name = entry.getKey();
         try {
-            Field field = clazz.getDeclaredField(name);
+            final Field field = clazz.getDeclaredField(name);
             field.setAccessible(true);
             field.set(mojo, entry.getValue());
         } catch (final NoSuchFieldException ex) {
