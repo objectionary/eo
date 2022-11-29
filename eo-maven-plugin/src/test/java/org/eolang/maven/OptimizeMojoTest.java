@@ -63,10 +63,10 @@ final class OptimizeMojoTest {
                 "+package f",
                 "[args] > main",
                 "  (stdout \"Hello!\").print > @"
-            ).execute(ParseMojo.class)
+            )
+            .execute(ParseMojo.class)
             .execute(OptimizeMojo.class);
-        final Map<String, Path> result = maven.result();
-        final Path path = result.get(
+        final Path path = maven.result().get(
             String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
         );
         final long mtime = path.toFile().lastModified();
@@ -79,39 +79,23 @@ final class OptimizeMojoTest {
 
     @Test
     void optimizesIfExpired(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        final Path tgt = target.resolve(
-            String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-        );
+        final FakeMaven maven = new FakeMaven(temp);
+        final Map<String, Path> res = maven
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .result();
+        final Path tgt = res.get(
+            String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT));
         final long start = System.currentTimeMillis();
-        tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L));
-        src.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(1L));
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
+        if (!tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L))) {
+            Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
+        }
+        maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
             tgt.toFile().lastModified(),
             Matchers.greaterThan(start)
