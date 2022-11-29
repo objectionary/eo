@@ -73,7 +73,7 @@
           x.lt 10
           [i]
             ^.^.^ > x
-            x.write (x.plus i) > @
+            x.write (x.plus 1) > @
     $.equal-to TRUE
 
 [] > prints-nice-formulas
@@ -183,15 +183,15 @@
     $.equal-to TRUE
 
 [] > last-while-dataization-object
-  memory 3 > x
+  memory 0 > x
   assert-that > @
     while.
-      x.lt 6
+      x.lt 2
       [i]
         seq > @
-          x.write (x.plus i)
+          x.write (x.plus 1)
           x
-    $.equal-to 6
+    $.equal-to 3
 
 [] > last-while-dataization-object-with-false-condition
   memory 3 > x
@@ -200,6 +200,6 @@
       x.lt 1
       [i]
         seq > @
-          x.write (x.plus i)
+          x.write (x.plus 1)
           x
     $.equal-to FALSE

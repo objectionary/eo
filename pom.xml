@@ -123,7 +123,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.16.0</version>
+        <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -252,8 +252,8 @@ SOFTWARE.
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration combine.self="override">
-            <source>11</source>
-            <target>11</target>
+            <source>8</source>
+            <target>8</target>
             <compilerArgs>
               <arg>-Xpkginfo:always</arg>
             </compilerArgs>
