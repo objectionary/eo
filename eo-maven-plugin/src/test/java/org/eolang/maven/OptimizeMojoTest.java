@@ -196,42 +196,23 @@ final class OptimizeMojoTest {
 
     @Test
     void failsOnErrorFlag(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            String.join(
-                "\n",
-                "+package f",
-                "\n+alias THIS-IS-WRONG org.eolang.io.stdout",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @\n"
-            ),
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("failOnError", false)
-            .execute();
         MatcherAssert.assertThat(
-            Files.notExists(
-                target.resolve(
-                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            new FakeMaven(temp)
+                .withProgram(
+                    "+package f",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
+                    "[args] > main",
+                    "  (stdout \"Hello!\").print > @"
                 )
-            ),
-            Matchers.is(true)
+                .with("failOnError", false)
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
+                .result(),
+            Matchers.not(
+                Matchers.hasKey(
+                    String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                )
+            )
         );
     }
 
