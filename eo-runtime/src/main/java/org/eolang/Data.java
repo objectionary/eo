@@ -176,11 +176,6 @@ public interface Data<T> {
         }
 
         @Override
-        public void move(final Phi rho) {
-            // nothing
-        }
-
-        @Override
         public Attr attr(final int pos) {
             return this.object.attr(pos);
         }
@@ -191,8 +186,8 @@ public interface Data<T> {
         }
 
         @Override
-        public String location() {
-            return this.object.location();
+        public String locator() {
+            return this.object.locator();
         }
 
         @Override

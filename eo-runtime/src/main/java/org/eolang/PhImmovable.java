@@ -71,23 +71,22 @@ final class PhImmovable implements Phi {
     }
 
     @Override
-    public void move(final Phi rho) {
-        // ignore it
-    }
-
-    @Override
     public Attr attr(final int pos) {
         return this.origin.attr(pos);
     }
 
     @Override
     public Attr attr(final String attr) {
-        return this.origin.attr(attr);
+        Attr val = this.origin.attr(attr);
+        if ("ρ".equals(attr)) {
+            val = new AtFixed(val);
+        }
+        return val;
     }
 
     @Override
-    public String location() {
-        return this.origin.location();
+    public String locator() {
+        return this.origin.locator();
     }
 
 }

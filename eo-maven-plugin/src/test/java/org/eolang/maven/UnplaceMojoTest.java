@@ -38,6 +38,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class UnplaceMojoTest {
     /**
      * Value for 'class' ATTR_KIND.
@@ -159,6 +160,62 @@ final class UnplaceMojoTest {
         );
         MatcherAssert.assertThat(
             Files.exists(Paths.get(String.valueOf(pparent))),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void testUnplaceRemoveBinaries(@TempDir final Path temp) throws Exception {
+        final Path foo = temp.resolve("a/b/c/foo6.class");
+        new Home().save("testUnplaceRemoveBinaries", foo);
+        final Path list = temp.resolve("placed.csv");
+        Catalogs.INSTANCE.make(list)
+            .add(foo.toString())
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo))
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+        new Moja<>(UnplaceMojo.class)
+            .with("placed", list.toFile())
+            .with("placedFormat", "csv")
+            .with("removeBinaries", new SetOf<>("**foo6.class"))
+            .execute();
+        final Path placed = temp.resolve("placed.csv");
+        MatcherAssert.assertThat(
+            Files.readString(placed).contains("false"),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            Files.readString(placed).contains("true"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void testUnplaceKeepBinaries(@TempDir final Path temp) throws Exception {
+        final Path foo = temp.resolve("a/b/c/foo6.class");
+        new Home().save("testUnplaceKeepBinaries", foo);
+        final Path list = temp.resolve("placed.csv");
+        Catalogs.INSTANCE.make(list)
+            .add(foo.toString())
+            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
+            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo))
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+        new Moja<>(UnplaceMojo.class)
+            .with("placed", list.toFile())
+            .with("placedFormat", "csv")
+            .with("keepBinaries", new SetOf<>("**foo6.class"))
+            .execute();
+        final Path placed = temp.resolve("placed.csv");
+        MatcherAssert.assertThat(
+            Files.readString(placed).contains("false"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            Files.readString(placed).contains("true"),
             Matchers.is(false)
         );
     }

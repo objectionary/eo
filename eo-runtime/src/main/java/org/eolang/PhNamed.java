@@ -78,11 +78,6 @@ final class PhNamed implements Phi {
     }
 
     @Override
-    public void move(final Phi rho) {
-        this.origin.move(rho);
-    }
-
-    @Override
     public Attr attr(final int pos) {
         return new AtNamed(this.name, this.name, this, this.origin.attr(pos));
     }
@@ -93,8 +88,8 @@ final class PhNamed implements Phi {
     }
 
     @Override
-    public String location() {
-        return this.origin.location();
+    public String locator() {
+        return this.origin.locator();
     }
 
 }

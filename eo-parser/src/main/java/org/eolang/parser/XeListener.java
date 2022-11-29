@@ -52,7 +52,7 @@ import org.xembly.Directives;
  *  are stored as bytes, remove data attribute from XML
  *  and XSLT templates.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
@@ -76,14 +76,21 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     private final long start;
 
     /**
-     * Ctor.
-     * @param nme Tha name of it
+     * Redundancy checker.
      */
-    public XeListener(final String nme) {
-        this.name = nme;
+    private final RedundantParentheses check;
+
+    /**
+     * Ctor.
+     * @param name Tha name of it
+     * @param check The strategy to check eo expressions for redundant parentheses.
+     */
+    public XeListener(final String name, final RedundantParentheses check) {
+        this.name = name;
         this.dirs = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
+        this.check = check;
     }
 
     @Override
@@ -167,7 +174,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterObject(final ProgramParser.ObjectContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        if (ctx.application() != null) {
+            ProgramParser.ApplicationContext application = ctx.application();
+            if (application.suffix() != null) {
+                application = application.application();
+            }
+            final String text = application.getText();
+            if (this.check.test(text)) {
+                this.dirs.push()
+                    .xpath("/program/errors")
+                    .add("error")
+                    .attr("line", ctx.getStart().getLine())
+                    .attr("severity", "warning")
+                    .set(String.format("'%s' contains redundant parentheses", text))
+                    .pop();
+            }
+        }
     }
 
     @Override
@@ -340,7 +362,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterHas(final ProgramParser.HasContext ctx) {
         this.objects.enter();
-        this.objects.prop("as", ctx.NAME().getText());
+        final String has;
+        if (ctx.RHO() == null) {
+            has = ctx.NAME().getText();
+        } else {
+            has = "^";
+        }
+        this.objects.prop("as", has);
     }
 
     @Override

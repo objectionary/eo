@@ -42,7 +42,7 @@
 [] > empty-array-length
   [elements...] > arr
   assert-that > @
-    (arr).elements.length
+    arr.elements.length
     $.equal-to 0
 
 # check that array.length works properly for non-empty arrays
@@ -167,13 +167,13 @@
 
 [] > array-fluent-with
   assert-that > @
-    ((((*).with 1).with 2).with 3)
+    ((*.with 1).with 2).with 3
     $.equal-to
       list
         * 1 2 3
 
 [] > array-fluent-with-indented
-  (*)
+  *
   .with 1
   .with 2
   .with 3 > a

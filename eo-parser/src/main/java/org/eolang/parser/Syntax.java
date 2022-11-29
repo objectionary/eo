@@ -71,16 +71,46 @@ public final class Syntax {
     private final Output target;
 
     /**
+     * Checks redundant parentheses.
+     */
+    private final RedundantParentheses redundancy;
+
+    /**
      * Ctor.
      *
      * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
+     * @todo #485:90min The {@link org.eolang.parser.Syntax} by default just write warning to the
+     *  log about redundant parentheses because some objects from objectioanry already contain
+     *  redundancy parentheses in their source code that causes exceptions during parsing if
+     *  {@link org.eolang.parser.Syntax#redundancy} is true. By that reason it's important to
+     *  fix all redundancy parentheses in the objectionary. Then we will be able to remove
+     *  'redundancy' flag and check all eo programs for redundant parentheses by default.
      */
     public Syntax(final String nme, final Input ipt, final Output tgt) {
+        this(nme, ipt, tgt, new RedundantParentheses());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param nme The name of it
+     * @param ipt Input text
+     * @param tgt Target
+     * @param redundancy Check for redundant parentheses
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public Syntax(
+        final String nme,
+        final Input ipt,
+        final Output tgt,
+        final RedundantParentheses redundancy
+    ) {
         this.name = nme;
         this.input = ipt;
         this.target = tgt;
+        this.redundancy = redundancy;
     }
 
     /**
@@ -96,7 +126,8 @@ public final class Syntax {
             public void syntaxError(final Recognizer<?, ?> recognizer,
                 final Object symbol, final int line,
                 final int position, final String msg,
-                final RecognitionException error) {
+                final RecognitionException error
+            ) {
                 throw new ParsingException(
                     String.format(
                         "[%d:%d] %s: \"%s\"",
@@ -117,7 +148,7 @@ public final class Syntax {
         );
         parser.removeErrorListeners();
         parser.addErrorListener(errors);
-        final XeListener xel = new XeListener(this.name);
+        final XeListener xel = new XeListener(this.name, this.redundancy);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
         new Schema(dom).check();

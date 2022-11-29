@@ -101,6 +101,8 @@ method
     |
     RHO
     |
+    SIGMA
+    |
     AT
     |
     VERTEX
@@ -140,11 +142,11 @@ htail
   :
   (
     SPACE
-    head
-    |
-    SPACE
     application
     method
+    |
+    SPACE
+    head
     |
     SPACE
     scope
@@ -198,7 +200,11 @@ head
 has
   :
   COLON
-  NAME
+  (
+    NAME
+    |
+    RHO
+  )
   ;
 
 data

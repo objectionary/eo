@@ -109,7 +109,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
-        this.add("σ", new AtSimple(sigma));
+        this.add("σ", new AtFixed(new AtSimple(sigma)));
     }
 
     @Override
@@ -191,11 +191,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final void move(final Phi rho) {
-        this.attrs.put("ρ", new AtSimple(rho));
-    }
-
-    @Override
     public final Attr attr(final int pos) {
         if (pos < 0) {
             throw new ExFailure(
@@ -254,7 +249,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             } else {
                 final Phi phi = this.cached.get(name, aphi::get);
                 final Phi found = phi.attr(name).get();
-                found.move(this);
+                found.attr("ρ").put(this);
                 attr = new AtSimple(found);
             }
         }
@@ -280,7 +275,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public String location() {
+    public String locator() {
         return "?";
     }
 

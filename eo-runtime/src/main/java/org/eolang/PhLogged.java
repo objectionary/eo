@@ -77,12 +77,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public void move(final Phi rho) {
-        this.origin.move(rho);
-        System.out.printf("%d.move()!\n", this.hashCode());
-    }
-
-    @Override
     public Attr attr(final int pos) {
         System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
         final Attr ret = new AtLogged(
@@ -105,8 +99,8 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public String location() {
-        return this.origin.location();
+    public String locator() {
+        return this.origin.locator();
     }
 
 }

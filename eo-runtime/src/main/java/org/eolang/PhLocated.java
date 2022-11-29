@@ -85,11 +85,6 @@ public final class PhLocated implements Phi {
     }
 
     @Override
-    public void move(final Phi rho) {
-        this.origin.move(rho);
-    }
-
-    @Override
     public Attr attr(final int pos) {
         return new AtLocated(this.origin.attr(pos), this.line, this.position);
     }
@@ -100,7 +95,7 @@ public final class PhLocated implements Phi {
     }
 
     @Override
-    public String location() {
+    public String locator() {
         return String.format("%d:%d", this.line, this.position);
     }
 

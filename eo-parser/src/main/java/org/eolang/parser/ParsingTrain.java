@@ -30,7 +30,6 @@ import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrLambda;
@@ -40,6 +39,9 @@ import com.yegor256.xsline.TrLogged;
  * Train of XSL shifts.
  *
  * @since 0.1
+ * @todo #1024:30min Need to figure out, which errors need to be
+ *   "critical", same as "duplicate-names" error. After that
+ *   move them to "critical-errors" directory.
  */
 public final class ParsingTrain extends TrEnvelope {
 
@@ -85,6 +87,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/errors/unused-aliases.xsl",
         "/org/eolang/parser/errors/data-objects.xsl",
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",
+        "/org/eolang/parser/set-locators.xsl",
     };
 
     /**
@@ -99,20 +102,18 @@ public final class ParsingTrain extends TrEnvelope {
                         new TrClasspath<>(ParsingTrain.SHEETS).back()
                     )
                 ),
-                shift -> new StLambda(
-                    shift::uid,
-                    (position, out) -> new StSequence(
-                        xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                        new StAfter(
-                            shift,
-                            new StLambda(
-                                shift::uid,
-                                (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                    .with("sheet", shift.uid())
-                                    .transform(xml)
-                            )
+                shift -> new StSequence(
+                    shift.uid(),
+                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
+                    new StAfter(
+                        shift,
+                        new StLambda(
+                            shift::uid,
+                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
+                                .with("sheet", shift.uid())
+                                .transform(xml)
                         )
-                    ).apply(position, out)
+                    )
                 )
             )
         );

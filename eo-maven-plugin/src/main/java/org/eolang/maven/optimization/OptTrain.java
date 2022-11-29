@@ -62,7 +62,8 @@ public final class OptTrain implements Optimization {
             "/org/eolang/parser/optimize/fix-missed-names.xsl",
             "/org/eolang/parser/add-refs.xsl",
             "/org/eolang/parser/errors/broken-refs.xsl",
-            "/org/eolang/parser/optimize/constant-folding.xsl"
+            "/org/eolang/parser/optimize/constant-folding.xsl",
+            "/org/eolang/parser/set-locators.xsl"
         ).back()
     );
 
@@ -93,7 +94,7 @@ public final class OptTrain implements Optimization {
     }
 
     /**
-     * Constructor for single shift optimization.
+     * Constructor for single {@link StClasspath} optimization.
      *
      * @param delegate Optimizations that have to be done before.
      * @param xls File from classpath.
@@ -110,7 +111,7 @@ public final class OptTrain implements Optimization {
      * @param delegate Optimizations that have to be done before.
      * @param shifts To apply
      */
-    private OptTrain(
+    public OptTrain(
         final Optimization delegate,
         final Train<Shift> shifts
     ) {

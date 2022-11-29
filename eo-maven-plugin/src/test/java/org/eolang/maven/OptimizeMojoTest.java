@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
@@ -334,7 +335,7 @@ final class OptimizeMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .execute();
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(OptimizeMojo.class)
                 .with("targetDir", target.toFile())
                 .with("foreign", foreign.toFile())
@@ -369,8 +370,55 @@ final class OptimizeMojoTest {
             .with("foreignFormat", "csv")
             .with("cache", temp.resolve("cache/parsed"))
             .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("failOnError", false)
+            .with("trackOptimizationSteps", true)
+            .execute();
+        MatcherAssert.assertThat(
+            new XMLDocument(
+                target.resolve(
+                    String.format("%s/foo/main/02-duplicate-names.xml", OptimizeMojo.STEPS)
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/program/sheets[count(sheet)=3]",
+                "/program/errors[count(error)=1]",
+                "/program/errors/error[@severity='critical']"
+            )
+        );
+    }
+
+    @Test
+    void failsOnCritical(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("foo/main.eo");
+        new Home(temp).save(
+            String.join(
+                "\n",
+                "+package f\n",
+                "[args] > main",
+                "  seq > @",
+                "    TRUE > x",
+                "    FALSE > x\n"
+            ),
+            src
+        );
+        final Path target = temp.resolve("target");
+        final Path foreign = temp.resolve("eo-foreign.csv");
+        Catalogs.INSTANCE.make(foreign)
+            .add("foo.main")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, src.toString());
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "csv")
+            .with("cache", temp.resolve("cache/parsed"))
+            .execute();
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(OptimizeMojo.class)
                 .with("targetDir", target.toFile())
                 .with("foreign", foreign.toFile())
@@ -403,7 +451,7 @@ final class OptimizeMojoTest {
             target.resolve("01-parse/foo/src.xmir")
         );
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> new Moja<>(OptimizeMojo.class)
                 .with("targetDir", target.toFile())
                 .with("foreign", foreign.toFile())

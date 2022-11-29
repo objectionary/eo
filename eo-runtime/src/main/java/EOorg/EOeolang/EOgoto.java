@@ -58,7 +58,7 @@ public class EOgoto extends PhDefault {
                 this,
                 rho -> {
                     final Phi body = rho.attr("f").get().copy();
-                    body.move(rho);
+                    body.attr("ρ").put(rho);
                     body.attr(0).put(new EOgoto.Token(rho));
                     Phi ret;
                     while (true) {

@@ -40,6 +40,8 @@ SOFTWARE.
         <xs:element name="i" minOccurs="0" maxOccurs="unbounded" type="i">
         </xs:element>
       </xs:sequence>
+      <xs:attribute name="version" type="xs:string"/>
+      <xs:attribute name="time" type="xs:string"/>
     </xs:complexType>
   </xs:element>
 </xs:schema>
