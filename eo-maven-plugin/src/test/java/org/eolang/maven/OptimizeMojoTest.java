@@ -147,37 +147,21 @@ final class OptimizeMojoTest {
 
     @Test
     void savesOptimizedResultsToCache(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_HASH, hash)
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("trackOptimizationSteps", true)
-            .with("foreignFormat", "json")
+        new FakeMaven(temp)
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @")
             .with("cache", cache)
-            .execute();
+            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
             cache.resolve(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
-                .resolve("foo/main.xmir").toFile(),
+                .resolve("foo/x/main.xmir").toFile(),
             FileMatchers.anExistingFile()
         );
     }
