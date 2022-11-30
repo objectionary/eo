@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -158,11 +159,14 @@ public final class Moja<T extends AbstractMojo> {
         final Map.Entry<String, Object> entry
     ) throws IllegalAccessException {
         final String name = entry.getKey();
-        try {
-            final Field field = clazz.getDeclaredField(name);
+        final Optional<Field> declared = Arrays.stream(clazz.getDeclaredFields())
+            .filter(f -> f.getName().equals(name))
+            .findFirst();
+        if (declared.isPresent()) {
+            final Field field = declared.get();
             field.setAccessible(true);
             field.set(mojo, entry.getValue());
-        } catch (final NoSuchFieldException ex) {
+        } else {
             final Class<?> parent = clazz.getSuperclass();
             if (parent == null) {
                 Logger.warn(
