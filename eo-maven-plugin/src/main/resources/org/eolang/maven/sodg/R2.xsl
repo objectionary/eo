@@ -41,7 +41,7 @@ SOFTWARE.
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:fqn(/program, eo:locator(.))"/>
+          <xsl:value-of select="@loc"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
@@ -63,10 +63,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:fqn(/program, eo:locator(ancestor::*[1]))"/>
+          <xsl:value-of select="ancestor::*[1]/@loc"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:fqn(/program, eo:locator(.))"/>
+          <xsl:value-of select="@loc"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:value-of select="concat('text:', eo:attr(eo:alpha(.)))"/>
@@ -86,10 +86,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(.)"/>
+          <xsl:value-of select="@loc"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
+          <xsl:value-of select="ancestor::*[1]/@loc"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:text>ρ</xsl:text>
@@ -103,10 +103,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(.)"/>
+          <xsl:value-of select="@loc"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
+          <xsl:value-of select="ancestor::*[1]/@loc"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:text>σ</xsl:text>

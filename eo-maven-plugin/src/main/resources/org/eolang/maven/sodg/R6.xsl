@@ -42,7 +42,7 @@ SOFTWARE.
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
           <xsl:variable name="v">
-            <xsl:value-of select="eo:locator(.)"/>
+            <xsl:value-of select="@loc"/>
           </xsl:variable>
           <xsl:value-of select="$v"/>
         </xsl:sequence>

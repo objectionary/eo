@@ -40,7 +40,7 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:locator(ancestor::*[1])"/>
+          <xsl:value-of select="ancestor::*[1]/@loc"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:value-of select="@base"/>

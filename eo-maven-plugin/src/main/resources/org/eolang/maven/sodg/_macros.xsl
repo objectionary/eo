@@ -46,34 +46,6 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
-  <xsl:function name="eo:locator" as="xs:string">
-    <xsl:param name="o" as="node()"/>
-    <xsl:variable name="ret">
-      <xsl:choose>
-        <xsl:when test="$o/parent::o">
-          <xsl:value-of select="eo:locator($o/parent::o)"/>
-          <xsl:text>.</xsl:text>
-        </xsl:when>
-      </xsl:choose>
-      <xsl:choose>
-        <xsl:when test="$o/@name">
-          <xsl:value-of select="$o/@name"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:choose>
-            <xsl:when test="name($o) = 'o'">
-              <xsl:text>α</xsl:text>
-              <xsl:value-of select="count($o/preceding-sibling::o)"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>ν0</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:value-of select="$ret"/>
-  </xsl:function>
   <xsl:function name="eo:fqn" as="xs:string">
     <xsl:param name="program" as="node()"/>
     <xsl:param name="base" as="xs:string"/>
