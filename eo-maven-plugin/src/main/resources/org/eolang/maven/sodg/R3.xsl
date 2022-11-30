@@ -39,10 +39,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="@loc"/>
+          <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:base-to-loc(/program, @base)"/>
+          <xsl:value-of select="eo:var(eo:base-to-loc(/program, @base))"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:text>π</xsl:text>

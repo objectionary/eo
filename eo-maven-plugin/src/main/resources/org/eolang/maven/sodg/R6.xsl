@@ -41,13 +41,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'PUT'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:variable name="v">
-            <xsl:value-of select="@loc"/>
-          </xsl:variable>
-          <xsl:value-of select="$v"/>
+          <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('data:', text())"/>
+          <xsl:value-of select="text()"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

@@ -33,7 +33,6 @@ import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
@@ -64,8 +63,6 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -172,21 +169,10 @@ public final class SodgMojo extends SafeMojo {
                 ).back(),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/rename.xsl",
-                    "/org/eolang/maven/sodg/strip.xsl",
-                    "/org/eolang/maven/sodg/variability.xsl",
                     "/org/eolang/maven/sodg/add-license.xsl"
                 ).back()
             ),
             SodgMojo.class
-        ),
-        new StLambda(
-            "escape-data",
-            xml -> {
-                final Node dom = xml.node();
-                SodgMojo.escape(dom);
-                return new XMLDocument(dom);
-            }
         ),
         new StSchema("/org/eolang/maven/sodg/after.xsd")
     );
@@ -446,32 +432,6 @@ public final class SodgMojo extends SafeMojo {
                 dot,
                 sibling.getParent().relativize(sibling)
             );
-        }
-    }
-
-    /**
-     * Escape all texts in all "a" elements.
-     * @param node The node
-     */
-    private static void escape(final Node node) {
-        if ("a".equals(node.getLocalName())
-            && "data".equals(node.getAttributes().getNamedItem("prefix").getTextContent())) {
-            final String text = node.getTextContent();
-            final StringBuilder out = new StringBuilder(text.length());
-            for (final char chr : text.toCharArray()) {
-                if (chr >= ' ' && chr <= '}' && chr != '\'' && chr != '"') {
-                    out.append(chr);
-                } else {
-                    out.append("\\u").append(String.format("%04x", (int) chr));
-                }
-            }
-            node.setTextContent(out.toString());
-        }
-        if (node.hasChildNodes()) {
-            final NodeList kids = node.getChildNodes();
-            for (int idx = 0; idx < kids.getLength(); ++idx) {
-                SodgMojo.escape(kids.item(idx));
-            }
         }
     }
 

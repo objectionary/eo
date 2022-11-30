@@ -100,7 +100,7 @@ SOFTWARE.
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="$loc"/>
+          <xsl:value-of select="eo:var($loc)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
@@ -117,10 +117,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="$parent"/>
+          <xsl:value-of select="eo:var($parent)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="$loc"/>
+          <xsl:value-of select="eo:var($loc)"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:value-of select="$k"/>

@@ -50,10 +50,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="'ATOM'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('text:', $fqn)"/>
+          <xsl:value-of select="concat('02-', $fqn)"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
