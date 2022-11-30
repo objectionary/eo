@@ -149,7 +149,7 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TRAIN = new TrWith(
         new TrFast(
-            new TrJoined(
+            new TrJoined<>(
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/remove-leveled.xsl"
                 ).back(),
