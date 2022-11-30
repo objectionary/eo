@@ -27,10 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -41,12 +39,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
 import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 
 /**
