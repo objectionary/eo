@@ -42,7 +42,7 @@ SOFTWARE.
           <xsl:value-of select="@loc"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="@base"/>
+          <xsl:value-of select="eo:base-to-loc(/program, @base)"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:text>π</xsl:text>

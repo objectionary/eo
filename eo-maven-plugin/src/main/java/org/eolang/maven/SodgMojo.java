@@ -138,6 +138,7 @@ public final class SodgMojo extends SafeMojo {
         new TrClasspath<>(
             "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
             "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+            "/org/eolang/maven/sodg-to/catch-empty-edges.xsl",
             "/org/eolang/maven/sodg-to/to-dot.xsl"
         ).back(),
         SodgMojo.class
@@ -161,6 +162,7 @@ public final class SodgMojo extends SafeMojo {
                         )
                     ),
                     "/org/eolang/maven/sodg/R0.xsl",
+                    "/org/eolang/maven/sodg/R0.1.xsl",
                     "/org/eolang/maven/sodg/R1.xsl",
                     "/org/eolang/maven/sodg/R2.xsl",
                     "/org/eolang/maven/sodg/R2.1.xsl",
@@ -409,9 +411,6 @@ public final class SodgMojo extends SafeMojo {
                 new Xembler(
                     new Directives()
                         .append(Collections.singleton(comment))
-                        .add("graph")
-                        .add("v")
-                        .attr("id", "ν0")
                         .append(directives)
                 ).domQuietly()
             );

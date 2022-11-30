@@ -46,16 +46,20 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
-  <xsl:function name="eo:fqn" as="xs:string">
+  <xsl:function name="eo:base-to-loc" as="xs:string">
     <xsl:param name="program" as="node()"/>
     <xsl:param name="base" as="xs:string"/>
+    <xsl:if test="starts-with($base, '.')">
+      <xsl:message terminate="yes">
+        <xsl:text>You can't get a locator from a base that starts with a dot</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:variable name="ret">
-      <xsl:choose>
-        <xsl:when test="not(contains($base, '.')) and $program/metas/meta[head='package']">
-          <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
-          <xsl:text>.</xsl:text>
-        </xsl:when>
-      </xsl:choose>
+      <xsl:text>Φ.</xsl:text>
+      <xsl:if test="not(contains($base, '.')) and $program/metas/meta[head='package']">
+        <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
+        <xsl:text>.</xsl:text>
+      </xsl:if>
       <xsl:value-of select="$base"/>
     </xsl:variable>
     <xsl:value-of select="$ret"/>

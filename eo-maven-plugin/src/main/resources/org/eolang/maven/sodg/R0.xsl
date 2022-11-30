@@ -28,7 +28,6 @@ SOFTWARE.
   All further XSL transformations will work with "i" elements inside
   this "sodg" one.
   -->
-  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program[not(sodg)]">
     <xsl:copy>
