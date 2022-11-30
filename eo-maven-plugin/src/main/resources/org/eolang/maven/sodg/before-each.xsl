@@ -30,11 +30,9 @@ SOFTWARE.
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:param name="sheet"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/">
-    <xsl:copy-of select="program/sodg"/>
-  </xsl:template>
   <xsl:template match="/program/sodg">
     <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
       <xsl:call-template name="i">
         <xsl:with-param name="name" select="'COMMENT'"/>
         <xsl:with-param name="args" as="item()*">

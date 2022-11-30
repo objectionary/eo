@@ -40,6 +40,7 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.TrMapped;
 import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
@@ -146,47 +147,50 @@ public final class SodgMojo extends SafeMojo {
     /**
      * The train that generates SODG.
      */
-    private static final Train<Shift> TRAIN = new TrWith(
-        new TrFast(
-            new TrJoined(
-                new TrClasspath<>(
-                    "/org/eolang/maven/sodg/remove-leveled.xsl"
-                ).back(),
-                new TrMapped<>(
-                    (Function<String, Shift>) path -> new StBefore(
-                        new StClasspath(path),
-                        new StClasspath(
-                            "/org/eolang/maven/sodg/before-each.xsl",
-                            String.format("sheet %s", path)
-                        )
-                    ),
-                    "/org/eolang/maven/sodg/R0.xsl",
-                    "/org/eolang/maven/sodg/R1.xsl",
-                    "/org/eolang/maven/sodg/R2.xsl",
-                    "/org/eolang/maven/sodg/R2.1.xsl",
-                    "/org/eolang/maven/sodg/R3.xsl",
-                    "/org/eolang/maven/sodg/R6.xsl",
-                    "/org/eolang/maven/sodg/R7.xsl"
-                ).back(),
-                new TrClasspath<>(
-                    "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/rename.xsl",
-                    "/org/eolang/maven/sodg/strip.xsl",
-                    "/org/eolang/maven/sodg/variability.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl"
-                ).back()
+    private static final Train<Shift> TRAIN = new TrLogged(
+        new TrWith(
+            new TrFast(
+                new TrJoined(
+                    new TrClasspath<>(
+                        "/org/eolang/maven/sodg/remove-leveled.xsl"
+                    ).back(),
+                    new TrMapped<>(
+                        (Function<String, Shift>) path -> new StBefore(
+                            new StClasspath(path),
+                            new StClasspath(
+                                "/org/eolang/maven/sodg/before-each.xsl",
+                                String.format("sheet %s", path)
+                            )
+                        ),
+                        "/org/eolang/maven/sodg/R0.xsl",
+                        "/org/eolang/maven/sodg/R1.xsl",
+                        "/org/eolang/maven/sodg/R2.xsl",
+                        "/org/eolang/maven/sodg/R2.1.xsl",
+                        "/org/eolang/maven/sodg/R3.xsl",
+                        "/org/eolang/maven/sodg/R6.xsl",
+                        "/org/eolang/maven/sodg/R7.xsl"
+                    ).back(),
+                    new TrClasspath<>(
+                        "/org/eolang/maven/sodg/focus.xsl",
+                        "/org/eolang/maven/sodg/rename.xsl",
+                        "/org/eolang/maven/sodg/strip.xsl",
+                        "/org/eolang/maven/sodg/variability.xsl",
+                        "/org/eolang/maven/sodg/add-license.xsl"
+                    ).back()
+                ),
+                SodgMojo.class
             ),
-            SodgMojo.class
+            new StLambda(
+                "escape-data",
+                xml -> {
+                    final Node dom = xml.node();
+                    SodgMojo.escape(dom);
+                    return new XMLDocument(dom);
+                }
+            ),
+            new StSchema("/org/eolang/maven/sodg/after.xsd")
         ),
-        new StLambda(
-            "escape-data",
-            xml -> {
-                final Node dom = xml.node();
-                SodgMojo.escape(dom);
-                return new XMLDocument(dom);
-            }
-        ),
-        new StSchema("/org/eolang/maven/sodg/after.xsd")
+        SodgMojo.class
     );
 
     /**

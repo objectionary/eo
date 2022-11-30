@@ -30,7 +30,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program[not(sodg)]">
+  <xsl:template match="/program[not(sodg)]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="sodg">
