@@ -152,6 +152,10 @@ public final class Moja<T extends AbstractMojo> {
      * @param mojo The mojo
      * @param entry Field name and value
      * @throws java.lang.IllegalAccessException If can't set field.
+     * @todo #1494:30min We have some doubts about using Logger.warn in initField method.
+     *  Since it's important to notice the developer during of using the plugin that the property
+     *  can't be set to the Mojo, we can't just remove Logger.warn. On the other hand, we will
+     *  see warnings all the time during unit testing, which can be an insignificant problem.
      */
     private void initField(
         final Class<?> clazz,
