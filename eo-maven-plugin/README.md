@@ -107,21 +107,22 @@ one after another:
     The output of this step you can find in the `target/generated-sources` directory.
 
 Let's see what happens to the directories with each step. More about these phases is written ih this [post](https://www.yegor256.com/2021/10/21/objectionary.html):
+By default `<LOCAL CACHE>`  is `<user home>/.eo/`, `<FOREIGN>` is `target/eo/foreign.csv`, `<PLACED>` is `target/eo/placed.csv`.
 
-| Step      | Input | Output |
-|-----------|-------|--------|
- | REGISTER  |       |        |
- | PARSE     |       |        |
- | OPTIMIZE  |       |        |
- | DISCOVER  |       |        |
- | PULL      |       |        |
- | RESOLVE   |       |        |
- | MARK      |       |        |
- | PLACE     |       |        |
- | TRANSPILE |       |        |
- | COPY      |       |        |
- | UNPLACE   |       |        |
- | UNSPILE   |       |        |
+| Step      | Input                                         | Output                                                     | Description                                                     |
+|-----------|-----------------------------------------------|------------------------------------------------------------|-----------------------------------------------------------------|
+ | REGISTER  | `src/main/eo/`                                | target/eo/foreign.csv                                      | Add all found EO sources                                        |
+ | PARSE     | `target/eo/foreign.csv`,<br/>`<LOCAL CACHE>`  | `<FOREIGN>`, `<LOCAL CACHE>/parced`, `target/eo/01-parse/` | parsed to `.xmir` programs are stored to `target/eo/01-parse/`  |
+ | OPTIMIZE  |                                               |                                                            |                                                                 |
+ | DISCOVER  |                                               |                                                            |                                                                 |
+ | PULL      |                                               |                                                            |                                                                 |
+ | RESOLVE   |                                               |                                                            |                                                                 |
+ | MARK      |                                               |                                                            |                                                                 |
+ | PLACE     |                                               |                                                            |                                                                 |
+ | TRANSPILE |                                               |                                                            |                                                                 | 
+ | COPY      |                                               |                                                            |                                                                 | 
+ | UNPLACE   |                                               |                                                            |                                                                 |
+ | UNSPILE   |                                               |                                                            |                                                                 |
 
 There is also a module called `eo-runtime`, which includes both `.eo` and `.java` code
 for most popular and important objects that any of you will need in order
