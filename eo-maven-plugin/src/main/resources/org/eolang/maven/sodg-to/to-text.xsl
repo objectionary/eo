@@ -35,6 +35,7 @@ SOFTWARE.
     </xsl:element>
   </xsl:template>
   <xsl:template match="i[@name='COMMENT']">
+    <xsl:value-of select="$EOL"/>
     <xsl:text># </xsl:text>
     <xsl:value-of select="c"/>
     <xsl:value-of select="$EOL"/>

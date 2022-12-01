@@ -1,8 +1,8 @@
 locators:
-  - .data .f Δ=01-02 .π >float
+  - .data .f Δ=3.1415926 .π >float
   - .data .b Δ=01 .π >bool
   - .data .i Δ=00-00-00-00-00-01-00-00 .π >int
-  - .data .s Δ=00-01-01 .π >string
+  - .data .s Δ=друг .π >string
 eo: |
   [] > data
     3.1415926 > f
