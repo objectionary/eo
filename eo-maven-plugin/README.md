@@ -106,6 +106,23 @@ one after another:
     of transformations that do this, they all exist in `.xsl` files.
     The output of this step you can find in the `target/generated-sources` directory.
 
+Let's see what happens to the directories with each step. More about these phases is written ih this [post](https://www.yegor256.com/2021/10/21/objectionary.html):
+
+| Step      | Input | Output |
+|-----------|-------|--------|
+ | REGISTER  |       |        |
+ | PARSE     |       |        |
+ | OPTIMIZE  |       |        |
+ | DISCOVER  |       |        |
+ | PULL      |       |        |
+ | RESOLVE   |       |        |
+ | MARK      |       |        |
+ | PLACE     |       |        |
+ | TRANSPILE |       |        |
+ | COPY      |       |        |
+ | UNPLACE   |       |        |
+ | UNSPILE   |       |        |
+
 There is also a module called `eo-runtime`, which includes both `.eo` and `.java` code
 for most popular and important objects that any of you will need in order
 to write even a simple EO program. There are objects like `string`, `int`, `sprintf`,
