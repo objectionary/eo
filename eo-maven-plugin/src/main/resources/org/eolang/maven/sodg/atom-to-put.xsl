@@ -22,33 +22,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-lost-edges" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="atom-to-put" version="2.0">
   <!--
-  Here we go through all edges and confirm that they have
-  relative vertices. We don't want to have an edge that departures
-  from a vertex but doesn't arrive anywhere.
+  Here we attach atoms to vertices using ATOM instruction.
   -->
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/graph/v/e">
-    <xsl:variable name="e" select="."/>
-    <xsl:if test="not(/graph/v[@id=$e/@to])">
-      <xsl:message terminate="yes">
-        <xsl:text>The edge </xsl:text>
-        <xsl:value-of select="$e/@id"/>
-        <xsl:text> departs from </xsl:text>
-        <xsl:value-of select="$e/parent::v/@id"/>
-        <xsl:text> and points to the vertex </xsl:text>
-        <xsl:value-of select="$e/@to"/>
-        <xsl:text>; however the target vertex doesn't exist in the graph</xsl:text>
-      </xsl:message>
-    </xsl:if>
+  <xsl:template match="/program/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@name and @atom and not(@base)]" mode="sodg" priority="1">
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'PUT'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="substring-after(@loc, '.')"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is an atom returning "</xsl:text>
+        <xsl:value-of select="@atom"/>
+        <xsl:text>"</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  <xsl:template match="o" mode="sodg">
+    <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="node()|@*" mode="#current"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

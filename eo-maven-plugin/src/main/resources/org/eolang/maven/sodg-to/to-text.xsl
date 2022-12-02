@@ -22,32 +22,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="strip" version="2.0">
-  <!--
-  Currently each <a/> element starts with either "edge:", or "vertex:",
-  or "text:", or "data:". Here, we strip the prefixes.
-  -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="to-text" version="2.0">
+  <xsl:include href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/gmi/i/a">
-    <xsl:copy>
-      <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
-      <xsl:variable name="body" select="replace(., '^[a-z]+:', '')"/>
-      <xsl:attribute name="prefix" select="$prefix"/>
-      <xsl:choose>
-        <xsl:when test="$prefix = 'vertex'">
-          <xsl:text>ν</xsl:text>
-        </xsl:when>
-        <xsl:when test="$prefix = 'edge'">
-          <xsl:text>ε</xsl:text>
-        </xsl:when>
-      </xsl:choose>
-      <xsl:value-of select="$body"/>
-    </xsl:copy>
+  <xsl:variable name="EOL">
+    <xsl:value-of select="'&#10;'"/>
+  </xsl:variable>
+  <xsl:template match="/sodg">
+    <xsl:element name="text">
+      <xsl:call-template name="license-text"/>
+      <xsl:apply-templates select="i"/>
+    </xsl:element>
   </xsl:template>
-  <xsl:template match="node()|@*" mode="#default">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
+  <xsl:template match="i[@name='COMMENT']">
+    <xsl:value-of select="$EOL"/>
+    <xsl:text># </xsl:text>
+    <xsl:value-of select="c"/>
+    <xsl:value-of select="$EOL"/>
+  </xsl:template>
+  <xsl:template match="i[@name!='COMMENT']">
+    <xsl:value-of select="@name"/>
+    <xsl:text>(</xsl:text>
+    <xsl:for-each select="a">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:text>);</xsl:text>
+    <xsl:if test="c">
+      <xsl:text> # </xsl:text>
+      <xsl:value-of select="c"/>
+    </xsl:if>
+    <xsl:value-of select="$EOL"/>
   </xsl:template>
 </xsl:stylesheet>

@@ -22,33 +22,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="rename" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-lost-edges" version="2.0">
   <!--
-  This one renames all <a/> elements that contain edges. Each element
-  currently starts with either "edge:", or "vertex:", or "text:", or "data:".
-  We rename the elements that start with "edge:", giving them new numbers.
+  Here we go through all edges and confirm that they have
+  relative vertices. We don't want to have an edge that departures
+  from a vertex but doesn't arrive anywhere.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="sorted">
-    <xsl:perform-sort select="/gmi/i/a[starts-with(., 'edge:') or starts-with(., 'vertex:') and . != 'vertex:0']">
-      <xsl:sort select="."/>
-    </xsl:perform-sort>
-  </xsl:variable>
-  <xsl:template match="/gmi/i/a[matches(., '[a-z]+:.*') and . != 'vertex:0']">
-    <xsl:variable name="a" select="."/>
-    <xsl:variable name="prefix" select="tokenize(., ':')[1]"/>
+  <xsl:template match="/graph/v/e">
+    <xsl:variable name="e" select="."/>
+    <xsl:if test="not(/graph/v[@id=$e/@to])">
+      <xsl:message terminate="yes">
+        <xsl:text>The edge departs from '</xsl:text>
+        <xsl:value-of select="$e/parent::v/@id"/>
+        <xsl:text>' and points to the vertex '</xsl:text>
+        <xsl:value-of select="$e/@to"/>
+        <xsl:text>'; however the target vertex doesn't exist in the graph</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:copy>
-      <xsl:choose>
-        <xsl:when test="$prefix = 'edge' or $prefix = 'vertex'">
-          <xsl:value-of select="$prefix"/>
-          <xsl:text>:</xsl:text>
-          <xsl:value-of select="index-of(distinct-values($sorted/a), $a)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="."/>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

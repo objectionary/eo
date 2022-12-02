@@ -1,0 +1,13 @@
+skip: true
+locators:
+  - .test
+  - .org .eolang .int
+  - .arrays .z .α0 .π >test
+  - .arrays .z .α1 .α0 Δ=2A .π >int
+  - .arrays .z .α1 .α1 Δ=2B .π >int
+eo: |
+  [] > arrays
+    * > z
+      test
+      * 42 43
+
