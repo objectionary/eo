@@ -22,22 +22,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="R0" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="focus" version="2.0">
   <!--
-  Here we start the graph, creating a new XML element "gmi" under "program".
-  All further XSL transformations will work with "i" elements inside
-  this "gmi" one.
+  Here we remove everything from the document, except the "sodg"
+  node, making it the root one.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="program[not(gmi)]">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:element name="gmi">
-        <xsl:attribute name="time" select="@time"/>
-        <xsl:attribute name="version" select="@version"/>
-      </xsl:element>
-    </xsl:copy>
+  <xsl:template match="/">
+    <xsl:copy-of select="program/sodg"/>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

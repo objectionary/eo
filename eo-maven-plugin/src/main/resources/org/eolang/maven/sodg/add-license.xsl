@@ -22,18 +22,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="variability" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-license" version="2.0">
   <!--
-  For each element <a/> that has vertex or edge absolute numbers
-  we add a dollar sign, to indicate that it's a variable.
+  Here we add a license.
   -->
-  <xsl:import href="/org/eolang/maven/gmi/_macros.xsl"/>
+  <xsl:import href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/gmi/i/a[. != 'ν0' and @prefix = 'vertex' or @prefix = 'edge']">
+  <xsl:template match="sodg">
+    <xsl:call-template name="license-xml"/>
     <xsl:copy>
-      <xsl:apply-templates select="node() except text()|@*"/>
-      <xsl:text>$</xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

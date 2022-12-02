@@ -31,12 +31,16 @@ import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StLambda;
+import com.yegor256.xsline.StBefore;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.TrMapped;
 import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -46,6 +50,8 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -59,45 +65,52 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Convert XMIR to GMI.
+ * Convert XMIR to SODG.
+ *
+ * SODG (Surging Object DiGraph) is our own format of graph representation.
+ * It essentially is a text file that consists of instructions for a virtual
+ * machine that is capable of parsing them and building a graph. An example
+ * of such a machine can be found in
+ * <a href="https://github.com/objectionary/sodg">this repository</a>. When the
+ * graph is built by the virtual machine, it must be possible to execute
+ * a program using graph traversing algorithm. An example of such an executor
+ * of a graph can be found in
+ * <a href="https://github.com/objectionary/reo">this repository</a>.
  *
  * @since 0.27
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @Mojo(
-    name = "gmi",
+    name = "sodg",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class GmiMojo extends SafeMojo {
+public final class SodgMojo extends SafeMojo {
 
     /**
-     * The directory where to save GMI to.
+     * The directory where to save SODG to.
      */
-    public static final String DIR = "gmi";
+    public static final String DIR = "sodg";
 
     /**
-     * GMI to text.
+     * SODG to text.
      */
     private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
-            new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/to-text.xsl"
+            "/org/eolang/maven/sodg-to/to-text.xsl"
         ).back(),
-        GmiMojo.class
+        SodgMojo.class
     );
 
     /**
-     * GMI to Xembly.
+     * SODG to Xembly.
      */
     private static final Train<Shift> TO_XEMBLY = new TrFast(
         new TrDefault<Shift>().with(
@@ -106,7 +119,7 @@ public final class GmiMojo extends SafeMojo {
                     new UncheckedText(
                         new TextOf(
                             new ResourceOf(
-                                "org/eolang/maven/gmi-to/to-xembly.xsl"
+                                "org/eolang/maven/sodg-to/to-xembly.xsl"
                             )
                         )
                     ).asString(),
@@ -114,7 +127,7 @@ public final class GmiMojo extends SafeMojo {
                 ).with("testing", "no")
             )
         ),
-        GmiMojo.class
+        SodgMojo.class
     );
 
     /**
@@ -122,58 +135,65 @@ public final class GmiMojo extends SafeMojo {
      */
     private static final Train<Shift> TO_DOT = new TrFast(
         new TrClasspath<>(
-            new TrDefault<>(),
-            "/org/eolang/maven/gmi-to/catch-lost-edges.xsl",
-            "/org/eolang/maven/gmi-to/catch-duplicate-edges.xsl",
-            "/org/eolang/maven/gmi-to/to-dot.xsl"
+            "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+            "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+            "/org/eolang/maven/sodg-to/catch-empty-edges.xsl",
+            "/org/eolang/maven/sodg-to/to-dot.xsl"
         ).back(),
-        GmiMojo.class
+        SodgMojo.class
     );
 
     /**
-     * The train that generates GMI.
+     * The train that generates SODG.
      */
     private static final Train<Shift> TRAIN = new TrWith(
         new TrFast(
-            new TrClasspath<>(
-                new TrDefault<>(),
-                "/org/eolang/maven/gmi/remove-leveled.xsl",
-                "/org/eolang/maven/gmi/R0.xsl",
-                "/org/eolang/maven/gmi/R1.xsl",
-                "/org/eolang/maven/gmi/R1.1.xsl",
-                "/org/eolang/maven/gmi/R4.xsl",
-                "/org/eolang/maven/gmi/R5.xsl",
-                "/org/eolang/maven/gmi/R6.xsl",
-                "/org/eolang/maven/gmi/R7.xsl",
-                "/org/eolang/maven/gmi/focus.xsl",
-                "/org/eolang/maven/gmi/rename.xsl",
-                "/org/eolang/maven/gmi/strip.xsl",
-                "/org/eolang/maven/gmi/variability.xsl",
-                "/org/eolang/maven/gmi/add-license.xsl"
-            ).back(),
-            GmiMojo.class
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/maven/sodg/pre-clean.xsl",
+                    "/org/eolang/maven/sodg/remove-leveled.xsl"
+                ).back(),
+                new TrLogged(
+                    new TrMapped<>(
+                        (Function<String, Shift>) path -> new StBefore(
+                            new StClasspath(path),
+                            new StClasspath(
+                                "/org/eolang/maven/sodg/before-each.xsl",
+                                String.format("sheet %s", path)
+                            )
+                        ),
+                        "/org/eolang/maven/sodg/add-sodg-root.xsl",
+                        "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
+                        "/org/eolang/maven/sodg/touch.xsl",
+                        "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
+                        "/org/eolang/maven/sodg/pi-copies.xsl",
+                        "/org/eolang/maven/sodg/dots.xsl",
+                        "/org/eolang/maven/sodg/data-to-put.xsl",
+                        "/org/eolang/maven/sodg/atom-to-put.xsl"
+                    ).back(),
+                    SodgMojo.class,
+                    Level.FINEST
+                ),
+                new TrClasspath<>(
+                    "/org/eolang/maven/sodg/focus.xsl",
+                    "/org/eolang/maven/sodg/add-license.xsl"
+                ).back()
+            ),
+            SodgMojo.class
         ),
-        new StLambda(
-            "escape-data",
-            xml -> {
-                final Node dom = xml.node();
-                GmiMojo.escape(dom);
-                return new XMLDocument(dom);
-            }
-        ),
-        new StSchema("/org/eolang/maven/gmi/after.xsd")
+        new StSchema("/org/eolang/maven/sodg/after.xsd")
     );
 
     /**
-     * Shall we generate .xml files with GMIs?
+     * Shall we generate .xml files with SODGs?
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
-        property = "eo.generateGmiXmlFiles",
+        property = "eo.generateSodgXmlFiles",
         defaultValue = "false"
     )
     @SuppressWarnings("PMD.LongVariable")
-    private boolean generateGmiXmlFiles;
+    private boolean generateSodgXmlFiles;
 
     /**
      * Shall we generate .xe files with Xembly instructions graph?
@@ -209,22 +229,22 @@ public final class GmiMojo extends SafeMojo {
     private boolean generateDotFiles;
 
     /**
-     * List of object names to participate in GMI generation.
+     * List of object names to participate in SODG generation.
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
      */
     @Parameter
-    private Set<String> gmiIncludes = new SetOf<>("**");
+    private Set<String> sodgIncludes = new SetOf<>("**");
 
     /**
-     * List of object names which are excluded from GMI generation.
+     * List of object names which are excluded from SODG generation.
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
      */
     @Parameter
-    private Set<String> gmiExcludes = new SetOf<>();
+    private Set<String> sodgExcludes = new SetOf<>();
 
     @Override
     public void exec() throws IOException {
@@ -241,55 +261,55 @@ public final class GmiMojo extends SafeMojo {
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
-        final Path home = this.targetDir.toPath().resolve(GmiMojo.DIR);
+        final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;
-        final Set<Pattern> includes = this.gmiIncludes.stream()
-            .map(i -> Pattern.compile(GmiMojo.createMatcher(i)))
+        final Set<Pattern> includes = this.sodgIncludes.stream()
+            .map(i -> Pattern.compile(SodgMojo.createMatcher(i)))
             .collect(Collectors.toSet());
-        final Set<Pattern> excludes = this.gmiExcludes.stream()
-            .map(i -> Pattern.compile(GmiMojo.createMatcher(i)))
+        final Set<Pattern> excludes = this.sodgExcludes.stream()
+            .map(i -> Pattern.compile(SodgMojo.createMatcher(i)))
             .collect(Collectors.toSet());
         for (final Tojo tojo : tojos) {
             final String name = tojo.get(Tojos.KEY);
             if (this.exclude(name, includes, excludes)) {
                 continue;
             }
-            final Path gmi = new Place(name).make(home, "gmi");
+            final Path sodg = new Place(name).make(home, "sodg");
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-            if (gmi.toFile().lastModified() >= xmir.toFile().lastModified()) {
+            if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
-                    name, new Rel(gmi)
+                    name, new Rel(sodg)
                 );
                 continue;
             }
-            final int extra = this.render(xmir, gmi);
+            final int extra = this.render(xmir, sodg);
             instructions += extra;
-            tojo.set(AssembleMojo.ATTR_GMI, gmi.toAbsolutePath().toString());
+            tojo.set(AssembleMojo.ATTR_SODG, sodg.toAbsolutePath().toString());
             Logger.info(
-                this, "GMI for %s saved to %s (%d instructions)",
-                name, new Rel(gmi), extra
+                this, "SODG for %s saved to %s (%d instructions)",
+                name, new Rel(sodg), extra
             );
             ++total;
         }
         if (total == 0) {
             if (tojos.isEmpty()) {
-                Logger.info(this, "No .xmir need to be converted to GMIs");
+                Logger.info(this, "No .xmir need to be converted to SODGs");
             } else {
-                Logger.info(this, "No .xmir converted to GMIs");
+                Logger.info(this, "No .xmir converted to SODGs");
             }
         } else {
             Logger.info(
-                this, "Converted %d .xmir to GMIs, saved to %s, %d instructions",
+                this, "Converted %d .xmir to SODGs, saved to %s, %d instructions",
                 total, new Rel(home), instructions
             );
         }
     }
 
     /**
-     * Creates a regular expression out of gmiInclude string.
-     * @param pattern String from gmiIncludes
+     * Creates a regular expression out of sodgInclude string.
+     * @param pattern String from sodgIncludes
      * @return Created regular expression
      */
     private static String createMatcher(final String pattern) {
@@ -301,8 +321,8 @@ public final class GmiMojo extends SafeMojo {
     /**
      * Exclude this EO program from processing?
      * @param name The name
-     * @param includes Patterns for gmis to be included
-     * @param excludes Patterns for gmis to be excluded
+     * @param includes Patterns for sodgs to be included
+     * @param excludes Patterns for sodgs to be excluded
      * @return TRUE if to exclude
      */
     private boolean exclude(
@@ -312,55 +332,55 @@ public final class GmiMojo extends SafeMojo {
     ) {
         boolean exclude = false;
         if (includes.stream().noneMatch(p -> p.matcher(name).matches())) {
-            Logger.debug(this, "Excluding %s due to gmiIncludes option", name);
+            Logger.debug(this, "Excluding %s due to sodgIncludes option", name);
             exclude = true;
         }
         if (excludes.stream().anyMatch(p -> p.matcher(name).matches())) {
-            Logger.debug(this, "Excluding %s due to gmiExcludes option", name);
+            Logger.debug(this, "Excluding %s due to sodgExcludes option", name);
             exclude = true;
         }
         return exclude;
     }
 
     /**
-     * Convert XMIR file to GMI.
+     * Convert XMIR file to SODG.
      *
      * @param xmir Location of XMIR
-     * @param gmi Location of GMI
-     * @return Total number of GMI instructions generated
+     * @param sodg Location of SODG
+     * @return Total number of SODG instructions generated
      * @throws IOException If fails
      */
-    private int render(final Path xmir, final Path gmi) throws IOException {
+    private int render(final Path xmir, final Path sodg) throws IOException {
         final XML before = new XMLDocument(xmir);
         if (Logger.isTraceEnabled(this)) {
-            Logger.trace(this, "XML before translating to GMI:\n%s", before);
+            Logger.trace(this, "XML before translating to SODG:\n%s", before);
         }
-        final XML after = new Xsline(GmiMojo.TRAIN).pass(before);
-        final String instructions = new Xsline(GmiMojo.TO_TEXT)
+        final XML after = new Xsline(SodgMojo.TRAIN).pass(before);
+        final String instructions = new Xsline(SodgMojo.TO_TEXT)
             .pass(after)
             .xpath("/text/text()")
             .get(0);
         if (Logger.isTraceEnabled(this)) {
-            Logger.trace(this, "GMIs:\n%s", instructions);
+            Logger.trace(this, "SODGs:\n%s", instructions);
         }
-        new Home(gmi.getParent()).save(instructions, gmi.getParent().relativize(gmi));
-        if (this.generateGmiXmlFiles) {
-            final Path sibling = gmi.resolveSibling(String.format("%s.xml", gmi.getFileName()));
+        new Home(sodg.getParent()).save(instructions, sodg.getParent().relativize(sodg));
+        if (this.generateSodgXmlFiles) {
+            final Path sibling = sodg.resolveSibling(String.format("%s.xml", sodg.getFileName()));
             new Home(sibling.getParent()).save(
                 after.toString(),
                 sibling.getParent().relativize(sibling)
             );
         }
         if (this.generateXemblyFiles) {
-            final String xembly = new Xsline(GmiMojo.TO_XEMBLY)
+            final String xembly = new Xsline(SodgMojo.TO_XEMBLY)
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
-            final Path sibling = gmi.resolveSibling(String.format("%s.xe", gmi.getFileName()));
+            final Path sibling = sodg.resolveSibling(String.format("%s.xe", sodg.getFileName()));
             new Home(sibling.getParent()).save(
                 xembly,
                 sibling.getParent().relativize(sibling)
             );
-            this.makeGraph(xembly, gmi);
+            this.makeGraph(xembly, sodg);
         }
         return instructions.split("\n").length;
     }
@@ -368,15 +388,15 @@ public final class GmiMojo extends SafeMojo {
     /**
      * Make graph.
      * @param xembly The Xembly script
-     * @param gmi The path of GMI file
+     * @param sodg The path of SODG file
      * @throws IOException If fails
      */
-    private void makeGraph(final String xembly, final Path gmi) throws IOException {
+    private void makeGraph(final String xembly, final Path sodg) throws IOException {
         if (this.generateGraphFiles) {
             final Directives all = new Directives(xembly);
             Logger.debug(
                 this, "There are %d Xembly directives for %s",
-                new IoChecked<>(new LengthOf(all)).value(), gmi
+                new IoChecked<>(new LengthOf(all)).value(), sodg
             );
             final ListOf<Directive> directives = new ListOf<>(all);
             final Directive comment = directives.remove(0);
@@ -384,14 +404,11 @@ public final class GmiMojo extends SafeMojo {
                 new Xembler(
                     new Directives()
                         .append(Collections.singleton(comment))
-                        .add("graph")
-                        .add("v")
-                        .attr("id", "ν0")
                         .append(directives)
                 ).domQuietly()
             );
-            final Path sibling = gmi.resolveSibling(
-                String.format("%s.graph.xml", gmi.getFileName())
+            final Path sibling = sodg.resolveSibling(
+                String.format("%s.graph.xml", sodg.getFileName())
             );
             new Home(sibling.getParent()).save(
                 graph.toString(),
@@ -400,54 +417,28 @@ public final class GmiMojo extends SafeMojo {
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Graph:\n%s", graph.toString());
             }
-            this.makeDot(graph, gmi);
+            this.makeDot(graph, sodg);
         }
     }
 
     /**
      * Make graph.
      * @param graph The graph in XML
-     * @param gmi The path of GMI file
+     * @param sodg The path of SODG file
      * @throws IOException If fails
      */
-    private void makeDot(final XML graph, final Path gmi) throws IOException {
+    private void makeDot(final XML graph, final Path sodg) throws IOException {
         if (this.generateDotFiles) {
-            final String dot = new Xsline(GmiMojo.TO_DOT)
+            final String dot = new Xsline(SodgMojo.TO_DOT)
                 .pass(graph).xpath("//dot/text()").get(0);
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Dot:\n%s", dot);
             }
-            final Path sibling = gmi.resolveSibling(String.format("%s.dot", gmi.getFileName()));
+            final Path sibling = sodg.resolveSibling(String.format("%s.dot", sodg.getFileName()));
             new Home(sibling.getParent()).save(
                 dot,
                 sibling.getParent().relativize(sibling)
             );
-        }
-    }
-
-    /**
-     * Escape all texts in all "a" elements.
-     * @param node The node
-     */
-    private static void escape(final Node node) {
-        if ("a".equals(node.getLocalName())
-            && "data".equals(node.getAttributes().getNamedItem("prefix").getTextContent())) {
-            final String text = node.getTextContent();
-            final StringBuilder out = new StringBuilder(text.length());
-            for (final char chr : text.toCharArray()) {
-                if (chr >= ' ' && chr <= '}' && chr != '\'' && chr != '"') {
-                    out.append(chr);
-                } else {
-                    out.append("\\u").append(String.format("%04x", (int) chr));
-                }
-            }
-            node.setTextContent(out.toString());
-        }
-        if (node.hasChildNodes()) {
-            final NodeList kids = node.getChildNodes();
-            for (int idx = 0; idx < kids.getLength(); ++idx) {
-                GmiMojo.escape(kids.item(idx));
-            }
         }
     }
 

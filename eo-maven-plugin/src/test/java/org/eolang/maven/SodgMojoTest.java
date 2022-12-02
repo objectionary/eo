@@ -49,12 +49,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * Test case for {@link OptimizeMojo}.
+ * Test case for {@link SodgMojo}.
  *
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class GmiMojoTest {
+final class SodgMojoTest {
 
     @Test
     @Disabled
@@ -66,10 +66,10 @@ final class GmiMojoTest {
             }
             program.append("[x y z] > foo\n");
         }
-        final XML graph = GmiMojoTest.toGraph(program.toString(), "**");
+        final XML graph = SodgMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
             ".foo .foo",
-            new GmiMojoTest.ExistsIn(graph)
+            new SodgMojoTest.ExistsIn(graph)
         );
     }
 
@@ -80,7 +80,7 @@ final class GmiMojoTest {
         final Map<String, Object> map = new Yaml().load(
             new TextOf(
                 new ResourceOf(
-                    String.format("org/eolang/maven/gmis/%s", pack)
+                    String.format("org/eolang/maven/sodgs/%s", pack)
                 )
             ).asString()
         );
@@ -88,25 +88,30 @@ final class GmiMojoTest {
             map.get("skip") == null,
             String.format("%s is skipped", pack)
         );
-        final Object value = map.get("inclusion");
-        String inclusion = "**";
-        if (value != null) {
-            inclusion = value.toString().substring(1, value.toString().length() - 1);
+        Object inclusion = map.get("inclusion");
+        if (inclusion == null) {
+            inclusion = "**";
+        } else {
+            inclusion = inclusion.toString().substring(
+                1, inclusion.toString().length() - 1
+            );
         }
-        final XML graph = GmiMojoTest.toGraph(map.get("eo").toString(), inclusion);
+        final XML graph = SodgMojoTest.toGraph(
+            map.get("eo").toString(), inclusion.toString()
+        );
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
                     loc,
-                    new GmiMojoTest.ExistsIn(graph)
+                    new SodgMojoTest.ExistsIn(graph)
                 )
             );
         }
         assertions.add(
             () -> MatcherAssert.assertThat(
                 graph,
-                new GmiMojoTest.LicensePresents()
+                new SodgMojoTest.LicensePresents()
             )
         );
         Assertions.assertAll(assertions);
@@ -114,7 +119,7 @@ final class GmiMojoTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Collection<String> yamlPacks() {
-        return GmiMojoTest.yamls("org/eolang/maven/gmis/", "");
+        return SodgMojoTest.yamls("org/eolang/maven/sodgs/", "");
     }
 
     private static Collection<String> yamls(final String path,
@@ -129,7 +134,7 @@ final class GmiMojoTest {
                 out.add(String.format("%s%s", prefix, sub));
             } else {
                 out.addAll(
-                    GmiMojoTest.yamls(
+                    SodgMojoTest.yamls(
                         String.format("%s%s/", path, sub),
                         String.format("%s/", sub)
                     )
@@ -143,7 +148,7 @@ final class GmiMojoTest {
      * Convert EO source to Graph.
      *
      * @param code Code in EO
-     * @param inclusion Value of gmiIncludes property
+     * @param inclusion Value of sodgIncludes property
      * @return The graph
      * @throws IOException If fails
      */
@@ -168,19 +173,19 @@ final class GmiMojoTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
             .execute();
-        new Moja<>(GmiMojo.class)
-            .with("generateGmiXmlFiles", true)
+        new Moja<>(SodgMojo.class)
+            .with("generateSodgXmlFiles", true)
             .with("generateXemblyFiles", true)
             .with("generateGraphFiles", true)
             .with("generateDotFiles", true)
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
-            .with("gmiIncludes", new SetOf<>(inclusion))
+            .with("sodgIncludes", new SetOf<>(inclusion))
             .execute();
         return new XMLDocument(
             target.resolve(
-                String.format("%s/foo/main.gmi.graph.xml", GmiMojo.DIR)
+                String.format("%s/foo/main.sodg.graph.xml", SodgMojo.DIR)
             )
         );
     }
@@ -251,7 +256,7 @@ final class GmiMojoTest {
          * @checkstyle CyclomaticComplexityCheck (10 lines)
          * @checkstyle NPathComplexityCheck (10 lines)
          */
-        @SuppressWarnings("PMD.NPathComplexity")
+        @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
         private void matches(final String item) {
             String vertex = "ν0";
             for (final String sub : item.split(" ")) {
@@ -276,6 +281,20 @@ final class GmiMojoTest {
                     vertex = opts.get(0);
                     continue;
                 }
+                if (sub.charAt(0) == '>') {
+                    final List<XML> inputs = this.graph.nodes(
+                        String.format("/graph/v/e[@to='%s']", vertex)
+                    );
+                    if (inputs.isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no '%s' edge coming into %s",
+                                sub.substring(1), vertex
+                            )
+                        );
+                    }
+                    continue;
+                }
                 if (sub.startsWith("Δ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
@@ -285,7 +304,7 @@ final class GmiMojoTest {
                             )
                         );
                     }
-                    final String data = sub.substring(2).replace('-', ' ');
+                    final String data = sub.substring(2);
                     final boolean matches = !node.xpath(
                         String.format(
                             "data[text() = '%s']/text()", data
@@ -302,7 +321,7 @@ final class GmiMojoTest {
                     continue;
                 }
                 if (sub.startsWith("λ=")) {
-                    if (node.nodes("lambda").isEmpty()) {
+                    if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "There is no lambda (%s) at %s",
@@ -310,18 +329,17 @@ final class GmiMojoTest {
                             )
                         );
                     }
-                    final String expr = sub.substring(2);
-                    final boolean matches = !this.graph.xpath(
+                    final String data = sub.substring(2);
+                    final boolean matches = !node.xpath(
                         String.format(
-                            "/graph/v[@id='%s']/lambda[text() = '%s']/text()",
-                            vertex, expr
+                            "data[text() = '%s']/text()", data
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "Lambda '%s' at '%s' is not equal to '%s'",
-                                node.xpath("lambda/text()").get(0), vertex, expr
+                                node.xpath("data/text()").get(0), vertex, data
                             )
                         );
                     }
@@ -338,6 +356,7 @@ final class GmiMojoTest {
                             )
                         );
                     }
+                    continue;
                 }
                 throw new IllegalArgumentException(
                     String.format(

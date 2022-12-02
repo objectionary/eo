@@ -1,6 +1,6 @@
 locators:
-  - .boom λ=foo.boom
-  - .hello$alpha λ=foo.hello$alpha
+  - .foo .boom λ=foo.boom
+  - .foo .hello$alpha λ=foo.hello$alpha
 eo: |
   +package foo
   

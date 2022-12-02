@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -183,11 +184,11 @@ final class UnplaceMojoTest {
             .execute();
         final Path placed = temp.resolve("placed.csv");
         MatcherAssert.assertThat(
-            Files.readString(placed).contains("false"),
+            new TextOf(placed).asString().contains("false"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            Files.readString(placed).contains("true"),
+            new TextOf(placed).asString().contains("true"),
             Matchers.is(true)
         );
     }
@@ -211,11 +212,11 @@ final class UnplaceMojoTest {
             .execute();
         final Path placed = temp.resolve("placed.csv");
         MatcherAssert.assertThat(
-            Files.readString(placed).contains("false"),
+            new TextOf(placed).asString().contains("false"),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.readString(placed).contains("true"),
+            new TextOf(placed).asString().contains("true"),
             Matchers.is(false)
         );
     }
