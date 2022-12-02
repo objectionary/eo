@@ -61,6 +61,11 @@ public final class FakeMaven {
      */
     private final Map<String, Object> attributes;
 
+    /**
+     * Current program number.
+     * We can save several programs in workspace and each program has it's own number
+     * started from 0.
+     */
     private final AtomicInteger current;
 
     /**
@@ -118,7 +123,7 @@ public final class FakeMaven {
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
-        for (final Tojo tojo : foreign().select(all -> true)) {
+        for (final Tojo tojo : this.foreign().select(all -> true)) {
             for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
                 tojo.set(entry.getKey(), entry.getValue());
             }
@@ -182,25 +187,15 @@ public final class FakeMaven {
     }
 
     /**
-     * Adds eo program to a workspace.
-     * @param content EO program content.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
+     * Suffix for the program name or path.
+     * - main_1.eo
+     * - foo.x.main100
+     * - main.eo
+     * @param index Number of the program.
+     * @return String suffix.
      */
-    private FakeMaven withProgram(final String content) throws IOException {
-        final Path path = Paths.get(String.format("foo/x/main%s.eo", suffix(current.get())));
-        this.workspace.save(content, path);
-        foreign()
-            .add(String.format("foo.x.main%s", suffix(current.get())))
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
-            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
-        current.incrementAndGet();
-        return this;
-    }
-
-    static String suffix(int index) {
-        String suffix;
+    static String suffix(final int index) {
+        final String suffix;
         if (index == 0) {
             suffix = "";
         } else {
@@ -209,4 +204,23 @@ public final class FakeMaven {
         return suffix;
     }
 
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    private FakeMaven withProgram(final String content) throws IOException {
+        final Path path = Paths.get(
+            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
+        );
+        this.workspace.save(content, path);
+        this.foreign()
+            .add(String.format("foo.x.main%s", suffix(this.current.get())))
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
+            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        this.current.incrementAndGet();
+        return this;
+    }
 }

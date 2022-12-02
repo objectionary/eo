@@ -128,7 +128,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Set<Callable<Object>> tasks = new HashSet<>(0);
         final AtomicInteger done = new AtomicInteger(0);
         sources.stream()
-//            .map(SynchronizedTojo::new)
+            .map(SynchronizedTojo::new)
             .forEach(
                 tojo -> {
                     final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));

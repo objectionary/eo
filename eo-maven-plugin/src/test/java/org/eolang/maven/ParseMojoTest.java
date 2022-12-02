@@ -26,7 +26,6 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.stream.IntStream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -129,21 +128,32 @@ final class ParseMojoTest {
         );
     }
 
+    /**
+     * The test with high number of eo programs reveals concurrency problems of the ParseMojo.
+     * Since other tests works only with single program - it's hard to find concurrency mistakes.
+     * @param temp Test directory.
+     * @throws IOException If problem with filesystem happened.
+     */
     @Test
     void parsesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
-        FakeMaven maven = new FakeMaven(temp);
+        final FakeMaven maven = new FakeMaven(temp);
         final int total = 50;
-        for (int program = 0; program < total; program++) {
-            maven.withProgram("+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n");
+        for (int program = 0; program < total; ++program) {
+            maven.withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print"
+            );
         }
         final Map<String, Path> res = maven.execute(ParseMojo.class).result();
-        for (int i = 0; i < total; i++) {
-            MatcherAssert.assertThat(res,
+        for (int program = 0; program < total; ++program) {
+            MatcherAssert.assertThat(
+                res,
                 Matchers.hasKey(
                     String.format(
                         "target/%s/foo/x/main%s.%s",
                         ParseMojo.DIR,
-                        FakeMaven.suffix(i),
+                        FakeMaven.suffix(program),
                         TranspileMojo.EXT
                     ))
             );

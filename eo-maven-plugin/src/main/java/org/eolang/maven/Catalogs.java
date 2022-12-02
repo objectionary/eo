@@ -30,7 +30,6 @@ import com.yegor256.tojos.MnSticky;
 import com.yegor256.tojos.Mono;
 import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
-import com.yegor256.tojos.TjSynchronized;
 import com.yegor256.tojos.Tojos;
 import java.nio.file.Path;
 import java.util.Locale;
@@ -129,7 +128,6 @@ public final class Catalogs {
         } else {
             mono = new MnPostponed(mono, 500L);
         }
-//        return new TjSynchronized(new TjCached(new TjDefault(mono)));
         return new TjCached(new TjDefault(mono));
     }
 

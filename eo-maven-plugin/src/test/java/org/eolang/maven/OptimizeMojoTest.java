@@ -31,6 +31,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -49,7 +50,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class OptimizeMojoTest {
 
     @Test
@@ -191,6 +192,42 @@ final class OptimizeMojoTest {
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             )
         );
+    }
+
+    /**
+     * The test with high number of eo programs reveals concurrency problems of the OptimizeMojo.
+     * Since other tests works only with single program - it's hard to find concurrency mistakes.
+     * @param temp Test directory.
+     * @throws java.io.IOException If problem with filesystem happened.
+     */
+    @Test
+    void optimizesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int total = 20;
+        for (int program = 0; program < total; ++program) {
+            maven.withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print"
+            );
+        }
+        final Map<String, Path> res = maven
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .result();
+        for (int program = 0; program < total; ++program) {
+            MatcherAssert.assertThat(
+                res,
+                Matchers.hasKey(
+                    String.format(
+                        "target/%s/foo/x/main%s.%s",
+                        OptimizeMojo.DIR,
+                        FakeMaven.suffix(program),
+                        TranspileMojo.EXT
+                    )
+                )
+            );
+        }
     }
 
     @Test
