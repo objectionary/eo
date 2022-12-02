@@ -29,6 +29,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -39,8 +40,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -60,11 +66,38 @@ public final class ProbeMojo extends SafeMojo {
     /**
      * The Git hash to pull objects from, in objectionary.
      *
-     * @since 0.28.11
+     * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
     private String tag = "master";
+
+    /**
+     * Target directory.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.home")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path outputPath = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
+    /**
+     * Read hashes from local file.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "offlineHashFile")
+    private Path offlineHashFile;
+
+    /**
+     * Return hash by pattern.
+     * -DofflineHash=0.*.*:abc2sd3
+     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "offlineHash")
+    private String offlineHash;
 
     /**
      * The objectionary.
@@ -78,9 +111,23 @@ public final class ProbeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && !row.exists(AssembleMojo.ATTR_PROBED)
         );
-        final CommitHash hash = new ChCached(new ChRemote(this.tag));
+        final CommitHash hash;
+        if (this.offlineHashFile == null && this.offlineHash == null) {
+            hash = new ChCached(new ChRemote(this.tag));
+        } else if (this.offlineHash == null) {
+            hash = new ChCached(new ChText(this.offlineHashFile, this.tag));
+        } else {
+            hash = new ChCached(new ChPattern(this.offlineHash, this.tag));
+        }
         if (this.objectionary == null) {
-            this.objectionary = new OyRemote(hash);
+            this.objectionary = new OyFallbackSwap(
+                new OyHome(
+                    new ChNarrow(hash),
+                    this.outputPath
+                ),
+                ProbeMojo.remote(hash),
+                this.forceUpdate()
+            );
         }
         final Collection<String> probed = new HashSet<>(1);
         for (final Tojo tojo : tojos) {
@@ -88,7 +135,9 @@ public final class ProbeMojo extends SafeMojo {
             final Collection<String> names = this.probe(src);
             int count = 0;
             for (final String name : names) {
-                if (this.objectionary.get(name).toString().isEmpty()) {
+                if (new UncheckedText(
+                        new TextOf(this.objectionary.get(name))
+                    ).asString().isEmpty()) {
                     continue;
                 }
                 ++count;
@@ -121,7 +170,33 @@ public final class ProbeMojo extends SafeMojo {
     }
 
     /**
-     * Pull all probes found in the provided XML file.
+     * Is force update option enabled.
+     *
+     * @return True if option enabled and false otherwise
+     */
+    private boolean forceUpdate() {
+        return this.session.getRequest().isUpdateSnapshots();
+    }
+
+    /**
+     * Create remote repo.
+     *
+     * @param hash Full Git hash
+     * @return Objectionary
+     */
+    private static Objectionary remote(final CommitHash hash) {
+        Objectionary obj;
+        try {
+            InetAddress.getByName("home.objectionary.com").isReachable(1000);
+            obj = new OyRemote(hash);
+        } catch (final IOException ex) {
+            obj = new OyEmpty();
+        }
+        return obj;
+    }
+
+    /**
+     * Find all probes found in the provided XML file.
      *
      * @param file The .xmir file
      * @return List of foreign objects found

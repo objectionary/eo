@@ -31,12 +31,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.Input;
-import org.cactoos.io.ResourceOf;
+import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link ProbeMojo}.
@@ -50,25 +49,27 @@ final class ProbeMojoTest {
      */
     private static final String EO_FOREIGN = "eo-foreign.json";
 
-    @ParameterizedTest
-    @CsvSource({
-        "org/eolang/maven/mess.eo, 4",
-        "org/eolang/maven/sum.eo, 0",
-        "org/eolang/maven/withwarning.eo, 0"
-    })
-    public void executesProbePhaseForCorrectEoPrograms(
-        final String program,
-        final int dependencies,
-        final @TempDir Path temp
-    ) throws IOException {
-        this.saveProgram(temp, new ResourceOf(program));
+    private static final String program = String.join(
+        "\n",
+        "+alias org.eolang.txt.sprintf",
+            "+alias org.eolang.io.stdout",
+            "+package org.eolang.custom\n",
+            "[] > main",
+            "  stdout > @",
+            "    sprintf \"I am %d years old\"",
+            "      plus.",
+            "        1337",
+            "        228"
+    );
+
+    @Test
+    public void executesProbePhase(@TempDir final Path temp) throws IOException {
+        this.saveProgram(temp, new InputOf(ProbeMojoTest.program));
         this.probe(temp);
         final Deque<Map<String, String>> json = this.discoveredJsonEntries(temp);
         final Map<String, String> first = json.removeFirst();
-        System.out.println(first.keySet());
-        System.out.println(first.values());
         MatcherAssert.assertThat(
-            String.valueOf(dependencies),
+            String.valueOf(1),
             Matchers.equalTo(first.get("probed"))
         );
     }
@@ -104,7 +105,17 @@ final class ProbeMojoTest {
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
+            .with("objectionary", this.dummy())
             .execute();
+    }
+
+    /**
+     * Dummy Objectionary.
+     *
+     * @return Dummy Objectionary.
+     */
+    private Objectionary dummy() {
+        return input -> new InputOf(ProbeMojoTest.program);
     }
 
 }

@@ -137,17 +137,23 @@ public final class PullMojo extends SafeMojo {
                 this.forceUpdate()
             );
         }
-        if (!tojos.isEmpty()) {
-            for (final Tojo tojo : tojos) {
-                tojo.set(
-                    AssembleMojo.ATTR_EO,
-                    this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
-                );
-                tojo.set(
-                    AssembleMojo.ATTR_HASH,
-                    new ChNarrow(hash).value()
-                );
+        for (final Tojo tojo : tojos) {
+            tojo.set(
+                AssembleMojo.ATTR_EO,
+                this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
+            );
+            tojo.set(
+                AssembleMojo.ATTR_HASH,
+                new ChNarrow(hash).value()
+            );
+        }
+        if (tojos.isEmpty()) {
+            if (this.scopedTojos().select(row -> true).isEmpty()) {
+                Logger.warn(this, "Nothing to pull, since there are no foreign programs");
+            } else {
+                Logger.info(this, "Nothing to pull, all programs pulled already");
             }
+        } else {
             Logger.info(
                 this, "%d program(s) pulled from %s",
                 tojos.size(), this.objectionary
