@@ -34,26 +34,15 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@name and @atom]" mode="sodg" priority="1">
-    <xsl:variable name="fqn">
-      <xsl:if test="/program/metas/meta[head='package']">
-        <xsl:value-of select="/program/metas/meta[head='package']/tail"/>
-        <xsl:text>.</xsl:text>
-      </xsl:if>
-      <xsl:for-each select="ancestor::o[@abstract and @name]">
-        <xsl:value-of select="@name"/>
-        <xsl:text>.</xsl:text>
-      </xsl:for-each>
-      <xsl:value-of select="@name"/>
-    </xsl:variable>
+  <xsl:template match="o[@name and @atom and not(@base)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ATOM'"/>
+      <xsl:with-param name="name" select="'PUT'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('02-', $fqn)"/>
+          <xsl:value-of select="substring-after(@loc, '.')"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

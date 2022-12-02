@@ -85,11 +85,11 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);
-        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.28.11");
+        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
-            path.resolve("eo-runtime-0.28.11.jar").toFile(),
-            FileMatchers.anExistingFile()
+            path,
+            new ContainsFile("**/eo-runtime-*.jar")
         );
     }
 

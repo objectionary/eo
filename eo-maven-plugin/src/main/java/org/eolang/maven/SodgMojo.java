@@ -158,14 +158,14 @@ public final class SodgMojo extends SafeMojo {
                             String.format("sheet %s", path)
                         )
                     ),
-                    "/org/eolang/maven/sodg/R0.xsl",
-                    "/org/eolang/maven/sodg/R0.1.xsl",
+                    "/org/eolang/maven/sodg/add-sodg-root.xsl",
+                    "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
                     "/org/eolang/maven/sodg/R1.xsl",
                     "/org/eolang/maven/sodg/R2.xsl",
                     "/org/eolang/maven/sodg/R2.1.xsl",
-                    "/org/eolang/maven/sodg/R3.xsl",
-                    "/org/eolang/maven/sodg/R6.xsl",
-                    "/org/eolang/maven/sodg/R7.xsl"
+                    "/org/eolang/maven/sodg/pi-copies.xsl",
+                    "/org/eolang/maven/sodg/data-to-put.xsl",
+                    "/org/eolang/maven/sodg/atom-to-put.xsl"
                 ).back(),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
