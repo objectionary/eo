@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,6 +61,8 @@ public final class FakeMaven {
      */
     private final Map<String, Object> attributes;
 
+    private final AtomicInteger current;
+
     /**
      * The main constructor.
      *
@@ -69,6 +72,7 @@ public final class FakeMaven {
         this.workspace = new Home(workspace);
         this.params = new HashMap<>();
         this.attributes = new HashMap<>();
+        this.current = new AtomicInteger(0);
     }
 
     /**
@@ -79,7 +83,7 @@ public final class FakeMaven {
      */
     public FakeMaven withProgram(final String... program) throws IOException {
         return this.withProgram(
-            Paths.get("foo/x/main.eo"), String.join("\n", program)
+            Paths.get(currentProgramPath()), String.join("\n", program)
         );
     }
 
@@ -116,12 +120,10 @@ public final class FakeMaven {
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
-        final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
-            .add("foo.x.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
-        for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
-            tojo.set(entry.getKey(), entry.getValue());
+        for (final Tojo tojo : foreign().select(all -> true)) {
+            for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
+                tojo.set(entry.getKey(), entry.getValue());
+            }
         }
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
@@ -190,7 +192,32 @@ public final class FakeMaven {
      */
     private FakeMaven withProgram(final Path path, final String content) throws IOException {
         this.workspace.save(content, path);
-        this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        foreign()
+            .add(currentProgramName())
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
+            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        current.incrementAndGet();
         return this;
+    }
+
+    private String currentProgramPath() {
+        String suffix;
+        if (current.get() == 0) {
+            suffix = "";
+        } else {
+            suffix = String.format("_%d", current.get());
+        }
+        return String.format("foo/x/main%s.eo", suffix);
+    }
+
+    private String currentProgramName() {
+        String suffix;
+        if (current.get() == 0) {
+            suffix = "";
+        } else {
+            suffix = String.format("_%d", current.get());
+        }
+        return String.format("foo.x.main%s", suffix);
     }
 }

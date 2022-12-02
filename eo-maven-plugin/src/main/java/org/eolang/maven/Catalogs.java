@@ -129,7 +129,8 @@ public final class Catalogs {
         } else {
             mono = new MnPostponed(mono, 500L);
         }
-        return new TjSynchronized(new TjCached(new TjDefault(mono)));
+//        return new TjSynchronized(new TjCached(new TjDefault(mono)));
+        return new TjCached(new TjDefault(mono));
     }
 
 }

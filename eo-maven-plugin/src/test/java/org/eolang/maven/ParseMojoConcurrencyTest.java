@@ -48,140 +48,42 @@ class ParseMojoConcurrencyTest {
     private static final int NUMBER_PROGRAMS = 50;
 
     @Test
-    void parsesConcurrently(@TempDir final Path temp) {
-        final Path foreign = new EoForeign(
-            "eo-foreign.csv",
-            IntStream.rangeClosed(1, ParseMojoConcurrencyTest.NUMBER_PROGRAMS).mapToObj(
-                i -> new EoProgram("foo/x/main", i)
-            )
-        ).save(temp);
-        final Path target = temp.resolve("target");
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
-        MatcherAssert.assertThat(this.allProgramsParsed(target), Matchers.is(true));
-        MatcherAssert.assertThat(this.allTojosWrittenToFile(foreign), Matchers.is(true));
+    void parsesConcurrentlyWithNewApi(@TempDir final Path temp) throws IOException {
+        FakeMaven maven = new FakeMaven(temp);
+        for (int i = 0; i < NUMBER_PROGRAMS; i++) {
+            maven.withProgram("+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n");
+        }
+        maven.execute(ParseMojo.class);
+        MatcherAssert.assertThat(this.allProgramsParsed(maven.targetPath()), Matchers.is(true));
+        MatcherAssert.assertThat(this.allTojosWrittenToFile(maven.foreignPath()), Matchers.is(true));
     }
 
     private boolean allProgramsParsed(final Path target) {
-        return IntStream.rangeClosed(1, ParseMojoConcurrencyTest.NUMBER_PROGRAMS)
+        return IntStream.range(0, ParseMojoConcurrencyTest.NUMBER_PROGRAMS)
             .allMatch(
                 i -> Files.exists(
                     target.resolve(
-                        String.format("%s/foo/x/main/%d.%s", ParseMojo.DIR, i, TranspileMojo.EXT)
+                        String.format("%s/foo/x/main%s.%s", ParseMojo.DIR, suffix(i), TranspileMojo.EXT)
                     )
                 )
             );
     }
 
+    private String suffix(int i){
+        if(i == 0){
+            return "";
+        } else {
+            return String.format("_%d", i);
+        }
+    }
+
     private boolean allTojosWrittenToFile(final Path foreign) {
-        return IntStream.rangeClosed(1, ParseMojoConcurrencyTest.NUMBER_PROGRAMS)
+        return IntStream.range(0, ParseMojoConcurrencyTest.NUMBER_PROGRAMS)
             .allMatch(
                 i -> new TjSmart(
                     Catalogs.INSTANCE.make(foreign)
-                ).getById(String.format("foo.x.main.%d", i)).exists("xmir")
+                ).getById(String.format("foo.x.main%s", suffix(i))).exists("xmir")
             );
     }
 
-    /**
-     * Eo foreign file, eo-foreign.json or eo-foreign.csv.
-     *
-     * @since 0.28.11
-     */
-    private static final class EoForeign {
-        /**
-         * File name, for example, eo-foreign.json.
-         */
-        private final String name;
-
-        /**
-         * All eo programs.
-         */
-        private final Stream<EoProgram> programs;
-
-        /**
-         * The main constructor.
-         *
-         * @param name EO foreign file name
-         * @param programs EO programs
-         */
-        private EoForeign(
-            final String name,
-            final Stream<EoProgram> programs
-        ) {
-            this.name = name;
-            this.programs = programs;
-        }
-
-        private Path save(final Path dir) {
-            final Path path = dir.resolve(this.name);
-            final Tojos tojos = Catalogs.INSTANCE.make(path);
-            this.programs.forEach(
-                program -> tojos.add(program.packageName())
-                    .set(AssembleMojo.ATTR_SCOPE, "compile")
-                    .set(AssembleMojo.ATTR_EO, program.save(dir).toString())
-            );
-            return path;
-        }
-    }
-
-    /**
-     * EO program.
-     *
-     * @since 0.28.11
-     */
-    private static final class EoProgram {
-
-        /**
-         * Eo program number in test.
-         */
-        private final int number;
-
-        /**
-         * Eo program name with path.
-         */
-        private final String name;
-
-        /**
-         * The main constructor.
-         *
-         * @param name Name of EO program
-         * @param number EO program number
-         */
-        private EoProgram(
-            final String name,
-            final int number
-        ) {
-            this.name = name;
-            this.number = number;
-        }
-
-        private String packageName() {
-            return String.format(
-                "%s.%d",
-                this.name.replace("/", "."),
-                this.number
-            );
-        }
-
-        private Path save(final Path dir) {
-            try {
-                final Path src = dir.resolve(String.format("%s_%d.eo", this.name, this.number));
-                new Home().save(this.programText(), src);
-                return src;
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format("EoProgram #%d can't be saved into %s", this.number, dir),
-                    ex
-                );
-            }
-        }
-
-        private String programText() {
-            return "+package f\n\n[args] > main\n  (stdout \"Hello!\").print\n";
-        }
-    }
 }
