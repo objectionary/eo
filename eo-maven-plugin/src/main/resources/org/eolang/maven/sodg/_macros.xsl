@@ -64,6 +64,21 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
+  <xsl:function name="eo:parent-of-loc" as="xs:string">
+    <xsl:param name="loc" as="xs:string"/>
+    <xsl:variable name="ret">
+      <xsl:variable name="parts" select="tokenize($loc, '\.')"/>
+      <xsl:for-each select="$parts">
+        <xsl:if test="position() != last()">
+          <xsl:if test="position() &gt; 1">
+            <xsl:text>.</xsl:text>
+          </xsl:if>
+          <xsl:value-of select="."/>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:value-of select="$ret"/>
+  </xsl:function>
   <xsl:function name="eo:var" as="xs:string">
     <xsl:param name="v" as="xs:string"/>
     <xsl:variable name="ret">

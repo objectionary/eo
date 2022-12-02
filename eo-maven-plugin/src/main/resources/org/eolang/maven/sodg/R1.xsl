@@ -24,11 +24,9 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R1" version="2.0">
   <!--
-  Here we find all objects that have @base attributes that don't
-  start with a dot. Then we make sure their bases exist in the graph
-  and are bound to the root. We ignore those @base attributes
-  that are already visible in @name attributes in some objects in the
-  graph.
+  Here we find all objects that have @loc attributes (basically, all objects).
+  Then we make sure their vertices exist in the graph
+  and are bound to their parents.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -56,48 +54,50 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <xsl:template match="o[@base and not(starts-with(@base, '.'))]" mode="sodg" priority="1">
-    <xsl:variable name="o" select="."/>
-    <xsl:variable name="loc" select="eo:base-to-loc(/program, @base)"/>
-    <xsl:if test="not(//o[@name=$o/@base])">
-      <xsl:for-each select="tokenize($loc, '\.')">
-        <xsl:variable name="p" select="position()"/>
-        <xsl:if test="$p &gt; 1">
-          <xsl:variable name="kid">
-            <xsl:for-each select="tokenize($loc, '\.')">
-              <xsl:if test="position() &lt;= $p">
-                <xsl:if test="position() &gt; 1">
-                  <xsl:text>.</xsl:text>
-                </xsl:if>
-                <xsl:value-of select="."/>
-              </xsl:if>
-            </xsl:for-each>
-          </xsl:variable>
-          <xsl:if test="not($o/preceding::o[not(starts-with(@base, '.')) and starts-with(concat(eo:base-to-loc(/program, @base), '.'), concat($kid, '.'))])">
-            <xsl:call-template name="add">
-              <xsl:with-param name="loc" select="$kid"/>
-              <xsl:with-param name="full" select="$loc"/>
-            </xsl:call-template>
-          </xsl:if>
-        </xsl:if>
-      </xsl:for-each>
+  <xsl:template match="o" mode="sodg" priority="1">
+    <xsl:call-template name="touch">
+      <xsl:with-param name="o" select="."/>
+      <xsl:with-param name="loc" select="@loc"/>
+    </xsl:call-template>
+    <xsl:if test="@base">
+      <xsl:variable name="b-loc" select="eo:base-to-loc(/program, @base)"/>
+      <xsl:if test="$b-loc != @loc">
+        <xsl:call-template name="touch">
+          <xsl:with-param name="o" select="."/>
+          <xsl:with-param name="loc" select="$b-loc"/>
+        </xsl:call-template>
+      </xsl:if>
     </xsl:if>
+  </xsl:template>
+  <xsl:template name="touch">
+    <xsl:param name="o"/>
+    <xsl:param name="loc"/>
+    <xsl:for-each select="tokenize($loc, '\.')">
+      <xsl:variable name="p" select="position()"/>
+      <xsl:if test="$p &gt; 1">
+        <xsl:variable name="kid">
+          <xsl:for-each select="tokenize($loc, '\.')">
+            <xsl:if test="position() &lt;= $p">
+              <xsl:if test="position() &gt; 1">
+                <xsl:text>.</xsl:text>
+              </xsl:if>
+              <xsl:value-of select="."/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:if test="not($o/(preceding::o | ancestor::o)[starts-with(concat(@loc, '.'), concat($kid, '.')) or (@base and starts-with(concat(eo:base-to-loc(/program, @base), '.'), concat($kid, '.')))])">
+          <xsl:call-template name="add">
+            <xsl:with-param name="loc" select="$kid"/>
+            <xsl:with-param name="full" select="$o/@loc"/>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template name="add">
     <xsl:param name="loc"/>
     <xsl:param name="full"/>
-    <xsl:variable name="parts" select="tokenize($loc, '\.')"/>
-    <xsl:variable name="k" select="$parts[count($parts)]"/>
-    <xsl:variable name="parent">
-      <xsl:for-each select="$parts">
-        <xsl:if test="position() != last()">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>.</xsl:text>
-          </xsl:if>
-          <xsl:value-of select="."/>
-        </xsl:if>
-      </xsl:for-each>
-    </xsl:variable>
+    <xsl:variable name="parent" select="eo:parent-of-loc($loc)"/>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'ADD'"/>
       <xsl:with-param name="args" as="item()*">
@@ -115,6 +115,8 @@ SOFTWARE.
         <xsl:text>' has not been seen</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
+    <xsl:variable name="parts" select="tokenize($loc, '\.')"/>
+    <xsl:variable name="k" select="$parts[count($parts)]"/>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">

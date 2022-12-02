@@ -22,10 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R2.1" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="R2" version="2.0">
   <!--
-  Here we BIND attributes of objects to other objects, not
-  making copies of them.
+  Here we BIND all object formations to their parents using \rho and \sigma.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -35,22 +34,40 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(o) and not(@data)]" mode="sodg" priority="1">
+  <xsl:template match="o[not(starts-with(@base, '.')) and (o or @data)]" mode="sodg" priority="1">
+    <xsl:variable name="parent" select="eo:parent-of-loc(@loc)"/>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:var(ancestor::*[1]/@loc)"/>
+          <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:var(eo:base-to-loc(/program, @base))"/>
+          <xsl:value-of select="eo:var($parent)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:attr(eo:alpha(.))"/>
+          <xsl:text>ρ</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>Link to existing object</xsl:text>
+        <xsl:text>\rho</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($parent)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>σ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>\sigma</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

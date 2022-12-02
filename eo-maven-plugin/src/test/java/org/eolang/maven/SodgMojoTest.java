@@ -304,7 +304,7 @@ final class SodgMojoTest {
                             )
                         );
                     }
-                    final String data = sub.substring(2).replace('-', ' ');
+                    final String data = sub.substring(2);
                     final boolean matches = !node.xpath(
                         String.format(
                             "data[text() = '%s']/text()", data
@@ -314,6 +314,31 @@ final class SodgMojoTest {
                         throw new IllegalArgumentException(
                             String.format(
                                 "Data '%s' at '%s' is not equal to '%s'",
+                                node.xpath("data/text()").get(0), vertex, data
+                            )
+                        );
+                    }
+                    continue;
+                }
+                if (sub.startsWith("λ=")) {
+                    if (node.nodes("data").isEmpty()) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "There is no lambda (%s) at %s",
+                                sub, vertex
+                            )
+                        );
+                    }
+                    final String data = sub.substring(2);
+                    final boolean matches = !node.xpath(
+                        String.format(
+                            "data[text() = '%s']/text()", data
+                        )
+                    ).isEmpty();
+                    if (!matches) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "Lambda '%s' at '%s' is not equal to '%s'",
                                 node.xpath("data/text()").get(0), vertex, data
                             )
                         );

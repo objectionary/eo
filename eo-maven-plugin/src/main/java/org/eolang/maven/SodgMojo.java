@@ -39,6 +39,7 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.TrMapped;
 import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
@@ -148,25 +149,28 @@ public final class SodgMojo extends SafeMojo {
         new TrFast(
             new TrJoined<>(
                 new TrClasspath<>(
+                    "/org/eolang/maven/sodg/pre-clean.xsl",
                     "/org/eolang/maven/sodg/remove-leveled.xsl"
                 ).back(),
-                new TrMapped<>(
-                    (Function<String, Shift>) path -> new StBefore(
-                        new StClasspath(path),
-                        new StClasspath(
-                            "/org/eolang/maven/sodg/before-each.xsl",
-                            String.format("sheet %s", path)
-                        )
-                    ),
-                    "/org/eolang/maven/sodg/add-sodg-root.xsl",
-                    "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
-                    "/org/eolang/maven/sodg/R1.xsl",
-                    "/org/eolang/maven/sodg/R2.xsl",
-                    "/org/eolang/maven/sodg/R2.1.xsl",
-                    "/org/eolang/maven/sodg/pi-copies.xsl",
-                    "/org/eolang/maven/sodg/data-to-put.xsl",
-                    "/org/eolang/maven/sodg/atom-to-put.xsl"
-                ).back(),
+                new TrLogged(
+                    new TrMapped<>(
+                        (Function<String, Shift>) path -> new StBefore(
+                            new StClasspath(path),
+                            new StClasspath(
+                                "/org/eolang/maven/sodg/before-each.xsl",
+                                String.format("sheet %s", path)
+                            )
+                        ),
+                        "/org/eolang/maven/sodg/add-sodg-root.xsl",
+                        "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
+                        "/org/eolang/maven/sodg/R1.xsl",
+                        "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
+                        "/org/eolang/maven/sodg/pi-copies.xsl",
+                        "/org/eolang/maven/sodg/data-to-put.xsl",
+                        "/org/eolang/maven/sodg/atom-to-put.xsl"
+                    ).back(),
+                    SodgMojo.class
+                ),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
                     "/org/eolang/maven/sodg/add-license.xsl"
