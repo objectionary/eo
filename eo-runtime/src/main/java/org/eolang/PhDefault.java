@@ -104,18 +104,13 @@ public abstract class PhDefault implements Phi, Cloneable {
      *
      * @param sigma Sigma
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
         this.order = new ArrayList<>(0);
-        this.attrs = new AtsExtended(
-            "ρ",
-            new AtSimple(sigma),
-            new AtsExtended(
-                "σ",
-                new AtFixed(new AtSimple(sigma)),
-                new HashMap<>(0)
-            ).get()
-        ).get();
+        this.attrs = new HashMap<>(0);
+        this.add("ρ", new AtSimple(sigma));
+        this.add("σ", new AtFixed(new AtSimple(sigma)));
     }
 
     @Override
