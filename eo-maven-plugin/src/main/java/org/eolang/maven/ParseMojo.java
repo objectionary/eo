@@ -115,7 +115,7 @@ public final class ParseMojo extends SafeMojo {
         final Set<Callable<Object>> tasks = new HashSet<>(0);
         final AtomicInteger total = new AtomicInteger(0);
         tojos.stream()
-            .map(SynchronizedTojo::new)
+//            .map(SynchronizedTojo::new)
             .forEach(
                 tojo -> {
                     if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
