@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -170,7 +171,8 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/data-to-put.xsl",
                         "/org/eolang/maven/sodg/atom-to-put.xsl"
                     ).back(),
-                    SodgMojo.class
+                    SodgMojo.class,
+                    Level.FINEST
                 ),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",

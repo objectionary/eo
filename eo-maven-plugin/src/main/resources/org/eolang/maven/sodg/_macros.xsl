@@ -55,6 +55,9 @@ SOFTWARE.
           <xsl:value-of select="eo:base-to-loc($o/o[1])"/>
           <xsl:value-of select="$o/@base"/>
         </xsl:when>
+        <xsl:when test="$o/@base = 'Q'">
+          <xsl:text>Φ</xsl:text>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:text>Φ.</xsl:text>
           <xsl:if test="not(contains($o/@base, '.')) and $program/metas/meta[head='package']">

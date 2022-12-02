@@ -256,9 +256,9 @@ final class SodgMojoTest {
          * @checkstyle CyclomaticComplexityCheck (10 lines)
          * @checkstyle NPathComplexityCheck (10 lines)
          */
-        @SuppressWarnings("PMD.NPathComplexity")
+        @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
         private void matches(final String item) {
-                String vertex = "ν0";
+            String vertex = "ν0";
             for (final String sub : item.split(" ")) {
                 final XML node = this.graph.nodes(
                     String.format("/graph/v[@id='%s']", vertex)
