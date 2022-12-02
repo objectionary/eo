@@ -142,11 +142,11 @@ htail
   :
   (
     SPACE
-    head
-    |
-    SPACE
     application
     method
+    |
+    SPACE
+    head
     |
     SPACE
     scope

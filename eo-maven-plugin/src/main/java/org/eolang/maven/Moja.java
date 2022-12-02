@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -114,9 +116,7 @@ public final class Moja<T extends AbstractMojo> {
         try {
             final AbstractMojo mojo = this.type.getConstructor().newInstance();
             for (final Map.Entry<String, Object> ent : this.attrs.entrySet()) {
-                final Field field = this.field(this.type, ent.getKey());
-                field.setAccessible(true);
-                field.set(mojo, ent.getValue());
+                this.initField(this.type, mojo, ent);
             }
             mojo.execute();
         } catch (final MojoExecutionException | MojoFailureException
@@ -128,7 +128,7 @@ public final class Moja<T extends AbstractMojo> {
 
     @Override
     public String toString() {
-        return String.format("Moja<%s>}", this.type.getSimpleName());
+        return String.format("Moja<%s>", this.type.getSimpleName());
     }
 
     /**
@@ -147,30 +147,42 @@ public final class Moja<T extends AbstractMojo> {
     }
 
     /**
-     * Take a field.
-     * @param mojo The class
-     * @param name Field name
-     * @return Field
+     * Init a field.
+     * @param clazz The mojo class
+     * @param mojo The mojo
+     * @param entry Field name and value
+     * @throws java.lang.IllegalAccessException If can't set field.
+     * @todo #1494:30min We have some doubts about using Logger.warn in initField method.
+     *  Since it's important to notice the developer during of using the plugin that the property
+     *  can't be set to the Mojo, we can't just remove Logger.warn. On the other hand, we will
+     *  see warnings all the time during unit testing, which can be an insignificant problem.
      */
-    private Field field(final Class<?> mojo, final String name) {
-        Field field;
-        try {
-            field = mojo.getDeclaredField(name);
-        } catch (final NoSuchFieldException ex) {
-            final Class<?> parent = mojo.getSuperclass();
+    private void initField(
+        final Class<?> clazz,
+        final AbstractMojo mojo,
+        final Map.Entry<String, Object> entry
+    ) throws IllegalAccessException {
+        final String name = entry.getKey();
+        final Optional<Field> declared = Arrays.stream(clazz.getDeclaredFields())
+            .filter(f -> f.getName().equals(name))
+            .findFirst();
+        if (declared.isPresent()) {
+            final Field field = declared.get();
+            field.setAccessible(true);
+            field.set(mojo, entry.getValue());
+        } else {
+            final Class<?> parent = clazz.getSuperclass();
             if (parent == null) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't find \"%s\" in %s",
-                        name,
-                        this.type.getCanonicalName()
-                    ),
-                    ex
+                Logger.warn(
+                    this,
+                    "Can't find '%s' in '%s'",
+                    name,
+                    mojo.getClass().getCanonicalName()
                 );
+            } else {
+                this.initField(parent, mojo, entry);
             }
-            field = this.field(parent, name);
         }
-        return field;
     }
 
 }

@@ -115,9 +115,7 @@ public final class FakeMaven {
      * @return Workspace after executing Mojo.
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
-    public <T extends AbstractMojo> Map<String, Path> execute(
-        final Class<T> mojo
-    ) throws IOException {
+    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
             .add("foo.x.main")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -133,7 +131,7 @@ public final class FakeMaven {
             moja.with(entry.getKey(), entry.getValue());
         }
         moja.execute();
-        return this.result();
+        return this;
     }
 
     /**
@@ -164,26 +162,13 @@ public final class FakeMaven {
     }
 
     /**
-     * Adds eo program to a workspace.
-     * @param path Relative path where to save EO program
-     * @param content EO program content.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    private FakeMaven withProgram(final Path path, final String content) throws IOException {
-        this.workspace.save(content, path);
-        this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
-        return this;
-    }
-
-    /**
      * Creates of the result map with all files and folders that was created
      *  or compiled during mojo execution.
      *
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
      */
-    private Map<String, Path> result() throws IOException {
+    public Map<String, Path> result() throws IOException {
         final Path root = this.workspace.absolute(Paths.get(""));
         return Files.walk(root).collect(
             Collectors.toMap(
@@ -194,5 +179,18 @@ public final class FakeMaven {
                 Function.identity()
             )
         );
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param path Relative path where to save EO program
+     * @param content EO program content.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    private FakeMaven withProgram(final Path path, final String content) throws IOException {
+        this.workspace.save(content, path);
+        this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        return this;
     }
 }

@@ -30,11 +30,11 @@ import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
+import java.util.logging.Level;
 
 /**
  * Train of XSL shifts.
@@ -100,10 +100,9 @@ public final class ParsingTrain extends TrEnvelope {
             new TrLambda(
                 new TrFast(
                     new TrLogged(
-                        new TrClasspath<>(
-                            new TrDefault<>(),
-                            ParsingTrain.SHEETS
-                        ).back()
+                        new TrClasspath<>(ParsingTrain.SHEETS).back(),
+                        ParsingTrain.class,
+                        Level.FINEST
                     )
                 ),
                 shift -> new StSequence(

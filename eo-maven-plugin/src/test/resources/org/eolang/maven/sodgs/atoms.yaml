@@ -1,0 +1,10 @@
+locators:
+  - .foo .boom λ=foo.boom
+  - .foo .hello$alpha λ=foo.hello$alpha
+eo: |
+  +package foo
+  
+  [] > hello
+    [] > alpha /bool
+
+  [x] > boom /int
