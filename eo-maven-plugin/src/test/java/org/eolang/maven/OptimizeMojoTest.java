@@ -31,9 +31,9 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -54,78 +54,45 @@ final class OptimizeMojoTest {
 
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            temp.relativize(src)
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class);
+        final Path path = maven.result().get(
+            String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
         );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        final Path tgt = target.resolve(
-            String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-        );
-        final long mtime = tgt.toFile().lastModified();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
+        final long mtime = path.toFile().lastModified();
+        maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
-            tgt.toFile().lastModified(),
+            path.toFile().lastModified(),
             Matchers.is(mtime)
         );
     }
 
     @Test
     void optimizesIfExpired(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        final Path tgt = target.resolve(
-            String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-        );
+        final FakeMaven maven = new FakeMaven(temp);
+        final Path tgt = maven
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .result()
+            .get(
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            );
         final long start = System.currentTimeMillis();
-        tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L));
-        src.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(1L));
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
+        if (!tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L))) {
+            Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
+        }
+        maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
             tgt.toFile().lastModified(),
             Matchers.greaterThan(start)
@@ -140,47 +107,36 @@ final class OptimizeMojoTest {
      */
     @Test
     void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        final Path cache = temp.resolve("cache");
         final TextOf cached = new TextOf(
             new ResourceOf("org/eolang/maven/optimize/main.xml")
         );
+        final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new Home(cache).save(
             cached,
             Paths.get(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
-                .resolve("foo/main.xmir")
+                .resolve("foo/x/main.xmir")
         );
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_HASH, hash)
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("trackOptimizationSteps", true)
-            .with("foreignFormat", "json")
+        new FakeMaven(temp)
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
             .with("cache", cache)
-            .execute();
+            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
             new XMLDocument(
-                new Home(target).load(
+                new Home(temp).load(
                     Paths.get(
-                        String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                        String.format(
+                            "target/%s/foo/x/main.%s",
+                            OptimizeMojo.DIR,
+                            TranspileMojo.EXT
+                        )
                     )
                 ).asBytes()
             ),
@@ -190,198 +146,114 @@ final class OptimizeMojoTest {
 
     @Test
     void savesOptimizedResultsToCache(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_HASH, hash)
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("trackOptimizationSteps", true)
-            .with("foreignFormat", "json")
+        new FakeMaven(temp)
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
             .with("cache", cache)
-            .execute();
+            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
             cache.resolve(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
-                .resolve("foo/main.xmir").toFile(),
+                .resolve("foo/x/main.xmir").toFile(),
             FileMatchers.anExistingFile()
         );
     }
 
     @Test
-    void testSimpleOptimize(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            "+package f\n\n[args] > main\n  (stdout \"Hello!\").print > @\n",
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
+    void optimizesSuccessfully(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Map<String, Path> res = maven
+            .withProgram(
+                "+package f",
+                "[args] > main",
+                "  (stdout \"Hello!\").print > @"
+            )
             .with("trackOptimizationSteps", true)
-            .with("foreignFormat", "csv")
-            .execute();
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .result();
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format("%s/foo/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
-                )
-            ),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
+            )
         );
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-                )
-            ),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            )
         );
     }
 
     @Test
     void failsOnErrorFlag(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            String.join(
-                "\n",
-                "+package f",
-                "\n+alias THIS-IS-WRONG org.eolang.io.stdout",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @\n"
-            ),
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("failOnError", false)
-            .execute();
         MatcherAssert.assertThat(
-            Files.notExists(
-                target.resolve(
-                    String.format("%s/foo/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            new FakeMaven(temp)
+                .withProgram(
+                    "+package f",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
+                    "[args] > main",
+                    "  (stdout \"Hello!\").print > @"
                 )
-            ),
-            Matchers.is(true)
+                .with("failOnError", false)
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
+                .result(),
+            Matchers.not(
+                Matchers.hasKey(
+                    String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                )
+            )
         );
     }
 
     @Test
-    void testOptimizedFail(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            String.join(
-                "\n",
-                "+package f",
-                "\n+alias THIS-IS-WRONG org.eolang.io.stdout",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @\n"
-            ),
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
+    void failsOptimization(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(OptimizeMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .execute()
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
+                    "[args] > main",
+                    "  (stdout \"Hello!\").print > @"
+                )
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
         );
     }
 
     @Test
     void stopsOnCritical(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            String.join(
-                "\n",
-                "+package f\n",
-                "[args] > main",
-                "  seq > @",
-                "    TRUE > x",
-                "    FALSE > x\n"
-            ),
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("failOnError", false)
-            .with("trackOptimizationSteps", true)
-            .execute();
         MatcherAssert.assertThat(
             new XMLDocument(
-                target.resolve(
-                    String.format("%s/foo/main/02-duplicate-names.xml", OptimizeMojo.STEPS)
-                )
+                new FakeMaven(temp)
+                    .withProgram(
+                        "+package f",
+                        "[args] > main",
+                        "  seq > @",
+                        "    TRUE > x",
+                        "    FALSE > x"
+                    )
+                    .with("trackOptimizationSteps", true)
+                    .with("failOnError", false)
+                    .execute(ParseMojo.class)
+                    .execute(OptimizeMojo.class)
+                    .result()
+                    .get(
+                        String.format(
+                            "target/%s/foo/x/main/02-duplicate-names.xml",
+                            OptimizeMojo.STEPS
+                        )
+                    )
             ),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)=3]",
@@ -392,73 +264,44 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnCritical(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(
-            String.join(
-                "\n",
-                "+package f\n",
-                "[args] > main",
-                "  seq > @",
-                "    TRUE > x",
-                "    FALSE > x\n"
-            ),
-            src
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.csv");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
+    void failsOnCritical(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(OptimizeMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .execute()
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f",
+                    "[args] > main",
+                    "  seq > @",
+                    "    TRUE > x",
+                    "    FALSE > x"
+                )
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
         );
     }
 
     @Test
-    void testFailOnWarning(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("foo.src.eo");
-        new Home(temp).save(
-            new ResourceOf("org/eolang/maven/withwarning.eo"),
-            temp.relativize(src)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
+    void failsOnWarning(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+architect yegor256@gmail.com",
+                "+junit",
+                "+package org.eolang.examples",
+                "[] > main",
+                "  [] > @",
+                "    hello > test"
+            );
         this.applyXsl(
             "org/eolang/maven/set-warning-severity.xsl",
-            target.resolve("01-parse/foo/src.xmir")
+            maven.execute(ParseMojo.class)
+                .result()
+                .get("target/01-parse/foo/x/main.xmir")
         );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(OptimizeMojo.class)
-                .with("targetDir", target.toFile())
-                .with("foreign", foreign.toFile())
-                .with("foreignFormat", "csv")
-                .with("failOnError", false)
+            () -> maven.with("failOnError", false)
                 .with("failOnWarning", true)
-                .execute()
+                .execute(OptimizeMojo.class)
         );
     }
 

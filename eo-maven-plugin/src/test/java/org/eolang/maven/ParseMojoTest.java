@@ -48,7 +48,8 @@ final class ParseMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
-                .execute(ParseMojo.class),
+                .execute(ParseMojo.class)
+                .result(),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
             )
@@ -89,6 +90,7 @@ final class ParseMojoTest {
                     .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
                     .with("cache", cache)
                     .execute(ParseMojo.class)
+                    .result()
                     .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
             ).toString(),
             Matchers.equalTo(expected)
@@ -114,7 +116,8 @@ final class ParseMojoTest {
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .with("failOnError", false)
-                .execute(ParseMojo.class),
+                .execute(ParseMojo.class)
+                .result(),
             Matchers.not(
                 Matchers.hasKey(
                     String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
