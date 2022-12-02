@@ -47,20 +47,23 @@ SOFTWARE.
     <xsl:value-of select="$ret"/>
   </xsl:function>
   <xsl:function name="eo:base-to-loc" as="xs:string">
-    <xsl:param name="program" as="node()"/>
-    <xsl:param name="base" as="xs:string"/>
-    <xsl:if test="starts-with($base, '.')">
-      <xsl:message terminate="yes">
-        <xsl:text>You can't get a locator from a base that starts with a dot</xsl:text>
-      </xsl:message>
-    </xsl:if>
+    <xsl:param name="o" as="node()"/>
+    <xsl:variable name="program" select="$o/ancestor::objects/ancestor::program"/>
     <xsl:variable name="ret">
-      <xsl:text>Φ.</xsl:text>
-      <xsl:if test="not(contains($base, '.')) and $program/metas/meta[head='package']">
-        <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
-        <xsl:text>.</xsl:text>
-      </xsl:if>
-      <xsl:value-of select="$base"/>
+      <xsl:choose>
+        <xsl:when test="starts-with($o/@base, '.')">
+          <xsl:value-of select="eo:base-to-loc($o/o[1])"/>
+          <xsl:value-of select="$o/@base"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>Φ.</xsl:text>
+          <xsl:if test="not(contains($o/@base, '.')) and $program/metas/meta[head='package']">
+            <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
+            <xsl:text>.</xsl:text>
+          </xsl:if>
+          <xsl:value-of select="$o/@base"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>

@@ -55,12 +55,14 @@ SOFTWARE.
     </xsl:choose>
   </xsl:function>
   <xsl:template match="o" mode="sodg" priority="1">
-    <xsl:call-template name="touch">
-      <xsl:with-param name="o" select="."/>
-      <xsl:with-param name="loc" select="@loc"/>
-    </xsl:call-template>
+    <xsl:if test="not(ends-with(@loc, '.ρ'))">
+      <xsl:call-template name="touch">
+        <xsl:with-param name="o" select="."/>
+        <xsl:with-param name="loc" select="@loc"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:if test="@base">
-      <xsl:variable name="b-loc" select="eo:base-to-loc(/program, @base)"/>
+      <xsl:variable name="b-loc" select="eo:base-to-loc(.)"/>
       <xsl:if test="$b-loc != @loc">
         <xsl:call-template name="touch">
           <xsl:with-param name="o" select="."/>
@@ -85,7 +87,7 @@ SOFTWARE.
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        <xsl:if test="not($o/(preceding::o | ancestor::o)[starts-with(concat(@loc, '.'), concat($kid, '.')) or (@base and starts-with(concat(eo:base-to-loc(/program, @base), '.'), concat($kid, '.')))])">
+        <xsl:if test="not($o/(preceding::o | ancestor::o)[starts-with(concat(@loc, '.'), concat($kid, '.')) or (@base and starts-with(concat(eo:base-to-loc(.), '.'), concat($kid, '.')))])">
           <xsl:call-template name="add">
             <xsl:with-param name="loc" select="$kid"/>
             <xsl:with-param name="full" select="$o/@loc"/>

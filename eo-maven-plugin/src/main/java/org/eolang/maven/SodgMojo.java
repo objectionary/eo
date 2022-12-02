@@ -166,6 +166,7 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/touch.xsl",
                         "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
                         "/org/eolang/maven/sodg/pi-copies.xsl",
+                        "/org/eolang/maven/sodg/dots.xsl",
                         "/org/eolang/maven/sodg/data-to-put.xsl",
                         "/org/eolang/maven/sodg/atom-to-put.xsl"
                     ).back(),
