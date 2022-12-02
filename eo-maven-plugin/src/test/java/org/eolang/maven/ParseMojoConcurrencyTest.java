@@ -63,18 +63,10 @@ class ParseMojoConcurrencyTest {
             .allMatch(
                 i -> Files.exists(
                     target.resolve(
-                        String.format("%s/foo/x/main%s.%s", ParseMojo.DIR, suffix(i), TranspileMojo.EXT)
+                        String.format("%s/foo/x/main%s.%s", ParseMojo.DIR, FakeMaven.suffix(i), TranspileMojo.EXT)
                     )
                 )
             );
-    }
-
-    private String suffix(int i){
-        if(i == 0){
-            return "";
-        } else {
-            return String.format("_%d", i);
-        }
     }
 
     private boolean allTojosWrittenToFile(final Path foreign) {
@@ -82,7 +74,7 @@ class ParseMojoConcurrencyTest {
             .allMatch(
                 i -> new TjSmart(
                     Catalogs.INSTANCE.make(foreign)
-                ).getById(String.format("foo.x.main%s", suffix(i))).exists("xmir")
+                ).getById(String.format("foo.x.main%s", FakeMaven.suffix(i))).exists("xmir")
             );
     }
 

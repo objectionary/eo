@@ -82,9 +82,7 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     public FakeMaven withProgram(final String... program) throws IOException {
-        return this.withProgram(
-            Paths.get(currentProgramPath()), String.join("\n", program)
-        );
+        return this.withProgram(String.join("\n", program));
     }
 
     /**
@@ -185,15 +183,15 @@ public final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
-     * @param path Relative path where to save EO program
      * @param content EO program content.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    private FakeMaven withProgram(final Path path, final String content) throws IOException {
+    private FakeMaven withProgram(final String content) throws IOException {
+        final Path path = Paths.get(String.format("foo/x/main%s.eo", suffix(current.get())));
         this.workspace.save(content, path);
         foreign()
-            .add(currentProgramName())
+            .add(String.format("foo.x.main%s", suffix(current.get())))
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "0.25.0")
             .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
@@ -201,23 +199,14 @@ public final class FakeMaven {
         return this;
     }
 
-    private String currentProgramPath() {
+    static String suffix(int index) {
         String suffix;
-        if (current.get() == 0) {
+        if (index == 0) {
             suffix = "";
         } else {
-            suffix = String.format("_%d", current.get());
+            suffix = String.format("_%d", index);
         }
-        return String.format("foo/x/main%s.eo", suffix);
+        return suffix;
     }
 
-    private String currentProgramName() {
-        String suffix;
-        if (current.get() == 0) {
-            suffix = "";
-        } else {
-            suffix = String.format("_%d", current.get());
-        }
-        return String.format("foo.x.main%s", suffix);
-    }
 }
