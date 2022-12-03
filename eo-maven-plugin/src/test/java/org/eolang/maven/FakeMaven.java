@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
@@ -44,6 +45,7 @@ import org.apache.maven.plugin.AbstractMojo;
  * @since 0.28.12
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@NotThreadSafe
 public final class FakeMaven {
 
     /**
