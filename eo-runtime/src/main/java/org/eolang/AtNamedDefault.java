@@ -51,7 +51,7 @@ public final class AtNamedDefault implements Attr {
             ),
             String.format(
                 "%s.%s",
-                new Oname(phi),
+                new PhDefault.Oname(phi),
                 name
             ),
             phi,

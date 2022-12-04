@@ -317,4 +317,39 @@ public abstract class PhDefault implements Phi, Cloneable {
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
+
+    /**
+     * Object name, as in source code.
+     *
+     * @since 0.28.12
+     */
+    static final class Oname {
+
+        /**
+         * Object to get name.
+         */
+        private final Phi phi;
+
+        /**
+         * Ctor.
+         *
+         * @param phi The phi
+         */
+        Oname(final Phi phi) {
+            this.phi = phi;
+        }
+
+        @Override
+        public String toString() {
+            String txt = this.phi.getClass().getSimpleName();
+            final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
+            if (null != xmir) {
+                txt = xmir.oname();
+                if ("@".equals(txt)) {
+                    txt = "φ";
+                }
+            }
+            return txt;
+        }
+    }
 }
