@@ -42,6 +42,7 @@ import org.apache.maven.plugin.AbstractMojo;
 /**
  * Fake maven workspace that executes Mojos in order to test
  * their behaviour and results.
+ * NOT thread-safe.
  * @since 0.28.12
  */
 @SuppressWarnings("PMD.TooManyMethods")
