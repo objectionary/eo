@@ -34,7 +34,7 @@ SOFTWARE.
   </xsl:variable>
   <xsl:function name="eo:node" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:value-of select="$name"/>
+    <xsl:value-of select="replace($name, '^\$', '')"/>
   </xsl:function>
   <xsl:template match="/*">
     <xsl:copy>
@@ -100,10 +100,10 @@ SOFTWARE.
     <xsl:value-of select="@title"/>
     <xsl:text>"</xsl:text>
     <xsl:choose>
-      <xsl:when test="@title = 'π'">
+      <xsl:when test="starts-with(@title, 'π')">
         <xsl:text>,style=dashed</xsl:text>
       </xsl:when>
-      <xsl:when test="@title = 'ρ' or @title = 'σ'">
+      <xsl:when test="starts-with(@title, 'ρ') or starts-with(@title, 'σ')">
         <xsl:text>,color=gray,fontcolor=gray</xsl:text>
       </xsl:when>
     </xsl:choose>

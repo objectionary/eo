@@ -100,7 +100,7 @@ public final class SodgMojo extends SafeMojo {
     public static final String DIR = "sodg";
 
     /**
-     * SODG to text.
+     * SODG to plain text.
      */
     private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
@@ -131,16 +131,18 @@ public final class SodgMojo extends SafeMojo {
     );
 
     /**
-     * Xembly to Dot.
+     * SODG to Dot.
      */
-    private static final Train<Shift> TO_DOT = new TrFast(
-        new TrClasspath<>(
-            "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
-            "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
-            "/org/eolang/maven/sodg-to/catch-empty-edges.xsl",
-            "/org/eolang/maven/sodg-to/to-dot.xsl"
-        ).back(),
-        SodgMojo.class
+    private static final Train<Shift> TO_DOT = new TrLogged(
+        new TrFast(
+            new TrClasspath<>(
+//                "/org/eolang/maven/sodg-to/normalize-graph-names.xsl",
+                "/org/eolang/maven/sodg-to/to-dot.xsl"
+            ).back(),
+            SodgMojo.class
+        ),
+        SodgMojo.class,
+        Level.FINEST
     );
 
     /**
@@ -170,14 +172,18 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/xi-binds.xsl",
                         "/org/eolang/maven/sodg/connect-dots.xsl",
                         "/org/eolang/maven/sodg/put-data.xsl",
-                        "/org/eolang/maven/sodg/put-atoms.xsl"
+                        "/org/eolang/maven/sodg/put-atoms.xsl",
+                        "/org/eolang/maven/sodg-to/normalize-names.xsl"
                     ).back(),
                     SodgMojo.class,
                     Level.FINEST
                 ),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl"
+                    "/org/eolang/maven/sodg/add-license.xsl",
+                    "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+                    "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+                    "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
                 ).back()
             ),
             SodgMojo.class
