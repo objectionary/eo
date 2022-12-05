@@ -136,7 +136,6 @@ public final class SodgMojo extends SafeMojo {
     private static final Train<Shift> TO_DOT = new TrLogged(
         new TrFast(
             new TrClasspath<>(
-//                "/org/eolang/maven/sodg-to/normalize-graph-names.xsl",
                 "/org/eolang/maven/sodg-to/to-dot.xsl"
             ).back(),
             SodgMojo.class

@@ -59,7 +59,7 @@ SOFTWARE.
       <xsl:with-param name="o" select="."/>
       <xsl:with-param name="loc" select="@loc"/>
     </xsl:call-template>
-    <xsl:if test="@base">
+    <xsl:if test="@base and not(starts-with(@base, '.'))">
       <xsl:variable name="b-loc" select="eo:base-to-loc(.)"/>
       <xsl:if test="$b-loc != @loc">
         <xsl:call-template name="touch">

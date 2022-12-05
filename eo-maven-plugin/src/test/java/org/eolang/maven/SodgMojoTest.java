@@ -261,9 +261,13 @@ final class SodgMojoTest {
         private void matches(final String item) {
             String vertex = "ν0";
             for (final String sub : item.split(" ")) {
+                boolean inverse = false;
                 final XML node = this.graph.nodes(
                     String.format("/graph/v[@id='%s']", vertex)
                 ).get(0);
+                if (sub.charAt(0) == '!') {
+                    inverse = true;
+                }
                 if (sub.charAt(0) == '.') {
                     final List<String> opts = node.xpath(
                         String.format(
@@ -271,7 +275,7 @@ final class SodgMojoTest {
                             sub.substring(1)
                         )
                     );
-                    if (opts.isEmpty()) {
+                    if (opts.isEmpty() && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "Can't find path '%s' while staying at %s",
@@ -279,14 +283,16 @@ final class SodgMojoTest {
                             )
                         );
                     }
-                    vertex = opts.get(0);
+                    if (!inverse) {
+                        vertex = opts.get(0);
+                    }
                     continue;
                 }
                 if (sub.charAt(0) == '>') {
                     final List<XML> inputs = this.graph.nodes(
                         String.format("/graph/v/e[@to='%s']", vertex)
                     );
-                    if (inputs.isEmpty()) {
+                    if (inputs.isEmpty() && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "There is no '%s' edge coming into %s",
@@ -349,7 +355,7 @@ final class SodgMojoTest {
                 if (sub.startsWith("ν=")) {
                     final String expected = sub.substring(2);
                     final boolean matches = vertex.equals(expected);
-                    if (!matches) {
+                    if (!matches && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "Current vertex '%s' is not '%s', as expected",
