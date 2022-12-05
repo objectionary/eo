@@ -37,7 +37,7 @@ final class PacksTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**/*.yaml")
-    void testPacks(final String pack) throws Exception {
+    void parsesPacks(final String pack) throws Exception {
         final CheckPack check = new CheckPack(pack);
         if (check.skip()) {
             Assumptions.abort(
