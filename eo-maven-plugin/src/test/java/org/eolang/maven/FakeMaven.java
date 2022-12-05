@@ -84,6 +84,15 @@ public final class FakeMaven {
     }
 
     /**
+     * Adds correct 'Hello world' program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    public FakeMaven withHelloWorld() throws IOException {
+        return this.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print");
+    }
+
+    /**
      * Adds eo program to a workspace.
      * @param program Program as a raw string.
      * @return The same maven instance.

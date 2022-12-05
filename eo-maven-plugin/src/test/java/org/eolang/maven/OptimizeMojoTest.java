@@ -68,11 +68,7 @@ final class OptimizeMojoTest {
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class);
         final Path path = maven.result().get(
@@ -90,11 +86,7 @@ final class OptimizeMojoTest {
     void optimizesIfExpired(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Path tgt = maven
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class)
             .result()
@@ -132,11 +124,7 @@ final class OptimizeMojoTest {
                 .resolve("foo/x/main.xmir")
         );
         new FakeMaven(temp)
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
             .execute(ParseMojo.class)
@@ -162,11 +150,7 @@ final class OptimizeMojoTest {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new FakeMaven(temp)
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
             .execute(ParseMojo.class)
@@ -183,11 +167,7 @@ final class OptimizeMojoTest {
     void optimizesSuccessfully(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .with("trackOptimizationSteps", true)
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class)
@@ -217,11 +197,7 @@ final class OptimizeMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 20;
         for (int program = 0; program < total; ++program) {
-            maven.withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print"
-            );
+            maven.withHelloWorld();
         }
         final Map<String, Path> res = maven
             .execute(ParseMojo.class)

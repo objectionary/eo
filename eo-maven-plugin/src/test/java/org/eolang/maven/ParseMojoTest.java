@@ -49,7 +49,7 @@ final class ParseMojoTest {
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
+            maven.withHelloWorld()
                 .execute(ParseMojo.class)
                 .result(),
             Matchers.hasKey(
@@ -67,7 +67,7 @@ final class ParseMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
+                .withHelloWorld()
                 .with("timeout", 0)
                 .execute(ParseMojo.class)
         );
@@ -139,11 +139,7 @@ final class ParseMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 50;
         for (int program = 0; program < total; ++program) {
-            maven.withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print"
-            );
+            maven.withHelloWorld();
         }
         final Map<String, Path> res = maven.execute(ParseMojo.class).result();
         for (int program = 0; program < total; ++program) {
