@@ -71,7 +71,7 @@ final class SodgMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/sodgs/", glob = "*.yaml")
+    @ClasspathSource(value = "org/eolang/maven/sodgs", glob = "**/*.yaml")
     @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
     void generatesSodgForPacks(final String pack) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
