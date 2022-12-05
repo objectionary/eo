@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
 public abstract class PhDefault implements Phi, Cloneable {
 
     /**
@@ -107,8 +108,8 @@ public abstract class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
-        this.order = new ArrayList<>(0);
         this.attrs = new HashMap<>(0);
+        this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
         this.add("σ", new AtFixed(new AtSimple(sigma)));
     }
@@ -146,7 +147,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
             PhDefault.TERMS.get().remove(this.vertex);
             Collections.sort(list);
-            txt = new Oname(this).toString();
+            txt = this.oname();
             if (!list.isEmpty()) {
                 txt = String.format(
                     "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
@@ -254,7 +255,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 attr = new AtSimple(found);
             }
         }
-        attr = new AtNamedDefault(attr, name, this);
+        attr = this.named(attr, name);
         if ("φ".equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
@@ -298,6 +299,43 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     /**
+     * Make named attribute.
+     * @param attr The original attr
+     * @param name The name of it
+     * @return Named one
+     */
+    private Attr named(final Attr attr, final String name) {
+        return new AtNamed(
+            String.format(
+                "%s#%s",
+                this.getClass().getCanonicalName(), name
+            ),
+            String.format(
+                "%s.%s",
+                this.oname(), name
+            ),
+            this,
+            attr
+        );
+    }
+
+    /**
+     * Get its object name, as in source code.
+     * @return The name
+     */
+    private String oname() {
+        String txt = this.getClass().getSimpleName();
+        final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
+        if (null != xmir) {
+            txt = xmir.oname();
+            if ("@".equals(txt)) {
+                txt = "φ";
+            }
+        }
+        return txt;
+    }
+
+    /**
      * Log debug message for PhDefault.
      * @param msg Message to log
      */
@@ -316,40 +354,5 @@ public abstract class PhDefault implements Phi, Cloneable {
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
-    }
-
-    /**
-     * Object name, as in source code.
-     *
-     * @since 0.28.12
-     */
-    static final class Oname {
-
-        /**
-         * Object to get name.
-         */
-        private final Phi phi;
-
-        /**
-         * Ctor.
-         *
-         * @param phi The phi
-         */
-        Oname(final Phi phi) {
-            this.phi = phi;
-        }
-
-        @Override
-        public String toString() {
-            String txt = this.phi.getClass().getSimpleName();
-            final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
-            if (null != xmir) {
-                txt = xmir.oname();
-                if ("@".equals(txt)) {
-                    txt = "φ";
-                }
-            }
-            return txt;
-        }
     }
 }
