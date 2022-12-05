@@ -52,7 +52,7 @@ public final class EOas_phiTest {
                     0, new Data.ToPhi(1L)
                 )
             ).take(String.class),
-            Matchers.containsString("as_phi.x ≡")
+            Matchers.containsString("as-phi.x ≡")
         );
     }
 
