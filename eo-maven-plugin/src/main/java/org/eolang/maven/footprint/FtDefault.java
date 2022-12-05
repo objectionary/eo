@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.footprint;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,12 +29,14 @@ import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.Home;
+import org.eolang.maven.Place;
 
 /**
  * Default implementation of a Footprint.
  * @since 1.0
  */
-final class FtDefault implements Footprint {
+public final class FtDefault implements Footprint {
 
     /**
      * Path to main location.
@@ -45,7 +47,7 @@ final class FtDefault implements Footprint {
      * Ctor.
      * @param main Main location.
      */
-    FtDefault(final Path main) {
+    public FtDefault(final Path main) {
         this.main = main;
     }
 
