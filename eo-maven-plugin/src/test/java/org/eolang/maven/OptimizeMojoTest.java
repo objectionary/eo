@@ -38,12 +38,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link OptimizeMojo}.
@@ -52,6 +55,15 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class OptimizeMojoTest {
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**/*.yaml")
+    void testPacks(final String pack) throws Exception {
+        MatcherAssert.assertThat(
+            new CheckPack(pack).failures(),
+            Matchers.empty()
+        );
+    }
 
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {

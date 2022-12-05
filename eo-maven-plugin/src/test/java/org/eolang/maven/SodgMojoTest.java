@@ -32,10 +32,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.set.SetOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.TypeSafeMatcher;
@@ -45,7 +43,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -74,16 +71,10 @@ final class SodgMojoTest {
     }
 
     @ParameterizedTest
-    @MethodSource("yamlPacks")
+    @ClasspathSource(value = "org/eolang/maven/sodgs/", glob = "*.yaml")
     @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
     void testPacks(final String pack) throws Exception {
-        final Map<String, Object> map = new Yaml().load(
-            new TextOf(
-                new ResourceOf(
-                    String.format("org/eolang/maven/sodgs/%s", pack)
-                )
-            ).asString()
-        );
+        final Map<String, Object> map = new Yaml().load(pack);
         Assumptions.assumeTrue(
             map.get("skip") == null,
             String.format("%s is skipped", pack)
@@ -115,33 +106,6 @@ final class SodgMojoTest {
             )
         );
         Assertions.assertAll(assertions);
-    }
-
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlPacks() {
-        return SodgMojoTest.yamls("org/eolang/maven/sodgs/", "");
-    }
-
-    private static Collection<String> yamls(final String path,
-        final String prefix
-    ) {
-        final Collection<String> out = new LinkedList<>();
-        final String[] paths = new UncheckedText(
-            new TextOf(new ResourceOf(path))
-        ).asString().split("\n");
-        for (final String sub : paths) {
-            if (sub.endsWith(".yaml")) {
-                out.add(String.format("%s%s", prefix, sub));
-            } else {
-                out.addAll(
-                    SodgMojoTest.yamls(
-                        String.format("%s%s/", path, sub),
-                        String.format("%s/", sub)
-                    )
-                );
-            }
-        }
-        return out;
     }
 
     /**

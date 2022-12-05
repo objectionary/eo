@@ -215,6 +215,11 @@ SOFTWARE.
       logging system. -->
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
   </dependencies>
   <build>
     <plugins>
