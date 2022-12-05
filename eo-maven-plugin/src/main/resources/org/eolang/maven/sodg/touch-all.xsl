@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="touch" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="touch-all" version="2.0">
   <!--
   Here we find all objects that have @loc attributes (basically, all objects).
   Then we make sure their vertices exist in the graph
@@ -55,12 +55,10 @@ SOFTWARE.
     </xsl:choose>
   </xsl:function>
   <xsl:template match="o" mode="sodg" priority="1">
-    <xsl:if test="not(ends-with(@loc, '.ρ'))">
-      <xsl:call-template name="touch">
-        <xsl:with-param name="o" select="."/>
-        <xsl:with-param name="loc" select="@loc"/>
-      </xsl:call-template>
-    </xsl:if>
+    <xsl:call-template name="touch">
+      <xsl:with-param name="o" select="."/>
+      <xsl:with-param name="loc" select="@loc"/>
+    </xsl:call-template>
     <xsl:if test="@base">
       <xsl:variable name="b-loc" select="eo:base-to-loc(.)"/>
       <xsl:if test="$b-loc != @loc">

@@ -181,6 +181,7 @@ final class SodgMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("generateDotFiles", true)
             .with("sodgIncludes", new SetOf<>(inclusion))
             .execute();
         return new XMLDocument(

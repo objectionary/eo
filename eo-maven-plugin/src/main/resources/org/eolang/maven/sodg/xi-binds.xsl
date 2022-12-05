@@ -22,10 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="dots" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xi-binds" version="2.0">
   <!--
-  Here we find objects with "dot notation" in the @base
-  attribute and attach a proper ATOM to their vertices.
+  Here we add xi-edges to objects that ARE other objects.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -35,19 +34,22 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.')]" mode="sodg" priority="1">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(o) and not(@data)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'ATOM'"/>
+      <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
-          <xsl:value-of select="eo:vertex(.)"/>
+          <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat('text:', 'S/ξ.ρ', @base)"/>
+          <xsl:value-of select="eo:var(eo:base-to-loc(.))"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>ξ</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>This is a dot-notation</xsl:text>
+        <xsl:text>This is a copy</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
