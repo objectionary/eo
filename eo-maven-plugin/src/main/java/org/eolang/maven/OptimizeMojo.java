@@ -217,7 +217,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojp
      * @return Optimization for specific Tojo
      */
-    private Optimization optimization(final SynchronizedTojo tojo) {
+    private Optimization optimization(final Tojo tojo) {
         Optimization opt;
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(targetDir.toPath().resolve(OptimizeMojo.STEPS));

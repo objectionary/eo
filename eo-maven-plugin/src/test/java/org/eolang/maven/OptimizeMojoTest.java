@@ -31,35 +31,44 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link OptimizeMojo}.
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class OptimizeMojoTest {
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**/*.yaml")
+    void testPacks(final String pack) throws Exception {
+        MatcherAssert.assertThat(
+            new CheckPack(pack).failures(),
+            Matchers.empty()
+        );
+    }
 
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class);
         final Path path = maven.result().get(
@@ -77,11 +86,7 @@ final class OptimizeMojoTest {
     void optimizesIfExpired(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Path tgt = maven
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class)
             .result()
@@ -119,11 +124,7 @@ final class OptimizeMojoTest {
                 .resolve("foo/x/main.xmir")
         );
         new FakeMaven(temp)
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
             .execute(ParseMojo.class)
@@ -149,11 +150,7 @@ final class OptimizeMojoTest {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new FakeMaven(temp)
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
             .execute(ParseMojo.class)
@@ -170,11 +167,7 @@ final class OptimizeMojoTest {
     void optimizesSuccessfully(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
-            .withProgram(
-                "+package f",
-                "[args] > main",
-                "  (stdout \"Hello!\").print > @"
-            )
+            .withHelloWorld()
             .with("trackOptimizationSteps", true)
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class)
@@ -191,6 +184,38 @@ final class OptimizeMojoTest {
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             )
         );
+    }
+
+    /**
+     * The test with high number of eo programs reveals concurrency problems of the OptimizeMojo.
+     * Since other tests works only with single program - it's hard to find concurrency mistakes.
+     * @param temp Test directory.
+     * @throws java.io.IOException If problem with filesystem happened.
+     */
+    @Test
+    void optimizesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int total = 20;
+        for (int program = 0; program < total; ++program) {
+            maven.withHelloWorld();
+        }
+        final Map<String, Path> res = maven
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .result();
+        for (int program = 0; program < total; ++program) {
+            MatcherAssert.assertThat(
+                res,
+                Matchers.hasKey(
+                    String.format(
+                        "target/%s/foo/x/main%s.%s",
+                        OptimizeMojo.DIR,
+                        FakeMaven.suffix(program),
+                        TranspileMojo.EXT
+                    )
+                )
+            );
+        }
     }
 
     @Test
