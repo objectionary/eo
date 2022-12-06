@@ -35,12 +35,19 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeSet;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.UncheckedInput;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.TextOfScalar;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
@@ -134,12 +141,21 @@ public final class ProbeMojo extends SafeMojo {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.probe(src);
             int count = 0;
+            int fl = 0;
             for (final String name : names) {
-                if (new UncheckedText(
-                        new TextOf(this.objectionary.get(name))
-                    ).asString().isEmpty()) {
-                    continue;
+                System.out.println(String.format("NAME IS %s\n", name));
+                try {
+                    new UncheckedInput(this.objectionary.get(name));
+                } catch (final Exception e) {
+                    System.out.println("FOUND!!!!!!!!!!!!!!!!");
+                    Logger.info(
+                        this,
+                        String.format("Failed to probe %s from %s", name, this.objectionary)
+                    );
+                    fl = 1;
                 }
+                if (fl == 1) continue;
+                System.out.println(new UncheckedText(new TextOf(this.objectionary.get(name))).asString());
                 ++count;
                 final Tojo ftojo = this.scopedTojos().add(name);
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
@@ -184,7 +200,7 @@ public final class ProbeMojo extends SafeMojo {
      * @param hash Full Git hash
      * @return Objectionary
      */
-    private static Objectionary remote(final CommitHash hash) {
+    public static Objectionary remote(final CommitHash hash) {
         Objectionary obj;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
