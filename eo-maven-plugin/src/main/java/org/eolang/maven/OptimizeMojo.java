@@ -126,7 +126,6 @@ public final class OptimizeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
         final Set<Callable<Object>> tasks = new HashSet<>(0);
-        final AtomicInteger done = new AtomicInteger(0);
         sources.stream()
             .map(SynchronizedTojo::new)
             .forEach(
@@ -152,7 +151,6 @@ public final class OptimizeMojo extends SafeMojo {
                                 try {
                                     final XML optimized = this.optimization(tojo)
                                         .apply(new XMLDocument(src));
-                                    done.incrementAndGet();
                                     if (this.shouldPass(optimized)) {
                                         tojo.set(
                                             AssembleMojo.ATTR_XMIR2,
@@ -195,18 +193,19 @@ public final class OptimizeMojo extends SafeMojo {
 //                    }
 //                );
 
-            tasks.stream().parallel().forEach(
-                task -> {
-                    try {
-                        task.call();
-                    } catch (Exception ex) {
-                        throw new IllegalArgumentException(
-                            ex.getCause().getMessage(),
-                            ex
-                        );
-                    }
+        final long done = tasks.stream().parallel().mapToInt(
+            task -> {
+                try {
+                    task.call();
+                    return 1;
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException(
+                        ex.getCause().getMessage(),
+                        ex
+                    );
                 }
-            );
+            }
+        ).sum();
 //        } catch (final InterruptedException ex) {
 //            Thread.currentThread().interrupt();
 //            throw new IllegalStateException(
@@ -217,8 +216,8 @@ public final class OptimizeMojo extends SafeMojo {
 //                ex
 //            );
 //        }
-        if (done.get() > 0) {
-            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done.get(), sources.size());
+        if (done > 0) {
+            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
