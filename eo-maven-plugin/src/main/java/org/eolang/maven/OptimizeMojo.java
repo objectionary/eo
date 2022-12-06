@@ -128,19 +128,10 @@ public final class OptimizeMojo extends SafeMojo {
         final Set<Callable<Object>> tasks = new HashSet<>(0);
         sources.stream()
             .map(SynchronizedTojo::new)
+            .filter(this::optimizationRequired)
             .forEach(
                 tojo -> {
                     final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                    if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
-                        final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-                        if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                            Logger.debug(
-                                this, "Already optimized %s to %s",
-                                new Rel(src), new Rel(tgt)
-                            );
-                            return;
-                        }
-                    }
                     Logger.info(
                         this, "Adding optimization task for %s",
                         src
@@ -172,10 +163,10 @@ public final class OptimizeMojo extends SafeMojo {
                 }
             );
 //        try {
-            Logger.info(
-                this, "Running %s optimizations in parallel",
-                tasks.size()
-            );
+        Logger.info(
+            this, "Running %s optimizations in parallel",
+            tasks.size()
+        );
 //            Executors.newFixedThreadPool(4)
 //                .invokeAll(tasks)
 //                .forEach(
@@ -221,6 +212,21 @@ public final class OptimizeMojo extends SafeMojo {
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
+    }
+
+    private boolean optimizationRequired(Tojo tojo) {
+        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
+            final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already optimized %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
