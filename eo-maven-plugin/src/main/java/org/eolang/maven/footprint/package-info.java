@@ -21,33 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.io.IOException;
-import org.cactoos.Scalar;
-
 /**
- * Program footprint of EO compilation process.
- * @since 1.0
+ * EO program footprint.
+ * Represents a program physical artifacts (like files, memory blocks, or others).
+ * In its simplest form footprint of a program is a file on a disc with program data (XMIR).
  */
-interface Footprint {
-
-    /**
-     * Get program content of a specific type.
-     * @param program Program name
-     * @param ext File extension which defines the type
-     * @return Content of a file
-     * @throws IOException In case of IO issue.
-     */
-    String load(String program, String ext) throws IOException;
-
-    /**
-     * Save content.
-     * @param program Program name
-     * @param ext File extension
-     * @param content File content
-     * @throws IOException In case of IO issues
-     */
-    void save(String program, String ext, Scalar<String> content)
-        throws IOException;
-}
+package org.eolang.maven.footprint;
