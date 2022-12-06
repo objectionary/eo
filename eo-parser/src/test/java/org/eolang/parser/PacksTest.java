@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
@@ -47,6 +48,15 @@ final class PacksTest {
         MatcherAssert.assertThat(
             check.failures(),
             Matchers.empty()
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
+    void testXslStylesheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
         );
     }
 
