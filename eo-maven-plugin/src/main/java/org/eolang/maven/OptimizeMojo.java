@@ -48,8 +48,6 @@ import org.eolang.parser.ParsingTrain;
 /**
  * Optimize XML files.
  *
- * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *   via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
@@ -131,8 +129,8 @@ public final class OptimizeMojo extends SafeMojo {
             this, "Running %s optimizations in parallel",
             tasks.size()
         );
-        final int done = tasks.stream()
-            .parallel().mapToInt(Supplier::get)
+        final int done = tasks.parallelStream()
+            .mapToInt(Supplier::get)
             .sum();
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
