@@ -163,7 +163,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.14.0</version>
+      <version>0.15.0</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -214,6 +214,11 @@ SOFTWARE.
       package, in order to initiate Slf4j forwarding to Maven
       logging system. -->
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
     </dependency>
   </dependencies>
   <build>

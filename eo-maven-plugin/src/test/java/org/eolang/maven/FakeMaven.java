@@ -32,17 +32,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Fake maven workspace that executes Mojos in order to test
  * their behaviour and results.
+ * NOT thread-safe.
  * @since 0.28.12
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@NotThreadSafe
 public final class FakeMaven {
 
     /**
@@ -61,6 +65,13 @@ public final class FakeMaven {
     private final Map<String, Object> attributes;
 
     /**
+     * Current program number.
+     * We can save several programs in workspace and each program has it's own number
+     * started from 0.
+     */
+    private final AtomicInteger current;
+
+    /**
      * The main constructor.
      *
      * @param workspace Test temporary directory.
@@ -69,6 +80,16 @@ public final class FakeMaven {
         this.workspace = new Home(workspace);
         this.params = new HashMap<>();
         this.attributes = new HashMap<>();
+        this.current = new AtomicInteger(0);
+    }
+
+    /**
+     * Adds correct 'Hello world' program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    public FakeMaven withHelloWorld() throws IOException {
+        return this.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print");
     }
 
     /**
@@ -78,9 +99,7 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     public FakeMaven withProgram(final String... program) throws IOException {
-        return this.withProgram(
-            Paths.get("foo/x/main.eo"), String.join("\n", program)
-        );
+        return this.withProgram(String.join("\n", program));
     }
 
     /**
@@ -115,15 +134,11 @@ public final class FakeMaven {
      * @return Workspace after executing Mojo.
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
-    public <T extends AbstractMojo> Map<String, Path> execute(
-        final Class<T> mojo
-    ) throws IOException {
-        final Tojo tojo = Catalogs.INSTANCE.make(this.foreignPath())
-            .add("foo.x.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0");
-        for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
-            tojo.set(entry.getKey(), entry.getValue());
+    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
+        for (final Tojo tojo : this.foreign().select(all -> true)) {
+            for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
+                tojo.set(entry.getKey(), entry.getValue());
+            }
         }
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
@@ -133,7 +148,7 @@ public final class FakeMaven {
             moja.with(entry.getKey(), entry.getValue());
         }
         moja.execute();
-        return this.result();
+        return this;
     }
 
     /**
@@ -164,26 +179,13 @@ public final class FakeMaven {
     }
 
     /**
-     * Adds eo program to a workspace.
-     * @param path Relative path where to save EO program
-     * @param content EO program content.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    private FakeMaven withProgram(final Path path, final String content) throws IOException {
-        this.workspace.save(content, path);
-        this.withTojoAttribute(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
-        return this;
-    }
-
-    /**
      * Creates of the result map with all files and folders that was created
      *  or compiled during mojo execution.
      *
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
      */
-    private Map<String, Path> result() throws IOException {
+    public Map<String, Path> result() throws IOException {
         final Path root = this.workspace.absolute(Paths.get(""));
         return Files.walk(root).collect(
             Collectors.toMap(
@@ -194,5 +196,43 @@ public final class FakeMaven {
                 Function.identity()
             )
         );
+    }
+
+    /**
+     * Suffix for the program name or path.
+     * - main_1.eo
+     * - foo.x.main100
+     * - main.eo
+     * @param index Number of the program.
+     * @return String suffix.
+     */
+    static String suffix(final int index) {
+        final String suffix;
+        if (index == 0) {
+            suffix = "";
+        } else {
+            suffix = String.format("_%d", index);
+        }
+        return suffix;
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    private FakeMaven withProgram(final String content) throws IOException {
+        final Path path = Paths.get(
+            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
+        );
+        this.workspace.save(content, path);
+        this.foreign()
+            .add(String.format("foo.x.main%s", suffix(this.current.get())))
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
+            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        this.current.incrementAndGet();
+        return this;
     }
 }

@@ -23,7 +23,9 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -47,8 +49,9 @@ final class ParseMojoTest {
     void testSimpleParsing(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            maven.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
-                .execute(ParseMojo.class),
+            maven.withHelloWorld()
+                .execute(ParseMojo.class)
+                .result(),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
             )
@@ -64,7 +67,7 @@ final class ParseMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print")
+                .withHelloWorld()
                 .with("timeout", 0)
                 .execute(ParseMojo.class)
         );
@@ -89,6 +92,7 @@ final class ParseMojoTest {
                     .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
                     .with("cache", cache)
                     .execute(ParseMojo.class)
+                    .result()
                     .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
             ).toString(),
             Matchers.equalTo(expected)
@@ -114,12 +118,41 @@ final class ParseMojoTest {
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .with("failOnError", false)
-                .execute(ParseMojo.class),
+                .execute(ParseMojo.class)
+                .result(),
             Matchers.not(
                 Matchers.hasKey(
                     String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             )
         );
+    }
+
+    /**
+     * The test with high number of eo programs reveals concurrency problems of the ParseMojo.
+     * Since other tests works only with single program - it's hard to find concurrency mistakes.
+     * @param temp Test directory.
+     * @throws IOException If problem with filesystem happened.
+     */
+    @Test
+    void parsesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int total = 50;
+        for (int program = 0; program < total; ++program) {
+            maven.withHelloWorld();
+        }
+        final Map<String, Path> res = maven.execute(ParseMojo.class).result();
+        for (int program = 0; program < total; ++program) {
+            MatcherAssert.assertThat(
+                res,
+                Matchers.hasKey(
+                    String.format(
+                        "target/%s/foo/x/main%s.%s",
+                        ParseMojo.DIR,
+                        FakeMaven.suffix(program),
+                        TranspileMojo.EXT
+                    ))
+            );
+        }
     }
 }

@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
 public abstract class PhDefault implements Phi, Cloneable {
 
     /**
@@ -104,6 +105,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      *
      * @param sigma Sigma
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
         this.attrs = new HashMap<>(0);
@@ -124,7 +126,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
-        if (PhDefault.TERMS.get() == null) {
+        if (null == PhDefault.TERMS.get()) {
             PhDefault.TERMS.set(new HashSet<>());
         }
         String txt;
@@ -176,7 +178,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public final Phi copy() {
         try {
-            final PhDefault copy = PhDefault.class.cast(this.clone());
+            final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
@@ -192,7 +194,7 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final int pos) {
-        if (pos < 0) {
+        if (0 > pos) {
             throw new ExFailure(
                 String.format(
                     "Attribute position can't be negative (%d)",
@@ -228,16 +230,16 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public final Attr attr(final String name) {
-        NESTING.set(NESTING.get() + 1);
+        PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
         if ("ν".equals(name)) {
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
         } else {
             attr = this.attrs.get(name);
         }
-        if (attr == null) {
+        if (null == attr) {
             final Attr aphi = this.attrs.get("φ");
-            if (aphi == null) {
+            if (null == aphi) {
                 attr = new AtAbsent(
                     name,
                     String.format(
@@ -264,13 +266,13 @@ public abstract class PhDefault implements Phi, Cloneable {
         PhDefault.debug(
             String.format(
                 "%s\uD835\uDD38('%s' for %s) ➜ %s",
-                padding(),
+                PhDefault.padding(),
                 name,
                 this,
                 attr
             )
         );
-        NESTING.set(NESTING.get() - 1);
+        PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
         return attr;
     }
 
@@ -324,7 +326,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     private String oname() {
         String txt = this.getClass().getSimpleName();
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
-        if (xmir != null) {
+        if (null != xmir) {
             txt = xmir.oname();
             if ("@".equals(txt)) {
                 txt = "φ";
@@ -351,6 +353,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @return Padding string.
      */
     private static String padding() {
-        return String.join("", Collections.nCopies(NESTING.get(), "·"));
+        return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
 }

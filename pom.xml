@@ -123,7 +123,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.16.0</version>
+        <version>0.19.0</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -169,7 +169,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.25.5</version>
+        <version>0.26.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -196,6 +196,12 @@ SOFTWARE.
         <artifactId>annotations</artifactId>
         <version>3.0.1u2</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eolang</groupId>
+        <artifactId>jucs</artifactId>
+        <version>0.0.4</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -252,6 +258,8 @@ SOFTWARE.
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration combine.self="override">
+            <source>8</source>
+            <target>8</target>
             <compilerArgs>
               <arg>-Xpkginfo:always</arg>
             </compilerArgs>

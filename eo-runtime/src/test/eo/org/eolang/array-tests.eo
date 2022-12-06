@@ -106,7 +106,7 @@
       nop
     $.is
       $.equal-to
-        "Can't at() the 20th element of the array, there are just 4 of them"
+        "Can't #at(20) the 21th element of the array, there are just 4 of them"
 
 [] > concat-array-with-empty-array-1
   * 1 2 3 > a

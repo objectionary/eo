@@ -75,9 +75,9 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
-     * Absolute location of GMI file.
+     * Absolute location of SODG file.
      */
-    public static final String ATTR_GMI = "gmi";
+    public static final String ATTR_SODG = "sodg";
 
     /**
      * Tojo ATTR.

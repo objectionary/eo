@@ -27,15 +27,20 @@
  */
 package EOorg.EOeolang;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
+import org.eolang.PhFake;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,6 +55,57 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 public final class EOboolEOwhileTest {
+
+    @Test
+    public void iteratesOnce() {
+        final AtomicBoolean term = new AtomicBoolean(true);
+        final AtomicLong body = new AtomicLong(0L);
+        new Dataized(
+            new PhWith(
+                new PhCopy(
+                    new PhMethod(
+                        new PhFake(
+                            () -> new Data.ToPhi(
+                                term.getAndSet(false)
+                            )
+                        ),
+                        "while"
+                    )
+                ),
+                0,
+                new PhFake(() -> new Data.ToPhi(body.incrementAndGet()))
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            body.get(), Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
+    public void iteratesManyTimes() {
+        final long total = 5L;
+        final AtomicLong term = new AtomicLong(total);
+        final AtomicLong body = new AtomicLong(0L);
+        new Dataized(
+            new PhWith(
+                new PhCopy(
+                    new PhMethod(
+                        new PhFake(
+                            () -> new Data.ToPhi(
+                                term.getAndDecrement() > 0L
+                            )
+                        ),
+                        "while"
+                    )
+                ),
+                0,
+                new PhFake(() -> new Data.ToPhi(body.incrementAndGet()))
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            body.get(), Matchers.equalTo(total)
+        );
+    }
 
     @Test
     public void loopsOverAbstractObjects() {
