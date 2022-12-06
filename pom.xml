@@ -197,6 +197,12 @@ SOFTWARE.
         <version>3.0.1u2</version>
         <scope>provided</scope>
       </dependency>
+      <dependency>
+        <groupId>org.eolang</groupId>
+        <artifactId>jucs</artifactId>
+        <version>0.0.4</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

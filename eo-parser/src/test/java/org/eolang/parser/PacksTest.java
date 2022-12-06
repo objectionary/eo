@@ -23,16 +23,11 @@
  */
 package org.eolang.parser;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for packs.
@@ -41,15 +36,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 final class PacksTest {
 
     @ParameterizedTest
-    @MethodSource("yamlPacks")
-    void testPacks(final String pack) throws Exception {
-        final CheckPack check = new CheckPack(
-            new TextOf(
-                new ResourceOf(
-                    String.format("org/eolang/parser/packs/%s", pack)
-                )
-            ).asString()
-        );
+    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**/*.yaml")
+    void parsesPacks(final String pack) throws Exception {
+        final CheckPack check = new CheckPack(pack);
         if (check.skip()) {
             Assumptions.abort(
                 String.format("%s is not ready", pack)
@@ -59,32 +48,6 @@ final class PacksTest {
             check.failures(),
             Matchers.empty()
         );
-    }
-
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> yamlPacks() {
-        return PacksTest.yamls("org/eolang/parser/packs/", "");
-    }
-
-    private static Collection<String> yamls(final String path,
-        final String prefix) {
-        final Collection<String> out = new LinkedList<>();
-        final String[] paths = new UncheckedText(
-            new TextOf(new ResourceOf(path))
-        ).asString().split("\n");
-        for (final String sub : paths) {
-            if (sub.endsWith(".yaml")) {
-                out.add(String.format("%s%s", prefix, sub));
-            } else {
-                out.addAll(
-                    PacksTest.yamls(
-                        String.format("%s%s/", path, sub),
-                        String.format("%s/", sub)
-                    )
-                );
-            }
-        }
-        return out;
     }
 
 }

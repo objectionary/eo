@@ -39,20 +39,17 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -83,17 +80,11 @@ final class SnippetTest {
 
     @Disabled
     @ParameterizedTest
-    @MethodSource("yamlSnippets")
     @SuppressWarnings("unchecked")
-    void testFullRun(final String yml) throws Exception {
+    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "*.yaml")
+    void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
-        final Map<String, Object> map = yaml.load(
-            new TextOf(
-                new ResourceOf(
-                    String.format("org/eolang/maven/snippets/%s", yml)
-                )
-            ).asString()
-        );
+        final Map<String, Object> map = yaml.load(yml);
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         final int result = SnippetTest.run(
             this.temp,
@@ -116,15 +107,6 @@ final class SnippetTest {
                 )
             );
         }
-    }
-
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static String[] yamlSnippets() {
-        return new UncheckedText(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/snippets/")
-            )
-        ).asString().split("\n");
     }
 
     /**
