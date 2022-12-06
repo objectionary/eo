@@ -69,8 +69,7 @@ final class OptimizeMojoTest {
     void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class);
+            .execute(new FakeMaven.Optimize());
         final Path path = maven.result().get(
             String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
         );
@@ -87,8 +86,7 @@ final class OptimizeMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Path tgt = maven
             .withHelloWorld()
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
+            .execute(new FakeMaven.Optimize())
             .result()
             .get(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
@@ -127,8 +125,7 @@ final class OptimizeMojoTest {
             .withHelloWorld()
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class);
+            .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             new XMLDocument(
                 new Home(temp).load(
@@ -153,8 +150,7 @@ final class OptimizeMojoTest {
             .withHelloWorld()
             .with("cache", cache)
             .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class);
+            .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             cache.resolve(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
@@ -169,8 +165,7 @@ final class OptimizeMojoTest {
         final Map<String, Path> res = maven
             .withHelloWorld()
             .with("trackOptimizationSteps", true)
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
+            .execute(new FakeMaven.Optimize())
             .result();
         MatcherAssert.assertThat(
             res,
@@ -200,8 +195,7 @@ final class OptimizeMojoTest {
             maven.withHelloWorld();
         }
         final Map<String, Path> res = maven
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
+            .execute(new FakeMaven.Optimize())
             .result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
@@ -229,8 +223,7 @@ final class OptimizeMojoTest {
                     "  (stdout \"Hello!\").print > @"
                 )
                 .with("failOnError", false)
-                .execute(ParseMojo.class)
-                .execute(OptimizeMojo.class)
+                .execute(new FakeMaven.Optimize())
                 .result(),
             Matchers.not(
                 Matchers.hasKey(
@@ -251,8 +244,7 @@ final class OptimizeMojoTest {
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
                 )
-                .execute(ParseMojo.class)
-                .execute(OptimizeMojo.class)
+                .execute(new FakeMaven.Optimize())
         );
     }
 
@@ -270,8 +262,7 @@ final class OptimizeMojoTest {
                     )
                     .with("trackOptimizationSteps", true)
                     .with("failOnError", false)
-                    .execute(ParseMojo.class)
-                    .execute(OptimizeMojo.class)
+                    .execute(new FakeMaven.Optimize())
                     .result()
                     .get(
                         String.format(
@@ -300,8 +291,7 @@ final class OptimizeMojoTest {
                     "    TRUE > x",
                     "    FALSE > x"
                 )
-                .execute(ParseMojo.class)
-                .execute(OptimizeMojo.class)
+                .execute(new FakeMaven.Optimize())
         );
     }
 
