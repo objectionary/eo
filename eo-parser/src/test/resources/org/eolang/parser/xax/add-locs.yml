@@ -1,0 +1,13 @@
+sheets:
+  - /org/eolang/parser/set-locators.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o name="a">
+        <o base="b"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - /program/objects/o[@loc='Φ.a']/o[@loc='Φ.a.α0']

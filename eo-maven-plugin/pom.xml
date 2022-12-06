@@ -220,6 +220,11 @@ SOFTWARE.
       <artifactId>jucs</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>xax</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
   </dependencies>
   <build>
     <plugins>

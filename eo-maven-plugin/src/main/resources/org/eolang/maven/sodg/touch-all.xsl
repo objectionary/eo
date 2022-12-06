@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="touch" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="touch-all" version="2.0">
   <!--
   Here we find all objects that have @loc attributes (basically, all objects).
   Then we make sure their vertices exist in the graph
@@ -55,13 +55,11 @@ SOFTWARE.
     </xsl:choose>
   </xsl:function>
   <xsl:template match="o" mode="sodg" priority="1">
-    <xsl:if test="not(ends-with(@loc, '.ρ'))">
-      <xsl:call-template name="touch">
-        <xsl:with-param name="o" select="."/>
-        <xsl:with-param name="loc" select="@loc"/>
-      </xsl:call-template>
-    </xsl:if>
-    <xsl:if test="@base">
+    <xsl:call-template name="touch">
+      <xsl:with-param name="o" select="."/>
+      <xsl:with-param name="loc" select="@loc"/>
+    </xsl:call-template>
+    <xsl:if test="@base and not(starts-with(@base, '.'))">
       <xsl:variable name="b-loc" select="eo:base-to-loc(.)"/>
       <xsl:if test="$b-loc != @loc">
         <xsl:call-template name="touch">
@@ -87,7 +85,13 @@ SOFTWARE.
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        <xsl:if test="not($o/(preceding::o | ancestor::o)[starts-with(concat(@loc, '.'), concat($kid, '.')) or (@base and starts-with(concat(eo:base-to-loc(.), '.'), concat($kid, '.')))])">
+        <xsl:comment>
+          <xsl:text>The $kid: </xsl:text>
+          <xsl:value-of select="$kid"/>
+          <xsl:text>, the $o/@loc: </xsl:text>
+          <xsl:value-of select="$o/@loc"/>
+        </xsl:comment>
+        <xsl:if test="not($o/(preceding::o | ancestor::o)[starts-with(concat(@loc, '.'), concat($kid, '.')) or (@base and not(starts-with(@base, '.')) and starts-with(concat(eo:base-to-loc(.), '.'), concat($kid, '.')))])">
           <xsl:call-template name="add">
             <xsl:with-param name="loc" select="$kid"/>
             <xsl:with-param name="full" select="$o/@loc"/>
@@ -119,27 +123,29 @@ SOFTWARE.
     </xsl:call-template>
     <xsl:variable name="parts" select="tokenize($loc, '\.')"/>
     <xsl:variable name="k" select="$parts[count($parts)]"/>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'BIND'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:var($parent)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:var($loc)"/>
-        </xsl:sequence>
-        <xsl:sequence>
+    <xsl:if test="$k != 'ρ'">
+      <xsl:call-template name="i">
+        <xsl:with-param name="name" select="'BIND'"/>
+        <xsl:with-param name="args" as="item()*">
+          <xsl:sequence>
+            <xsl:value-of select="eo:var($parent)"/>
+          </xsl:sequence>
+          <xsl:sequence>
+            <xsl:value-of select="eo:var($loc)"/>
+          </xsl:sequence>
+          <xsl:sequence>
+            <xsl:value-of select="$k"/>
+          </xsl:sequence>
+        </xsl:with-param>
+        <xsl:with-param name="comment">
+          <xsl:text>Link to the </xsl:text>
+          <xsl:value-of select="eo:th(position())"/>
+          <xsl:text> part of the '</xsl:text>
           <xsl:value-of select="$k"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>Link to the </xsl:text>
-        <xsl:value-of select="eo:th(position())"/>
-        <xsl:text> part of the '</xsl:text>
-        <xsl:value-of select="$k"/>
-        <xsl:text>' locator</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
+          <xsl:text>' locator</xsl:text>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
     <!-- ignore it -->

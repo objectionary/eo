@@ -1,0 +1,21 @@
+sheets:
+  - /org/eolang/maven/sodg/touch-all.xsl
+document:
+  <program>
+    <metas>
+      <meta>
+        <head>package</head>
+        <tail>a.b.c</tail>
+      </meta>
+    </metas>
+    <objects loc="Φ">
+      <o base=".not" line="2" loc="Φ.x" name="x">
+        <o base="org.eolang.bool" data="bytes" loc="Φ.x.ρ">01</o>
+      </o>
+    </objects>
+    <sodg/>
+  </program>
+asserts:
+  - /program/sodg/i[@name='ADD']/a[.='$Φ.org']
+  - /program/sodg/i[@name='ADD']/a[.='$Φ.org.eolang']
+  - /program/sodg/i[@name='ADD']/a[.='$Φ.org.eolang.bool']

@@ -1,0 +1,14 @@
+sheets:
+  - /org/eolang/maven/sodg/focus.xsl
+document:
+  <program>
+    <objects loc="Φ">
+      <o base=".not" line="2" loc="Φ.x" name="x">
+        <o base="org.eolang.bool" data="bytes" loc="Φ.x.ρ">01</o>
+      </o>
+    </objects>
+    <sodg/>
+  </program>
+asserts:
+  - /sodg
+  - //sodg[count(i)=0]

@@ -81,7 +81,7 @@ final class SnippetTest {
     @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
-    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "*.yaml")
+    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
