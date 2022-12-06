@@ -47,7 +47,6 @@ SOFTWARE.
     </xsl:call-template>
   </xsl:template>
   <xsl:template match="o[o or @abstract or (not(@base) and @name)]" mode="sodg" priority="1">
-    <xsl:comment>booo</xsl:comment>
     <xsl:call-template name="bind">
       <xsl:with-param name="kid" select="@loc"/>
       <xsl:with-param name="parent" select="ancestor::*[@abstract or name()='objects'][1]/@loc"/>
