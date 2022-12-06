@@ -173,37 +173,50 @@ public final class OptimizeMojo extends SafeMojo {
                     );
                 }
             );
-        try {
+//        try {
             Logger.info(
                 this, "Running %s optimizations in parallel",
                 tasks.size()
             );
-            Executors.newFixedThreadPool(4)
-                .invokeAll(tasks)
-                .forEach(
-                    completed -> {
-                        try {
-                            completed.get();
-                        } catch (final InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        } catch (final ExecutionException ex) {
-                            throw new IllegalArgumentException(
-                                ex.getCause().getMessage(),
-                                ex
-                            );
-                        }
+//            Executors.newFixedThreadPool(4)
+//                .invokeAll(tasks)
+//                .forEach(
+//                    completed -> {
+//                        try {
+//                            completed.get();
+//                        } catch (final InterruptedException ex) {
+//                            Thread.currentThread().interrupt();
+//                        } catch (final ExecutionException ex) {
+//                            throw new IllegalArgumentException(
+//                                ex.getCause().getMessage(),
+//                                ex
+//                            );
+//                        }
+//                    }
+//                );
+
+            tasks.stream().parallel().forEach(
+                task -> {
+                    try {
+                        task.call();
+                    } catch (Exception ex) {
+                        throw new IllegalArgumentException(
+                            ex.getCause().getMessage(),
+                            ex
+                        );
                     }
-                );
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "Interrupted while waiting for %d optimizations to finish",
-                    done.get()
-                ),
-                ex
+                }
             );
-        }
+//        } catch (final InterruptedException ex) {
+//            Thread.currentThread().interrupt();
+//            throw new IllegalStateException(
+//                String.format(
+//                    "Interrupted while waiting for %d optimizations to finish",
+//                    done.get()
+//                ),
+//                ex
+//            );
+//        }
         if (done.get() > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done.get(), sources.size());
         } else {
