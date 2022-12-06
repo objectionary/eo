@@ -57,7 +57,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class OptimizeMojoTest {
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**/*.yaml")
+    @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
     void testPacks(final String pack) throws Exception {
         MatcherAssert.assertThat(
             new CheckPack(pack).failures(),

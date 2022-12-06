@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.Map;
 import org.cactoos.set.SetOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -71,7 +73,16 @@ final class SodgMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/sodgs", glob = "**/*.yaml")
+    @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
+    void transformsThroughSheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/sodgs", glob = "**.yaml")
     @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
     void generatesSodgForPacks(final String pack) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);

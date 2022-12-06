@@ -117,27 +117,29 @@ SOFTWARE.
     </xsl:call-template>
     <xsl:variable name="parts" select="tokenize($loc, '\.')"/>
     <xsl:variable name="k" select="$parts[count($parts)]"/>
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'BIND'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:var($parent)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:var($loc)"/>
-        </xsl:sequence>
-        <xsl:sequence>
+    <xsl:if test="$k != 'ρ'">
+      <xsl:call-template name="i">
+        <xsl:with-param name="name" select="'BIND'"/>
+        <xsl:with-param name="args" as="item()*">
+          <xsl:sequence>
+            <xsl:value-of select="eo:var($parent)"/>
+          </xsl:sequence>
+          <xsl:sequence>
+            <xsl:value-of select="eo:var($loc)"/>
+          </xsl:sequence>
+          <xsl:sequence>
+            <xsl:value-of select="$k"/>
+          </xsl:sequence>
+        </xsl:with-param>
+        <xsl:with-param name="comment">
+          <xsl:text>Link to the </xsl:text>
+          <xsl:value-of select="eo:th(position())"/>
+          <xsl:text> part of the '</xsl:text>
           <xsl:value-of select="$k"/>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>Link to the </xsl:text>
-        <xsl:value-of select="eo:th(position())"/>
-        <xsl:text> part of the '</xsl:text>
-        <xsl:value-of select="$k"/>
-        <xsl:text>' locator</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
+          <xsl:text>' locator</xsl:text>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
     <!-- ignore it -->

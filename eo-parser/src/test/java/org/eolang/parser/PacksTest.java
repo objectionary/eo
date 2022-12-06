@@ -36,7 +36,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class PacksTest {
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**/*.yaml")
+    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**.yaml")
     void parsesPacks(final String pack) throws Exception {
         final CheckPack check = new CheckPack(pack);
         if (check.skip()) {
