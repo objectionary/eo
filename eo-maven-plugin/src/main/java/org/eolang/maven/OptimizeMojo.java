@@ -129,9 +129,8 @@ public final class OptimizeMojo extends SafeMojo {
             this, "Running %s optimizations in parallel",
             tasks.size()
         );
-        final int done = tasks.parallelStream()
-            .mapToInt(Supplier::get)
-            .sum();
+        tasks.parallelStream().forEach(Supplier::get);
+        final int done = tasks.size();
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
         } else {
