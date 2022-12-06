@@ -132,9 +132,9 @@ public final class OptimizeMojo extends SafeMojo {
             this, "Running %s optimizations in parallel",
             tasks.size()
         );
-        final long done = tasks.stream()
-            .parallel()
-            .mapToInt(this::executeOptimizationTask).sum();
+        final int done = tasks.stream()
+            .parallel().mapToInt(OptimizeMojo::executeOptimizationTask)
+            .sum();
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
         } else {
@@ -142,18 +142,12 @@ public final class OptimizeMojo extends SafeMojo {
         }
     }
 
-    private int executeOptimizationTask(final Callable<Object> task) {
-        try {
-            task.call();
-            return 1;
-        } catch (Exception ex) {
-            throw new IllegalArgumentException(
-                ex.getCause().getMessage(),
-                ex
-            );
-        }
-    }
-
+    /**
+     * Converts tojo to optimization task.
+     *
+     * @param tojo Tojo that should be optimized.
+     * @return Optimization task.
+     */
     private Callable<Object> toOptimizationTask(final SynchronizedTojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         Logger.info(
@@ -184,8 +178,15 @@ public final class OptimizeMojo extends SafeMojo {
         );
     }
 
+    /**
+     * Checks if tojo was already optimized.
+     *
+     * @param tojo Tojo to check
+     * @return True if optimization is required, false otherwise.
+     */
     private boolean optimizationRequired(Tojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
             final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
@@ -193,10 +194,28 @@ public final class OptimizeMojo extends SafeMojo {
                     this, "Already optimized %s to %s",
                     new Rel(src), new Rel(tgt)
                 );
-                return false;
+                res = false;
             }
         }
-        return true;
+        return res;
+    }
+
+    /**
+     * Executes optimization task
+     *
+     * @param task Task to execute.
+     * @return 1 if optimization was executed successfully.
+     */
+    private static int executeOptimizationTask(final Callable<Object> task) {
+        try {
+            task.call();
+            return 1;
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(
+                ex.getCause().getMessage(),
+                ex
+            );
+        }
     }
 
     /**
