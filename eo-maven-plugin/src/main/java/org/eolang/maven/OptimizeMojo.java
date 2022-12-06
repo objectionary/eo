@@ -39,6 +39,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -125,43 +126,40 @@ public final class OptimizeMojo extends SafeMojo {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final Set<Callable<Object>> tasks = new HashSet<>(0);
-        sources.stream()
+        final Set<Callable<Object>> tasks = sources.stream()
             .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
-            .forEach(
+            .map(
                 tojo -> {
                     final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
                     Logger.info(
                         this, "Adding optimization task for %s",
                         src
                     );
-                    tasks.add(
-                        Executors.callable(
-                            () -> {
-                                try {
-                                    final XML optimized = this.optimization(tojo)
-                                        .apply(new XMLDocument(src));
-                                    if (this.shouldPass(optimized)) {
-                                        tojo.set(
-                                            AssembleMojo.ATTR_XMIR2,
-                                            this.make(optimized, src).toAbsolutePath().toString()
-                                        );
-                                    }
-                                } catch (final IOException exception) {
-                                    throw new IllegalStateException(
-                                        String.format(
-                                            "Unable to optimize %s",
-                                            tojo.get(Tojos.KEY)
-                                        ),
-                                        exception
+                    return Executors.callable(
+                        () -> {
+                            try {
+                                final XML optimized = this.optimization(tojo)
+                                    .apply(new XMLDocument(src));
+                                if (this.shouldPass(optimized)) {
+                                    tojo.set(
+                                        AssembleMojo.ATTR_XMIR2,
+                                        this.make(optimized, src).toAbsolutePath().toString()
                                     );
                                 }
+                            } catch (final IOException exception) {
+                                throw new IllegalStateException(
+                                    String.format(
+                                        "Unable to optimize %s",
+                                        tojo.get(Tojos.KEY)
+                                    ),
+                                    exception
+                                );
                             }
-                        )
+                        }
                     );
                 }
-            );
+            ).collect(Collectors.toSet());
 //        try {
         Logger.info(
             this, "Running %s optimizations in parallel",
