@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -115,12 +115,18 @@ public final class OptimizeMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
+    /**
+     * Number of optimized programs.
+     */
+    private AtomicInteger done;
+
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final Set<Supplier<Integer>> tasks = sources.stream()
+        this.done = new AtomicInteger(0);
+        final Set<Runnable> tasks = sources.stream()
             .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
             .map(this::toOptimizationTask)
@@ -129,10 +135,13 @@ public final class OptimizeMojo extends SafeMojo {
             this, "Running %s optimizations in parallel",
             tasks.size()
         );
-        tasks.parallelStream().forEach(Supplier::get);
-        final int done = tasks.size();
-        if (done > 0) {
-            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
+        tasks.parallelStream().forEach(Runnable::run);
+        if (this.done.get() > 0) {
+            Logger.info(
+                this,
+                "Optimized %d out of %d XMIR program(s)", this.done.get(),
+                sources.size()
+            );
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
@@ -144,7 +153,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojo that should be optimized.
      * @return Optimization task.
      */
-    private Supplier<Integer> toOptimizationTask(final SynchronizedTojo tojo) {
+    private Runnable toOptimizationTask(final SynchronizedTojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         Logger.info(
             this, "Adding optimization task for %s",
@@ -160,7 +169,7 @@ public final class OptimizeMojo extends SafeMojo {
                         this.make(optimized, src).toAbsolutePath().toString()
                     );
                 }
-                return 1;
+                this.done.incrementAndGet();
             } catch (final IOException exception) {
                 throw new IllegalStateException(
                     String.format(
