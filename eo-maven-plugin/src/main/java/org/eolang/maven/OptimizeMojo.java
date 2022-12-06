@@ -33,7 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -120,19 +119,24 @@ public final class OptimizeMojo extends SafeMojo {
      */
     private AtomicInteger done;
 
+    /*
+     * @checkstyle IllegalCatchCheck (100 lines)
+     */
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
         this.done = new AtomicInteger(0);
-        final Set<Runnable> tasks = sources.stream()
+        final List<Runnable> tasks = sources.stream()
             .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
             .map(this::toOptimizationTask)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
         Logger.info(
-            this, "Running %s optimizations in parallel",
+            this,
+            "Running %s optimizations in parallel",
             tasks.size()
         );
         tasks.parallelStream().forEach(Runnable::run);
