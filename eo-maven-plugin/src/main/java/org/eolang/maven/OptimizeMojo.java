@@ -32,13 +32,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -129,87 +126,62 @@ public final class OptimizeMojo extends SafeMojo {
         final Set<Callable<Object>> tasks = sources.stream()
             .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
-            .map(
-                tojo -> {
-                    final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                    Logger.info(
-                        this, "Adding optimization task for %s",
-                        src
-                    );
-                    return Executors.callable(
-                        () -> {
-                            try {
-                                final XML optimized = this.optimization(tojo)
-                                    .apply(new XMLDocument(src));
-                                if (this.shouldPass(optimized)) {
-                                    tojo.set(
-                                        AssembleMojo.ATTR_XMIR2,
-                                        this.make(optimized, src).toAbsolutePath().toString()
-                                    );
-                                }
-                            } catch (final IOException exception) {
-                                throw new IllegalStateException(
-                                    String.format(
-                                        "Unable to optimize %s",
-                                        tojo.get(Tojos.KEY)
-                                    ),
-                                    exception
-                                );
-                            }
-                        }
-                    );
-                }
-            ).collect(Collectors.toSet());
-//        try {
+            .map(this::toOptimizationTask)
+            .collect(Collectors.toSet());
         Logger.info(
             this, "Running %s optimizations in parallel",
             tasks.size()
         );
-//            Executors.newFixedThreadPool(4)
-//                .invokeAll(tasks)
-//                .forEach(
-//                    completed -> {
-//                        try {
-//                            completed.get();
-//                        } catch (final InterruptedException ex) {
-//                            Thread.currentThread().interrupt();
-//                        } catch (final ExecutionException ex) {
-//                            throw new IllegalArgumentException(
-//                                ex.getCause().getMessage(),
-//                                ex
-//                            );
-//                        }
-//                    }
-//                );
-
-        final long done = tasks.stream().parallel().mapToInt(
-            task -> {
-                try {
-                    task.call();
-                    return 1;
-                } catch (Exception ex) {
-                    throw new IllegalArgumentException(
-                        ex.getCause().getMessage(),
-                        ex
-                    );
-                }
-            }
-        ).sum();
-//        } catch (final InterruptedException ex) {
-//            Thread.currentThread().interrupt();
-//            throw new IllegalStateException(
-//                String.format(
-//                    "Interrupted while waiting for %d optimizations to finish",
-//                    done.get()
-//                ),
-//                ex
-//            );
-//        }
+        final long done = tasks.stream()
+            .parallel()
+            .mapToInt(this::executeOptimizationTask).sum();
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
+    }
+
+    private int executeOptimizationTask(final Callable<Object> task) {
+        try {
+            task.call();
+            return 1;
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(
+                ex.getCause().getMessage(),
+                ex
+            );
+        }
+    }
+
+    private Callable<Object> toOptimizationTask(final SynchronizedTojo tojo) {
+        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        Logger.info(
+            this, "Adding optimization task for %s",
+            src
+        );
+        return Executors.callable(
+            () -> {
+                try {
+                    final XML optimized = this.optimization(tojo)
+                        .apply(new XMLDocument(src));
+                    if (this.shouldPass(optimized)) {
+                        tojo.set(
+                            AssembleMojo.ATTR_XMIR2,
+                            this.make(optimized, src).toAbsolutePath().toString()
+                        );
+                    }
+                } catch (final IOException exception) {
+                    throw new IllegalStateException(
+                        String.format(
+                            "Unable to optimize %s",
+                            tojo.get(Tojos.KEY)
+                        ),
+                        exception
+                    );
+                }
+            }
+        );
     }
 
     private boolean optimizationRequired(Tojo tojo) {
