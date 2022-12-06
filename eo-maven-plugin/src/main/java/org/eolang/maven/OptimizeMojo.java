@@ -34,8 +34,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -123,7 +122,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final Set<Callable<Object>> tasks = sources.stream()
+        final Set<Supplier<Integer>> tasks = sources.stream()
             .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
             .map(this::toOptimizationTask)
@@ -133,7 +132,7 @@ public final class OptimizeMojo extends SafeMojo {
             tasks.size()
         );
         final int done = tasks.stream()
-            .parallel().mapToInt(OptimizeMojo::executeOptimizationTask)
+            .parallel().mapToInt(Supplier::get)
             .sum();
         if (done > 0) {
             Logger.info(this, "Optimized %d out of %d XMIR program(s)", done, sources.size());
@@ -148,34 +147,33 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojo that should be optimized.
      * @return Optimization task.
      */
-    private Callable<Object> toOptimizationTask(final SynchronizedTojo tojo) {
+    private Supplier<Integer> toOptimizationTask(final SynchronizedTojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         Logger.info(
             this, "Adding optimization task for %s",
             src
         );
-        return Executors.callable(
-            () -> {
-                try {
-                    final XML optimized = this.optimization(tojo)
-                        .apply(new XMLDocument(src));
-                    if (this.shouldPass(optimized)) {
-                        tojo.set(
-                            AssembleMojo.ATTR_XMIR2,
-                            this.make(optimized, src).toAbsolutePath().toString()
-                        );
-                    }
-                } catch (final IOException exception) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Unable to optimize %s",
-                            tojo.get(Tojos.KEY)
-                        ),
-                        exception
+        return () -> {
+            try {
+                final XML optimized = this.optimization(tojo)
+                    .apply(new XMLDocument(src));
+                if (this.shouldPass(optimized)) {
+                    tojo.set(
+                        AssembleMojo.ATTR_XMIR2,
+                        this.make(optimized, src).toAbsolutePath().toString()
                     );
                 }
+                return 1;
+            } catch (final IOException exception) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Unable to optimize %s",
+                        tojo.get(Tojos.KEY)
+                    ),
+                    exception
+                );
             }
-        );
+        };
     }
 
     /**
@@ -184,7 +182,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojo to check
      * @return True if optimization is required, false otherwise.
      */
-    private boolean optimizationRequired(Tojo tojo) {
+    private boolean optimizationRequired(final Tojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
@@ -198,24 +196,6 @@ public final class OptimizeMojo extends SafeMojo {
             }
         }
         return res;
-    }
-
-    /**
-     * Executes optimization task
-     *
-     * @param task Task to execute.
-     * @return 1 if optimization was executed successfully.
-     */
-    private static int executeOptimizationTask(final Callable<Object> task) {
-        try {
-            task.call();
-            return 1;
-        } catch (Exception ex) {
-            throw new IllegalArgumentException(
-                ex.getCause().getMessage(),
-                ex
-            );
-        }
     }
 
     /**
