@@ -262,7 +262,7 @@ public final class FakeMaven {
      *
      * @since 0.28.12
      */
-    static class Parse implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Parse implements Iterable<Class<? extends AbstractMojo>> {
 
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
@@ -277,7 +277,7 @@ public final class FakeMaven {
      *
      * @since 0.28.12
      */
-    static class Optimize implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Optimize implements Iterable<Class<? extends AbstractMojo>> {
 
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
