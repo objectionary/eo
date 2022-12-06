@@ -29,10 +29,10 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="@*" priority="1">
+  <xsl:template match="@*[starts-with(., '$Φ.')]" priority="1">
     <xsl:attribute name="{name()}">
       <xsl:text>$ν</xsl:text>
-      <xsl:value-of select="index-of(distinct-values(/@*), .)"/>
+      <xsl:value-of select="index-of(distinct-values(//@*[starts-with(., '$Φ.')]), .)"/>
     </xsl:attribute>
   </xsl:template>
   <xsl:template match="node()|@*">

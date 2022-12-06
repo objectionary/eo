@@ -85,12 +85,6 @@ SOFTWARE.
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        <xsl:comment>
-          <xsl:text>The $kid: </xsl:text>
-          <xsl:value-of select="$kid"/>
-          <xsl:text>, the $o/@loc: </xsl:text>
-          <xsl:value-of select="$o/@loc"/>
-        </xsl:comment>
         <xsl:if test="not($o/(preceding::o | ancestor::o)[starts-with(concat(@loc, '.'), concat($kid, '.')) or (@base and not(starts-with(@base, '.')) and starts-with(concat(eo:base-to-loc(.), '.'), concat($kid, '.')))])">
           <xsl:call-template name="add">
             <xsl:with-param name="loc" select="$kid"/>

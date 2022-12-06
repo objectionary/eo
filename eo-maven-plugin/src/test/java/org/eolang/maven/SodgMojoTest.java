@@ -235,13 +235,15 @@ final class SodgMojoTest {
         @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
         private void matches(final String item) {
             String vertex = "ν0";
-            for (final String sub : item.split(" ")) {
+            for (final String part : item.split(" ")) {
+                String sub = part;
                 boolean inverse = false;
                 final XML node = this.graph.nodes(
                     String.format("/graph/v[@id='%s']", vertex)
                 ).get(0);
                 if (sub.charAt(0) == '!') {
                     inverse = true;
+                    sub = sub.substring(1);
                 }
                 if (sub.charAt(0) == '.') {
                     final List<String> opts = node.xpath(
