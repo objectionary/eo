@@ -104,6 +104,7 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TO_TEXT = new TrFast(
         new TrClasspath<>(
+            "/org/eolang/maven/sodg-to/normalize-names.xsl",
             "/org/eolang/maven/sodg-to/to-text.xsl"
         ).back(),
         SodgMojo.class
@@ -136,6 +137,7 @@ public final class SodgMojo extends SafeMojo {
     private static final Train<Shift> TO_DOT = new TrLogged(
         new TrFast(
             new TrClasspath<>(
+                "/org/eolang/maven/sodg-to/normalize-attrs.xsl",
                 "/org/eolang/maven/sodg-to/to-dot.xsl"
             ).back(),
             SodgMojo.class
@@ -171,8 +173,7 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/xi-binds.xsl",
                         "/org/eolang/maven/sodg/connect-dots.xsl",
                         "/org/eolang/maven/sodg/put-data.xsl",
-                        "/org/eolang/maven/sodg/put-atoms.xsl",
-                        "/org/eolang/maven/sodg-to/normalize-names.xsl"
+                        "/org/eolang/maven/sodg/put-atoms.xsl"
                     ).back(),
                     SodgMojo.class,
                     Level.FINEST

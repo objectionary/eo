@@ -157,7 +157,7 @@ SOFTWARE.
   <xsl:template name="i">
     <xsl:param name="name" as="xs:string"/>
     <xsl:param name="args" as="item()*"/>
-    <xsl:param name="comment" as="xs:string"/>
+    <xsl:param name="comment" as="xs:string" select="''"/>
     <xsl:element name="i">
       <xsl:attribute name="name">
         <xsl:value-of select="$name"/>
