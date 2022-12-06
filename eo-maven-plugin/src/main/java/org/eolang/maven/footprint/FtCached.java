@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.footprint;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -30,6 +30,8 @@ import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.Home;
+import org.eolang.maven.Place;
 
 /**
  * Program footprint of EO compilation process.
@@ -50,7 +52,7 @@ import org.cactoos.text.TextOf;
  * </code>
  * @since 1.0
  */
-final class FtCached implements Footprint {
+public final class FtCached implements Footprint {
     /**
      * Path to target root.
      */
@@ -72,7 +74,7 @@ final class FtCached implements Footprint {
      * @param main Main root
      * @param cache Cache root
      */
-    FtCached(final String hash, final Path main, final Path cache) {
+    public FtCached(final String hash, final Path main, final Path cache) {
         this.hash = hash;
         this.main = main;
         this.cache = cache;

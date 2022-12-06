@@ -21,34 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.footprint;
 
-import java.nio.file.Path;
-import org.eolang.maven.footprint.FtDefault;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import java.io.IOException;
+import org.cactoos.Scalar;
 
 /**
- * Tests for Cached.
+ * Program footprint of EO compilation process.
  * @since 1.0
  */
-final class FtDefaultTest {
-    @Test
-    void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
-        final String content = String.join(
-            "\n",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-            "<program>",
-            "</program>"
-        );
-        new FtDefault(temp.resolve("target"))
-            .save("org.eolang.txt.text", "xmir", () -> content);
-        MatcherAssert.assertThat(
-            new FtDefault(temp.resolve("target"))
-                .load("org.eolang.txt.text", "xmir"),
-            Matchers.equalTo(content)
-        );
-    }
+public interface Footprint {
+
+    /**
+     * Get program content of a specific type.
+     * @param program Program name
+     * @param ext File extension which defines the type
+     * @return Content of a file
+     * @throws IOException In case of IO issue.
+     */
+    String load(String program, String ext) throws IOException;
+
+    /**
+     * Save content.
+     * @param program Program name
+     * @param ext File extension
+     * @param content File content
+     * @throws IOException In case of IO issues
+     */
+    void save(String program, String ext, Scalar<String> content)
+        throws IOException;
 }
