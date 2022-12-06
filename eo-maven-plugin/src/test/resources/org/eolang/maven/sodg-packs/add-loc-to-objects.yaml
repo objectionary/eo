@@ -1,0 +1,8 @@
+sheets:
+  - /org/eolang/maven/sodg/add-loc-to-objects.xsl
+document:
+  <program>
+    <objects/>
+  </program>
+asserts:
+  - /program/objects[@loc='Φ']
