@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
