@@ -73,6 +73,12 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>11.4</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->
