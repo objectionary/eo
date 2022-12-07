@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import org.cactoos.Fallback;
@@ -34,7 +34,7 @@ import org.cactoos.func.IoCheckedFunc;
  *
  * @since 1.0
  */
-final class OyFallback implements Objectionary {
+public final class OyFallback implements Objectionary {
 
     /**
      * Primary Objectionary.
@@ -51,7 +51,7 @@ final class OyFallback implements Objectionary {
      * @param primary Primary source.
      * @param secondary Secondary source.
      */
-    OyFallback(final Objectionary primary, final Objectionary secondary) {
+    public OyFallback(final Objectionary primary, final Objectionary secondary) {
         this.first = primary;
         this.second = secondary;
     }

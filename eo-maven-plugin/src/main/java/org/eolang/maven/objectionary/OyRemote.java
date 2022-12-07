@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.maven.Place;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -36,7 +37,7 @@ import org.eolang.maven.hash.CommitHash;
  *
  * @since 0.1
  */
-final class OyRemote implements Objectionary {
+public final class OyRemote implements Objectionary {
 
     /**
      * The address template.
@@ -48,7 +49,7 @@ final class OyRemote implements Objectionary {
      * @param hash Commit hash
      * @throws IOException if fails.
      */
-    OyRemote(final CommitHash hash) throws IOException {
+    public OyRemote(final CommitHash hash) throws IOException {
         this.template = new UrlOy(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash.value()
@@ -79,7 +80,7 @@ final class OyRemote implements Objectionary {
      *
      * @since 1.0
      */
-    static final class UrlOy {
+    public static final class UrlOy {
 
         /**
          * URL template. Expects two placeholders in terms of
@@ -99,7 +100,7 @@ final class OyRemote implements Objectionary {
          * @param template URL template.
          * @param hash Objects version hash.
          */
-        UrlOy(final String template, final String hash) {
+        public UrlOy(final String template, final String hash) {
             this.template = template;
             this.hash = hash;
         }

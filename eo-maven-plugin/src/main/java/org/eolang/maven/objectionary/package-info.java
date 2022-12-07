@@ -23,7 +23,11 @@
  */
 /**
  * Classes for EO objects repository (Objectionary).
- * Represents a program physical artifacts (like files, memory blocks, or others).
- * In its simplest form footprint of a program is a file on a disc with program data (XMIR).
+ * <br/>{@link org.eolang.maven.objectionary.Objectionary} base interface represents
+ * the repository. {@link org.eolang.maven.objectionary.OyRemote} and
+ * {@link org.eolang.maven.objectionary.OyHome} are implementations for
+ * remote and local storage.
+ * <br/>{@link org.eolang.maven.objectionary.OyFallback} allows to chain two
+ * repositories for object search.
  */
 package org.eolang.maven.objectionary;

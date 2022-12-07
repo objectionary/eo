@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import org.cactoos.Input;
@@ -31,7 +31,7 @@ import org.cactoos.Input;
  *
  * @since 0.1
  */
-final class OyEmpty implements Objectionary {
+public final class OyEmpty implements Objectionary {
 
     @Override
     public String toString() {

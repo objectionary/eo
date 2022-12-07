@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.TeeInput;
+import org.eolang.maven.Place;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -34,7 +35,7 @@ import org.eolang.maven.hash.CommitHash;
  *
  * @since 1.0
  */
-final class OyCaching implements Objectionary {
+public final class OyCaching implements Objectionary {
 
     /**
      * Cache location.
@@ -57,7 +58,7 @@ final class OyCaching implements Objectionary {
      * @param cache Cache directory.
      * @param primary Primary objectionary.
      */
-    OyCaching(
+    public OyCaching(
         final CommitHash hash,
         final Path cache,
         final Objectionary primary
@@ -71,7 +72,7 @@ final class OyCaching implements Objectionary {
      * @param cache Cache directory.
      * @param primary Primary objectionary.
      */
-    OyCaching(
+    public OyCaching(
         final String ver,
         final Path cache,
         final Objectionary primary

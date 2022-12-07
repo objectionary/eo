@@ -21,12 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.maven.Place;
+import org.eolang.maven.Rel;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -34,7 +36,7 @@ import org.eolang.maven.hash.CommitHash;
  *
  * @since 1.0
  */
-final class OyHome implements Objectionary {
+public final class OyHome implements Objectionary {
     /**
      * Local storage.
      */
@@ -50,7 +52,7 @@ final class OyHome implements Objectionary {
      * @param hash Commit hash.
      * @param path Root.
      */
-    OyHome(final CommitHash hash, final Path path) {
+    public OyHome(final CommitHash hash, final Path path) {
         this(hash.value(), path);
     }
 
@@ -59,7 +61,7 @@ final class OyHome implements Objectionary {
      * @param ver Version.
      * @param path Root.
      */
-    OyHome(final String ver, final Path path) {
+    public OyHome(final String ver, final Path path) {
         this.version = ver;
         this.home = path;
     }
