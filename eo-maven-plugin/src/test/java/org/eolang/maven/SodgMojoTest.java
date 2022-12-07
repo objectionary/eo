@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.Map;
 import org.cactoos.set.SetOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -71,7 +73,16 @@ final class SodgMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/sodgs", glob = "**/*.yaml")
+    @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
+    void transformsThroughSheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/sodgs", glob = "**.yaml")
     @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
     void generatesSodgForPacks(final String pack) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
@@ -145,6 +156,7 @@ final class SodgMojoTest {
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "csv")
+            .with("generateDotFiles", true)
             .with("sodgIncludes", new SetOf<>(inclusion))
             .execute();
         return new XMLDocument(
@@ -223,10 +235,16 @@ final class SodgMojoTest {
         @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
         private void matches(final String item) {
             String vertex = "ν0";
-            for (final String sub : item.split(" ")) {
+            for (final String part : item.split(" ")) {
+                String sub = part;
+                boolean inverse = false;
                 final XML node = this.graph.nodes(
                     String.format("/graph/v[@id='%s']", vertex)
                 ).get(0);
+                if (sub.charAt(0) == '!') {
+                    inverse = true;
+                    sub = sub.substring(1);
+                }
                 if (sub.charAt(0) == '.') {
                     final List<String> opts = node.xpath(
                         String.format(
@@ -234,7 +252,7 @@ final class SodgMojoTest {
                             sub.substring(1)
                         )
                     );
-                    if (opts.isEmpty()) {
+                    if (opts.isEmpty() && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "Can't find path '%s' while staying at %s",
@@ -242,14 +260,16 @@ final class SodgMojoTest {
                             )
                         );
                     }
-                    vertex = opts.get(0);
+                    if (!inverse) {
+                        vertex = opts.get(0);
+                    }
                     continue;
                 }
                 if (sub.charAt(0) == '>') {
                     final List<XML> inputs = this.graph.nodes(
                         String.format("/graph/v/e[@to='%s']", vertex)
                     );
-                    if (inputs.isEmpty()) {
+                    if (inputs.isEmpty() && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "There is no '%s' edge coming into %s",
@@ -312,7 +332,7 @@ final class SodgMojoTest {
                 if (sub.startsWith("ν=")) {
                     final String expected = sub.substring(2);
                     final boolean matches = vertex.equals(expected);
-                    if (!matches) {
+                    if (!matches && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
                                 "Current vertex '%s' is not '%s', as expected",

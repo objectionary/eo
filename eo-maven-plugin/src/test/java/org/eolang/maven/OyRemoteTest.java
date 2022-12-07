@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.eolang.maven.objectionary.OyRemote;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

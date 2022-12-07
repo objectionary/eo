@@ -35,6 +35,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.objectionary.Objectionary;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.

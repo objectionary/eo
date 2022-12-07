@@ -31,18 +31,12 @@ import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link XMIR}.
@@ -53,11 +47,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 final class XMIRTest {
 
     @ParameterizedTest
-    @MethodSource("samples")
-    void printsToEO(final String sample) throws Exception {
-        final String src = new TextOf(
-            new ResourceOf(sample)
-        ).asString();
+    @ClasspathSource(value = "org/eolang/parser/xmir-samples/", glob = "**.eo")
+    void printsToEO(final String src) throws Exception {
         Logger.debug(this, "Original EOLANG:%n%s", src);
         final XML first = XMIRTest.clean(XMIRTest.parse(src));
         Logger.debug(this, "First:%n%s", first);
@@ -105,23 +96,6 @@ final class XMIRTest {
         return new XSLDocument(
             XMIRTest.class.getResourceAsStream("strip-xmir.xsl")
         ).with(new ClasspathSources()).transform(xmir);
-    }
-
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Collection<String> samples() {
-        final String dir = "org/eolang/parser/xmir-samples/";
-        return new ListOf<>(
-            new Mapped<>(
-                file -> String.format("%s%s", dir, file),
-                new ListOf<>(
-                    new UncheckedText(
-                        new TextOf(
-                            new ResourceOf(dir)
-                        )
-                    ).asString().split("\n")
-                )
-            )
-        );
     }
 
 }

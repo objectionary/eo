@@ -44,6 +44,7 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.objectionary.Objectionary;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -81,7 +82,7 @@ final class SnippetTest {
     @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
-    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "*.yaml")
+    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
