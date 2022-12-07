@@ -21,44 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.eolang.maven.objectionary.OyRemote;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.io.IOException;
+import org.cactoos.Input;
 
 /**
- * Test for {@link OyRemote}.
+ * Fake empty HTTP Objectionary server.
  *
- * @since 1.0
+ * @since 0.1
  */
-final class OyRemoteTest {
+public final class OyEmpty implements Objectionary {
 
-    @Test
-    void buildsCorrectUrl() throws Exception {
-        MatcherAssert.assertThat(
-            new OyRemote.UrlOy(
-                "https://raw/objectionary/home/%s/objects/%s.eo",
-                "abcde"
-            ).value("org.eolang.app"),
-            Matchers.is(
-                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
-            )
-        );
+    @Override
+    public String toString() {
+        return "empty";
     }
 
-    @Test
-    void throwsExceptionOnInvalidUrl() {
-        Assertions.assertThrows(
-            MalformedURLException.class,
-            () -> new OyRemote.UrlOy(
-                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-                "abcde"
-            ).value("org.eolang.app")
-        );
+    @Override
+    public Input get(final String name) throws IOException {
+        throw new IOException("Empty objectionary");
     }
+
 }

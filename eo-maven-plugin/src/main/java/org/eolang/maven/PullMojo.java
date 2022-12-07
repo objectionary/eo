@@ -40,6 +40,12 @@ import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyCaching;
+import org.eolang.maven.objectionary.OyEmpty;
+import org.eolang.maven.objectionary.OyFallbackSwap;
+import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyRemote;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.

@@ -21,84 +21,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import org.cactoos.Input;
-import org.cactoos.io.TeeInput;
+import org.cactoos.io.InputOf;
+import org.eolang.maven.Place;
+import org.eolang.maven.Rel;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * Objectionary which caches objects locally.
+ * Objectionary stored locally.
  *
  * @since 1.0
  */
-final class OyCaching implements Objectionary {
-
+public final class OyHome implements Objectionary {
     /**
-     * Cache location.
+     * Local storage.
      */
-    private final Path cache;
+    private final Path home;
 
     /**
-     * Version or hash.
+     * Version.
      */
     private final String version;
 
     /**
-     * Remote Objectionary.
-     */
-    private final Objectionary primary;
-
-    /**
      * Ctor.
      * @param hash Commit hash.
-     * @param cache Cache directory.
-     * @param primary Primary objectionary.
+     * @param path Root.
      */
-    OyCaching(
-        final CommitHash hash,
-        final Path cache,
-        final Objectionary primary
-    ) {
-        this(hash.value(), cache, primary);
+    public OyHome(final CommitHash hash, final Path path) {
+        this(hash.value(), path);
     }
 
     /**
      * Ctor.
      * @param ver Version.
-     * @param cache Cache directory.
-     * @param primary Primary objectionary.
+     * @param path Root.
      */
-    OyCaching(
-        final String ver,
-        final Path cache,
-        final Objectionary primary
-    ) {
+    public OyHome(final String ver, final Path path) {
         this.version = ver;
-        this.cache = cache;
-        this.primary = primary;
+        this.home = path;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "[%s]+(%s cache to %s)",
-            this.primary, this.version, this.cache
+            "%s (%s)",
+            new Rel(this.home), this.version
         );
     }
 
     @Override
-    public Input get(final String name) throws IOException {
-        return new TeeInput(
-            this.primary.get(name),
-            new Place(name).make(
-                this.cache
-                    .resolve("pulled")
-                    .resolve(this.version),
-                "eo"
-            )
+    public Input get(final String name) throws FileNotFoundException {
+        final Path file = new Place(name).make(
+            this.home
+                .resolve("pulled")
+                .resolve(this.version),
+            "eo"
         );
+        if (!file.toFile().exists()) {
+            throw new FileNotFoundException(name);
+        }
+        return new InputOf(file);
     }
 }

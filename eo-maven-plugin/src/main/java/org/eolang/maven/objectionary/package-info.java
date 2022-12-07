@@ -21,26 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.io.IOException;
-import org.cactoos.Input;
-
 /**
- * Fake empty HTTP Objectionary server.
- *
- * @since 0.1
+ * Classes for EO objects repository (Objectionary).
+ * <br/>{@link org.eolang.maven.objectionary.Objectionary} base interface represents
+ * the repository. {@link org.eolang.maven.objectionary.OyRemote} and
+ * {@link org.eolang.maven.objectionary.OyHome} are implementations for
+ * remote and local storage.
+ * <br/>{@link org.eolang.maven.objectionary.OyFallback} allows to chain two
+ * repositories for object search.
  */
-final class OyEmpty implements Objectionary {
-
-    @Override
-    public String toString() {
-        return "empty";
-    }
-
-    @Override
-    public Input get(final String name) throws IOException {
-        throw new IOException("Empty objectionary");
-    }
-
-}
+package org.eolang.maven.objectionary;

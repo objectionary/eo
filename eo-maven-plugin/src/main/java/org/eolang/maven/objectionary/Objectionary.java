@@ -21,60 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
-import org.cactoos.Fallback;
 import org.cactoos.Input;
-import org.cactoos.func.FuncWithFallback;
-import org.cactoos.func.IoCheckedFunc;
 
 /**
- * Objectionary with fallback.
+ * Objectionary.
  *
  * @since 1.0
  */
-final class OyFallback implements Objectionary {
-
+public interface Objectionary {
     /**
-     * Primary Objectionary.
+     * Resolve object.
+     * @param name Object name.
+     * @return Object code.
+     * @throws IOException If fails to fetch.
      */
-    private final Objectionary first;
+    Input get(String name) throws IOException;
 
-    /**
-     * Fallback Objectionary.
-     */
-    private final Objectionary second;
-
-    /**
-     * Ctor.
-     * @param primary Primary source.
-     * @param secondary Secondary source.
-     */
-    OyFallback(final Objectionary primary, final Objectionary secondary) {
-        this.first = primary;
-        this.second = secondary;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-            "[%s]+[fallback to %s]",
-            this.first, this.second
-        );
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Input get(final String name) throws IOException {
-        return new IoCheckedFunc<>(
-            new FuncWithFallback<>(
-                this.first::get,
-                new Fallback.From<>(
-                    IOException.class,
-                    ex -> this.second.get(name)
-                )
-            )
-        ).apply(name);
-    }
 }

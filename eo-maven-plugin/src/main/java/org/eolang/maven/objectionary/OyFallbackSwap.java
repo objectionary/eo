@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import org.cactoos.Input;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.PullMojo;
 
 /**
  * Fallback which can swap primary/secondary repos.
@@ -46,7 +47,7 @@ import org.cactoos.scalar.Unchecked;
  * </pre>
  * @since 1.0
  */
-final class OyFallbackSwap implements Objectionary {
+public final class OyFallbackSwap implements Objectionary {
     /**
      * Swapped Oy.
      */
@@ -58,7 +59,7 @@ final class OyFallbackSwap implements Objectionary {
      * @param second Initial secondary
      * @param swap Whether to swap
      */
-    OyFallbackSwap(
+    public OyFallbackSwap(
         final Objectionary first,
         final Objectionary second,
         final boolean swap
