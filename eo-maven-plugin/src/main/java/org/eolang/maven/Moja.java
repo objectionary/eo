@@ -173,11 +173,12 @@ public final class Moja<T extends AbstractMojo> {
         } else {
             final Class<?> parent = clazz.getSuperclass();
             if (parent == null) {
-                Logger.warn(
-                    this,
-                    "Can't find '%s' in '%s'",
-                    name,
-                    mojo.getClass().getCanonicalName()
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't find '%s' in '%s'",
+                        name,
+                        this.type.getCanonicalName()
+                    )
                 );
             } else {
                 this.initField(parent, mojo, entry);
