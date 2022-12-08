@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -105,7 +105,7 @@ final class DcsDepgraph implements Iterable<Dependency> {
 
     @Override
     public Iterator<Dependency> iterator() {
-        return new DcsJson(this.file(this.dependency)).iterator();
+        return new DcsDepgraph.DcsJson(this.file(this.dependency)).iterator();
     }
 
     /**
@@ -153,15 +153,15 @@ final class DcsDepgraph implements Iterable<Dependency> {
     /**
      * Creates filename for transitive dependencies file.
      *
-     * @param dependency Dependency
+     * @param dep Dependency
      * @return Filename
      */
-    private static String fileName(final Dependency dependency) {
+    private static String fileName(final Dependency dep) {
         return String.format(
             "%s_%s_%s%s",
-            dependency.getGroupId(),
-            dependency.getArtifactId(),
-            dependency.getVersion(),
+            dep.getGroupId(),
+            dep.getArtifactId(),
+            dep.getVersion(),
             ".json"
         );
     }
@@ -171,7 +171,7 @@ final class DcsDepgraph implements Iterable<Dependency> {
      *
      * @since 0.28.11
      */
-    static class DcsJson implements Iterable<Dependency> {
+    static final class DcsJson implements Iterable<Dependency> {
 
         /**
          * File path.
@@ -181,16 +181,16 @@ final class DcsDepgraph implements Iterable<Dependency> {
         /**
          * The main constructor.
          *
-         * @param file File path
+         * @param path File path
          */
-        DcsJson(final Path file) {
-            this.file = file;
+        DcsJson(final Path path) {
+            this.file = path;
         }
 
         @Override
         public Iterator<Dependency> iterator() {
             try {
-                final List<Dependency> all = new ArrayList<>(0);
+                final Collection<Dependency> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
                     Logger.debug(this, String.format("Dependencies file: %s", this.file));
                     final JsonReader reader = Json.createReader(Files.newBufferedReader(this.file));

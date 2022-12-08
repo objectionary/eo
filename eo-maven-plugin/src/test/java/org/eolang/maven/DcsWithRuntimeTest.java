@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.28.11
  */
-class DcsWithRuntimeTest {
+final class DcsWithRuntimeTest {
 
     @Test
     void addsHardcodedVersionOfRuntimeDependency() throws Exception {

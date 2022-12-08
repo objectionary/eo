@@ -34,7 +34,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link org.eolang.maven.DcsDepgraph.DcsJson}.
+ * Test case for {@link DcsDepgraph.DcsJson}.
  *
  * @since 0.28.11
  */

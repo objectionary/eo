@@ -33,7 +33,7 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
 /**
- * Add runtime dependency if it is absent.
+ * Add runtime dependency to the list of dependencies, if it is absent there.
  *
  * @since 0.28.11
  */

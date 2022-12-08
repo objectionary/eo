@@ -37,7 +37,7 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.28.11
  */
-final class DcsUniqelyVersioned implements Iterable<Dependency> {
+final class DcsUniquelyVersioned implements Iterable<Dependency> {
 
     /**
      * Source of dependencies.
@@ -49,14 +49,15 @@ final class DcsUniqelyVersioned implements Iterable<Dependency> {
      *
      * @param dlg Source of dependencies.
      */
-    DcsUniqelyVersioned(final Iterable<Dependency> dlg) {
+    DcsUniquelyVersioned(final Iterable<Dependency> dlg) {
         this.delegate = dlg;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
         final Collection<Dependency> deps = new ListOf<>(this.delegate.iterator());
-        final Map<String, Set<String>> conflicts = deps.stream()
+        final Map<String, Set<String>> conflicts = deps
+            .stream()
             .collect(
                 Collectors.groupingBy(
                     Dependency::getManagementKey,
@@ -65,7 +66,9 @@ final class DcsUniqelyVersioned implements Iterable<Dependency> {
                         Collectors.toSet()
                     )
                 )
-            ).entrySet().stream()
+            )
+            .entrySet()
+            .stream()
             .filter(e -> e.getValue().size() > 1)
             .collect(
                 Collectors.toMap(

@@ -51,12 +51,12 @@ public final class DcsDefault implements Iterable<Dependency> {
     /**
      * Discover self too.
      */
-    private final boolean discoverSelf;
+    private final boolean discover;
 
     /**
      * Skip if zero version.
      */
-    private final boolean skipZeroVersions;
+    private final boolean skip;
 
     /**
      * Ctor.
@@ -67,8 +67,8 @@ public final class DcsDefault implements Iterable<Dependency> {
     public DcsDefault(final Tojos tjs, final boolean self,
         final boolean skip) {
         this.tojos = tjs;
-        this.discoverSelf = self;
-        this.skipZeroVersions = skip;
+        this.discover = self;
+        this.skip = skip;
     }
 
     @Override
@@ -85,7 +85,7 @@ public final class DcsDefault implements Iterable<Dependency> {
         final Collection<Dependency> deps = new HashSet<>(0);
         for (final Tojo tojo : list) {
             if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
-                && !this.discoverSelf) {
+                && !this.discover) {
                 Logger.debug(
                     this, "Program %s/%s skipped due to its zero version",
                     tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
@@ -103,7 +103,7 @@ public final class DcsDefault implements Iterable<Dependency> {
                 continue;
             }
             final Dependency dep = opt.get();
-            if (this.skipZeroVersions && ParseMojo.ZERO.equals(dep.getVersion())) {
+            if (this.skip && ParseMojo.ZERO.equals(dep.getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s/%s skipped: %s",
                     tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),

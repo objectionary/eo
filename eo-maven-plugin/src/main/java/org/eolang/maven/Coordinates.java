@@ -48,7 +48,8 @@ public final class Coordinates implements Comparable<Coordinates> {
     @Override
     public String toString() {
         final String ret;
-        if (this.dependency.getClassifier().isEmpty()) {
+        if (this.dependency.getClassifier() == null
+            || this.dependency.getClassifier().isEmpty()) {
             ret = String.format(
                 "%s:%s:%s",
                 this.dependency.getGroupId(),

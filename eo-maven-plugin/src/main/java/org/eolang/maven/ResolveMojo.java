@@ -37,8 +37,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
 
 /**
  * Find all required runtime dependencies, download
@@ -149,7 +147,7 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Find all deps for all tojos.
+     * Find all deps for all Tojos.
      *
      * @return List of them
      */
@@ -162,38 +160,40 @@ public final class ResolveMojo extends SafeMojo {
             )
         );
         if (!this.ignoreVersionConflicts) {
-            deps = new DcsUniqelyVersioned(deps);
+            deps = new DcsUniquelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {
             deps = new Mapped<>(
                 dependency -> {
-                    final long transitives = new Unchecked<>(
-                        new LengthOf(
-                            new Filtered<>(
-                                dep -> !dep.getScope().contains("test")
-                                    && !("org.eolang".equals(dep.getGroupId())
-                                    && "eo-runtime".equals(dep.getArtifactId())),
-                                new Filtered<>(
-                                    dep -> dep.getGroupId().equals(dependency.getGroupId())
-                                        && dep.getArtifactId().equals(dependency.getArtifactId()),
-                                    new DcsDepgraph(
-                                        this.project,
-                                        this.session,
-                                        this.manager,
-                                        this.targetDir.toPath()
-                                            .resolve(ResolveMojo.DIR)
-                                            .resolve("dependencies-info"),
-                                        dependency
-                                    )
-                                )
+                    final Iterable<Dependency> transitives = new Filtered<>(
+                        dep -> !ResolveMojo.eqTo(dep, dependency),
+                        new Filtered<>(
+                            dep -> !dep.getScope().contains("test")
+                                && !("org.eolang".equals(dep.getGroupId())
+                                && "eo-runtime".equals(dep.getArtifactId())),
+                            new DcsDepgraph(
+                                this.project,
+                                this.session,
+                                this.manager,
+                                this.targetDir.toPath()
+                                    .resolve(ResolveMojo.DIR)
+                                    .resolve("dependencies-info"),
+                                dependency
                             )
                         )
-                    ).value();
-                    if (transitives > 0L) {
+                    );
+                    final String list = String.join(
+                        ", ",
+                        new Mapped<>(
+                            dep -> new Coordinates(dep).toString(),
+                            transitives
+                        )
+                    );
+                    if (!list.isEmpty()) {
                         throw new IllegalStateException(
                             String.format(
-                                "%s contains transitive dependencies",
-                                dependency
+                                "%s contains transitive dependencies: [%s]",
+                                dependency, list
                             )
                         );
                     }
@@ -209,6 +209,26 @@ public final class ResolveMojo extends SafeMojo {
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Compare with NULL-safety.
+     * @param left Left
+     * @param right Right
+     * @return TRUE if they are equal
+     */
+    private static boolean eqTo(final Dependency left, final Dependency right) {
+        String lclf = left.getClassifier();
+        if (lclf == null) {
+            lclf = "";
+        }
+        String rclf = right.getClassifier();
+        if (rclf == null) {
+            rclf = "";
+        }
+        return lclf.equals(rclf)
+            && left.getArtifactId().equals(right.getArtifactId())
+            && left.getGroupId().equals(right.getGroupId());
     }
 
     /**
