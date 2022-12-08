@@ -183,7 +183,7 @@ public final class Main {
                 Class.forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)
             );
-        } catch (ClassNotFoundException ex){
+        } catch (final ClassNotFoundException ex) {
             throw new ExUnset(
                 String.format("Can not find \"%s\" object", opts.get(0))
             );

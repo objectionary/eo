@@ -85,10 +85,10 @@ public final class MainTest {
     }
 
     @Test
-    public void ObjectNotFoundException() throws Exception {
+    public void objectNotFoundException() throws Exception {
         MatcherAssert.assertThat(
-                MainTest.exec("--verbose", "unavailable-name"),
-                Matchers.containsString("Can not find \"unavailable-name\" object")
+            MainTest.exec("--verbose", "unavailable-name"),
+            Matchers.containsString("Can not find \"unavailable-name\" object")
         );
     }
 
