@@ -43,9 +43,13 @@ import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
- * Json File retrieved using the plugin for uploading transitive dependencies.
- * You can read more <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
+ * A list of transitive dependencies for a given Maven dependency.
  *
+ * A JSON File is retrieved using the plugin for uploading
+ * transitive dependencies. Then, we go through the JSON, parse it
+ * and build a list of dependencies.
+ *
+ * @see <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
  * @since 0.28.11
  */
 final class DcsDepgraph implements Iterable<Dependency> {
@@ -76,27 +80,27 @@ final class DcsDepgraph implements Iterable<Dependency> {
     private final Dependency dependency;
 
     /**
-     * The main contructor.
+     * The main constructor.
      *
-     * @param project Maven project
-     * @param session Maven session
-     * @param manager Maven plugin manager
-     * @param dir Directory to save all transitive dependencies files
-     * @param dependency Dependency
+     * @param pkt Maven project
+     * @param ssn Maven session
+     * @param mgr Maven plugin manager
+     * @param path Directory to save all transitive dependencies files
+     * @param dep Dependency
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     DcsDepgraph(
-        final MavenProject project,
-        final MavenSession session,
-        final BuildPluginManager manager,
-        final Path dir,
-        final Dependency dependency
+        final MavenProject pkt,
+        final MavenSession ssn,
+        final BuildPluginManager mgr,
+        final Path path,
+        final Dependency dep
     ) {
-        this.project = project;
-        this.session = session;
-        this.manager = manager;
-        this.dir = dir;
-        this.dependency = dependency;
+        this.project = pkt;
+        this.session = ssn;
+        this.manager = mgr;
+        this.dir = path;
+        this.dependency = dep;
     }
 
     @Override

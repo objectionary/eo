@@ -34,7 +34,11 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Find all required runtime dependencies, download
@@ -158,23 +162,44 @@ public final class ResolveMojo extends SafeMojo {
             )
         );
         if (!this.ignoreVersionConflicts) {
-            deps = new DcsWithoutConflicts(deps);
+            deps = new DcsUniqelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {
-            deps = new DcsNoOneHasTransitive(
-                deps,
-                dep -> new DcsTransitive(
-                    new DcsDepgraph(
-                        this.project,
-                        this.session,
-                        this.manager,
-                        this.targetDir.toPath()
-                            .resolve(ResolveMojo.DIR)
-                            .resolve("dependencies-info"),
-                        dep
-                    ),
-                    dep
-                )
+            deps = new Mapped<>(
+                dependency -> {
+                    final long transitives = new Unchecked<>(
+                        new LengthOf(
+                            new Filtered<>(
+                                dep -> !dep.getScope().contains("test")
+                                    && !("org.eolang".equals(dep.getGroupId())
+                                    && "eo-runtime".equals(dep.getArtifactId())),
+                                new Filtered<>(
+                                    dep -> dep.getGroupId().equals(dependency.getGroupId())
+                                        && dep.getArtifactId().equals(dependency.getArtifactId()),
+                                    new DcsDepgraph(
+                                        this.project,
+                                        this.session,
+                                        this.manager,
+                                        this.targetDir.toPath()
+                                            .resolve(ResolveMojo.DIR)
+                                            .resolve("dependencies-info"),
+                                        dependency
+                                    )
+                                )
+                            )
+                        )
+                    ).value();
+                    if (transitives > 0L) {
+                        throw new IllegalStateException(
+                            String.format(
+                                "%s contains transitive dependencies",
+                                dependency
+                            )
+                        );
+                    }
+                    return dependency;
+                },
+                deps
             );
         }
         return new ListOf<>(deps)

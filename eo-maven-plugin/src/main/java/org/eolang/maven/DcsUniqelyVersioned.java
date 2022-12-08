@@ -32,11 +32,12 @@ import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 
 /**
- * Check dependencies for conflicts.
+ * A decorator of a list of dependencies that throws an exception
+ * if any dependency has a duplicate with a different version.
  *
  * @since 0.28.11
  */
-final class DcsWithoutConflicts implements Iterable<Dependency> {
+final class DcsUniqelyVersioned implements Iterable<Dependency> {
 
     /**
      * Source of dependencies.
@@ -48,7 +49,7 @@ final class DcsWithoutConflicts implements Iterable<Dependency> {
      *
      * @param dlg Source of dependencies.
      */
-    DcsWithoutConflicts(final Iterable<Dependency> dlg) {
+    DcsUniqelyVersioned(final Iterable<Dependency> dlg) {
         this.delegate = dlg;
     }
 
