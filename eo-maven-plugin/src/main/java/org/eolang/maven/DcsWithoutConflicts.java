@@ -36,20 +36,20 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.28.11
  */
-final class DcsWithoutConflicts implements Dependencies {
+final class DcsWithoutConflicts implements Iterable<Dependency> {
 
     /**
      * Source of dependencies.
      */
-    private final Dependencies delegate;
+    private final Iterable<Dependency> delegate;
 
     /**
      * The main constructor.
      *
-     * @param delegate Source of dependencies.
+     * @param dlg Source of dependencies.
      */
-    DcsWithoutConflicts(final Dependencies delegate) {
-        this.delegate = delegate;
+    DcsWithoutConflicts(final Iterable<Dependency> dlg) {
+        this.delegate = dlg;
     }
 
     @Override

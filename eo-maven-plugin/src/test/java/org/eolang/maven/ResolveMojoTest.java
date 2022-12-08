@@ -31,6 +31,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -38,6 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
+@ExtendWith(WeAreOnline.class)
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ResolveMojoTest {
 

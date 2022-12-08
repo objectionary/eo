@@ -47,7 +47,7 @@ final class DcsWithRuntime implements Dependencies {
     /**
      * All dependencies.
      */
-    private final Dependencies delegate;
+    private final Iterable<Dependency> delegate;
 
     /**
      * Supplier of the eo-runtime dependency.
@@ -59,7 +59,7 @@ final class DcsWithRuntime implements Dependencies {
      *
      * @param delegate Dependencies delegate.
      */
-    DcsWithRuntime(final Dependencies delegate) {
+    DcsWithRuntime(final Iterable<Dependency> delegate) {
         this(delegate, DcsWithRuntime.MAVEN_DEPENDENCY);
     }
 
@@ -69,7 +69,7 @@ final class DcsWithRuntime implements Dependencies {
      * @param delegate Dependencies delegate.
      * @param supplied Supplier of the eo-runtime dependency.
      */
-    DcsWithRuntime(final Dependencies delegate, final Unchecked<Dependency> supplied) {
+    DcsWithRuntime(final Iterable<Dependency> delegate, final Unchecked<Dependency> supplied) {
         this.delegate = delegate;
         this.supplied = supplied;
     }

@@ -23,9 +23,9 @@
  */
 package org.eolang.maven;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.cactoos.Func;
 import org.cactoos.func.UncheckedFunc;
@@ -44,7 +44,7 @@ final class DcsNoOneHasTransitive implements Dependencies {
     /**
      * Source of dependencies to check.
      */
-    private final Dependencies delegate;
+    private final Iterable<Dependency> delegate;
 
     /**
      * The function that get all transitive dependencies for the particular one.
@@ -54,20 +54,20 @@ final class DcsNoOneHasTransitive implements Dependencies {
     /**
      * The main constructor.
      *
-     * @param delegate Source of dependencies to check
-     * @param transitive The function that get all transitive dependencies for the particular one.
+     * @param dlg Source of dependencies to check
+     * @param trans The function that get all transitive dependencies for the particular one.
      */
     DcsNoOneHasTransitive(
-        final Dependencies delegate,
-        final Func<Dependency, Dependencies> transitive
+        final Iterable<Dependency> dlg,
+        final Func<Dependency, Dependencies> trans
     ) {
-        this.delegate = delegate;
-        this.transitive = new UncheckedFunc<>(transitive);
+        this.delegate = dlg;
+        this.transitive = new UncheckedFunc<>(trans);
     }
 
     @Override
     public Iterator<Dependency> iterator() {
-        final List<Dependency> res = new LinkedList<>();
+        final Collection<Dependency> res = new LinkedList<>();
         for (final Dependency dep : this.delegate) {
             if (this.hasTransitive(dep)) {
                 throw new IllegalStateException(
