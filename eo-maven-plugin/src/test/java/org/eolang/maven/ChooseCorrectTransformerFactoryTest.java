@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
@@ -46,14 +47,13 @@ class ChooseCorrectTransformerFactoryTest {
 
     @Test
     void choosesCorrectlyInConcurrentEnvironment() {
-        IntStream.range(0, 100)
-            .parallel()
+        for (final Class<? extends TransformerFactory> clazz : IntStream.range(0, 100).parallel()
             .mapToObj(i -> TransformerFactory.newInstance().getClass())
-            .forEach(
-                clazz -> MatcherAssert.assertThat(
-                    clazz,
-                    Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
-                )
+            .collect(Collectors.toList())) {
+            MatcherAssert.assertThat(
+                clazz,
+                Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );
+        }
     }
 }
