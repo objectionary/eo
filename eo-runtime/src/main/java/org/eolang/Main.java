@@ -41,8 +41,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static java.lang.Class.*;
-
 /**
  * Bridge between Java CLI and EO.
  *
@@ -182,7 +180,7 @@ public final class Main {
         final Phi app;
         try {
             app = Phi.class.cast(
-                forName(path).getConstructor(Phi.class)
+                Class.forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)
             );
         } catch (ClassNotFoundException ex){
