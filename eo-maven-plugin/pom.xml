@@ -70,7 +70,12 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-log</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
       <!-- version from parent POM -->
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
