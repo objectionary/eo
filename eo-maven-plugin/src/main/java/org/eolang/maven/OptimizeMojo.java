@@ -220,7 +220,7 @@ public final class OptimizeMojo extends SafeMojo {
     private Optimization optimization(final Tojo tojo) {
         Optimization opt;
         if (this.trackOptimizationSteps) {
-            opt = new OptSpy(targetDir.toPath().resolve(OptimizeMojo.STEPS));
+            opt = new OptSpy(this.targetDir.toPath().resolve(OptimizeMojo.STEPS));
         } else {
             opt = new OptTrain();
         }

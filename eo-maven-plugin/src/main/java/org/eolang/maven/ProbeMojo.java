@@ -35,19 +35,14 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeSet;
-import org.apache.maven.plugin.MojoExecutionException;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.UncheckedInput;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.TextOfScalar;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
@@ -143,19 +138,22 @@ public final class ProbeMojo extends SafeMojo {
             int count = 0;
             int fl = 0;
             for (final String name : names) {
-                System.out.println(String.format("NAME IS %s\n", name));
+                //System.out.println(String.format("NAME IS %s\n", name));
                 try {
-                    new UncheckedInput(this.objectionary.get(name));
+                    this.objectionary.get(name);
+                    //System.out.println("PLUS");
                 } catch (final Exception e) {
-                    System.out.println("FOUND!!!!!!!!!!!!!!!!");
+                    System.out.println("NOT FOUND!!!!!!!!!!!!!!!!");
                     Logger.info(
                         this,
                         String.format("Failed to probe %s from %s", name, this.objectionary)
                     );
                     fl = 1;
                 }
-                if (fl == 1) continue;
-                System.out.println(new UncheckedText(new TextOf(this.objectionary.get(name))).asString());
+                if (fl == 1) {
+                    continue;
+                }
+                //System.out.println(new UncheckedText(new TextOf(this.objectionary.get(name))).asString());
                 ++count;
                 final Tojo ftojo = this.scopedTojos().add(name);
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
@@ -166,6 +164,8 @@ public final class ProbeMojo extends SafeMojo {
             }
             tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
         }
+        //System.out.print("FINALLY PROBED:  ");
+        //System.out.println(probed);
         if (tojos.isEmpty()) {
             if (this.scopedTojos().select(row -> true).isEmpty()) {
                 Logger.warn(this, "Nothing to probe, since there are no programs");
@@ -221,7 +221,7 @@ public final class ProbeMojo extends SafeMojo {
     private Collection<String> probe(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = new TreeSet<>(
+        final Collection<String> probed = new TreeSet<>(
             new ListOf<>(
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
@@ -229,18 +229,28 @@ public final class ProbeMojo extends SafeMojo {
                 )
             )
         );
-        if (names.isEmpty()) {
+        final Collection<String> ret = new TreeSet<>();
+        probed.forEach(obj -> {
+            if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
+                ret.add(obj.substring(2));
+            } else {
+                ret.add(obj);
+            }
+        });
+        //System.out.print("found OBJECTS: ");
+        //System.out.println(ret);
+        if (ret.isEmpty()) {
             Logger.debug(
-                this, "Didn't find any probes in %s",
+                this, "Didn't find any probed objects in %s",
                 new Rel(file)
             );
         } else {
             Logger.debug(
-                this, "Found %d probes in %s: %s",
-                names.size(), new Rel(file), names
+                this, "Found %d probed objects in %s: %s",
+                ret.size(), new Rel(file), ret
             );
         }
-        return names;
+        return ret;
     }
 
 }
