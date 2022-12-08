@@ -37,7 +37,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.28.11
  */
-final class DcsWithRuntime implements Dependencies {
+final class DcsWithRuntime implements Iterable<Dependency> {
 
     /**
      * Dependency downloaded by HTTP from Maven Central.
@@ -57,21 +57,22 @@ final class DcsWithRuntime implements Dependencies {
     /**
      * Constructor.
      *
-     * @param delegate Dependencies delegate.
+     * @param dlg Dependencies delegate.
      */
-    DcsWithRuntime(final Iterable<Dependency> delegate) {
-        this(delegate, DcsWithRuntime.MAVEN_DEPENDENCY);
+    DcsWithRuntime(final Iterable<Dependency> dlg) {
+        this(dlg, DcsWithRuntime.MAVEN_DEPENDENCY);
     }
 
     /**
      * The main constructor.
      *
-     * @param delegate Dependencies delegate.
-     * @param supplied Supplier of the eo-runtime dependency.
+     * @param dlg Dependencies delegate.
+     * @param sup Supplier of the eo-runtime dependency.
      */
-    DcsWithRuntime(final Iterable<Dependency> delegate, final Unchecked<Dependency> supplied) {
-        this.delegate = delegate;
-        this.supplied = supplied;
+    DcsWithRuntime(final Iterable<Dependency> dlg,
+        final Unchecked<Dependency> sup) {
+        this.delegate = dlg;
+        this.supplied = sup;
     }
 
     @Override

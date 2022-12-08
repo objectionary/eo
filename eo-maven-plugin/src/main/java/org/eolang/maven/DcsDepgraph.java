@@ -48,7 +48,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.28.11
  */
-final class DcsDepgraph implements Dependencies {
+final class DcsDepgraph implements Iterable<Dependency> {
 
     /**
      * Maven project.
@@ -167,7 +167,7 @@ final class DcsDepgraph implements Dependencies {
      *
      * @since 0.28.11
      */
-    static class DcsJson implements Dependencies {
+    static class DcsJson implements Iterable<Dependency> {
 
         /**
          * File path.

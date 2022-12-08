@@ -32,12 +32,12 @@ import org.cactoos.iterator.Filtered;
  *
  * @since 0.28.11
  */
-final class DcsTransitive implements Dependencies {
+final class DcsTransitive implements Iterable<Dependency> {
 
     /**
      * Delegate dependencies.
      */
-    private final Dependencies delegate;
+    private final Iterable<Dependency> delegate;
 
     /**
      * The dependency that transitive dependencies we are interested of.
@@ -47,12 +47,12 @@ final class DcsTransitive implements Dependencies {
     /**
      * The main contructor.
      *
-     * @param delegate Delegate
-     * @param origin The dependency that transitive dependencies we are interested of
+     * @param dlg Delegate
+     * @param dep The dependency that transitive dependencies we are interested of
      */
-    DcsTransitive(final Dependencies delegate, final Dependency origin) {
-        this.delegate = delegate;
-        this.origin = origin;
+    DcsTransitive(final Iterable<Dependency> dlg, final Dependency dep) {
+        this.delegate = dlg;
+        this.origin = dep;
     }
 
     @Override
@@ -97,8 +97,8 @@ final class DcsTransitive implements Dependencies {
      */
     private static boolean notRuntime(final Dependency dep) {
         return !(
-            dep.getGroupId().equals("org.eolang")
-                && dep.getArtifactId().equals("eo-runtime")
+            "org.eolang".equals(dep.getGroupId())
+                && "eo-runtime".equals(dep.getArtifactId())
             );
     }
 }

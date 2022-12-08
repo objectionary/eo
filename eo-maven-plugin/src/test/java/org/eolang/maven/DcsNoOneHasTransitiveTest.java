@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link org.eolang.maven.DcsNoOneHasTransitive}.
+ * Test case for {@link DcsNoOneHasTransitive}.
  *
  * @since 0.28.11
  */
@@ -61,14 +61,14 @@ class DcsNoOneHasTransitiveTest {
         );
     }
 
-    private static Dependencies empty() {
+    private static Iterable<Dependency> empty() {
         return Collections::emptyIterator;
     }
 
-    private static Dependencies single(final String artifact) {
+    private static Iterable<Dependency> single(final String artifact) {
         return Collections.singletonList(
             DcsNoOneHasTransitiveTest.dependency(artifact)
-        )::iterator;
+        );
     }
 
     private static Dependency dependency(final String artifact) {

@@ -39,7 +39,7 @@ import org.cactoos.scalar.Unchecked;
  * @todo #1361:90min The class without tests. We definitely have to write some tests
  *   in order to make the class possible for future refactoring and easy maintainance.
  */
-final class DcsNoOneHasTransitive implements Dependencies {
+final class DcsNoOneHasTransitive implements Iterable<Dependency> {
 
     /**
      * Source of dependencies to check.
@@ -49,7 +49,7 @@ final class DcsNoOneHasTransitive implements Dependencies {
     /**
      * The function that get all transitive dependencies for the particular one.
      */
-    private final UncheckedFunc<Dependency, Dependencies> transitive;
+    private final UncheckedFunc<Dependency, Iterable<Dependency>> transitive;
 
     /**
      * The main constructor.
@@ -59,7 +59,7 @@ final class DcsNoOneHasTransitive implements Dependencies {
      */
     DcsNoOneHasTransitive(
         final Iterable<Dependency> dlg,
-        final Func<Dependency, Dependencies> trans
+        final Func<Dependency, Iterable<Dependency>> trans
     ) {
         this.delegate = dlg;
         this.transitive = new UncheckedFunc<>(trans);

@@ -32,7 +32,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link org.eolang.maven.DcsWithRuntime}.
+ * Test case for {@link DcsWithRuntime}.
  *
  * @since 0.28.11
  */
@@ -41,7 +41,7 @@ class DcsWithRuntimeTest {
     @Test
     void addsHardcodedVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
-            dependencies(),
+            DcsWithRuntimeTest.dependencies(),
             new Unchecked<>(DcsWithRuntimeTest::dependency)
         );
         MatcherAssert.assertThat(
@@ -53,7 +53,7 @@ class DcsWithRuntimeTest {
     @Test
     void addsRemoteVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
-            dependencies()
+            DcsWithRuntimeTest.dependencies()
         );
         MatcherAssert.assertThat(
             new LengthOf(dependencies).value(),
@@ -61,8 +61,8 @@ class DcsWithRuntimeTest {
         );
     }
 
-    private static Dependencies dependencies() {
-        return Collections.singleton(dependency())::iterator;
+    private static Iterable<Dependency> dependencies() {
+        return Collections.singleton(DcsWithRuntimeTest.dependency());
     }
 
     private static Dependency dependency() {
