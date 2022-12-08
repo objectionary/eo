@@ -41,6 +41,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.lang.Class.*;
+
 /**
  * Bridge between Java CLI and EO.
  *
@@ -177,10 +179,17 @@ public final class Main {
         final String path = Arrays.stream(opts.get(0).split("\\."))
             .map(p -> String.format("EO%s", p))
             .collect(Collectors.joining("."));
-        final Phi app = Phi.class.cast(
-            Class.forName(path).getConstructor(Phi.class)
+        final Phi app;
+        try {
+            app = Phi.class.cast(
+                forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)
-        );
+            );
+        } catch (ClassNotFoundException ex){
+            throw new ExUnset(
+                String.format("Can not find \"%s\" object", opts.get(0))
+            );
+        }
         for (int idx = 1; idx < opts.size(); ++idx) {
             final Phi phi = new EOstring(Phi.Φ);
             final String arg = opts.get(idx);
