@@ -185,7 +185,7 @@ public final class Main {
             );
         } catch (final ClassNotFoundException ex) {
             throw new ExUnset(
-                String.format("Can not find \"%s\" object", opts.get(0))
+                String.format("Can not find '%s' object", opts.get(0))
             );
         }
         for (int idx = 1; idx < opts.size(); ++idx) {
