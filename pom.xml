@@ -73,7 +73,8 @@ SOFTWARE.
   </issueManagement>
   <scm>
     <connection>scm:git:git@github.com:objectionary/eo.git</connection>
-    <developerConnection>scm:git:git@github.com:objectionary/eo.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:objectionary/eo.git
+    </developerConnection>
     <url>https://github.com/objectionary/eo</url>
   </scm>
   <ciManagement>
@@ -167,6 +168,12 @@ SOFTWARE.
         <version>0.22.0</version>
       </dependency>
       <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>Saxon-HE</artifactId>
+        <version>11.4</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
         <version>0.26.0</version>
@@ -200,8 +207,14 @@ SOFTWARE.
       <dependency>
         <groupId>org.eolang</groupId>
         <artifactId>jucs</artifactId>
-        <version>0.0.4</version>
+        <version>0.2.0</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eolang</groupId>
+        <artifactId>xax</artifactId>
+        <scope>test</scope>
+        <version>0.0.5</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -173,11 +172,12 @@ public final class Moja<T extends AbstractMojo> {
         } else {
             final Class<?> parent = clazz.getSuperclass();
             if (parent == null) {
-                Logger.warn(
-                    this,
-                    "Can't find '%s' in '%s'",
-                    name,
-                    mojo.getClass().getCanonicalName()
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't find '%s' in '%s'",
+                        name,
+                        this.type.getCanonicalName()
+                    )
                 );
             } else {
                 this.initField(parent, mojo, entry);

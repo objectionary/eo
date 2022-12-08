@@ -1,0 +1,12 @@
+sheets:
+  - /org/eolang/maven/sodg-to/normalize-attrs.xsl
+document:
+  <graph>
+    <v id="$Φ.foo">
+      <e title="hello" to="$Φ.foo.x"/>
+      <e to="ν0"/>
+    </v>
+  </graph>
+asserts:
+  - /graph[count(v)=1]
+  - /graph/v[@id='$ν1' and e[@to='$ν2' and @title="hello"] and e/@to='ν0']

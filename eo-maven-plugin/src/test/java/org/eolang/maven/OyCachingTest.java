@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.objectionary.OyCaching;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

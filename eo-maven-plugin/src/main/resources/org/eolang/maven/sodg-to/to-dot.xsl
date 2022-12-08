@@ -34,13 +34,15 @@ SOFTWARE.
   </xsl:variable>
   <xsl:function name="eo:node" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:value-of select="replace(replace($name, 'ν', 'v'), '\$', '')"/>
+    <xsl:value-of select="replace($name, '^\$', '')"/>
   </xsl:function>
   <xsl:template match="/*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="dot">
         <xsl:call-template name="license-dot"/>
+        <xsl:text>/* Render it at https://dreampuf.github.io/GraphvizOnline/ */</xsl:text>
+        <xsl:value-of select="$EOL"/>
         <xsl:text>digraph {</xsl:text>
         <xsl:value-of select="$EOL"/>
         <xsl:text>  node [fixedsize=true,width=1,fontname="Arial"];</xsl:text>
@@ -76,7 +78,7 @@ SOFTWARE.
         <xsl:text>Φ</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="replace(eo:node(@id), 'v', 'ν')"/>
+        <xsl:value-of select="eo:node(@id)"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="lambda">
@@ -98,10 +100,10 @@ SOFTWARE.
     <xsl:value-of select="@title"/>
     <xsl:text>"</xsl:text>
     <xsl:choose>
-      <xsl:when test="@title = 'π'">
+      <xsl:when test="starts-with(@title, 'π')">
         <xsl:text>,style=dashed</xsl:text>
       </xsl:when>
-      <xsl:when test="@title = 'ρ' or @title = 'σ'">
+      <xsl:when test="starts-with(@title, 'ρ') or starts-with(@title, 'σ')">
         <xsl:text>,color=gray,fontcolor=gray</xsl:text>
       </xsl:when>
     </xsl:choose>

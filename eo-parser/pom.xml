@@ -63,7 +63,7 @@ SOFTWARE.
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
-      <version>11.4</version>
+      <!-- version from parent POM -->
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -143,6 +143,11 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>xax</artifactId>
       <!-- version from parent POM -->
     </dependency>
   </dependencies>

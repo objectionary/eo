@@ -29,11 +29,9 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Data;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -68,24 +66,6 @@ public final class EOerror extends PhDefault {
                     throw new ExError(enclosure);
                 }
             )
-        );
-    }
-
-    /**
-     * Ctor.
-     *
-     * <p>Use this method to build a new error object. Don't use the
-     * constructor here. This factory method is much more convenient.</p>
-     *
-     * @param format Message format string, similar to {@link String#format(String, Object...)}
-     * @param params Parameters, which will be passed to the formatter
-     * @return The error object
-     */
-    public static Phi make(final String format, final Object... params) {
-        return new PhWith(
-            new EOerror(Phi.Φ),
-            "α",
-            new Data.ToPhi(String.format(format, params))
         );
     }
 

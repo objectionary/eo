@@ -27,7 +27,10 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhWith;
+import org.eolang.Phi;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +46,11 @@ public final class EOerrorTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(
-                EOerror.make("intentional error")
+                new PhWith(
+                    new EOerror(Phi.Φ),
+                    "α",
+                    new Data.ToPhi("intentional error")
+                )
             ).take()
         );
     }

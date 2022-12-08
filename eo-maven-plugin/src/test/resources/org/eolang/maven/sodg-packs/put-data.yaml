@@ -1,0 +1,12 @@
+sheets:
+  - /org/eolang/maven/sodg/put-data.xsl
+document:
+  <program>
+    <objects loc="Φ">
+      <o name="x" base="org.eolang.bool" data="bool" loc="Φ.a.b.x">01</o>
+    </objects>
+    <sodg/>
+  </program>
+asserts:
+  - //sodg[count(i)=1]
+  - //i[@name='PUT' and a='$Φ.a.b.x' and a='01-']

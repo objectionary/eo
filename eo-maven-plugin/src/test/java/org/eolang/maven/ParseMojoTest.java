@@ -29,6 +29,7 @@ import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.hamcrest.MatcherAssert;
@@ -50,7 +51,7 @@ final class ParseMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             maven.withHelloWorld()
-                .execute(ParseMojo.class)
+                .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
@@ -69,7 +70,7 @@ final class ParseMojoTest {
             () -> new FakeMaven(temp)
                 .withHelloWorld()
                 .with("timeout", 0)
-                .execute(ParseMojo.class)
+                .execute(new FakeMaven.Parse())
         );
     }
 
@@ -91,7 +92,7 @@ final class ParseMojoTest {
                 maven.withProgram("invalid content")
                     .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
                     .with("cache", cache)
-                    .execute(ParseMojo.class)
+                    .execute(new FakeMaven.Parse())
                     .result()
                     .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
             ).toString(),
@@ -118,7 +119,7 @@ final class ParseMojoTest {
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .with("failOnError", false)
-                .execute(ParseMojo.class)
+                .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.not(
                 Matchers.hasKey(
@@ -141,7 +142,7 @@ final class ParseMojoTest {
         for (int program = 0; program < total; ++program) {
             maven.withHelloWorld();
         }
-        final Map<String, Path> res = maven.execute(ParseMojo.class).result();
+        final Map<String, Path> res = maven.execute(new FakeMaven.Parse()).result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
                 res,

@@ -27,15 +27,22 @@ import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
 
@@ -127,6 +134,24 @@ public final class FakeMaven {
     }
 
     /**
+     * Executes mojos in the workspace.
+     * You can use utility classes to run predefined maven pipelines:
+     *  - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
+     *  - {@link org.eolang.maven.FakeMaven.Optimize} to parse and optimize eo code
+     *  - see other inner classes below.
+     * @param mojo Several mojos to execute.
+     * @return Workspace after executing Mojo.
+     * @throws IOException If some problem with filesystem is happened.
+     */
+    public FakeMaven execute(final Iterable<Class<? extends AbstractMojo>> mojo)
+        throws IOException {
+        for (final Class<? extends AbstractMojo> clazz : mojo) {
+            this.execute(clazz);
+        }
+        return this;
+    }
+
+    /**
      * Executes Mojo in the workspace.
      *
      * @param mojo Mojo to execute.
@@ -144,7 +169,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         final Moja<T> moja = new Moja<>(mojo);
-        for (final Map.Entry<String, ?> entry : this.params.entrySet()) {
+        for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
         }
         moja.execute();
@@ -234,5 +259,71 @@ public final class FakeMaven {
             .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
         this.current.incrementAndGet();
         return this;
+    }
+
+    /**
+     * Ensures the map of allowed params for the Mojo.
+     *
+     * @param mojo Mojo
+     * @return Map of params that applicable to the Mojo
+     */
+    private Map<String, ?> allowedParams(final Class<? extends AbstractMojo> mojo) {
+        final Map<String, Object> res = new HashMap<>();
+        final Set<String> allowed = FakeMaven.mojoFields(mojo, new HashSet<>());
+        for (final Map.Entry<String, Object> entry : this.params.entrySet()) {
+            if (allowed.contains(entry.getKey())) {
+                res.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Looks for all declared fields for mojo and its parents.
+     *
+     * @param mojo Mojo or mojo parent.
+     * @param fields Already collected fields.
+     * @return All mojo and mojo parent fields.
+     */
+    private static Set<String> mojoFields(final Class<?> mojo, final Set<String> fields) {
+        final Set<String> res;
+        if (mojo == null) {
+            res = fields;
+        } else {
+            Stream.of(mojo.getDeclaredFields()).map(Field::getName).forEach(fields::add);
+            res = mojoFields(mojo.getSuperclass(), fields);
+        }
+        return res;
+    }
+
+    /**
+     * Parse full pipeline.
+     *
+     * @since 0.28.12
+     */
+    static final class Parse implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Collections.<Class<? extends AbstractMojo>>singletonList(
+                ParseMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Optimization full pipeline.
+     *
+     * @since 0.28.12
+     */
+    static final class Optimize implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class
+            ).iterator();
+        }
     }
 }

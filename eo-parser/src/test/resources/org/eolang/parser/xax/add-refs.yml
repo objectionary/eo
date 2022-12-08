@@ -1,0 +1,13 @@
+sheets:
+  - /org/eolang/parser/add-refs.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o name="a" line="4">
+        <o base="a"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - /program/objects/o[@name='a']/o[@base='a']

@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
@@ -36,7 +37,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class PacksTest {
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**/*.yaml")
+    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**.yaml")
     void parsesPacks(final String pack) throws Exception {
         final CheckPack check = new CheckPack(pack);
         if (check.skip()) {
@@ -47,6 +48,15 @@ final class PacksTest {
         MatcherAssert.assertThat(
             check.failures(),
             Matchers.empty()
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
+    void testXslStylesheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
         );
     }
 
