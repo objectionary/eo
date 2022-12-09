@@ -131,7 +131,7 @@ public final class OptimizeMojo extends SafeMojo {
             "Running %s optimizations in parallel",
             tasks.size()
         );
-        final int done = tasks.parallelStream().mapToInt(Supplier::get).sum();
+        final long done = tasks.parallelStream().mapToInt(Supplier::get).sum();
         if (done > 0) {
             Logger.info(
                 this,
@@ -146,6 +146,12 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Converts tojo to optimization task.
      *
+     * We use {@link ClassLoader} in that method in order to load all
+     * required dependencies correctly and avoid some problems with
+     * loading of {@link javax.xml.transform.TransformerFactory}.
+     * You can read more about that strange Java behavior in that discussions:
+     *  - <a href="https://stackoverflow.com/questions/49113207/completablefuture-forkjoinpool-set-class-loader/57551188#57551188">CompletableFuture / ForkJoinPool Set Class Loader</a>
+     *  - <a href="https://stackoverflow.com/questions/74708979/is-there-any-difference-between-parallelstream-and-executorservice"> Difference between parallelStream() and ExecutorService</a>
      * @param tojo Tojo that should be optimized.
      * @return Optimization task.
      */
@@ -155,8 +161,10 @@ public final class OptimizeMojo extends SafeMojo {
             this, "Adding optimization task for %s",
             src
         );
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         return () -> {
             try {
+                Thread.currentThread().setContextClassLoader(loader);
                 final XML optimized = this.optimization(tojo)
                     .apply(new XMLDocument(src));
                 if (this.shouldPass(optimized)) {
