@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.log.Supplier;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
@@ -32,13 +33,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -51,8 +47,6 @@ import org.eolang.parser.ParsingTrain;
 /**
  * Optimize XML files.
  *
- * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *   via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
@@ -114,6 +108,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * EO cache directory.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.cache")
@@ -121,94 +116,96 @@ public final class OptimizeMojo extends SafeMojo {
     private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final Set<Callable<Object>> tasks = new HashSet<>(0);
-        final AtomicInteger done = new AtomicInteger(0);
-        sources.stream()
+        final List<Supplier<Integer>> tasks = sources.stream()
             .map(SynchronizedTojo::new)
-            .forEach(
-                tojo -> {
-                    final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                    if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
-                        final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-                        if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                            Logger.debug(
-                                this, "Already optimized %s to %s",
-                                new Rel(src), new Rel(tgt)
-                            );
-                            return;
-                        }
-                    }
-                    Logger.info(
-                        this, "Adding optimization task for %s",
-                        src
-                    );
-                    tasks.add(
-                        Executors.callable(
-                            () -> {
-                                try {
-                                    final XML optimized = this.optimization(tojo)
-                                        .apply(new XMLDocument(src));
-                                    done.incrementAndGet();
-                                    if (this.shouldPass(optimized)) {
-                                        tojo.set(
-                                            AssembleMojo.ATTR_XMIR2,
-                                            this.make(optimized, src).toAbsolutePath().toString()
-                                        );
-                                    }
-                                } catch (final IOException exception) {
-                                    throw new IllegalStateException(
-                                        String.format(
-                                            "Unable to optimize %s",
-                                            tojo.get(Tojos.KEY)
-                                        ),
-                                        exception
-                                    );
-                                }
-                            }
-                        )
-                    );
-                }
-            );
-        try {
+            .filter(this::optimizationRequired)
+            .map(this::toOptimizationTask)
+            .collect(Collectors.toList());
+        Logger.info(
+            this,
+            "Running %s optimizations in parallel",
+            tasks.size()
+        );
+        final long done = tasks.parallelStream().mapToInt(Supplier::get).sum();
+        if (done > 0) {
             Logger.info(
-                this, "Running %s optimizations in parallel",
-                tasks.size()
+                this,
+                "Optimized %d out of %d XMIR program(s)", done,
+                sources.size()
             );
-            Executors.newFixedThreadPool(4)
-                .invokeAll(tasks)
-                .forEach(
-                    completed -> {
-                        try {
-                            completed.get();
-                        } catch (final InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        } catch (final ExecutionException ex) {
-                            throw new IllegalArgumentException(
-                                ex.getCause().getMessage(),
-                                ex
-                            );
-                        }
-                    }
-                );
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "Interrupted while waiting for %d optimizations to finish",
-                    done.get()
-                ),
-                ex
-            );
-        }
-        if (done.get() > 0) {
-            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done.get(), sources.size());
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
+    }
+
+    /**
+     * Converts tojo to optimization task.
+     *
+     * We use {@link ClassLoader} in that method in order to load all
+     * required dependencies correctly and avoid some problems with
+     * loading of {@link javax.xml.transform.TransformerFactory}.
+     * You can read more about that strange Java behavior in that discussions:
+     *  - <a href="https://stackoverflow.com/questions/49113207/completablefuture-forkjoinpool-set-class-loader/57551188#57551188">CompletableFuture / ForkJoinPool Set Class Loader</a>
+     *  - <a href="https://stackoverflow.com/questions/74708979/is-there-any-difference-between-parallelstream-and-executorservice"> Difference between parallelStream() and ExecutorService</a>
+     * @param tojo Tojo that should be optimized.
+     * @return Optimization task.
+     */
+    private Supplier<Integer> toOptimizationTask(final SynchronizedTojo tojo) {
+        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        Logger.info(
+            this, "Adding optimization task for %s",
+            src
+        );
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        return () -> {
+            try {
+                Thread.currentThread().setContextClassLoader(loader);
+                final XML optimized = this.optimization(tojo)
+                    .apply(new XMLDocument(src));
+                if (this.shouldPass(optimized)) {
+                    tojo.set(
+                        AssembleMojo.ATTR_XMIR2,
+                        this.make(optimized, src).toAbsolutePath().toString()
+                    );
+                }
+                return 1;
+            } catch (final IOException exception) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Unable to optimize %s",
+                        tojo.get(Tojos.KEY)
+                    ),
+                    exception
+                );
+            }
+        };
+    }
+
+    /**
+     * Checks if tojo was already optimized.
+     *
+     * @param tojo Tojo to check
+     * @return True if optimization is required, false otherwise.
+     */
+    private boolean optimizationRequired(final Tojo tojo) {
+        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        boolean res = true;
+        if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
+            final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already optimized %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
     }
 
     /**
