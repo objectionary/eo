@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
@@ -216,17 +217,12 @@ public final class ResolveMojo extends SafeMojo {
      * @return TRUE if they are equal
      */
     private static boolean eqTo(final Dependency left, final Dependency right) {
-        String lclf = left.getClassifier();
-        if (lclf == null) {
-            lclf = "";
-        }
-        String rclf = right.getClassifier();
-        if (rclf == null) {
-            rclf = "";
-        }
-        return lclf.equals(rclf)
-            && left.getArtifactId().equals(right.getArtifactId())
-            && left.getGroupId().equals(right.getGroupId());
+        return Objects.equals(
+            Objects.toString(left.getClassifier(), ""),
+            Objects.toString(right.getClassifier(), "")
+        )
+            && Objects.equals(left.getArtifactId(), right.getArtifactId())
+            && Objects.equals(left.getGroupId(), right.getGroupId());
     }
 
     /**
