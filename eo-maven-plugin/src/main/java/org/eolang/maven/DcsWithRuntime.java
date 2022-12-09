@@ -78,7 +78,7 @@ final class DcsWithRuntime implements Iterable<Dependency> {
     @Override
     public Iterator<Dependency> iterator() {
         final ListOf<Dependency> all = new ListOf<>(this.delegate);
-        if (all.stream().noneMatch(new RuntimeDependencyEquality())) {
+        if (all.stream().noneMatch(DcsWithRuntime::isRuntime)) {
             all.add(this.supplied.value());
         }
         return all.iterator();
@@ -105,6 +105,16 @@ final class DcsWithRuntime implements Iterable<Dependency> {
                 ex
             );
         }
+    }
+
+    /**
+     * Is it our runtime dep?
+     * @param other The dep
+     * @return TRUE if it is
+     */
+    private static boolean isRuntime(final Dependency other) {
+        return "org.eolang".equals(other.getGroupId())
+            && "eo-runtime".equals(other.getArtifactId());
     }
 
     /**
