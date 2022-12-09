@@ -84,6 +84,14 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void objectNotFoundException() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("unavailable-name"),
+            Matchers.containsString("Can not find 'unavailable-name' object")
+        );
+    }
+
     public static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add(MainTest.jdkExecutable("java"));
