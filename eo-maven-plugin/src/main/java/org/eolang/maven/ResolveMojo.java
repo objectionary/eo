@@ -24,22 +24,19 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 
 /**
@@ -113,7 +110,6 @@ public final class ResolveMojo extends SafeMojo {
         }
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
-            final String coords = ResolveMojo.coords(dep);
             String classifier = dep.getClassifier();
             if (classifier.isEmpty()) {
                 classifier = "-";
@@ -126,7 +122,7 @@ public final class ResolveMojo extends SafeMojo {
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, new Rel(dest)
+                    new Coordinates(dep), new Rel(dest)
                 );
                 continue;
             }
@@ -135,12 +131,12 @@ public final class ResolveMojo extends SafeMojo {
             if (files == 0) {
                 Logger.warn(
                     this, "No new files after unpacking of %s!",
-                    coords
+                    new Coordinates(dep)
                 );
             } else {
                 Logger.info(
                     this, "Found %d new file(s) after unpacking of %s",
-                    files, coords
+                    files, new Coordinates(dep)
                 );
             }
         }
@@ -152,59 +148,61 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Find all deps for all tojos.
+     * Find all deps for all Tojos.
      *
      * @return List of them
-     * @throws IOException If fails
      */
-    private Collection<Dependency> deps() throws IOException {
-        final Collection<Tojo> list = this.scopedTojos().select(
-            t -> t.exists(AssembleMojo.ATTR_XMIR)
-                && t.exists(AssembleMojo.ATTR_VERSION)
-                && !t.exists(AssembleMojo.ATTR_JAR)
+    private Collection<Dependency> deps() {
+        Iterable<Dependency> deps = new DcsWithRuntime(
+            new DcsDefault(
+                this.scopedTojos(),
+                this.discoverSelf,
+                this.skipZeroVersions
+            )
         );
-        Logger.debug(
-            this, "%d suitable tojo(s) found out of %d",
-            list.size(), this.scopedTojos().select(t -> true).size()
-        );
-        final Collection<Dependency> deps = new HashSet<>(0);
-        for (final Tojo tojo : list) {
-            if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
-                && !this.discoverSelf) {
-                Logger.debug(
-                    this, "Program %s/%s skipped due to its zero version",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
-                );
-                continue;
-            }
-            final Optional<Dependency> dep = ResolveMojo.artifact(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
-            );
-            if (!dep.isPresent()) {
-                Logger.debug(
-                    this, "No dependencies for %s/%s",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
-                );
-                continue;
-            }
-            final Dependency one = dep.get();
-            final String coords = ResolveMojo.coords(one);
-            if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
-                Logger.debug(
-                    this, "Zero-version dependency for %s/%s skipped: %s",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
-                    coords
-                );
-                continue;
-            }
-            Logger.info(
-                this, "Dependency found for %s/%s: %s",
-                tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION), coords
-            );
-            deps.add(one);
-            tojo.set(AssembleMojo.ATTR_JAR, coords);
+        if (!this.ignoreVersionConflicts) {
+            deps = new DcsUniquelyVersioned(deps);
         }
-        return new ListOf<>(this.dependenciesOf(deps)).stream()
+        if (!this.ignoreTransitive) {
+            deps = new Mapped<>(
+                dependency -> {
+                    final Iterable<Dependency> transitives = new Filtered<>(
+                        dep -> !ResolveMojo.eqTo(dep, dependency)
+                            && !dep.getScope().contains("test")
+                            && !("org.eolang".equals(dep.getGroupId())
+                            && "eo-runtime".equals(dep.getArtifactId())),
+                        new DcsDepgraph(
+                            this.project,
+                            this.session,
+                            this.manager,
+                            this.targetDir.toPath()
+                                .resolve(ResolveMojo.DIR)
+                                .resolve("dependencies-info"),
+                            dependency
+                        )
+                    );
+                    final String list = String.join(
+                        ", ",
+                        new Mapped<>(
+                            dep -> new Coordinates(dep).toString(),
+                            transitives
+                        )
+                    );
+                    if (!list.isEmpty()) {
+                        throw new IllegalStateException(
+                            String.format(
+                                "%s contains transitive dependencies: [%s]",
+                                dependency, list
+                            )
+                        );
+                    }
+                    return dependency;
+                },
+                deps
+            );
+        }
+        return new ListOf<>(deps)
+            .stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
@@ -213,95 +211,18 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Dependencies object.
-     *
-     * @param all Dependencies as a collection
-     * @return Dependencies object with applied decorators.
+     * Compare with NULL-safety.
+     * @param left Left
+     * @param right Right
+     * @return TRUE if they are equal
      */
-    private Dependencies dependenciesOf(final Collection<Dependency> all) {
-        Dependencies dependencies = new DcsWithRuntime(all::iterator);
-        if (!this.ignoreVersionConflicts) {
-            dependencies = new DcsWithoutConflicts(dependencies);
-        }
-        if (!this.ignoreTransitive) {
-            dependencies = new DcsNoOneHasTransitive(
-                dependencies,
-                dep -> new DcsTransitive(
-                    new DcsDepgraph(
-                        project,
-                        session,
-                        manager,
-                        targetDir.toPath()
-                            .resolve(ResolveMojo.DIR)
-                            .resolve("dependencies-info"),
-                        dep
-                    ),
-                    dep
-                )
-            );
-        }
-        return dependencies;
-    }
-
-    /**
-     * Find the artifact required by this EO XML.
-     *
-     * @param file EO file
-     * @return List of artifact needed
-     * @throws IOException If fails
-     */
-    private static Optional<Dependency> artifact(final Path file) throws IOException {
-        final Collection<String> coords = new XMLDocument(file).xpath(
-            "//meta[head='rt' and part[1]='jvm']/part[2]/text()"
-        );
-        final Optional<Dependency> dep;
-        if (coords.isEmpty()) {
-            dep = Optional.empty();
-        } else if (coords.size() == 1) {
-            final String[] parts = coords.iterator().next().split(":");
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId(parts[0]);
-            dependency.setArtifactId(parts[1]);
-            if (parts.length == 3) {
-                dependency.setVersion(parts[2]);
-                dependency.setClassifier("");
-            } else {
-                dependency.setClassifier(parts[2]);
-                dependency.setVersion(parts[3]);
-            }
-            dependency.setScope("transpile");
-            dep = Optional.of(dependency);
-        } else {
-            throw new IllegalStateException(
-                String.format(
-                    "Too many (%d) dependencies at %s",
-                    coords.size(), new Rel(file)
-                )
-            );
-        }
-        return dep;
-    }
-
-    /**
-     * Dep to coords.
-     *
-     * @param dep The dependency
-     * @return Coords
-     */
-    private static String coords(final Dependency dep) {
-        String ret = "";
-        if (dep.getClassifier().isEmpty()) {
-            ret = String.format(
-                "%s:%s:%s",
-                dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
-            );
-        } else {
-            ret = String.format(
-                "%s:%s:%s:%s",
-                dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion()
-            );
-        }
-        return ret;
+    private static boolean eqTo(final Dependency left, final Dependency right) {
+        return Objects.equals(
+            Objects.toString(left.getClassifier(), ""),
+            Objects.toString(right.getClassifier(), "")
+        )
+            && Objects.equals(left.getArtifactId(), right.getArtifactId())
+            && Objects.equals(left.getGroupId(), right.getGroupId());
     }
 
     /**
@@ -320,7 +241,7 @@ public final class ResolveMojo extends SafeMojo {
          *
          * @param dep Dependency
          */
-        private Wrap(final Dependency dep) {
+        Wrap(final Dependency dep) {
             this.dependency = dep;
         }
 
@@ -335,15 +256,15 @@ public final class ResolveMojo extends SafeMojo {
 
         @Override
         public int compareTo(final ResolveMojo.Wrap wrap) {
-            return ResolveMojo.Wrap.toStr(this.dependency).compareTo(
-                ResolveMojo.Wrap.toStr(wrap.dependency)
+            return new Coordinates(this.dependency).compareTo(
+                new Coordinates(wrap.dependency)
             );
         }
 
         @Override
         public boolean equals(final Object wrap) {
-            return ResolveMojo.Wrap.toStr(this.dependency).equals(
-                ResolveMojo.Wrap.toStr(
+            return new Coordinates(this.dependency).equals(
+                new Coordinates(
                     ResolveMojo.Wrap.class.cast(wrap).dependency
                 )
             );
@@ -351,20 +272,7 @@ public final class ResolveMojo extends SafeMojo {
 
         @Override
         public int hashCode() {
-            return ResolveMojo.Wrap.toStr(this.dependency).hashCode();
-        }
-
-        /**
-         * Convert it to string.
-         *
-         * @param dep The dep
-         * @return The text
-         */
-        private static String toStr(final Dependency dep) {
-            return String.format(
-                "%s:%s",
-                dep.getGroupId(), dep.getArtifactId()
-            );
+            return new Coordinates(this.dependency).hashCode();
         }
     }
 }

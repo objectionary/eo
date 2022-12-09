@@ -32,30 +32,32 @@ import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 
 /**
- * Check dependencies for conflicts.
+ * A decorator of a list of dependencies that throws an exception
+ * if any dependency has a duplicate with a different version.
  *
  * @since 0.28.11
  */
-final class DcsWithoutConflicts implements Dependencies {
+final class DcsUniquelyVersioned implements Iterable<Dependency> {
 
     /**
      * Source of dependencies.
      */
-    private final Dependencies delegate;
+    private final Iterable<Dependency> delegate;
 
     /**
      * The main constructor.
      *
-     * @param delegate Source of dependencies.
+     * @param dlg Source of dependencies.
      */
-    DcsWithoutConflicts(final Dependencies delegate) {
-        this.delegate = delegate;
+    DcsUniquelyVersioned(final Iterable<Dependency> dlg) {
+        this.delegate = dlg;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
         final Collection<Dependency> deps = new ListOf<>(this.delegate.iterator());
-        final Map<String, Set<String>> conflicts = deps.stream()
+        final Map<String, Set<String>> conflicts = deps
+            .stream()
             .collect(
                 Collectors.groupingBy(
                     Dependency::getManagementKey,
@@ -64,7 +66,9 @@ final class DcsWithoutConflicts implements Dependencies {
                         Collectors.toSet()
                     )
                 )
-            ).entrySet().stream()
+            )
+            .entrySet()
+            .stream()
             .filter(e -> e.getValue().size() > 1)
             .collect(
                 Collectors.toMap(
