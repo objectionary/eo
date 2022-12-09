@@ -117,6 +117,12 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        if (!online()) {
+            Logger.warn(
+                this, "There is not internet connection. Pull skipped"
+            );
+            return;
+        }
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)

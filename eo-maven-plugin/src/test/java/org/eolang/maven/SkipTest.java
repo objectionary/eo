@@ -54,7 +54,7 @@ class SkipTest {
                     )
                 )
             ),
-            Matchers.is(true)
+            Matchers.is(SafeMojo.online())
         );
     }
 

@@ -85,7 +85,7 @@ final class AssembleMojoTest {
                     )
                 )
             ),
-            Matchers.is(true)
+            Matchers.is(SafeMojo.online())
         );
     }
 
@@ -146,7 +146,7 @@ final class AssembleMojoTest {
                     )
                 )
             ),
-            Matchers.is(true)
+            Matchers.is(SafeMojo.online())
         );
         MatcherAssert.assertThat(
             new Home(target).exists(
@@ -160,5 +160,4 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
     }
-
 }

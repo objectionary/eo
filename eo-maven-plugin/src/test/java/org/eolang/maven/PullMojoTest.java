@@ -71,7 +71,7 @@ final class PullMojoTest {
                     )
                 )
             ),
-            Matchers.is(true)
+            Matchers.is(SafeMojo.online())
         );
     }
 
