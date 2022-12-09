@@ -26,7 +26,7 @@ package org.eolang.maven.hash;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.Home;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

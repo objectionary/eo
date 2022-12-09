@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.util.Rel;
 
 /**
  * Add object names to the "foreign" registry as demanded.

@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

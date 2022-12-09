@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.Input;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;

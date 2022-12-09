@@ -42,6 +42,8 @@ import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 
 /**

@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
+import org.eolang.maven.util.Home;
 
 /**
  * Fake maven workspace that executes Mojos in order to test

@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.maven.util.Rel;
 
 /**
  * Implementation of maven clean plugin,

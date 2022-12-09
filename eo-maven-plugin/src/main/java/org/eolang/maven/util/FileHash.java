@@ -21,39 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.eolang.maven.util.Home;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import java.util.Arrays;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.Md5DigestOf;
+import org.cactoos.bytes.UncheckedBytes;
+import org.cactoos.io.InputOf;
 
 /**
- * Test case for {@link UnspileMojo}.
+ * MD5 hash of a file (its content).
  *
- * @since 0.1
+ * @since 0.24
  */
-final class UnspileMojoTest {
+public final class FileHash {
 
-    @Test
-    void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path generated = Paths.get("generated");
-        final Path classes = Paths.get("classes");
-        final Path foo = Paths.get("a/b/c/foo.class");
-        new Home(temp).save("abc", foo);
-        new Home(temp).save("xxx", generated.resolve("a/b/c/foo.java"));
-        new Home(temp).save("cde", classes.resolve("foo.txt"));
-        new Moja<>(UnspileMojo.class)
-            .with("generatedDir", generated.toFile())
-            .with("classesDir", classes.toFile())
-            .execute();
-        MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(false)
-        );
+    /**
+     * The file.
+     */
+    private final Path file;
+
+    /**
+     * Ctor.
+     * @param path The name of the file
+     */
+    public FileHash(final Path path) {
+        this.file = path;
     }
+
+    @Override
+    public String toString() {
+        final String hash;
+        if (Files.exists(this.file)) {
+            hash = Arrays.toString(
+                new UncheckedBytes(
+                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
+                ).asBytes()
+            );
+        } else {
+            hash = "";
+        }
+        return hash;
+    }
+
 }

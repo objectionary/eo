@@ -48,6 +48,7 @@ import org.cactoos.io.OutputTo;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
