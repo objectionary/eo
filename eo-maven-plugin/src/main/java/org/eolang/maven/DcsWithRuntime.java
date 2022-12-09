@@ -96,12 +96,11 @@ final class DcsWithRuntime implements Iterable<Dependency> {
         );
         try {
             return DcsWithRuntime.dependency(
-                new XMLDocument(new URL(url))
-                    .xpath("//latest/text()").get(0)
+                new XMLDocument(new URL(url)).xpath("//latest/text()").get(0)
             );
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                String.format("Can't get eo-runtime dependency by url %s", url),
+                String.format("Can't get eo-runtime dependency by the URL: %s", url),
                 ex
             );
         }

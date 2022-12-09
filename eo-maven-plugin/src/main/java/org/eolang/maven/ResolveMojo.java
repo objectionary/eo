@@ -166,20 +166,18 @@ public final class ResolveMojo extends SafeMojo {
             deps = new Mapped<>(
                 dependency -> {
                     final Iterable<Dependency> transitives = new Filtered<>(
-                        dep -> !ResolveMojo.eqTo(dep, dependency),
-                        new Filtered<>(
-                            dep -> !dep.getScope().contains("test")
-                                && !("org.eolang".equals(dep.getGroupId())
-                                && "eo-runtime".equals(dep.getArtifactId())),
-                            new DcsDepgraph(
-                                this.project,
-                                this.session,
-                                this.manager,
-                                this.targetDir.toPath()
-                                    .resolve(ResolveMojo.DIR)
-                                    .resolve("dependencies-info"),
-                                dependency
-                            )
+                        dep -> !ResolveMojo.eqTo(dep, dependency)
+                            && !dep.getScope().contains("test")
+                            && !("org.eolang".equals(dep.getGroupId())
+                            && "eo-runtime".equals(dep.getArtifactId())),
+                        new DcsDepgraph(
+                            this.project,
+                            this.session,
+                            this.manager,
+                            this.targetDir.toPath()
+                                .resolve(ResolveMojo.DIR)
+                                .resolve("dependencies-info"),
+                            dependency
                         )
                     );
                     final String list = String.join(
