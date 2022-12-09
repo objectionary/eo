@@ -87,4 +87,15 @@ public final class OyHome implements Objectionary {
         }
         return new InputOf(file);
     }
+
+    @Override
+    public boolean contains(final String name) {
+        final Path file = new Place(name).make(
+            this.home
+                .resolve("pulled")
+                .resolve(this.version),
+            "eo"
+        );
+        return file.toFile().exists();
+    }
 }

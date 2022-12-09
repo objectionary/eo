@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.objectionary.Objectionary;
@@ -133,6 +134,15 @@ final class PullMojoTest {
      * @return Dummy Objectionary.
      */
     private Objectionary dummy() {
-        return input -> new InputOf("[] > hello\n");
+        return new Objectionary() {
+            @Override
+            public Input get(final String name) {
+                return new InputOf("[] > hello\n");
+            }
+            @Override
+            public boolean contains(final String name) {
+                return true;
+            }
+        };
     }
 }

@@ -107,13 +107,4 @@ final class ProbeMojoTest {
             .execute();
     }
 
-    /**
-     * Dummy Objectionary.
-     *
-     * @return Dummy Objectionary.
-     */
-    private Objectionary dummy(String code) {
-        return input -> new InputOf(code);
-    }
-
 }

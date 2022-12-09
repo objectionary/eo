@@ -173,7 +173,7 @@ public final class PullMojo extends SafeMojo {
      * @param hash Full Git hash
      * @return Objectionary
      */
-    private static Objectionary remote(final CommitHash hash) {
+    public static Objectionary remote(final CommitHash hash) {
         Objectionary obj;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
@@ -189,7 +189,7 @@ public final class PullMojo extends SafeMojo {
      *
      * @return True if option enabled and false otherwise
      */
-    private boolean forceUpdate() {
+    public boolean forceUpdate() {
         return this.session.getRequest().isUpdateSnapshots();
     }
 

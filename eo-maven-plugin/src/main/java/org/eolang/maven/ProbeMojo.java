@@ -29,21 +29,16 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeSet;
-import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.io.UncheckedInput;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChPattern;
@@ -51,10 +46,8 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
-import org.eolang.maven.objectionary.OyRemote;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the
@@ -132,7 +125,7 @@ public final class ProbeMojo extends SafeMojo {
                     new ChNarrow(hash),
                     this.outputPath
                 ),
-                ProbeMojo.remote(hash),
+                PullMojo.remote(hash),
                 this.forceUpdate()
             );
         }
@@ -144,18 +137,7 @@ public final class ProbeMojo extends SafeMojo {
             int fl = 0;
             for (final String name : names) {
                 //System.out.println(String.format("NAME IS %s\n", name));
-                try {
-                    this.objectionary.get(name);
-                    //System.out.println("PLUS");
-                } catch (final Exception e) {
-                    System.out.println("NOT FOUND!!!!!!!!!!!!!!!!");
-                    Logger.info(
-                        this,
-                        String.format("Failed to probe %s from %s", name, this.objectionary)
-                    );
-                    fl = 1;
-                }
-                if (fl == 1) {
+                if (!this.objectionary.contains(name)) {
                     continue;
                 }
                 //System.out.println(new UncheckedText(new TextOf(this.objectionary.get(name))).asString());
@@ -169,8 +151,6 @@ public final class ProbeMojo extends SafeMojo {
             }
             tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
         }
-        //System.out.print("FINALLY PROBED:  ");
-        //System.out.println(probed);
         if (tojos.isEmpty()) {
             if (this.scopedTojos().select(row -> true).isEmpty()) {
                 Logger.warn(this, "Nothing to probe, since there are no programs");
@@ -188,32 +168,6 @@ public final class ProbeMojo extends SafeMojo {
                 probed.size(), tojos.size(), probed
             );
         }
-    }
-
-    /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    private boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
-    }
-
-    /**
-     * Create remote repo.
-     *
-     * @param hash Full Git hash
-     * @return Objectionary
-     */
-    public static Objectionary remote(final CommitHash hash) {
-        Objectionary obj;
-        try {
-            InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyRemote(hash);
-        } catch (final IOException ex) {
-            obj = new OyEmpty();
-        }
-        return obj;
     }
 
     /**
@@ -256,6 +210,15 @@ public final class ProbeMojo extends SafeMojo {
             );
         }
         return ret;
+    }
+
+    /**
+     * Is force update option enabled.
+     *
+     * @return True if option enabled and false otherwise
+     */
+    public boolean forceUpdate() {
+        return this.session.getRequest().isUpdateSnapshots();
     }
 
 }
