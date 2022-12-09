@@ -35,6 +35,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import org.apache.maven.model.Dependency;
+import org.eolang.maven.mojos.AssembleMojo;
+import org.eolang.maven.mojos.ParseMojo;
 
 /**
  * It is a list of dependencies that are needed by the build.

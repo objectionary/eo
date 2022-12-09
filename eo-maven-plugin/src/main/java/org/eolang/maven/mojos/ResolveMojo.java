@@ -39,12 +39,11 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.Central;
+import org.eolang.maven.Coordinates;
+import org.eolang.maven.DcsDefault;
 import org.eolang.maven.DcsDepgraph;
-import org.eolang.maven.DcsNoOneHasTransitive;
-import org.eolang.maven.DcsTransitive;
+import org.eolang.maven.DcsUniquelyVersioned;
 import org.eolang.maven.DcsWithRuntime;
-import org.eolang.maven.DcsWithoutConflicts;
-import org.eolang.maven.Dependencies;
 import org.eolang.maven.Rel;
 import org.eolang.maven.Walk;
 

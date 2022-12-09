@@ -37,7 +37,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.28.11
  */
-final class DcsWithRuntime implements Iterable<Dependency> {
+public final class DcsWithRuntime implements Iterable<Dependency> {
 
     /**
      * Dependency downloaded by HTTP from Maven Central.
@@ -59,7 +59,7 @@ final class DcsWithRuntime implements Iterable<Dependency> {
      *
      * @param dlg Dependencies delegate.
      */
-    DcsWithRuntime(final Iterable<Dependency> dlg) {
+    public DcsWithRuntime(final Iterable<Dependency> dlg) {
         this(dlg, DcsWithRuntime.MAVEN_DEPENDENCY);
     }
 
