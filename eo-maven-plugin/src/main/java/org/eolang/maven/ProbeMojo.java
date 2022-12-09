@@ -50,11 +50,16 @@ import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyEmpty;
+import org.eolang.maven.objectionary.OyFallbackSwap;
+import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyRemote;
 
 /**
- *  Go through all `probe` metas in XMIR files, try to locate the
- *  objects pointed by `probe` in Objectionary and if found register them in
- *  catalog.
+ * Go through all `probe` metas in XMIR files, try to locate the
+ * objects pointed by `probe` in Objectionary and if found register them in
+ * catalog.
  *
  * @since 0.28.11
  */
