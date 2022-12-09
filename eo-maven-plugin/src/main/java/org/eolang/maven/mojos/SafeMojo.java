@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
@@ -45,6 +45,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.Catalogs;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -53,7 +54,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  * @since 0.1
  */
 @SuppressWarnings("PMD.TooManyFields")
-abstract class SafeMojo extends AbstractMojo {
+public abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Maven project.

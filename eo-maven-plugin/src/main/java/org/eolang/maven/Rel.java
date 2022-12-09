@@ -49,7 +49,7 @@ public final class Rel {
      *
      * @param file File relative to working directory.
      */
-    Rel(final File file) {
+    public Rel(final File file) {
         this(file.toPath());
     }
 

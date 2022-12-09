@@ -48,7 +48,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.28.11
  */
-final class DcsDepgraph implements Dependencies {
+public final class DcsDepgraph implements Dependencies {
 
     /**
      * Maven project.
@@ -85,7 +85,7 @@ final class DcsDepgraph implements Dependencies {
      * @param dependency Dependency
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    DcsDepgraph(
+    public DcsDepgraph(
         final MavenProject project,
         final MavenSession session,
         final BuildPluginManager manager,

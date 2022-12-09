@@ -26,6 +26,8 @@ package org.eolang.maven;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.mojos.Moja;
+import org.eolang.maven.mojos.UnspileMojo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

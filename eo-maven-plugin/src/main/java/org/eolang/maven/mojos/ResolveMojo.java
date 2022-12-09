@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
@@ -41,6 +41,15 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.Central;
+import org.eolang.maven.DcsDepgraph;
+import org.eolang.maven.DcsNoOneHasTransitive;
+import org.eolang.maven.DcsTransitive;
+import org.eolang.maven.DcsWithRuntime;
+import org.eolang.maven.DcsWithoutConflicts;
+import org.eolang.maven.Dependencies;
+import org.eolang.maven.Rel;
+import org.eolang.maven.Walk;
 
 /**
  * Find all required runtime dependencies, download

@@ -32,7 +32,7 @@ import org.cactoos.iterator.Filtered;
  *
  * @since 0.28.11
  */
-final class DcsTransitive implements Dependencies {
+public final class DcsTransitive implements Dependencies {
 
     /**
      * Delegate dependencies.
@@ -50,7 +50,7 @@ final class DcsTransitive implements Dependencies {
      * @param delegate Delegate
      * @param origin The dependency that transitive dependencies we are interested of
      */
-    DcsTransitive(final Dependencies delegate, final Dependency origin) {
+    public DcsTransitive(final Dependencies delegate, final Dependency origin) {
         this.delegate = delegate;
         this.origin = origin;
     }

@@ -27,7 +27,7 @@ import java.io.IOException;
 import org.cactoos.Input;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.PullMojo;
+import org.eolang.maven.mojos.PullMojo;
 
 /**
  * Fallback which can swap primary/secondary repos.

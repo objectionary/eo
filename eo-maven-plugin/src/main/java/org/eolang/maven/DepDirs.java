@@ -40,7 +40,7 @@ import org.cactoos.list.ListEnvelope;
  *
  * @since 0.13
  */
-final class DepDirs extends ListEnvelope<String> {
+public final class DepDirs extends ListEnvelope<String> {
 
     /**
      * Ctor.
@@ -48,7 +48,7 @@ final class DepDirs extends ListEnvelope<String> {
      * @param dir The directory
      * @throws IOException If fails
      */
-    DepDirs(final Path dir) throws IOException {
+    public DepDirs(final Path dir) throws IOException {
         super(DepDirs.list(dir));
     }
 

@@ -36,7 +36,7 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.28.11
  */
-final class DcsWithoutConflicts implements Dependencies {
+public final class DcsWithoutConflicts implements Dependencies {
 
     /**
      * Source of dependencies.
@@ -48,7 +48,7 @@ final class DcsWithoutConflicts implements Dependencies {
      *
      * @param delegate Source of dependencies.
      */
-    DcsWithoutConflicts(final Dependencies delegate) {
+    public DcsWithoutConflicts(final Dependencies delegate) {
         this.delegate = delegate;
     }
 

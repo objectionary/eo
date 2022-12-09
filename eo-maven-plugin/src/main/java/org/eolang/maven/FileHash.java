@@ -36,7 +36,7 @@ import org.cactoos.io.InputOf;
  *
  * @since 0.24
  */
-final class FileHash {
+public final class FileHash {
 
     /**
      * The file.
@@ -47,7 +47,7 @@ final class FileHash {
      * Ctor.
      * @param path The name of the file
      */
-    FileHash(final Path path) {
+    public FileHash(final Path path) {
         this.file = path;
     }
 

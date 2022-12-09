@@ -21,43 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
-import com.jcabi.log.Logger;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
- * Add object names to the "foreign" registry as demanded.
+ * Compile binaries.
  *
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #1161:30m Extract Rust code & parameters
+ *  from org.eolang.rust objects here.
+ *  Call rustc with provided dependencies and
+ *  put binary *.so files to target directory.
  */
 @Mojo(
-    name = "demand-foreign",
+    name = "binarize",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true
+    threadSafe = true,
+    requiresDependencyResolution = ResolutionScope.COMPILE
 )
-public final class DemandMojo extends SafeMojo {
+@SuppressWarnings("PMD.LongVariable")
+public final class BinarizeMojo extends SafeMojo {
 
     /**
-     * List of object names to add.
+     * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.17.0
      */
-    @Parameter(required = true)
-    private List<String> objects;
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/eo-binaries"
+    )
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private File generatedDir;
 
     @Override
-    public void exec() {
-        for (final String obj : this.objects) {
-            this.scopedTojos().add(obj);
-        }
-        Logger.info(
-            this, "Added %d objects to foreign catalog at %s",
-            this.objects.size(), new Rel(this.foreign)
-        );
+    public void exec() throws IOException {
+        throw new UnsupportedEncodingException("NYI");
     }
 
 }

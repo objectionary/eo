@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
@@ -37,6 +37,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.FileHash;
+import org.eolang.maven.Rel;
 
 /**
  * It deletes binary files, which were previously copied by "place" mojo.

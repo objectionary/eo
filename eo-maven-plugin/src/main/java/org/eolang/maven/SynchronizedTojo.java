@@ -33,7 +33,7 @@ import com.yegor256.tojos.Tojo;
  *  <a href="https://github.com/yegor256/tojos/issues/16">#16</a>. This class
  *  should be removed and all usages updated accordingly.
  */
-final class SynchronizedTojo implements Tojo {
+public final class SynchronizedTojo implements Tojo {
     /**
      * Lock object.
      */
@@ -48,7 +48,7 @@ final class SynchronizedTojo implements Tojo {
      * Ctor.
      * @param origin Tojo
      */
-    SynchronizedTojo(final Tojo origin) {
+    public SynchronizedTojo(final Tojo origin) {
         this.origin = origin;
     }
 

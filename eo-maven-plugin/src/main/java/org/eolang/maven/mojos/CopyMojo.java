@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import java.io.File;
@@ -36,6 +36,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.Home;
+import org.eolang.maven.Rel;
+import org.eolang.maven.Walk;
 
 /**
  * Copy all .eo files from src/main/eo to target/classes/EO-SOURCES

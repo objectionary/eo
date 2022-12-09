@@ -37,7 +37,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.28.11
  */
-final class DcsWithRuntime implements Dependencies {
+public final class DcsWithRuntime implements Dependencies {
 
     /**
      * Dependency downloaded by HTTP from Maven Central.
@@ -59,7 +59,7 @@ final class DcsWithRuntime implements Dependencies {
      *
      * @param delegate Dependencies delegate.
      */
-    DcsWithRuntime(final Dependencies delegate) {
+    public DcsWithRuntime(final Dependencies delegate) {
         this(delegate, DcsWithRuntime.MAVEN_DEPENDENCY);
     }
 

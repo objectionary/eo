@@ -31,7 +31,7 @@ import java.nio.file.Path;
  *
  * @since 0.1
  */
-final class Unplace {
+public final class Unplace {
 
     /**
      * The parent dir.
@@ -42,7 +42,7 @@ final class Unplace {
      * Ctor.
      * @param dir The name of the parent dir
      */
-    Unplace(final File dir) {
+    public Unplace(final File dir) {
         this(dir.toPath());
     }
 
@@ -50,7 +50,7 @@ final class Unplace {
      * Ctor.
      * @param dir The name of the parent dir
      */
-    Unplace(final Path dir) {
+    public Unplace(final Path dir) {
         this.parent = dir;
     }
 

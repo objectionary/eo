@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
@@ -65,6 +65,9 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.Home;
+import org.eolang.maven.Place;
+import org.eolang.maven.Rel;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;

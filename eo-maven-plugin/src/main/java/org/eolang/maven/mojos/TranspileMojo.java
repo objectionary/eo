@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
@@ -44,6 +44,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.Home;
+import org.eolang.maven.JavaFiles;
+import org.eolang.maven.Place;
+import org.eolang.maven.Rel;
+import org.eolang.maven.SpyTrain;
 import org.eolang.parser.ParsingTrain;
 
 /**

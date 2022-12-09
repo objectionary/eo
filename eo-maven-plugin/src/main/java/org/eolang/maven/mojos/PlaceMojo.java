@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
 import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
@@ -38,6 +38,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.DepDirs;
+import org.eolang.maven.FileHash;
+import org.eolang.maven.Home;
+import org.eolang.maven.Rel;
+import org.eolang.maven.Walk;
 
 /**
  * Take binary files from where ResolveMojo placed them and

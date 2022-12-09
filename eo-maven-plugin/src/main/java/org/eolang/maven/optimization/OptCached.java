@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Place;
+import org.eolang.maven.mojos.AssembleMojo;
 
 /**
  * The cached optimization.

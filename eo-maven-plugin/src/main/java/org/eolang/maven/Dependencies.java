@@ -30,5 +30,5 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.28.11
  */
-interface Dependencies extends Iterable<Dependency> {
+public interface Dependencies extends Iterable<Dependency> {
 }

@@ -39,7 +39,7 @@ import org.cactoos.scalar.Unchecked;
  * @todo #1361:90min The class without tests. We definitely have to write some tests
  *   in order to make the class possible for future refactoring and easy maintainance.
  */
-final class DcsNoOneHasTransitive implements Dependencies {
+public final class DcsNoOneHasTransitive implements Dependencies {
 
     /**
      * Source of dependencies to check.
@@ -57,7 +57,7 @@ final class DcsNoOneHasTransitive implements Dependencies {
      * @param delegate Source of dependencies to check
      * @param transitive The function that get all transitive dependencies for the particular one.
      */
-    DcsNoOneHasTransitive(
+    public DcsNoOneHasTransitive(
         final Dependencies delegate,
         final Func<Dependency, Dependencies> transitive
     ) {

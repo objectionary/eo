@@ -21,49 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.mojos;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import com.jcabi.log.Logger;
+import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.Rel;
 
 /**
- * Compile binaries.
+ * Add object names to the "foreign" registry as demanded.
  *
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #1161:30m Extract Rust code & parameters
- *  from org.eolang.rust objects here.
- *  Call rustc with provided dependencies and
- *  put binary *.so files to target directory.
  */
 @Mojo(
-    name = "binarize",
+    name = "demand-foreign",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    threadSafe = true
 )
-@SuppressWarnings("PMD.LongVariable")
-public final class BinarizeMojo extends SafeMojo {
+public final class DemandMojo extends SafeMojo {
 
     /**
-     * Target directory.
+     * List of object names to add.
      * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.17.0
      */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo-binaries"
-    )
-    @SuppressWarnings("PMD.UnusedPrivateField")
-    private File generatedDir;
+    @Parameter(required = true)
+    private List<String> objects;
 
     @Override
-    public void exec() throws IOException {
-        throw new UnsupportedEncodingException("NYI");
+    public void exec() {
+        for (final String obj : this.objects) {
+            this.scopedTojos().add(obj);
+        }
+        Logger.info(
+            this, "Added %d objects to foreign catalog at %s",
+            this.objects.size(), new Rel(this.foreign)
+        );
     }
 
 }
