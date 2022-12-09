@@ -65,6 +65,8 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;

@@ -46,6 +46,8 @@ import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.

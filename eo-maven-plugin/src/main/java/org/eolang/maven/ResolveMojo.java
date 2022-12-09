@@ -38,6 +38,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.util.Rel;
+import org.eolang.maven.util.Walk;
 
 /**
  * Find all required runtime dependencies, download

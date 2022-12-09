@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -49,7 +49,7 @@ public final class Rel {
      *
      * @param file File relative to working directory.
      */
-    Rel(final File file) {
+    public Rel(final File file) {
         this(file.toPath());
     }
 
@@ -68,7 +68,7 @@ public final class Rel {
      * @param base Current working directory.
      * @param other Path relative to working directory.
      */
-    Rel(final Path base, final Path other) {
+    public Rel(final Path base, final Path other) {
         this.base = base;
         this.other = other;
     }

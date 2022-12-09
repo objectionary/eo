@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

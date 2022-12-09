@@ -33,6 +33,8 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.maven.util.Rel;
+import org.eolang.maven.util.Walk;
 
 /**
  * Extend current list of foreign objects with those

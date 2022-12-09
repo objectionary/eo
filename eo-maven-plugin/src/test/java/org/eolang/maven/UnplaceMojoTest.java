@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.util.FileHash;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

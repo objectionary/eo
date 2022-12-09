@@ -45,6 +45,8 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;

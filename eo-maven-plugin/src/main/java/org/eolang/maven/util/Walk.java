@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -40,7 +40,7 @@ import org.cactoos.list.ListEnvelope;
  *
  * @since 0.1
  */
-final class Walk extends ListEnvelope<Path> {
+public final class Walk extends ListEnvelope<Path> {
 
     /**
      * The home.
@@ -53,7 +53,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param dir The directory
      * @throws IOException If fails
      */
-    Walk(final Path dir) throws IOException {
+    public Walk(final Path dir) throws IOException {
         this(dir, Walk.list(dir));
     }
 
@@ -73,7 +73,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
-    Walk includes(final Collection<String> globs) {
+    public Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
             this.stream()
@@ -91,7 +91,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
-    Walk excludes(final Collection<String> globs) {
+    public Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,
             this.stream()

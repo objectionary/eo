@@ -38,6 +38,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.util.FileHash;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
+import org.eolang.maven.util.Walk;
 
 /**
  * Take binary files from where ResolveMojo placed them and

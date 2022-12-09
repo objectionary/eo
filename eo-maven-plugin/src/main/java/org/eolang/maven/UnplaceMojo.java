@@ -37,6 +37,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.util.FileHash;
+import org.eolang.maven.util.Rel;
 
 /**
  * It deletes binary files, which were previously copied by "place" mojo.
