@@ -33,11 +33,11 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
 /**
- * Add runtime dependency if it is absent.
+ * Add runtime dependency to the list of dependencies, if it is absent there.
  *
  * @since 0.28.11
  */
-public final class DcsWithRuntime implements Dependencies {
+final class DcsWithRuntime implements Iterable<Dependency> {
 
     /**
      * Dependency downloaded by HTTP from Maven Central.
@@ -47,7 +47,7 @@ public final class DcsWithRuntime implements Dependencies {
     /**
      * All dependencies.
      */
-    private final Dependencies delegate;
+    private final Iterable<Dependency> delegate;
 
     /**
      * Supplier of the eo-runtime dependency.
@@ -57,27 +57,28 @@ public final class DcsWithRuntime implements Dependencies {
     /**
      * Constructor.
      *
-     * @param delegate Dependencies delegate.
+     * @param dlg Dependencies delegate.
      */
-    public DcsWithRuntime(final Dependencies delegate) {
-        this(delegate, DcsWithRuntime.MAVEN_DEPENDENCY);
+    DcsWithRuntime(final Iterable<Dependency> dlg) {
+        this(dlg, DcsWithRuntime.MAVEN_DEPENDENCY);
     }
 
     /**
      * The main constructor.
      *
-     * @param delegate Dependencies delegate.
-     * @param supplied Supplier of the eo-runtime dependency.
+     * @param dlg Dependencies delegate.
+     * @param sup Supplier of the eo-runtime dependency.
      */
-    DcsWithRuntime(final Dependencies delegate, final Unchecked<Dependency> supplied) {
-        this.delegate = delegate;
-        this.supplied = supplied;
+    DcsWithRuntime(final Iterable<Dependency> dlg,
+        final Unchecked<Dependency> sup) {
+        this.delegate = dlg;
+        this.supplied = sup;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
         final ListOf<Dependency> all = new ListOf<>(this.delegate);
-        if (all.stream().noneMatch(new RuntimeDependencyEquality())) {
+        if (all.stream().noneMatch(DcsWithRuntime::isRuntime)) {
             all.add(this.supplied.value());
         }
         return all.iterator();
@@ -95,15 +96,24 @@ public final class DcsWithRuntime implements Dependencies {
         );
         try {
             return DcsWithRuntime.dependency(
-                new XMLDocument(new URL(url))
-                    .xpath("//latest/text()").get(0)
+                new XMLDocument(new URL(url)).xpath("//latest/text()").get(0)
             );
         } catch (final IOException ex) {
             throw new IllegalStateException(
-                String.format("Can't get eo-runtime dependency by url %s", url),
+                String.format("Can't get eo-runtime dependency by the URL: %s", url),
                 ex
             );
         }
+    }
+
+    /**
+     * Is it our runtime dep?
+     * @param other The dep
+     * @return TRUE if it is
+     */
+    private static boolean isRuntime(final Dependency other) {
+        return "org.eolang".equals(other.getGroupId())
+            && "eo-runtime".equals(other.getArtifactId());
     }
 
     /**

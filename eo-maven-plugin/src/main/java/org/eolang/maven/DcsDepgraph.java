@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -43,12 +43,16 @@ import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
- * Json File retrieved using the plugin for uploading transitive dependencies.
- * You can read more <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
+ * A list of transitive dependencies for a given Maven dependency.
  *
+ * A JSON File is retrieved using the plugin for uploading
+ * transitive dependencies. Then, we go through the JSON, parse it
+ * and build a list of dependencies.
+ *
+ * @see <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
  * @since 0.28.11
  */
-public final class DcsDepgraph implements Dependencies {
+final class DcsDepgraph implements Iterable<Dependency> {
 
     /**
      * Maven project.
@@ -76,32 +80,32 @@ public final class DcsDepgraph implements Dependencies {
     private final Dependency dependency;
 
     /**
-     * The main contructor.
+     * The main constructor.
      *
-     * @param project Maven project
-     * @param session Maven session
-     * @param manager Maven plugin manager
-     * @param dir Directory to save all transitive dependencies files
-     * @param dependency Dependency
+     * @param pkt Maven project
+     * @param ssn Maven session
+     * @param mgr Maven plugin manager
+     * @param path Directory to save all transitive dependencies files
+     * @param dep Dependency
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    public DcsDepgraph(
-        final MavenProject project,
-        final MavenSession session,
-        final BuildPluginManager manager,
-        final Path dir,
-        final Dependency dependency
+    DcsDepgraph(
+        final MavenProject pkt,
+        final MavenSession ssn,
+        final BuildPluginManager mgr,
+        final Path path,
+        final Dependency dep
     ) {
-        this.project = project;
-        this.session = session;
-        this.manager = manager;
-        this.dir = dir;
-        this.dependency = dependency;
+        this.project = pkt;
+        this.session = ssn;
+        this.manager = mgr;
+        this.dir = path;
+        this.dependency = dep;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
-        return new DcsJson(this.file(this.dependency)).iterator();
+        return new DcsDepgraph.DcsJson(this.file(this.dependency)).iterator();
     }
 
     /**
@@ -149,15 +153,15 @@ public final class DcsDepgraph implements Dependencies {
     /**
      * Creates filename for transitive dependencies file.
      *
-     * @param dependency Dependency
+     * @param dep Dependency
      * @return Filename
      */
-    private static String fileName(final Dependency dependency) {
+    private static String fileName(final Dependency dep) {
         return String.format(
             "%s_%s_%s%s",
-            dependency.getGroupId(),
-            dependency.getArtifactId(),
-            dependency.getVersion(),
+            dep.getGroupId(),
+            dep.getArtifactId(),
+            dep.getVersion(),
             ".json"
         );
     }
@@ -167,7 +171,7 @@ public final class DcsDepgraph implements Dependencies {
      *
      * @since 0.28.11
      */
-    static class DcsJson implements Dependencies {
+    static final class DcsJson implements Iterable<Dependency> {
 
         /**
          * File path.
@@ -177,16 +181,16 @@ public final class DcsDepgraph implements Dependencies {
         /**
          * The main constructor.
          *
-         * @param file File path
+         * @param path File path
          */
-        DcsJson(final Path file) {
-            this.file = file;
+        DcsJson(final Path path) {
+            this.file = path;
         }
 
         @Override
         public Iterator<Dependency> iterator() {
             try {
-                final List<Dependency> all = new ArrayList<>(0);
+                final Collection<Dependency> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
                     Logger.debug(this, String.format("Dependencies file: %s", this.file));
                     final JsonReader reader = Json.createReader(Files.newBufferedReader(this.file));

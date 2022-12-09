@@ -154,7 +154,7 @@ final class ResolveMojoTest {
                 .with("skipZeroVersions", true)
                 .with("discoverSelf", false)
                 .with("ignoreVersionConflicts", false)
-                .with("ignoreTransitive", true)
+                .with("ignoreTransitive", false)
                 .execute()
         );
         MatcherAssert.assertThat(
