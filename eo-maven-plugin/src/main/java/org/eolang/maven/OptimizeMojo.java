@@ -123,10 +123,10 @@ public final class OptimizeMojo extends SafeMojo {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final Optimization common = this.common();
+        final Optimization common = this.optimization();
         final List<Supplier<Integer>> tasks = sources.stream()
-            .filter(this::optimizationRequired)
-            .map(tojo -> this.toOptimizationTask(tojo, common))
+            .filter(this::isOptimizationRequired)
+            .map(tojo -> this.task(tojo, common))
             .collect(Collectors.toList());
         Logger.info(
             this,
@@ -158,7 +158,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param common Optimization.
      * @return Optimization task.
      */
-    private Supplier<Integer> toOptimizationTask(
+    private Supplier<Integer> task(
         final Tojo tojo,
         final Optimization common
     ) {
@@ -198,7 +198,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojo to check
      * @return True if optimization is required, false otherwise.
      */
-    private boolean optimizationRequired(final Tojo tojo) {
+    private boolean isOptimizationRequired(final Tojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
@@ -219,10 +219,10 @@ public final class OptimizeMojo extends SafeMojo {
      *
      * @return Optimization for all tojos.
      */
-    private Optimization common() {
+    private Optimization optimization() {
         Optimization opt;
         if (this.trackOptimizationSteps) {
-            opt = new OptSpy(targetDir.toPath().resolve(OptimizeMojo.STEPS));
+            opt = new OptSpy(this.targetDir.toPath().resolve(OptimizeMojo.STEPS));
         } else {
             opt = new OptTrain();
         }
@@ -243,7 +243,7 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Optimization for specific tojo.
      *
-     * @param tojo Tojp
+     * @param tojo Tojo
      * @param opt Optimization
      * @return Optimization for specific Tojo
      */
