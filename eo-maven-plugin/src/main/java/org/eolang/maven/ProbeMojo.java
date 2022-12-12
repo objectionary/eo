@@ -39,11 +39,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
-import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChPattern;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFallbackSwap;
@@ -111,14 +107,9 @@ public final class ProbeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && !row.exists(AssembleMojo.ATTR_PROBED)
         );
-        final CommitHash hash;
-        if (this.offlineHashFile == null && this.offlineHash == null) {
-            hash = new ChCached(new ChRemote(this.tag));
-        } else if (this.offlineHash == null) {
-            hash = new ChCached(new ChText(this.offlineHashFile, this.tag));
-        } else {
-            hash = new ChCached(new ChPattern(this.offlineHash, this.tag));
-        }
+        final CommitHash hash = PullMojo.resolveHash(
+            this.offlineHashFile, this.offlineHash, this.tag
+        );
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
@@ -134,13 +125,11 @@ public final class ProbeMojo extends SafeMojo {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.probe(src);
             int count = 0;
-            int fl = 0;
             for (final String name : names) {
                 //System.out.println(String.format("NAME IS %s\n", name));
                 if (!this.objectionary.contains(name)) {
                     continue;
                 }
-                //System.out.println(new UncheckedText(new TextOf(this.objectionary.get(name))).asString());
                 ++count;
                 final Tojo ftojo = this.scopedTojos().add(name);
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
@@ -191,13 +180,13 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<String> ret = new TreeSet<>();
         probed.forEach(obj -> {
             if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
-                ret.add(obj.substring(2));
+                ret.add(
+                    obj.substring(2)
+                );
             } else {
                 ret.add(obj);
             }
         });
-        //System.out.print("found OBJECTS: ");
-        //System.out.println(ret);
         if (ret.isEmpty()) {
             Logger.debug(
                 this, "Didn't find any probed objects in %s",

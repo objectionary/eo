@@ -89,11 +89,11 @@ public final class OyFallbackSwap implements Objectionary {
     public Input get(final String name) throws IOException {
         return this.swapped.value().get(name);
     }
+
     @Override
     public boolean contains(final String name) throws IOException {
         return this.swapped.value().contains(name);
     }
-
 
     @Override
     public String toString() {

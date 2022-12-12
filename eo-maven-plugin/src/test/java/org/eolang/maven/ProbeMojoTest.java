@@ -34,7 +34,6 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -49,7 +48,7 @@ final class ProbeMojoTest {
      */
     private static final String EO_FOREIGN = "eo-foreign.json";
 
-    private static final String program = String.join(
+    private static final String PROGRAM = String.join(
         "\n",
             "+package org.eolang.custom\n",
             "[] > main",
@@ -60,9 +59,8 @@ final class ProbeMojoTest {
             "        228"
     );
 
-    //@Test
     public void executesProbePhase(@TempDir final Path temp) throws IOException {
-        this.saveProgram(temp, new InputOf(ProbeMojoTest.program));
+        this.saveProgram(temp, new InputOf(ProbeMojoTest.PROGRAM));
         this.probe(temp);
         final Deque<Map<String, String>> json = this.discoveredJsonEntries(temp);
         final Map<String, String> first = json.removeFirst();

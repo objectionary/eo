@@ -121,14 +121,9 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final CommitHash hash;
-        if (this.offlineHashFile == null && this.offlineHash == null) {
-            hash = new ChCached(new ChRemote(this.tag));
-        } else if (this.offlineHash == null) {
-            hash = new ChCached(new ChText(this.offlineHashFile, this.tag));
-        } else {
-            hash = new ChCached(new ChPattern(this.offlineHash, this.tag));
-        }
+        final CommitHash hash = PullMojo.resolveHash(
+            this.offlineHashFile, this.offlineHash, this.tag
+        );
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
@@ -222,4 +217,27 @@ public final class PullMojo extends SafeMojo {
         }
         return src;
     }
+
+    /**
+     * Resolve {@link CommitHash} depending on the
+     * parameters.
+     *
+     * @param offHashFile Read hashes from local file
+     * @param offHash Return hash by pattern
+     * @param tg The Git hash to pull objects from, in objectionary
+     * @return The {@link CommitHash}
+     */
+    public static CommitHash resolveHash(final Path offHashFile,
+        final String offHash, final String tg) {
+        final CommitHash hash;
+        if (offHashFile == null && offHash == null) {
+            hash = new ChCached(new ChRemote(tg));
+        } else if (offHash == null) {
+            hash = new ChCached(new ChText(offHashFile, tg));
+        } else {
+            hash = new ChCached(new ChPattern(offHash, tg));
+        }
+        return hash;
+    }
+
 }

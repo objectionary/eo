@@ -276,7 +276,7 @@ public final class AssembleMojo extends SafeMojo {
             AssembleMojo.ATTR_XMIR,
             AssembleMojo.ATTR_XMIR2,
             AssembleMojo.ATTR_DISCOVERED,
-            AssembleMojo.ATTR_PROBED
+            AssembleMojo.ATTR_PROBED,
         };
         final Collection<String> parts = new LinkedList<>();
         for (final String attr : attrs) {

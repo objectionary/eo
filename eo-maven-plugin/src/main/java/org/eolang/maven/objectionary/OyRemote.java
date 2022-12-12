@@ -76,19 +76,19 @@ public final class OyRemote implements Objectionary {
     @Override
     public boolean contains(final String name) {
         final URL url;
-        boolean presence;
         try {
             url = this.template.value(name);
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             Logger.debug(
                 this, "The invalid URL for object: %s !",
                 name
             );
             throw new RuntimeException(ex);
         }
+        boolean presence;
         try (InputStream inputStream = new Unchecked<>(() -> url).value().openStream()) {
             presence = true;
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Logger.debug(
                 this, "The object '%s' is absent in %s...",
                 name, url

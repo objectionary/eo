@@ -23,13 +23,11 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.Input;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -73,16 +71,9 @@ final class AssembleMojoTest {
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                new Objectionary() {
-                    @Override
-                    public Input get(final String name) throws IOException {
-                        return new InputOf("[] > sprintf\n");
-                    }
-                    @Override
-                    public boolean contains(final String name) throws IOException {
-                        return true;
-                    }
-                }
+                new OyLambda(
+                    new UncheckedFunc<>(s -> new InputOf("[] > sprintf\n"))
+                )
             )
             .execute();
         MatcherAssert.assertThat(
@@ -141,8 +132,8 @@ final class AssembleMojoTest {
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
+                new OyLambda(
+                    new UncheckedFunc<>(s -> new InputOf("[] > sprintf\n"))
                 )
             )
             .execute();

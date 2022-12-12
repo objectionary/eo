@@ -23,10 +23,9 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.Input;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.objectionary.Objectionary;
@@ -55,17 +54,14 @@ final class OyFallbackTest {
             new OyCaching(
                 branch,
                 path,
-                new Objectionary() {
-                    @Override
-                    public Input get(final String name) throws IOException {
-                        counter.incrementAndGet();
-                        return new InputOf("[] > main\n");
-                    }
-                    @Override
-                    public boolean contains(final String name) throws IOException {
-                        return true;
-                    }
-                }
+                new OyLambda(
+                    new UncheckedFunc<>(
+                        s -> {
+                            counter.incrementAndGet();
+                            return new InputOf("[] > main\n");
+                        }
+                    )
+                )
             )
         );
         final String object = "org.example.main";

@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.objectionary.OyFallbackSwap;
@@ -41,9 +42,13 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    s -> new InputOf("[] > local\n"),
-                    s -> new InputOf("[] > remote\n"),
-                    false
+                    new OyLambda(
+                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
+                    ),
+                    new OyLambda(
+                        new UncheckedFunc<>(s -> new InputOf("[] > remote\n"))
+                    ),
+                false
                 ).get("")
             ).asString(),
             Matchers.containsString("local")
@@ -55,10 +60,16 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    s -> new InputOf("[] > local\n"),
-                    s -> {
-                        throw new IOException("Can't get object");
-                    },
+                    new OyLambda(
+                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
+                    ),
+                    new OyLambda(
+                        new UncheckedFunc<>(
+                            s -> {
+                                throw new IOException("Can't get object");
+                            }
+                        )
+                    ),
                     false
                 ).get("")
             ).asString(),
@@ -71,8 +82,12 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    s -> new InputOf("[] > local\n"),
-                    s -> new InputOf("[] > remote\n"),
+                    new OyLambda(
+                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
+                    ),
+                    new OyLambda(
+                        new UncheckedFunc<>(s -> new InputOf("[] > remote\n"))
+                    ),
                     true
                 ).get("")
             ).asString(),
