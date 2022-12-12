@@ -25,8 +25,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.util.concurrent.TimeUnit;
+import org.eolang.maven.util.Online;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -36,27 +35,21 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  *
  * @since 0.26
  */
-public final class WeAreOnline implements ExecutionCondition {
+public final class OnlineCondition implements ExecutionCondition {
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(
         final ExtensionContext context) {
         ConditionEvaluationResult ret;
-        final String host = "www.objectionary.com";
-        final int delay = (int) TimeUnit.SECONDS.toMillis(1L);
         try {
-            if (InetAddress.getByName(host).isReachable(delay)) {
-                ret = ConditionEvaluationResult.enabled(
-                    "We are online!"
-                );
+            if (new Online().value()) {
+                ret = ConditionEvaluationResult.enabled("We are online!");
             } else {
-                ret = ConditionEvaluationResult.disabled(
-                    String.format("Can't reach %s in %dms", host, delay)
-                );
+                ret = ConditionEvaluationResult.disabled("We are offline");
             }
         } catch (final IOException ex) {
             ret = ConditionEvaluationResult.disabled(
-                String.format("Failed to ping %s: %s", host, ex.getMessage())
+                String.format("Failed to check online status: %s", ex.getMessage())
             );
         }
         return ret;

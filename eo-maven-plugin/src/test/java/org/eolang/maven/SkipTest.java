@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ import org.junit.jupiter.api.io.TempDir;
 class SkipTest {
 
     @Test
-    void testExecutedPullMojo(@TempDir final Path temp) {
+    void testExecutedPullMojo(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
@@ -55,7 +56,7 @@ class SkipTest {
                     )
                 )
             ),
-            Matchers.is(SafeMojo.online())
+            Matchers.is(new Online().value())
         );
     }
 

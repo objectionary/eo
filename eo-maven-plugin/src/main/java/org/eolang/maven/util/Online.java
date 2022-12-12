@@ -21,46 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.util;
 
-package org.eolang.maven.hash;
-
-import org.eolang.maven.OnlineCondition;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
- * Test case for {@link org.eolang.maven.hash.ChRemote}.
- * @since 0.26
+ * Check if we are online.
+ *
+ * @since 1.0
  */
-@ExtendWith(OnlineCondition.class)
-final class ChRemoteTest {
+public class Online {
+    /**
+     * URL to validate.
+     */
+    private final String url;
 
-    @Test
-    void testCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
-        );
+    /**
+     * Ctor.
+     * @param url URL to check availability for.
+     */
+    public Online(final String url) {
+        this.url = url;
     }
 
-    @Test
-    void testCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
-        MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
-        );
+    /**
+     * Ctor.
+     * Check against default url.
+     */
+    public Online() {
+        this("https://www.objectionary.com");
     }
 
-    @Test
-    void testCommitHashException() {
-        Assertions.assertThrows(
-            ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
-        );
+    /**
+     * If we are online.
+     * @return True if we are online and false otherwise.
+     * @throws IOException In case of check failure
+     */
+    public boolean value() throws IOException {
+        boolean online = true;
+        try {
+            final URLConnection conn = new URL(this.url).openConnection();
+            conn.connect();
+            conn.getInputStream().close();
+        } catch (final IOException ignored) {
+            online = false;
+        }
+        return online;
     }
 }

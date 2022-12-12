@@ -71,7 +71,7 @@ import org.yaml.snakeyaml.Yaml;
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
  */
-@ExtendWith(WeAreOnline.class)
+@ExtendWith(OnlineCondition.class)
 final class SnippetTest {
 
     /**

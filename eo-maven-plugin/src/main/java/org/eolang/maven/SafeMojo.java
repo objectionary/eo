@@ -29,8 +29,6 @@ import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -295,24 +293,6 @@ abstract class SafeMojo extends AbstractMojo {
                 );
             }
         };
-    }
-
-    /**
-     * Check the internet connection.
-     *
-     * @return Is the internet connection available
-     */
-    protected static boolean online() {
-        boolean online = true;
-        try {
-            final URL url = new URL("https://github.com/objectionary/home");
-            final URLConnection conn = url.openConnection();
-            conn.connect();
-            conn.getInputStream().close();
-        } catch (final IOException ignored) {
-            online = false;
-        }
-        return online;
     }
 
     /**
