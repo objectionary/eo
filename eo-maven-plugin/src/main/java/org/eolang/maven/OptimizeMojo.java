@@ -125,7 +125,6 @@ public final class OptimizeMojo extends SafeMojo {
         );
         final Optimization common = this.common();
         final List<Supplier<Integer>> tasks = sources.stream()
-            .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
             .map(tojo -> this.toOptimizationTask(tojo, common))
             .collect(Collectors.toList());
@@ -160,7 +159,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Optimization task.
      */
     private Supplier<Integer> toOptimizationTask(
-        final SynchronizedTojo tojo,
+        final Tojo tojo,
         final Optimization common
     ) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
