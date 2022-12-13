@@ -34,12 +34,8 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.map.MapEntry;
-import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChPattern;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
@@ -131,9 +127,9 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final CommitHash hash = PullMojo.resolveHash(
+        final CommitHash hash = new ChResolve(
             this.offlineHashFile, this.offlineHash, this.tag
-        );
+        ).getCommitHash();
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
@@ -143,7 +139,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     new ChNarrow(hash),
                     this.outputPath,
-                    PullMojo.remote(hash).getKey()
+                    PullMojo.remote(hash)
                 ),
                 this.forceUpdate()
             );
@@ -173,33 +169,20 @@ public final class PullMojo extends SafeMojo {
     }
 
     /**
-     * Remote objectionary.
+     * Create remote repo.
      *
-     * @param hash Commit hash
-     * @return MapEntry, where key is Objectionary, value is
-     * access of connect
+     * @param hash Full Git hash
+     * @return Objectionary
      */
-    public static MapEntry<Objectionary, Boolean> remote(final CommitHash hash) {
+    private static Objectionary remote(final CommitHash hash) {
         Objectionary obj;
-        boolean acs;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
             obj = new OyRemote(hash);
-            acs = true;
         } catch (final IOException ex) {
             obj = new OyEmpty();
-            acs = false;
         }
-        return new MapEntry<>(obj, acs);
-    }
-
-    /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    public boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
+        return obj;
     }
 
     /**
@@ -233,25 +216,12 @@ public final class PullMojo extends SafeMojo {
     }
 
     /**
-     * Resolve {@link CommitHash} depending on the
-     * parameters.
+     * Is force update option enabled.
      *
-     * @param offHashFile Read hashes from local file
-     * @param offHash Return hash by pattern
-     * @param tg The Git hash to pull objects from, in objectionary
-     * @return The {@link CommitHash}
+     * @return True if option enabled and false otherwise
      */
-    public static CommitHash resolveHash(final Path offHashFile,
-        final String offHash, final String tg) {
-        final CommitHash hash;
-        if (offHashFile == null && offHash == null) {
-            hash = new ChCached(new ChRemote(tg));
-        } else if (offHash == null) {
-            hash = new ChCached(new ChText(offHashFile, tg));
-        } else {
-            hash = new ChCached(new ChPattern(offHash, tg));
-        }
-        return hash;
+    private boolean forceUpdate() {
+        return this.session.getRequest().isUpdateSnapshots();
     }
 
 }

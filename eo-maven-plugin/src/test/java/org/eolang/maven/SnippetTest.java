@@ -45,7 +45,6 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
@@ -124,7 +123,7 @@ final class SnippetTest {
      * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
     private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");

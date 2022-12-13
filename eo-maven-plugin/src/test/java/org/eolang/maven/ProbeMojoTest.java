@@ -32,12 +32,16 @@ import org.cactoos.Input;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.map.MapEntry;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -45,12 +49,13 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.28.11
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ProbeMojoTest {
 
     /**
-     * Default format of eo-foreign.json for all tests.
+     * Catalog 'eo-foreign.json' for all tests.
      */
-    private static final String FOREIGN_FORMAT = "json";
+    private static final String FOREIGN = "eo-foreign.json";
 
     @Test
     void testSimpleProbe(@TempDir final Path temp) throws IOException {
@@ -62,13 +67,11 @@ final class ProbeMojoTest {
         this.saveProgram(temp, src);
         this.execUntilProbeMojo(temp);
         final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(
-            String.format("eo-foreign.%s", ProbeMojoTest.FOREIGN_FORMAT)
-        ).toFile();
+        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
-            .with("foreignFormat", ProbeMojoTest.FOREIGN_FORMAT)
+            .with("foreignFormat", "json")
             .with("objectionary", this.dummy())
             .execute();
         MatcherAssert.assertThat(
@@ -91,13 +94,11 @@ final class ProbeMojoTest {
         this.saveProgram(temp, src);
         this.execUntilProbeMojo(temp);
         final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(
-            String.format("eo-foreign.%s", ProbeMojoTest.FOREIGN_FORMAT)
-        ).toFile();
+        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
-            .with("foreignFormat", ProbeMojoTest.FOREIGN_FORMAT)
+            .with("foreignFormat", "json")
             .with("objectionary", this.dummy())
             .with("offlineHashFile", temp.resolve("tags.txt"))
             .execute();
@@ -117,13 +118,11 @@ final class ProbeMojoTest {
         this.saveProgram(temp, src);
         this.execUntilProbeMojo(temp);
         final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(
-            String.format("eo-foreign.%s", ProbeMojoTest.FOREIGN_FORMAT)
-        ).toFile();
+        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
-            .with("foreignFormat", ProbeMojoTest.FOREIGN_FORMAT)
+            .with("foreignFormat", "json")
             .with("objectionary", this.dummy())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
@@ -135,6 +134,7 @@ final class ProbeMojoTest {
     }
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void tryToFindInOyRemote(@TempDir final Path temp) throws IOException {
         final Input src = new InputOf(
             new TextOf(
@@ -144,32 +144,24 @@ final class ProbeMojoTest {
         this.saveProgram(temp, src);
         this.execUntilProbeMojo(temp);
         final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(
-            String.format("eo-foreign.%s", ProbeMojoTest.FOREIGN_FORMAT)
-        ).toFile();
-        final MapEntry<Objectionary, Boolean> entry = PullMojo.remote(
-            PullMojo.resolveHash(null, null, "0.28.10")
-        );
+        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
+        final Objectionary obj = new OyRemote(new ChCached(new ChRemote("0.28.10")));
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
-            .with("foreignFormat", ProbeMojoTest.FOREIGN_FORMAT)
+            .with("foreignFormat", "json")
             .with("tag", "0.28.10")
-            .with("objectionary", entry.getKey())
+            .with("objectionary", obj)
             .execute();
-        if (entry.getValue().equals(true)) {
-            MatcherAssert.assertThat(
-                new LinkedList<>(new MnJson(foreign).read()).getFirst().get("probed"),
-                Matchers.equalTo("2")
-            );
-        }
+        MatcherAssert.assertThat(
+            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("probed"),
+            Matchers.equalTo("2")
+        );
     }
 
     private void execUntilProbeMojo(final Path temp) {
         final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(
-            String.format("eo-foreign.%s", ProbeMojoTest.FOREIGN_FORMAT)
-        ).toFile();
+        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ParseMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
@@ -187,10 +179,7 @@ final class ProbeMojoTest {
     private void saveProgram(final Path temp, final Input code) throws IOException {
         final Path program = temp.resolve("program.eo");
         new Home(temp).save(code, temp.relativize(program));
-        Catalogs.INSTANCE.make(
-                temp.resolve(String.format("eo-foreign.%s", ProbeMojoTest.FOREIGN_FORMAT)),
-                "json"
-            )
+        Catalogs.INSTANCE.make(temp.resolve(ProbeMojoTest.FOREIGN), "json")
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, program.toString());

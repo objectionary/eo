@@ -40,10 +40,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -52,6 +55,7 @@ import org.eolang.maven.util.Rel;
  * catalog.
  *
  * @since 0.28.11
+ * @checkstyle CyclomaticComplexityCheck (300 lines)
  */
 @Mojo(
     name = "probe",
@@ -104,20 +108,26 @@ public final class ProbeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        if (!new Online().value()) {
+            Logger.warn(
+                this, "There is not internet connection. Probe skipped"
+            );
+            return;
+        }
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && !row.exists(AssembleMojo.ATTR_PROBED)
         );
-        final CommitHash hash = PullMojo.resolveHash(
+        final CommitHash hash = new ChResolve(
             this.offlineHashFile, this.offlineHash, this.tag
-        );
+        ).getCommitHash();
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
                     new ChNarrow(hash),
                     this.outputPath
                 ),
-                PullMojo.remote(hash).getKey(),
+                new OyRemote(hash),
                 this.forceUpdate()
             );
         }
@@ -179,15 +189,15 @@ public final class ProbeMojo extends SafeMojo {
             )
         );
         final Collection<String> ret = new TreeSet<>();
-        probed.forEach(obj -> {
-            if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
-                ret.add(
-                    obj.substring(2)
-                );
-            } else {
-                ret.add(obj);
+        probed.forEach(
+            obj -> {
+                if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
+                    ret.add(obj.substring(2));
+                } else {
+                    ret.add(obj);
+                }
             }
-        });
+        );
         if (ret.isEmpty()) {
             Logger.debug(
                 this, "Didn't find any probed objects in %s",
