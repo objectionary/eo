@@ -2,7 +2,7 @@
 
 [] > main
   QQ.io.stdout > @
-    QQ.io.sprintf "I am %d years old"
+    QQ.txt.sprintf "I am %d years old"
       plus.
         1337
         228

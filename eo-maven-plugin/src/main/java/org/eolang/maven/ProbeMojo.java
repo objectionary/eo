@@ -116,7 +116,7 @@ public final class ProbeMojo extends SafeMojo {
                     new ChNarrow(hash),
                     this.outputPath
                 ),
-                PullMojo.remote(hash),
+                PullMojo.remote(hash).getKey(),
                 this.forceUpdate()
             );
         }
@@ -126,7 +126,6 @@ public final class ProbeMojo extends SafeMojo {
             final Collection<String> names = this.probe(src);
             int count = 0;
             for (final String name : names) {
-                //System.out.println(String.format("NAME IS %s\n", name));
                 if (!this.objectionary.contains(name)) {
                     continue;
                 }
@@ -138,6 +137,7 @@ public final class ProbeMojo extends SafeMojo {
                 ftojo.set(AssembleMojo.ATTR_PROBED_AT, src);
                 probed.add(name);
             }
+            tojo.set(AssembleMojo.ATTR_HASH, new ChNarrow(hash).value());
             tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
         }
         if (tojos.isEmpty()) {
@@ -206,7 +206,7 @@ public final class ProbeMojo extends SafeMojo {
      *
      * @return True if option enabled and false otherwise
      */
-    public boolean forceUpdate() {
+    private boolean forceUpdate() {
         return this.session.getRequest().isUpdateSnapshots();
     }
 

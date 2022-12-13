@@ -34,6 +34,7 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChPattern;
@@ -133,7 +134,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     new ChNarrow(hash),
                     this.outputPath,
-                    PullMojo.remote(hash)
+                    PullMojo.remote(hash).getKey()
                 ),
                 this.forceUpdate()
             );
@@ -163,20 +164,24 @@ public final class PullMojo extends SafeMojo {
     }
 
     /**
-     * Create remote repo.
+     * Remote objectionary.
      *
-     * @param hash Full Git hash
-     * @return Objectionary
+     * @param hash Commit hash
+     * @return MapEntry, where key is Objectionary, value is
+     * access of connect
      */
-    public static Objectionary remote(final CommitHash hash) {
+    public static MapEntry<Objectionary, Boolean> remote(final CommitHash hash) {
         Objectionary obj;
+        boolean acs;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
             obj = new OyRemote(hash);
+            acs = true;
         } catch (final IOException ex) {
             obj = new OyEmpty();
+            acs = false;
         }
-        return obj;
+        return new MapEntry<>(obj, acs);
     }
 
     /**
