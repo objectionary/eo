@@ -44,6 +44,7 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.util.Rel;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the

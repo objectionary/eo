@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
