@@ -42,7 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 class SkipTest {
 
     @Test
-    void testExecutedPullMojo(@TempDir final Path temp) {
+    void testExecutedPullMojo(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
@@ -54,7 +54,7 @@ class SkipTest {
                     )
                 )
             ),
-            Matchers.is(true)
+            Matchers.is(new Online().value())
         );
     }
 

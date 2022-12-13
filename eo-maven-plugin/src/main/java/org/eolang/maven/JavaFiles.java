@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.cactoos.text.Joined;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 
 /**
  * Java files from XMIR.

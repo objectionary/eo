@@ -47,6 +47,9 @@ import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Online;
+import org.eolang.maven.util.Rel;
 
 /**
  * Pull EO XML files from Objectionary and parse them into XML.
@@ -118,6 +121,12 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        if (!new Online().value()) {
+            Logger.warn(
+                this, "There is not internet connection. Pull skipped"
+            );
+            return;
+        }
         final Collection<Tojo> tojos = this.scopedTojos().select(
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)

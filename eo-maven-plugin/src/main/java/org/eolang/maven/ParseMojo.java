@@ -48,6 +48,7 @@ import org.cactoos.io.OutputTo;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
@@ -118,7 +119,6 @@ public final class ParseMojo extends SafeMojo {
         final Set<Callable<Object>> tasks = new HashSet<>(0);
         final AtomicInteger total = new AtomicInteger(0);
         tojos.stream()
-            .map(SynchronizedTojo::new)
             .forEach(
                 tojo -> {
                     if (tojo.exists(AssembleMojo.ATTR_XMIR)) {

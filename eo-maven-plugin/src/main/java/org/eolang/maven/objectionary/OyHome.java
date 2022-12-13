@@ -28,8 +28,8 @@ import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.eolang.maven.Place;
-import org.eolang.maven.Rel;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.util.Rel;
 
 /**
  * Objectionary stored locally.

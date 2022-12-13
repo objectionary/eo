@@ -30,8 +30,8 @@ import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.Home;
 import org.eolang.maven.Place;
+import org.eolang.maven.util.Home;
 
 /**
  * Program footprint of EO compilation process.

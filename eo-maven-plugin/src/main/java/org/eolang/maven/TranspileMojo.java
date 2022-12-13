@@ -44,6 +44,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 
 /**

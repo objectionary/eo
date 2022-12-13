@@ -38,6 +38,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.util.Rel;
 
 /**
  * Read all XMIR files and find foreign objects in them, then

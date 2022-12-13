@@ -45,6 +45,9 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -69,7 +72,7 @@ import org.yaml.snakeyaml.Yaml;
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
  */
-@ExtendWith(WeAreOnline.class)
+@ExtendWith(OnlineCondition.class)
 final class SnippetTest {
 
     /**

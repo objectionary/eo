@@ -36,6 +36,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
+import org.eolang.maven.util.Walk;
 
 /**
  * Copy all .eo files from src/main/eo to target/classes/EO-SOURCES

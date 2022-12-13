@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.util.Rel;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link org.eolang.maven.Rel}.
+ * Test case for {@link Rel}.
  *
  * @since 0.28.11
  */

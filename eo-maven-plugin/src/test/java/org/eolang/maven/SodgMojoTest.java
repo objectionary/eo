@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import org.cactoos.set.SetOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.util.Home;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;

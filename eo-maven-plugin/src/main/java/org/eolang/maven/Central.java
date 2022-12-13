@@ -31,6 +31,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.eolang.maven.util.Rel;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**

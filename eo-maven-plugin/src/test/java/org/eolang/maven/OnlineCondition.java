@@ -21,55 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang.maven;
 
-import com.yegor256.tojos.Tojo;
+import java.io.IOException;
+import org.eolang.maven.util.Online;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExecutionCondition;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
- * Thread-safe version of tojo. Synchronizes on global single lock within JVM.
- * @since 1.0
- * @todo #1230:30min Replace this custom {@link SynchronizedTojo} with
- *  implementation from Tojo framework once completed in
- *  <a href="https://github.com/yegor256/tojos/issues/16">#16</a>. This class
- *  should be removed and all usages updated accordingly.
+ * JUnit's extension to skip a test if we are not online.
+ *
+ * @since 0.26
  */
-final class SynchronizedTojo implements Tojo {
-    /**
-     * Lock object.
-     */
-    private static final Object LOCK = SynchronizedTojo.class;
-
-    /**
-     * Origin tojo.
-     */
-    private final Tojo origin;
-
-    /**
-     * Ctor.
-     * @param origin Tojo
-     */
-    SynchronizedTojo(final Tojo origin) {
-        this.origin = origin;
-    }
+public final class OnlineCondition implements ExecutionCondition {
 
     @Override
-    public boolean exists(final String key) {
-        synchronized (SynchronizedTojo.LOCK) {
-            return this.origin.exists(key);
+    public ConditionEvaluationResult evaluateExecutionCondition(
+        final ExtensionContext context) {
+        ConditionEvaluationResult ret;
+        try {
+            if (new Online().value()) {
+                ret = ConditionEvaluationResult.enabled("We are online!");
+            } else {
+                ret = ConditionEvaluationResult.disabled("We are offline");
+            }
+        } catch (final IOException ex) {
+            ret = ConditionEvaluationResult.disabled(
+                String.format("Failed to check online status: %s", ex.getMessage())
+            );
         }
-    }
-
-    @Override
-    public String get(final String key) {
-        synchronized (SynchronizedTojo.LOCK) {
-            return this.origin.get(key);
-        }
-    }
-
-    @Override
-    public Tojo set(final String key, final Object value) {
-        synchronized (SynchronizedTojo.LOCK) {
-            return this.origin.set(key, value);
-        }
+        return ret;
     }
 }

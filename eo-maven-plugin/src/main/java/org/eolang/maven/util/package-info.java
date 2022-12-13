@@ -21,39 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.eolang.maven.util.Home;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 /**
- * Test case for {@link UnspileMojo}.
- *
- * @since 0.1
+ * Utility classes for EO maven plugin.
  */
-final class UnspileMojoTest {
-
-    @Test
-    void testCleaning(@TempDir final Path temp) throws Exception {
-        final Path generated = Paths.get("generated");
-        final Path classes = Paths.get("classes");
-        final Path foo = Paths.get("a/b/c/foo.class");
-        new Home(temp).save("abc", foo);
-        new Home(temp).save("xxx", generated.resolve("a/b/c/foo.java"));
-        new Home(temp).save("cde", classes.resolve("foo.txt"));
-        new Moja<>(UnspileMojo.class)
-            .with("generatedDir", generated.toFile())
-            .with("classesDir", classes.toFile())
-            .execute();
-        MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(false)
-        );
-    }
-}
+package org.eolang.maven.util;

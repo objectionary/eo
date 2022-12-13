@@ -21,49 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
- * MD5 hash of a file (its content).
+ * Check if we are online.
  *
- * @since 0.24
+ * @since 1.0
  */
-final class FileHash {
-
+public class Online {
     /**
-     * The file.
+     * URL to validate.
      */
-    private final Path file;
+    private final String url;
 
     /**
      * Ctor.
-     * @param path The name of the file
+     * @param url URL to check availability for.
      */
-    FileHash(final Path path) {
-        this.file = path;
+    public Online(final String url) {
+        this.url = url;
     }
 
-    @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
-        } else {
-            hash = "";
+    /**
+     * Ctor.
+     * Check against default url.
+     */
+    public Online() {
+        this("https://www.objectionary.com");
+    }
+
+    /**
+     * If we are online.
+     * @return True if we are online and false otherwise.
+     * @throws IOException In case of check failure
+     */
+    public boolean value() throws IOException {
+        boolean online = true;
+        try {
+            final URLConnection conn = new URL(this.url).openConnection();
+            conn.connect();
+            conn.getInputStream().close();
+        } catch (final IOException ignored) {
+            online = false;
         }
-        return hash;
+        return online;
     }
-
 }

@@ -27,8 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.nio.file.Path;
 import org.eolang.maven.Place;
-import org.eolang.maven.Rel;
 import org.eolang.maven.SpyTrain;
+import org.eolang.maven.util.Rel;
 
 /**
  * Optimization that spies.

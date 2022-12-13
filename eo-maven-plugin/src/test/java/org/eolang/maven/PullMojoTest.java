@@ -32,6 +32,8 @@ import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,7 @@ final class PullMojoTest {
     private static final String FOREIGN_FORMAT = "json";
 
     @Test
-    void testSimplePull(@TempDir final Path temp) {
+    void testSimplePull(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
@@ -72,7 +74,7 @@ final class PullMojoTest {
                     )
                 )
             ),
-            Matchers.is(true)
+            Matchers.is(new Online().value())
         );
     }
 

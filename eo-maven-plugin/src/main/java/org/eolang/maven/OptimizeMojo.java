@@ -42,6 +42,8 @@ import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -122,7 +124,6 @@ public final class OptimizeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
         final List<Supplier<Integer>> tasks = sources.stream()
-            .map(SynchronizedTojo::new)
             .filter(this::optimizationRequired)
             .map(this::toOptimizationTask)
             .collect(Collectors.toList());
@@ -155,7 +156,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojo that should be optimized.
      * @return Optimization task.
      */
-    private Supplier<Integer> toOptimizationTask(final SynchronizedTojo tojo) {
+    private Supplier<Integer> toOptimizationTask(final Tojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         Logger.info(
             this, "Adding optimization task for %s",
