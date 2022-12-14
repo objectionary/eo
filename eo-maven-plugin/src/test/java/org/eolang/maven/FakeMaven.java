@@ -184,8 +184,12 @@ public final class FakeMaven {
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         this.params.putIfAbsent("project", new MavenProjectStub());
-        this.params.putIfAbsent("generatedDir", this.workspace.emptyDir("generated"));
-        this.params.putIfAbsent("transpiled",
+        this.params.putIfAbsent(
+            "generatedDir",
+            this.workspace.absolute(Paths.get("generated")).toFile()
+        );
+        this.params.putIfAbsent(
+            "transpiled",
             this.workspace.save(new TextOf(""), Paths.get("transpiled")).toFile()
         );
         this.params.putIfAbsent("transpiledFormat", "csv");

@@ -24,7 +24,6 @@
 package org.eolang.maven.util;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -154,21 +153,6 @@ public final class Home {
                 ex
             );
         }
-    }
-
-    /**
-     * Creates directory.
-     *
-     * @param folder Name
-     * @return Path to created directory
-     * @throws IOException if fails
-     */
-    public File emptyDir(final String folder) throws IOException {
-        final Path res = this.cwd.resolve(folder);
-        if (!Files.exists(res)) {
-            Files.createDirectory(res);
-        }
-        return res.toFile();
     }
 
     /**
