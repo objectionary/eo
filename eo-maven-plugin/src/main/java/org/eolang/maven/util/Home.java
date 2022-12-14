@@ -71,45 +71,6 @@ public final class Home {
     }
 
     /**
-     * Saving input.
-     *
-     * @param input Input
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
-    public void save(final Input input, final Path path) throws IOException {
-        final Path target = this.absolute(path);
-        if (target.toFile().getParentFile().mkdirs()) {
-            Logger.debug(
-                this, "Directory created: %s",
-                new Rel(target.getParent())
-            );
-        }
-        try {
-            final long bytes = new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        input,
-                        new OutputTo(target)
-                    )
-                )
-            ).value();
-            Logger.debug(
-                Home.class, "File %s saved (%d bytes)",
-                target, bytes
-            );
-        } catch (final IOException ex) {
-            throw new IOException(
-                String.format(
-                    "Failed while trying to save to %s",
-                    target
-                ),
-                ex
-            );
-        }
-    }
-
-    /**
      * Saving string.
      *
      * @param str String
@@ -125,10 +86,11 @@ public final class Home {
      *
      * @param txt Text
      * @param path Cwd-relative path to file
+     * @return Path to saved file
      * @throws IOException If fails
      */
-    public void save(final Text txt, final Path path) throws IOException {
-        this.save(new InputOf(txt), path);
+    public Path save(final Text txt, final Path path) throws IOException {
+        return this.save(new InputOf(txt), path);
     }
 
     /**
@@ -151,6 +113,47 @@ public final class Home {
      */
     public void save(final byte[] bytes, final Path path) throws IOException {
         this.save(new InputOf(bytes), path);
+    }
+
+    /**
+     * Saving input.
+     *
+     * @param input Input
+     * @param path Cwd-relative path to file
+     * @return Path to saved file
+     * @throws IOException If fails
+     */
+    public Path save(final Input input, final Path path) throws IOException {
+        final Path target = this.absolute(path);
+        if (target.toFile().getParentFile().mkdirs()) {
+            Logger.debug(
+                this, "Directory created: %s",
+                new Rel(target.getParent())
+            );
+        }
+        try {
+            final long bytes = new IoChecked<>(
+                new LengthOf(
+                    new TeeInput(
+                        input,
+                        new OutputTo(target)
+                    )
+                )
+            ).value();
+            Logger.debug(
+                Home.class, "File %s saved (%d bytes)",
+                target, bytes
+            );
+            return target;
+        } catch (final IOException ex) {
+            throw new IOException(
+                String.format(
+                    "Failed while trying to save to %s",
+                    target
+                ),
+                ex
+            );
+        }
     }
 
     /**
