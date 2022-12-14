@@ -169,21 +169,6 @@ public final class Home {
     }
 
     /**
-     * Creates empty file.
-     *
-     * @param name File name
-     * @return Path to created file
-     * @throws IOException if fails
-     */
-    public File emptyFile(final String name) throws IOException {
-        final Path path = this.cwd.resolve(name);
-        if (!Files.exists(path)) {
-            Files.createFile(path);
-        }
-        return path.toFile();
-    }
-
-    /**
      * Check if exists.
      *
      * @param path Cwd-relative path to file
