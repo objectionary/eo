@@ -191,10 +191,12 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<String> ret = new TreeSet<>();
         probed.forEach(
             obj -> {
-                if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
-                    ret.add(obj.substring(2));
-                } else {
-                    ret.add(obj);
+                if (!ProbeMojo.hasReservedChars(obj)) {
+                    if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
+                        ret.add(obj.substring(2));
+                    } else {
+                        ret.add(obj);
+                    }
                 }
             }
         );
@@ -210,6 +212,26 @@ public final class ProbeMojo extends SafeMojo {
             );
         }
         return ret;
+    }
+
+    /**
+     * Checks if String has reserved symbols.
+     *
+     * @param str String
+     * @return True if found
+     * @checkstyle BooleanExpressionComplexityCheck (15 lines)
+     */
+    private static boolean hasReservedChars(final String str) {
+        return str.contains("<")
+            || str.contains(">")
+            || str.contains("$")
+            || str.contains("*")
+            || str.contains("?")
+            || str.contains(":")
+            || str.contains("\"")
+            || str.contains("|")
+            || str.contains("^")
+            || str.contains("@");
     }
 
     /**
