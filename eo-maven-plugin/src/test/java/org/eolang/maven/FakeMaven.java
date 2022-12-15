@@ -188,10 +188,9 @@ public final class FakeMaven {
             "generatedDir",
             this.workspace.absolute(Paths.get("generated")).toFile()
         );
-        this.params.putIfAbsent(
-            "transpiled",
-            this.workspace.save(new TextOf(""), Paths.get("transpiled")).toFile()
-        );
+        final Path transpiled = Paths.get("transpiled");
+        this.workspace.save(new TextOf(""), transpiled);
+        this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
         this.params.putIfAbsent("transpiledFormat", "csv");
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

@@ -85,11 +85,10 @@ public final class Home {
      *
      * @param txt Text
      * @param path Cwd-relative path to file
-     * @return Path to saved file
      * @throws IOException If fails
      */
-    public Path save(final Text txt, final Path path) throws IOException {
-        return this.save(new InputOf(txt), path);
+    public void save(final Text txt, final Path path) throws IOException {
+        this.save(new InputOf(txt), path);
     }
 
     /**
@@ -119,10 +118,9 @@ public final class Home {
      *
      * @param input Input
      * @param path Cwd-relative path to file
-     * @return Path to saved file
      * @throws IOException If fails
      */
-    public Path save(final Input input, final Path path) throws IOException {
+    public void save(final Input input, final Path path) throws IOException {
         final Path target = this.absolute(path);
         if (target.toFile().getParentFile().mkdirs()) {
             Logger.debug(
@@ -143,7 +141,6 @@ public final class Home {
                 Home.class, "File %s saved (%d bytes)",
                 target, bytes
             );
-            return target;
         } catch (final IOException ex) {
             throw new IOException(
                 String.format(
