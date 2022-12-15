@@ -116,12 +116,19 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final int total = this.scopedTojos()
+        final List<Supplier<Integer>> tasks = this.scopedTojos()
             .select(row -> row.exists(AssembleMojo.ATTR_EO))
             .stream()
             .filter(this::hasNotAlreadyParsed)
             .map(this::task)
-            .parallel()
+            .collect(Collectors.toList());
+        Logger.info(
+            this,
+            "Running %s parsing tasks in parallel",
+            tasks.size()
+        );
+        final int total = tasks
+            .parallelStream()
             .mapToInt(Supplier::get)
             .sum();
         if (0 == total) {
@@ -137,6 +144,79 @@ public final class ParseMojo extends SafeMojo {
         }
     }
 
+
+    private Supplier<Integer> task(final Tojo tojo) {
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        return () -> {
+            try {
+                Thread.currentThread().setContextClassLoader(loader);
+                this.parse(tojo);
+                return 1;
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Unable to parse %s",
+                        tojo.get(Tojos.KEY)
+                    ),
+                    ex
+                );
+            }
+        };
+    }
+//    @Override
+//    public void exec() throws IOException {
+//        final List<Callable<Integer>> tasks = this.scopedTojos()
+//            .select(row -> row.exists(AssembleMojo.ATTR_EO))
+//            .stream()
+//            .filter(this::hasNotAlreadyParsed)
+//            .map(this::task)
+//            .collect(Collectors.toList());
+//
+//        try {
+//            for (final Future<Integer> future : Executors.newFixedThreadPool(4).invokeAll(
+//                tasks)) {
+//                try {
+//                    future.get();
+//                } catch (ExecutionException ex) {
+//                    throw new IllegalStateException(ex);
+//                }
+//            }
+//        } catch (InterruptedException ex) {
+//            Thread.currentThread().interrupt();
+//            throw new IllegalStateException("Interrupted", ex);
+//        }
+//        final int total = tasks.size();
+//        if (0 == total) {
+//            if (((Collection<Tojo>) this.scopedTojos().select(
+//                row -> row.exists(AssembleMojo.ATTR_EO)
+//            )).isEmpty()) {
+//                Logger.info(this, "No .eo sources need to be parsed to XMIRs");
+//            } else {
+//                Logger.info(this, "No .eo sources parsed to XMIRs");
+//            }
+//        } else {
+//            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
+//        }
+//    }
+//
+//
+//    private Callable<Integer> task(final Tojo tojo) {
+//        return () -> {
+//            try {
+//                this.parse(tojo);
+//                return 1;
+//            } catch (final IOException ex) {
+//                throw new IllegalStateException(
+//                    String.format(
+//                        "Unable to parse %s",
+//                        tojo.get(Tojos.KEY)
+//                    ),
+//                    ex
+//                );
+//            }
+//        };
+//    }
+
     private boolean hasNotAlreadyParsed(final Tojo tojo) {
         boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
@@ -151,23 +231,6 @@ public final class ParseMojo extends SafeMojo {
             }
         }
         return res;
-    }
-
-    private Supplier<Integer> task(final Tojo tojo) {
-        return () -> {
-            try {
-                this.parse(tojo);
-                return 1;
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Unable to parse %s",
-                        tojo.get(Tojos.KEY)
-                    ),
-                    ex
-                );
-            }
-        };
     }
 
     /**
