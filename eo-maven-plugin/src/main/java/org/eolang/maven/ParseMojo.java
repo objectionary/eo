@@ -33,14 +33,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -61,8 +54,6 @@ import org.xembly.Xembler;
  * Parse EO to XML.
  *
  * @since 0.1
- * @todo #1230:30min Make number of threads used in thread executor within {@link #exec()} method
- *  configurable via mojo parameter `threads`. Default value should be 4.
  */
 @Mojo(
     name = "parse",
@@ -107,13 +98,6 @@ public final class ParseMojo extends SafeMojo {
         defaultValue = "true")
     private boolean failOnError = true;
 
-    /**
-     * Number of parallel threads.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.threads", defaultValue = "4")
-    private int threads = 4;
-
     @Override
     public void exec() throws IOException {
         final List<Supplier<Integer>> tasks = this.scopedTojos()
@@ -144,7 +128,12 @@ public final class ParseMojo extends SafeMojo {
         }
     }
 
-
+    /**
+     * Create a task for parsing a single EO file.
+     *
+     * @param tojo Tojo
+     * @return Task
+     */
     private Supplier<Integer> task(final Tojo tojo) {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         return () -> {
@@ -163,60 +152,13 @@ public final class ParseMojo extends SafeMojo {
             }
         };
     }
-//    @Override
-//    public void exec() throws IOException {
-//        final List<Callable<Integer>> tasks = this.scopedTojos()
-//            .select(row -> row.exists(AssembleMojo.ATTR_EO))
-//            .stream()
-//            .filter(this::hasNotAlreadyParsed)
-//            .map(this::task)
-//            .collect(Collectors.toList());
-//
-//        try {
-//            for (final Future<Integer> future : Executors.newFixedThreadPool(4).invokeAll(
-//                tasks)) {
-//                try {
-//                    future.get();
-//                } catch (ExecutionException ex) {
-//                    throw new IllegalStateException(ex);
-//                }
-//            }
-//        } catch (InterruptedException ex) {
-//            Thread.currentThread().interrupt();
-//            throw new IllegalStateException("Interrupted", ex);
-//        }
-//        final int total = tasks.size();
-//        if (0 == total) {
-//            if (((Collection<Tojo>) this.scopedTojos().select(
-//                row -> row.exists(AssembleMojo.ATTR_EO)
-//            )).isEmpty()) {
-//                Logger.info(this, "No .eo sources need to be parsed to XMIRs");
-//            } else {
-//                Logger.info(this, "No .eo sources parsed to XMIRs");
-//            }
-//        } else {
-//            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
-//        }
-//    }
-//
-//
-//    private Callable<Integer> task(final Tojo tojo) {
-//        return () -> {
-//            try {
-//                this.parse(tojo);
-//                return 1;
-//            } catch (final IOException ex) {
-//                throw new IllegalStateException(
-//                    String.format(
-//                        "Unable to parse %s",
-//                        tojo.get(Tojos.KEY)
-//                    ),
-//                    ex
-//                );
-//            }
-//        };
-//    }
 
+    /**
+     * Check if the given tojo has already been parsed.
+     *
+     * @param tojo Tojo.
+     * @return True if the tojo has already been parsed.
+     */
     private boolean hasNotAlreadyParsed(final Tojo tojo) {
         boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
