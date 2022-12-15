@@ -102,4 +102,9 @@ public final class OyCaching implements Objectionary {
             )
         );
     }
+
+    @Override
+    public boolean contains(final String name) throws IOException {
+        return this.primary.contains(name);
+    }
 }

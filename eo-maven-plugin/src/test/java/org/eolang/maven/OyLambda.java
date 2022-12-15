@@ -21,31 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.objectionary;
+package org.eolang.maven;
 
-import java.io.IOException;
 import org.cactoos.Input;
+import org.cactoos.func.UncheckedFunc;
+import org.eolang.maven.objectionary.Objectionary;
 
 /**
- * Fake empty HTTP Objectionary server.
+ * Objectionary with Lambda Ctor for testing.
  *
- * @since 0.1
+ * @since 0.28.11
  */
-public final class OyEmpty implements Objectionary {
+public final class OyLambda implements Objectionary {
+
+    /**
+     * Function that emulates 'get()' method in {@link Objectionary}.
+     */
+    private final UncheckedFunc<String, Input> lambda;
+
+    /**
+     * Ctor.
+     *
+     * @param func Lambda func.
+     */
+    public OyLambda(final UncheckedFunc<String, Input> func) {
+        this.lambda = func;
+    }
 
     @Override
     public String toString() {
-        return "empty";
+        return "OyLambda";
     }
 
     @Override
-    public Input get(final String name) throws IOException {
-        throw new IOException("Empty objectionary");
+    public Input get(final String name) {
+        return this.lambda.apply(name);
     }
 
     @Override
-    public boolean contains(final String name) throws IOException {
-        throw new IOException("Empty objectionary");
+    public boolean contains(final String name) {
+        return true;
     }
 
 }

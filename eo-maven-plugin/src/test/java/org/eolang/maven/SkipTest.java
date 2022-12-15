@@ -27,8 +27,8 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
@@ -116,7 +116,9 @@ class SkipTest {
             .with("skip", skip)
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf("[] > hello\n")
+                new OyLambda(
+                    new UncheckedFunc<>(s -> new InputOf("[] > hello\n"))
+                )
             )
             .execute();
     }

@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.Output;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -44,7 +45,6 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
@@ -123,7 +123,7 @@ final class SnippetTest {
      * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
     private static int run(final Path tmp, final Input code, final List<String> args,
         final Input stdin, final Output stdout) throws Exception {
         final Path src = tmp.resolve("src");
@@ -154,11 +154,15 @@ final class SnippetTest {
             .with("placed", target.resolve("list").toFile())
             .with(
                 "objectionary",
-                (Objectionary) name -> new InputOf(
-                    home.resolve(
-                        String.format(
-                            "src/main/eo/%s.eo",
-                            name.replace(".", "/")
+                new OyLambda(
+                    new UncheckedFunc<>(
+                        name -> new InputOf(
+                            home.resolve(
+                                String.format(
+                                    "src/main/eo/%s.eo",
+                                    name.replace(".", "/")
+                                )
+                            )
                         )
                     )
                 )

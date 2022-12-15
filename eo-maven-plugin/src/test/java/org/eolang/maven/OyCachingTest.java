@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.objectionary.OyCaching;
@@ -48,7 +49,9 @@ final class OyCachingTest {
                 new OyCaching(
                     "master",
                     path,
-                    name -> new InputOf(content)
+                    new OyLambda(
+                        new UncheckedFunc<>(s -> new InputOf(content))
+                    )
                 ).get("org.example.main")
             ).asString(),
             Matchers.is(content)

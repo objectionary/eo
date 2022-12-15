@@ -40,4 +40,11 @@ public interface Objectionary {
      */
     Input get(String name) throws IOException;
 
+    /**
+     * Checks whether an Objectionary contains a provided object.
+     * @param name Object name.
+     * @return Object code.
+     * @throws IOException If fails to fetch.
+     */
+    boolean contains(String name) throws IOException;
 }

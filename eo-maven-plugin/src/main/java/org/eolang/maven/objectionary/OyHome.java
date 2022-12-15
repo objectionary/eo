@@ -23,7 +23,9 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.jcabi.log.Logger;
 import java.io.FileNotFoundException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -86,5 +88,26 @@ public final class OyHome implements Objectionary {
             throw new FileNotFoundException(name);
         }
         return new InputOf(file);
+    }
+
+    @Override
+    public boolean contains(final String name) {
+        boolean ret;
+        try {
+            final Path file = new Place(name).make(
+                this.home
+                    .resolve("pulled")
+                    .resolve(this.version),
+                "eo"
+            );
+            ret = file.toFile().exists();
+        } catch (final InvalidPathException ex) {
+            Logger.debug(
+                this, "The object '%s' is absent in %s...",
+                name, this.home
+            );
+            ret = false;
+        }
+        return ret;
     }
 }
