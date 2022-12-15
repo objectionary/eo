@@ -21,46 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import org.cactoos.Input;
-import org.cactoos.func.UncheckedFunc;
-import org.eolang.maven.objectionary.Objectionary;
-
 /**
- * Objectionary with Lambda Ctor for testing.
- *
- * @since 0.28.11
+ * Objectionary tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.objectionary.Objectionary}.
  */
-public final class OyLambda implements Objectionary {
-
-    /**
-     * Function that emulates 'get()' method in {@link Objectionary}.
-     */
-    private final UncheckedFunc<String, Input> lambda;
-
-    /**
-     * Ctor.
-     *
-     * @param func Lambda func.
-     */
-    public OyLambda(final UncheckedFunc<String, Input> func) {
-        this.lambda = func;
-    }
-
-    @Override
-    public String toString() {
-        return "OyLambda";
-    }
-
-    @Override
-    public Input get(final String name) {
-        return this.lambda.apply(name);
-    }
-
-    @Override
-    public boolean contains(final String name) {
-        return true;
-    }
-
-}
+package org.eolang.maven.objectionary;

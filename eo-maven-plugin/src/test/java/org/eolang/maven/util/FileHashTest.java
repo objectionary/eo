@@ -21,44 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyHome;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link OyHome}.
+ * Test for {@link FileHash}.
  *
- * @since 1.0
+ * @since 0.26
  */
-final class OyLocalTest {
+final class FileHashTest {
 
     @Test
-    void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        new LengthOf(
-            new TeeInput(
-                new InputOf(content),
-                new OutputTo(
-                    path.resolve("pulled/master/org/example/main.eo")
-                )
-            )
-        ).value();
+    void readsFromExistingFile(@TempDir final Path temp) throws IOException {
+        final Path path = temp.resolve("1.txt");
+        new Home(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            new TextOf(
-                new OyHome("master", path)
-                    .get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
+            new FileHash(path).toString(),
+            Matchers.startsWith("[-26, 1, -29, 113, ")
         );
     }
+
+    @Test
+    void readsFromAbsentFile(@TempDir final Path temp) {
+        final Path path = temp.resolve("2.txt");
+        MatcherAssert.assertThat(
+            new FileHash(path).toString(),
+            Matchers.equalTo("")
+        );
+    }
+
 }

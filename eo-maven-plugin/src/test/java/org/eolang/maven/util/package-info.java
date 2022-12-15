@@ -21,41 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import org.eolang.maven.util.FileHash;
-import org.eolang.maven.util.Home;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 /**
- * Test for {@link FileHash}.
- *
- * @since 0.26
+ * Test cases for {@link org.eolang.maven.util} package.
  */
-final class FileHashTest {
-
-    @Test
-    void readsFromExistingFile(@TempDir final Path temp) throws IOException {
-        final Path path = temp.resolve("1.txt");
-        new Home(temp).save("hey, you", temp.relativize(path));
-        MatcherAssert.assertThat(
-            new FileHash(path).toString(),
-            Matchers.startsWith("[-26, 1, -29, 113, ")
-        );
-    }
-
-    @Test
-    void readsFromAbsentFile(@TempDir final Path temp) {
-        final Path path = temp.resolve("2.txt");
-        MatcherAssert.assertThat(
-            new FileHash(path).toString(),
-            Matchers.equalTo("")
-        );
-    }
-
-}
+package org.eolang.maven.util;

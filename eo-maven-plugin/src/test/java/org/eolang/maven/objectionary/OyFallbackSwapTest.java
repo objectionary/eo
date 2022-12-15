@@ -21,13 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyFallbackSwap;
+import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,12 +41,8 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
-                    ),
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > remote\n"))
-                    ),
+                    new OyFake(s -> new InputOf("[] > local\n")),
+                    new OyFake(s -> new InputOf("[] > remote\n")),
                     false
                 ).get("")
             ).asString(),
@@ -60,15 +55,11 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
-                    ),
-                    new OyLambda(
-                        new UncheckedFunc<>(
-                            s -> {
-                                throw new IOException("Can't get object");
-                            }
-                        )
+                    new OyFake(s -> new InputOf("[] > local\n")),
+                    new OyFake(
+                        s -> {
+                            throw new IOException("Can't get object");
+                        }
                     ),
                     false
                 ).get("")
@@ -82,12 +73,8 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
-                    ),
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > remote\n"))
-                    ),
+                    new OyFake(s -> new InputOf("[] > local\n")),
+                    new OyFake(s -> new InputOf("[] > remote\n")),
                     true
                 ).get("")
             ).asString(),

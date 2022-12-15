@@ -21,60 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyFallback;
-import org.eolang.maven.objectionary.OyHome;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link OyFallback}.
+ * Test for {@link OyHome}.
  *
  * @since 1.0
  */
-final class OyFallbackTest {
+final class OyLocalTest {
 
     @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final AtomicInteger counter = new AtomicInteger();
-        final String branch = "master";
-        final Objectionary objectionary = new OyFallback(
-            new OyHome(branch, path),
-            new OyCaching(
-                branch,
-                path,
-                new OyLambda(
-                    new UncheckedFunc<>(
-                        s -> {
-                            counter.incrementAndGet();
-                            return new InputOf("[] > main\n");
-                        }
-                    )
+    void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
+        final String content = "[] > main\n";
+        new LengthOf(
+            new TeeInput(
+                new InputOf(content),
+                new OutputTo(
+                    path.resolve("pulled/master/org/example/main.eo")
                 )
             )
-        );
-        final String object = "org.example.main";
-        Assertions.assertNotNull(
-            new TextOf(objectionary.get(object)).asString()
-        );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo").toFile().exists()
-        );
-        Assertions.assertNotNull(objectionary.get(object));
+        ).value();
         MatcherAssert.assertThat(
-            counter.get(),
-            Matchers.is(1)
+            new TextOf(
+                new OyHome("master", path)
+                    .get("org.example.main")
+            ).asString(),
+            Matchers.is(content)
         );
     }
 }

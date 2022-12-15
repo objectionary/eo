@@ -23,43 +23,52 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Path;
-import org.cactoos.func.UncheckedFunc;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyCaching;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.jcabi.log.Logger;
+import org.cactoos.Func;
+import org.cactoos.Input;
+import org.eolang.maven.objectionary.Objectionary;
 
 /**
- * Test for {@link OyCaching}.
+ * Objectionary with lambda-function Ctor for testing.
  *
- * @since 1.0
+ * @since 0.28.11
  */
-final class OyCachingTest {
+public final class OyFake implements Objectionary {
 
-    @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        MatcherAssert.assertThat(
-            new TextOf(
-                new OyCaching(
-                    "master",
-                    path,
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf(content))
-                    )
-                ).get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
-        );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo")
-                .toFile()
-                .exists()
-        );
+    /**
+     * Function that emulates 'get()' method in {@link Objectionary}.
+     */
+    private final Func<String, Input> lambda;
+
+    /**
+     * Ctor.
+     *
+     * @param func Lambda func.
+     */
+    public OyFake(final Func<String, Input> func) {
+        this.lambda = func;
     }
+
+    @Override
+    public String toString() {
+        return "OyFake";
+    }
+
+    @Override
+    public Input get(final String name) {
+        try {
+            return this.lambda.apply(name);
+        } catch (final Exception e) {
+            Logger.debug(
+                this, "Invalid lambda function for OyFake!"
+            );
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean contains(final String name) {
+        return true;
+    }
+
 }
