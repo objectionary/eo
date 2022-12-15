@@ -119,36 +119,11 @@ public final class ParseMojo extends SafeMojo {
         final Set<Callable<Object>> tasks = new HashSet<>(0);
         final AtomicInteger total = new AtomicInteger(0);
         tojos.stream()
+            .filter(this::hasNotAlreadyParsed)
             .forEach(
                 tojo -> {
-                    if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
-                        final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-                        if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
-                            Logger.debug(
-                                this, "Already parsed %s to %s (it's newer than the source)",
-                                tojo.get(Tojos.KEY), new Rel(xmir)
-                            );
-                            return;
-                        }
-                    }
                     tasks.add(
-                        Executors.callable(
-                            () -> {
-                                try {
-                                    this.parse(tojo);
-                                    total.incrementAndGet();
-                                } catch (final IOException ex) {
-                                    throw new IllegalStateException(
-                                        String.format(
-                                            "Unable to parse %s",
-                                            tojo.get(Tojos.KEY)
-                                        ),
-                                        ex
-                                    );
-                                }
-                            }
-                        )
+                        task(total, tojo)
                     );
                 }
             );
@@ -183,6 +158,40 @@ public final class ParseMojo extends SafeMojo {
         } else {
             Logger.info(this, "Parsed %d .eo sources to XMIRs", total.get());
         }
+    }
+
+    private boolean hasNotAlreadyParsed(final Tojo tojo) {
+        if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
+            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+            if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already parsed %s to %s (it's newer than the source)",
+                    tojo.get(Tojos.KEY), new Rel(xmir)
+                );
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Callable<Object> task(final AtomicInteger total, final Tojo tojo) {
+        return Executors.callable(
+            () -> {
+                try {
+                    this.parse(tojo);
+                    total.incrementAndGet();
+                } catch (final IOException ex) {
+                    throw new IllegalStateException(
+                        String.format(
+                            "Unable to parse %s",
+                            tojo.get(Tojos.KEY)
+                        ),
+                        ex
+                    );
+                }
+            }
+        );
     }
 
     /**
