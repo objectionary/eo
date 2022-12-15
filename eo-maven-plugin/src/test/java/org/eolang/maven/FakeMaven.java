@@ -45,6 +45,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.Home;
 
 /**
@@ -111,6 +114,17 @@ public final class FakeMaven {
     }
 
     /**
+     * Adds eo program to a workspace.
+     *
+     * @param path Path to the program
+     * @return The same maven instance
+     * @throws IOException If fails
+     */
+    public FakeMaven withProgram(final Path path) throws IOException {
+        return this.withProgram(new UncheckedText(new TextOf(path)).asString());
+    }
+
+    /**
      * Sets parameter for execution.
      *
      * @param param Parameter name
@@ -169,6 +183,15 @@ public final class FakeMaven {
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
+        this.params.putIfAbsent("project", new MavenProjectStub());
+        this.params.putIfAbsent(
+            "generatedDir",
+            this.workspace.absolute(Paths.get("generated")).toFile()
+        );
+        final Path transpiled = Paths.get("transpiled");
+        this.workspace.save(new TextOf(""), transpiled);
+        this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
+        this.params.putIfAbsent("transpiledFormat", "csv");
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -324,6 +347,23 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 OptimizeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Transpile full pipeline.
+     *
+     * @since 0.29.0
+     */
+    static final class Transpile implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                TranspileMojo.class
             ).iterator();
         }
     }
