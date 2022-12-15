@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.log.Supplier;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
@@ -33,12 +34,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -113,54 +116,29 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_EO)
-        );
-        final Set<Callable<Object>> tasks = new HashSet<>(0);
-        final AtomicInteger total = new AtomicInteger(0);
-        tojos.stream()
+        final int total = this.scopedTojos()
+            .select(row -> row.exists(AssembleMojo.ATTR_EO))
+            .stream()
             .filter(this::hasNotAlreadyParsed)
-            .forEach(
-                tojo -> {
-                    tasks.add(
-                        task(total, tojo)
-                    );
-                }
-            );
-        try {
-            for (final Future<Object> completed : Executors.newFixedThreadPool(this.threads)
-                .invokeAll(tasks)) {
-                try {
-                    completed.get();
-                } catch (final ExecutionException ex) {
-                    throw new IllegalArgumentException(
-                        ex.getCause().getMessage(),
-                        ex
-                    );
-                }
-            }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "Interrupted while waiting for %d parsing to finish",
-                    total.get()
-                ),
-                ex
-            );
-        }
-        if (total.get() == 0) {
-            if (tojos.isEmpty()) {
+            .map(this::task)
+            .parallel()
+            .mapToInt(Supplier::get)
+            .sum();
+        if (0 == total) {
+            if (((Collection<Tojo>) this.scopedTojos().select(
+                row -> row.exists(AssembleMojo.ATTR_EO)
+            )).isEmpty()) {
                 Logger.info(this, "No .eo sources need to be parsed to XMIRs");
             } else {
                 Logger.info(this, "No .eo sources parsed to XMIRs");
             }
         } else {
-            Logger.info(this, "Parsed %d .eo sources to XMIRs", total.get());
+            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
         }
     }
 
     private boolean hasNotAlreadyParsed(final Tojo tojo) {
+        boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
@@ -169,29 +147,27 @@ public final class ParseMojo extends SafeMojo {
                     this, "Already parsed %s to %s (it's newer than the source)",
                     tojo.get(Tojos.KEY), new Rel(xmir)
                 );
-                return false;
+                res = false;
             }
         }
-        return true;
+        return res;
     }
 
-    private Callable<Object> task(final AtomicInteger total, final Tojo tojo) {
-        return Executors.callable(
-            () -> {
-                try {
-                    this.parse(tojo);
-                    total.incrementAndGet();
-                } catch (final IOException ex) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Unable to parse %s",
-                            tojo.get(Tojos.KEY)
-                        ),
-                        ex
-                    );
-                }
+    private Supplier<Integer> task(final Tojo tojo) {
+        return () -> {
+            try {
+                this.parse(tojo);
+                return 1;
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Unable to parse %s",
+                        tojo.get(Tojos.KEY)
+                    ),
+                    ex
+                );
             }
-        );
+        };
     }
 
     /**
