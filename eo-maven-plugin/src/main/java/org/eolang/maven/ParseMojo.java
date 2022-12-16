@@ -103,7 +103,7 @@ public final class ParseMojo extends SafeMojo {
         final List<Supplier<Integer>> tasks = this.scopedTojos()
             .select(row -> row.exists(AssembleMojo.ATTR_EO))
             .stream()
-            .filter(this::hasNotAlreadyParsed)
+            .filter(this::isNotParsed)
             .map(this::task)
             .collect(Collectors.toList());
         Logger.info(
@@ -159,7 +159,7 @@ public final class ParseMojo extends SafeMojo {
      * @param tojo Tojo.
      * @return True if the tojo has already been parsed.
      */
-    private boolean hasNotAlreadyParsed(final Tojo tojo) {
+    private boolean isNotParsed(final Tojo tojo) {
         boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
             final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
