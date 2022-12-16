@@ -154,10 +154,10 @@ public final class ParseMojo extends SafeMojo {
     }
 
     /**
-     * Check if the given tojo has already been parsed.
+     * Check if the given tojo has not been parsed.
      *
      * @param tojo Tojo.
-     * @return True if the tojo has already been parsed.
+     * @return True if the tojo has not been parsed.
      */
     private boolean isNotParsed(final Tojo tojo) {
         boolean res = true;
