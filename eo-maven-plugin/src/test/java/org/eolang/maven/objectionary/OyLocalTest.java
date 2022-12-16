@@ -59,5 +59,10 @@ final class OyLocalTest {
             ).asString(),
             Matchers.is(content)
         );
+        MatcherAssert.assertThat(
+            new OyHome("master", path)
+                .contains("org.example.main"),
+            Matchers.is(true)
+        );
     }
 }

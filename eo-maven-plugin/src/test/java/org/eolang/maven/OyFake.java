@@ -29,24 +29,46 @@ import org.cactoos.Input;
 import org.eolang.maven.objectionary.Objectionary;
 
 /**
- * Objectionary with lambda-function Ctor for testing.
+ * Objectionary with lambda-function Ctor-s for testing.
  *
  * @since 0.28.11
+ * @checkstyle IllegalCatchCheck (150 lines)
  */
 public final class OyFake implements Objectionary {
 
     /**
      * Function that emulates 'get()' method in {@link Objectionary}.
+     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Func<String, Input> lambda;
+    private final Func<String, Input> lambdaGet;
+
+    /**
+     * Function that emulates 'contains()' method in {@link Objectionary}.
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    private final Func<String, Boolean> lambdaCont;
 
     /**
      * Ctor.
      *
-     * @param func Lambda func.
+     * @param get Lambda func for get()
      */
-    public OyFake(final Func<String, Input> func) {
-        this.lambda = func;
+    public OyFake(final Func<String, Input> get) {
+        this(
+            get,
+            s -> true
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param get Lambda func for get()
+     * @param cont Lambda func for contains()
+     */
+    public OyFake(final Func<String, Input> get, final Func<String, Boolean> cont) {
+        this.lambdaGet = get;
+        this.lambdaCont = cont;
     }
 
     @Override
@@ -55,20 +77,29 @@ public final class OyFake implements Objectionary {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public Input get(final String name) {
         try {
-            return this.lambda.apply(name);
-        } catch (final Exception e) {
+            return this.lambdaGet.apply(name);
+        } catch (final Exception ex) {
             Logger.debug(
-                this, "Invalid lambda function for OyFake!"
+                this, "Invalid lambda function for get() method in OyFake!"
             );
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(ex);
         }
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public boolean contains(final String name) {
-        return true;
+        try {
+            return this.lambdaCont.apply(name);
+        } catch (final Exception ex) {
+            Logger.debug(
+                this, "Invalid lambda function for contains() method in OyFake!"
+            );
+            throw new IllegalArgumentException(ex);
+        }
     }
 
 }

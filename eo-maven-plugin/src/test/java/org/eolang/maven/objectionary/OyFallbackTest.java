@@ -54,21 +54,33 @@ final class OyFallbackTest {
                     s -> {
                         counter.incrementAndGet();
                         return new InputOf("[] > main\n");
+                    },
+                    s -> {
+                        counter.incrementAndGet();
+                        return false;
                     }
                 )
             )
         );
         final String object = "org.example.main";
+        MatcherAssert.assertThat(
+            objectionary.contains(object),
+            Matchers.is(false)
+        );
         Assertions.assertNotNull(
             new TextOf(objectionary.get(object)).asString()
         );
         Assertions.assertTrue(
             path.resolve("pulled/master/org/example/main.eo").toFile().exists()
         );
+        MatcherAssert.assertThat(
+            objectionary.contains(object),
+            Matchers.is(true)
+        );
         Assertions.assertNotNull(objectionary.get(object));
         MatcherAssert.assertThat(
             counter.get(),
-            Matchers.is(1)
+            Matchers.is(2)
         );
     }
 }

@@ -25,6 +25,9 @@ package org.eolang.maven.objectionary;
 
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
@@ -57,6 +60,28 @@ final class OyCachingTest {
             path.resolve("pulled/master/org/example/main.eo")
                 .toFile()
                 .exists()
+        );
+    }
+
+    @Test
+    void checksPresenceOfObject(@TempDir final Path path) throws Exception {
+        final String content = "[] > main\n";
+        new LengthOf(
+            new TeeInput(
+                new InputOf(content),
+                new OutputTo(
+                    path.resolve("pulled/master/org/example/main.eo")
+                )
+            )
+        ).value();
+        final Objectionary objectionary = new OyCaching(
+            "master",
+            path,
+            new OyHome("master", path)
+        );
+        MatcherAssert.assertThat(
+            objectionary.contains("org.example.main"),
+            Matchers.is(true)
         );
     }
 }

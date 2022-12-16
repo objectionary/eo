@@ -23,12 +23,17 @@
  */
 package org.eolang.maven.objectionary;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.eolang.maven.OnlineCondition;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link OyRemote}.
@@ -58,6 +63,17 @@ final class OyRemoteTest {
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.app")
+        );
+    }
+
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    void checksPresenceOfObject() throws IOException {
+        final CommitHash hash = new ChRemote("master");
+        final Objectionary objectionary = new OyRemote(hash);
+        MatcherAssert.assertThat(
+            objectionary.contains("org.eolang.io.stdout"),
+            Matchers.is(true)
         );
     }
 }

@@ -24,12 +24,15 @@
 package org.eolang.maven.objectionary;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests for {@link OyFallbackSwap}.
@@ -79,6 +82,47 @@ class OyFallbackSwapTest {
                 ).get("")
             ).asString(),
             Matchers.containsString("remote")
+        );
+    }
+
+    @Test
+    void checksPresenceOfObject(@TempDir final Path path) throws Exception {
+        final Objectionary home = new OyHome(
+            "master",
+            path
+        );
+        final Objectionary cache = new OyCaching(
+            "master",
+            path,
+            new OyFake(
+                s -> new InputOf("[] > main\n"),
+                s -> false
+            )
+        );
+        MatcherAssert.assertThat(
+            new OyFallbackSwap(
+                home,
+                cache,
+                home.contains("")
+            ).contains(""),
+            Matchers.is(false)
+        );
+        Assertions.assertNotNull(
+            new TextOf(
+                new OyFallbackSwap(
+                    home,
+                    cache,
+                    true
+                ).get("")
+            ).asString()
+        );
+        MatcherAssert.assertThat(
+            new OyFallbackSwap(
+                home,
+                cache,
+                home.contains("")
+            ).contains(""),
+            Matchers.is(true)
         );
     }
 }
