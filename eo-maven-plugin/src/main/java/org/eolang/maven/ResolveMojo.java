@@ -99,14 +99,13 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean ignoreTransitive;
 
-
     /**
      * Add eo-runtime dependency to the classpath.
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
     private boolean withRuntimeDependency = true;
 
     /**
@@ -183,7 +182,7 @@ public final class ResolveMojo extends SafeMojo {
                         dep -> !ResolveMojo.eqTo(dep, dependency)
                             && !dep.getScope().contains("test")
                             && !("org.eolang".equals(dep.getGroupId())
-                                     && "eo-runtime".equals(dep.getArtifactId())),
+                                && "eo-runtime".equals(dep.getArtifactId())),
                         new DcsDepgraph(
                             this.project,
                             this.session,

@@ -121,14 +121,13 @@ final class PlaceMojoTest {
     @Test
     void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        final Path withRuntimeDependency = maven
-            .withHelloWorld()
-            .with("withRuntimeDependency", false)
-            .execute(new FakeMaven.Place())
-            .result()
-            .get("target/classes");
         MatcherAssert.assertThat(
-            withRuntimeDependency,
+            maven
+                .withHelloWorld()
+                .with("withRuntimeDependency", false)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
             Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
         );
         MatcherAssert.assertThat(

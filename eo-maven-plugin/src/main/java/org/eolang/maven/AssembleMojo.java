@@ -213,7 +213,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
     private boolean withRuntimeDependency = true;
 
     /**
