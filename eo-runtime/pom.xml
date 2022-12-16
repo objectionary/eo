@@ -22,7 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eolang</groupId>
@@ -95,9 +97,13 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>@{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU</argLine>
+          <argLine>@{argLine} -Xss${stack-size} -Duser.language=ru
+            -Duser.region=RU
+          </argLine>
           <systemProperties>
-            <java.util.logging.config.file>${project.basedir}/src/test/resources/jul.properties</java.util.logging.config.file>
+            <java.util.logging.config.file>
+              ${project.basedir}/src/test/resources/jul.properties
+            </java.util.logging.config.file>
           </systemProperties>
         </configuration>
       </plugin>
@@ -128,6 +134,7 @@ SOFTWARE.
                 <glob>EOorg/EOeolang/EOmath/**</glob>
                 <glob>EOorg/EOeolang/EOfs/**</glob>
               </removeBinaries>
+              <withRuntimeDependency>false</withRuntimeDependency>
             </configuration>
           </execution>
           <execution>
@@ -144,7 +151,9 @@ SOFTWARE.
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources</generatedDir>
+              <generatedDir>${project.basedir}/target/generated-test-sources
+              </generatedDir>
+              <withRuntimeDependency>false</withRuntimeDependency>
             </configuration>
           </execution>
         </executions>

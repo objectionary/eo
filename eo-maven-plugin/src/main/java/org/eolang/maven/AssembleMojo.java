@@ -208,6 +208,15 @@ public final class AssembleMojo extends SafeMojo {
     private boolean ignoreTransitive;
 
     /**
+     * Add eo-runtime dependency to the classpath.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean withRuntimeDependency = true;
+
+    /**
      * Parsed cache directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
