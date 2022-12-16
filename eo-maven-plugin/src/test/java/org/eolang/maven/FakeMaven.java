@@ -197,6 +197,13 @@ public final class FakeMaven {
         this.params.putIfAbsent("ignoreVersionConflict", false);
         this.params.putIfAbsent("ignoreTransitive", true);
         this.params.putIfAbsent("central", new DummyCentral());
+        final Path placed = Paths.get("placed.json");
+        this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
+        this.params.putIfAbsent("placedFormat", "json");
+        this.params.putIfAbsent(
+            "outputDir",
+            this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
+        );
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -229,6 +236,17 @@ public final class FakeMaven {
     public TjSmart foreign() {
         return new TjSmart(
             Catalogs.INSTANCE.make(this.foreignPath())
+        );
+    }
+
+    /**
+     * Tojo for placed.json file.
+     *
+     * @return TjSmart of the current placed.json file.
+     */
+    public TjSmart placed() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.workspace.absolute(Paths.get("placed.json")))
         );
     }
 
@@ -386,6 +404,24 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ResolveMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Plan all eo dependencies full pipeline.
+     *
+     * @since 0.29.0
+     */
+    static final class Place implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                ResolveMojo.class,
+                PlaceMojo.class
             ).iterator();
         }
     }
