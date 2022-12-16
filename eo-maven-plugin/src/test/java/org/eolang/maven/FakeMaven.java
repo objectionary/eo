@@ -192,6 +192,11 @@ public final class FakeMaven {
         this.workspace.save(new TextOf(""), transpiled);
         this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
         this.params.putIfAbsent("transpiledFormat", "csv");
+        this.params.putIfAbsent("skipZeroVersions", true);
+        this.params.putIfAbsent("discoverSelf", false);
+        this.params.putIfAbsent("ignoreVersionConflict", false);
+        this.params.putIfAbsent("ignoreTransitive", true);
+        this.params.putIfAbsent("central", new DummyCentral());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -364,6 +369,23 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 TranspileMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Resolve all eo dependencies.
+     *
+     * @since 0.29.0
+     */
+    static final class Resolve implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                ResolveMojo.class
             ).iterator();
         }
     }
