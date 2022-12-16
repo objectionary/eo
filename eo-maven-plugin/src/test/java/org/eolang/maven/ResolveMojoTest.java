@@ -94,6 +94,16 @@ final class ResolveMojoTest {
         );
     }
 
+    @Test
+    void resolvesWithEoRuntimeDependency(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld().execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-*.jar")
+        );
+    }
+
     /**
      * Test conflicts.
      *
