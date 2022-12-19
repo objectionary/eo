@@ -29,6 +29,15 @@
 +package org.eolang
 +version 0.0.0
 
+[] > goto-simple
+  assert-that > @
+    goto
+      [g]
+        seq > @
+          g.forward TRUE
+          FALSE
+    $.equal-to TRUE
+
 [] > goto-jumps-backwards
   memory 0 > i
   assert-that > @
@@ -44,7 +53,7 @@
               TRUE
       stdout "Finished!"
       i
-    $.equal-to 10
+    $.equal-to 11
 
 [] > goto-jumps-forward
   [x] > div
@@ -82,15 +91,4 @@
           b
   assert-that > @
     max 7 42
-    $.equal-to 42
-
-[] > nested-goto
-  assert-that > @
-    goto
-      [g1]
-        seq > @
-          goto
-            [g2]
-              g1.forward 42 > @
-          7
     $.equal-to 42

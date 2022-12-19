@@ -50,4 +50,31 @@
 #       g.backward
 # ```
 #
-[f] > goto /?
+# Note: goto follows `bool.while` semantics, i.e. the body `f`
+# will be dataized one additional time after goto is escaped.
+#
+[f] > goto
+
+  memory 0 > m
+
+  while. > @
+    $.m.eq 0
+    [i]
+      try > @
+        []
+          seq > @
+            m.write 1
+            f token
+        [e]
+          e > @
+        nop
+
+  # callback object for generating errors
+  [] > token
+    # forward jump
+    [r] > forward
+      error r > @
+
+    seq > backward
+      m.write 0
+      error TRUE
