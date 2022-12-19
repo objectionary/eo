@@ -130,40 +130,15 @@ final class SodgMojoTest {
      */
     private static XML toGraph(final String code, final String inclusion) throws IOException {
         final Path temp = Files.createTempDirectory("eo");
+        final FakeMaven maven = new FakeMaven(temp);
         final Path src = temp.resolve("foo/main.eo");
         new Home(temp).save(code, temp.relativize(src));
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(SodgMojo.class)
-            .with("generateSodgXmlFiles", true)
-            .with("generateXemblyFiles", true)
-            .with("generateGraphFiles", true)
-            .with("generateDotFiles", true)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("generateDotFiles", true)
+        maven
             .with("sodgIncludes", new SetOf<>(inclusion))
-            .execute();
+            .withForeignPath(src)
+            .execute(new FakeMaven.Sodg()).result();
         return new XMLDocument(
-            target.resolve(
-                String.format("%s/foo/main.sodg.graph.xml", SodgMojo.DIR)
-            )
+            temp.resolve(String.format("target/%s/foo/main.sodg.graph.xml", SodgMojo.DIR))
         );
     }
 
