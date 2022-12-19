@@ -95,9 +95,13 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>@{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU</argLine>
+          <argLine>@{argLine} -Xss${stack-size} -Duser.language=ru
+            -Duser.region=RU
+          </argLine>
           <systemProperties>
-            <java.util.logging.config.file>${project.basedir}/src/test/resources/jul.properties</java.util.logging.config.file>
+            <java.util.logging.config.file>
+              ${project.basedir}/src/test/resources/jul.properties
+            </java.util.logging.config.file>
           </systemProperties>
         </configuration>
       </plugin>
@@ -144,7 +148,8 @@ SOFTWARE.
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources</generatedDir>
+              <generatedDir>${project.basedir}/target/generated-test-sources
+              </generatedDir>
             </configuration>
           </execution>
         </executions>
@@ -155,7 +160,9 @@ SOFTWARE.
         <executions>
           <execution>
             <id>project-validate</id>
-            <!--Replace the next phase with 'verify' when #1576 will finished-->
+            <!-- @todo #1575:30min Set 'verify' phase for the 'project-validate'
+                  Replace the next phase with 'verify' when #1576
+                  will finished -->
             <phase>none</phase>
             <goals>
               <goal>execute</goal>
