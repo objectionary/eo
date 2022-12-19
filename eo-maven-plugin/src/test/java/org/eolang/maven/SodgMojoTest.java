@@ -136,7 +136,7 @@ final class SodgMojoTest {
         maven
             .with("sodgIncludes", new SetOf<>(inclusion))
             .withForeignPath(src)
-            .execute(new FakeMaven.Sodg()).result();
+            .execute(new FakeMaven.Sodg());
         return new XMLDocument(
             temp.resolve(String.format("target/%s/foo/main.sodg.graph.xml", SodgMojo.DIR))
         );
