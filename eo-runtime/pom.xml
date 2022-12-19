@@ -95,8 +95,8 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>@{argLine} -Xss${stack-size} -Duser.language=ru
-            -Duser.region=RU
+          <argLine>
+            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemProperties>
             <java.util.logging.config.file>
@@ -148,7 +148,8 @@ SOFTWARE.
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources
+              <generatedDir>
+                ${project.basedir}/target/generated-test-sources
               </generatedDir>
             </configuration>
           </execution>
