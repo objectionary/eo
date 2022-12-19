@@ -95,8 +95,8 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>@{argLine} -Xss${stack-size} -Duser.language=ru
-            -Duser.region=RU
+          <argLine>
+            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemProperties>
             <java.util.logging.config.file>
@@ -149,7 +149,8 @@ SOFTWARE.
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <generatedDir>${project.basedir}/target/generated-test-sources
+              <generatedDir>
+                ${project.basedir}/target/generated-test-sources
               </generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
             </configuration>
@@ -162,7 +163,14 @@ SOFTWARE.
         <executions>
           <execution>
             <id>project-validate</id>
+            <!-- @todo #1575:30min Set 'verify' phase for the 'project-validate'. Replace the phase with 'verify' when #1576 will finished. This action will make the integration test work. -->
             <phase>none</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
+            </configuration>
           </execution>
         </executions>
       </plugin>
