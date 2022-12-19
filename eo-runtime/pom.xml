@@ -155,7 +155,14 @@ SOFTWARE.
         <executions>
           <execution>
             <id>project-validate</id>
+            <!--Replace the next phase with 'verify' when #1576 will finished-->
             <phase>none</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
+            </configuration>
           </execution>
         </executions>
       </plugin>
