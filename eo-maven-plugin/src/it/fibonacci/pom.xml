@@ -34,18 +34,11 @@ SOFTWARE.
   <version>@project.version@</version>
   <packaging>jar</packaging>
   <name>Fibonacci Numbers Calculator</name>
-  <dependencies>
-    <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version>@project.version@</version>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
+        <version>3.8.1</version>
         <configuration combine.self="override"/>
       </plugin>
       <plugin>
