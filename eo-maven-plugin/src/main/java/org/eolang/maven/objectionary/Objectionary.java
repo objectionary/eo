@@ -34,6 +34,7 @@ import org.cactoos.Input;
 public interface Objectionary {
     /**
      * Resolve object.
+     *
      * @param name Object name.
      * @return Object code.
      * @throws IOException If fails to fetch.
@@ -44,6 +45,13 @@ public interface Objectionary {
      * Checks whether an Objectionary contains a provided object.
      * @param name Object name.
      * @return Object code.
+     * @throws IOException If fails to fetch.
+     */
+    /**
+     * Checks whether an Objectionary contains a provided object.
+     *
+     * @param name Object name.
+     * @return Boolean: "true" if found, "false" if not.
      * @throws IOException If fails to fetch.
      */
     boolean contains(String name) throws IOException;

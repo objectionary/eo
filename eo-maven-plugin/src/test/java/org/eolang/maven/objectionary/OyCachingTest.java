@@ -74,13 +74,12 @@ final class OyCachingTest {
                 )
             )
         ).value();
-        final Objectionary objectionary = new OyCaching(
-            "master",
-            path,
-            new OyHome("master", path)
-        );
         MatcherAssert.assertThat(
-            objectionary.contains("org.example.main"),
+            new OyCaching(
+                "master",
+                path,
+                new OyHome("master", path)
+            ).contains("org.example.main"),
             Matchers.is(true)
         );
     }
