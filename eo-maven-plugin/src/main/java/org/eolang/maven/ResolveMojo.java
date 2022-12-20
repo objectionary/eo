@@ -162,6 +162,10 @@ public final class ResolveMojo extends SafeMojo {
      * Find all deps for all Tojos.
      *
      * @return List of them
+     * @todo #1595:30 Make method 'deps' testable. For now it's not possible to test
+     *   'ignoreTransitive=false' branch because it's hard to mock all required fields.
+     *   Maybe we should provide a chance to mock all dependencies related to maven or
+     *   even extract new classes.
      */
     private Collection<Dependency> deps() {
         Iterable<Dependency> deps = new DcsDefault(
@@ -183,7 +187,7 @@ public final class ResolveMojo extends SafeMojo {
                             && !dep.getScope().contains("test")
                             && !dep.getScope().contains("provided")
                             && !("org.eolang".equals(dep.getGroupId())
-                            && "eo-runtime".equals(dep.getArtifactId())),
+                                     && "eo-runtime".equals(dep.getArtifactId())),
                         new DcsDepgraph(
                             this.project,
                             this.session,
