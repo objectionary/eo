@@ -181,8 +181,9 @@ public final class ResolveMojo extends SafeMojo {
                     final Iterable<Dependency> transitives = new Filtered<>(
                         dep -> !ResolveMojo.eqTo(dep, dependency)
                             && !dep.getScope().contains("test")
+                            && !dep.getScope().contains("provided")
                             && !("org.eolang".equals(dep.getGroupId())
-                                && "eo-runtime".equals(dep.getArtifactId())),
+                            && "eo-runtime".equals(dep.getArtifactId())),
                         new DcsDepgraph(
                             this.project,
                             this.session,
