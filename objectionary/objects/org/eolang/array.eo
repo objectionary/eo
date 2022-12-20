@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.28.11
-+version 0.28.11
++rt jvm org.eolang:eo-runtime:0.28.12
++version 0.28.12
 
 # @todo #1060:30min The method .empty is not nessesary.
 #  Make the create of array possible just by using
@@ -33,7 +33,7 @@
 [] > array
   # Create empty array
   [] > empty
-    (*) > @
+    * > @
 
   # Obtain the length of the array.
   [] > length /int
