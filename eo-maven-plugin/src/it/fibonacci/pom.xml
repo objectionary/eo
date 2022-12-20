@@ -34,6 +34,13 @@ SOFTWARE.
   <version>@project.version@</version>
   <packaging>jar</packaging>
   <name>Fibonacci Numbers Calculator</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime</artifactId>
+      <version>@project.version@</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -62,6 +69,7 @@ SOFTWARE.
           </execution>
         </executions>
         <configuration>
+          <withRuntimeDependency>false</withRuntimeDependency>
           <sodgIncludes>
             <o>org.eolang.error</o>
           </sodgIncludes>
