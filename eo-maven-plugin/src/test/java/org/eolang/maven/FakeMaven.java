@@ -219,8 +219,10 @@ public final class FakeMaven {
             "outputDir",
             this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
         );
-        final Path sodg = Paths.get("eo");
-        this.params.putIfAbsent("cache", this.workspace.absolute(sodg).resolve("cache/parsed"));
+        this.params.putIfAbsent(
+            "cache",
+            this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed")
+        );
         this.params.putIfAbsent("generateSodgXmlFiles", true);
         this.params.putIfAbsent("generateXemblyFiles", true);
         this.params.putIfAbsent("generateGraphFiles", true);
