@@ -149,21 +149,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Sets foreign with path.
-     *
-     * @param path Tojo attribute.
-     * @return The same maven instance.
-     */
-    public FakeMaven withForeignPath(final Path path) {
-        this.foreign()
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
-            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
-        return this;
-    }
-
-    /**
      * Executes mojos in the workspace.
      * You can use utility classes to run predefined maven pipelines:
      *  - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
@@ -226,6 +211,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generateSodgXmlFiles", true);
         this.params.putIfAbsent("generateXemblyFiles", true);
         this.params.putIfAbsent("generateGraphFiles", true);
+        this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

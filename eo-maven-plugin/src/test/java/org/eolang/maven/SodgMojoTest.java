@@ -27,14 +27,12 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.set.SetOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.Home;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
@@ -129,16 +127,13 @@ final class SodgMojoTest {
      * @throws IOException If fails
      */
     private static XML toGraph(final String code, final String inclusion) throws IOException {
-        final Path temp = Files.createTempDirectory("eo");
-        final FakeMaven maven = new FakeMaven(temp);
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(code, temp.relativize(src));
-        maven
-            .with("sodgIncludes", new SetOf<>(inclusion))
-            .withForeignPath(src)
-            .execute(new FakeMaven.Sodg());
         return new XMLDocument(
-            temp.resolve(String.format("target/%s/foo/main.sodg.graph.xml", SodgMojo.DIR))
+            new FakeMaven(Files.createTempDirectory("eo"))
+                .with("sodgIncludes", new SetOf<>(inclusion))
+                .withProgram(code)
+                .execute(new FakeMaven.Sodg())
+                .result()
+                .get(String.format("target/%s/foo/x/main.sodg.graph.xml", SodgMojo.DIR))
         );
     }
 
