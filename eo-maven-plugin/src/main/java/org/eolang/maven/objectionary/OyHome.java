@@ -26,7 +26,6 @@ package org.eolang.maven.objectionary;
 import com.jcabi.log.Logger;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -38,6 +37,7 @@ import org.eolang.maven.util.Rel;
  * Objectionary stored locally.
  *
  * @since 1.0
+ * @checkstyle IllegalCatchCheck (150 lines)
  */
 public final class OyHome implements Objectionary {
     /**
@@ -92,6 +92,7 @@ public final class OyHome implements Objectionary {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public boolean contains(final String name) {
         boolean ret;
         try {
@@ -103,7 +104,7 @@ public final class OyHome implements Objectionary {
                 "eo"
                 )
             );
-        } catch (final InvalidPathException ex) {
+        } catch (final RuntimeException ex) {
             Logger.debug(
                 this, "The object '%s' is absent in %s...",
                 name, this.home

@@ -39,16 +39,12 @@ public final class OyFake implements Objectionary {
 
     /**
      * Function that emulates 'get()' method in {@link Objectionary}.
-     *
-     * @checkstyle MemberNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private final Func<String, Input> get;
 
     /**
      * Function that emulates 'contains()' method in {@link Objectionary}.
-     *
-     * @checkstyle MemberNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private final Func<String, Boolean> contains;

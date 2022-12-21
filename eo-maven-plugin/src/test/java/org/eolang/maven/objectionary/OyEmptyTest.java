@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 final class OyEmptyTest {
 
     @Test
-    void tryToResolveObject() {
+    void resolvesObject() {
         Assertions.assertThrows(
             IOException.class,
             () -> new OyEmpty().get("org.eolang.io.stdin")
@@ -43,7 +43,7 @@ final class OyEmptyTest {
     }
 
     @Test
-    void tryToCheckPresenceOfObject() {
+    void checksPresenceOfObject() {
         Assertions.assertThrows(
             IOException.class,
             () -> new OyEmpty().contains("org.eolang.io.stdin")
