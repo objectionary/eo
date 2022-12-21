@@ -40,12 +40,14 @@ public final class OyFake implements Objectionary {
      * Function that emulates 'get()' method in {@link Objectionary}.
      * @checkstyle MemberNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private final Func<String, Input> get;
 
     /**
      * Function that emulates 'contains()' method in {@link Objectionary}.
      * @checkstyle MemberNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private final Func<String, Boolean> contains;
 
     /**
@@ -63,7 +65,7 @@ public final class OyFake implements Objectionary {
     /**
      * Ctor.
      *
-     * @param get Lambda func for get()
+     * @param gett Lambda func for get()
      * @param cont Lambda func for contains()
      */
     public OyFake(final Func<String, Input> gett, final Func<String, Boolean> cont) {
