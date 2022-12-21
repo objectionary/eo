@@ -59,4 +59,5 @@ final class OyLocalTest {
             Matchers.is(true)
         );
     }
+
 }
