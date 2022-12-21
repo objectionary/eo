@@ -42,6 +42,8 @@ import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
@@ -102,24 +104,19 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final List<Scalar<? extends Integer>> tasks = this.scopedTojos()
-            .select(row -> row.exists(AssembleMojo.ATTR_EO))
-            .stream()
-            .filter(this::isNotParsed)
-            .map(tojo -> (Scalar<Integer>) () -> {
-                this.parse(tojo);
-                return 1;
-            })
-            .collect(Collectors.toList());
-        Logger.info(
-            this,
-            "Running %s parsing tasks in parallel",
-            tasks.size()
-        );
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
-                tasks
+                new Mapped<>(
+                    tojo -> (Scalar<Integer>) () -> {
+                        this.parse(tojo);
+                        return 1;
+                    },
+                    new Filtered<>(
+                        this::isNotParsed,
+                        this.scopedTojos().select(row -> row.exists(AssembleMojo.ATTR_EO))
+                    )
+                )
             )
         ).intValue();
         if (0 == total) {
