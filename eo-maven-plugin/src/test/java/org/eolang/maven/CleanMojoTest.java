@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -91,7 +90,7 @@ class CleanMojoTest {
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                new OyFake(s -> new InputOf("[] > sprintf\n"))
+                new OyFake()
             )
             .execute();
         new Moja<>(CleanMojo.class)

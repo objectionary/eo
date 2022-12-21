@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
@@ -135,7 +134,7 @@ final class PullMojoTest {
      * @return Dummy Objectionary.
      */
     private Objectionary dummy() {
-        return new OyFake(s -> new InputOf("[] > hello\n"));
+        return new OyFake();
     }
 
 }
