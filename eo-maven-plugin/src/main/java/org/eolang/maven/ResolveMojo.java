@@ -184,7 +184,7 @@ public final class ResolveMojo extends SafeMojo {
                 dependency -> {
                     final Iterable<Dependency> transitives = new Filtered<>(
                         dep -> !ResolveMojo.eqTo(dep, dependency)
-                            && ResolveMojo.isNotRuntimeRequired(dep)
+                            && ResolveMojo.isRuntimeRequired(dep)
                             && !("org.eolang".equals(dep.getGroupId())
                             && "eo-runtime".equals(dep.getArtifactId())),
                         new DcsDepgraph(
@@ -231,8 +231,11 @@ public final class ResolveMojo extends SafeMojo {
      * @param dep Maven dependency
      * @return True if it's not needed at runtime
      */
-    private static boolean isNotRuntimeRequired(final Dependency dep) {
-        return !dep.getScope().contains("test") && !dep.getScope().contains("provided");
+    private static boolean isRuntimeRequired(final Dependency dep) {
+        return dep.getScope() == null
+            || dep.getScope().isEmpty()
+            || "runtime".equals(dep.getScope())
+            || "compiled".equals(dep.getScope());
     }
 
     /**
