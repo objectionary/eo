@@ -92,3 +92,14 @@
   assert-that > @
     max 7 42
     $.equal-to 42
+
+[] > nested-goto
+  assert-that > @
+    goto
+      [g1]
+        seq > @
+          goto
+            [g2]
+              g1.forward 42 > @
+          7
+    $.equal-to 42

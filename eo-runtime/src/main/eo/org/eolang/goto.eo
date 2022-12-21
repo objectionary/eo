@@ -57,6 +57,8 @@
 
   memory 0 > m
 
+  $.< > badge!
+
   while. > @
     $.m.eq 0
     [i]
@@ -66,15 +68,26 @@
             m.write 1
             f token
         [e]
-          e > @
+          if. > @
+            e.b.eq badge
+            e.v
+            error e
         nop
 
-  # callback object for generating errors
+  # Callback object for generating errors.
+  # `badge` is used to assign token to a particular object
+  # when used in nested GOTOs.
   [] > token
     # forward jump
     [r] > forward
-      error r > @
+      error > @
+        []
+          badge > b
+          r > v
 
     seq > backward
       m.write 0
-      error TRUE
+      error
+        []
+          badge > b
+          TRUE > v
