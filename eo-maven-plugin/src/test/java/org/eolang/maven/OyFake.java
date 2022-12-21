@@ -51,11 +51,11 @@ public final class OyFake implements Objectionary {
     /**
      * Ctor.
      *
-     * @param get Lambda func for get()
+     * @param gett Lambda func for get()
      */
-    public OyFake(final Func<String, Input> get) {
+    public OyFake(final Func<String, Input> gett) {
         this(
-            get,
+            gett,
             s -> true
         );
     }
@@ -66,8 +66,8 @@ public final class OyFake implements Objectionary {
      * @param get Lambda func for get()
      * @param cont Lambda func for contains()
      */
-    public OyFake(final Func<String, Input> get, final Func<String, Boolean> cont) {
-        this.get = get;
+    public OyFake(final Func<String, Input> gett, final Func<String, Boolean> cont) {
+        this.get = gett;
         this.contains = cont;
     }
 
