@@ -40,13 +40,13 @@ public final class OyFake implements Objectionary {
      * Function that emulates 'get()' method in {@link Objectionary}.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Func<String, Input> lambdaGet;
+    private final Func<String, Input> get;
 
     /**
      * Function that emulates 'contains()' method in {@link Objectionary}.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Func<String, Boolean> lambdaCont;
+    private final Func<String, Boolean> contains;
 
     /**
      * Ctor.
@@ -67,8 +67,8 @@ public final class OyFake implements Objectionary {
      * @param cont Lambda func for contains()
      */
     public OyFake(final Func<String, Input> get, final Func<String, Boolean> cont) {
-        this.lambdaGet = get;
-        this.lambdaCont = cont;
+        this.get = get;
+        this.contains = cont;
     }
 
     @Override
@@ -80,7 +80,7 @@ public final class OyFake implements Objectionary {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public Input get(final String name) {
         try {
-            return this.lambdaGet.apply(name);
+            return this.get.apply(name);
         } catch (final Exception ex) {
             Logger.debug(
                 this, "Invalid lambda function for get() method in OyFake!"
@@ -93,7 +93,7 @@ public final class OyFake implements Objectionary {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public boolean contains(final String name) {
         try {
-            return this.lambdaCont.apply(name);
+            return this.contains.apply(name);
         } catch (final Exception ex) {
             Logger.debug(
                 this, "Invalid lambda function for contains() method in OyFake!"

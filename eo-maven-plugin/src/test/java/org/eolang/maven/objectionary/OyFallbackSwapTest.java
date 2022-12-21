@@ -30,7 +30,6 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -107,14 +106,15 @@ class OyFallbackSwapTest {
             ).contains(""),
             Matchers.is(false)
         );
-        Assertions.assertNotNull(
+        MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
                     home,
                     cache,
                     true
                 ).get("")
-            ).asString()
+            ).asString(),
+            Matchers.is(Matchers.notNullValue())
         );
         MatcherAssert.assertThat(
             new OyFallbackSwap(

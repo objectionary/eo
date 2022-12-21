@@ -30,7 +30,6 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -67,17 +66,22 @@ final class OyFallbackTest {
             objectionary.contains(object),
             Matchers.is(false)
         );
-        Assertions.assertNotNull(
-            new TextOf(objectionary.get(object)).asString()
+        MatcherAssert.assertThat(
+            new TextOf(objectionary.get(object)).asString(),
+            Matchers.is(Matchers.notNullValue())
         );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo").toFile().exists()
+        MatcherAssert.assertThat(
+            path.resolve("pulled/master/org/example/main.eo").toFile().exists(),
+            Matchers.is(true)
         );
         MatcherAssert.assertThat(
             objectionary.contains(object),
             Matchers.is(true)
         );
-        Assertions.assertNotNull(objectionary.get(object));
+        MatcherAssert.assertThat(
+            objectionary.get(object),
+            Matchers.is(Matchers.notNullValue())
+        );
         MatcherAssert.assertThat(
             counter.get(),
             Matchers.is(2)
