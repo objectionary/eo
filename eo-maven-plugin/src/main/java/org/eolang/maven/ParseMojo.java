@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.log.Supplier;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
@@ -107,7 +106,10 @@ public final class ParseMojo extends SafeMojo {
             .select(row -> row.exists(AssembleMojo.ATTR_EO))
             .stream()
             .filter(this::isNotParsed)
-            .map(this::task)
+            .map(tojo -> (Scalar<Integer>) () -> {
+                this.parse(tojo);
+                return 1;
+            })
             .collect(Collectors.toList());
         Logger.info(
             this,
@@ -131,29 +133,6 @@ public final class ParseMojo extends SafeMojo {
         } else {
             Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
         }
-    }
-
-    /**
-     * Create a task for parsing a single EO file.
-     *
-     * @param tojo Tojo
-     * @return Task
-     */
-    private Scalar<Integer> task(final Tojo tojo) {
-        return () -> {
-            try {
-                this.parse(tojo);
-                return 1;
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Unable to parse %s",
-                        tojo.get(Tojos.KEY)
-                    ),
-                    ex
-                );
-            }
-        };
     }
 
     /**
