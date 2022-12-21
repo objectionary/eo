@@ -24,11 +24,9 @@
 package org.eolang.maven.objectionary;
 
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
+import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -44,14 +42,10 @@ final class OyLocalTest {
     @Test
     void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
         final String content = "[] > main\n";
-        new LengthOf(
-            new TeeInput(
-                new InputOf(content),
-                new OutputTo(
-                    path.resolve("pulled/master/org/example/main.eo")
-                )
-            )
-        ).value();
+        new Home(path).save(
+            content,
+            Paths.get("pulled/master/org/example/main.eo")
+        );
         MatcherAssert.assertThat(
             new TextOf(
                 new OyHome("master", path)

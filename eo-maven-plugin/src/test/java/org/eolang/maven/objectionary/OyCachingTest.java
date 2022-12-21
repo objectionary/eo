@@ -24,12 +24,11 @@
 package org.eolang.maven.objectionary;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.OyFake;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -65,15 +64,10 @@ final class OyCachingTest {
 
     @Test
     void checksPresenceOfObject(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        new LengthOf(
-            new TeeInput(
-                new InputOf(content),
-                new OutputTo(
-                    path.resolve("pulled/master/org/example/main.eo")
-                )
-            )
-        ).value();
+        new Home(path).save(
+            "[] > main\n",
+            Paths.get("pulled/master/org/example/main.eo")
+        );
         MatcherAssert.assertThat(
             new OyCaching(
                 "master",
