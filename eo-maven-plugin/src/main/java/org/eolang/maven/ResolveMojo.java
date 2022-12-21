@@ -162,6 +162,10 @@ public final class ResolveMojo extends SafeMojo {
      * Find all deps for all Tojos.
      *
      * @return List of them
+     * @todo #1595:30 Make method 'deps' testable. For now it's not possible to test
+     *  'ignoreTransitive=false' branch because it's hard to mock all required fields.
+     *  Maybe we should provide a chance to mock all dependencies related to maven or
+     *  even extract new classes.
      */
     private Collection<Dependency> deps() {
         Iterable<Dependency> deps = new DcsDefault(
@@ -180,9 +184,9 @@ public final class ResolveMojo extends SafeMojo {
                 dependency -> {
                     final Iterable<Dependency> transitives = new Filtered<>(
                         dep -> !ResolveMojo.eqTo(dep, dependency)
-                            && !dep.getScope().contains("test")
+                            && ResolveMojo.isRuntimeRequired(dep)
                             && !("org.eolang".equals(dep.getGroupId())
-                                && "eo-runtime".equals(dep.getArtifactId())),
+                            && "eo-runtime".equals(dep.getArtifactId())),
                         new DcsDepgraph(
                             this.project,
                             this.session,
@@ -220,6 +224,18 @@ public final class ResolveMojo extends SafeMojo {
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Check if dependency is not needed at runtime.
+     * @param dep Maven dependency
+     * @return True if it's not needed at runtime
+     */
+    private static boolean isRuntimeRequired(final Dependency dep) {
+        return dep.getScope() == null
+            || dep.getScope().isEmpty()
+            || "runtime".equals(dep.getScope())
+            || "compiled".equals(dep.getScope());
     }
 
     /**
