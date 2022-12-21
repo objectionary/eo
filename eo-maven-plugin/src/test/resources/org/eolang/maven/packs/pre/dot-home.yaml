@@ -1,0 +1,19 @@
+xsls:
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //java/text()[not(contains(., '&amp;'))]
+
+eo: |
+  [] > foo
+    5 > five
+  
+    a > @
+  
+    [] > a
+      [] > @
+        &.&.five > @
