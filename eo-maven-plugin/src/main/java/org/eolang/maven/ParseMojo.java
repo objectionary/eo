@@ -39,8 +39,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.number.SumOf;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
@@ -100,7 +103,7 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final List<Supplier<Integer>> tasks = this.scopedTojos()
+        final List<Scalar<? extends Integer>> tasks = this.scopedTojos()
             .select(row -> row.exists(AssembleMojo.ATTR_EO))
             .stream()
             .filter(this::isNotParsed)
@@ -111,10 +114,12 @@ public final class ParseMojo extends SafeMojo {
             "Running %s parsing tasks in parallel",
             tasks.size()
         );
-        final int total = tasks
-            .parallelStream()
-            .mapToInt(Supplier::get)
-            .sum();
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                tasks
+            )
+        ).intValue();
         if (0 == total) {
             if (((Collection<Tojo>) this.scopedTojos().select(
                 row -> row.exists(AssembleMojo.ATTR_EO)
@@ -134,11 +139,9 @@ public final class ParseMojo extends SafeMojo {
      * @param tojo Tojo
      * @return Task
      */
-    private Supplier<Integer> task(final Tojo tojo) {
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    private Scalar<Integer> task(final Tojo tojo) {
         return () -> {
             try {
-                Thread.currentThread().setContextClassLoader(loader);
                 this.parse(tojo);
                 return 1;
             } catch (final IOException ex) {
