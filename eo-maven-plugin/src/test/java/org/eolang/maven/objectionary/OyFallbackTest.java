@@ -37,6 +37,10 @@ import org.junit.jupiter.api.io.TempDir;
  * Test for {@link OyFallback}.
  *
  * @since 1.0
+ * @todo #1567:30min The "putsObjectToLocalCache" is very complicated, since
+ *  it checks a lot of things like methods "get" and "contains" in Objectionary,
+ *  work of "OyFallback", and behaviour of "OyCaching". Need to split this test
+ *  into several tests to check every thing separately.
  */
 final class OyFallbackTest {
 

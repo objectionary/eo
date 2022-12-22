@@ -80,11 +80,6 @@ public final class OyFake implements Objectionary {
     }
 
     @Override
-    public String toString() {
-        return "OyFake";
-    }
-
-    @Override
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public Input get(final String name) {
         try {
@@ -110,4 +105,8 @@ public final class OyFake implements Objectionary {
         }
     }
 
+    @Override
+    public String toString() {
+        return "OyFake";
+    }
 }

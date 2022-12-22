@@ -53,6 +53,22 @@ final class OyLocalTest {
             ).asString(),
             Matchers.is(content)
         );
+    }
+
+    @Test
+    void checksPresenceOfObjectInLocalStorage(@TempDir final Path path) throws Exception {
+        final String content = "[] > main\n";
+        new Home(path).save(
+            content,
+            Paths.get("pulled/master/org/example/main.eo")
+        );
+        MatcherAssert.assertThat(
+            new TextOf(
+                new OyHome("master", path)
+                    .get("org.example.main")
+            ).asString(),
+            Matchers.is(content)
+        );
         MatcherAssert.assertThat(
             new OyHome("master", path)
                 .contains("org.example.main"),
