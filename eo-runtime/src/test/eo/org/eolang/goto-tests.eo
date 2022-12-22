@@ -53,7 +53,7 @@
               TRUE
       stdout "Finished!"
       i
-    $.equal-to 11
+    $.equal-to 13
 
 [] > goto-jumps-forward
   [x] > div
