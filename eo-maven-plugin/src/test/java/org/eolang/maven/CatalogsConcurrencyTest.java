@@ -45,7 +45,8 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.29.0
  * @todo #1574:30min MonoTojo is not thread safe.
  *  It's not possible to use it in parallel. It should be fixed.
- *  After that, remove the @Disabled annotation from the test below.
+ *  When <a href="https://github.com/yegor256/tojos/issues/50"> the issue</a> will be fixed,
+ *  remove the @Disabled annotation from the test below.
  */
 class CatalogsConcurrencyTest {
 
