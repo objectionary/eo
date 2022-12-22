@@ -193,7 +193,14 @@ public final class ParseMojo extends SafeMojo {
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private void parse(final Tojo tojo) throws IOException {
-        final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+        String first;
+        try {
+            first = tojo.get(AssembleMojo.ATTR_EO);
+        } catch (final Exception ex) {
+            Logger.error(this, "Failed to parse %s: %[exception]s", tojo, ex);
+            throw ex;
+        }
+        final Path source = Paths.get(first);
         final String name = tojo.get(Tojos.KEY);
         final Footprint footprint;
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
