@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.objectionary;
 
-import com.jcabi.log.Logger;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,25 +91,14 @@ public final class OyHome implements Objectionary {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public boolean contains(final String name) {
-        boolean ret;
-        try {
-            ret = Files.exists(
-                new Place(name).make(
-                    this.home
-                        .resolve("pulled")
-                        .resolve(this.version),
+        return Files.exists(
+            new Place(name).make(
+                this.home
+                    .resolve("pulled")
+                    .resolve(this.version),
                 "eo"
-                )
-            );
-        } catch (final RuntimeException ex) {
-            Logger.debug(
-                this, "The object '%s' is absent in %s...",
-                name, this.home
-            );
-            ret = false;
-        }
-        return ret;
+            )
+        );
     }
 }
