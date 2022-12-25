@@ -58,8 +58,8 @@ public final class ChResolve implements CommitHash {
      * Ctor.
      *
      * @param hashFile Hash from file
-     * @param hash     Hash by pattern
-     * @param tagg     The Git hash to pull objects from
+     * @param hash Hash by pattern
+     * @param tagg The Git hash to pull objects from
      * @checkstyle ParameterNameCheck (10 lines)
      */
     public ChResolve(final Path hashFile, final String hash, final String tagg) {
