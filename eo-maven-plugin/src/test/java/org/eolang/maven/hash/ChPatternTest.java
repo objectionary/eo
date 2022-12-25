@@ -29,7 +29,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link org.eolang.maven.hash.ChPattern}.
+ * Test case for {@link ChPattern}.
  *
  * @since 0.28.11
  */
