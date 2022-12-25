@@ -29,46 +29,56 @@ import java.nio.file.Path;
  * Resolve {@link CommitHash} depending on the
  * parameters.
  *
- * @since 0.28.11
+ * @since 0.28.14
  */
 public final class ChResolve implements CommitHash {
 
     /**
-     * Resolved {@link CommitHash}.
+     * Read hashes from local file.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
      */
-    private final CommitHash hash;
+    private final Path offlineHashFile;
+
+    /**
+     * Return hash by pattern.
+     * -DofflineHash=0.*.*:abc2sd3
+     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    private final String offlineHash;
+
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     */
+    private final String tag;
 
     /**
      * Ctor.
      *
+     * @param hashFile Hash from file
+     * @param hash     Hash by pattern
+     * @param tagg     The Git hash to pull objects from
      * @checkstyle ParameterNameCheck (10 lines)
-     * @param offlineHashFile Hash from file
-     * @param offlineHash Hash by pattern
-     * @param tag The Git hash to pull objects from
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public ChResolve(final Path offlineHashFile, final String offlineHash, final String tag) {
-        if (offlineHashFile == null && offlineHash == null) {
-            this.hash = new ChCached(new ChRemote(tag));
-        } else if (offlineHash == null) {
-            this.hash = new ChCached(new ChText(offlineHashFile, tag));
-        } else {
-            this.hash = new ChCached(new ChPattern(offlineHash, tag));
-        }
+    public ChResolve(final Path hashFile, final String hash, final String tagg) {
+        this.offlineHashFile = hashFile;
+        this.offlineHash = hash;
+        this.tag = tagg;
     }
 
     @Override
     public String value() {
-        return this.hash.toString();
-    }
-
-    /**
-     * Getter.
-     *
-     * @return Resolved {@link CommitHash}
-     */
-    public CommitHash getCommitHash() {
-        return this.hash;
+        final CommitHash ret;
+        if (this.offlineHashFile == null && this.offlineHash == null) {
+            ret = new ChCached(new ChRemote(this.tag));
+        } else if (this.offlineHash == null) {
+            ret = new ChCached(new ChText(this.offlineHashFile, this.tag));
+        } else {
+            ret = new ChCached(new ChPattern(this.offlineHash, this.tag));
+        }
+        return ret.value();
     }
 
 }

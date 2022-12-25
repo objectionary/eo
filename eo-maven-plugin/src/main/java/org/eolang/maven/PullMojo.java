@@ -129,7 +129,7 @@ public final class PullMojo extends SafeMojo {
         );
         final CommitHash hash = new ChResolve(
             this.offlineHashFile, this.offlineHash, this.tag
-        ).getCommitHash();
+        );
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
