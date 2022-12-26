@@ -110,7 +110,7 @@ public final class ProbeMojo extends SafeMojo {
     public void exec() throws IOException {
         if (!new Online().value()) {
             Logger.warn(
-                this, "There is not internet connection. Probe skipped"
+                this, "We are offline: skipping probes"
             );
             return;
         }

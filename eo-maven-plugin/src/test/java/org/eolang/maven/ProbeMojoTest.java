@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import org.cactoos.Input;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -72,7 +71,7 @@ final class ProbeMojoTest {
             .with("targetDir", target)
             .with("foreign", foreign)
             .with("foreignFormat", "json")
-            .with("objectionary", this.dummy())
+            .with("objectionary", new OyFake())
             .execute();
         MatcherAssert.assertThat(
             new LinkedList<>(new MnJson(foreign).read()).getFirst().get("probed"),
@@ -99,7 +98,7 @@ final class ProbeMojoTest {
             .with("targetDir", target)
             .with("foreign", foreign)
             .with("foreignFormat", "json")
-            .with("objectionary", this.dummy())
+            .with("objectionary", new OyFake())
             .with("offlineHashFile", temp.resolve("tags.txt"))
             .execute();
         MatcherAssert.assertThat(
@@ -123,7 +122,7 @@ final class ProbeMojoTest {
             .with("targetDir", target)
             .with("foreign", foreign)
             .with("foreignFormat", "json")
-            .with("objectionary", this.dummy())
+            .with("objectionary", new OyFake())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
             .execute();
@@ -183,17 +182,6 @@ final class ProbeMojoTest {
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_EO, program.toString());
-    }
-
-    /**
-     * Dummy Objectionary.
-     *
-     * @return Dummy Objectionary.
-     */
-    private Objectionary dummy() {
-        return new OyLambda(
-            new UncheckedFunc<>(s -> new InputOf("[] > hello\n"))
-        );
     }
 
 }
