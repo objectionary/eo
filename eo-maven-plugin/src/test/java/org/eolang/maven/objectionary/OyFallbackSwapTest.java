@@ -21,16 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.objectionary;
 
 import java.io.IOException;
-import org.cactoos.func.UncheckedFunc;
+import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyFallbackSwap;
+import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests for {@link OyFallbackSwap}.
@@ -42,13 +43,9 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
-                    ),
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > remote\n"))
-                    ),
-                false
+                    new OyFake(s -> new InputOf("[] > local\n")),
+                    new OyFake(s -> new InputOf("[] > remote\n")),
+                    false
                 ).get("")
             ).asString(),
             Matchers.containsString("local")
@@ -60,15 +57,11 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
-                    ),
-                    new OyLambda(
-                        new UncheckedFunc<>(
-                            s -> {
-                                throw new IOException("Can't get object");
-                            }
-                        )
+                    new OyFake(s -> new InputOf("[] > local\n")),
+                    new OyFake(
+                        s -> {
+                            throw new IOException("Can't get object");
+                        }
                     ),
                     false
                 ).get("")
@@ -82,16 +75,54 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > local\n"))
-                    ),
-                    new OyLambda(
-                        new UncheckedFunc<>(s -> new InputOf("[] > remote\n"))
-                    ),
+                    new OyFake(s -> new InputOf("[] > local\n")),
+                    new OyFake(s -> new InputOf("[] > remote\n")),
                     true
                 ).get("")
             ).asString(),
             Matchers.containsString("remote")
+        );
+    }
+
+    @Test
+    void checksPresenceOfObject(@TempDir final Path path) throws Exception {
+        final Objectionary home = new OyHome(
+            "master",
+            path
+        );
+        final Objectionary cache = new OyCaching(
+            "master",
+            path,
+            new OyFake(
+                s -> new InputOf("[] > main\n"),
+                s -> false
+            )
+        );
+        MatcherAssert.assertThat(
+            new OyFallbackSwap(
+                home,
+                cache,
+                home.contains("")
+            ).contains(""),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            new TextOf(
+                new OyFallbackSwap(
+                    home,
+                    cache,
+                    true
+                ).get("")
+            ).asString(),
+            Matchers.is(Matchers.notNullValue())
+        );
+        MatcherAssert.assertThat(
+            new OyFallbackSwap(
+                home,
+                cache,
+                home.contains("")
+            ).contains(""),
+            Matchers.is(true)
         );
     }
 }

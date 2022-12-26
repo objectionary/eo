@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.Output;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -154,14 +153,12 @@ final class SnippetTest {
             .with("placed", target.resolve("list").toFile())
             .with(
                 "objectionary",
-                new OyLambda(
-                    new UncheckedFunc<>(
-                        name -> new InputOf(
-                            home.resolve(
-                                String.format(
-                                    "src/main/eo/%s.eo",
-                                    name.replace(".", "/")
-                                )
+                new OyFake(
+                    name -> new InputOf(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
                             )
                         )
                     )

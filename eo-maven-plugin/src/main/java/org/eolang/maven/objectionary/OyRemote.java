@@ -38,6 +38,10 @@ import org.eolang.maven.hash.CommitHash;
  * The simple HTTP Objectionary server.
  *
  * @since 0.1
+ * @todo #1567:30min In method `contains()` we catch an `IOException`
+ *  for flow control. Now, if the exception occurred, this method returns `false`.
+ *  Need to allow it to not use this approach, since control-flow via Exceptions
+ *  is prohibited.
  */
 public final class OyRemote implements Objectionary {
 

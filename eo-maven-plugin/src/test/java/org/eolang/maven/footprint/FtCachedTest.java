@@ -21,44 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.footprint;
 
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyHome;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link OyHome}.
- *
+ * Tests for Cached.
  * @since 1.0
  */
-final class OyLocalTest {
-
+final class FtCachedTest {
     @Test
-    void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        new LengthOf(
-            new TeeInput(
-                new InputOf(content),
-                new OutputTo(
-                    path.resolve("pulled/master/org/example/main.eo")
-                )
-            )
-        ).value();
+    void testContentOfCachedFile(@TempDir final Path temp) throws Exception {
+        final String content = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<program>",
+            "</program>"
+        );
+        new FtCached("abcde123", temp.resolve("target"), temp.resolve("parsed"))
+            .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new TextOf(
-                new OyHome("master", path)
-                    .get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
+            new FtCached("abcde123", temp.resolve("target"), temp.resolve("parsed"))
+                .load("org.eolang.txt.text", "xmir"),
+            Matchers.equalTo(content)
         );
     }
 }

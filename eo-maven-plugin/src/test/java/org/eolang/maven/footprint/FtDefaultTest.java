@@ -21,38 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.objectionary;
+package org.eolang.maven.footprint;
 
-import java.io.IOException;
-import org.cactoos.Input;
+import java.nio.file.Path;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Objectionary.
- *
+ * Tests for Cached.
  * @since 1.0
  */
-public interface Objectionary {
-    /**
-     * Resolve object.
-     *
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
-     */
-    Input get(String name) throws IOException;
-
-    /**
-     * Checks whether an Objectionary contains a provided object.
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
-     */
-    /**
-     * Checks whether an Objectionary contains a provided object.
-     *
-     * @param name Object name.
-     * @return Boolean: "true" if found, "false" if not.
-     * @throws IOException If fails to fetch.
-     */
-    boolean contains(String name) throws IOException;
+final class FtDefaultTest {
+    @Test
+    void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
+        final String content = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<program>",
+            "</program>"
+        );
+        new FtDefault(temp.resolve("target"))
+            .save("org.eolang.txt.text", "xmir", () -> content);
+        MatcherAssert.assertThat(
+            new FtDefault(temp.resolve("target"))
+                .load("org.eolang.txt.text", "xmir"),
+            Matchers.equalTo(content)
+        );
+    }
 }

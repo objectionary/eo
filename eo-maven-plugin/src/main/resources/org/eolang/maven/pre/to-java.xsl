@@ -459,6 +459,9 @@ SOFTWARE.
       <xsl:when test="$method='^'">
         <xsl:text>ρ</xsl:text>
       </xsl:when>
+      <xsl:when test="$method='&amp;'">
+        <xsl:text>σ</xsl:text>
+      </xsl:when>
       <xsl:when test="$method='&lt;'">
         <xsl:text>ν</xsl:text>
       </xsl:when>

@@ -21,32 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.list.ListOf;
-import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link Walk}.
+ * Test for {@link FileHash}.
  *
- * @since 0.11
+ * @since 0.26
  */
-final class WalkTest {
+final class FileHashTest {
 
     @Test
-    void findsFiles(@TempDir final Path temp) throws Exception {
-        new Home(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
-        new Home(temp).save("", Paths.get("EOxxx/bar"));
+    void readsFromExistingFile(@TempDir final Path temp) throws IOException {
+        final Path path = temp.resolve("1.txt");
+        new Home(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            new Walk(temp).includes(new ListOf<>("EO**/*")),
-            Matchers.iterableWithSize(1)
+            new FileHash(path).toString(),
+            Matchers.startsWith("[-26, 1, -29, 113, ")
+        );
+    }
+
+    @Test
+    void readsFromAbsentFile(@TempDir final Path temp) {
+        final Path path = temp.resolve("2.txt");
+        MatcherAssert.assertThat(
+            new FileHash(path).toString(),
+            Matchers.equalTo("")
         );
     }
 

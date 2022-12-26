@@ -46,10 +46,6 @@ public final class OptTrain implements Optimization {
      * <br>Separate instance of the train is used of each optimization
      * thread since {@link com.jcabi.xml.XSLDocument}, which is used under
      * the hood in {@link TrClasspath}, is not thread-safe.
-     * @todo #1336:30min Replace creation of new `Train` instances for each
-     *  parsing task to a single `Train&gtShift&lt TRAIN`, once `TrClasspath`
-     *  is thread-safe (solved by
-     *  <a href="https://github.com/jcabi/jcabi-xml/issues/185"/>).
      */
     static final Train<Shift> DEFAULT_TRAIN = new TrFast(
         new TrClasspath<>(

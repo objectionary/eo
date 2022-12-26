@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.Tojos;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -89,6 +90,49 @@ final class PlaceMojoTest {
         MatcherAssert.assertThat(
             Files.exists(classes.resolve("org/eolang/f/x.a.class")),
             Matchers.is(true)
+        );
+    }
+
+    /**
+     * Test case for {@link PlaceMojo#execute()}.
+     * Since for tests we are using {@link org.eolang.maven.DummyCentral}, then instead of unpacking
+     * of classes from jar it just copies the jar itself to target/classes folder.
+     *
+     * @param temp Temporary directory
+     * @throws IOException If fails
+     */
+    @Test
+    void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        MatcherAssert.assertThat(
+            maven
+                .withHelloWorld()
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            new ContainsFile("**/eo-runtime-*.jar")
+        );
+        MatcherAssert.assertThat(
+            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        MatcherAssert.assertThat(
+            maven
+                .withHelloWorld()
+                .with("withRuntimeDependency", false)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+        );
+        MatcherAssert.assertThat(
+            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
+            Matchers.equalTo(0)
         );
     }
 

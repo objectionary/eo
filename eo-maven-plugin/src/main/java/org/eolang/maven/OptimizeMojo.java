@@ -123,9 +123,10 @@ public final class OptimizeMojo extends SafeMojo {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
+        final Optimization common = this.optimization();
         final List<Supplier<Integer>> tasks = sources.stream()
-            .filter(this::optimizationRequired)
-            .map(this::toOptimizationTask)
+            .filter(this::isOptimizationRequired)
+            .map(tojo -> this.task(tojo, common))
             .collect(Collectors.toList());
         Logger.info(
             this,
@@ -154,9 +155,13 @@ public final class OptimizeMojo extends SafeMojo {
      *  - <a href="https://stackoverflow.com/questions/49113207/completablefuture-forkjoinpool-set-class-loader/57551188#57551188">CompletableFuture / ForkJoinPool Set Class Loader</a>
      *  - <a href="https://stackoverflow.com/questions/74708979/is-there-any-difference-between-parallelstream-and-executorservice"> Difference between parallelStream() and ExecutorService</a>
      * @param tojo Tojo that should be optimized.
+     * @param common Optimization.
      * @return Optimization task.
      */
-    private Supplier<Integer> toOptimizationTask(final Tojo tojo) {
+    private Supplier<Integer> task(
+        final Tojo tojo,
+        final Optimization common
+    ) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         Logger.info(
             this, "Adding optimization task for %s",
@@ -166,7 +171,7 @@ public final class OptimizeMojo extends SafeMojo {
         return () -> {
             try {
                 Thread.currentThread().setContextClassLoader(loader);
-                final XML optimized = this.optimization(tojo)
+                final XML optimized = this.optimization(tojo, common)
                     .apply(new XMLDocument(src));
                 if (this.shouldPass(optimized)) {
                     tojo.set(
@@ -193,7 +198,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @param tojo Tojo to check
      * @return True if optimization is required, false otherwise.
      */
-    private boolean optimizationRequired(final Tojo tojo) {
+    private boolean isOptimizationRequired(final Tojo tojo) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
         boolean res = true;
         if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
@@ -210,12 +215,11 @@ public final class OptimizeMojo extends SafeMojo {
     }
 
     /**
-     * Optimization for specific tojo.
+     * Common optimization for all tojos.
      *
-     * @param tojo Tojp
-     * @return Optimization for specific Tojo
+     * @return Optimization for all tojos.
      */
-    private Optimization optimization(final Tojo tojo) {
+    private Optimization optimization() {
         Optimization opt;
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(this.targetDir.toPath().resolve(OptimizeMojo.STEPS));
@@ -228,19 +232,33 @@ public final class OptimizeMojo extends SafeMojo {
         if (this.failOnWarning) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
         }
-        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
-            opt = new OptCached(
-                opt,
-                this.cache.resolve(OptimizeMojo.OPTIMIZED)
-                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
-            );
-        }
         if (this.failOnError) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
         } else {
             opt = new OptTrain(opt, new ParsingTrain().empty());
         }
         return opt;
+    }
+
+    /**
+     * Optimization for specific tojo.
+     *
+     * @param tojo Tojo
+     * @param opt Optimization
+     * @return Optimization for specific Tojo
+     */
+    private Optimization optimization(final Tojo tojo, final Optimization opt) {
+        final Optimization res;
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+            res = new OptCached(
+                opt,
+                this.cache.resolve(OptimizeMojo.OPTIMIZED)
+                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
+            );
+        } else {
+            res = opt;
+        }
+        return res;
     }
 
     /**
