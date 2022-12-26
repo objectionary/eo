@@ -35,19 +35,15 @@ public final class ChResolve implements CommitHash {
 
     /**
      * Read hashes from local file.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    private final Path offlineHashFile;
+    private final Path file;
 
     /**
      * Return hash by pattern.
      * -DofflineHash=0.*.*:abc2sd3
      * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
-     *
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    private final String offlineHash;
+    private final String hash;
 
     /**
      * The Git hash to pull objects from, in objectionary.
@@ -57,26 +53,25 @@ public final class ChResolve implements CommitHash {
     /**
      * Ctor.
      *
-     * @param hashFile Hash from file
-     * @param hash Hash by pattern
-     * @param tagg The Git hash to pull objects from
-     * @checkstyle ParameterNameCheck (10 lines)
+     * @param data Hash from file
+     * @param text Hash by pattern
+     * @param label The Git hash to pull objects from
      */
-    public ChResolve(final Path hashFile, final String hash, final String tagg) {
-        this.offlineHashFile = hashFile;
-        this.offlineHash = hash;
-        this.tag = tagg;
+    public ChResolve(final Path data, final String text, final String label) {
+        this.file = data;
+        this.hash = text;
+        this.tag = label;
     }
 
     @Override
     public String value() {
         final CommitHash ret;
-        if (this.offlineHashFile == null && this.offlineHash == null) {
+        if (this.file == null && this.hash == null) {
             ret = new ChCached(new ChRemote(this.tag));
-        } else if (this.offlineHash == null) {
-            ret = new ChCached(new ChText(this.offlineHashFile, this.tag));
+        } else if (this.hash == null) {
+            ret = new ChCached(new ChText(this.file, this.tag));
         } else {
-            ret = new ChCached(new ChPattern(this.offlineHash, this.tag));
+            ret = new ChCached(new ChPattern(this.hash, this.tag));
         }
         return ret.value();
     }
