@@ -144,16 +144,6 @@ public final class PullMojo extends SafeMojo {
                 this.forceUpdate()
             );
         }
-        for (final Tojo tojo : tojos) {
-            tojo.set(
-                AssembleMojo.ATTR_EO,
-                this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
-            );
-            tojo.set(
-                AssembleMojo.ATTR_HASH,
-                new ChNarrow(hash).value()
-            );
-        }
         if (!tojos.isEmpty()) {
             for (final Tojo tojo : tojos) {
                 tojo.set(
