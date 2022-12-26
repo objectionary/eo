@@ -58,7 +58,8 @@ public final class OptCached implements Optimization {
      */
     public OptCached(
         final Optimization delegate,
-        final Path folder) {
+        final Path folder
+    ) {
         this.delegate = delegate;
         this.folder = folder;
     }
