@@ -52,7 +52,7 @@
 #
 # Note: goto follows `bool.while` and `try` semantics: the body `f`
 # will be dataized one additional time after goto is escaped.
-# @todo 1562:60min Remove `goto` excessive dataization. Current implementation
+# @todo #1562:60min Remove `goto` excessive dataization. Current implementation
 #  dataizes the body of `goto` two additional times after `while` work is completed.
 #  This happens due to surrounding `seq` object: it dataizes `c` during its own dataization and
 #  returns it outside. Returned object will be further dataized. Need to find
