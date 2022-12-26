@@ -50,29 +50,47 @@
 #       g.backward
 # ```
 #
-# Note: goto follows `bool.while` semantics, i.e. the body `f`
+# Note: goto follows `bool.while` and `try` semantics: the body `f`
 # will be dataized one additional time after goto is escaped.
+# @todo 1562:60min Remove `goto` excessive dataization. Current implementation
+#  dataizes the body of `goto` two additional times after `while` work is completed.
+#  This happens due to surrounding `seq` object: it dataizes `c` during its own dataization and
+#  returns it outside. Returned object will be further dataized. Need to find
+#  a way to restructure the code to avoid this.
 #
 [f] > goto
 
   memory 0 > m
 
+  cage 0 > c
+
   $.< > badge!
 
-  while. > @
-    $.m.eq 0
-    [i]
-      try > @
-        []
-          seq > @
-            m.write 1
-            f token
-        [e]
-          if. > @
-            e.b.eq badge
-            e.v
-            error e
-        nop
+  seq > @
+    while.
+      []
+        if. > @
+          m.eq 0
+          seq
+            try
+              []
+                seq > @
+                  m.write 1
+                  c.write
+                    f token
+                  c
+                  nop
+              [e]
+                if. > @
+                  e.b.eq badge
+                  c.write
+                    e.v
+                  error e
+              nop
+            TRUE
+          FALSE
+      nop
+    c
 
   # Callback object for generating errors.
   # `badge` is used to assign token to a particular object

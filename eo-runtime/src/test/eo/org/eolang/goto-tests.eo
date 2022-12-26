@@ -34,9 +34,18 @@
     goto
       [g]
         seq > @
-          g.forward TRUE
-          FALSE
-    $.equal-to TRUE
+          g.forward 256
+          128
+    $.equal-to 256
+
+[] > goto-no-jump
+  assert-that > @
+    goto
+      [g]
+        seq > @
+          nop
+          "abc"
+    $.equal-to "abc"
 
 [] > goto-jumps-backwards
   memory 0 > i
@@ -53,7 +62,7 @@
               TRUE
       stdout "Finished!"
       i
-    $.equal-to 13
+    $.equal-to 12
 
 [] > goto-jumps-forward
   [x] > div
