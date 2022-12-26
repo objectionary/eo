@@ -31,6 +31,8 @@ package org.eolang;
  * <p>This class is thread-safe.</p>
  *
  * @since 0.24
+ * @todo #1614:30min This class don't have enough tests. We need to add more, at least for
+ *  the next methods: equals(), toString(), φTerm(), copy(), attr(), locator().
  */
 public final class PhLogged implements Phi {
 
