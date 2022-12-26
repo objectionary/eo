@@ -21,34 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Path;
-import org.eolang.maven.footprint.FtDefault;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 /**
- * Tests for Cached.
- * @since 1.0
+ * Test cases for {@link org.eolang.maven.util} package.
  */
-final class FtDefaultTest {
-    @Test
-    void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
-        final String content = String.join(
-            "\n",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-            "<program>",
-            "</program>"
-        );
-        new FtDefault(temp.resolve("target"))
-            .save("org.eolang.txt.text", "xmir", () -> content);
-        MatcherAssert.assertThat(
-            new FtDefault(temp.resolve("target"))
-                .load("org.eolang.txt.text", "xmir"),
-            Matchers.equalTo(content)
-        );
-    }
-}
+package org.eolang.maven.util;

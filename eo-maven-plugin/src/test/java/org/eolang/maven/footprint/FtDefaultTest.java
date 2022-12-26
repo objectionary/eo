@@ -21,33 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.footprint;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.list.ListOf;
-import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link Walk}.
- *
- * @since 0.11
+ * Tests for Cached.
+ * @since 1.0
  */
-final class WalkTest {
-
+final class FtDefaultTest {
     @Test
-    void findsFiles(@TempDir final Path temp) throws Exception {
-        new Home(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
-        new Home(temp).save("", Paths.get("EOxxx/bar"));
+    void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
+        final String content = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<program>",
+            "</program>"
+        );
+        new FtDefault(temp.resolve("target"))
+            .save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new Walk(temp).includes(new ListOf<>("EO**/*")),
-            Matchers.iterableWithSize(1)
+            new FtDefault(temp.resolve("target"))
+                .load("org.eolang.txt.text", "xmir"),
+            Matchers.equalTo(content)
         );
     }
-
 }

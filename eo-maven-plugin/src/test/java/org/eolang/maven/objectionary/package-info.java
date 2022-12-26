@@ -21,42 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyCaching;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 /**
- * Test for {@link OyCaching}.
- *
- * @since 1.0
+ * Objectionary tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.objectionary.Objectionary}.
  */
-final class OyCachingTest {
-
-    @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        MatcherAssert.assertThat(
-            new TextOf(
-                new OyCaching(
-                    "master",
-                    path,
-                    name -> new InputOf(content)
-                ).get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
-        );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo")
-                .toFile()
-                .exists()
-        );
-    }
-}
+package org.eolang.maven.objectionary;
