@@ -34,7 +34,6 @@ import org.cactoos.experimental.Threads;
 import org.cactoos.number.SumOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -43,10 +42,6 @@ import org.junit.jupiter.api.io.TempDir;
  * All tests in that class must be executed in parallel and in order to be sure that
  * everything works fine it's important to run the tests many times.
  * @since 0.29.0
- * @todo #1574:30min MonoTojo is not thread safe.
- *  It's not possible to use it in parallel. It should be fixed.
- *  When <a href="https://github.com/yegor256/tojos/issues/50"> the issue</a> will be fixed,
- *  remove the @Disabled annotation from the test below.
  */
 class CatalogsConcurrencyTest {
 
@@ -55,7 +50,6 @@ class CatalogsConcurrencyTest {
      */
     private static final int CORES = Runtime.getRuntime().availableProcessors();
 
-    @Disabled
     @Test
     void readsFromTojosConcurrently(@TempDir final Path tmp) {
         final Tojos tojos = Catalogs.INSTANCE.make(tmp.resolve("foreign"), "json");
