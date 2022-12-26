@@ -44,48 +44,45 @@ final class ChResolveTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    void testCommitHashFromRemoteTag() {
-        final String hash = new ChResolve(
-            null,
-            null,
-            "0.26.0"
-        ).value();
+    void getsCommitHashValueFromRemoteTag() {
         MatcherAssert.assertThat(
-            hash,
+            new ChResolve(
+                null,
+                null,
+                "0.26.0"
+            ).value(),
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
         );
     }
 
     @Test
-    void testCommitHashFromPattern() {
-        final String hash = new ChResolve(
-            null,
-            "master:m23ss3h,3.1.*:abc2sd3",
-            "master"
-        ).value();
+    void getsCommitHashValueFromPattern() {
         MatcherAssert.assertThat(
-            hash,
+            new ChResolve(
+                null,
+                "master:m23ss3h,3.1.*:abc2sd3",
+                "master"
+            ).value(),
             Matchers.equalTo("m23ss3h")
         );
     }
 
     @Test
-    void testCommitHashFromFile(@TempDir final Path temp) throws IOException {
+    void getsCommitHashValueFromFile(@TempDir final Path temp) throws IOException {
         final Path file = temp.resolve("tags.txt");
         new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), file);
-        final String hash = new ChResolve(
-            file,
-            null,
-            "master"
-        ).value();
         MatcherAssert.assertThat(
-            hash,
+            new ChResolve(
+                file,
+                null,
+                "master"
+            ).value(),
             Matchers.equalTo("mmmmmmm807fae45ab3ef497451b1066bdd7704c5")
         );
     }
 
     @Test
-    void testWithNoArguments() {
+    void catchesErrorWithNoArguments() {
         Assertions.assertThrows(
             NullPointerException.class,
             () -> new ChResolve(null, null, null).value()
