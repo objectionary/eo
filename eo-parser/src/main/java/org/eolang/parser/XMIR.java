@@ -26,7 +26,13 @@ package org.eolang.parser;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Prints XMIR to EO.
@@ -44,6 +50,14 @@ import com.jcabi.xml.XSLDocument;
  * @link https://xml.jcabi.com
  */
 public final class XMIR {
+
+    /**
+     * The sheet for transformations.
+     */
+    private static final XSL SHEET = new XSLDocument(
+        XMIR.class.getResourceAsStream("xmir-to-eo.xsl"),
+        "xmir-to-eo"
+    ).with(new ClasspathSources());
 
     /**
      * The XML content.
@@ -72,10 +86,47 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
-        return new XSLDocument(
-            this.getClass().getResourceAsStream("xmir-to-eo.xsl"),
-            "xmir-to-eo"
-        ).with(new ClasspathSources()).applyTo(this.xml);
+        final Directives dirs = new Directives();
+        final Iterable<String> floats = new HashSet<>(
+            this.xml.xpath(
+                "//o[@data='bytes' and @base='float']/text()"
+            )
+        );
+        for (final String hex : floats) {
+            final double num = Double.longBitsToDouble(
+                Long.parseLong(hex.replace(" ", ""), 16)
+            );
+            dirs.xpath(
+                String.format(
+                    "//o[@data='bytes' and @base='float' and text()='%s']",
+                    hex
+                )
+            ).set(Double.toString(num));
+        }
+        final Iterable<String> strings = new HashSet<>(
+            this.xml.xpath(
+                "//o[@data='bytes' and @base='string']/text()"
+            )
+        );
+        for (final String hex : strings) {
+            final String[] parts = hex.replace(" ", "").split("(?<=\\G.{2})");
+            final ByteBuffer buffer = ByteBuffer.allocate(parts.length);
+            for (final String pair : parts) {
+                buffer.put((byte) Integer.parseInt(pair, 16));
+            }
+            final String txt = new String(buffer.array(), StandardCharsets.UTF_8);
+            dirs.xpath(
+                String.format(
+                    "//o[@data='bytes' and @base='string' and text()='%s']",
+                    hex
+                )
+            ).set(txt);
+        }
+        return XMIR.SHEET.applyTo(
+            new XMLDocument(
+                new Xembler(dirs).applyQuietly(this.xml.node())
+            )
+        );
     }
 
 }

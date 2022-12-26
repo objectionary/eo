@@ -417,9 +417,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 data = XeListener.bytesToHex((byte) 0x00);
             }
         } else if (ctx.FLOAT() != null) {
-            type = "float";
+            type = "bytes";
             base = "float";
-            data = Double.toString(Double.parseDouble(text));
+            data = XeListener.bytesToHex(
+                ByteBuffer
+                    .allocate(Long.BYTES)
+                    .putDouble(Double.parseDouble(text))
+                    .array()
+            );
         } else if (ctx.INT() != null) {
             type = "bytes";
             base = "int";
@@ -430,15 +435,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.HEX() != null) {
-            type = "int";
+            type = "bytes";
             base = "int";
-            data = Long.toString(
-                Long.parseLong(text.substring(2), 16)
+            data = XeListener.bytesToHex(
+                ByteBuffer
+                    .allocate(Long.BYTES)
+                    .putLong(Long.parseLong(text.substring(2), 16))
+                    .array()
             );
         } else if (ctx.STRING() != null) {
-            type = "string";
+            type = "bytes";
             base = "string";
-            data = text.substring(1, text.length() - 1);
+            data = XeListener.bytesToHex(
+                StringEscapeUtils.unescapeJava(
+                    text.substring(1, text.length() - 1)
+                ).getBytes(StandardCharsets.UTF_8)
+            );
         } else if (ctx.TEXT() != null) {
             type = "bytes";
             base = "string";
@@ -460,11 +472,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         }
         this.objects.prop("data", type);
         this.objects.prop("base", base);
-        this.objects.data(
-            data
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-        );
+        this.objects.data(data);
     }
 
     @Override
