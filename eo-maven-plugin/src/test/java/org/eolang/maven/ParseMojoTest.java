@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -126,6 +127,26 @@ final class ParseMojoTest {
                     String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             )
+        );
+    }
+
+    @Test
+    void doesNotParseIfAlreadyParsed(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Map<String, Path> result = maven
+            .withHelloWorld()
+            .execute(new FakeMaven.Parse())
+            .result();
+        final File parsed = result.get(
+            String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+        ).toFile();
+        final long before = parsed.lastModified();
+        maven.execute(ParseMojo.class);
+        final long after = parsed.lastModified();
+        MatcherAssert.assertThat(
+            "File was modified",
+            before,
+            Matchers.equalTo(after)
         );
     }
 
