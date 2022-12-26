@@ -43,4 +43,9 @@ public final class OyEmpty implements Objectionary {
         throw new IOException("Empty objectionary");
     }
 
+    @Override
+    public boolean contains(final String name) throws IOException {
+        throw new IOException("Empty objectionary");
+    }
+
 }

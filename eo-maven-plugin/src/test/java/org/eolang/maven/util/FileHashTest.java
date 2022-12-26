@@ -21,62 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
 import java.io.IOException;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyFallbackSwap;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Tests for {@link OyFallbackSwap}.
- * @since 1.0
+ * Test for {@link FileHash}.
+ *
+ * @since 0.26
  */
-class OyFallbackSwapTest {
+final class FileHashTest {
+
     @Test
-    void testFallbackNoSwapOy() throws Exception {
+    void readsFromExistingFile(@TempDir final Path temp) throws IOException {
+        final Path path = temp.resolve("1.txt");
+        new Home(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            new TextOf(
-                new OyFallbackSwap(
-                    s -> new InputOf("[] > local\n"),
-                    s -> new InputOf("[] > remote\n"),
-                    false
-                ).get("")
-            ).asString(),
-            Matchers.containsString("local")
+            new FileHash(path).toString(),
+            Matchers.startsWith("[-26, 1, -29, 113, ")
         );
     }
 
     @Test
-    void testFallbackSwapOyFail() throws Exception {
+    void readsFromAbsentFile(@TempDir final Path temp) {
+        final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
-            new TextOf(
-                new OyFallbackSwap(
-                    s -> new InputOf("[] > local\n"),
-                    s -> {
-                        throw new IOException("Can't get object");
-                    },
-                    false
-                ).get("")
-            ).asString(),
-            Matchers.containsString("local")
+            new FileHash(path).toString(),
+            Matchers.equalTo("")
         );
     }
 
-    @Test
-    void testFallbackSwapOy() throws Exception {
-        MatcherAssert.assertThat(
-            new TextOf(
-                new OyFallbackSwap(
-                    s -> new InputOf("[] > local\n"),
-                    s -> new InputOf("[] > remote\n"),
-                    true
-                ).get("")
-            ).asString(),
-            Matchers.containsString("remote")
-        );
-    }
 }

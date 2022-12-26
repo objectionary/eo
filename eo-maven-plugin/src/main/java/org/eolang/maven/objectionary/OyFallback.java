@@ -77,4 +77,10 @@ public final class OyFallback implements Objectionary {
             )
         ).apply(name);
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean contains(final String name) throws IOException {
+        return this.first.contains(name) || this.second.contains(name);
+    }
 }

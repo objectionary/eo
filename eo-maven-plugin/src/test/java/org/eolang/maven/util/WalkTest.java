@@ -21,55 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyFallback;
-import org.eolang.maven.objectionary.OyHome;
+import java.nio.file.Paths;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test for {@link OyFallback}.
+ * Test case for {@link Walk}.
  *
- * @since 1.0
+ * @since 0.11
  */
-final class OyFallbackTest {
+final class WalkTest {
 
     @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final AtomicInteger counter = new AtomicInteger();
-        final String branch = "master";
-        final Objectionary objectionary = new OyFallback(
-            new OyHome(branch, path),
-            new OyCaching(
-                branch,
-                path,
-                name -> {
-                    counter.incrementAndGet();
-                    return new InputOf("[] > main\n");
-                }
-            )
-        );
-        final String object = "org.example.main";
-        Assertions.assertNotNull(
-            new TextOf(objectionary.get(object)).asString()
-        );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo").toFile().exists()
-        );
-        Assertions.assertNotNull(objectionary.get(object));
+    void findsFiles(@TempDir final Path temp) throws Exception {
+        new Home(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
+        new Home(temp).save("", Paths.get("EOxxx/bar"));
         MatcherAssert.assertThat(
-            counter.get(),
-            Matchers.is(1)
+            new Walk(temp).includes(new ListOf<>("EO**/*")),
+            Matchers.iterableWithSize(1)
         );
     }
+
 }

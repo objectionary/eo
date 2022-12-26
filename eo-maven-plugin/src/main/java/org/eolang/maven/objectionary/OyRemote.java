@@ -25,10 +25,12 @@ package org.eolang.maven.objectionary;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.Place;
 import org.eolang.maven.hash.CommitHash;
 
@@ -36,6 +38,10 @@ import org.eolang.maven.hash.CommitHash;
  * The simple HTTP Objectionary server.
  *
  * @since 0.1
+ * @todo #1567:30min In method `contains()` we catch an `IOException`
+ *  for flow control. Now, if the exception occurred, this method returns `false`.
+ *  Need to allow it to not use this approach, since control-flow via Exceptions
+ *  is prohibited.
  */
 public final class OyRemote implements Objectionary {
 
@@ -69,6 +75,22 @@ public final class OyRemote implements Objectionary {
             name, url
         );
         return new InputOf(url);
+    }
+
+    @Override
+    public boolean contains(final String name) throws MalformedURLException {
+        final URL url = this.template.value(name);
+        boolean presence;
+        try (InputStream inputStream = new Unchecked<>(() -> url).value().openStream()) {
+            presence = true;
+        } catch (final IOException ex) {
+            Logger.debug(
+                this, "The object '%s' is absent in %s...",
+                name, url
+            );
+            presence = false;
+        }
+        return presence;
     }
 
     /**
