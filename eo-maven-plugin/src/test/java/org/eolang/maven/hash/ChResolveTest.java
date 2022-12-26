@@ -82,7 +82,7 @@ final class ChResolveTest {
     }
 
     @Test
-    void catchesErrorWithNoArguments() {
+    void catchesAnExceptionWithNoArguments() {
         Assertions.assertThrows(
             NullPointerException.class,
             () -> new ChResolve(null, null, null).value()
