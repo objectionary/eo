@@ -49,14 +49,26 @@ final class StUnhexTest {
     }
 
     @Test
+    void convertsMaxIntFromHexToEo() {
+        MatcherAssert.assertThat(
+            new Xsline(new StUnhex()).pass(
+                new XMLDocument(
+                    "<p><o base='org.eolang.int' data='bytes'>FF FF FF FF FF FF FF FF</o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPaths("//o[text()='-1' and @data='int']")
+        );
+    }
+
+    @Test
     void convertsStringFromHexToEo() {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='string' data='bytes'>41 42 43</o></p>"
+                    "<p><o base='string' data='bytes'>41 42 0A 09</o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='ABC' and @data='string']")
+            XhtmlMatchers.hasXPaths("//o[text()='AB\\n\\t' and @data='string']")
         );
     }
 
@@ -65,7 +77,7 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='float' data='bytes'>41 42 43 67 AE CD 3E FD</o></p>"
+                    "<p><o base='org.eolang.float' data='bytes'>41 42 43 67 AE CD 3E FD</o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='2393807.3656386123' and @data='float']")
@@ -73,7 +85,7 @@ final class StUnhexTest {
     }
 
     @Test
-    void convertsBoolFromHexToEo() {
+    void convertsTrueFromHexToEo() {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
@@ -81,6 +93,18 @@ final class StUnhexTest {
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='TRUE' and @data='bool']")
+        );
+    }
+
+    @Test
+    void convertsFalseFromHexToEo() {
+        MatcherAssert.assertThat(
+            new Xsline(new StUnhex()).pass(
+                new XMLDocument(
+                    "<p><o base='org.eolang.bool' data='bytes'>00</o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPaths("//o[text()='FALSE' and @data='bool']")
         );
     }
 

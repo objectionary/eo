@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Locale;
+import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -50,47 +51,25 @@ public final class StUnhex implements Shift {
     public XML apply(final int position, final XML xml) {
         final Directives dirs = new Directives();
         for (final String hex : StUnhex.matches(xml, "float")) {
-            final double num = Double.longBitsToDouble(
-                Long.parseLong(StUnhex.unspace(hex), 16)
-            );
-            dirs.xpath(
-                String.format(
-                    "//o[@data='bytes' and @base='float' and text()='%s']",
-                    hex
-                )
-            ).set(Double.toString(num)).attr("data", "float");
+            final double num = StUnhex.buffer(StUnhex.unspace(hex)).getDouble();
+            StUnhex.append(dirs, "float", hex, Double.toString(num));
         }
         for (final String hex : StUnhex.matches(xml, "int")) {
-            final long num = Long.parseLong(StUnhex.unspace(hex), 16);
-            dirs.xpath(
-                String.format(
-                    "//o[@data='bytes' and @base='int' and text()='%s']",
-                    hex
-                )
-            ).set(Long.toString(num)).attr("data", "int");
+            final long num = StUnhex.buffer(StUnhex.unspace(hex)).getLong();
+            StUnhex.append(dirs, "int", hex, Long.toString(num));
         }
         for (final String hex : StUnhex.matches(xml, "bool")) {
             final boolean val = !"00".equals(StUnhex.unspace(hex));
-            dirs.xpath(
-                String.format(
-                    "//o[@data='bytes' and @base='bool' and text()='%s']",
-                    hex
-                )
-            ).set(Boolean.toString(val).toUpperCase(Locale.ENGLISH)).attr("data", "bool");
+            StUnhex.append(dirs, "bool", hex, Boolean.toString(val).toUpperCase(Locale.ENGLISH));
         }
         for (final String hex : StUnhex.matches(xml, "string")) {
-            final String[] parts = StUnhex.unspace(hex).split("(?<=\\G.{2})");
-            final ByteBuffer buffer = ByteBuffer.allocate(parts.length);
-            for (final String pair : parts) {
-                buffer.put((byte) Integer.parseInt(pair, 16));
-            }
-            final String txt = new String(buffer.array(), StandardCharsets.UTF_8);
-            dirs.xpath(
-                String.format(
-                    "//o[@data='bytes' and @base='string' and text()='%s']",
-                    hex
+            final String txt = StringEscapeUtils.escapeJava(
+                new String(
+                    StUnhex.buffer(StUnhex.unspace(hex)).array(),
+                    StandardCharsets.UTF_8
                 )
-            ).set(txt).attr("data", "string");
+            );
+            StUnhex.append(dirs, "string", hex, txt);
         }
         return new XMLDocument(
             new Xembler(dirs).applyQuietly(xml.node())
@@ -107,11 +86,26 @@ public final class StUnhex implements Shift {
         return new HashSet<>(
             xml.xpath(
                 String.format(
-                    "//o[@data='bytes' and @base='%s']/text()",
+                    "//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s')]/text()",
                     type
                 )
             )
         );
+    }
+
+    /**
+     * Make a byte buffer from a string.
+     * @param txt The text
+     * @return The buffer of bytes
+     */
+    private static ByteBuffer buffer(final String txt) {
+        final String[] parts = txt.split("(?<=\\G.{2})");
+        final ByteBuffer buffer = ByteBuffer.allocate(parts.length);
+        for (final String pair : parts) {
+            buffer.put((byte) Integer.parseInt(pair, 16));
+        }
+        buffer.position(0);
+        return buffer;
     }
 
     /**
@@ -129,4 +123,23 @@ public final class StUnhex implements Shift {
         }
         return out.toString();
     }
+
+    /**
+     * Append Xemply instructions.
+     * @param dirs The directives
+     * @param type The type to match
+     * @param before Value before
+     * @param after Value after
+     * @checkstyle ParameterNumberCheck (4 lines)
+     */
+    private static void append(final Directives dirs, final String type,
+        final String before, final String after) {
+        dirs.xpath(
+            String.format(
+                "//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s') and text()='%s']",
+                type, before
+            )
+        ).set(after).attr("data", type);
+    }
 }
+

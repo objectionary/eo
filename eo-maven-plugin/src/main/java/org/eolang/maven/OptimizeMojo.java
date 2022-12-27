@@ -128,13 +128,13 @@ public final class OptimizeMojo extends SafeMojo {
             .filter(this::isOptimizationRequired)
             .map(tojo -> this.task(tojo, common))
             .collect(Collectors.toList());
-        Logger.info(
+        Logger.debug(
             this,
-            "Running %s optimizations in parallel",
+            "Running %s parallel optimization(s)",
             tasks.size()
         );
         final long done = tasks.parallelStream().mapToInt(Supplier::get).sum();
-        if (done > 0) {
+        if (done > 0L) {
             Logger.info(
                 this,
                 "Optimized %d out of %d XMIR program(s)", done,
@@ -163,7 +163,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Optimization common
     ) {
         final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-        Logger.info(
+        Logger.debug(
             this, "Adding optimization task for %s",
             src
         );

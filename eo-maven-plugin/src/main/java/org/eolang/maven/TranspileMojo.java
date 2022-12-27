@@ -47,6 +47,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.StUnhex;
 
 /**
  * Compile.
@@ -81,7 +82,11 @@ public final class TranspileMojo extends SafeMojo {
      * Parsing train with XSLs.
      */
     private static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(new ParsingTrain().empty()),
+        new TrClasspath<>(
+            new ParsingTrain()
+                .empty()
+                .with(new StUnhex())
+        ),
         Arrays.asList(
             "/org/eolang/maven/pre/classes.xsl",
             "/org/eolang/maven/pre/package.xsl",
