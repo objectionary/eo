@@ -24,17 +24,14 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.log.Supplier;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -133,7 +130,7 @@ public final class OptimizeMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> task(tojo, common),
+                    tojo -> this.task(tojo, common),
                     new Filtered<>(
                         this::isOptimizationRequired,
                         sources
