@@ -68,5 +68,4 @@ class AtConstTest {
             Matchers.equalTo(simple.get())
         );
     }
-
 }
