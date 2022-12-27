@@ -44,7 +44,13 @@ SOFTWARE.
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat(replace(text(), ' ', '-'), '-')"/>
+          <xsl:variable name="data">
+            <xsl:value-of select="replace(text(), ' ', '-')"/>
+            <xsl:if test="not(contains(text(), ' '))">
+              <xsl:text>-</xsl:text>
+            </xsl:if>
+          </xsl:variable>
+          <xsl:value-of select="$data"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
