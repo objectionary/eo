@@ -38,6 +38,11 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
 import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
@@ -124,20 +129,22 @@ public final class OptimizeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
         final Optimization common = this.optimization();
-        final List<Supplier<Integer>> tasks = sources.stream()
-            .filter(this::isOptimizationRequired)
-            .map(tojo -> this.task(tojo, common))
-            .collect(Collectors.toList());
-        Logger.info(
-            this,
-            "Running %s optimizations in parallel",
-            tasks.size()
-        );
-        final long done = tasks.parallelStream().mapToInt(Supplier::get).sum();
-        if (done > 0) {
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    tojo -> task(tojo, common),
+                    new Filtered<>(
+                        this::isOptimizationRequired,
+                        sources
+                    )
+                )
+            )
+        ).intValue();
+        if (total > 0) {
             Logger.info(
                 this,
-                "Optimized %d out of %d XMIR program(s)", done,
+                "Optimized %d out of %d XMIR program(s)", total,
                 sources.size()
             );
         } else {
@@ -148,17 +155,11 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Converts tojo to optimization task.
      *
-     * We use {@link ClassLoader} in that method in order to load all
-     * required dependencies correctly and avoid some problems with
-     * loading of {@link javax.xml.transform.TransformerFactory}.
-     * You can read more about that strange Java behavior in that discussions:
-     *  - <a href="https://stackoverflow.com/questions/49113207/completablefuture-forkjoinpool-set-class-loader/57551188#57551188">CompletableFuture / ForkJoinPool Set Class Loader</a>
-     *  - <a href="https://stackoverflow.com/questions/74708979/is-there-any-difference-between-parallelstream-and-executorservice"> Difference between parallelStream() and ExecutorService</a>
      * @param tojo Tojo that should be optimized.
      * @param common Optimization.
      * @return Optimization task.
      */
-    private Supplier<Integer> task(
+    private Scalar<Integer> task(
         final Tojo tojo,
         final Optimization common
     ) {
@@ -167,28 +168,16 @@ public final class OptimizeMojo extends SafeMojo {
             this, "Adding optimization task for %s",
             src
         );
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         return () -> {
-            try {
-                Thread.currentThread().setContextClassLoader(loader);
-                final XML optimized = this.optimization(tojo, common)
-                    .apply(new XMLDocument(src));
-                if (this.shouldPass(optimized)) {
-                    tojo.set(
-                        AssembleMojo.ATTR_XMIR2,
-                        this.make(optimized, src).toAbsolutePath().toString()
-                    );
-                }
-                return 1;
-            } catch (final IOException exception) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Unable to optimize %s",
-                        tojo.get(Tojos.KEY)
-                    ),
-                    exception
+            final XML optimized = this.optimization(tojo, common)
+                .apply(new XMLDocument(src));
+            if (this.shouldPass(optimized)) {
+                tojo.set(
+                    AssembleMojo.ATTR_XMIR2,
+                    this.make(optimized, src).toAbsolutePath().toString()
                 );
             }
+            return 1;
         };
     }
 
