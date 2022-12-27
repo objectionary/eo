@@ -67,13 +67,13 @@ public final class ChResolve implements CommitHash {
     public String value() {
         final CommitHash ret;
         if (this.file == null && this.hash == null) {
-            ret = new ChCached(new ChRemote(this.tag));
+            ret = new ChRemote(this.tag);
         } else if (this.hash == null) {
-            ret = new ChCached(new ChText(this.file, this.tag));
+            ret = new ChText(this.file, this.tag);
         } else {
-            ret = new ChCached(new ChPattern(this.hash, this.tag));
+            ret = new ChPattern(this.hash, this.tag);
         }
-        return ret.value();
+        return new ChCached(ret).value();
     }
 
 }
