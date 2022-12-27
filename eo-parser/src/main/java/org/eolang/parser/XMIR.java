@@ -28,11 +28,8 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import org.xembly.Directives;
-import org.xembly.Xembler;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 
 /**
  * Prints XMIR to EO.
@@ -47,7 +44,7 @@ import org.xembly.Xembler;
  *
  * @since 0.5
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
- * @link https://xml.jcabi.com
+ * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  */
 public final class XMIR {
 
@@ -86,46 +83,8 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
-        final Directives dirs = new Directives();
-        final Iterable<String> floats = new HashSet<>(
-            this.xml.xpath(
-                "//o[@data='bytes' and @base='float']/text()"
-            )
-        );
-        for (final String hex : floats) {
-            final double num = Double.longBitsToDouble(
-                Long.parseLong(hex.replace(" ", ""), 16)
-            );
-            dirs.xpath(
-                String.format(
-                    "//o[@data='bytes' and @base='float' and text()='%s']",
-                    hex
-                )
-            ).set(Double.toString(num));
-        }
-        final Iterable<String> strings = new HashSet<>(
-            this.xml.xpath(
-                "//o[@data='bytes' and @base='string']/text()"
-            )
-        );
-        for (final String hex : strings) {
-            final String[] parts = hex.replace(" ", "").split("(?<=\\G.{2})");
-            final ByteBuffer buffer = ByteBuffer.allocate(parts.length);
-            for (final String pair : parts) {
-                buffer.put((byte) Integer.parseInt(pair, 16));
-            }
-            final String txt = new String(buffer.array(), StandardCharsets.UTF_8);
-            dirs.xpath(
-                String.format(
-                    "//o[@data='bytes' and @base='string' and text()='%s']",
-                    hex
-                )
-            ).set(txt);
-        }
         return XMIR.SHEET.applyTo(
-            new XMLDocument(
-                new Xembler(dirs).applyQuietly(this.xml.node())
-            )
+            new Xsline(new TrDefault<>(new StUnhex())).pass(this.xml)
         );
     }
 
