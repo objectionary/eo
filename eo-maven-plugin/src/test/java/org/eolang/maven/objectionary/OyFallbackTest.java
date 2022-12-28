@@ -64,7 +64,7 @@ final class OyFallbackTest {
     void getsObjectWhenPrimaryContains() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(this.fallback.get("org.example.main")).asString(),
-            Matchers.equalTo(primary.source)
+            Matchers.equalTo(this.primary.source)
         );
         MatcherAssert.assertThat(
             this.primary.invocations.get(),
@@ -80,7 +80,7 @@ final class OyFallbackTest {
     void getsObjectWhenPrimaryNotContains() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(this.fallback.get("org.example.secondary")).asString(),
-            Matchers.equalTo(secondary.source)
+            Matchers.equalTo(this.secondary.source)
         );
         MatcherAssert.assertThat(
             this.primary.invocations.get(),
