@@ -41,11 +41,6 @@ import org.junit.jupiter.api.Test;
 final class OyFallbackTest {
 
     /**
-     * Eo program source.
-     */
-    private static final String SOURCE = "[] > main\n";
-
-    /**
      * Primary objectionary.
      */
     private final OyMock primary = new OyMock("org.example.main");
@@ -53,7 +48,7 @@ final class OyFallbackTest {
     /**
      * Secondary objectionary.
      */
-    private final OyMock secondary = new OyMock("org.example.secondary");
+    private final OyMock secondary = new OyMock("org.example.secondary", "[] > s\n");
 
     /**
      * Objectionary with fallback.
@@ -69,7 +64,7 @@ final class OyFallbackTest {
     void getsObjectWhenPrimaryContains() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(this.fallback.get("org.example.main")).asString(),
-            Matchers.equalTo(OyFallbackTest.SOURCE)
+            Matchers.equalTo(primary.source)
         );
         MatcherAssert.assertThat(
             this.primary.invocations.get(),
@@ -85,7 +80,7 @@ final class OyFallbackTest {
     void getsObjectWhenPrimaryNotContains() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(this.fallback.get("org.example.secondary")).asString(),
-            Matchers.equalTo(OyFallbackTest.SOURCE)
+            Matchers.equalTo(secondary.source)
         );
         MatcherAssert.assertThat(
             this.primary.invocations.get(),
@@ -143,11 +138,26 @@ final class OyFallbackTest {
         private final String name;
 
         /**
+         * Object source.
+         */
+        private final String source;
+
+        /**
          * Ctor.
          * @param object Object name
          */
         private OyMock(final String object) {
+            this(object, "[] > main\n");
+        }
+
+        /**
+         * Ctor.
+         * @param object Object name
+         * @param source Eo program source
+         */
+        private OyMock(final String object, final String source) {
             this.name = object;
+            this.source = source;
             this.invocations = new AtomicInteger();
         }
 
@@ -155,7 +165,7 @@ final class OyFallbackTest {
         public Input get(final String object) throws IOException {
             this.invocations.incrementAndGet();
             if (this.name.equals(object)) {
-                return new InputOf(OyFallbackTest.SOURCE);
+                return new InputOf(this.source);
             } else {
                 throw new IOException(String.format("%s not found", object));
             }
