@@ -23,72 +23,158 @@
  */
 package org.eolang.maven.objectionary;
 
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test for {@link OyFallback}.
  *
  * @since 1.0
- * @todo #1567:30min The "putsObjectToLocalCache" is very complicated, since
- *  it checks a lot of things like methods "get" and "contains" in Objectionary,
- *  work of "OyFallback", and behaviour of "OyCaching". Need to split this test
- *  into several tests to check every part separately.
  */
 final class OyFallbackTest {
 
+    /**
+     * Primary objectionary.
+     */
+    private final OyMock primary = new OyMock("org.example.main");
+
+    /**
+     * Secondary objectionary.
+     */
+    private final OyMock secondary = new OyMock("org.example.secondary", "[] > s\n");
+
+    /**
+     * Objectionary with fallback.
+     */
+    private Objectionary fallback;
+
+    @BeforeEach
+    void setUp() {
+        this.fallback = new OyFallback(this.primary, this.secondary);
+    }
+
     @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final AtomicInteger counter = new AtomicInteger();
-        final String branch = "master";
-        final Objectionary objectionary = new OyFallback(
-            new OyHome(branch, path),
-            new OyCaching(
-                branch,
-                path,
-                new OyFake(
-                    s -> {
-                        counter.incrementAndGet();
-                        return new InputOf("[] > main\n");
-                    },
-                    s -> {
-                        counter.incrementAndGet();
-                        return false;
-                    }
-                )
-            )
-        );
-        final String object = "org.example.main";
+    void getsObjectWhenPrimaryContains() throws Exception {
         MatcherAssert.assertThat(
-            objectionary.contains(object),
+            new TextOf(this.fallback.get("org.example.main")).asString(),
+            Matchers.equalTo(this.primary.source)
+        );
+        MatcherAssert.assertThat(
+            this.primary.invocations.get(),
+            Matchers.equalTo(1)
+        );
+        MatcherAssert.assertThat(
+            this.secondary.invocations.get(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void getsObjectWhenPrimaryNotContains() throws Exception {
+        MatcherAssert.assertThat(
+            new TextOf(this.fallback.get("org.example.secondary")).asString(),
+            Matchers.equalTo(this.secondary.source)
+        );
+        MatcherAssert.assertThat(
+            this.primary.invocations.get(),
+            Matchers.equalTo(1)
+        );
+        MatcherAssert.assertThat(
+            this.secondary.invocations.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void containsObject() throws IOException {
+        MatcherAssert.assertThat(
+            this.fallback.contains("org.example.main"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            this.fallback.contains("org.example.absent"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new TextOf(objectionary.get(object)).asString(),
-            Matchers.is(Matchers.notNullValue())
+            this.primary.invocations.get(),
+            Matchers.equalTo(2)
         );
         MatcherAssert.assertThat(
-            path.resolve("pulled/master/org/example/main.eo").toFile().exists(),
-            Matchers.is(true)
+            this.secondary.invocations.get(),
+            Matchers.equalTo(1)
         );
+    }
+
+    @Test
+    void convertsToString() {
         MatcherAssert.assertThat(
-            objectionary.contains(object),
-            Matchers.is(true)
+            this.fallback.toString(),
+            Matchers.equalTo(String.format("[%s]+[fallback to %s]", this.primary, this.secondary))
         );
-        MatcherAssert.assertThat(
-            objectionary.get(object),
-            Matchers.is(Matchers.notNullValue())
-        );
-        MatcherAssert.assertThat(
-            counter.get(),
-            Matchers.is(2)
-        );
+    }
+
+    /**
+     * Mock objectionary.
+     *
+     * @since 0.29.0
+     */
+    private static final class OyMock implements Objectionary {
+
+        /**
+         * Invocations counter.
+         */
+        private final AtomicInteger invocations;
+
+        /**
+         * Object name.
+         */
+        private final String name;
+
+        /**
+         * Object source.
+         */
+        private final String source;
+
+        /**
+         * Ctor.
+         * @param object Object name
+         */
+        private OyMock(final String object) {
+            this(object, "[] > main\n");
+        }
+
+        /**
+         * Ctor.
+         * @param object Object name
+         * @param source Eo program source
+         */
+        private OyMock(final String object, final String source) {
+            this.name = object;
+            this.source = source;
+            this.invocations = new AtomicInteger();
+        }
+
+        @Override
+        public Input get(final String object) throws IOException {
+            this.invocations.incrementAndGet();
+            if (this.name.equals(object)) {
+                return new InputOf(this.source);
+            } else {
+                throw new IOException(String.format("%s not found", object));
+            }
+        }
+
+        @Override
+        public boolean contains(final String object) throws IOException {
+            this.invocations.incrementAndGet();
+            return this.name.equals(object);
+        }
     }
 }
