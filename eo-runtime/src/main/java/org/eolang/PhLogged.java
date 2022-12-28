@@ -51,21 +51,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
     public String φTerm() {
         return this.origin.φTerm();
     }
@@ -103,6 +88,21 @@ public final class PhLogged implements Phi {
     @Override
     public String locator() {
         return this.origin.locator();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
     }
 
 }
