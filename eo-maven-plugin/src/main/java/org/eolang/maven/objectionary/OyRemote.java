@@ -76,7 +76,7 @@ public final class OyRemote implements Objectionary {
     public boolean contains(final String name) throws IOException {
         final int code = ((HttpURLConnection) this.template.value(name).openConnection())
             .getResponseCode();
-        return code >= HttpURLConnection.HTTP_OK && code < 399;
+        return code >= HttpURLConnection.HTTP_OK && code < 400;
     }
 
     /**
