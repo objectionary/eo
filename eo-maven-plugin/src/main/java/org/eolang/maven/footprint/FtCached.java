@@ -77,10 +77,9 @@ public final class FtCached implements Footprint {
 
     @Override
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = cachePath(program, ext);
         final String content;
-        if (Files.exists(cached)) {
-            content = new IoCheckedText(new TextOf(cached)).asString();
+        if (this.isCached(program, ext)) {
+            content = new IoCheckedText(new TextOf(this.path(program, ext))).asString();
         } else {
             content = origin.load(program, ext);
         }
@@ -90,23 +89,45 @@ public final class FtCached implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = cachePath(program, ext);
         final String text;
-        if (Files.exists(cached)) {
-            Logger.debug(
-                this,
-                "Program %s.%s is found in cache: %s",
-                program, ext, cached
-            );
+        if (this.isCached(program, ext)) {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            new Home(this.cache).save(text, cached);
+            new Home(this.cache).save(text, path(program, ext));
         }
         origin.save(program, ext, () -> text);
     }
 
-    private Path cachePath(final String program, final String ext) {
+    /**
+     * Is cached?
+     * @param program Program name
+     * @param ext Extension
+     * @return TRUE if cached
+     */
+    private boolean isCached(final String program, final String ext) {
+        final Path cache = this.path(program, ext);
+        final boolean res;
+        if (Files.exists(cache)) {
+            Logger.debug(
+                this,
+                "Program %s.%s is found in cache: %s",
+                program, ext, cache
+            );
+            res = true;
+        } else {
+            res = false;
+        }
+        return res;
+    }
+
+    /**
+     * Path to cached file.
+     * @param program Program name
+     * @param ext Extension
+     * @return Path
+     */
+    private Path path(final String program, final String ext) {
         return new Place(program).make(Paths.get(hash), ext);
     }
 }
