@@ -34,6 +34,8 @@ import org.eolang.maven.util.Home;
 
 /**
  * Default implementation of a Footprint.
+ * Program footprint of EO compilation process.
+ * <p/>The footprint consists of file in {@link #main} folder
  * @since 1.0
  */
 public final class FtDefault implements Footprint {

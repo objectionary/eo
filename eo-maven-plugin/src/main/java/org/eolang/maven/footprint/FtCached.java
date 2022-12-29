@@ -25,6 +25,7 @@ package org.eolang.maven.footprint;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
@@ -35,28 +36,12 @@ import org.eolang.maven.util.Home;
 
 /**
  * Program footprint of EO compilation process.
- * <p/>The footprint consists of file in {@link #main} folder and optionally cached
- * file in {@link #cache} folder.
+ * <p/>The footprint optionally cached in {@link #cache} folder.
  * Caching is applied if {@link #hash} is not empty otherwise caching is ignored.
- * <p/>Usage example:
- * <code>
- *  <pre>
- *    final Footprint footprint = new Footprint(
- *      hash,
- *      targetRoot,
- *      cacheRoot
- *    ).save(program, ext);
  *
- *    String content = footprint.content(program, ext);
- *  </pre>
- * </code>
  * @since 1.0
  */
 public final class FtCached implements Footprint {
-    /**
-     * Path to target root.
-     */
-    private final Path main;
 
     /**
      * Version tag.
@@ -67,29 +52,34 @@ public final class FtCached implements Footprint {
      * Path to cache root.
      */
     private final Path cache;
-    private final FtDefault origin;
+
+    /**
+     * Path to main root.
+     */
+    private final Footprint origin;
 
     /**
      * Ctor.
      * @param hash Version tag
-     * @param main Main root
      * @param cache Cache root
+     * @param origin Origin
      */
-    public FtCached(final String hash, final Path main, final Path cache) {
+    public FtCached(
+        final String hash,
+        final Path cache,
+        final Footprint origin
+    ) {
         this.hash = hash;
-        this.main = main;
         this.cache = cache;
-        this.origin = new FtDefault(this.main);
+        this.origin = origin;
     }
 
     @Override
     public String load(final String program, final String ext) throws IOException {
         final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
         final String content;
-        if (cached.toFile().exists()) {
-            content = new IoCheckedText(
-                new TextOf(cached)
-            ).asString();
+        if (Files.exists(cached)) {
+            content = new IoCheckedText(new TextOf(cached)).asString();
         } else {
             content = origin.load(program, ext);
         }
@@ -101,10 +91,10 @@ public final class FtCached implements Footprint {
         throws IOException {
         final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
         final String text;
-        if (cached.toFile().exists()) {
+        if (Files.exists(cached)) {
             Logger.debug(
                 this,
-                "Program %s.%s found in cache: %s",
+                "Program %s.%s is found in cache: %s",
                 program, ext, cached
             );
             text = this.load(program, ext);

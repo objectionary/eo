@@ -42,11 +42,17 @@ final class FtCachedTest {
             "<program>",
             "</program>"
         );
-        new FtCached("abcde123", temp.resolve("target"), temp.resolve("parsed"))
-            .save("org.eolang.txt.text", "xmir", () -> content);
+        new FtCached(
+            "abcde123",
+            temp.resolve("parsed"),
+            new FtDefault(temp.resolve("target"))
+        ).save("org.eolang.txt.text", "xmir", () -> content);
         MatcherAssert.assertThat(
-            new FtCached("abcde123", temp.resolve("target"), temp.resolve("parsed"))
-                .load("org.eolang.txt.text", "xmir"),
+            new FtCached(
+                "abcde123",
+                temp.resolve("parsed"),
+                new FtDefault(temp.resolve("target"))
+            ).load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
         );
     }
