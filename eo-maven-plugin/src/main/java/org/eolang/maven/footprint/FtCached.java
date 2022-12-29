@@ -67,6 +67,7 @@ public final class FtCached implements Footprint {
      * Path to cache root.
      */
     private final Path cache;
+    private final FtDefault origin;
 
     /**
      * Ctor.
@@ -78,30 +79,27 @@ public final class FtCached implements Footprint {
         this.hash = hash;
         this.main = main;
         this.cache = cache;
+        this.origin = new FtDefault(this.main);
     }
 
     @Override
     public String load(final String program, final String ext) throws IOException {
         final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
-        final Path target = new Place(program).make(this.main, ext);
-        final IoCheckedText content;
+        final String content;
         if (cached.toFile().exists()) {
             content = new IoCheckedText(
                 new TextOf(cached)
-            );
+            ).asString();
         } else {
-            content = new IoCheckedText(
-                new TextOf(target)
-            );
+            content = origin.load(program, ext);
         }
-        return content.asString();
+        return content;
     }
 
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
         final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
-        final Path target = new Place(program).make(this.main, ext);
         final String text;
         if (cached.toFile().exists()) {
             Logger.debug(
@@ -114,6 +112,6 @@ public final class FtCached implements Footprint {
             text = new IoChecked<>(content).value();
             new Home(this.cache).save(text, this.cache.relativize(cached));
         }
-        new Home(this.main).save(text, this.main.relativize(target));
+        origin.save(program, ext, () -> text);
     }
 }
