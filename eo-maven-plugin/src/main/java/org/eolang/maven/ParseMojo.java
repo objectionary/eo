@@ -169,7 +169,7 @@ public final class ParseMojo extends SafeMojo {
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
             footprint = new FtCached(
                 tojo.get(AssembleMojo.ATTR_HASH),
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
+                this.cache.resolve(ParseMojo.PARSED),
                 footprint
             );
         }
