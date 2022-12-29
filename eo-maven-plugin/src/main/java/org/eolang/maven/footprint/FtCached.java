@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -76,7 +77,7 @@ public final class FtCached implements Footprint {
 
     @Override
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
+        final Path cached = cachePath(program, ext);
         final String content;
         if (Files.exists(cached)) {
             content = new IoCheckedText(new TextOf(cached)).asString();
@@ -89,7 +90,7 @@ public final class FtCached implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
+        final Path cached = cachePath(program, ext);
         final String text;
         if (Files.exists(cached)) {
             Logger.debug(
@@ -100,8 +101,12 @@ public final class FtCached implements Footprint {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            new Home(this.cache).save(text, this.cache.relativize(cached));
+            new Home(this.cache).save(text, cached);
         }
         origin.save(program, ext, () -> text);
+    }
+
+    private Path cachePath(final String program, final String ext) {
+        return new Place(program).make(Paths.get(hash), ext);
     }
 }
