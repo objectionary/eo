@@ -42,7 +42,11 @@ SOFTWARE.
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="substring-after(@loc, '.')"/>
+          <xsl:variable name="data">
+            <xsl:text>01-</xsl:text>
+            <xsl:value-of select="substring-after(@loc, '.')"/>
+          </xsl:variable>
+          <xsl:value-of select="$data"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

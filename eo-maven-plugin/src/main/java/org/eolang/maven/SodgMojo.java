@@ -30,9 +30,11 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
+import com.yegor256.xsline.FuncChecked;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
@@ -49,6 +51,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -67,6 +70,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
+import org.eolang.parser.StUnhex;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -158,6 +162,28 @@ public final class SodgMojo extends SafeMojo {
                     "/org/eolang/maven/sodg/pre-clean.xsl",
                     "/org/eolang/maven/sodg/remove-leveled.xsl"
                 ).back(),
+                new TrDefault<>(
+                    new StLambda(
+                        xml -> {
+                            final Directives dirs = new Directives();
+                            return new HashSet<>(
+                                xml.xpath(
+                                    String.format(
+                                        "//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s')]/text()",
+                                        type
+                                    )
+                                )
+                            );
+                            for (final String hex : StUnhex.matches(xml, "float")) {
+                                final double num = StUnhex.buffer(StUnhex.unspace(hex)).getDouble();
+                                StUnhex.append(dirs, "float", hex, Double.toString(num));
+                            }
+                            return new XMLDocument(
+                                new Xembler(dirs).applyQuietly(xml.node())
+                            );
+                        }
+                    )
+                ),
                 new TrLogged(
                     new TrMapped<>(
                         (Function<String, Shift>) path -> new StBefore(
