@@ -85,7 +85,7 @@ public final class FtCached implements Footprint {
                 )
             ).asString();
         } else {
-            content = origin.load(program, ext);
+            content = this.origin.load(program, ext);
         }
         return content;
     }
@@ -98,9 +98,9 @@ public final class FtCached implements Footprint {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
-            new Home(this.cache).save(text, path(program, ext));
+            new Home(this.cache).save(text, this.path(program, ext));
         }
-        origin.save(program, ext, () -> text);
+        this.origin.save(program, ext, () -> text);
     }
 
     /**
@@ -132,6 +132,6 @@ public final class FtCached implements Footprint {
      * @return Path
      */
     private Path path(final String program, final String ext) {
-        return new Place(program).make(Paths.get(hash), ext);
+        return new Place(program).make(Paths.get(this.hash), ext);
     }
 }
