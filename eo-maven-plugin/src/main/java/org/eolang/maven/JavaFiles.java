@@ -98,7 +98,6 @@ final class JavaFiles {
      */
     private static Path saveJava(final XML java, final Path generated) throws IOException {
         final String type = java.xpath("@java-name").get(0);
-        try {
             final Path dest = new Place(type).make(
                 generated, "java"
             );
@@ -110,14 +109,5 @@ final class JavaFiles {
                 generated.relativize(dest)
             );
             return dest;
-        } catch (final InvalidPathException ex) {
-            throw new IOException(
-                String.format(
-                    "Unable to save Java class `%s`. Check you system encoding. Expected `UTF-8`",
-                    type
-                ),
-                ex
-            );
-        }
     }
 }
