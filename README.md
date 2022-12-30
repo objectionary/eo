@@ -30,7 +30,7 @@ they are good enough, including
 [Python](https://en.wikipedia.org/wiki/Python_%28programming_language%29),
 [PHP](https://en.wikipedia.org/wiki/PHP),
 [C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29).
-All of them have something we don't tolerate.
+All of them have something **we don't tolerate**:
 
   * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
   * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
