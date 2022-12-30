@@ -98,16 +98,11 @@ final class JavaFiles {
      */
     private static Path saveJava(final XML java, final Path generated) throws IOException {
         final String type = java.xpath("@java-name").get(0);
-            final Path dest = new Place(type).make(
-                generated, "java"
-            );
-            new Home(generated).save(
-                new Joined(
-                    "",
-                    java.xpath("java/text()")
-                ),
-                generated.relativize(dest)
-            );
-            return dest;
+        final Path dest = new Place(type).make(generated, "java");
+        new Home(generated).save(
+            new Joined("", java.xpath("java/text()")),
+            generated.relativize(dest)
+        );
+        return dest;
     }
 }
