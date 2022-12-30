@@ -79,7 +79,11 @@ public final class FtCached implements Footprint {
     public String load(final String program, final String ext) throws IOException {
         final String content;
         if (this.isCached(program, ext)) {
-            content = new IoCheckedText(new TextOf(this.path(program, ext))).asString();
+            content = new IoCheckedText(
+                new TextOf(
+                    this.cache.resolve(this.path(program, ext))
+                )
+            ).asString();
         } else {
             content = origin.load(program, ext);
         }
@@ -106,13 +110,13 @@ public final class FtCached implements Footprint {
      * @return TRUE if cached
      */
     private boolean isCached(final String program, final String ext) {
-        final Path cache = this.path(program, ext);
+        final Path relative = this.path(program, ext);
         final boolean res;
-        if (Files.exists(cache)) {
+        if (Files.exists(this.cache.resolve(relative))) {
             Logger.debug(
                 this,
                 "Program %s.%s is found in cache: %s",
-                program, ext, cache
+                program, ext, relative
             );
             res = true;
         } else {
@@ -122,7 +126,7 @@ public final class FtCached implements Footprint {
     }
 
     /**
-     * Path to cached file.
+     * Relative path to cached file.
      * @param program Program name
      * @param ext Extension
      * @return Path
