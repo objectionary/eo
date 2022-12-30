@@ -451,4 +451,17 @@ public final class FakeMaven {
             ).iterator();
         }
     }
+
+    /**
+     * Single register phase.
+     * @since 1.0
+     */
+    static final class Register implements Iterable<Class<? extends AbstractMojo>> {
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                RegisterMojo.class
+            ).iterator();
+        }
+    }
 }
