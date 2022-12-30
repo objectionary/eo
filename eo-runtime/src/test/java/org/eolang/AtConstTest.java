@@ -21,43 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.hash;
+package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link ChNarrow}.
+ * Test case for {@link AtConst}.
  *
- * @since 0.28.11
+ * @since 0.29.0
  */
-class ChNarrowTest {
+class AtConstTest {
 
-    @ParameterizedTest
-    @CsvSource({
-        "1234567, 1234567",
-        "12345678, 1234567",
-        "123456789, 1234567",
-        "1, 1"
-    })
-    void cutsHashCorrectly(final String input, final String output) {
+    @Test
+    void convertsToString() {
         MatcherAssert.assertThat(
-            new ChNarrow(
-                new CommitHash.ChConstant(input)
-            ).value(),
-            Matchers.equalTo(output)
+            new AtConst(new AtSimple(), Phi.Φ).toString(),
+            Matchers.equalTo("ΦS!")
         );
     }
 
     @Test
-    void throwsExceptionIfEmpty() {
+    void convertsToTerm() {
+        MatcherAssert.assertThat(
+            new AtConst(new AtSimple(), Phi.Φ).φTerm(),
+            Matchers.equalTo("Φ!")
+        );
+    }
+
+    @Test
+    void copies() {
         Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+            IllegalStateException.class,
+            () -> new AtConst(new AtSimple(), Phi.Φ).copy(Phi.Φ)
+        );
+    }
+
+    @Test
+    void puts() {
+        final AtSimple simple = new AtSimple();
+        new AtConst(simple, Phi.Φ).put(Phi.Φ);
+        MatcherAssert.assertThat(
+            Phi.Φ,
+            Matchers.equalTo(simple.get())
         );
     }
 }

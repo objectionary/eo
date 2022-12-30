@@ -29,12 +29,15 @@ import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link TranspileMojo}.
@@ -58,6 +61,15 @@ final class TranspileMojoTest {
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
         this.compiled = "generated/EOorg/EOeolang/EOexamples/EOmessTest.java";
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
+    void testPreStylesheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
+        );
     }
 
     @Test

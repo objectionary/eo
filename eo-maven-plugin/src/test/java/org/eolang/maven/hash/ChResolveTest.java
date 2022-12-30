@@ -24,43 +24,69 @@
 
 package org.eolang.maven.hash;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import org.cactoos.io.ResourceOf;
 import org.eolang.maven.OnlineCondition;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link ChRemote}.
- * @since 0.26
+ * Test case for {@link ChResolve}.
+ * @since 0.28.14
  */
-@ExtendWith(OnlineCondition.class)
-final class ChRemoteTest {
+final class ChResolveTest {
 
     @Test
-    void testCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
+    @ExtendWith(OnlineCondition.class)
+    void getsCommitHashValueFromRemoteTag() {
         MatcherAssert.assertThat(
-            hash,
+            new ChResolve(
+                null,
+                null,
+                "0.26.0"
+            ).value(),
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
         );
     }
 
     @Test
-    void testCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
+    void getsCommitHashValueFromPattern() {
         MatcherAssert.assertThat(
-            hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
+            new ChResolve(
+                null,
+                "master:m23ss3h,3.1.*:abc2sd3",
+                "master"
+            ).value(),
+            Matchers.equalTo("m23ss3h")
         );
     }
 
     @Test
-    void testCommitHashException() {
-        Assertions.assertThrows(
-            ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
+    void getsCommitHashValueFromFile(@TempDir final Path temp) throws IOException {
+        final Path file = temp.resolve("tags.txt");
+        new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), file);
+        MatcherAssert.assertThat(
+            new ChResolve(
+                file,
+                null,
+                "master"
+            ).value(),
+            Matchers.equalTo("mmmmmmm807fae45ab3ef497451b1066bdd7704c5")
         );
     }
+
+    @Test
+    void catchesAnExceptionWhenNoArguments() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new ChResolve(null, null, null).value()
+        );
+    }
+
 }

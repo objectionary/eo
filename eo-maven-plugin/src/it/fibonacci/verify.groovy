@@ -46,7 +46,7 @@ private static boolean online() {
   'target/eo/01-parse/org/eolang/examples/app.xmir',
   'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
   'target/eo/03-optimize/org/eolang/examples/app.xmir',
-  'target/eo/05-pre/org/eolang/examples/app/00-classes.xml',
+  'target/eo/05-pre/org/eolang/examples/app/01-classes.xml',
   'target/eo/06-transpile/org/eolang/examples/app.xmir',
   'target/eo/sodg/org/eolang/error.sodg',
   'target/eo/sodg/org/eolang/error.sodg.xe',

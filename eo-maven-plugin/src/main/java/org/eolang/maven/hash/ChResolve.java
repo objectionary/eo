@@ -29,46 +29,59 @@ import java.nio.file.Path;
  * Resolve {@link CommitHash} depending on the
  * parameters.
  *
- * @since 0.28.11
+ * @since 0.28.14
+ * @todo #1569:30min Now, this class is a configurable. This is not
+ *  a good practice. More technically, encapsulated properties must not
+ *  be used to change the behavior of an object.
+ *  Need to use composable decorators to make this class
+ *  not configurable.
+ * @todo #1569:30min Need to rename this class to a more correct one.
+ *  The correct one name will consist of prefix "Ch" and a noun or
+ *  adjective.
  */
 public final class ChResolve implements CommitHash {
 
     /**
-     * Resolved {@link CommitHash}.
+     * Read hashes from local file.
      */
-    private final CommitHash hash;
+    private final Path file;
+
+    /**
+     * Return hash by pattern.
+     * -DofflineHash=0.*.*:abc2sd3
+     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
+     */
+    private final String hash;
+
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     */
+    private final String tag;
 
     /**
      * Ctor.
      *
-     * @checkstyle ParameterNameCheck (10 lines)
-     * @param offlineHashFile Hash from file
-     * @param offlineHash Hash by pattern
-     * @param tag The Git hash to pull objects from
+     * @param data Hash from file
+     * @param text Hash by pattern
+     * @param label The Git hash to pull objects from
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public ChResolve(final Path offlineHashFile, final String offlineHash, final String tag) {
-        if (offlineHashFile == null && offlineHash == null) {
-            this.hash = new ChCached(new ChRemote(tag));
-        } else if (offlineHash == null) {
-            this.hash = new ChCached(new ChText(offlineHashFile, tag));
-        } else {
-            this.hash = new ChCached(new ChPattern(offlineHash, tag));
-        }
+    public ChResolve(final Path data, final String text, final String label) {
+        this.file = data;
+        this.hash = text;
+        this.tag = label;
     }
 
     @Override
     public String value() {
-        return this.hash.toString();
-    }
-
-    /**
-     * Getter.
-     *
-     * @return Resolved {@link CommitHash}
-     */
-    public CommitHash getCommitHash() {
-        return this.hash;
+        final CommitHash ret;
+        if (this.file == null && this.hash == null) {
+            ret = new ChRemote(this.tag);
+        } else if (this.hash == null) {
+            ret = new ChText(this.file, this.tag);
+        } else {
+            ret = new ChPattern(this.hash, this.tag);
+        }
+        return new ChCached(ret).value();
     }
 
 }

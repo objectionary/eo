@@ -72,11 +72,12 @@ SOFTWARE.
   <xsl:template name="touch">
     <xsl:param name="o"/>
     <xsl:param name="loc"/>
-    <xsl:for-each select="tokenize($loc, '\.')">
+    <xsl:variable name="identifiers" select="tokenize($loc, '\.')"/>
+    <xsl:for-each select="$identifiers">
       <xsl:variable name="p" select="position()"/>
       <xsl:if test="$p &gt; 1">
         <xsl:variable name="kid">
-          <xsl:for-each select="tokenize($loc, '\.')">
+          <xsl:for-each select="$identifiers">
             <xsl:if test="position() &lt;= $p">
               <xsl:if test="position() &gt; 1">
                 <xsl:text>.</xsl:text>
