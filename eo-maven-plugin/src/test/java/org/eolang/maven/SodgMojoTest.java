@@ -287,19 +287,20 @@ final class SodgMojoTest {
                         );
                     }
                     final String data = sub.substring(2);
+                    final String hex = SodgMojoTest.ExistsIn.bytesToHex(
+                        data.getBytes(StandardCharsets.UTF_8)
+                    );
                     final boolean matches = !node.xpath(
                         String.format(
                             "data[text() = '01-%s']/text()",
-                            SodgMojoTest.ExistsIn.bytesToHex(
-                                data.getBytes(StandardCharsets.UTF_8)
-                            )
+                            hex
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s'",
-                                node.xpath("data/text()").get(0), vertex, data
+                                "Lambda '%s' at '%s' is not equal to '%s' (01-%s)",
+                                node.xpath("data/text()").get(0), vertex, data, hex
                             )
                         );
                     }
@@ -333,11 +334,11 @@ final class SodgMojoTest {
          * @return Hexadecimal value as string.
          */
         private static String bytesToHex(final byte... bytes) {
-            final StringJoiner str = new StringJoiner(" ");
+            final StringJoiner out = new StringJoiner("-");
             for (final byte bty : bytes) {
-                str.add(String.format("%02X", bty));
+                out.add(String.format("%02X", bty));
             }
-            return str.toString();
+            return out.toString();
         }
     }
 

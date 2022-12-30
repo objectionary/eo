@@ -30,11 +30,10 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
-import com.yegor256.xsline.FuncChecked;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.StLambda;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
@@ -47,12 +46,13 @@ import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -70,7 +70,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
-import org.eolang.parser.StUnhex;
+import org.eolang.parser.StXPath;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -163,25 +163,19 @@ public final class SodgMojo extends SafeMojo {
                     "/org/eolang/maven/sodg/remove-leveled.xsl"
                 ).back(),
                 new TrDefault<>(
-                    new StLambda(
-                        xml -> {
-                            final Directives dirs = new Directives();
-                            return new HashSet<>(
-                                xml.xpath(
-                                    String.format(
-                                        "//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s')]/text()",
-                                        type
+                    new StEndless(
+                        new StXPath(
+                            "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
+                            xml -> {
+                                final String loc = xml.xpath("@loc").get(0);
+                                return new Directives().attr(
+                                    "lambda",
+                                    SodgMojo.locToHex(
+                                        loc.substring(loc.indexOf('.') + 1)
                                     )
-                                )
-                            );
-                            for (final String hex : StUnhex.matches(xml, "float")) {
-                                final double num = StUnhex.buffer(StUnhex.unspace(hex)).getDouble();
-                                StUnhex.append(dirs, "float", hex, Double.toString(num));
+                                );
                             }
-                            return new XMLDocument(
-                                new Xembler(dirs).applyQuietly(xml.node())
-                            );
-                        }
+                        )
                     )
                 ),
                 new TrLogged(
@@ -475,6 +469,19 @@ public final class SodgMojo extends SafeMojo {
                 sibling.getParent().relativize(sibling)
             );
         }
+    }
+
+    /**
+     * Lambda to HEX.
+     * @param loc The lambda
+     * @return Hexadecimal value as string.
+     */
+    private static String locToHex(final String loc) {
+        final StringJoiner out = new StringJoiner("-");
+        for (final byte bty : loc.getBytes(StandardCharsets.UTF_8)) {
+            out.add(String.format("%02X", bty));
+        }
+        return out.toString();
     }
 
 }

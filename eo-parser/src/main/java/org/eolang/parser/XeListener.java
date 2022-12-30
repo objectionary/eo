@@ -556,10 +556,10 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      * @return Hexadecimal value as string.
      */
     private static String bytesToHex(final byte... bytes) {
-        final StringJoiner str = new StringJoiner(" ");
+        final StringJoiner out = new StringJoiner(" ");
         for (final byte bty : bytes) {
-            str.add(String.format("%02X", bty));
+            out.add(String.format("%02X", bty));
         }
-        return str.toString();
+        return out.toString();
     }
 }

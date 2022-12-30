@@ -35,6 +35,20 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and @atom and not(@base)]" mode="sodg" priority="1">
+    <xsl:if test="not(@lambda)">
+      <xsl:message terminate="yes">
+        <xsl:text>The @lambda is absent at '</xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text>'</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:if test="@lambda = ''">
+      <xsl:message terminate="yes">
+        <xsl:text>The @lambda is empty at '</xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text>'</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'PUT'"/>
       <xsl:with-param name="args" as="item()*">
@@ -44,7 +58,7 @@ SOFTWARE.
         <xsl:sequence>
           <xsl:variable name="data">
             <xsl:text>01-</xsl:text>
-            <xsl:value-of select="substring-after(@loc, '.')"/>
+            <xsl:value-of select="replace(@lambda, ' ', '-')"/>
           </xsl:variable>
           <xsl:value-of select="$data"/>
         </xsl:sequence>
