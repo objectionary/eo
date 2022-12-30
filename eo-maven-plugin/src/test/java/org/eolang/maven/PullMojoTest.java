@@ -24,17 +24,24 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.MnJson;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -42,6 +49,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class PullMojoTest {
 
     /**
@@ -65,6 +73,69 @@ final class PullMojoTest {
             .execute();
         MatcherAssert.assertThat(
             new Home(target).exists(
+                Paths.get(
+                    String.format(
+                        "%s/org/eolang/io/stdout.eo",
+                        PullMojo.DIR
+                    )
+                )
+            ),
+            Matchers.is(new Online().value())
+        );
+    }
+
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    void pullsFromProbes(@TempDir final Path temp) throws IOException {
+        final Input src = new InputOf(
+            new TextOf(
+                new ResourceOf("org/eolang/maven/simple-io.eo")
+            )
+        );
+        final Path program = temp.resolve("program.eo");
+        new Home(temp).save(src, temp.relativize(program));
+        Catalogs.INSTANCE.make(temp.resolve("eo-foreign.json"), "json")
+            .add("foo.src")
+            .set(AssembleMojo.ATTR_SCOPE, "compile")
+            .set(AssembleMojo.ATTR_EO, program.toString());
+        final File target = temp.resolve("target").toFile();
+        final File foreign = temp.resolve("eo-foreign.json").toFile();
+        new Moja<>(ParseMojo.class)
+            .with("targetDir", target)
+            .with("foreign", foreign)
+            .execute();
+        new Moja<>(OptimizeMojo.class)
+            .with("targetDir", target)
+            .with("foreign", foreign)
+            .execute();
+        new Moja<>(DiscoverMojo.class)
+            .with("targetDir", target)
+            .with("foreign", foreign)
+            .execute();
+        new Moja<>(ProbeMojo.class)
+            .with("targetDir", target)
+            .with("foreign", foreign)
+            .with("foreignFormat", "json")
+            .with(
+                "objectionary",
+                new OyRemote(
+                    new ChResolve(null, null, "master")
+                )
+            )
+            .execute();
+        new Moja<>(PullMojo.class)
+            .with("targetDir", target)
+            .with("foreign", foreign)
+            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
+            .with(
+                "objectionary",
+                new OyRemote(
+                    new ChResolve(null, null, "master")
+                )
+            )
+            .execute();
+        MatcherAssert.assertThat(
+            new Home(target.toPath()).exists(
                 Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
