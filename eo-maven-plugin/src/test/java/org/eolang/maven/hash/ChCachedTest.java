@@ -29,7 +29,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link org.eolang.maven.hash.ChCached}.
+ * Test case for {@link ChCached}.
  *
  * @since 0.28.11
  */
