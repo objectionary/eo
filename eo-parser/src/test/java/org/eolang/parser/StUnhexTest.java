@@ -80,6 +80,20 @@ final class StUnhexTest {
     }
 
     @Test
+    void convertsEmptyStringFromHexToEo() {
+        MatcherAssert.assertThat(
+            new Xsline(new StUnhex()).pass(
+                new XMLDocument(
+                    "<p><o base='string' data='bytes'/></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "//o[empty(text()) and @data='string']"
+            )
+        );
+    }
+
+    @Test
     void convertsFloatFromHexToEo() {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(

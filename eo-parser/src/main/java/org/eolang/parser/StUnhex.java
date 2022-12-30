@@ -96,6 +96,10 @@ public final class StUnhex extends StEnvelope {
                                 )
                             )
                         )
+                    ),
+                    new StXPath(
+                        "(//o[@data='bytes' and (@base='string' or @base='org.eolang.string') and empty(text())])[1]",
+                        xml -> new Directives().attr("data", "string")
                     )
                 )
             )
@@ -140,7 +144,7 @@ public final class StUnhex extends StEnvelope {
      */
     private static String xpath(final String type) {
         return String.format(
-            "(//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s')])[1]",
+            "(//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s') and not(empty(text()))])[1]",
             type
         );
     }
