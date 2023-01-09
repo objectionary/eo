@@ -252,7 +252,7 @@ final class SodgMojoTest {
                     }
                     continue;
                 }
-                if (sub.startsWith("Δ=")) {
+                if (sub.startsWith("δ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
@@ -264,7 +264,7 @@ final class SodgMojoTest {
                     final String data = sub.substring(2);
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '00-%s']/text()", data
+                            "data[text() = '%s']/text()", data
                         )
                     ).isEmpty();
                     if (!matches) {
@@ -277,7 +277,7 @@ final class SodgMojoTest {
                     }
                     continue;
                 }
-                if (sub.startsWith("λ=")) {
+                if (sub.startsWith("τ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
@@ -292,14 +292,14 @@ final class SodgMojoTest {
                     );
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '01-%s']/text()",
+                            "data[text() = '%s']/text()",
                             hex
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s' (01-%s)",
+                                "Lambda '%s' at '%s' is not equal to '%s' (%s)",
                                 node.xpath("data/text()").get(0), vertex, data, hex
                             )
                         );
