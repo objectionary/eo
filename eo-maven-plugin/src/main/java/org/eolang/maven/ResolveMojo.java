@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
@@ -174,7 +175,12 @@ public final class ResolveMojo extends SafeMojo {
             this.skipZeroVersions
         );
         if (this.withRuntimeDependency) {
-            deps = new DcsWithRuntime(deps);
+            final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
+            if (runtime.isPresent()) {
+                deps = new DcsWithRuntime(deps, runtime.get());
+            } else {
+                deps = new DcsWithRuntime(deps);
+            }
         }
         if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
@@ -186,7 +192,7 @@ public final class ResolveMojo extends SafeMojo {
                         dep -> !ResolveMojo.eqTo(dep, dependency)
                             && ResolveMojo.isRuntimeRequired(dep)
                             && !("org.eolang".equals(dep.getGroupId())
-                            && "eo-runtime".equals(dep.getArtifactId())),
+                                     && "eo-runtime".equals(dep.getArtifactId())),
                         new DcsDepgraph(
                             this.project,
                             this.session,
@@ -224,6 +230,28 @@ public final class ResolveMojo extends SafeMojo {
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Runtime dependency from pom.xml.
+     *
+     * @return Dependency if found.
+     */
+    private Optional<Dependency> runtimeDependencyFromPom() {
+        final Optional<Dependency> res;
+        if (this.project == null) {
+            res = Optional.empty();
+        } else {
+            res = this.project
+                .getDependencies()
+                .stream()
+                .filter(
+                    dep -> "org.eolang".equals(dep.getGroupId())
+                        && "eo-runtime".equals(dep.getArtifactId())
+                )
+                .findFirst();
+        }
+        return res;
     }
 
     /**
