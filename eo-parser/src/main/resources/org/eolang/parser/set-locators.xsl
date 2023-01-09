@@ -64,12 +64,12 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="starts-with($o/parent::o/@base, '.')">
+            <xsl:when test="starts-with($o/parent::o/@base, '.') and not($o/preceding-sibling::o)">
               <xsl:text>ρ</xsl:text>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>α</xsl:text>
-              <xsl:value-of select="count($o/preceding-sibling::o)"/>
+              <xsl:value-of select="count($o/preceding-sibling::o) - count($o/parent::o[starts-with(@base, '.')])"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
