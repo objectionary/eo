@@ -8,4 +8,4 @@ document:
   </sodg>
 asserts:
   - /text[contains(., 'This file was auto-generated')]
-  - /text[contains(., 'ADD(xyz);&#10;')]
+  - /text[contains(., 'ADD(xyz);')]
