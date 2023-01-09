@@ -50,7 +50,7 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:for-each>
     <xsl:text>);</xsl:text>
-    <xsl:if test="c">
+    <xsl:if test="c and not(empty(c/text()))">
       <xsl:text> # </xsl:text>
       <xsl:value-of select="c"/>
     </xsl:if>
