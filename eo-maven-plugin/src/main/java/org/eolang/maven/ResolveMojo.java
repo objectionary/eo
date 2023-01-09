@@ -196,8 +196,7 @@ public final class ResolveMojo extends SafeMojo {
                     final Iterable<Dependency> transitives = new Filtered<>(
                         dep -> !ResolveMojo.eqTo(dep, dependency)
                             && ResolveMojo.isRuntimeRequired(dep)
-                            && !("org.eolang".equals(dep.getGroupId())
-                                     && "eo-runtime".equals(dep.getArtifactId())),
+                            && !isRuntime(dep),
                         new DcsDepgraph(
                             this.project,
                             this.session,
@@ -250,13 +249,20 @@ public final class ResolveMojo extends SafeMojo {
             res = this.project
                 .getDependencies()
                 .stream()
-                .filter(
-                    dep -> "org.eolang".equals(dep.getGroupId())
-                        && "eo-runtime".equals(dep.getArtifactId())
-                )
+                .filter(ResolveMojo::isRuntime)
                 .findFirst();
         }
         return res;
+    }
+
+    /**
+     * Checks if dependency is runtime.
+     * @param dep Dependency
+     * @return True if runtime.
+     */
+    private static boolean isRuntime(final Dependency dep) {
+        return "org.eolang".equals(dep.getGroupId())
+            && "eo-runtime".equals(dep.getArtifactId());
     }
 
     /**
