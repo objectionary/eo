@@ -44,7 +44,7 @@
               TRUE
       stdout "Finished!"
       i
-    $.equal-to 10
+    $.equal-to 11
 
 [] > goto-jumps-forward
   [x] > div
