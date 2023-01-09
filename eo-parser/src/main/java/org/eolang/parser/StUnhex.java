@@ -23,16 +23,16 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StEndless;
+import com.yegor256.xsline.StEnvelope;
+import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.Locale;
 import org.apache.commons.text.StringEscapeUtils;
+import org.xembly.Directive;
 import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * This {@link Shift} turns hex data inside XMIR
@@ -40,54 +40,67 @@ import org.xembly.Xembler;
  *
  * @since 0.29.0
  */
-public final class StUnhex implements Shift {
-
-    @Override
-    public String uid() {
-        return this.getClass().getSimpleName();
-    }
-
-    @Override
-    public XML apply(final int position, final XML xml) {
-        final Directives dirs = new Directives();
-        for (final String hex : StUnhex.matches(xml, "float")) {
-            final double num = StUnhex.buffer(StUnhex.unspace(hex)).getDouble();
-            StUnhex.append(dirs, "float", hex, Double.toString(num));
-        }
-        for (final String hex : StUnhex.matches(xml, "int")) {
-            final long num = StUnhex.buffer(StUnhex.unspace(hex)).getLong();
-            StUnhex.append(dirs, "int", hex, Long.toString(num));
-        }
-        for (final String hex : StUnhex.matches(xml, "bool")) {
-            final boolean val = !"00".equals(StUnhex.unspace(hex));
-            StUnhex.append(dirs, "bool", hex, Boolean.toString(val).toUpperCase(Locale.ENGLISH));
-        }
-        for (final String hex : StUnhex.matches(xml, "string")) {
-            final String txt = StringEscapeUtils.escapeJava(
-                new String(
-                    StUnhex.buffer(StUnhex.unspace(hex)).array(),
-                    StandardCharsets.UTF_8
-                )
-            );
-            StUnhex.append(dirs, "string", hex, txt);
-        }
-        return new XMLDocument(
-            new Xembler(dirs).applyQuietly(xml.node())
-        );
-    }
+public final class StUnhex extends StEnvelope {
 
     /**
-     * Take all texts by the given type.
-     * @param xml The XML
-     * @param type The type
-     * @return List of values
+     * Ctor.
      */
-    private static Iterable<String> matches(final XML xml, final String type) {
-        return new HashSet<>(
-            xml.xpath(
-                String.format(
-                    "//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s')]/text()",
-                    type
+    public StUnhex() {
+        super(
+            new StEndless(
+                new StSequence(
+                    StUnhex.class.getSimpleName(),
+                    new StXPath(
+                        StUnhex.xpath("float"),
+                        xml -> StUnhex.append(
+                            "float",
+                            Double.toString(
+                                StUnhex.buffer(
+                                    StUnhex.unspace(xml.xpath("text()").get(0))
+                                ).getDouble()
+                            )
+                        )
+                    ),
+                    new StXPath(
+                        StUnhex.xpath("int"),
+                        xml -> StUnhex.append(
+                            "int",
+                            Long.toString(
+                                StUnhex.buffer(
+                                    StUnhex.unspace(xml.xpath("text()").get(0))
+                                ).getLong()
+                            )
+                        )
+                    ),
+                    new StXPath(
+                        StUnhex.xpath("bool"),
+                        xml -> StUnhex.append(
+                            "bool",
+                            Boolean.toString(
+                                !"00".equals(
+                                    StUnhex.unspace(xml.xpath("text()").get(0))
+                                )
+                            ).toUpperCase(Locale.ENGLISH)
+                        )
+                    ),
+                    new StXPath(
+                        StUnhex.xpath("string"),
+                        xml -> StUnhex.append(
+                            "string",
+                            StringEscapeUtils.escapeJava(
+                                new String(
+                                    StUnhex.buffer(
+                                        StUnhex.unspace(xml.xpath("text()").get(0))
+                                    ).array(),
+                                    StandardCharsets.UTF_8
+                                )
+                            )
+                        )
+                    ),
+                    new StXPath(
+                        "(//o[@data='bytes' and (@base='string' or @base='org.eolang.string') and empty(text())])[1]",
+                        xml -> new Directives().attr("data", "string")
+                    )
                 )
             )
         );
@@ -125,21 +138,26 @@ public final class StUnhex implements Shift {
     }
 
     /**
-     * Append Xemply instructions.
-     * @param dirs The directives
+     * Make XPath.
      * @param type The type to match
-     * @param before Value before
-     * @param after Value after
-     * @checkstyle ParameterNumberCheck (4 lines)
+     * @return XPath
      */
-    private static void append(final Directives dirs, final String type,
-        final String before, final String after) {
-        dirs.xpath(
-            String.format(
-                "//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s') and text()='%s']",
-                type, before
-            )
-        ).set(after).attr("data", type);
+    private static String xpath(final String type) {
+        return String.format(
+            "(//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s') and not(empty(text()))])[1]",
+            type
+        );
+    }
+
+    /**
+     * Append Xemply instructions.
+     * @param type The type to match
+     * @param after Value after
+     * @return Dirs
+     */
+    private static Iterable<Directive> append(final String type,
+        final String after) {
+        return new Directives().set(after).attr("data", type);
     }
 }
 

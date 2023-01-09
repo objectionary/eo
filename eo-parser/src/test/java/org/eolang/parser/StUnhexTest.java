@@ -65,10 +65,31 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='string' data='bytes'>41 42 0A 09</o></p>"
+                    String.join(
+                        "",
+                        "<p><o base='string' data='bytes'>41 42 0A 09</o>",
+                        "<o base='string' data='bytes'>41 42</o></p>"
+                    )
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='AB\\n\\t' and @data='string']")
+            XhtmlMatchers.hasXPaths(
+                "//o[text()='AB\\n\\t' and @data='string']",
+                "//o[text()='AB' and @data='string']"
+            )
+        );
+    }
+
+    @Test
+    void convertsEmptyStringFromHexToEo() {
+        MatcherAssert.assertThat(
+            new Xsline(new StUnhex()).pass(
+                new XMLDocument(
+                    "<p><o base='string' data='bytes'/></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "//o[empty(text()) and @data='string']"
+            )
         );
     }
 
@@ -80,7 +101,9 @@ final class StUnhexTest {
                     "<p><o base='org.eolang.float' data='bytes'>41 42 43 67 AE CD 3E FD</o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='2393807.3656386123' and @data='float']")
+            XhtmlMatchers.hasXPaths(
+                "//o[text()='2393807.3656386123' and @data='float']"
+            )
         );
     }
 
@@ -89,10 +112,17 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='bool' data='bytes'>01</o></p>"
+                    String.join(
+                        "",
+                        "<p><o base='bool' data='bytes' name='a'>01</o>",
+                        "<o><o base='bool' data='bytes' name='b'>00</o></o></p>"
+                    )
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='TRUE' and @data='bool']")
+            XhtmlMatchers.hasXPaths(
+                "//o[text()='TRUE' and @data='bool' and @name='a']",
+                "//o[text()='FALSE' and @data='bool' and @name='b']"
+            )
         );
     }
 

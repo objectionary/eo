@@ -45,10 +45,8 @@ SOFTWARE.
         </xsl:sequence>
         <xsl:sequence>
           <xsl:variable name="data">
+            <xsl:text>00-</xsl:text>
             <xsl:value-of select="replace(text(), ' ', '-')"/>
-            <xsl:if test="not(contains(text(), ' '))">
-              <xsl:text>-</xsl:text>
-            </xsl:if>
           </xsl:variable>
           <xsl:value-of select="$data"/>
         </xsl:sequence>

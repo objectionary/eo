@@ -21,43 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.hash;
+package org.eolang.parser;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StEndless;
+import com.yegor256.xsline.Xsline;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.xembly.Directives;
 
 /**
- * Test case for {@link ChNarrow}.
+ * Test case for {@link StXPath}.
  *
- * @since 0.28.11
+ * @since 0.29.0
  */
-class ChNarrowTest {
-
-    @ParameterizedTest
-    @CsvSource({
-        "1234567, 1234567",
-        "12345678, 1234567",
-        "123456789, 1234567",
-        "1, 1"
-    })
-    void cutsHashCorrectly(final String input, final String output) {
-        MatcherAssert.assertThat(
-            new ChNarrow(
-                new CommitHash.ChConstant(input)
-            ).value(),
-            Matchers.equalTo(output)
-        );
-    }
+final class StXPathTest {
 
     @Test
-    void throwsExceptionIfEmpty() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+    void modifiesSimpleNode() {
+        MatcherAssert.assertThat(
+            new Xsline(
+                new StEndless(
+                    new StXPath(
+                        "(//x[@a and not(@b)])[1]",
+                        xml -> new Directives().attr(
+                            "b", xml.xpath("text()").get(0)
+                        )
+                    )
+                )
+            ).pass(new XMLDocument("<p><x a='1'>foo</x><x><x a='2'>bar</x></x></p>")),
+            XhtmlMatchers.hasXPaths(
+                "//x[@b='foo']",
+                "//x[@b='bar']"
+            )
         );
     }
+
 }

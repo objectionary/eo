@@ -26,11 +26,13 @@ package org.eolang.maven;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import org.cactoos.set.SetOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
@@ -262,7 +264,7 @@ final class SodgMojoTest {
                     final String data = sub.substring(2);
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '%s']/text()", data
+                            "data[text() = '00-%s']/text()", data
                         )
                     ).isEmpty();
                     if (!matches) {
@@ -285,16 +287,20 @@ final class SodgMojoTest {
                         );
                     }
                     final String data = sub.substring(2);
+                    final String hex = SodgMojoTest.ExistsIn.bytesToHex(
+                        data.getBytes(StandardCharsets.UTF_8)
+                    );
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '%s']/text()", data
+                            "data[text() = '01-%s']/text()",
+                            hex
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s'",
-                                node.xpath("data/text()").get(0), vertex, data
+                                "Lambda '%s' at '%s' is not equal to '%s' (01-%s)",
+                                node.xpath("data/text()").get(0), vertex, data, hex
                             )
                         );
                     }
@@ -322,6 +328,18 @@ final class SodgMojoTest {
             }
         }
 
+        /**
+         * Bytes to HEX.
+         * @param bytes Bytes.
+         * @return Hexadecimal value as string.
+         */
+        private static String bytesToHex(final byte... bytes) {
+            final StringJoiner out = new StringJoiner("-");
+            for (final byte bty : bytes) {
+                out.add(String.format("%02X", bty));
+            }
+            return out.toString();
+        }
     }
 
 }
