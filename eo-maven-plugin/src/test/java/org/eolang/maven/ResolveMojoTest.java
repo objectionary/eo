@@ -26,6 +26,11 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -113,6 +118,24 @@ final class ResolveMojoTest {
         MatcherAssert.assertThat(
             maven.targetPath(),
             Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+        );
+    }
+
+    @Test
+    void resolvesWithRuntimeDependencyFromPom(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Dependency runtime = new Dependency();
+        runtime.setGroupId("org.eolang");
+        runtime.setArtifactId("eo-runtime");
+        runtime.setVersion("0.7.0");
+        final MavenProject project = new MavenProject();
+        project.setDependencies(Collections.singletonList(runtime));
+        maven.withHelloWorld()
+            .with("project", project)
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-0.7.0.jar")
         );
     }
 

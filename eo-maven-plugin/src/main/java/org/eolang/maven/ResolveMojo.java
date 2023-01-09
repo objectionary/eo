@@ -123,7 +123,7 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             String classifier = dep.getClassifier();
-            if (classifier.isEmpty()) {
+            if (classifier == null || classifier.isEmpty()) {
                 classifier = "-";
             }
             final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
@@ -178,6 +178,11 @@ public final class ResolveMojo extends SafeMojo {
             final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
             if (runtime.isPresent()) {
                 deps = new DcsWithRuntime(deps, runtime.get());
+                Logger.info(
+                    this,
+                    "Runtime dependency added from pom with version: %s",
+                    runtime.get().getVersion()
+                );
             } else {
                 deps = new DcsWithRuntime(deps);
             }
