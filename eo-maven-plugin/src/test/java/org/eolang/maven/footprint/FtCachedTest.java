@@ -60,7 +60,7 @@ final class FtCachedTest {
     }
 
     @Test
-    void returnsListOfSavedFilesWithoutDirectory(@TempDir final Path temp) throws IOException {
+    void returnsListOfSavedFilesFromDelegate(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Footprint footprint = new FtCached(
             UUID.randomUUID().toString(),

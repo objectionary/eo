@@ -25,9 +25,7 @@ package org.eolang.maven.footprint;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Random;
-import java.util.UUID;
+import org.cactoos.Scalar;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -38,30 +36,35 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 1.0
  */
 final class FtDefaultTest {
+
+    /**
+     * Default extension.
+     */
+    private static final String XMIR = "xmir";
+
+    /**
+     * Default content.
+     */
+    private static final Scalar<String> CONTENT = () -> "content";
+
     @Test
     void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
-        final String content = String.join(
-            "\n",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-            "<program>",
-            "</program>"
-        );
-        new FtDefault(temp.resolve("target"))
-            .save("org.eolang.txt.text", "xmir", () -> content);
+        final String program = "org.eolang.txt.text";
+        final Path target = temp.resolve("target");
+        new FtDefault(target).save(program, FtDefaultTest.XMIR, FtDefaultTest.CONTENT);
         MatcherAssert.assertThat(
-            new FtDefault(temp.resolve("target"))
-                .load("org.eolang.txt.text", "xmir"),
-            Matchers.equalTo(content)
+            new FtDefault(target).load(program, FtDefaultTest.XMIR),
+            Matchers.equalTo(FtDefaultTest.CONTENT.value())
         );
     }
 
     @Test
     void returnsListOfSavedFilesWithoutDirectory(@TempDir final Path temp) throws IOException {
         final Footprint footprint = new FtDefault(temp);
-        footprint.save("org.eolang.a", "xmir", () -> UUID.randomUUID().toString());
-        footprint.save("org.eolang.b", "xmir", () -> UUID.randomUUID().toString());
-        footprint.save("org.eolang.c", "o", () -> UUID.randomUUID().toString());
-        footprint.save("org.eolang.dir.sub", "o", () -> UUID.randomUUID().toString());
+        footprint.save("org.eolang.a", FtDefaultTest.XMIR, FtDefaultTest.CONTENT);
+        footprint.save("org.eolang.b", FtDefaultTest.XMIR, FtDefaultTest.CONTENT);
+        footprint.save("org.eolang.c", "o", FtDefaultTest.CONTENT);
+        footprint.save("org.eolang.dir.sub", "o", FtDefaultTest.CONTENT);
         final Path subfolder = temp.resolve("org").resolve("eolang");
         MatcherAssert.assertThat(
             footprint.list("xmir"),
