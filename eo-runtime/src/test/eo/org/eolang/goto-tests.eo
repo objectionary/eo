@@ -42,9 +42,11 @@
               i.lt 10
               g.backward
               TRUE
+      .@
+      .<
       stdout "Finished!"
       i
-    $.equal-to 11
+    $.equal-to 10
 
 [] > goto-jumps-forward
   [x] > div
