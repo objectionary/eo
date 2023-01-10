@@ -56,6 +56,8 @@ import org.eolang.maven.util.Rel;
  *
  * @since 0.28.11
  * @checkstyle CyclomaticComplexityCheck (300 lines)
+ * @todo #1395:30min Need to add the logic of "hasReservedChars" method to
+ *  "add-probes.xsl". After that, the method in this class need to be removed.
  */
 @Mojo(
     name = "probe",
@@ -134,7 +136,7 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<String> probed = new HashSet<>(1);
         for (final Tojo tojo : tojos) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-            final Collection<String> names = this.probe(src);
+            final Collection<String> names = this.probes(src);
             int count = 0;
             for (final String name : names) {
                 if (!this.objectionary.contains(name)) {
@@ -145,7 +147,7 @@ public final class ProbeMojo extends SafeMojo {
                 if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
                     ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
                 }
-                ftojo.set(AssembleMojo.ATTR_PROBED_AT, src);
+                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
                 probed.add(name);
             }
             tojo.set(AssembleMojo.ATTR_HASH, new ChNarrow(hash).value());
@@ -177,7 +179,7 @@ public final class ProbeMojo extends SafeMojo {
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<String> probe(final Path file)
+    private Collection<String> probes(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
         final Collection<String> probed = new TreeSet<>(

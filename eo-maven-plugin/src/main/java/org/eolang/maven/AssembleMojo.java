@@ -97,11 +97,6 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_PROBED = "probed";
 
     /**
-     * Where this object was probed.
-     */
-    public static final String ATTR_PROBED_AT = "probed-at";
-
-    /**
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
