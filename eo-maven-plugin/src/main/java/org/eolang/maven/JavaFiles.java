@@ -32,7 +32,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
+import org.cactoos.Text;
 import org.cactoos.text.Joined;
+import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 
@@ -71,9 +73,8 @@ final class JavaFiles {
     public List<Path> save() throws IOException {
         final Collection<XML> nodes = new XMLDocument(this.source)
             .nodes("//class[java and not(@atom)]");
-        final List<Path> files = new ArrayList<>(0);
         for (final XML java : nodes) {
-            files.add(this.saveJava(java));
+            this.saveJava(java);
         }
         if (nodes.isEmpty()) {
             Logger.debug(
@@ -86,7 +87,7 @@ final class JavaFiles {
                 nodes.size(), new Rel(this.source), new Rel(this.dest)
             );
         }
-        return files;
+        return new FtDefault(this.dest).paths("java");
     }
 
     /**
@@ -95,13 +96,11 @@ final class JavaFiles {
      * @return Path to generated file
      * @throws IOException If fails
      */
-    private Path saveJava(final XML java) throws IOException {
-        final String type = java.xpath("@java-name").get(0);
-        final Path path = new Place(type).make(this.dest, "java");
-        new Home(this.dest).save(
-            new Joined("", java.xpath("java/text()")),
-            this.dest.relativize(path)
+    private void saveJava(final XML java) throws IOException {
+        new FtDefault(this.dest).save(
+            java.xpath("@java-name").get(0),
+            "java",
+            new Joined("", java.xpath("java/text()"))::asString
         );
-        return path;
     }
 }

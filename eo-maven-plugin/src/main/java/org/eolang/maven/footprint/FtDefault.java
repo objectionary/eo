@@ -24,7 +24,11 @@
 package org.eolang.maven.footprint;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -35,7 +39,7 @@ import org.eolang.maven.util.Home;
 /**
  * Default implementation of a Footprint.
  * Program footprint of EO compilation process.
- * <p/>The footprint consists of file in {@link #main} folder
+ * <p>The footprint consists of file in {@link #main} folder</p>
  * @since 1.0
  */
 public final class FtDefault implements Footprint {
@@ -69,5 +73,19 @@ public final class FtDefault implements Footprint {
             new IoChecked<>(content).value(),
             this.main.relativize(new Place(program).make(this.main, ext))
         );
+    }
+
+    @Override
+    public List<Path> paths(final String ext) throws IOException {
+        final List<Path> res;
+        if (Files.exists(this.main)) {
+            res = Files.walk(this.main)
+                .filter(path -> path.toString().endsWith(ext))
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+        } else {
+            res = Collections.emptyList();
+        }
+        return res;
     }
 }

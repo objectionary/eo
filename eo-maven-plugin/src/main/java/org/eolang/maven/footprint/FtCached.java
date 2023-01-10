@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -37,7 +38,7 @@ import org.eolang.maven.util.Home;
 
 /**
  * Program footprint of EO compilation process.
- * <p/>The footprint optionally cached in {@link #cache} folder.
+ * <p>The footprint optionally cached in {@link #cache} folder.</p>
  * Caching is applied if {@link #hash} is not empty otherwise caching is ignored.
  *
  * @since 1.0
@@ -101,6 +102,11 @@ public final class FtCached implements Footprint {
             new Home(this.cache).save(text, this.path(program, ext));
         }
         this.origin.save(program, ext, () -> text);
+    }
+
+    @Override
+    public List<Path> paths(final String ext) throws IOException {
+        return this.origin.paths(ext);
     }
 
     /**
