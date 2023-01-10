@@ -48,8 +48,8 @@ final class FtDefaultTest {
     private static final Scalar<String> CONTENT = () -> "content";
 
     @Test
-    void testContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
-        final String program = "org.eolang.txt.text";
+    void loadsContentOfNoCacheFile(@TempDir final Path temp) throws Exception {
+        final String program = "org.eolang.txt";
         final Path target = temp.resolve("target");
         new FtDefault(target).save(program, FtDefaultTest.XMIR, FtDefaultTest.CONTENT);
         MatcherAssert.assertThat(

@@ -25,7 +25,7 @@ package org.eolang.maven.footprint;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.UUID;
+import org.cactoos.Scalar;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,26 +36,22 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 1.0
  */
 final class FtCachedTest {
+
+    /**
+     * Default content.
+     */
+    private static final Scalar<String> CONTENT = () -> "content";
+
     @Test
-    void testContentOfCachedFile(@TempDir final Path temp) throws Exception {
-        final String content = String.join(
-            "\n",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-            "<program>",
-            "</program>"
-        );
-        new FtCached(
-            "abcde123",
-            temp.resolve("parsed"),
-            new FtDefault(temp.resolve("target"))
-        ).save("org.eolang.txt.text", "xmir", () -> content);
+    void loadsContentOfCachedFile(@TempDir final Path temp) throws Exception {
+        final Path target = temp.resolve("target");
+        final Path parsed = temp.resolve("parsed");
+        final Footprint cached = new FtCached("abcde123", parsed, new FtDefault(target));
+        final String program = "org.eolang.txt.format";
+        cached.save(program, "xmir", FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
-            new FtCached(
-                "abcde123",
-                temp.resolve("parsed"),
-                new FtDefault(temp.resolve("target"))
-            ).load("org.eolang.txt.text", "xmir"),
-            Matchers.equalTo(content)
+            cached.load(program, "xmir"),
+            Matchers.equalTo(FtCachedTest.CONTENT.value())
         );
     }
 
@@ -63,11 +59,11 @@ final class FtCachedTest {
     void returnsListOfSavedFilesFromDelegate(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Footprint footprint = new FtCached(
-            UUID.randomUUID().toString(),
+            "abcde123",
             temp.resolve("parsed"),
             new FtDefault(target)
         );
-        footprint.save("prog", "xmir", () -> "content");
+        footprint.save("prog", "xmir", FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
             footprint.list("xmir"),
             Matchers.hasItem(target.resolve("prog.xmir"))
