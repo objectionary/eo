@@ -31,6 +31,8 @@ import java.io.PrintStream;
  * convenient for debugging).
  *
  * @since 0.24
+ * @todo #1617:30min Use logger instead of System.out.println. It's much better to use standard
+ *  logger in that class. Examples of using logger are inside {@link PhDefault} or {@link Dataized}.
  */
 final class AtLogged implements Attr {
 
