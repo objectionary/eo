@@ -63,13 +63,13 @@ public class EOgoto extends PhDefault {
                     Phi ret;
                     while (true) {
                         try {
-                            ret = new Data.ToPhi(new Dataized(body).take());
+                            ret = body;
+                            new Dataized(body).take();
                             break;
                         } catch (final EOgoto.BackwardException ex) {
                             if (!ex.sigma.attr("σ").get().equals(rho)) {
                                 throw ex;
                             }
-                            ret = new Data.ToPhi(true);
                         } catch (final EOgoto.ForwardException ex) {
                             if (!ex.sigma.attr("σ").get().equals(rho)) {
                                 throw ex;

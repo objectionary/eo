@@ -31,6 +31,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.footprint.FtCached;
+import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.hamcrest.MatcherAssert;
@@ -85,8 +86,8 @@ final class ParseMojoTest {
         final String hash = new ChNarrow(new ChRemote("0.25.0")).value();
         new FtCached(
             hash,
-            maven.targetPath(),
-            cache.resolve(ParseMojo.PARSED)
+            cache.resolve(ParseMojo.PARSED),
+            new FtDefault(maven.targetPath())
         ).save("foo.x.main", "xmir", () -> expected);
         MatcherAssert.assertThat(
             new TextOf(

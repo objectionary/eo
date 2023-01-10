@@ -64,13 +64,28 @@ final class DcsWithRuntime implements Iterable<Dependency> {
     }
 
     /**
+     * Constructor.
+     *
+     * @param dlg Dependencies delegate.
+     * @param sup Dependency.
+     */
+    DcsWithRuntime(
+        final Iterable<Dependency> dlg,
+        final Dependency sup
+    ) {
+        this(dlg, new Unchecked<>(() -> sup));
+    }
+
+    /**
      * The main constructor.
      *
      * @param dlg Dependencies delegate.
      * @param sup Supplier of the eo-runtime dependency.
      */
-    DcsWithRuntime(final Iterable<Dependency> dlg,
-        final Unchecked<Dependency> sup) {
+    DcsWithRuntime(
+        final Iterable<Dependency> dlg,
+        final Unchecked<Dependency> sup
+    ) {
         this.delegate = dlg;
         this.supplied = sup;
     }
