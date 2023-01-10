@@ -24,13 +24,15 @@
 
 package org.eolang;
 
+import java.io.PrintStream;
+
 /**
  * An attribute that logs all its operations to the console (very
  * convenient for debugging).
  *
  * @since 0.24
- * @todo #1614:30min This class don't have enough tests. We need to add more, at least for
- *  the next methods: toString(), φTerm(), copy(), put(), get().
+ * @todo #1617:30min Use logger instead of System.out.println. It's much better to use standard
+ *  logger in that class. Examples of using logger are inside {@link PhDefault} or {@link Dataized}.
  */
 final class AtLogged implements Attr {
 
@@ -45,13 +47,29 @@ final class AtLogged implements Attr {
     private final String owner;
 
     /**
+     * Output stream.
+     */
+    private final PrintStream out;
+
+    /**
      * Ctor.
      * @param attr Attribute
      * @param label Label
      */
     AtLogged(final Attr attr, final String label) {
+        this(attr, label, System.out);
+    }
+
+    /**
+     * Ctor.
+     * @param attr Attribute
+     * @param label Label
+     * @param stream Output stream
+     */
+    AtLogged(final Attr attr, final String label, final PrintStream stream) {
         this.origin = attr;
         this.owner = label;
+        this.out = stream;
     }
 
     @Override
@@ -66,25 +84,24 @@ final class AtLogged implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        System.out.printf("  %s.copy()...\n", this.owner);
+        this.out.printf("  %s.copy()...\n", this.owner);
         final Attr ret = this.origin.copy(self);
-        System.out.printf("  %s.copy()!\n", this.owner);
+        this.out.printf("  %s.copy()!\n", this.owner);
         return ret;
     }
 
     @Override
     public Phi get() {
-        System.out.printf("  %s.get()...\n", this.owner);
+        this.out.printf("  %s.get()...\n", this.owner);
         final Phi ret = this.origin.get();
-        System.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
+        this.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
         return ret;
     }
 
     @Override
     public void put(final Phi src) {
-        System.out.printf("  %s.put()...\n", this.owner);
+        this.out.printf("  %s.put()...\n", this.owner);
         this.origin.put(src);
-        System.out.printf("  %s.put()!\n", this.owner);
+        this.out.printf("  %s.put()!\n", this.owner);
     }
-
 }
