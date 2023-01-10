@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 import org.cactoos.text.Joined;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
@@ -68,18 +69,18 @@ final class JavaFiles {
      * @throws IOException In case issues with I/O
      */
     public List<Path> save() throws IOException {
+        final Collection<XML> nodes = new XMLDocument(this.source)
+            .nodes("//class[java and not(@atom)]");
         final List<Path> files = new ArrayList<>(0);
-        final XML xml = new XMLDocument(this.source);
-        final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
+        for (final XML java : nodes) {
+            files.add(this.saveJava(java));
+        }
         if (nodes.isEmpty()) {
             Logger.debug(
                 this, "No .java files generated from %s",
                 new Rel(this.source)
             );
         } else {
-            for (final XML java : nodes) {
-                files.add(JavaFiles.saveJava(java, this.dest));
-            }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
                 nodes.size(), new Rel(this.source), new Rel(this.dest)
@@ -91,17 +92,16 @@ final class JavaFiles {
     /**
      * Save this Java file.
      * @param java The XML with Java
-     * @param generated Path to all files
      * @return Path to generated file
      * @throws IOException If fails
      */
-    private static Path saveJava(final XML java, final Path generated) throws IOException {
+    private Path saveJava(final XML java) throws IOException {
         final String type = java.xpath("@java-name").get(0);
-        final Path dest = new Place(type).make(generated, "java");
-        new Home(generated).save(
+        final Path path = new Place(type).make(this.dest, "java");
+        new Home(this.dest).save(
             new Joined("", java.xpath("java/text()")),
-            generated.relativize(dest)
+            this.dest.relativize(path)
         );
-        return dest;
+        return path;
     }
 }
