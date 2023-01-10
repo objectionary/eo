@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.io.PrintStream;
+
 /**
  * An attribute that logs all its operations to the console (very
  * convenient for debugging).
@@ -44,14 +46,28 @@ final class AtLogged implements Attr {
      */
     private final String owner;
 
+
+    private final PrintStream out;
+
     /**
      * Ctor.
      * @param attr Attribute
      * @param label Label
      */
     AtLogged(final Attr attr, final String label) {
+        this(attr, label, System.out);
+    }
+
+    /**
+     * Ctor.
+     * @param attr Attribute
+     * @param label Label
+     * @param out Output stream
+     */
+    AtLogged(final Attr attr, final String label, PrintStream out) {
         this.origin = attr;
         this.owner = label;
+        this.out = out;
     }
 
     @Override
@@ -66,25 +82,25 @@ final class AtLogged implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        System.out.printf("  %s.copy()...\n", this.owner);
+        this.out.printf("  %s.copy()...\n", this.owner);
         final Attr ret = this.origin.copy(self);
-        System.out.printf("  %s.copy()!\n", this.owner);
+        this.out.printf("  %s.copy()!\n", this.owner);
         return ret;
     }
 
     @Override
     public Phi get() {
-        System.out.printf("  %s.get()...\n", this.owner);
+        this.out.printf("  %s.get()...\n", this.owner);
         final Phi ret = this.origin.get();
-        System.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
+        this.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
         return ret;
     }
 
     @Override
     public void put(final Phi src) {
-        System.out.printf("  %s.put()...\n", this.owner);
+        this.out.printf("  %s.put()...\n", this.owner);
         this.origin.put(src);
-        System.out.printf("  %s.put()!\n", this.owner);
+        this.out.printf("  %s.put()!\n", this.owner);
     }
 
 }
