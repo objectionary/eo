@@ -44,7 +44,9 @@ final class AtLogged implements Attr {
      */
     private final String owner;
 
-
+    /**
+     * Output stream.
+     */
     private final PrintStream out;
 
     /**
@@ -60,12 +62,12 @@ final class AtLogged implements Attr {
      * Ctor.
      * @param attr Attribute
      * @param label Label
-     * @param out Output stream
+     * @param stream Output stream
      */
-    AtLogged(final Attr attr, final String label, PrintStream out) {
+    AtLogged(final Attr attr, final String label, final PrintStream stream) {
         this.origin = attr;
         this.owner = label;
-        this.out = out;
+        this.out = stream;
     }
 
     @Override
@@ -100,5 +102,4 @@ final class AtLogged implements Attr {
         this.origin.put(src);
         this.out.printf("  %s.put()!\n", this.owner);
     }
-
 }
