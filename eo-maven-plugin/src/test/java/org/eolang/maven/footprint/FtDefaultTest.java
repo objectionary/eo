@@ -23,7 +23,11 @@
  */
 package org.eolang.maven.footprint;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Random;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -48,6 +52,34 @@ final class FtDefaultTest {
             new FtDefault(temp.resolve("target"))
                 .load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
+        );
+    }
+
+    @Test
+    void returnsListOfSavedFilesWithoutDirectory(@TempDir final Path temp) throws IOException {
+        final Footprint footprint = new FtDefault(temp);
+        footprint.save("org.eolang.a", "xmir", () -> UUID.randomUUID().toString());
+        footprint.save("org.eolang.b", "xmir", () -> UUID.randomUUID().toString());
+        footprint.save("org.eolang.c", "o", () -> UUID.randomUUID().toString());
+        footprint.save("org.eolang.dir.sub", "o", () -> UUID.randomUUID().toString());
+        final Path subfolder = temp.resolve("org").resolve("eolang");
+        MatcherAssert.assertThat(
+            footprint.list("xmir"),
+            Matchers.containsInAnyOrder(
+                subfolder.resolve("a.xmir"),
+                subfolder.resolve("b.xmir")
+            )
+        );
+        MatcherAssert.assertThat(
+            footprint.list("o"),
+            Matchers.containsInAnyOrder(
+                subfolder.resolve("c.o"),
+                subfolder.resolve("dir").resolve("sub.o")
+            )
+        );
+        MatcherAssert.assertThat(
+            footprint.list("dir"),
+            Matchers.empty()
         );
     }
 }
