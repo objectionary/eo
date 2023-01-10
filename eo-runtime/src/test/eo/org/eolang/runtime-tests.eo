@@ -141,6 +141,14 @@
       45-1F-E7.<.eq (45-1F-E7.<)
     $.equal-to TRUE
 
+[] > take-vertex-as-vertical-attribute
+  assert-that > @
+    eq.
+      <.
+        42
+      42.<
+    $.equal-to TRUE
+
 [] > negative-object-vertices
   [x] > a
   assert-that > @

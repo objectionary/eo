@@ -25,6 +25,7 @@ package org.eolang.maven.objectionary;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
@@ -69,6 +70,13 @@ public final class OyRemote implements Objectionary {
             name, url
         );
         return new InputOf(url);
+    }
+
+    @Override
+    public boolean contains(final String name) throws IOException {
+        final int code = ((HttpURLConnection) this.template.value(name).openConnection())
+            .getResponseCode();
+        return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
     /**

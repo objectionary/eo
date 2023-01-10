@@ -62,8 +62,8 @@ public class EOtry extends PhDefault {
                     body.attr("ρ").put(rho);
                     Phi ret;
                     try {
-                        new Dataized(body).take();
                         ret = body;
+                        new Dataized(body).take();
                     } catch (final EOerror.ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
                         ctch.attr("ρ").put(rho);

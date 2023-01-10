@@ -193,6 +193,19 @@
           x
     $.equal-to 3
 
+[] > while-without-last-dataization
+  memory 0 > x
+  assert-that > @
+    seq
+      while.
+        x.lt 2
+        [i]
+          x.write (x.plus 1) > @
+      .@
+      .<
+      x
+    $.equal-to 2
+
 [] > last-while-dataization-object-with-false-condition
   memory 3 > x
   assert-that > @

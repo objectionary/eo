@@ -36,7 +36,7 @@ SOFTWARE.
   <xsl:template match="/sodg">
     <xsl:element name="xembly">
       <xsl:call-template name="license-xe"/>
-      <xsl:text>ADD "graph"; ADD "v"; ATTR "id", "ν0";</xsl:text>
+      <xsl:text>ADD "graph";</xsl:text>
       <xsl:value-of select="$EOL"/>
       <xsl:apply-templates select="i"/>
     </xsl:element>

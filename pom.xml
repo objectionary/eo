@@ -124,31 +124,31 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.19.0</version>
+        <version>0.20.0</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -176,7 +176,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.26.0</version>
+        <version>0.27.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -240,7 +240,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.13</version>
+            <version>3.0.14</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -269,7 +269,7 @@ SOFTWARE.
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.8.1</version>
           <configuration combine.self="override">
             <source>8</source>
             <target>8</target>

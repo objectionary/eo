@@ -105,14 +105,34 @@ final class PlaceMojoTest {
     void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            maven.withHelloWorld()
+            maven
+                .withHelloWorld()
                 .execute(new FakeMaven.Place())
-                .result().get("target/classes"),
+                .result()
+                .get("target/classes"),
             new ContainsFile("**/eo-runtime-*.jar")
         );
         MatcherAssert.assertThat(
             maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        MatcherAssert.assertThat(
+            maven
+                .withHelloWorld()
+                .with("withRuntimeDependency", false)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+        );
+        MatcherAssert.assertThat(
+            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
+            Matchers.equalTo(0)
         );
     }
 

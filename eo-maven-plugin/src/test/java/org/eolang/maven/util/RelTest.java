@@ -21,55 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyFallback;
-import org.eolang.maven.objectionary.OyHome;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test for {@link OyFallback}.
+ * Test case for {@link Rel}.
  *
- * @since 1.0
+ * @since 0.28.11
  */
-final class OyFallbackTest {
+class RelTest {
+
+    @ParameterizedTest
+    @CsvSource({
+        "'file.txt', './file.txt'",
+        "'dir/file.txt', './dir/file.txt'",
+        "'long/path/to/file.txt', './long/path/to/file.txt'",
+        "'../file.txt', './../file.txt'",
+        "'./file.txt', '././file.txt'"
+    })
+    void returnsRelativePathOfCurrentWorkingDirectory(
+        final String file,
+        final String expected,
+        @TempDir final Path temp
+    ) {
+        MatcherAssert.assertThat(
+            new Rel(temp, temp.resolve(file)).toString(),
+            Matchers.is(Paths.get(expected).toString())
+        );
+    }
 
     @Test
-    void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
-        final AtomicInteger counter = new AtomicInteger();
-        final String branch = "master";
-        final Objectionary objectionary = new OyFallback(
-            new OyHome(branch, path),
-            new OyCaching(
-                branch,
-                path,
-                name -> {
-                    counter.incrementAndGet();
-                    return new InputOf("[] > main\n");
-                }
-            )
-        );
-        final String object = "org.example.main";
-        Assertions.assertNotNull(
-            new TextOf(objectionary.get(object)).asString()
-        );
-        Assertions.assertTrue(
-            path.resolve("pulled/master/org/example/main.eo").toFile().exists()
-        );
-        Assertions.assertNotNull(objectionary.get(object));
+    void returnsAbsolutePathIfBaseAndOtherFromDifferentHierarchies() {
         MatcherAssert.assertThat(
-            counter.get(),
-            Matchers.is(1)
+            new Rel(
+                Paths.get("/a/b/c"),
+                Paths.get("/d/e/f")
+            ).toString(),
+            Matchers.is(Paths.get("/d/e/f").toAbsolutePath().toString())
         );
     }
 }

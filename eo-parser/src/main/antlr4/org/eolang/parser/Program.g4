@@ -188,7 +188,11 @@ head
     NAME
     COPY?
     |
-    NAME
+    (
+      NAME
+      |
+      VERTEX
+    )
     DOT
     |
     data

@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2022 Objectionary.com
@@ -21,33 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.list.ListOf;
-import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Walk;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.stream.Collectors
 
-/**
- * Test case for {@link Walk}.
- *
- * @since 0.11
- */
-final class WalkTest {
-
-    @Test
-    void findsFiles(@TempDir final Path temp) throws Exception {
-        new Home(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
-        new Home(temp).save("", Paths.get("EOxxx/bar"));
-        MatcherAssert.assertThat(
-            new Walk(temp).includes(new ListOf<>("EO**/*")),
-            Matchers.iterableWithSize(1)
-        );
-    }
-
+println 'Verify that all java classes were compiled successfully'
+Path binaries = basedir.toPath()
+  .resolve("target")
+  .resolve("classes")
+  .resolve("org")
+  .resolve("eolang");
+Path classes = basedir.toPath()
+  .resolve("src")
+  .resolve("main")
+  .resolve("java")
+  .resolve("org")
+  .resolve("eolang");
+Set<String> expected = Files.walk(classes)
+  .filter(it -> {
+    it.toString().endsWith(".java")
+  })
+  .map(Path::getFileName)
+  .map(Path::toString)
+  .map(it -> {
+    return it.replace(".java", ".class")
+  }).collect(Collectors.toSet())
+Set<String> actual = Files.walk(binaries)
+  .filter(it -> {
+    it.toString().endsWith(".class")
+  })
+  .map(Path::getFileName)
+  .map(Path::toString)
+  .collect(Collectors.toSet())
+if (!actual.containsAll(expected)) {
+  throw new IllegalStateException(
+    String.format(
+      "Not all classes are compiled\nExpected %s\nActual %s",
+      expected,
+      actual
+    )
+  )
 }

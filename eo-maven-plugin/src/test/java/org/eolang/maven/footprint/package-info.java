@@ -21,44 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.eolang.maven.objectionary.OyRemote;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test for {@link OyRemote}.
- *
- * @since 1.0
+ * Footprint tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.footprint.Footprint}.
  */
-final class OyRemoteTest {
-
-    @Test
-    void buildsCorrectUrl() throws Exception {
-        MatcherAssert.assertThat(
-            new OyRemote.UrlOy(
-                "https://raw/objectionary/home/%s/objects/%s.eo",
-                "abcde"
-            ).value("org.eolang.app"),
-            Matchers.is(
-                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
-            )
-        );
-    }
-
-    @Test
-    void throwsExceptionOnInvalidUrl() {
-        Assertions.assertThrows(
-            MalformedURLException.class,
-            () -> new OyRemote.UrlOy(
-                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-                "abcde"
-            ).value("org.eolang.app")
-        );
-    }
-}
+package org.eolang.maven.footprint;

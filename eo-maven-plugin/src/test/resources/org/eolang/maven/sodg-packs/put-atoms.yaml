@@ -3,10 +3,13 @@ sheets:
 document:
   <program>
     <objects loc="Φ">
-      <o name="x" atom="" loc="Φ.a.b.x"/>
+      <o name="x" atom="" loc="Φ.a.b.x" lambda='01-02-03'/>
     </objects>
     <sodg/>
   </program>
 asserts:
-  - //sodg[count(i)=1]
-  - //i[@name='PUT' and a='$Φ.a.b.x' and a='a.b.x']
+  - //sodg[count(i)=4]
+  - //i[@name='ADD' and a='$Φ.a.b.x.λ']
+  - //i[@name='BIND' and a='$Φ.a.b.x' and a='$Φ.a.b.x.λ' and a='λ']
+  - //i[@name='BIND' and a='$Φ.a.b.x.λ' and a='$Φ.a.b.x' and a='ρ']
+  - //i[@name='PUT' and a='$Φ.a.b.x.λ' and a='01-02-03']

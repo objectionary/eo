@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.footprint.FtCached;
+import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.hamcrest.MatcherAssert;
@@ -84,8 +86,8 @@ final class ParseMojoTest {
         final String hash = new ChNarrow(new ChRemote("0.25.0")).value();
         new FtCached(
             hash,
-            maven.targetPath(),
-            cache.resolve(ParseMojo.PARSED)
+            cache.resolve(ParseMojo.PARSED),
+            new FtDefault(maven.targetPath())
         ).save("foo.x.main", "xmir", () -> expected);
         MatcherAssert.assertThat(
             new TextOf(
@@ -126,6 +128,26 @@ final class ParseMojoTest {
                     String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
                 )
             )
+        );
+    }
+
+    @Test
+    void doesNotParseIfAlreadyParsed(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Map<String, Path> result = maven
+            .withHelloWorld()
+            .execute(new FakeMaven.Parse())
+            .result();
+        final File parsed = result.get(
+            String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+        ).toFile();
+        final long before = parsed.lastModified();
+        maven.execute(ParseMojo.class);
+        final long after = parsed.lastModified();
+        MatcherAssert.assertThat(
+            "File was modified",
+            before,
+            Matchers.equalTo(after)
         );
     }
 

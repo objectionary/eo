@@ -21,44 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.parser;
 
-import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.objectionary.OyHome;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StEndless;
+import com.yegor256.xsline.Xsline;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.xembly.Directives;
 
 /**
- * Test for {@link OyHome}.
+ * Test case for {@link StXPath}.
  *
- * @since 1.0
+ * @since 0.29.0
  */
-final class OyLocalTest {
+final class StXPathTest {
 
     @Test
-    void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
-        final String content = "[] > main\n";
-        new LengthOf(
-            new TeeInput(
-                new InputOf(content),
-                new OutputTo(
-                    path.resolve("pulled/master/org/example/main.eo")
-                )
-            )
-        ).value();
+    void modifiesSimpleNode() {
         MatcherAssert.assertThat(
-            new TextOf(
-                new OyHome("master", path)
-                    .get("org.example.main")
-            ).asString(),
-            Matchers.is(content)
+            new Xsline(
+                new StEndless(
+                    new StXPath(
+                        "(//x[@a and not(@b)])[1]",
+                        xml -> new Directives().attr(
+                            "b", xml.xpath("text()").get(0)
+                        )
+                    )
+                )
+            ).pass(new XMLDocument("<p><x a='1'>foo</x><x><x a='2'>bar</x></x></p>")),
+            XhtmlMatchers.hasXPaths(
+                "//x[@b='foo']",
+                "//x[@b='bar']"
+            )
         );
     }
+
 }

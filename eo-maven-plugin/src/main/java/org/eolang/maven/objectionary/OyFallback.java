@@ -57,14 +57,6 @@ public final class OyFallback implements Objectionary {
     }
 
     @Override
-    public String toString() {
-        return String.format(
-            "[%s]+[fallback to %s]",
-            this.first, this.second
-        );
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public Input get(final String name) throws IOException {
         return new IoCheckedFunc<>(
@@ -76,5 +68,19 @@ public final class OyFallback implements Objectionary {
                 )
             )
         ).apply(name);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean contains(final String name) throws IOException {
+        return this.first.contains(name) || this.second.contains(name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "[%s]+[fallback to %s]",
+            this.first, this.second
+        );
     }
 }

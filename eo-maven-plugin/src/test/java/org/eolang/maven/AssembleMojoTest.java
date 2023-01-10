@@ -25,9 +25,7 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
@@ -73,9 +71,7 @@ final class AssembleMojoTest {
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
-                )
+                new OyFake()
             )
             .execute();
         MatcherAssert.assertThat(
@@ -134,9 +130,7 @@ final class AssembleMojoTest {
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
-                )
+                new OyFake()
             )
             .execute();
         MatcherAssert.assertThat(
@@ -162,4 +156,5 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
     }
+
 }

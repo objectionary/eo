@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
@@ -100,6 +101,15 @@ public final class ResolveMojo extends SafeMojo {
     private boolean ignoreTransitive;
 
     /**
+     * Add eo-runtime dependency to the classpath.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    private boolean withRuntimeDependency = true;
+
+    /**
      * The central.
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -113,7 +123,7 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             String classifier = dep.getClassifier();
-            if (classifier.isEmpty()) {
+            if (classifier == null || classifier.isEmpty()) {
                 classifier = "-";
             }
             final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
@@ -153,15 +163,30 @@ public final class ResolveMojo extends SafeMojo {
      * Find all deps for all Tojos.
      *
      * @return List of them
+     * @todo #1595:30 Make method 'deps' testable. For now it's not possible to test
+     *  'ignoreTransitive=false' branch because it's hard to mock all required fields.
+     *  Maybe we should provide a chance to mock all dependencies related to maven or
+     *  even extract new classes.
      */
     private Collection<Dependency> deps() {
-        Iterable<Dependency> deps = new DcsWithRuntime(
-            new DcsDefault(
-                this.scopedTojos(),
-                this.discoverSelf,
-                this.skipZeroVersions
-            )
+        Iterable<Dependency> deps = new DcsDefault(
+            this.scopedTojos(),
+            this.discoverSelf,
+            this.skipZeroVersions
         );
+        if (this.withRuntimeDependency) {
+            final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
+            if (runtime.isPresent()) {
+                deps = new DcsWithRuntime(deps, runtime.get());
+                Logger.info(
+                    this,
+                    "Runtime dependency added from pom with version: %s",
+                    runtime.get().getVersion()
+                );
+            } else {
+                deps = new DcsWithRuntime(deps);
+            }
+        }
         if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
         }
@@ -170,9 +195,8 @@ public final class ResolveMojo extends SafeMojo {
                 dependency -> {
                     final Iterable<Dependency> transitives = new Filtered<>(
                         dep -> !ResolveMojo.eqTo(dep, dependency)
-                            && !dep.getScope().contains("test")
-                            && !("org.eolang".equals(dep.getGroupId())
-                            && "eo-runtime".equals(dep.getArtifactId())),
+                            && ResolveMojo.isRuntimeRequired(dep)
+                            && !isRuntime(dep),
                         new DcsDepgraph(
                             this.project,
                             this.session,
@@ -210,6 +234,47 @@ public final class ResolveMojo extends SafeMojo {
             .distinct()
             .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Runtime dependency from pom.xml.
+     *
+     * @return Dependency if found.
+     */
+    private Optional<Dependency> runtimeDependencyFromPom() {
+        final Optional<Dependency> res;
+        if (this.project == null) {
+            res = Optional.empty();
+        } else {
+            res = this.project
+                .getDependencies()
+                .stream()
+                .filter(ResolveMojo::isRuntime)
+                .findFirst();
+        }
+        return res;
+    }
+
+    /**
+     * Checks if dependency is runtime.
+     * @param dep Dependency
+     * @return True if runtime.
+     */
+    private static boolean isRuntime(final Dependency dep) {
+        return "org.eolang".equals(dep.getGroupId())
+            && "eo-runtime".equals(dep.getArtifactId());
+    }
+
+    /**
+     * Check if dependency is not needed at runtime.
+     * @param dep Maven dependency
+     * @return True if it's not needed at runtime
+     */
+    private static boolean isRuntimeRequired(final Dependency dep) {
+        return dep.getScope() == null
+            || dep.getScope().isEmpty()
+            || "runtime".equals(dep.getScope())
+            || "compiled".equals(dep.getScope());
     }
 
     /**

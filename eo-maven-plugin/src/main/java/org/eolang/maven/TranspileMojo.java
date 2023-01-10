@@ -47,6 +47,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.StUnhex;
 
 /**
  * Compile.
@@ -80,8 +81,12 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Parsing train with XSLs.
      */
-    private static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(new ParsingTrain().empty()),
+    static final Train<Shift> TRAIN = new TrBulk<>(
+        new TrClasspath<>(
+            new ParsingTrain()
+                .empty()
+                .with(new StUnhex())
+        ),
         Arrays.asList(
             "/org/eolang/maven/pre/classes.xsl",
             "/org/eolang/maven/pre/package.xsl",
@@ -187,7 +192,8 @@ public final class TranspileMojo extends SafeMojo {
      * @throws IOException If any issues with I/O
      */
     private List<Path> transpile(final Path src, final XML input,
-        final Path target) throws IOException {
+        final Path target
+    ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final int removed = this.removeTranspiled(src);
         if (removed > 0) {
@@ -206,9 +212,9 @@ public final class TranspileMojo extends SafeMojo {
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
             TranspileMojo.TRAIN, place.make(
-                this.targetDir.toPath().resolve(TranspileMojo.PRE),
-                ""
-            )
+            this.targetDir.toPath().resolve(TranspileMojo.PRE),
+            ""
+        )
         );
         final XML out = new Xsline(trn).pass(input);
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);

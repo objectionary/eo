@@ -3,8 +3,8 @@ locators:
   - .test
   - .org .eolang .int
   - .arrays .z .α0 .π >test
-  - .arrays .z .α1 .α0 Δ=2A .π >int
-  - .arrays .z .α1 .α1 Δ=2B .π >int
+  - .arrays .z .α1 .α0 .Δ δ=2A .ρ .π >int
+  - .arrays .z .α1 .α1 .Δ δ=2B .ρ .π >int
 eo: |
   [] > arrays
     * > z
