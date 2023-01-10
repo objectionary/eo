@@ -78,7 +78,7 @@ final class FtDefaultTest {
             )
         );
         MatcherAssert.assertThat(
-            footprint.list("dir"),
+            footprint.list("org"),
             Matchers.empty()
         );
     }

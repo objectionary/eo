@@ -23,7 +23,9 @@
  */
 package org.eolang.maven.footprint;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,21 @@ final class FtCachedTest {
                 new FtDefault(temp.resolve("target"))
             ).load("org.eolang.txt.text", "xmir"),
             Matchers.equalTo(content)
+        );
+    }
+
+    @Test
+    void returnsListOfSavedFilesWithoutDirectory(@TempDir final Path temp) throws IOException {
+        final Path target = temp.resolve("target");
+        final Footprint footprint = new FtCached(
+            UUID.randomUUID().toString(),
+            temp.resolve("parsed"),
+            new FtDefault(target)
+        );
+        footprint.save("prog", "xmir", () -> "content");
+        MatcherAssert.assertThat(
+            footprint.list("xmir"),
+            Matchers.hasItem(target.resolve("prog.xmir"))
         );
     }
 }
