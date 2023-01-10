@@ -44,7 +44,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
@@ -217,9 +216,8 @@ public final class TranspileMojo extends SafeMojo {
             TranspileMojo.TRAIN,
             place.make(this.targetDir.toPath().resolve(TranspileMojo.PRE), "")
         );
-        final XML out = new Xsline(trn).pass(input);
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        new Home(dir).save(out.toString(), dir.relativize(target));
+        new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
         return new JavaFiles(target, this.generatedDir.toPath()).save();
     }
 

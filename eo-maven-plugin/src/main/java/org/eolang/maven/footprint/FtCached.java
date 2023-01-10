@@ -105,8 +105,8 @@ public final class FtCached implements Footprint {
     }
 
     @Override
-    public List<Path> paths(final String ext) throws IOException {
-        return this.origin.paths(ext);
+    public List<Path> list(final String ext) throws IOException {
+        return this.origin.list(ext);
     }
 
     /**

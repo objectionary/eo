@@ -51,10 +51,10 @@ public final class FtDefault implements Footprint {
 
     /**
      * Ctor.
-     * @param main Main location.
+     * @param path Main location.
      */
-    public FtDefault(final Path main) {
-        this.main = main;
+    public FtDefault(final Path path) {
+        this.main = path;
     }
 
     @Override
@@ -76,12 +76,12 @@ public final class FtDefault implements Footprint {
     }
 
     @Override
-    public List<Path> paths(final String ext) throws IOException {
+    public List<Path> list(final String ext) throws IOException {
         final List<Path> res;
         if (Files.exists(this.main)) {
             res = Files.walk(this.main)
-                .filter(path -> path.toString().endsWith(ext))
                 .filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(ext))
                 .collect(Collectors.toList());
         } else {
             res = Collections.emptyList();

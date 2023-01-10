@@ -53,5 +53,11 @@ public interface Footprint {
     void save(String program, String ext, Scalar<String> content) throws IOException;
 
 
-    List<Path> paths(String ext) throws IOException;
+    /**
+     * Get all saved regular files as a list.
+     * @param ext File extension
+     * @return List of files
+     * @throws IOException In case of IO issues
+     */
+    List<Path> list(String ext) throws IOException;
 }

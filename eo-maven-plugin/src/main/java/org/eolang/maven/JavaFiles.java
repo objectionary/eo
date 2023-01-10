@@ -28,14 +28,11 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
-import org.cactoos.Text;
 import org.cactoos.text.Joined;
+import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtDefault;
-import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -55,6 +52,11 @@ final class JavaFiles {
     private final Path dest;
 
     /**
+     * Footprint.
+     */
+    private final Footprint footprint;
+
+    /**
      * Ctor.
      *
      * @param src XML with java code
@@ -63,6 +65,7 @@ final class JavaFiles {
     JavaFiles(final Path src, final Path target) {
         this.source = src;
         this.dest = target;
+        this.footprint = new FtDefault(target);
     }
 
     /**
@@ -73,8 +76,13 @@ final class JavaFiles {
     public List<Path> save() throws IOException {
         final Collection<XML> nodes = new XMLDocument(this.source)
             .nodes("//class[java and not(@atom)]");
+        final String ext = "java";
         for (final XML java : nodes) {
-            this.saveJava(java);
+            this.footprint.save(
+                java.xpath("@java-name").get(0),
+                ext,
+                new Joined("", java.xpath("java/text()"))::asString
+            );
         }
         if (nodes.isEmpty()) {
             Logger.debug(
@@ -87,20 +95,6 @@ final class JavaFiles {
                 nodes.size(), new Rel(this.source), new Rel(this.dest)
             );
         }
-        return new FtDefault(this.dest).paths("java");
-    }
-
-    /**
-     * Save this Java file.
-     * @param java The XML with Java
-     * @return Path to generated file
-     * @throws IOException If fails
-     */
-    private void saveJava(final XML java) throws IOException {
-        new FtDefault(this.dest).save(
-            java.xpath("@java-name").get(0),
-            "java",
-            new Joined("", java.xpath("java/text()"))::asString
-        );
+        return this.footprint.list(ext);
     }
 }
