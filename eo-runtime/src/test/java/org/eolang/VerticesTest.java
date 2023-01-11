@@ -67,7 +67,7 @@ final class VerticesTest {
      * values.
      */
     @Test
-    void vtxConcurrencyTest() {
+    void performsVtxOperationsConcurrently() {
         final Set<Integer> hashes = ConcurrentHashMap.newKeySet();
         final Vertices vtx = new Vertices();
         final int threads = 1000;

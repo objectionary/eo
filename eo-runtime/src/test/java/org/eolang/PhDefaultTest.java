@@ -145,7 +145,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void recursiveCachingOfPhi() {
+    void cachesPhiRecursively() {
         final Phi phi = new PhDefaultTest.RecursivePhi(Phi.Φ);
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
@@ -155,7 +155,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void recursiveCachingOfPhiViaNew() {
+    void cachesPhiViaNewRecursively() {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew(Phi.Φ);
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(

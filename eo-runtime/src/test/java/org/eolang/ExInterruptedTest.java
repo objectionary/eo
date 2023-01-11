@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 public class ExInterruptedTest {
 
     @Test
-    void rightException() {
+    void throwsRightException() {
         final EOthrow phi = new EOthrow(new Data.ToPhi(true));
         Assertions.assertThrows(
             ExInterrupted.class,

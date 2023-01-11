@@ -44,7 +44,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void safeToString() {
+    void convertsSafeToString() {
         MatcherAssert.assertThat(
             new PhMethod(Phi.Φ, "hello").toString(),
             Matchers.endsWith(".hello")
@@ -63,7 +63,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesToLocalJustOnce() {
+    void calculatesLocalJustOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
@@ -74,7 +74,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesThroughPhiOnce() {
+    void calculatesPhiOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
@@ -82,7 +82,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesThroughPhiManyTimes() {
+    void calculatesPhiManyTimes() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         final int total = 10;

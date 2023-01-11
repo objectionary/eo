@@ -84,7 +84,7 @@ final class PhiTest {
     }
 
     @Test
-    void locationTest() {
+    void getsLocation() {
         MatcherAssert.assertThat(
             new PhWith(
                 new PhLocated(

@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 public final class EOstringEOsliceTest {
 
     @Test
-    public void sliceString() {
+    public void slicesString() {
         final Phi str = new Data.ToPhi("строка ㄤㄠ");
         final Phi phi = new PhWith(
             new PhWith(

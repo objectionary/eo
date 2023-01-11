@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 public final class EOstringEOas_bytesTest {
 
     @Test
-    public void stringToBytes() {
+    public void convertsStringToBytes() {
         final Phi str = new Data.ToPhi("Hello, друг!");
         final Phi phi = new EOstring$EOas_bytes(str);
         MatcherAssert.assertThat(
