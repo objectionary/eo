@@ -49,6 +49,8 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.28.11
  * @todo #1395:40min Rewrite this class via using
  *  a new method for testing Mojos with using `FakeMaven` class.
+ *  At the moment, this class has a lot of "noise"-code. So,
+ *  by using `FakeMaven` it will be more clear.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ProbeMojoTest {
