@@ -53,7 +53,7 @@ final class PacksTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
-    void testXslStylesheets(final String yaml) {
+    void createsXaxStoryWithXslStylesheets(final String yaml) {
         MatcherAssert.assertThat(
             new XaxStory(yaml),
             Matchers.is(true)

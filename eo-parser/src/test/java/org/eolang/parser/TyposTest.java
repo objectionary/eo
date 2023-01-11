@@ -43,7 +43,7 @@ final class TyposTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
-    void testPacks(final String yml) throws Exception {
+    void checksPacks(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         try {

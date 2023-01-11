@@ -36,7 +36,7 @@ import org.xembly.Xembler;
 final class ObjectsTest {
 
     @Test
-    void oneObject() {
+    void parsesOneObject() {
         final Objects objs = new Objects.ObjXembly();
         objs.start(9, 10);
         objs.prop("x", "y");
@@ -55,7 +55,7 @@ final class ObjectsTest {
     }
 
     @Test
-    void nestedObjects() {
+    void parsesNestedObjects() {
         final Objects objs = new Objects.ObjXembly();
         objs.start(1, 2);
         objs.start(3, 4);
@@ -73,7 +73,7 @@ final class ObjectsTest {
     }
 
     @Test
-    void entersPrevios() {
+    void parsesObjectsWithEnteringPrevious() {
         final Objects objs = new Objects.ObjXembly();
         objs.start(5, 6);
         objs.start(7, 8);

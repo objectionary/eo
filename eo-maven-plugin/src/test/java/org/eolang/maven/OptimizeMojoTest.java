@@ -59,7 +59,7 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void testPacks(final String pack) throws Exception {
+    void checksPacks(final String pack) throws Exception {
         MatcherAssert.assertThat(
             new CheckPack(pack).failures(),
             Matchers.empty()
