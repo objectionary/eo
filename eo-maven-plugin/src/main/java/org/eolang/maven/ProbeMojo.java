@@ -176,8 +176,9 @@ public final class ProbeMojo extends SafeMojo {
      * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
-     * @todo #1395:10min Rewrite lines 185-202 as fully `cactoos` style.
-     *  So there is will no "imperative" `forEach()` in line 193.
+     * @todo #1395:30min Rewrite lines 187-204 as fully `cactoos` style to
+     *  make to code more convenient. So there is will no "imperative" `forEach()`
+     *  in line 194.
      */
     private Collection<String> probes(final Path file)
         throws FileNotFoundException {
