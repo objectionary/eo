@@ -22,7 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.jcabi</groupId>
@@ -319,6 +321,19 @@ SOFTWARE.
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.volodya-lombrozo</groupId>
+            <artifactId>test-naming-conventions</artifactId>
+            <version>0.1.2</version>
+            <executions>
+              <execution>
+                <id>check-tests-names</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
