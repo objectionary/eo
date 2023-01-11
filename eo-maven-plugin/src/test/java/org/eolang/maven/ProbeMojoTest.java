@@ -47,6 +47,8 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
+ * @todo #1395:40min Rewrite this class via using
+ *  a new method for testing Mojos with using `FakeMaven` class.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ProbeMojoTest {
@@ -57,7 +59,7 @@ final class ProbeMojoTest {
     private static final String FOREIGN = "eo-foreign.json";
 
     @Test
-    void testSimpleProbe(@TempDir final Path temp) throws IOException {
+    void findsProbes(@TempDir final Path temp) throws IOException {
         final Input src = new InputOf(
             new TextOf(
                 new ResourceOf("org/eolang/maven/simple-io.eo")
@@ -80,7 +82,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    void probeUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
+    void findsProbesViaOfflineHashFile(@TempDir final Path temp) throws IOException {
         new Home().save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             temp.resolve("tags.txt")
@@ -108,7 +110,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    void probeUsingOfflineHash(@TempDir final Path temp) throws IOException {
+    void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
         final Input src = new InputOf(
             new TextOf(
                 new ResourceOf("org/eolang/maven/simple-io.eo")
@@ -134,7 +136,7 @@ final class ProbeMojoTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    void tryToFindInOyRemote(@TempDir final Path temp) throws IOException {
+    void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final Input src = new InputOf(
             new TextOf(
                 new ResourceOf("org/eolang/maven/simple-io.eo")
