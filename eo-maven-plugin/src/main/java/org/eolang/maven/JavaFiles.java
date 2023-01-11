@@ -28,11 +28,11 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.cactoos.text.Joined;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.footprint.Footprint;
+import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -52,6 +52,11 @@ final class JavaFiles {
     private final Path dest;
 
     /**
+     * Footprint.
+     */
+    private final Footprint footprint;
+
+    /**
      * Ctor.
      *
      * @param src XML with java code
@@ -60,6 +65,7 @@ final class JavaFiles {
     JavaFiles(final Path src, final Path target) {
         this.source = src;
         this.dest = target;
+        this.footprint = new FtDefault(target);
     }
 
     /**
@@ -68,40 +74,27 @@ final class JavaFiles {
      * @throws IOException In case issues with I/O
      */
     public List<Path> save() throws IOException {
-        final List<Path> files = new ArrayList<>(0);
-        final XML xml = new XMLDocument(this.source);
-        final Collection<XML> nodes = xml.nodes("//class[java and not(@atom)]");
+        final Collection<XML> nodes = new XMLDocument(this.source)
+            .nodes("//class[java and not(@atom)]");
+        final String ext = "java";
+        for (final XML java : nodes) {
+            this.footprint.save(
+                java.xpath("@java-name").get(0),
+                ext,
+                new Joined("", java.xpath("java/text()"))::asString
+            );
+        }
         if (nodes.isEmpty()) {
             Logger.debug(
                 this, "No .java files generated from %s",
                 new Rel(this.source)
             );
         } else {
-            for (final XML java : nodes) {
-                files.add(JavaFiles.saveJava(java, this.dest));
-            }
             Logger.info(
                 this, "Generated %d .java file(s) from %s to %s",
                 nodes.size(), new Rel(this.source), new Rel(this.dest)
             );
         }
-        return files;
-    }
-
-    /**
-     * Save this Java file.
-     * @param java The XML with Java
-     * @param generated Path to all files
-     * @return Path to generated file
-     * @throws IOException If fails
-     */
-    private static Path saveJava(final XML java, final Path generated) throws IOException {
-        final String type = java.xpath("@java-name").get(0);
-        final Path dest = new Place(type).make(generated, "java");
-        new Home(generated).save(
-            new Joined("", java.xpath("java/text()")),
-            generated.relativize(dest)
-        );
-        return dest;
+        return this.footprint.list(ext);
     }
 }
