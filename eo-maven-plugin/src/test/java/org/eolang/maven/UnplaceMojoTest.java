@@ -49,7 +49,7 @@ final class UnplaceMojoTest {
     private static final String ATTR_KIND_CLASS = "class";
 
     @Test
-    void testCleaning(@TempDir final Path temp) throws Exception {
+    void cleans(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo.class");
         final Home home = new Home(temp);
         home.save("...", temp.relativize(foo));
@@ -112,7 +112,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void testKeepBinaries(@TempDir final Path temp) throws Exception {
+    void keepsBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo5.class");
         new Home(temp).save("testKeepBinaries", temp.relativize(foo));
         final Path pparent = foo.getParent().getParent();
@@ -139,7 +139,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void testKeepRemoveBinaries(@TempDir final Path temp) throws Exception {
+    void keepsRemoveBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo6.class");
         final Home home = new Home(temp);
         home.save("testKeepRemoveBinaries", temp.relativize(foo));
@@ -168,7 +168,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void testUnplaceRemoveBinaries(@TempDir final Path temp) throws Exception {
+    void unplacesRemoveBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo6.class");
         new Home().save("testUnplaceRemoveBinaries", foo);
         final Path list = temp.resolve("placed.csv");
@@ -196,7 +196,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void testUnplaceKeepBinaries(@TempDir final Path temp) throws Exception {
+    void unplacesKeepBinaries(@TempDir final Path temp) throws Exception {
         final Path foo = temp.resolve("a/b/c/foo6.class");
         new Home().save("testUnplaceKeepBinaries", foo);
         final Path list = temp.resolve("placed.csv");

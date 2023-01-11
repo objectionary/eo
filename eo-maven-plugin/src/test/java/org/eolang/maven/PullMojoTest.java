@@ -50,7 +50,7 @@ final class PullMojoTest {
     private static final String FOREIGN_FORMAT = "json";
 
     @Test
-    void testSimplePull(@TempDir final Path temp) throws IOException {
+    void pullsSuccessfully(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)

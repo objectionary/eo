@@ -46,7 +46,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class ResolveMojoTest {
 
     @Test
-    void resolveWithSingleDependency(@TempDir final Path temp) throws Exception {
+    void resolvesWithSingleDependency(@TempDir final Path temp) throws Exception {
         final Path foo = Paths.get("src").resolve("foo.eo");
         new Home(temp).save(
             String.format(
@@ -73,7 +73,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolveWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
         final Path foo = Paths.get("src").resolve("sum.eo");
         final Home home = new Home(temp);
         home.save(
@@ -144,7 +144,7 @@ final class ResolveMojoTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
-    void testConflictingDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Home(temp).save(
             String.format(
@@ -205,7 +205,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
+    void resolvesWithConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Home(temp).save(
             String.format(
