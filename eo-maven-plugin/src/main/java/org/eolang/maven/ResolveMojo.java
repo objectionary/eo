@@ -36,6 +36,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Func;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -70,7 +71,7 @@ public final class ResolveMojo extends SafeMojo {
      * @since 0.9.0
      */
     @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    private Boolean skipZeroVersions;
+    private boolean skipZeroVersions;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -114,6 +115,22 @@ public final class ResolveMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
+
+    /**
+     * Transitive dependency extractor. It's a strategy pattern for extracting transitive
+     * dependencies for a particular artifact.
+     */
+    @Parameter(property = "eo.transitiveDependencies", required = true, defaultValue = "true")
+    private Func<Dependency, Iterable<Dependency>> transitiveDependenciesStrategy =
+        dependency -> new DcsDepgraph(
+            this.project,
+            this.session,
+            this.manager,
+            this.targetDir.toPath()
+                .resolve(ResolveMojo.DIR)
+                .resolve("dependencies-info"),
+            dependency
+        );
 
     @Override
     public void exec() throws IOException {
@@ -196,16 +213,8 @@ public final class ResolveMojo extends SafeMojo {
                     final Iterable<Dependency> transitives = new Filtered<>(
                         dep -> !ResolveMojo.eqTo(dep, dependency)
                             && ResolveMojo.isRuntimeRequired(dep)
-                            && !isRuntime(dep),
-                        new DcsDepgraph(
-                            this.project,
-                            this.session,
-                            this.manager,
-                            this.targetDir.toPath()
-                                .resolve(ResolveMojo.DIR)
-                                .resolve("dependencies-info"),
-                            dependency
-                        )
+                            && !ResolveMojo.isRuntime(dep),
+                        this.transitiveDependenciesStrategy.apply(dependency)
                     );
                     final String list = String.join(
                         ", ",

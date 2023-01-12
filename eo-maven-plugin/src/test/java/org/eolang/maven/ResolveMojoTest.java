@@ -29,6 +29,9 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
+import org.cactoos.Func;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -134,6 +137,45 @@ final class ResolveMojoTest {
         MatcherAssert.assertThat(
             maven.targetPath(),
             new ContainsFile("**/eo-runtime-0.7.0.jar")
+        );
+    }
+
+    @Test
+    void resolvesWithoutTransitiveDependencies(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .with("ignoreTransitive", false)
+            .with("transitiveDependenciesStrategy",
+                (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.emptyList()
+            )
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-*.jar")
+        );
+    }
+
+    @Test
+    void throwsExceptionWithTransitiveDependency(@TempDir final Path temp) {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Dependency dependency = new Dependency();
+        dependency.setScope("compiled");
+        dependency.setGroupId("org.eolang");
+        dependency.setArtifactId("eo-transitive");
+        dependency.setVersion("0.1.0");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven
+                .withProgram(
+                    "+rt jvm org.eolang:eo-foreign:0.22.1",
+                    "[] > foo /int"
+                )
+                .with("ignoreTransitive", false)
+                .with("transitiveDependenciesStrategy",
+                    (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.singleton(
+                        dependency)
+                )
+                .execute(new FakeMaven.Resolve())
         );
     }
 
