@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
-import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -87,13 +86,15 @@ final class PullMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
-        final Input src = new InputOf(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
-            )
-        );
         final Path program = temp.resolve("program.eo");
-        new Home(temp).save(src, temp.relativize(program));
+        new Home(temp).save(
+            new InputOf(
+                new TextOf(
+                    new ResourceOf("org/eolang/maven/simple-io.eo")
+                )
+            ),
+            program
+        );
         Catalogs.INSTANCE.make(temp.resolve("eo-foreign.json"), "json")
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
@@ -112,27 +113,20 @@ final class PullMojoTest {
             .with("targetDir", target)
             .with("foreign", foreign)
             .execute();
+        final Objectionary objectionary = new OyRemote(
+            new ChResolve(null, null, "master")
+        );
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
             .with("foreignFormat", "json")
-            .with(
-                "objectionary",
-                new OyRemote(
-                    new ChResolve(null, null, "master")
-                )
-            )
+            .with("objectionary", objectionary)
             .execute();
         new Moja<>(PullMojo.class)
             .with("targetDir", target)
             .with("foreign", foreign)
             .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
-            .with(
-                "objectionary",
-                new OyRemote(
-                    new ChResolve(null, null, "master")
-                )
-            )
+            .with("objectionary", objectionary)
             .execute();
         MatcherAssert.assertThat(
             new Home(target.toPath()).exists(

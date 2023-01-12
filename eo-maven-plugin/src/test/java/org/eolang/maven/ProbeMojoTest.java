@@ -139,12 +139,14 @@ final class ProbeMojoTest {
     }
 
     private void initTest(final Path temp) throws IOException {
-        final Input src = new InputOf(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
+        this.saveProgram(
+            temp,
+            new InputOf(
+                new TextOf(
+                    new ResourceOf("org/eolang/maven/simple-io.eo")
+                )
             )
         );
-        this.saveProgram(temp, src);
         this.execUntilProbeMojo(temp);
     }
 
