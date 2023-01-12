@@ -30,8 +30,6 @@ import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -145,7 +143,8 @@ final class ResolveMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .with("ignoreTransitive", false)
-            .with("transitiveDependenciesStrategy",
+            .with(
+                "transitiveStrategy",
                 (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.emptyList()
             )
             .execute(new FakeMaven.Resolve());
@@ -171,9 +170,11 @@ final class ResolveMojoTest {
                     "[] > foo /int"
                 )
                 .with("ignoreTransitive", false)
-                .with("transitiveDependenciesStrategy",
+                .with(
+                    "transitiveStrategy",
                     (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.singleton(
-                        dependency)
+                        dependency
+                    )
                 )
                 .execute(new FakeMaven.Resolve())
         );
