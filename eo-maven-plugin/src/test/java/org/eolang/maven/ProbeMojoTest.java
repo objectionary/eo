@@ -62,13 +62,7 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbes(@TempDir final Path temp) throws IOException {
-        final Input src = new InputOf(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
-            )
-        );
-        this.saveProgram(temp, src);
-        this.execUntilProbeMojo(temp);
+        this.initTest(temp);
         final File target = temp.resolve("target").toFile();
         final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ProbeMojo.class)
@@ -89,13 +83,7 @@ final class ProbeMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             temp.resolve("tags.txt")
         );
-        final Input src = new InputOf(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
-            )
-        );
-        this.saveProgram(temp, src);
-        this.execUntilProbeMojo(temp);
+        this.initTest(temp);
         final File target = temp.resolve("target").toFile();
         final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ProbeMojo.class)
@@ -113,13 +101,7 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
-        final Input src = new InputOf(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
-            )
-        );
-        this.saveProgram(temp, src);
-        this.execUntilProbeMojo(temp);
+        this.initTest(temp);
         final File target = temp.resolve("target").toFile();
         final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         new Moja<>(ProbeMojo.class)
@@ -139,13 +121,7 @@ final class ProbeMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
-        final Input src = new InputOf(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
-            )
-        );
-        this.saveProgram(temp, src);
-        this.execUntilProbeMojo(temp);
+        this.initTest(temp);
         final File target = temp.resolve("target").toFile();
         final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
         final Objectionary obj = new OyRemote(new ChCached(new ChRemote("0.28.10")));
@@ -160,6 +136,16 @@ final class ProbeMojoTest {
             new LinkedList<>(new MnJson(foreign).read()).getFirst().get("probed"),
             Matchers.equalTo("2")
         );
+    }
+
+    private void initTest(final Path temp) throws IOException {
+        final Input src = new InputOf(
+            new TextOf(
+                new ResourceOf("org/eolang/maven/simple-io.eo")
+            )
+        );
+        this.saveProgram(temp, src);
+        this.execUntilProbeMojo(temp);
     }
 
     private void execUntilProbeMojo(final Path temp) {
@@ -181,7 +167,7 @@ final class ProbeMojoTest {
 
     private void saveProgram(final Path temp, final Input code) throws IOException {
         final Path program = temp.resolve("program.eo");
-        new Home(temp).save(code, temp.relativize(program));
+        new Home(temp).save(code, program);
         Catalogs.INSTANCE.make(temp.resolve(ProbeMojoTest.FOREIGN), "json")
             .add("foo.src")
             .set(AssembleMojo.ATTR_SCOPE, "compile")

@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
@@ -33,7 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -53,6 +52,8 @@ import org.eolang.maven.util.Rel;
  * Go through all `probe` metas in XMIR files, try to locate the
  * objects pointed by `probe` in Objectionary and if found register them in
  * catalog.
+ * More about the purpose of this Mojo is in
+ * <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
  *
  * @since 0.28.11
  * @checkstyle CyclomaticComplexityCheck (300 lines)
@@ -176,20 +177,17 @@ public final class ProbeMojo extends SafeMojo {
      * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
-     * @todo #1395:30min Rewrite lines 187-204 as fully `cactoos` style to
+     * @todo #1395:30min Rewrite lines 185-200 as fully `cactoos` style to
      *  make to code more convenient. So there is will no "imperative" `forEach()`
      *  in line 194.
      */
     private Collection<String> probes(final Path file)
         throws FileNotFoundException {
-        final XML xml = new XMLDocument(file);
         final Collection<String> ret = new HashSet<>(1);
-        new TreeSet<>(
-            new ListOf<>(
-                new Filtered<>(
-                    obj -> !obj.isEmpty(),
-                    xml.xpath("//metas/meta[head/text() = 'probe']/tail/text()")
-                )
+        new ListOf<>(
+            new Filtered<>(
+                obj -> !obj.isEmpty(),
+                new XMLDocument(file).xpath("//metas/meta[head/text() = 'probe']/tail/text()")
             )
         ).forEach(
             obj -> {
@@ -223,19 +221,10 @@ public final class ProbeMojo extends SafeMojo {
      * @return True if found
      * @todo #1395:30min Need to add the logic of "hasReservedChars" method to
      *  add-probes.xsl". After that, the method in this class need to be removed.
-     * @checkstyle BooleanExpressionComplexityCheck (15 lines)
      */
     private static boolean hasReservedChars(final String str) {
-        return str.contains("<")
-            || str.contains(">")
-            || str.contains("$")
-            || str.contains("*")
-            || str.contains("?")
-            || str.contains(":")
-            || str.contains("\"")
-            || str.contains("|")
-            || str.contains("^")
-            || str.contains("@");
+        return Stream.of("<", ">", "$", "*", "?", ":", "\"", "|", "^", "@")
+            .anyMatch(str::contains);
     }
 
     /**
