@@ -93,12 +93,13 @@ final class PhiTest {
                         "x"
                     ),
                     123,
-                    56
+                    56,
+                    "Φ.org.eolang$obj"
                 ),
                 "Δ",
                 new Data.Value<>("aaa")
             ).locator(),
-            Matchers.equalTo("123:56")
+            Matchers.equalTo("Φ.org.eolang$obj:123:56")
         );
     }
 }

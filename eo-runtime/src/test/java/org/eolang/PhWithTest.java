@@ -85,7 +85,7 @@ final class PhWithTest {
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
             ).copy().toString(),
-            Matchers.containsString("int.plus≡EOorg.EOeolang.EOint$EOplusν")
+            Matchers.matchesPattern(".*int\\.plus≡.*EOorg\\.EOeolang\\.EOint\\$EOplusν.*")
         );
     }
 
