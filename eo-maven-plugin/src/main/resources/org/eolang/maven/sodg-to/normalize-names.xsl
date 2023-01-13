@@ -25,7 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="normalize-names" version="2.0">
   <!--
   This one renames all <a/> elements that start with '$Φ.'. All
-  vertices get simple unique integer-based numbers, such as 'ν42'.
+  vertices get simple unique integer-based numbers, such as 'v42'.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -36,7 +36,7 @@ SOFTWARE.
   </xsl:variable>
   <xsl:function name="eo:renamed">
     <xsl:param name="v" as="xs:string"/>
-    <xsl:text>$ν</xsl:text>
+    <xsl:text>$v</xsl:text>
     <xsl:value-of select="index-of(distinct-values($sorted/a), $v)"/>
   </xsl:function>
   <xsl:template match="/program/sodg/i/a[starts-with(text(), '$Φ.')]" priority="1">
