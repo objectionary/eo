@@ -35,6 +35,11 @@ SOFTWARE.
       <xsl:value-of select="index-of(distinct-values(//@*[starts-with(., '$Φ.')]), .)"/>
     </xsl:attribute>
   </xsl:template>
+  <xsl:template match="@*[.='ν0']" priority="1">
+    <xsl:attribute name="{name()}">
+      <xsl:text>v0</xsl:text>
+    </xsl:attribute>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

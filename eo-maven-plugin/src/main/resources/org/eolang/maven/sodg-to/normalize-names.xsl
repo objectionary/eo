@@ -44,6 +44,11 @@ SOFTWARE.
       <xsl:value-of select="eo:renamed(.)"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="/program/sodg/i/a[text() = 'ν0']" priority="1">
+    <xsl:copy>
+      <xsl:text>v0</xsl:text>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
