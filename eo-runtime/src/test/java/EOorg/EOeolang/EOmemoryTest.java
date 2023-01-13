@@ -50,7 +50,7 @@ public final class EOmemoryTest {
     private static final String WRITE = "write";
 
     @Test
-    public void writeAfterCopy() {
+    public void writesAfterCopy() {
         final Phi first = new EOmemory(Phi.Φ);
         final Phi second = first.copy();
         second.attr(0).put(new Data.ToPhi(1L));
@@ -120,7 +120,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    public void makeCorrectCopy() {
+    public void makesCorrectCopy() {
         final Phi mem = new EOmemory(Phi.Φ);
         final Phi text = new Data.ToPhi(1L);
         final Phi write = mem.attr(EOmemoryTest.WRITE).get();

@@ -82,6 +82,7 @@ final class ChResolveTest {
     }
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void catchesAnExceptionWhenNoArguments() {
         Assertions.assertThrows(
             NullPointerException.class,

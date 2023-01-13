@@ -69,7 +69,7 @@ final class PhConstTest {
     }
 
     @Test
-    void onceEvenIfCopied() {
+    void dataizesOnceEvenIfCopied() {
         final Dummy dummy = new Dummy("child");
         final Phi child = new PhMethod(new PhConst(dummy), "child");
         new Dataized(child).take(Long.class);
@@ -79,7 +79,7 @@ final class PhConstTest {
     }
 
     @Test
-    void simpleRandomToConst() {
+    void dataizesSimpleRandomToConst() {
         final Phi rnd = new PhConstTest.Rnd(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(rnd).take(Double.class),
@@ -95,7 +95,7 @@ final class PhConstTest {
     }
 
     @Test
-    void negRandomToConst() {
+    void dataizesNegRandomToConst() {
         final Phi cnst = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         final double first = new Dataized(
             cnst.attr("neg").get()
@@ -107,7 +107,7 @@ final class PhConstTest {
     }
 
     @Test
-    void randomToConst() {
+    void dataizesRandomToConst() {
         final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         final Phi eql = rnd.attr("eq").get();
         eql.attr(0).put(rnd);
@@ -118,7 +118,7 @@ final class PhConstTest {
     }
 
     @Test
-    void doesntAllowAttributesOfDecorateeToBeSet() {
+    void doesNotAllowAttributesOfDecorateeToBeSet() {
         final Phi phi = new Boom();
         Assertions.assertThrows(
             ExUnset.class,
@@ -156,7 +156,7 @@ final class PhConstTest {
     }
 
     @Test
-    void keepConstMultiLayers() {
+    void keepsConstMultiLayers() {
         final Phi phi = new PhWith(
             new Envelope(Phi.Φ),
             0,

@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
 public final class EOcageTest {
 
     @Test
-    public void simpleWriteAndRead() {
+    public void writesAndReads() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         MatcherAssert.assertThat(
@@ -57,7 +57,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void emptyCageHasIdentity() {
+    public void checksThatEmptyCageHasIdentity() {
         final Phi cage = new EOcage(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(cage.attr("ν").get()).take(Long.class),

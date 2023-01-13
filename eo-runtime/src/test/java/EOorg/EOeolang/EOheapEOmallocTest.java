@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 class EOheapEOmallocTest {
 
     @Test
-    public void allocateMemory() {
+    public void allocatesMemory() {
         final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(
             new PhMethod(heap, "malloc"),
@@ -76,7 +76,7 @@ class EOheapEOmallocTest {
     }
 
     @Test
-    public void checkMallocPointer() {
+    public void checksMallocPointer() {
         final long size = 20L;
         final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(

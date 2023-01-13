@@ -42,7 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class RegisterMojoTest {
 
     @Test
-    void registerOkNames(@TempDir final Path temp) throws IOException {
+    void registersOkNames(@TempDir final Path temp) throws IOException {
         new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             Paths.get("src/eo/org/eolang/maven/abc-def.eo")
@@ -77,7 +77,7 @@ final class RegisterMojoTest {
     }
 
     @Test
-    void noFailureWhenNoStrictNames(@TempDir final Path temp) throws IOException {
+    void doesNotFailWhenNoStrictNames(@TempDir final Path temp) throws IOException {
         new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             Paths.get("src/eo/org/eolang/maven/.abc.eo")

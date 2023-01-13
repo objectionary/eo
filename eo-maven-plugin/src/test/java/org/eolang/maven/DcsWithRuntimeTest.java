@@ -30,6 +30,7 @@ import org.cactoos.scalar.Unchecked;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link DcsWithRuntime}.
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test;
 final class DcsWithRuntimeTest {
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void addsHardcodedVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
             DcsWithRuntimeTest.dependencies(),
@@ -51,6 +53,7 @@ final class DcsWithRuntimeTest {
     }
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void addsRemoteVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
             DcsWithRuntimeTest.dependencies()

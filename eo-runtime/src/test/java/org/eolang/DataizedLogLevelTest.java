@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 final class DataizedLogLevelTest {
 
     @Test
-    void shortLogs() throws InterruptedException {
+    void printsShortLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -86,7 +86,7 @@ final class DataizedLogLevelTest {
     }
 
     @Test
-    void longLogs() throws InterruptedException {
+    void printsLongLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);

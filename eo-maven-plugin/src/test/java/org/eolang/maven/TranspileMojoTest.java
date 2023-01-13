@@ -65,7 +65,7 @@ final class TranspileMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
-    void testPreStylesheets(final String yaml) {
+    void createsPreStylesheets(final String yaml) {
         MatcherAssert.assertThat(
             new XaxStory(yaml),
             Matchers.is(true)

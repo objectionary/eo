@@ -126,7 +126,7 @@ public final class EOboolEOwhileTest {
     }
 
     @Test
-    public void complexBooleanToggle() {
+    public void dataizesComplexBooleanToggle() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhMethod(parent, "toggle");
         new Dataized(

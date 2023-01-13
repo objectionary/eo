@@ -58,7 +58,7 @@ final class SodgMojoTest {
 
     @Test
     @Disabled
-    void bigSlowTest() throws Exception {
+    void convertsToGraph() throws Exception {
         final StringBuilder program = new StringBuilder(1000);
         for (int idx = 0; idx < 40; ++idx) {
             for (int spc = 0; spc < idx; ++spc) {

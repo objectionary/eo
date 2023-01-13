@@ -38,6 +38,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -49,7 +50,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class ParseMojoTest {
 
     @Test
-    void testSimpleParsing(@TempDir final Path temp) throws Exception {
+    void parsesSuccessfully(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             maven.withHelloWorld()
@@ -77,7 +78,8 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
+    @ExtendWith(OnlineCondition.class)
+    void parsesWithCache(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Path cache = temp.resolve("cache");
         final String expected = new UncheckedText(
@@ -103,7 +105,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testCrashOnInvalidSyntax(@TempDir final Path temp) {
+    void crashesOnInvalidSyntax(@TempDir final Path temp) {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IllegalStateException.class,
@@ -116,7 +118,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testDoNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")

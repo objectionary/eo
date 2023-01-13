@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 public final class EObytesEOconcatTest {
 
     @Test
-    public void concatBytes() {
+    public void concatenatesBytes() {
         final Phi current = new EOstring$EOas_bytes(new Data.ToPhi("привет "));
         final Phi provided = new EOstring$EOas_bytes(new Data.ToPhi("mr. ㄤㄠ!"));
         final Phi phi = new PhMethod(

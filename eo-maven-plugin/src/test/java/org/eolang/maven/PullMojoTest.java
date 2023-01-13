@@ -49,6 +49,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(OnlineCondition.class)
 final class PullMojoTest {
 
     /**
@@ -57,7 +58,7 @@ final class PullMojoTest {
     private static final String FOREIGN_FORMAT = "json";
 
     @Test
-    void testSimplePull(@TempDir final Path temp) throws IOException {
+    void pullsSuccessfully(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
         Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)

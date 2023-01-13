@@ -39,7 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class OyFallbackSwapTest {
     @Test
-    void testFallbackNoSwapOy() throws Exception {
+    void getsWithFallbackNoSwapOy() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
@@ -53,7 +53,7 @@ class OyFallbackSwapTest {
     }
 
     @Test
-    void testFallbackSwapOyFail() throws Exception {
+    void getsWithFallbackSwapOyFail() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
@@ -71,7 +71,7 @@ class OyFallbackSwapTest {
     }
 
     @Test
-    void testFallbackSwapOy() throws Exception {
+    void getsWithFallbackSwapOy() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(

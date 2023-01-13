@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 public final class HeapsTest {
 
     @Test
-    public void mallocAndFreeWork() {
+    public void performsMallocAndFreeWork() {
         final Phi heap = new EOheap(Phi.Φ);
         final int pointer = Heaps.INSTANCE.malloc(heap, 100);
         MatcherAssert.assertThat(

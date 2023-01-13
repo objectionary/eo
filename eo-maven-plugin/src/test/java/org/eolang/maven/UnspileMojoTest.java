@@ -40,7 +40,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class UnspileMojoTest {
 
     @Test
-    void testCleaning(@TempDir final Path temp) throws Exception {
+    void cleans(@TempDir final Path temp) throws Exception {
         final Path generated = Paths.get("generated");
         final Path classes = Paths.get("classes");
         final Path foo = Paths.get("a/b/c/foo.class");

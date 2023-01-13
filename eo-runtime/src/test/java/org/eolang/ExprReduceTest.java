@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  */
 class ExprReduceTest {
     @Test
-    void exprTest() throws Exception {
+    void reducesExpr() {
         final ExprReduce expr = new ExprReduce<Long>(
             "x",
             Long::sum,
@@ -56,7 +56,7 @@ class ExprReduceTest {
     }
 
     @Test
-    void wrongTypeTest() {
+    void reducesWithWrongType() {
         final ExprReduce expr = new ExprReduce<Long>(
             "x",
             Long::sum,

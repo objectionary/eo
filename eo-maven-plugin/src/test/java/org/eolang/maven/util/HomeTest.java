@@ -60,7 +60,7 @@ final class HomeTest {
     }
 
     @Test
-    void existsTest(@TempDir final Path temp) throws IOException {
+    void exists(@TempDir final Path temp) throws IOException {
         Files.write(temp.resolve("file.txt"), "any content".getBytes());
         MatcherAssert.assertThat(
             new Home(temp).exists(Paths.get("file.txt")),
@@ -69,7 +69,7 @@ final class HomeTest {
     }
 
     @Test
-    void existsInDirTest(@TempDir final Path temp) throws IOException {
+    void existsInDir(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("dir/subdir/file.txt");
         target.getParent().toFile().mkdirs();
         Files.write(target, "any content".getBytes());
@@ -80,7 +80,7 @@ final class HomeTest {
     }
 
     @Test
-    void existsInDirDifferentEncryptionTest(@TempDir final Path temp) throws IOException {
+    void existsInDirDifferentEncryption(@TempDir final Path temp) throws IOException {
         final String filename = "文件名.txt";
         final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
@@ -93,7 +93,7 @@ final class HomeTest {
     }
 
     @Test
-    void existsInDirWithSpecialSymbolsTest(@TempDir final Path temp) throws IOException {
+    void existsInDirWithSpecialSymbols(@TempDir final Path temp) throws IOException {
         final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
         final byte[] bytes = filename.getBytes("CP1252");
         final String decoded = new String(bytes, "CP1252");
@@ -106,7 +106,7 @@ final class HomeTest {
     }
 
     @Test
-    void loadBytesFromExistingFile(@TempDir final Path temp) throws IOException {
+    void loadsBytesFromExistingFile(@TempDir final Path temp) throws IOException {
         final Home home = new Home(temp);
         final String content = "bar";
         final Path subfolder = temp.resolve("subfolder").resolve("foo.txt");
@@ -118,7 +118,7 @@ final class HomeTest {
     }
 
     @Test
-    void loadFromAbsentFile(@TempDir final Path temp) {
+    void loadsFromAbsentFile(@TempDir final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
             () -> new Home(temp).load(temp.resolve("nonexistent"))

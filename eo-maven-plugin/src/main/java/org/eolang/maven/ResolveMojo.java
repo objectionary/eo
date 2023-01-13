@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -36,8 +35,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
+import org.cactoos.Func;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -70,7 +68,7 @@ public final class ResolveMojo extends SafeMojo {
      * @since 0.9.0
      */
     @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    private Boolean skipZeroVersions;
+    private boolean skipZeroVersions;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -114,6 +112,25 @@ public final class ResolveMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
+
+    /**
+     * Transitive dependency extractor. It's a strategy pattern for extracting transitive
+     * dependencies for a particular artifact.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.transitiveDependencies", required = true, defaultValue = "true")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    private Func<Dependency, Iterable<Dependency>> transitiveStrategy =
+        dependency -> new DcsDepgraph(
+            this.project,
+            this.session,
+            this.manager,
+            this.targetDir.toPath()
+                .resolve(ResolveMojo.DIR)
+                .resolve("dependencies-info"),
+            dependency
+        );
 
     @Override
     public void exec() throws IOException {
@@ -160,13 +177,19 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
+     * Checks if dependency is runtime.
+     * @param dep Dependency
+     * @return True if runtime.
+     */
+    static boolean isRuntime(final Dependency dep) {
+        return "org.eolang".equals(dep.getGroupId())
+            && "eo-runtime".equals(dep.getArtifactId());
+    }
+
+    /**
      * Find all deps for all Tojos.
      *
      * @return List of them
-     * @todo #1595:30 Make method 'deps' testable. For now it's not possible to test
-     *  'ignoreTransitive=false' branch because it's hard to mock all required fields.
-     *  Maybe we should provide a chance to mock all dependencies related to maven or
-     *  even extract new classes.
      */
     private Collection<Dependency> deps() {
         Iterable<Dependency> deps = new DcsDefault(
@@ -191,41 +214,7 @@ public final class ResolveMojo extends SafeMojo {
             deps = new DcsUniquelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {
-            deps = new Mapped<>(
-                dependency -> {
-                    final Iterable<Dependency> transitives = new Filtered<>(
-                        dep -> !ResolveMojo.eqTo(dep, dependency)
-                            && ResolveMojo.isRuntimeRequired(dep)
-                            && !isRuntime(dep),
-                        new DcsDepgraph(
-                            this.project,
-                            this.session,
-                            this.manager,
-                            this.targetDir.toPath()
-                                .resolve(ResolveMojo.DIR)
-                                .resolve("dependencies-info"),
-                            dependency
-                        )
-                    );
-                    final String list = String.join(
-                        ", ",
-                        new Mapped<>(
-                            dep -> new Coordinates(dep).toString(),
-                            transitives
-                        )
-                    );
-                    if (!list.isEmpty()) {
-                        throw new IllegalStateException(
-                            String.format(
-                                "%s contains transitive dependencies: [%s]",
-                                dependency, list
-                            )
-                        );
-                    }
-                    return dependency;
-                },
-                deps
-            );
+            deps = new DcsEachWithoutTransitive(deps, this.transitiveStrategy);
         }
         return new ListOf<>(deps)
             .stream()
@@ -253,43 +242,6 @@ public final class ResolveMojo extends SafeMojo {
                 .findFirst();
         }
         return res;
-    }
-
-    /**
-     * Checks if dependency is runtime.
-     * @param dep Dependency
-     * @return True if runtime.
-     */
-    private static boolean isRuntime(final Dependency dep) {
-        return "org.eolang".equals(dep.getGroupId())
-            && "eo-runtime".equals(dep.getArtifactId());
-    }
-
-    /**
-     * Check if dependency is not needed at runtime.
-     * @param dep Maven dependency
-     * @return True if it's not needed at runtime
-     */
-    private static boolean isRuntimeRequired(final Dependency dep) {
-        return dep.getScope() == null
-            || dep.getScope().isEmpty()
-            || "runtime".equals(dep.getScope())
-            || "compiled".equals(dep.getScope());
-    }
-
-    /**
-     * Compare with NULL-safety.
-     * @param left Left
-     * @param right Right
-     * @return TRUE if they are equal
-     */
-    private static boolean eqTo(final Dependency left, final Dependency right) {
-        return Objects.equals(
-            Objects.toString(left.getClassifier(), ""),
-            Objects.toString(right.getClassifier(), "")
-        )
-            && Objects.equals(left.getArtifactId(), right.getArtifactId())
-            && Objects.equals(left.getGroupId(), right.getGroupId());
     }
 
     /**

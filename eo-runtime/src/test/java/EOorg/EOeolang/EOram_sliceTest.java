@@ -54,7 +54,7 @@ public final class EOram_sliceTest {
         "10, 5, hello, 5, 5, hello",
         "13, 0, hello world, 6, 5, world"
     })
-    void ramSlice(
+    void makesRamSlice(
         final long total,
         final int wrt,
         final String data,

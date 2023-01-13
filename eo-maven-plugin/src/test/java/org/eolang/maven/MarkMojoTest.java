@@ -39,7 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class MarkMojoTest {
 
     @Test
-    void extendForeignWithNewObjects(@TempDir final Path temp) throws Exception {
+    void extendsForeignWithNewObjects(@TempDir final Path temp) throws Exception {
         final Path bins = temp.resolve(ResolveMojo.DIR);
         new Home(bins).save(
             "hi",

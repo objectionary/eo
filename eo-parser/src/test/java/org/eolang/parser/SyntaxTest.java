@@ -105,7 +105,7 @@ final class SyntaxTest {
         "a b c > x\n  x ^ > @",
         "[] > x\n  x ^ > @"
     })
-    void shouldBeParsable(final String code) {
+    void parsesSuccessfully(final String code) {
         final Syntax syntax = new Syntax(
             "test-2",
             new InputOf(code),

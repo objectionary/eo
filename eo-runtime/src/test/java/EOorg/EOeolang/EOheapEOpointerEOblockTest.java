@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 public final class EOheapEOpointerEOblockTest {
 
     @Test
-    public void writesToHeap() {
+    public void writesBytesIntoHeap() {
         final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(
             new PhMethod(heap, "pointer"),
