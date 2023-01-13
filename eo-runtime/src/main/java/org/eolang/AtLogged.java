@@ -24,7 +24,7 @@
 
 package org.eolang;
 
-import java.io.PrintStream;
+import java.util.logging.Logger;
 
 /**
  * An attribute that logs all its operations to the console (very
@@ -47,9 +47,9 @@ final class AtLogged implements Attr {
     private final String owner;
 
     /**
-     * Output stream.
+     * Logger.
      */
-    private final PrintStream out;
+    private final Logger log;
 
     /**
      * Ctor.
@@ -57,19 +57,19 @@ final class AtLogged implements Attr {
      * @param label Label
      */
     AtLogged(final Attr attr, final String label) {
-        this(attr, label, System.out);
+        this(attr, label, Logger.getLogger(AtLogged.class.getName()));
     }
 
     /**
      * Ctor.
      * @param attr Attribute
      * @param label Label
-     * @param stream Output stream
+     * @param logger Logger
      */
-    AtLogged(final Attr attr, final String label, final PrintStream stream) {
+    AtLogged(final Attr attr, final String label, final Logger logger) {
         this.origin = attr;
         this.owner = label;
-        this.out = stream;
+        this.log = logger;
     }
 
     @Override
@@ -84,24 +84,24 @@ final class AtLogged implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        this.out.printf("  %s.copy()...\n", this.owner);
+        this.log.info(String.format("  %s.copy()...\n", this.owner));
         final Attr ret = this.origin.copy(self);
-        this.out.printf("  %s.copy()!\n", this.owner);
+        this.log.info(String.format("  %s.copy()!\n", this.owner));
         return ret;
     }
 
     @Override
     public Phi get() {
-        this.out.printf("  %s.get()...\n", this.owner);
+        this.log.info(String.format("  %s.get()...\n", this.owner));
         final Phi ret = this.origin.get();
-        this.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
+        this.log.info(String.format("  %s.get()! -> %d\n", this.owner, ret.hashCode()));
         return ret;
     }
 
     @Override
     public void put(final Phi src) {
-        this.out.printf("  %s.put()...\n", this.owner);
+        this.log.info(String.format("  %s.put()...\n", this.owner));
         this.origin.put(src);
-        this.out.printf("  %s.put()!\n", this.owner);
+        this.log.info(String.format("  %s.put()!\n", this.owner));
     }
 }
