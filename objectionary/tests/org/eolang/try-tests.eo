@@ -26,7 +26,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.16
++version 0.28.17
 
 [] > simple-division-by-zero
   try > @
@@ -83,3 +83,32 @@
       nop
     $.equal-to 32
 
+[] > try-memory-update
+  memory 0 > m
+  assert-that > @
+    seq
+      m.write 1
+      try
+        []
+          m.write (m.plus 1) > @
+        [e]
+          e > @
+        nop
+      m
+    $.equal-to 3
+
+[] > try-memory-update-catch
+  memory 0 > m
+  assert-that > @
+    seq
+      m.write 1
+      try
+        []
+          seq > @
+            5.div 0
+            m.write (m.plus 1)
+        [e]
+          e > @
+        nop
+      m
+    $.equal-to 1

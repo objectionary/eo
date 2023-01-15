@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.16
++version 0.28.17
 
 [] > goto-jumps-backwards
   memory 0 > i
@@ -42,6 +42,25 @@
               i.lt 10
               g.backward
               TRUE
+      stdout "Finished!"
+      i
+    $.equal-to 11
+
+[] > goto-jumps-backwards-without-last-datization
+  memory 0 > i
+  assert-that > @
+    seq
+      i.write 1
+      goto
+        [g]
+          seq > @
+            i.write (i.plus 1)
+            if.
+              i.lt 10
+              g.backward
+              TRUE
+      .@
+      .<
       stdout "Finished!"
       i
     $.equal-to 10

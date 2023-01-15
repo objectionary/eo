@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.16
++version 0.28.17
 
 [] > understands-this-correctly
   [x] > a
@@ -139,6 +139,14 @@
       "Hello".<.eq ("Hello".<)
       42.plus.<.gt 0
       45-1F-E7.<.eq (45-1F-E7.<)
+    $.equal-to TRUE
+
+[] > take-vertex-as-vertical-attribute
+  assert-that > @
+    eq.
+      <.
+        42
+      42.<
     $.equal-to TRUE
 
 [] > negative-object-vertices
