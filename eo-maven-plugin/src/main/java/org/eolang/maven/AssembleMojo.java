@@ -224,6 +224,17 @@ public final class AssembleMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
+    /**
+     * If set to TRUE, the exception on exit will be printed in details
+     * to the log.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.29.0
+     */
+    @Parameter(property = "eo.unrollExitError")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean unrollExitError = true;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {

@@ -62,6 +62,7 @@ SOFTWARE.
           </execution>
         </executions>
         <configuration>
+          <unrollExitError>true</unrollExitError>
           <withRuntimeDependency>false</withRuntimeDependency>
           <sodgIncludes>
             <o>org.eolang.error</o>
