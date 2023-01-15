@@ -29,6 +29,7 @@ import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -166,6 +167,16 @@ abstract class SafeMojo extends AbstractMojo {
     protected String transpiledFormat = "csv";
 
     /**
+     * If set to TRUE, the exception on exit will be printed in details
+     * to the log.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.29.0
+     */
+    @Parameter(property = "eo.unrollExitError")
+    protected boolean unrollExitError = true;
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
@@ -226,7 +237,7 @@ abstract class SafeMojo extends AbstractMojo {
                     );
                 }
             } catch (final IOException ex) {
-                throw new MojoFailureException(
+                this.exitError(
                     String.format(
                         "Failed to execute %s",
                         this.getClass().getCanonicalName()
@@ -234,7 +245,7 @@ abstract class SafeMojo extends AbstractMojo {
                     ex
                 );
             } catch (final TimeoutException ex) {
-                throw new MojoExecutionException(
+                this.exitError(
                     Logger.format(
                         "Timeout %[ms]s for Mojo execution is reached",
                         TimeUnit.SECONDS.toMillis(this.timeout)
@@ -242,7 +253,7 @@ abstract class SafeMojo extends AbstractMojo {
                     ex
                 );
             } catch (final ExecutionException ex) {
-                throw new MojoExecutionException(
+                this.exitError(
                     String.format("'%s' execution failed", this),
                     ex
                 );
@@ -339,5 +350,37 @@ abstract class SafeMojo extends AbstractMojo {
         } catch (final IOException ex) {
             throw new MojoFailureException(ex);
         }
+    }
+
+    /**
+     * Make an error for the exit and throw it.
+     * @param msg The message
+     * @param exp Original problem
+     * @throws MojoFailureException For sure
+     */
+    private void exitError(final String msg, final Throwable exp)
+        throws MojoFailureException {
+        final MojoFailureException out = new MojoFailureException(msg, exp);
+        if (this.unrollExitError) {
+            for (final String cause : SafeMojo.causes(exp)) {
+                Logger.error(this, cause);
+            }
+        }
+        throw out;
+    }
+
+    /**
+     * Turn the exception into an array of causes.
+     * @param exp Original problem
+     * @return List of causes
+     */
+    private static List<String> causes(final Throwable exp) {
+        final List<String> causes = new LinkedList<>();
+        causes.add(exp.getMessage());
+        final Throwable cause = exp.getCause();
+        if (cause != null) {
+            causes.addAll(SafeMojo.causes(cause));
+        }
+        return causes;
     }
 }
