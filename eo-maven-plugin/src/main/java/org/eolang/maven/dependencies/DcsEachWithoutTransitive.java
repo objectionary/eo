@@ -30,6 +30,7 @@ import org.cactoos.Func;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.eolang.maven.Coordinates;
+import org.eolang.maven.ResolveMojo;
 
 /**
  * Dependencies without transitive dependencies.
@@ -70,7 +71,7 @@ public final class DcsEachWithoutTransitive implements Iterable<Dependency> {
                 final Iterable<Dependency> transitives = new Filtered<>(
                     dep -> !DcsEachWithoutTransitive.eqTo(dep, dependency)
                         && DcsEachWithoutTransitive.isRuntimeRequired(dep)
-                        && !DcsEachWithoutTransitive.isRuntime(dep),
+                        && !ResolveMojo.isRuntime(dep),
                     this.transitive.apply(dependency)
                 );
                 final String list = String.join(
@@ -107,16 +108,6 @@ public final class DcsEachWithoutTransitive implements Iterable<Dependency> {
         )
             && Objects.equals(left.getArtifactId(), right.getArtifactId())
             && Objects.equals(left.getGroupId(), right.getGroupId());
-    }
-
-    /**
-     * Is it our runtime dep?
-     * @param other The dep
-     * @return TRUE if it is
-     */
-    private static boolean isRuntime(final Dependency other) {
-        return "org.eolang".equals(other.getGroupId())
-            && "eo-runtime".equals(other.getArtifactId());
     }
 
     /**

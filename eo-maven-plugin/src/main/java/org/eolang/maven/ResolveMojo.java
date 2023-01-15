@@ -186,7 +186,8 @@ public final class ResolveMojo extends SafeMojo {
      * @param dep Dependency
      * @return True if runtime.
      */
-    static boolean isRuntime(final Dependency dep) {
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());
     }
