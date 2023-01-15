@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -29,15 +29,16 @@ import org.apache.maven.model.Dependency;
 import org.cactoos.Func;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.eolang.maven.Coordinates;
 
 /**
  * Dependencies without transitive dependencies.
  *
  * @since 0.29.0
- * @todo #1589:30min Add fine grained tests for DcsEachWithoutTransitive. It's important to add new
+ * @todo #1589:30min Add fine-grained tests for DcsEachWithoutTransitive. It's important to add new
  *  unit tests for different cases including dome garbage inputs.
  */
-final class DcsEachWithoutTransitive implements Iterable<Dependency> {
+public final class DcsEachWithoutTransitive implements Iterable<Dependency> {
 
     /**
      * Original dependencies.
@@ -54,7 +55,7 @@ final class DcsEachWithoutTransitive implements Iterable<Dependency> {
      * @param dependencies Dependencies
      * @param strategy Strategy
      */
-    DcsEachWithoutTransitive(
+    public DcsEachWithoutTransitive(
         final Iterable<Dependency> dependencies,
         final Func<? super Dependency, ? extends Iterable<Dependency>> strategy
     ) {
@@ -69,7 +70,7 @@ final class DcsEachWithoutTransitive implements Iterable<Dependency> {
                 final Iterable<Dependency> transitives = new Filtered<>(
                     dep -> !DcsEachWithoutTransitive.eqTo(dep, dependency)
                         && DcsEachWithoutTransitive.isRuntimeRequired(dep)
-                        && !ResolveMojo.isRuntime(dep),
+                        && !DcsEachWithoutTransitive.isRuntime(dep),
                     this.transitive.apply(dependency)
                 );
                 final String list = String.join(
@@ -106,6 +107,16 @@ final class DcsEachWithoutTransitive implements Iterable<Dependency> {
         )
             && Objects.equals(left.getArtifactId(), right.getArtifactId())
             && Objects.equals(left.getGroupId(), right.getGroupId());
+    }
+
+    /**
+     * Is it our runtime dep?
+     * @param other The dep
+     * @return TRUE if it is
+     */
+    private static boolean isRuntime(final Dependency other) {
+        return "org.eolang".equals(other.getGroupId())
+            && "eo-runtime".equals(other.getArtifactId());
     }
 
     /**
