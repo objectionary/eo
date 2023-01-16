@@ -182,14 +182,11 @@ public final class ProbeMojo extends SafeMojo {
     private Collection<String> probes(final Path file) throws FileNotFoundException {
         final Collection<String> objects = new ListOf<>(
             new Mapped<>(
-                ProbeMojo::trimSuffix,
+                ProbeMojo::withoutPrefix,
                 new Filtered<>(
-                    ProbeMojo::hasNotContainReservedChars,
-                    new Filtered<>(
-                        obj -> !obj.isEmpty(),
-                        new XMLDocument(file).xpath(
-                            "//metas/meta[head/text() = 'probe']/tail/text()"
-                        )
+                    obj -> !obj.isEmpty() && ProbeMojo.notContainsReservedChars(obj),
+                    new XMLDocument(file).xpath(
+                        "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
                 ).iterator()
             )
@@ -208,12 +205,21 @@ public final class ProbeMojo extends SafeMojo {
         return objects;
     }
 
-    private static String trimSuffix(final String obj) {
+    /**
+     * Trim Q prefix.
+     * Q.a.b.c -> a.b
+     * a.b.c -> a.b.c
+     * @param obj Full object name
+     * @return Trimmed object name
+     */
+    private static String withoutPrefix(final String obj) {
+        final String result;
         if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
-            return obj.substring(2);
+            result = obj.substring(2);
         } else {
-            return obj;
+            result = obj;
         }
+        return result;
     }
 
     /**
@@ -224,7 +230,7 @@ public final class ProbeMojo extends SafeMojo {
      * @todo #1395:30min Need to add the logic of "hasReservedChars" method to
      *  add-probes.xsl". After that, the method in this class need to be removed.
      */
-    private static boolean hasNotContainReservedChars(final String str) {
+    private static boolean notContainsReservedChars(final String str) {
         return Stream.of("<", ">", "$", "*", "?", ":", "\"", "|", "^", "@")
             .noneMatch(str::contains);
     }
