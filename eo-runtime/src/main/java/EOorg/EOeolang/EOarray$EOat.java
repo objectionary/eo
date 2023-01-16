@@ -58,11 +58,15 @@ public class EOarray$EOat extends PhDefault {
                 rho -> {
                     final Phi[] array = new Param(rho).strong(Phi[].class);
                     int idx = new Param(rho, "i").strong(Long.class).intValue();
-                    if (array.length < Math.abs(idx) || array.length == idx) {
-                        final int element = idx < 0 ? idx + array.length : idx + 1;
+                    if (idx >= 0 && array.length <= idx) {
                         throw new ExFailure(
                             "Can't #at(%d) the %dth element of the array, there are just %d of them",
-                            idx, element, array.length
+                            idx, idx + 1, array.length
+                        );
+                    } else if (idx < 0 && array.length < Math.abs(idx)) {
+                        throw new ExFailure(
+                            "Can't #at(%d) the %dth element of the array",
+                            idx, array.length + idx
                         );
                     } else if (idx < 0) {
                         idx = array.length + idx;
