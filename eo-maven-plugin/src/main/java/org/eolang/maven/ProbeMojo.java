@@ -182,9 +182,9 @@ public final class ProbeMojo extends SafeMojo {
     private Collection<String> probes(final Path file) throws FileNotFoundException {
         final Collection<String> objects = new ListOf<>(
             new Mapped<>(
-                ProbeMojo::withoutPrefix,
+                ProbeMojo::noPrefix,
                 new Filtered<>(
-                    obj -> !obj.isEmpty() && ProbeMojo.notContainsReservedChars(obj),
+                    obj -> !obj.isEmpty() && ProbeMojo.missesReservedChars(obj),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
@@ -212,7 +212,7 @@ public final class ProbeMojo extends SafeMojo {
      * @param obj Full object name
      * @return Trimmed object name
      */
-    private static String withoutPrefix(final String obj) {
+    private static String noPrefix(final String obj) {
         final String result;
         if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
             result = obj.substring(2);
@@ -227,10 +227,10 @@ public final class ProbeMojo extends SafeMojo {
      *
      * @param str String
      * @return True if found
-     * @todo #1395:30min Need to add the logic of "hasReservedChars" method to
+     * @todo #1395:30min Need to add the logic of "missesReservedChars" method to
      *  add-probes.xsl". After that, the method in this class need to be removed.
      */
-    private static boolean notContainsReservedChars(final String str) {
+    private static boolean missesReservedChars(final String str) {
         return Stream.of("<", ">", "$", "*", "?", ":", "\"", "|", "^", "@")
             .noneMatch(str::contains);
     }
