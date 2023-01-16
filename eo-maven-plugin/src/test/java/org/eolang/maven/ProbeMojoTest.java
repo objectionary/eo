@@ -32,7 +32,6 @@ import java.util.LinkedList;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
@@ -63,35 +62,39 @@ final class ProbeMojoTest {
      */
     private static final String FOREIGN = "eo-foreign.json";
 
-//    @Test
-//    void findsProbes(@TempDir final Path temp) throws IOException {
-//        this.initTest(temp);
-//        final File target = temp.resolve("target").toFile();
-//        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
-//        new Moja<>(ProbeMojo.class)
-//            .with("targetDir", target)
-//            .with("foreign", foreign)
-//            .with("foreignFormat", "json")
-//            .with("objectionary", new OyFake())
-//            .execute();
-//        MatcherAssert.assertThat(
-//            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("probed"),
-//            Matchers.equalTo("7")
-//        );
-
-    //    }
     @Test
     void findsProbes(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            ProbeMojoTest.firstProbe(
+            ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("foreignFormat", "json")
                     .with("objectionary", new OyFake())
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
-                    .foreignPath()
+                    .foreignPath(),
+                "probed"
             ),
             Matchers.equalTo("7")
+        );
+    }
+
+    @Test
+    void findsProbesViaOfflineHashFile(@TempDir final Path temp) throws IOException {
+        new Home().save(
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            temp.resolve("tags.txt")
+        );
+        MatcherAssert.assertThat(
+            ProbeMojoTest.firstEntry(
+                new FakeMaven(temp)
+                    .with("offlineHashFile", temp.resolve("tags.txt"))
+                    .with("objectionary", new OyFake())
+                    .withProgram(ProbeMojoTest.program())
+                    .execute(new FakeMaven.Probe())
+                    .foreignPath(),
+                "hash"
+            ),
+            Matchers.equalTo("mmmmmmm")
         );
     }
 
@@ -103,31 +106,8 @@ final class ProbeMojoTest {
         ).asString();
     }
 
-    private static String firstProbe(final Path foreign) {
-        return new LinkedList<>(new MnCsv(foreign.toFile()).read()).getFirst().get("probed");
-    }
-
-
-    @Test
-    void findsProbesViaOfflineHashFile(@TempDir final Path temp) throws IOException {
-        new Home().save(
-            new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            temp.resolve("tags.txt")
-        );
-        this.initTest(temp);
-        final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
-        new Moja<>(ProbeMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .with("foreignFormat", "json")
-            .with("objectionary", new OyFake())
-            .with("offlineHashFile", temp.resolve("tags.txt"))
-            .execute();
-        MatcherAssert.assertThat(
-            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
-            Matchers.equalTo("mmmmmmm")
-        );
+    private static String firstEntry(final Path foreign, final String field) {
+        return new LinkedList<>(new MnCsv(foreign.toFile()).read()).getFirst().get(field);
     }
 
     @Test
