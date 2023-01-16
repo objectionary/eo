@@ -50,7 +50,8 @@ public final class ParsingTrain extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final XSL EACH = new XSLDocument(
-        ParsingTrain.class.getResourceAsStream("_each.xsl")
+        ParsingTrain.class.getResourceAsStream("_each.xsl"),
+        "each.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
