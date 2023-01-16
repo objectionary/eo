@@ -209,3 +209,15 @@
   assert-that > @
     arr.at -5
     $.equal-to 0
+
+[] > array-with-negative-index-out-of-bounds
+  * 0 1 2 3 4 > arr
+  assert-that > @
+    try
+      []
+        arr.at -6 > @
+      [e]
+        e > @
+      nop
+    $.equal-to
+      "Can't #at(-6) the -1th element of the array, there are just 5 of them"

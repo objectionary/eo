@@ -29,9 +29,11 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -56,6 +58,34 @@ public final class EOarrayEOatTest {
         MatcherAssert.assertThat(
             new Dataized(get).take(),
             Matchers.equalTo(txt)
+        );
+    }
+
+    @Test
+    public void checksNegativeIndex() {
+        final String first = "first";
+        final String second = "second";
+        final Phi array = new Data.ToPhi(new Phi[] {new Data.ToPhi(first), new Data.ToPhi(second)});
+        final Phi idx = new Data.ToPhi(-1L);
+        final Phi get = array.attr("at").get();
+        get.attr(0).put(idx);
+        MatcherAssert.assertThat(
+            new Dataized(get).take(String.class),
+            Matchers.equalTo(second)
+        );
+    }
+
+    @Test
+    public void checksOutOfBounds() {
+        final String first = "first";
+        final String second = "second";
+        final Phi array = new Data.ToPhi(new Phi[] {new Data.ToPhi(first), new Data.ToPhi(second)});
+        final Phi idx = new Data.ToPhi(-3L);
+        final Phi get = array.attr("at").get();
+        get.attr(0).put(idx);
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(get).take()
         );
     }
 }
