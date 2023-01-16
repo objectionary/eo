@@ -197,3 +197,15 @@
     list a
     $.equal-to
       list (* 1 2 3)
+
+[] > array-with-negative-index-gets-last
+  * 0 1 2 3 4 > arr
+  assert-that > @
+    arr.at -1
+    $.equal-to 4
+
+[] > array-with-negative-index-gets-first
+  * 0 1 2 3 4 > arr
+  assert-that > @
+    arr.at -5
+    $.equal-to 0
