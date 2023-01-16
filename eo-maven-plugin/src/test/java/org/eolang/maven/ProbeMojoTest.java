@@ -98,6 +98,23 @@ final class ProbeMojoTest {
         );
     }
 
+    @Test
+    void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            ProbeMojoTest.firstEntry(
+                new FakeMaven(temp)
+                    .with("tag", "1.0.0")
+                    .with("offlineHash", "*.*.*:abcdefg")
+                    .with("objectionary", new OyFake())
+                    .withProgram(ProbeMojoTest.program())
+                    .execute(new FakeMaven.Probe())
+                    .foreignPath(),
+                "hash"
+            ),
+            Matchers.equalTo("abcdefg")
+        );
+    }
+
     private static String program() {
         return new UncheckedText(
             new TextOf(
@@ -110,24 +127,24 @@ final class ProbeMojoTest {
         return new LinkedList<>(new MnCsv(foreign.toFile()).read()).getFirst().get(field);
     }
 
-    @Test
-    void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
-        this.initTest(temp);
-        final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
-        new Moja<>(ProbeMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .with("foreignFormat", "json")
-            .with("objectionary", new OyFake())
-            .with("tag", "1.0.0")
-            .with("offlineHash", "*.*.*:abcdefg")
-            .execute();
-        MatcherAssert.assertThat(
-            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
-            Matchers.equalTo("abcdefg")
-        );
-    }
+//    @Test
+//    void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
+//        this.initTest(temp);
+//        final File target = temp.resolve("target").toFile();
+//        final File foreign = temp.resolve(ProbeMojoTest.FOREIGN).toFile();
+//        new Moja<>(ProbeMojo.class)
+//            .with("targetDir", target)
+//            .with("foreign", foreign)
+//            .with("foreignFormat", "json")
+//            .with("objectionary", new OyFake())
+//            .with("tag", "1.0.0")
+//            .with("offlineHash", "*.*.*:abcdefg")
+//            .execute();
+//        MatcherAssert.assertThat(
+//            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
+//            Matchers.equalTo("abcdefg")
+//        );
+//    }
 
     @Test
     @ExtendWith(OnlineCondition.class)
