@@ -24,19 +24,14 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.MnCsv;
-import com.yegor256.tojos.MnJson;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedList;
-import org.cactoos.Input;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -49,18 +44,9 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
- * @todo #1395:40min Rewrite this class via using
- *  a new method for testing Mojos with using `FakeMaven` class.
- *  At the moment, this class has a lot of "noise"-code. So,
- *  by using `FakeMaven` it will be more clear.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ProbeMojoTest {
-
-    /**
-     * Catalog 'eo-foreign.json' for all tests.
-     */
-    private static final String FOREIGN = "eo-foreign.json";
 
     @Test
     void findsProbes(@TempDir final Path temp) throws Exception {
