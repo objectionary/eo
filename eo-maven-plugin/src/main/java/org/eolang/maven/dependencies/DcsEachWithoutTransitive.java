@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -29,6 +29,8 @@ import org.apache.maven.model.Dependency;
 import org.cactoos.Func;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.eolang.maven.Coordinates;
+import org.eolang.maven.ResolveMojo;
 
 /**
  * Dependencies without transitive dependencies.
@@ -37,7 +39,7 @@ import org.cactoos.iterable.Mapped;
  * @todo #1589:30min Add fine grained tests for DcsEachWithoutTransitive. It's important to add new
  *  unit tests for different cases including dome garbage inputs.
  */
-final class DcsEachWithoutTransitive implements Iterable<Dependency> {
+public final class DcsEachWithoutTransitive implements Iterable<Dependency> {
 
     /**
      * Original dependencies.
@@ -54,7 +56,7 @@ final class DcsEachWithoutTransitive implements Iterable<Dependency> {
      * @param dependencies Dependencies
      * @param strategy Strategy
      */
-    DcsEachWithoutTransitive(
+    public DcsEachWithoutTransitive(
         final Iterable<Dependency> dependencies,
         final Func<? super Dependency, ? extends Iterable<Dependency>> strategy
     ) {

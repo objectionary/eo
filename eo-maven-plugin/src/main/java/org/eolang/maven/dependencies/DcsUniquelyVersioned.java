@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -37,7 +37,7 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.28.11
  */
-final class DcsUniquelyVersioned implements Iterable<Dependency> {
+public final class DcsUniquelyVersioned implements Iterable<Dependency> {
 
     /**
      * Source of dependencies.
@@ -49,7 +49,7 @@ final class DcsUniquelyVersioned implements Iterable<Dependency> {
      *
      * @param dlg Source of dependencies.
      */
-    DcsUniquelyVersioned(final Iterable<Dependency> dlg) {
+    public DcsUniquelyVersioned(final Iterable<Dependency> dlg) {
         this.delegate = dlg;
     }
 
