@@ -464,4 +464,22 @@ public final class FakeMaven {
             ).iterator();
         }
     }
+
+    /**
+     * Probe full pipeline.
+     *
+     * @since 0.29
+     */
+    static final class Probe implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                DiscoverMojo.class,
+                ProbeMojo.class
+            ).iterator();
+        }
+    }
 }

@@ -130,7 +130,8 @@ public final class SodgMojo extends SafeMojo {
                             )
                         )
                     ).asString(),
-                    new ClasspathSources()
+                    new ClasspathSources(),
+                    "to-xembly.xsl"
                 ).with("testing", "no")
             )
         ),
