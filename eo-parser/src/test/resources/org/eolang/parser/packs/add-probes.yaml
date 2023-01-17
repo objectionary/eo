@@ -1,5 +1,6 @@
 tests:
   - /program/errors[count(error)=0]
+  - /program/sheets/sheet[contains(text(),'add-probes')]
   - //metas[count(.//meta[head/text()='probe'])=8]
   - //meta[head/text()='probe' and tail/text()='stdout.and']
   - //meta[head/text()='probe' and tail/text()='Q.org']

@@ -97,11 +97,19 @@ public final class ParsingTrain extends TrEnvelope {
      */
     @SuppressWarnings("unchecked")
     public ParsingTrain() {
+        this(ParsingTrain.SHEETS);
+    }
+
+    /**
+     * Ctor.
+     * @param sheets Sheets
+     */
+    ParsingTrain(final String... sheets) {
         super(
             new TrLambda(
                 new TrFast(
                     new TrLogged(
-                        new TrClasspath<>(ParsingTrain.SHEETS).back(),
+                        new TrClasspath<>(sheets).back(),
                         ParsingTrain.class,
                         Level.FINEST
                     )
