@@ -67,7 +67,7 @@ SOFTWARE.
         <xsl:apply-templates select="node()|@*"/>
         <xsl:for-each select="//o[starts-with(@base, '.')]">
           <xsl:variable name="probe" select="eo:qualify(.)"/>
-          <xsl:if test="not(eo:contains-any-of($probe, ('&lt;', '&gt;', '$', '*', '?', ':', '\', '|', '^', '@')))">
+          <xsl:if test="not(eo:contains-any-of($probe, ('$', '^', '@')))">
             <xsl:element name="meta">
               <xsl:attribute name="line">
                 <xsl:value-of select="@line"/>

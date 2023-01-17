@@ -12,14 +12,14 @@ tests:
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start' and part/text()='Q.org.eolang.car.engine.start']
 eo: |
   +package org.eolang.custom
-  
+
   [] > app
     QQ.txt.sprintf > @
       "Hello, world!\n"
     start. > a
       engine.
         QQ.car
-  
+
     and. > fib
       stdout
         sprintf
@@ -33,3 +33,8 @@ eo: |
         sprintf
           "%i"
     $.other 1 > one
+
+    memory 0 > price
+    [p] > set-price
+      ^.price.write p > @
+
