@@ -191,12 +191,10 @@ public final class ProbeMojo extends SafeMojo {
             )
         ).forEach(
             obj -> {
-                if (!ProbeMojo.hasReservedChars(obj)) {
-                    if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
-                        ret.add(obj.substring(2));
-                    } else {
-                        ret.add(obj);
-                    }
+                if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
+                    ret.add(obj.substring(2));
+                } else {
+                    ret.add(obj);
                 }
             }
         );
@@ -212,19 +210,6 @@ public final class ProbeMojo extends SafeMojo {
             );
         }
         return ret;
-    }
-
-    /**
-     * Checks if String has reserved symbols.
-     *
-     * @param str String
-     * @return True if found
-     * @todo #1395:30min Need to add the logic of "hasReservedChars" method to
-     *  add-probes.xsl". After that, the method in this class need to be removed.
-     */
-    private static boolean hasReservedChars(final String str) {
-        return Stream.of("<", ">", "$", "*", "?", ":", "\"", "|", "^", "@")
-            .anyMatch(str::contains);
     }
 
     /**
