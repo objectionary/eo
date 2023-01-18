@@ -183,7 +183,7 @@ public final class ProbeMojo extends SafeMojo {
             new Mapped<>(
                 ProbeMojo::noPrefix,
                 new Filtered<>(
-                    obj -> !obj.isEmpty() && ProbeMojo.missesReservedChars(obj),
+                    obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
