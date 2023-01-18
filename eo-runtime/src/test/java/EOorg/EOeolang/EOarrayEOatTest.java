@@ -63,11 +63,11 @@ public final class EOarrayEOatTest {
     @Test
     public void checksNegativeIndex() {
         MatcherAssert.assertThat(
-            new Dataized(get(-1)).take(String.class),
+            new Dataized(this.get(-1L)).take(String.class),
             Matchers.equalTo("second")
         );
         MatcherAssert.assertThat(
-            new Dataized(get(-2)).take(String.class),
+            new Dataized(this.get(-2L)).take(String.class),
             Matchers.equalTo("first")
         );
     }
@@ -76,17 +76,17 @@ public final class EOarrayEOatTest {
     public void checksOutOfBounds() {
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Dataized(get(-3)).take()
+            () -> new Dataized(this.get(-3L)).take()
         );
     }
 
-    private Phi get(int index) {
+    private Phi get(final long index) {
         final String first = "first";
         final String second = "second";
         final Phi array = new Data.ToPhi(
             new Phi[] {
                 new Data.ToPhi(first),
-                new Data.ToPhi(second)
+                new Data.ToPhi(second),
             });
         final Phi idx = new Data.ToPhi(index);
         final Phi get = array.attr("at").get();
