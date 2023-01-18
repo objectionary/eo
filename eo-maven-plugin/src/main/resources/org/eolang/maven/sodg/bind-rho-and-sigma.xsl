@@ -25,6 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="bind-rho-and-sigma" version="2.0">
   <!--
   Here we BIND all object formations to their parents using \rho and \sigma.
+  We don't bind "data" objects, through.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -33,17 +34,6 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[@data]" mode="sodg" priority="3">
-    <xsl:if test="not(@loc)">
-      <xsl:message terminate="yes">
-        <xsl:text>The object doesn't have @loc, how come?</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:call-template name="bind">
-      <xsl:with-param name="kid" select="@loc"/>
-      <xsl:with-param name="parent" select="'Φ'"/>
-    </xsl:call-template>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.')]" mode="sodg" priority="2">
     <xsl:if test="not(@loc)">
