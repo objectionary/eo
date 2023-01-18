@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChResolve;
@@ -176,28 +177,20 @@ public final class ProbeMojo extends SafeMojo {
      * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
-     * @todo #1395:30min Rewrite lines 185-200 as fully `cactoos` style to
-     *  make to code more convenient. So there is will no "imperative" `forEach()`
-     *  in line 194.
      */
-    private Collection<String> probes(final Path file)
-        throws FileNotFoundException {
-        final Collection<String> ret = new HashSet<>(1);
-        new ListOf<>(
-            new Filtered<>(
-                obj -> !obj.isEmpty(),
-                new XMLDocument(file).xpath("//metas/meta[head/text() = 'probe']/tail/text()")
+    private Collection<String> probes(final Path file) throws FileNotFoundException {
+        final Collection<String> objects = new ListOf<>(
+            new Mapped<>(
+                ProbeMojo::noPrefix,
+                new Filtered<>(
+                    obj -> !obj.isEmpty() && ProbeMojo.missesReservedChars(obj),
+                    new XMLDocument(file).xpath(
+                        "//metas/meta[head/text() = 'probe']/tail/text()"
+                    )
+                ).iterator()
             )
-        ).forEach(
-            obj -> {
-                if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
-                    ret.add(obj.substring(2));
-                } else {
-                    ret.add(obj);
-                }
-            }
         );
-        if (ret.isEmpty()) {
+        if (objects.isEmpty()) {
             Logger.debug(
                 this, "Didn't find any probed objects in %s",
                 new Rel(file)
@@ -205,10 +198,27 @@ public final class ProbeMojo extends SafeMojo {
         } else {
             Logger.debug(
                 this, "Found %d probed objects in %s: %s",
-                ret.size(), new Rel(file), ret
+                objects.size(), new Rel(file), objects
             );
         }
-        return ret;
+        return objects;
+    }
+
+    /**
+     * Trim Q prefix.
+     * Q.a.b.c -> a.b
+     * a.b.c -> a.b.c
+     * @param obj Full object name
+     * @return Trimmed object name
+     */
+    private static String noPrefix(final String obj) {
+        final String result;
+        if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
+            result = obj.substring(2);
+        } else {
+            result = obj;
+        }
+        return result;
     }
 
     /**

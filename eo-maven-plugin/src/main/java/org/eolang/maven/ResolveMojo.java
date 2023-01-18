@@ -37,6 +37,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.dependencies.DcsDefault;
+import org.eolang.maven.dependencies.DcsDepgraph;
+import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
+import org.eolang.maven.dependencies.DcsUniquelyVersioned;
+import org.eolang.maven.dependencies.DcsWithRuntime;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -181,7 +186,8 @@ public final class ResolveMojo extends SafeMojo {
      * @param dep Dependency
      * @return True if runtime.
      */
-    static boolean isRuntime(final Dependency dep) {
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());
     }

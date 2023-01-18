@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.OnlineCondition;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

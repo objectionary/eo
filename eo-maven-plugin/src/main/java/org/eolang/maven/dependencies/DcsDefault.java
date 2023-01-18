@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
@@ -35,6 +35,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import org.apache.maven.model.Dependency;
+import org.eolang.maven.AssembleMojo;
+import org.eolang.maven.Coordinates;
+import org.eolang.maven.ParseMojo;
 import org.eolang.maven.util.Rel;
 
 /**
