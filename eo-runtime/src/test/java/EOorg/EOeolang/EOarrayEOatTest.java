@@ -62,29 +62,35 @@ public final class EOarrayEOatTest {
 
     @Test
     public void checksNegativeIndex() {
-        final String first = "first";
-        final String second = "second";
-        final Phi array = new Data.ToPhi(new Phi[] {new Data.ToPhi(first), new Data.ToPhi(second)});
-        final Phi idx = new Data.ToPhi(-1L);
-        final Phi get = array.attr("at").get();
-        get.attr(0).put(idx);
         MatcherAssert.assertThat(
-            new Dataized(get).take(String.class),
-            Matchers.equalTo(second)
+            new Dataized(get(-1)).take(String.class),
+            Matchers.equalTo("second")
+        );
+        MatcherAssert.assertThat(
+            new Dataized(get(-2)).take(String.class),
+            Matchers.equalTo("first")
         );
     }
 
     @Test
     public void checksOutOfBounds() {
-        final String first = "first";
-        final String second = "second";
-        final Phi array = new Data.ToPhi(new Phi[] {new Data.ToPhi(first), new Data.ToPhi(second)});
-        final Phi idx = new Data.ToPhi(-3L);
-        final Phi get = array.attr("at").get();
-        get.attr(0).put(idx);
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Dataized(get).take()
+            () -> new Dataized(get(-3)).take()
         );
+    }
+
+    private Phi get(int index) {
+        final String first = "first";
+        final String second = "second";
+        final Phi array = new Data.ToPhi(
+            new Phi[] {
+                new Data.ToPhi(first),
+                new Data.ToPhi(second)
+            });
+        final Phi idx = new Data.ToPhi(index);
+        final Phi get = array.attr("at").get();
+        get.attr(0).put(idx);
+        return get;
     }
 }
