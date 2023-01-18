@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
