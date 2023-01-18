@@ -32,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -137,6 +136,7 @@ public final class ProbeMojo extends SafeMojo {
         for (final Tojo tojo : tojos) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.probes(src);
+            Logger.info(this, "Probing %s objects ", names);
             int count = 0;
             for (final String name : names) {
                 if (!this.objectionary.contains(name)) {
@@ -184,7 +184,7 @@ public final class ProbeMojo extends SafeMojo {
             new Mapped<>(
                 ProbeMojo::noPrefix,
                 new Filtered<>(
-                    obj -> !obj.isEmpty() && ProbeMojo.missesReservedChars(obj),
+                    obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
@@ -220,19 +220,6 @@ public final class ProbeMojo extends SafeMojo {
             result = obj;
         }
         return result;
-    }
-
-    /**
-     * Checks if String has reserved symbols.
-     *
-     * @param str String
-     * @return True if found
-     * @todo #1395:30min Need to add the logic of "missesReservedChars" method to
-     *  add-probes.xsl". After that, the method in this class need to be removed.
-     */
-    private static boolean missesReservedChars(final String str) {
-        return Stream.of("<", ">", "$", "*", "?", ":", "\"", "|", "^", "@")
-            .noneMatch(str::contains);
     }
 
     /**
