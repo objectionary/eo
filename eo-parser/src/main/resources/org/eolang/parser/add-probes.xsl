@@ -62,8 +62,8 @@ SOFTWARE.
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
         <xsl:for-each select="//o[starts-with(@base, '.')]">
-          <xsl:variable name="probe" select="eo:qualify(.)"/>
-          <xsl:if test="not(eo:contains-any-of($probe, ('$', '^', '@')))">
+          <xsl:variable name="p" select="eo:qualify(.)"/>
+          <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@')))">
             <xsl:element name="meta">
               <xsl:attribute name="line">
                 <xsl:value-of select="@line"/>
@@ -72,10 +72,10 @@ SOFTWARE.
                 <xsl:text>probe</xsl:text>
               </xsl:element>
               <xsl:element name="tail">
-                <xsl:value-of select="$probe"/>
+                <xsl:value-of select="$p"/>
               </xsl:element>
               <xsl:element name="part">
-                <xsl:value-of select="$probe"/>
+                <xsl:value-of select="$p"/>
               </xsl:element>
             </xsl:element>
           </xsl:if>

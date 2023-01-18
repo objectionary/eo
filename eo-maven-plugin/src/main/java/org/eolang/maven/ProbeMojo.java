@@ -136,6 +136,7 @@ public final class ProbeMojo extends SafeMojo {
         for (final Tojo tojo : tojos) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.probes(src);
+            Logger.info(this, "Probing %s objects ", names);
             int count = 0;
             for (final String name : names) {
                 if (!this.objectionary.contains(name)) {
