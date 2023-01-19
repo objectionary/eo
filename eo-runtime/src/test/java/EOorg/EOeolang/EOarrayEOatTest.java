@@ -32,6 +32,7 @@ import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -57,5 +58,39 @@ public final class EOarrayEOatTest {
             new Dataized(get).take(),
             Matchers.equalTo(txt)
         );
+    }
+
+    @Test
+    public void checksNegativeIndex() {
+        MatcherAssert.assertThat(
+            new Dataized(this.get(-1L)).take(String.class),
+            Matchers.equalTo("second")
+        );
+        MatcherAssert.assertThat(
+            new Dataized(this.get(-2L)).take(String.class),
+            Matchers.equalTo("first")
+        );
+    }
+
+    @Test
+    public void checksOutOfBounds() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(this.get(-3L)).take()
+        );
+    }
+
+    private Phi get(final long index) {
+        final String first = "first";
+        final String second = "second";
+        final Phi array = new Data.ToPhi(
+            new Phi[] {
+                new Data.ToPhi(first),
+                new Data.ToPhi(second),
+            });
+        final Phi idx = new Data.ToPhi(index);
+        final Phi get = array.attr("at").get();
+        get.attr(0).put(idx);
+        return get;
     }
 }
