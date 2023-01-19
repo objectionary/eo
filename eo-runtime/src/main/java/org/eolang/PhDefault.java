@@ -53,6 +53,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected static final Vertices VTX = new Vertices();
 
     /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(PhDefault.class.getName());
