@@ -24,12 +24,17 @@
 package org.eolang;
 
 import com.jcabi.log.VerboseProcess;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
@@ -89,6 +94,58 @@ public final class MainTest {
         MatcherAssert.assertThat(
             MainTest.exec("unavailable-name"),
             Matchers.containsString("Can not find 'unavailable-name' object")
+        );
+    }
+
+    @Test
+    public void readsStreamCorrectly() throws IOException {
+        final BufferedReader reader = new BufferedReader(
+            Channels.newReader(
+                Channels.newChannel(
+                    new ByteArrayInputStream(
+                        ">> ··\uD835\uDD38('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
+                            StandardCharsets.UTF_8
+                        )
+                    )
+                ),
+                StandardCharsets.UTF_8
+            )
+        );
+        MatcherAssert.assertThat(
+            reader.readLine().length(),
+            Matchers.greaterThan(0)
+        );
+    }
+
+    @Test
+    public void readsSimpleStreamCorrectly() throws IOException {
+        final BufferedReader reader = new BufferedReader(
+            Channels.newReader(
+                Channels.newChannel(
+                    new ByteArrayInputStream(
+                        "abc".getBytes(
+                            StandardCharsets.UTF_8
+                        )
+                    )
+                ),
+                StandardCharsets.UTF_8
+            )
+        );
+        MatcherAssert.assertThat(
+            reader.readLine().length(),
+            Matchers.greaterThan(0)
+        );
+    }
+
+    @Test
+    public void readsBytesCorrectly() throws IOException {
+        MatcherAssert.assertThat(
+            new ByteArrayInputStream(
+                "··\uD835\uDD38➜Φ".getBytes(
+                    StandardCharsets.UTF_8
+                )
+            ).read(),
+            Matchers.greaterThan(0)
         );
     }
 
