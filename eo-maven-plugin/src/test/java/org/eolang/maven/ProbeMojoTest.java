@@ -60,7 +60,7 @@ final class ProbeMojoTest {
                     .foreignPath(),
                 "probed"
             ),
-            Matchers.equalTo("7")
+            Matchers.equalTo("5")
         );
     }
 

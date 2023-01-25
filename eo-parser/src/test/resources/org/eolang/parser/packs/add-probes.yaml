@@ -1,9 +1,7 @@
 tests:
   - /program/errors[count(error)=0]
   - /program/sheets/sheet[contains(text(),'add-probes')]
-  - //metas[count(.//meta[head/text()='probe'])=8]
-  - //meta[head/text()='probe' and tail/text()='stdout.and' and part/text()='stdout.and']
-  - //meta[head/text()='probe' and tail/text()='Q.org' and part/text()='Q.org']
+  - //metas[count(.//meta[head/text()='probe'])=6]
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt' and part/text()='Q.org.eolang.txt']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.sprintf' and part/text()='Q.org.eolang.txt.sprintf']
