@@ -23,9 +23,14 @@
  */
 package org.eolang;
 
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link PhPackage}.
@@ -33,6 +38,11 @@ import org.junit.jupiter.api.Test;
  * @since 0.24
  */
 final class PhPackageTest {
+
+    /**
+     * Default test package.
+     */
+    private static final String DEFAULT_PACKAGE = "org.eolang";
 
     @Test
     void takesPackage() {
@@ -54,4 +64,52 @@ final class PhPackageTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("attributes")
+    void retrievesAttribute(final String attribute, final String expected) {
+        MatcherAssert.assertThat(
+            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr(attribute).get(),
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    void doesNotCopies() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy()
+        );
+    }
+
+    @Test
+    void doesNotGetAttributeByPosition() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr(0)
+        );
+    }
+
+    @Test
+    void convertsToPhiTerm() {
+        MatcherAssert.assertThat(
+            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).φTerm(),
+            Matchers.equalTo("Φ.org.eolang")
+        );
+    }
+
+    @Test
+    void returnsLocator() {
+        MatcherAssert.assertThat(
+            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
+            Matchers.equalTo("?:?")
+        );
+    }
+
+    private static Stream<Arguments> attributes() {
+        return Stream.of(
+            Arguments.of("pckg", "Φ.org.eolang.pckg"),
+            Arguments.of("pckg.$.next", "Φ.org.eolang.pckg"),
+            Arguments.of("pckg-next", "Φ.org.eolang.sub")
+        );
+    }
 }

@@ -43,8 +43,7 @@ final class PhPackage implements Phi {
     /**
      * All of them.
      */
-    private final Map<String, Phi> objects =
-        new ConcurrentHashMap<>(0);
+    private final Map<String, Phi> objects = new ConcurrentHashMap<>(0);
 
     /**
      * Ctor.
@@ -123,8 +122,10 @@ final class PhPackage implements Phi {
             kid.attr("ρ").put(this);
             return kid;
         } catch (final NoSuchMethodException
-            | InvocationTargetException | InstantiationException
-            | IllegalAccessException ex) {
+            | InvocationTargetException
+            | InstantiationException
+            | IllegalAccessException ex
+        ) {
             throw new ExFailure(
                 String.format(
                     "Can't find Java object/package '%s' in EO package '%s'",
