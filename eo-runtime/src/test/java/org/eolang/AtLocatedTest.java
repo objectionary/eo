@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ class AtLocatedTest {
     void convertsToString() {
         MatcherAssert.assertThat(
             new AtLocated(new AtSimple(), 10, 10).toString(),
-            Matchers.equalTo("<10:10>ΦS")
+            Matchers.equalTo("<?:10:10>ΦS")
         );
     }
 

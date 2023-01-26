@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,10 @@
 package org.eolang;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,12 +61,21 @@ class AtLoggedTest {
      */
     private String label;
 
+    /**
+     * Logger handler.
+     * Allows writing logs to output stream.
+     */
+    private StreamHandler handler;
+
     @BeforeEach
     void setUp() {
         this.out = new ByteArrayOutputStream();
         this.origin = new AtSimple();
         this.label = "test";
-        this.logged = new AtLogged(this.origin, this.label, new PrintStream(this.out));
+        final Logger mock = Logger.getLogger("mock");
+        this.handler = new StreamHandler(this.out, new SimpleFormatter());
+        mock.addHandler(this.handler);
+        this.logged = new AtLogged(this.origin, this.label, mock);
     }
 
     @Test
@@ -86,13 +97,12 @@ class AtLoggedTest {
     @Test
     void copiesWithLogging() {
         this.logged.copy(Phi.Φ);
-        final String log = new String(this.out.toByteArray(), StandardCharsets.UTF_8);
         MatcherAssert.assertThat(
-            log,
+            this.log(),
             Matchers.containsString(String.format("  %s.copy()...", this.label))
         );
         MatcherAssert.assertThat(
-            log,
+            this.log(),
             Matchers.containsString(String.format("  %s.copy()!", this.label))
         );
     }
@@ -103,13 +113,12 @@ class AtLoggedTest {
             this.logged.get(),
             Matchers.equalTo(this.origin.get())
         );
-        final String log = new String(this.out.toByteArray(), StandardCharsets.UTF_8);
         MatcherAssert.assertThat(
-            log,
+            this.log(),
             Matchers.containsString(String.format("  %s.get()...", this.label))
         );
         MatcherAssert.assertThat(
-            log,
+            this.log(),
             Matchers.containsString(String.format("  %s.get()!", this.label))
         );
     }
@@ -117,14 +126,23 @@ class AtLoggedTest {
     @Test
     void putsWithLogging() {
         this.logged.put(Phi.Φ);
-        final String log = new String(this.out.toByteArray(), StandardCharsets.UTF_8);
         MatcherAssert.assertThat(
-            log,
+            this.log(),
             Matchers.containsString(String.format("  %s.put()...", this.label))
         );
         MatcherAssert.assertThat(
-            log,
+            this.log(),
             Matchers.containsString(String.format("  %s.put()!", this.label))
         );
+    }
+
+    /**
+     * We need `flush` logs to output stream.
+     * Because <a href="https://stackoverflow.com/questions/69978526/why-streamhandler-doesnt-catch-log-messages">it's default behaviour.</a>
+     * @return Last log message.
+     */
+    private String log() {
+        this.handler.flush();
+        return new String(this.out.toByteArray(), StandardCharsets.UTF_8);
     }
 }

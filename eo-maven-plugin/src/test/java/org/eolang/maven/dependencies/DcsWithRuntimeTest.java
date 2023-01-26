@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,15 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.OnlineCondition;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link DcsWithRuntime}.
@@ -39,6 +41,7 @@ import org.junit.jupiter.api.Test;
 final class DcsWithRuntimeTest {
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void addsHardcodedVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
             DcsWithRuntimeTest.dependencies(),
@@ -51,6 +54,7 @@ final class DcsWithRuntimeTest {
     }
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void addsRemoteVersionOfRuntimeDependency() throws Exception {
         final DcsWithRuntime dependencies = new DcsWithRuntime(
             DcsWithRuntimeTest.dependencies()

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ public final class MainTest {
     }
 
     @Test
-    public void jvmFullRun() throws Exception {
+    public void executesJvmFullRun() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
             Matchers.allOf(
@@ -77,7 +77,7 @@ public final class MainTest {
     }
 
     @Test
-    public void jvmFullRunWithError() throws Exception {
+    public void executesJvmFullRunWithError() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
@@ -85,7 +85,7 @@ public final class MainTest {
     }
 
     @Test
-    public void objectNotFoundException() throws Exception {
+    public void executesWithObjectNotFoundException() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("unavailable-name"),
             Matchers.containsString("Can not find 'unavailable-name' object")

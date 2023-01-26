@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,8 @@ public final class ParsingTrain extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final XSL EACH = new XSLDocument(
-        ParsingTrain.class.getResourceAsStream("_each.xsl")
+        ParsingTrain.class.getResourceAsStream("_each.xsl"),
+        "each.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
@@ -96,11 +97,19 @@ public final class ParsingTrain extends TrEnvelope {
      */
     @SuppressWarnings("unchecked")
     public ParsingTrain() {
+        this(ParsingTrain.SHEETS);
+    }
+
+    /**
+     * Ctor.
+     * @param sheets Sheets
+     */
+    ParsingTrain(final String... sheets) {
         super(
             new TrLambda(
                 new TrFast(
                     new TrLogged(
-                        new TrClasspath<>(ParsingTrain.SHEETS).back(),
+                        new TrClasspath<>(sheets).back(),
                         ParsingTrain.class,
                         Level.FINEST
                     )

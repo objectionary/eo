@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ final class TyposTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
-    void testPacks(final String yml) throws Exception {
+    void checksPacks(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         try {

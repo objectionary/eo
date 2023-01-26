@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,12 +57,19 @@ public class EOarray$EOat extends PhDefault {
                 this,
                 rho -> {
                     final Phi[] array = new Param(rho).strong(Phi[].class);
-                    final int idx = new Param(rho, "i").strong(Long.class).intValue();
-                    if (array.length <= idx) {
+                    int idx = new Param(rho, "i").strong(Long.class).intValue();
+                    if (idx >= 0 && array.length <= idx) {
                         throw new ExFailure(
                             "Can't #at(%d) the %dth element of the array, there are just %d of them",
                             idx, idx + 1, array.length
                         );
+                    } else if (idx < 0 && array.length < Math.abs(idx)) {
+                        throw new ExFailure(
+                            "Can't #at(%d) the %dth element of the array",
+                            idx, array.length + idx
+                        );
+                    } else if (idx < 0) {
+                        idx = array.length + idx;
                     }
                     return array[idx];
                 }

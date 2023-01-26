@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -38,6 +40,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -49,7 +52,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class ParseMojoTest {
 
     @Test
-    void testSimpleParsing(@TempDir final Path temp) throws Exception {
+    void parsesSuccessfully(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             maven.withHelloWorld()
@@ -72,12 +75,13 @@ final class ParseMojoTest {
             () -> new FakeMaven(temp)
                 .withHelloWorld()
                 .with("timeout", 0)
-                .execute(new FakeMaven.Parse())
+                .execute(InfiniteMojo.class)
         );
     }
 
     @Test
-    void testSimpleParsingCached(@TempDir final Path temp) throws Exception {
+    @ExtendWith(OnlineCondition.class)
+    void parsesWithCache(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Path cache = temp.resolve("cache");
         final String expected = new UncheckedText(
@@ -103,7 +107,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testCrashOnInvalidSyntax(@TempDir final Path temp) {
+    void crashesOnInvalidSyntax(@TempDir final Path temp) {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IllegalStateException.class,
@@ -116,7 +120,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void testDoNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
@@ -176,6 +180,24 @@ final class ParseMojoTest {
                         TranspileMojo.EXT
                     ))
             );
+        }
+    }
+
+    /**
+     * The mojo that does nothing, but executes infinitely.
+     * @since 0.29
+     */
+    @Mojo(name = "infinite", defaultPhase = LifecyclePhase.VALIDATE)
+    private static final class InfiniteMojo extends SafeMojo {
+
+        @Override
+        public void exec() {
+            try {
+                Thread.sleep(Long.MAX_VALUE);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
         }
     }
 }

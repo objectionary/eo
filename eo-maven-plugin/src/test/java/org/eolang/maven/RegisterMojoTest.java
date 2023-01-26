@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class RegisterMojoTest {
 
     @Test
-    void registerOkNames(@TempDir final Path temp) throws IOException {
+    void registersOkNames(@TempDir final Path temp) throws IOException {
         new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             Paths.get("src/eo/org/eolang/maven/abc-def.eo")
@@ -77,7 +77,7 @@ final class RegisterMojoTest {
     }
 
     @Test
-    void noFailureWhenNoStrictNames(@TempDir final Path temp) throws IOException {
+    void doesNotFailWhenNoStrictNames(@TempDir final Path temp) throws IOException {
         new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             Paths.get("src/eo/org/eolang/maven/.abc.eo")
