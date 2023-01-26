@@ -117,6 +117,14 @@ final class PhPackageTest {
         );
     }
 
+    @Test
+    void convertsToString() {
+        MatcherAssert.assertThat(
+            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).toString(),
+            Matchers.equalTo("Φ.org.eolang")
+        );
+    }
+
     private static Stream<Arguments> attributes() {
         return Stream.of(
             Arguments.of("absent", PhPackage.class),
