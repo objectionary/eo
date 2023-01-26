@@ -78,6 +78,14 @@ final class PhPackageTest {
     }
 
     @Test
+    void throwsExceptionIfCantInstantiateObject() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr("failed").get()
+        );
+    }
+
+    @Test
     void doesNotCopies() {
         Assertions.assertThrows(
             ExFailure.class,
