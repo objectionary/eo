@@ -26,6 +26,7 @@ package org.eolang;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,26 +56,10 @@ final class PhPackage implements Phi {
 
     @Override
     public Attr attr(final String name) {
-        final StringBuilder abs = new StringBuilder(0).append(this.pkg);
-        if (abs.length() > 0) {
-            abs.append('.');
-        }
-        abs.append(name);
-        final String target = abs.toString()
-            .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
-            .replace("$", "$EO")
-            .replace("-", "_");
         return new AtSimple(
             this.objects.computeIfAbsent(
-                target, t -> {
-                    Phi phi;
-                    try {
-                        phi = this.sub(t);
-                    } catch (final ClassNotFoundException ex) {
-                        phi = new PhPackage(abs.toString());
-                    }
-                    return phi;
-                }
+                this.javaPackage(name),
+                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(this.eoPackage(name)))
             )
         );
     }
@@ -109,18 +94,46 @@ final class PhPackage implements Phi {
     }
 
     /**
-     * Make a sub package.
-     * @param target The name
-     * @return Phi
-     * @throws ClassNotFoundException If not found
+     * Creates eo-package path by name.
+     * @param name The name of an en object.
+     * @return Eo-package path.
      */
-    private Phi sub(final String target) throws ClassNotFoundException {
+    private String eoPackage(final String name) {
+        final StringBuilder abs = new StringBuilder(0).append(this.pkg);
+        if (abs.length() > 0) {
+            abs.append('.');
+        }
+        abs.append(name);
+        return abs.toString();
+    }
+
+    /**
+     * Creates Java-package path by name.
+     * @param name The name of an eo object.
+     * @return Java-package path.
+     */
+    private String javaPackage(final String name) {
+        return this.eoPackage(name)
+            .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
+            .replace("$", "$EO")
+            .replace("-", "_");
+    }
+
+    /**
+     * Load phi object by package name from ClassLoader.
+     * @param target The package name
+     * @return Phi
+     */
+    private Optional<Phi> loadPhi(final String target) {
+        Optional<Phi> res;
         try {
             final Phi kid = (Phi) Class.forName(target)
                 .getConstructor(Phi.class)
                 .newInstance(Phi.Φ);
             kid.attr("ρ").put(this);
-            return kid;
+            res = Optional.of(kid);
+        } catch (final ClassNotFoundException notfound) {
+            res = Optional.empty();
         } catch (final NoSuchMethodException
             | InvocationTargetException
             | InstantiationException
@@ -134,5 +147,6 @@ final class PhPackage implements Phi {
                 ex
             );
         }
+        return res;
     }
 }
