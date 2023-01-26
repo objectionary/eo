@@ -116,9 +116,9 @@ final class PhPackage implements Phi {
      */
     private Phi sub(final String target) throws ClassNotFoundException {
         try {
-            final Phi kid = Phi.class.cast(
-                Class.forName(target).getConstructor(Phi.class).newInstance(Phi.Φ)
-            );
+            final Phi kid = (Phi) Class.forName(target)
+                .getConstructor(Phi.class)
+                .newInstance(Phi.Φ);
             kid.attr("ρ").put(this);
             return kid;
         } catch (final NoSuchMethodException

@@ -23,6 +23,10 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EObool$EOand;
+import EOorg.EOeolang.EObytes$EOas_int;
+import EOorg.EOeolang.EObytes$EOeq;
+import EOorg.EOeolang.EOgoto;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -66,10 +70,10 @@ final class PhPackageTest {
 
     @ParameterizedTest
     @MethodSource("attributes")
-    void retrievesAttribute(final String attribute, final String expected) {
+    void retrievesAttribute(final String attribute, final Class<?> expected) {
         MatcherAssert.assertThat(
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr(attribute).get(),
-            Matchers.equalTo(expected)
+            Matchers.instanceOf(expected)
         );
     }
 
@@ -107,9 +111,11 @@ final class PhPackageTest {
 
     private static Stream<Arguments> attributes() {
         return Stream.of(
-            Arguments.of("pckg", "Φ.org.eolang.pckg"),
-            Arguments.of("pckg.$.next", "Φ.org.eolang.pckg"),
-            Arguments.of("pckg-next", "Φ.org.eolang.sub")
+            Arguments.of("absent", PhPackage.class),
+            Arguments.of("bytes$as-int", EObytes$EOas_int.class),
+            Arguments.of("bytes$eq", EObytes$EOeq.class),
+            Arguments.of("goto", EOgoto.class),
+            Arguments.of("bool$and", EObool$EOand.class)
         );
     }
 }
