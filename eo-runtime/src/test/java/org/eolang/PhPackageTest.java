@@ -71,10 +71,18 @@ final class PhPackageTest {
     @ParameterizedTest
     @MethodSource("attributes")
     void retrievesAttribute(final String attribute, final Class<?> expected) {
+        final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        final Phi actual = parent.attr(attribute).get();
         MatcherAssert.assertThat(
-            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr(attribute).get(),
+            actual,
             Matchers.instanceOf(expected)
         );
+        if (!(actual instanceof PhPackage)) {
+            MatcherAssert.assertThat(
+                actual.attr("ρ").get(),
+                Matchers.equalTo(parent)
+            );
+        }
     }
 
     @Test
