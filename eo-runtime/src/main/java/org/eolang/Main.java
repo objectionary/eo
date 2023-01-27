@@ -174,10 +174,7 @@ public final class Main {
      * @throws Exception If fails
      */
     private static void run(final List<String> opts) throws Exception {
-        final String path = Arrays.stream(opts.get(0).split("\\."))
-            .map(p -> String.format("EO%s", p))
-            .map(p -> p.replace("-", "_"))
-            .collect(Collectors.joining("."));
+        final String path = new JavaPath(opts.get(0)).toString();
         final Phi app;
         try {
             Main.LOGGER.info(String.format("Loading class %s", path));
