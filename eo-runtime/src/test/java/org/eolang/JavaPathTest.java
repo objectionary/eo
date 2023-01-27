@@ -23,12 +23,10 @@
  */
 package org.eolang;
 
-import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link JavaPath}.
@@ -38,22 +36,19 @@ import org.junit.jupiter.params.provider.MethodSource;
 class JavaPathTest {
 
     @ParameterizedTest
-    @MethodSource("cases")
+    @CsvSource({
+        "org.eolang, EOorg.EOeolang",
+        "obj, EOobj",
+        "obj.sub, EOobj.EOsub",
+        "obj.sub$attr, EOobj.EOsub$EOattr",
+        "obj.sub-dashed$attr, EOobj.EOsub_dashed$EOattr",
+        "obj.sub-dashed$attr-dashed, EOobj.EOsub_dashed$EOattr_dashed",
+        "'',''"
+    })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(
             new JavaPath(name).toString(),
             Matchers.equalTo(expected)
-        );
-    }
-
-    private static Stream<Arguments> cases() {
-        return Stream.of(
-            Arguments.of("obj", "EOobj"),
-            Arguments.of("obj.sub", "EOobj.EOsub"),
-            Arguments.of("obj.sub$attr", "EOobj.EOsub$EOattr"),
-            Arguments.of("obj.sub-dashed$attr", "EOobj.EOsub_dashed$EOattr"),
-            Arguments.of("obj.sub-dashed$attr-dashed", "EOobj.EOsub_dashed$EOattr_dashed"),
-            Arguments.of("", "")
         );
     }
 }
