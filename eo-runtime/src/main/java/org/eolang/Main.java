@@ -180,6 +180,7 @@ public final class Main {
             .collect(Collectors.joining("."));
         final Phi app;
         try {
+            Main.LOGGER.info(String.format("Loading class %s", path));
             app = Phi.class.cast(
                 Class.forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)

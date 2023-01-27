@@ -77,6 +77,17 @@ public final class MainTest {
     }
 
     @Test
+    void executesJvmFullRunWithDashedObject() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "as-bytes"),
+            Matchers.allOf(
+                Matchers.containsString("Loading class EOas_bytes"),
+                Matchers.containsString("Can not find 'as-bytes' object")
+            )
+        );
+    }
+
+    @Test
     public void executesJvmFullRunWithError() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
