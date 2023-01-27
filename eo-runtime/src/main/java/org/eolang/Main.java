@@ -176,6 +176,7 @@ public final class Main {
     private static void run(final List<String> opts) throws Exception {
         final String path = Arrays.stream(opts.get(0).split("\\."))
             .map(p -> String.format("EO%s", p))
+            .map(p -> p.replace("-", "_"))
             .collect(Collectors.joining("."));
         final Phi app;
         try {
