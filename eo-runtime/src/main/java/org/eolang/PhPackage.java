@@ -56,10 +56,11 @@ final class PhPackage implements Phi {
 
     @Override
     public Attr attr(final String name) {
+        final String obj = this.eoPackage(name);
         return new AtSimple(
             this.objects.computeIfAbsent(
-                new JavaPath(name).toString(),
-                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(this.eoPackage(name)))
+                new JavaPath(obj).toString(),
+                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(obj))
             )
         );
     }
