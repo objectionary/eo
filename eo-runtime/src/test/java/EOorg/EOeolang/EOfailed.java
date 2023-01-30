@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /*
  * @checkstyle PackageNameCheck (10 lines)
  */
@@ -33,5 +34,5 @@ import org.eolang.PhDefault;
  *
  * @since 0.29
  */
-public class EOfailed extends PhDefault {
+final class EOfailed extends PhDefault {
 }
