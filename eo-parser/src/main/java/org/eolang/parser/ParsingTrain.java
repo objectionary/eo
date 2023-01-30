@@ -40,9 +40,6 @@ import java.util.logging.Level;
  * Train of XSL shifts.
  *
  * @since 0.1
- * @todo #1024:30min Need to figure out, which errors need to be
- *   "critical", same as "duplicate-names" error. After that
- *   move them to "critical-errors" directory.
  */
 public final class ParsingTrain extends TrEnvelope {
 
