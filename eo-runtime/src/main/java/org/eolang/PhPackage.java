@@ -33,9 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * A package object, coming from {@link Phi}.
  *
  * @since 0.22
- * @todo #1717:30min Reuse {@link JavaPath} in {@link PhPackage} and remove code duplication.
- *  The duplicate code is in the method "attr()", in variable "target". That issue would be better
- *  implement after that <a href="https://github.com/objectionary/eo/pull/1718">PR</a> is merged.
  */
 final class PhPackage implements Phi {
 
@@ -61,7 +58,7 @@ final class PhPackage implements Phi {
     public Attr attr(final String name) {
         return new AtSimple(
             this.objects.computeIfAbsent(
-                this.javaPackage(name),
+                new JavaPath(name).toString(),
                 t -> this.loadPhi(t).orElseGet(() -> new PhPackage(this.eoPackage(name)))
             )
         );
@@ -108,18 +105,6 @@ final class PhPackage implements Phi {
         }
         abs.append(name);
         return abs.toString();
-    }
-
-    /**
-     * Creates Java-package path by name.
-     * @param name The name of an eo object.
-     * @return Java-package path.
-     */
-    private String javaPackage(final String name) {
-        return this.eoPackage(name)
-            .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
-            .replace("$", "$EO")
-            .replace("-", "_");
     }
 
     /**
