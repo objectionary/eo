@@ -83,7 +83,7 @@ final class ObjectsIndex {
                     ObjectsIndex::convert,
                     new Mapped<>(
                         Text::asString,
-                        new Split(new TextOf(new URL(address)), System.lineSeparator())
+                        new Split(new TextOf(new URL(address)), "\n")
                     )
                 )
             )
