@@ -28,6 +28,7 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -48,7 +49,6 @@ import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -80,7 +80,7 @@ final class SnippetTest {
     @TempDir
     public Path temp;
 
-    @Disabled
+    //    @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
@@ -123,8 +123,13 @@ final class SnippetTest {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
-    private static int run(final Path tmp, final Input code, final List<String> args,
-        final Input stdin, final Output stdout) throws Exception {
+    private static int run(
+        final Path tmp,
+        final Input code,
+        final List<String> args,
+        final Input stdin,
+        final Output stdout
+    ) throws Exception {
         final Path src = tmp.resolve("src");
         new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
@@ -161,6 +166,14 @@ final class SnippetTest {
                                 name.replace(".", "/")
                             )
                         )
+                    ),
+                    name -> Files.exists(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
+                        )
                     )
                 )
             )
@@ -168,6 +181,7 @@ final class SnippetTest {
             .execute();
         final Path generated = target.resolve("generated");
         new Moja<>(TranspileMojo.class)
+            .with("ignoreTransitive", true)
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
@@ -247,7 +261,8 @@ final class SnippetTest {
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void exec(final String cmd, final Path dir,
-        final Input stdin, final Output stdout) {
+        final Input stdin, final Output stdout
+    ) {
         Logger.debug(SnippetTest.class, "+%s", cmd);
         try {
             final Process proc = new ProcessBuilder()
