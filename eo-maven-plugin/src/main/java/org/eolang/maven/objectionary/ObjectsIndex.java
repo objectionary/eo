@@ -30,7 +30,6 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -51,7 +50,7 @@ final class ObjectsIndex {
      * Ctor.
      */
     ObjectsIndex() {
-        this(ObjectsIndex.loadIndex("https://home.objectionary.com/objectionary.lst"));
+        this(ObjectsIndex.index());
     }
 
     /**
@@ -66,24 +65,29 @@ final class ObjectsIndex {
      * Checks whether object index contains the object.
      * @param name Object name.
      * @return True if object index contains the object.
+     * @throws Exception If something unexpected happened.
      */
-    public boolean contains(final String name) {
-        return new Unchecked<>(this.objects).value().contains(name);
+    public boolean contains(final String name) throws Exception {
+        return this.objects.value().contains(name);
     }
 
     /**
      * Loads objects index.
-     * @param address Objects index address.
      * @return Objects index as a set of strings.
      */
-    private static Scalar<Set<String>> loadIndex(final String address) {
+    private static Scalar<Set<String>> index() {
         return new ScalarOf<>(
             () -> new SetOf<>(
                 new Mapped<>(
                     ObjectsIndex::convert,
                     new Mapped<>(
                         Text::asString,
-                        new Split(new TextOf(new URL(address)), "\n")
+                        new Split(
+                            new TextOf(
+                                new URL("https://home.objectionary.com/objectionary.lst")
+                            ),
+                            "\n"
+                        )
                     )
                 )
             )

@@ -25,6 +25,7 @@ package org.eolang.maven.objectionary;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
@@ -45,11 +46,6 @@ public final class OyRemote implements Objectionary {
     private final UrlOy template;
 
     /**
-     * Objects index.
-     */
-    private final ObjectsIndex index;
-
-    /**
      * Constructor.
      * @param hash Commit hash
      * @throws IOException if fails.
@@ -59,7 +55,6 @@ public final class OyRemote implements Objectionary {
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash.value()
         );
-        this.index = new ObjectsIndex();
     }
 
     @Override
@@ -78,8 +73,10 @@ public final class OyRemote implements Objectionary {
     }
 
     @Override
-    public boolean contains(final String name) {
-        return this.index.contains(name);
+    public boolean contains(final String name) throws IOException {
+        final int code = ((HttpURLConnection) this.template.value(name).openConnection())
+            .getResponseCode();
+        return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
     /**
@@ -87,7 +84,7 @@ public final class OyRemote implements Objectionary {
      * Assumes two placeholders in terms of
      * {@link String#format(String, Object...)}: 1st for version hash,
      * 2nd for program name.
-     * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+     * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
      *
      * @since 1.0
      */
@@ -97,7 +94,7 @@ public final class OyRemote implements Objectionary {
          * URL template. Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
          * 2nd for program name.
-         * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+         * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
          */
         private final String template;
 

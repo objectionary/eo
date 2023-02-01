@@ -23,57 +23,67 @@
  */
 package org.eolang.maven.objectionary;
 
+import java.io.IOException;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.scalar.ScalarOf;
+import org.cactoos.text.TextOf;
 import org.eolang.maven.OnlineCondition;
+import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test for {@link ObjectsIndex}.
+ * Test for {@link OyIndex}.
  *
  * @since 0.29
  */
-class ObjectsIndexTest {
+class OyIndexTest {
+
+    /**
+     * Object name for stdout.
+     */
+    private static final String STDOUT_OBJECT = "org.eolang.io.stdout";
 
     @Test
-    void contains() throws Exception {
-        final AtomicInteger calls = new AtomicInteger(0);
-        final String object = "org.eolang.io.stderr";
-        final ObjectsIndex index = new ObjectsIndex(
-            new ScalarOf<>(
-                () -> {
-                    calls.incrementAndGet();
-                    return Collections.singleton(object);
-                }
-            )
-        );
+    void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
-            index.contains(object),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            index.contains(object),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            index.contains("unknown"),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            calls.get(),
-            Matchers.is(1)
+            new TextOf(new OyIndex(new OyFake()).get("foo")).asString(),
+            Matchers.equalTo("[] > sprintf\n")
         );
     }
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    void downloadsAndChecksFromRealSource() throws Exception {
+    void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
-            new ObjectsIndex().contains("org.eolang.io.stdout"),
+            new OyIndex(new OyFake()).contains(OyIndexTest.STDOUT_OBJECT),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void containsInFakeIndex() throws IOException {
+        MatcherAssert.assertThat(
+            new OyIndex(
+                new OyFake(),
+                new ObjectsIndex(() -> Collections.singleton(OyIndexTest.STDOUT_OBJECT))
+            ).contains(OyIndexTest.STDOUT_OBJECT),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void checksContainsInDelegateIfExceptionHappensInIndex() throws IOException {
+        MatcherAssert.assertThat(
+            new OyIndex(
+                new OyFake(),
+                new ObjectsIndex(
+                    () -> {
+                        throw new IllegalStateException("Fake exception");
+                    }
+                )
+            ).contains(OyIndexTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
     }
