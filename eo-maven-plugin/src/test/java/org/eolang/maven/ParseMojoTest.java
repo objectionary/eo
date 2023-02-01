@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -73,7 +75,7 @@ final class ParseMojoTest {
             () -> new FakeMaven(temp)
                 .withHelloWorld()
                 .with("timeout", 0)
-                .execute(new FakeMaven.Parse())
+                .execute(InfiniteMojo.class)
         );
     }
 
@@ -178,6 +180,24 @@ final class ParseMojoTest {
                         TranspileMojo.EXT
                     ))
             );
+        }
+    }
+
+    /**
+     * The mojo that does nothing, but executes infinitely.
+     * @since 0.29
+     */
+    @Mojo(name = "infinite", defaultPhase = LifecyclePhase.VALIDATE)
+    private static final class InfiniteMojo extends SafeMojo {
+
+        @Override
+        public void exec() {
+            try {
+                Thread.sleep(Long.MAX_VALUE);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
         }
     }
 }

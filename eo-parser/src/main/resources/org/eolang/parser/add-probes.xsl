@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,8 @@ SOFTWARE.
         <xsl:apply-templates select="node()|@*"/>
         <xsl:for-each select="//o[starts-with(@base, '.')]">
           <xsl:variable name="p" select="eo:qualify(.)"/>
-          <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@','&lt;')))">
+          <xsl:variable name="c" select="string-length($p) - string-length(translate($p, '.', ''))"/>
+          <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@', '&lt;'))) and not(starts-with($p, '.')) and $c &gt; 1">
             <xsl:element name="meta">
               <xsl:attribute name="line">
                 <xsl:value-of select="@line"/>

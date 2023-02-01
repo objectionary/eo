@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -250,7 +250,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.1</version>
           <executions>
             <execution>
               <id>enforce-java</id>
@@ -323,7 +323,7 @@ SOFTWARE.
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>test-naming-conventions</artifactId>
-            <version>0.1.6</version>
+            <version>0.1.7</version>
             <executions>
               <execution>
                 <id>check-tests-names</id>

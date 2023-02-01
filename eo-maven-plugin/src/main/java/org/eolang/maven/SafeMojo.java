@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -326,13 +326,13 @@ abstract class SafeMojo extends AbstractMojo {
                     this.exec();
                     return new Object();
                 }
-            ).get(this.timeout, TimeUnit.SECONDS);
+            ).get(this.timeout.longValue(), TimeUnit.SECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(
                     "Timeout %[ms]s thread was interrupted",
-                    TimeUnit.SECONDS.toMillis(this.timeout)
+                    TimeUnit.SECONDS.toMillis(this.timeout.longValue())
                 ),
                 ex
             );
