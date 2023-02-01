@@ -40,10 +40,13 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.IsEmpty;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
@@ -150,42 +153,60 @@ final class SnippetTest {
                 Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
             )
         );
+        final OyFake objectionary = new OyFake(
+            name -> {
+                if (name.contains("collections") || name.contains("txt")) {
+                    return new ResourceOf(
+                        String.format("%s.eo", name.replace(".", "/"))
+                    );
+                }
+                return new InputOf(
+                    home.resolve(
+                        String.format(
+                            "src/main/eo/%s.eo",
+                            name.replace(".", "/")
+                        )
+                    )
+                );
+            },
+            name -> {
+                if (name.contains("collections") || name.contains("txt")) {
+                    return !new IsEmpty(
+                        new TextOf(
+                            new ResourceOf(
+                                String.format("%s.eo", name.replace(".", "/"))
+                            )
+                        )
+                    ).value();
+                }
+                return Files.exists(
+                    home.resolve(
+                        String.format(
+                            "src/main/eo/%s.eo",
+                            name.replace(".", "/")
+                        )
+                    )
+                );
+            }
+        );
         new Moja<>(AssembleMojo.class)
+            .with("ignoreTransitive", true)
+//            .with("withRuntimeDependency", false)
             .with("outputDir", target.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
             .with("placed", target.resolve("list").toFile())
-            .with(
-                "objectionary",
-                new OyFake(
-                    name -> new InputOf(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    ),
-                    name -> Files.exists(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    )
-                )
-            )
+            .with("objectionary", objectionary)
             .with("central", Central.EMPTY)
             .execute();
         final Path generated = target.resolve("generated");
         new Moja<>(TranspileMojo.class)
-            .with("ignoreTransitive", true)
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
+            .with("transpiled", target.resolve("transpiled.csv").toFile())
             .with("foreignFormat", "json")
             .execute();
         final Path classes = target.resolve("classes");

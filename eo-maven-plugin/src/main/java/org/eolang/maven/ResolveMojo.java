@@ -216,7 +216,7 @@ public final class ResolveMojo extends SafeMojo {
                 deps = new DcsWithRuntime(deps);
             }
         }
-        if (!this.ignoreVersionConflicts) {
+            if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {
