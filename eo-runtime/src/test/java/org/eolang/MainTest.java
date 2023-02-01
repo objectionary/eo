@@ -133,7 +133,7 @@ public final class MainTest {
         );
         MatcherAssert.assertThat(
             reader.readLine().length(),
-            Matchers.greaterThan(0)
+            Matchers.greaterThan(1)
         );
     }
 
