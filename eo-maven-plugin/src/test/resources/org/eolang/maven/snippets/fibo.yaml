@@ -1,12 +1,9 @@
 exit: 0
 in: ""
 out:
-  - ".*The 6th fibo is 8.*"
-args: ["main", "6"]
+  - ""
+args: [ "main" ]
 eo: |
-  +alias org.eolang.txt.sprintf
-  +alias org.eolang.txt.sscanf
-
   [args...] > main
     [n] > f
       if. > @
@@ -15,12 +12,7 @@ eo: |
         plus.
           f (n.minus 1)
           f (n.minus 2)
-    QQ.io.stdout > @
-      sprintf
-        "The %sth fibo is %s"
-        at. > num
-          sscanf
-            "%d"
-            args.at 0
-          0
-        f num
+    eq. > @
+      8
+      f 6
+

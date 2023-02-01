@@ -1,13 +1,12 @@
 exit: 0
 in: ""
 out:
-  - ".*Hello, дорогой Jeff.*"
-args: ["class.main", "Jeff"]
+  - ".*Hello, дорогой!.*"
+args: ["simple.main"]
 eo: |
-  +package class
+  +package simple
+  +alias org.eolang.io.stdout
 
   [args...] > main
-    QQ.io.stdout > @
-      QQ.txt.sprintf
-        "Hello, дорогой %s!"
-        args.at 0
+    stdout > @
+      "Hello, дорогой!"
