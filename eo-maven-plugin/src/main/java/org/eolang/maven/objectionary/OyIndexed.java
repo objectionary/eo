@@ -32,7 +32,7 @@ import org.cactoos.Input;
  *
  * @since 0.29
  */
-final class OyIndex implements Objectionary {
+public final class OyIndexed implements Objectionary {
 
     /**
      * Objectionary delegate.
@@ -48,7 +48,7 @@ final class OyIndex implements Objectionary {
      * Ctor.
      * @param objectionary Objectionary
      */
-    OyIndex(final Objectionary objectionary) {
+    public OyIndexed(final Objectionary objectionary) {
         this(objectionary, new ObjectsIndex());
     }
 
@@ -57,7 +57,7 @@ final class OyIndex implements Objectionary {
      * @param objectionary Objectionary
      * @param index Index
      */
-    OyIndex(final Objectionary objectionary, final ObjectsIndex index) {
+    OyIndexed(final Objectionary objectionary, final ObjectsIndex index) {
         this.delegate = objectionary;
         this.index = index;
     }

@@ -42,6 +42,7 @@ import org.eolang.maven.objectionary.OyCaching;
 import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
@@ -172,7 +173,7 @@ public final class PullMojo extends SafeMojo {
         Objectionary obj;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyRemote(hash);
+            obj = new OyIndexed(new OyRemote(hash));
         } catch (final IOException ex) {
             obj = new OyEmpty();
         }

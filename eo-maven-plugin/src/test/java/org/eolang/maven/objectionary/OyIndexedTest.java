@@ -34,11 +34,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test for {@link OyIndex}.
+ * Test for {@link OyIndexed}.
  *
  * @since 0.29
  */
-class OyIndexTest {
+class OyIndexedTest {
 
     /**
      * Object name for stdout.
@@ -48,7 +48,7 @@ class OyIndexTest {
     @Test
     void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
-            new TextOf(new OyIndex(new OyFake()).get("foo")).asString(),
+            new TextOf(new OyIndexed(new OyFake()).get("foo")).asString(),
             Matchers.equalTo("[] > sprintf\n")
         );
     }
@@ -57,7 +57,7 @@ class OyIndexTest {
     @ExtendWith(OnlineCondition.class)
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
-            new OyIndex(new OyFake()).contains(OyIndexTest.STDOUT_OBJECT),
+            new OyIndexed(new OyFake()).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
     }
@@ -65,10 +65,10 @@ class OyIndexTest {
     @Test
     void containsInFakeIndex() throws IOException {
         MatcherAssert.assertThat(
-            new OyIndex(
+            new OyIndexed(
                 new OyFake(),
-                new ObjectsIndex(() -> Collections.singleton(OyIndexTest.STDOUT_OBJECT))
-            ).contains(OyIndexTest.STDOUT_OBJECT),
+                new ObjectsIndex(() -> Collections.singleton(OyIndexedTest.STDOUT_OBJECT))
+            ).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
     }
@@ -76,14 +76,14 @@ class OyIndexTest {
     @Test
     void checksContainsInDelegateIfExceptionHappensInIndex() throws IOException {
         MatcherAssert.assertThat(
-            new OyIndex(
+            new OyIndexed(
                 new OyFake(),
                 new ObjectsIndex(
                     () -> {
                         throw new IllegalStateException("Fake exception");
                     }
                 )
-            ).contains(OyIndexTest.STDOUT_OBJECT),
+            ).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
     }
