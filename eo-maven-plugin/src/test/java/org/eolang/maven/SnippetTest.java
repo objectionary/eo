@@ -83,7 +83,6 @@ final class SnippetTest {
     @TempDir
     public Path temp;
 
-    //    @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
@@ -155,7 +154,7 @@ final class SnippetTest {
         );
         final OyFake objectionary = new OyFake(
             name -> {
-                if (name.contains("collections") || name.contains("txt")) {
+                if (name.contains("collections")) {
                     return new ResourceOf(
                         String.format("%s.eo", name.replace(".", "/"))
                     );
@@ -170,7 +169,7 @@ final class SnippetTest {
                 );
             },
             name -> {
-                if (name.contains("collections") || name.contains("txt")) {
+                if (name.contains("collections")) {
                     return !new IsEmpty(
                         new TextOf(
                             new ResourceOf(
@@ -191,7 +190,6 @@ final class SnippetTest {
         );
         new Moja<>(AssembleMojo.class)
             .with("ignoreTransitive", true)
-//            .with("withRuntimeDependency", false)
             .with("outputDir", target.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", foreign.toFile())
