@@ -120,7 +120,7 @@ final class MainTest {
     }
 
     @Test
-    public void readsStreamCorrectly() throws IOException {
+    void readsStreamCorrectly() throws IOException {
         final BufferedReader reader = new BufferedReader(
             Channels.newReader(
                 Channels.newChannel(
@@ -140,7 +140,7 @@ final class MainTest {
     }
 
     @Test
-    public void readsSimpleStreamCorrectly() throws IOException {
+    void readsSimpleStreamCorrectly() throws IOException {
         final BufferedReader reader = new BufferedReader(
             Channels.newReader(
                 Channels.newChannel(
@@ -160,7 +160,7 @@ final class MainTest {
     }
 
     @Test
-    public void readsBytesCorrectly() throws IOException {
+    void readsBytesCorrectly() throws IOException {
         MatcherAssert.assertThat(
             new ByteArrayInputStream(
                 "··\uD835\uDD38➜Φ".getBytes(
