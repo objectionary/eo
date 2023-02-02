@@ -73,6 +73,8 @@ import org.yaml.snakeyaml.Yaml;
  * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
+ * @todo #1723:30m Add FakeMojo support for SnippetTest. We have to reuse FakeMojo class in order
+ *  to reduce code duplication and increase overall test code readability. {@link FakeMaven}.
  */
 @ExtendWith(OnlineCondition.class)
 final class SnippetTest {
@@ -84,6 +86,17 @@ final class SnippetTest {
     @TempDir
     public Path temp;
 
+    /**
+     * Runs and checks of eo snippets.
+     *
+     * @todo #1723:90m Enable runsAllSpinners test. This test disabled because it requires
+     *  foreign eo objects from the internet. We need to find a way to mock them or to put into
+     *  eo-runtime.jar. You can read more about the problem
+     *  <a href="https://github.com/objectionary/eo/issues/1724">here</a>. Also it's important to
+     *  remove bytes-as-array.eo and list.eo from the test resources.
+     * @param yml Yaml test case.
+     * @throws Exception If fails
+     */
     @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
@@ -156,38 +169,44 @@ final class SnippetTest {
         );
         final OyFake objectionary = new OyFake(
             name -> {
+                final Input res;
                 if (name.contains("collections")) {
-                    return new ResourceOf(
+                    res = new ResourceOf(
                         String.format("%s.eo", name.replace(".", "/"))
                     );
-                }
-                return new InputOf(
-                    home.resolve(
-                        String.format(
-                            "src/main/eo/%s.eo",
-                            name.replace(".", "/")
+                } else {
+                    res = new InputOf(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
                         )
-                    )
-                );
+                    );
+                }
+                return res;
             },
             name -> {
+                final boolean res;
                 if (name.contains("collections")) {
-                    return !new IsEmpty(
+                    res = !new IsEmpty(
                         new TextOf(
                             new ResourceOf(
                                 String.format("%s.eo", name.replace(".", "/"))
                             )
                         )
                     ).value();
-                }
-                return Files.exists(
-                    home.resolve(
-                        String.format(
-                            "src/main/eo/%s.eo",
-                            name.replace(".", "/")
+                } else {
+                    res = Files.exists(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
                         )
-                    )
-                );
+                    );
+                }
+                return res;
             }
         );
         new Moja<>(AssembleMojo.class)
