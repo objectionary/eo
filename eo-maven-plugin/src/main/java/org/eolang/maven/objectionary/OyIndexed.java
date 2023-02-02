@@ -67,13 +67,14 @@ public final class OyIndexed implements Objectionary {
         return this.delegate.get(name);
     }
 
+    // @checkstyle IllegalCatchCheck (6 line)
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     @Override
     public boolean contains(final String name) throws IOException {
         boolean result;
         try {
             result = this.index.contains(name);
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (@SuppressWarnings("PMD.AvoidCatchingGenericException") final Exception ex) {
+        } catch (final Exception ex) {
             Logger.warn(
                 this,
                 "Failed to check object %s in objectionary index: %[exception]s",
