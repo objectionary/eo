@@ -67,7 +67,7 @@ public final class OyIndexed implements Objectionary {
         return this.delegate.get(name);
     }
 
-    // @checkstyle IllegalCatchCheck (6 line)
+    // @checkstyle IllegalCatchCheck (7 line)
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     @Override
     public boolean contains(final String name) throws IOException {

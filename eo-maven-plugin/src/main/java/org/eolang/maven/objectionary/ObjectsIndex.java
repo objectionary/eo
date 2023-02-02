@@ -50,7 +50,24 @@ final class ObjectsIndex {
      * Ctor.
      */
     ObjectsIndex() {
-        this(ObjectsIndex.index());
+        this(
+            new ScalarOf<Set<String>>(
+                () -> new SetOf<>(
+                    new Mapped<>(
+                        ObjectsIndex::convert,
+                        new Mapped<>(
+                            Text::asString,
+                            new Split(
+                                new TextOf(
+                                    new URL("https://home.objectionary.com/objectionary.lst")
+                                ),
+                                "\n"
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 
     /**
@@ -69,29 +86,6 @@ final class ObjectsIndex {
      */
     public boolean contains(final String name) throws Exception {
         return this.objects.value().contains(name);
-    }
-
-    /**
-     * Loads objects index.
-     * @return Objects index as a set of strings.
-     */
-    private static Scalar<Set<String>> index() {
-        return new ScalarOf<>(
-            () -> new SetOf<>(
-                new Mapped<>(
-                    ObjectsIndex::convert,
-                    new Mapped<>(
-                        Text::asString,
-                        new Split(
-                            new TextOf(
-                                new URL("https://home.objectionary.com/objectionary.lst")
-                            ),
-                            "\n"
-                        )
-                    )
-                )
-            )
-        );
     }
 
     /**
