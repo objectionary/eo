@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,7 @@ final class TranspileMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
-    void testPreStylesheets(final String yaml) {
+    void createsPreStylesheets(final String yaml) {
         MatcherAssert.assertThat(
             new XaxStory(yaml),
             Matchers.is(true)

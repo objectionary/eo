@@ -9,4 +9,4 @@ document:
   </graph>
 asserts:
   - /graph[count(v)=1]
-  - /graph/v[@id='$ν1' and e[@to='$ν2' and @title="hello"] and e/@to='ν0']
+  - /graph/v[@id='$v1' and e[@to='$v2' and @title="hello"] and e/@to='v0']

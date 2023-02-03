@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,13 +63,13 @@ public class EOgoto extends PhDefault {
                     Phi ret;
                     while (true) {
                         try {
-                            ret = new Data.ToPhi(new Dataized(body).take());
+                            ret = body;
+                            new Dataized(body).take();
                             break;
                         } catch (final EOgoto.BackwardException ex) {
                             if (!ex.sigma.attr("σ").get().equals(rho)) {
                                 throw ex;
                             }
-                            ret = new Data.ToPhi(true);
                         } catch (final EOgoto.ForwardException ex) {
                             if (!ex.sigma.attr("σ").get().equals(rho)) {
                                 throw ex;

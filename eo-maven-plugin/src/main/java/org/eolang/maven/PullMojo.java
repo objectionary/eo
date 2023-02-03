@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,11 +34,8 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChPattern;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
@@ -130,14 +127,9 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final CommitHash hash;
-        if (this.offlineHashFile == null && this.offlineHash == null) {
-            hash = new ChCached(new ChRemote(this.tag));
-        } else if (this.offlineHash == null) {
-            hash = new ChCached(new ChText(this.offlineHashFile, this.tag));
-        } else {
-            hash = new ChCached(new ChPattern(this.offlineHash, this.tag));
-        }
+        final CommitHash hash = new ChResolve(
+            this.offlineHashFile, this.offlineHash, this.tag
+        );
         if (this.objectionary == null) {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
@@ -188,15 +180,6 @@ public final class PullMojo extends SafeMojo {
     }
 
     /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    private boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
-    }
-
-    /**
      * Pull one object.
      *
      * @param name Name of the object, e.g. "org.eolang.io.stdout"
@@ -225,4 +208,14 @@ public final class PullMojo extends SafeMojo {
         }
         return src;
     }
+
+    /**
+     * Is force update option enabled.
+     *
+     * @return True if option enabled and false otherwise
+     */
+    private boolean forceUpdate() {
+        return this.session.getRequest().isUpdateSnapshots();
+    }
+
 }

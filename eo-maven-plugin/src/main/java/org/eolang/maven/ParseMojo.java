@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -162,16 +162,15 @@ public final class ParseMojo extends SafeMojo {
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
-        final Footprint footprint;
+        Footprint footprint;
+        footprint = new FtDefault(
+            this.targetDir.toPath().resolve(ParseMojo.DIR)
+        );
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
             footprint = new FtCached(
                 tojo.get(AssembleMojo.ATTR_HASH),
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                this.cache.resolve(ParseMojo.PARSED)
-            );
-        } else {
-            footprint = new FtDefault(
-                this.targetDir.toPath().resolve(ParseMojo.DIR)
+                this.cache.resolve(ParseMojo.PARSED),
+                footprint
             );
         }
         try {

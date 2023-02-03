@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ final class SodgMojoTest {
 
     @Test
     @Disabled
-    void bigSlowTest() throws Exception {
+    void convertsToGraph() throws Exception {
         final StringBuilder program = new StringBuilder(1000);
         for (int idx = 0; idx < 40; ++idx) {
             for (int spc = 0; spc < idx; ++spc) {
@@ -252,7 +252,7 @@ final class SodgMojoTest {
                     }
                     continue;
                 }
-                if (sub.startsWith("Δ=")) {
+                if (sub.startsWith("δ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
@@ -264,7 +264,7 @@ final class SodgMojoTest {
                     final String data = sub.substring(2);
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '00-%s']/text()", data
+                            "data[text() = '%s']/text()", data
                         )
                     ).isEmpty();
                     if (!matches) {
@@ -277,7 +277,7 @@ final class SodgMojoTest {
                     }
                     continue;
                 }
-                if (sub.startsWith("λ=")) {
+                if (sub.startsWith("τ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
@@ -292,14 +292,14 @@ final class SodgMojoTest {
                     );
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '01-%s']/text()",
+                            "data[text() = '%s']/text()",
                             hex
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s' (01-%s)",
+                                "Lambda '%s' at '%s' is not equal to '%s' (%s)",
                                 node.xpath("data/text()").get(0), vertex, data, hex
                             )
                         );

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -336,6 +336,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             this.objects.prop("data", "array");
         } else if (ctx.RHO() != null) {
             base = "^";
+        } else if (ctx.VERTEX() != null) {
+            base = "<";
         } else if (ctx.ROOT() != null) {
             base = "Q";
         } else if (ctx.HOME() != null) {

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,13 +62,13 @@ public class EOtry extends PhDefault {
                     body.attr("ρ").put(rho);
                     Phi ret;
                     try {
-                        final Object obj = new Dataized(body).take();
-                        ret = new Data.ToPhi(obj);
+                        ret = body;
+                        new Dataized(body).take();
                     } catch (final EOerror.ExError ex) {
                         final Phi ctch = rho.attr("catch").get().copy();
                         ctch.attr("ρ").put(rho);
                         ctch.attr(0).put(ex.enclosure());
-                        ret = new Data.ToPhi(new Dataized(ctch).take());
+                        ret = ctch;
                     } finally {
                         final Phi fin = rho.attr("finally").get().copy();
                         fin.attr("ρ").put(rho);
