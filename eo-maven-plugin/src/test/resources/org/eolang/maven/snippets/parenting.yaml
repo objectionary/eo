@@ -1,13 +1,14 @@
 exit: 0
 in: ""
 out:
-  - ".*The arg is 123.*"
-args: ["main", "123"]
+  - ".*123.*"
+args: [ "main", "123" ]
 eo: |
+  +alias org.eolang.io.stdout
+
   [args...] > main
+    "The code snippet that checks parent's args" > description
     [] > take
       ^.args.at 0 > @
-    QQ.io.stdout > @
-      QQ.txt.sprintf
-        "The arg is %s"
-        take
+    stdout > @
+      take
