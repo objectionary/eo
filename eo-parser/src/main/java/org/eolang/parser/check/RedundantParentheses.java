@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.parser.check;
 
 import com.jcabi.log.Logger;
 import java.util.ArrayDeque;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  *
  * @since 0.28.12
  */
-final class RedundantParentheses implements Predicate<String> {
+public final class RedundantParentheses implements Predicate<String> {
 
     /**
      * The callback that will be called in case if redundant parentheses is found.
@@ -44,7 +44,7 @@ final class RedundantParentheses implements Predicate<String> {
     /**
      * Constructor with default reaction that writes warning to the log.
      */
-    RedundantParentheses() {
+    public RedundantParentheses() {
         this(s -> Logger.warn("Redundant parentheses", s));
     }
 
@@ -53,7 +53,7 @@ final class RedundantParentheses implements Predicate<String> {
      *
      * @param reaction Will be called in case if redundant parentheses is found.
      */
-    RedundantParentheses(final Consumer<String> reaction) {
+    public RedundantParentheses(final Consumer<String> reaction) {
         this.reaction = reaction;
     }
 

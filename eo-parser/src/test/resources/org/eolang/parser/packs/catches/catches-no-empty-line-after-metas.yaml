@@ -1,0 +1,9 @@
+tests:
+  - /program/errors[count(error[@severity='error'])=1]
+  - /program/errors/error[@line='2']
+eo: |
+  +meta smth
+  +meta other
+  [] > main
+    [] > @
+      hello > test

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.eolang.parser.check.RedundantParentheses;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

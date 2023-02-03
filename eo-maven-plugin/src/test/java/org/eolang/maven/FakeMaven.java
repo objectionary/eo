@@ -100,7 +100,7 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     public FakeMaven withHelloWorld() throws IOException {
-        return this.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print");
+        return this.withProgram("+package f\n", "[args] > main", "  (stdout \"Hello!\").print");
     }
 
     /**

@@ -46,6 +46,7 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
+import org.eolang.parser.check.RedundantParentheses;
 import org.xembly.Xembler;
 
 /**

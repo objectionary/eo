@@ -17,5 +17,6 @@ tests:
   - //java[contains(text(), '@Test')]
 eo: |
   +junit
+  
   [] > works
     1.eq 1 > @

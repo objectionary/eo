@@ -38,6 +38,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
+import org.eolang.parser.check.MissingEmptyLineAfterMetas;
+import org.eolang.parser.check.RedundantParentheses;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -158,7 +160,15 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitMetas(final ProgramParser.MetasContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        if (new MissingEmptyLineAfterMetas().test(ctx.getText())) {
+            this.dirs.push()
+                .xpath("/program/errors")
+                .add("error")
+                .attr("line", ctx.getStop().getLine())
+                .attr("severity", "error")
+                .set("Metas and objects has no space in between")
+                .pop();
+        }
     }
 
     @Override
