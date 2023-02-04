@@ -101,9 +101,9 @@
   #  Double.NEGATIVE_INFINITY and convert them to Phi objects (EOfloat$EOnan,
   #  EOfloat$EOpositive_infinity and EOfloat$EOnegative-infinity)
 
-  # @todo #1253:30min. After allowing division by zero float make float.nan
-  #  decorated 0.0.div 0.0, float.positive-infinity - 1.0.div 0.0,
-  #  negative-infinity - -1.0.div 0.0
+  # @todo #1253:30min. After allowing division by zero float make float.nan,
+  #  float.positive-infinity, float.negative-infinity decorated 0.0.div 0.0,
+  #  1.0.div 0.0 and -1.0.div 0.0 accordingly
   # Not a number
   [] > nan
     # Tests that $ = x
