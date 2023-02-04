@@ -282,3 +282,85 @@
 
 [] > inline-float-computation
   ((4.0).plus (5.7)).eq (9.7) > @
+
+[] > nan-eq
+  and. > @
+    (float.float.nan.eq 42).eq FALSE
+    (float.float.nan.eq float.float.nan).eq FALSE
+
+[] > nan-neq
+  and. > @
+    (float.nan.neq 42).eq TRUE
+    (float.nan.neq float.nan).eq TRUE
+
+[] > nan-lt
+  and. > @
+    (float.nan.lt 42).eq FALSE
+    (float.nan.lt float.nan).eq FALSE
+
+[] > nan-lte
+  and. > @
+    (float.nan.lte 42).eq FALSE
+    (float.nan.lte float.nan).eq FALSE
+
+[] > nan-gt
+  and. > @
+    (float.nan.gt 42).eq FALSE
+    (float.nan.gt float.nan).eq FALSE
+
+[] > nan-gte
+  and. > @
+    (float.nan.gte 42).eq FALSE
+    (float.nan.gte float.nan).eq FALSE
+
+[] > nan-times
+  and. > @
+    (float.nan.times 42).as-bytes.eq (float.nan.as-bytes)
+    (float.nan.times float.nan).as-bytes.eq (float.nan.as-bytes)
+
+[] > nan-div
+  and. > @
+    (float.nan.div 42).as-bytes.eq (float.nan.as-bytes)
+    (float.nan.div float.nan).as-bytes.eq (float.nan.as-bytes)
+
+[] > nan-plus
+  and. > @
+    (float.nan.plus 42).as-bytes.eq (float.nan.as-bytes)
+    (float.nan.plus float.nan).as-bytes.eq (float.nan.as-bytes)
+
+[] > nan-minus
+  and. > @
+    (float.nan.minus 42).as-bytes.eq (float.nan.as-bytes)
+    (float.nan.minus float.nan).as-bytes.eq (float.nan.as-bytes)
+
+[] > nan-signum
+  eq. > @
+    float.nan.signum.as-bytes
+    float.nan.as-bytes
+
+[] > nan-pow
+  and. > @
+    (float.nan.pow 2).as-bytes.eq (float.nan.as-bytes)
+    (float.nan.pow float.nan).as-bytes.eq (float.nan.as-bytes)
+
+[] > nan-abs
+  eq. > @
+    float.nan.abs.as-bytes
+    float.nan.as-bytes
+
+[] > nan-as-bytes
+  eq. > @
+    7F-C0-00-00
+    float.nan.as-bytes
+
+[] > nan-as-int
+  eq. > @
+    "You can't convert NaN to int"
+    float.nan.as-int.msg
+
+[] > nan-as-string
+  eq. > @
+    "NaN"
+    float.nan.as-string
+
+
