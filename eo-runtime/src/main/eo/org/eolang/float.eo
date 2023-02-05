@@ -199,7 +199,7 @@
     [x] > gt
       not. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
+          x.as-bytes.eq (^.^.nan.as-bytes)
           ^.eq x
 
     # Tests that $ ≥ x
@@ -207,32 +207,32 @@
       not. > @
         eq.
           x.as-bytes
-          float.nan.as-bytes
+          ^.^.nan.as-bytes
 
     # Multiplication of $ and x
     [x] > times
       if. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
+          x.as-bytes.eq (^.^.nan.as-bytes)
           x.eq 0.0
-        float.nan
+        ^.^.nan
         if.
-          x.eq float.negative-infinity
-          float.negative-infinity
+          x.eq ^.^.negative-infinity
+          ^.^.negative-infinity
           ^
 
     # Sum of $ and x
     [x] > plus
       if. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
-          x.eq float.negative-infinity
-        float.nan
+          x.as-bytes.eq (^.^.nan.as-bytes)
+          x.eq ^.^.negative-infinity
+        ^.^.nan
         ^
 
     # Negation of $
     [] > neg
-      float.negative-infinity > @
+      ^.^.negative-infinity > @
 
     # Sign of $ (-1.0, 0.0, or 1.0)
     [] > signum
@@ -253,21 +253,21 @@
           if.
             x.eq 0.0
             1.0
-            float.nan
+            ^.^.nan
 
     # Quotient of the division of $ by x
     [x] > div
       if. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
-          x.eq float.negative-infinity
+          x.as-bytes.eq (^.^.nan.as-bytes)
+          x.eq ^.^.negative-infinity
           x.eq ^
-        float.nan
+        ^.^.nan
         ^
 
     # Remainder of $
     [] > mod
-      float.nan > @
+      ^.^.nan > @
 
     # Absolute value of $ (i.e., with no sign)
     [] > abs
@@ -302,7 +302,7 @@
     [x] > lt
       not. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
+          x.as-bytes.eq (^.^.nan.as-bytes)
           ^.eq x
 
     # Tests that $ ≤ x
@@ -310,7 +310,7 @@
       not. > @
         eq.
           x.as-bytes
-          float.nan.as-bytes
+          ^.^.nan.as-bytes
 
     # Tests that $ > x
     [x] > gt
@@ -324,26 +324,26 @@
     [x] > times
       if. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
+          x.as-bytes.eq (^.^.nan.as-bytes)
           x.eq 0.0
-        float.nan
+        ^.^.nan
         if.
           x.eq ^
-          float.positive-infinity
+          ^.^.positive-infinity
           ^
 
     # Sum of $ and x
     [x] > plus
       if. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
-          x.eq float.positive-infinity
-        float.nan
+          x.as-bytes.eq (^.^.nan.as-bytes)
+          x.eq ^.^.positive-infinity
+        ^.^.nan
         ^
 
     # Negation of $
     [] > neg
-      float.positive-infinity > @
+      ^.^.positive-infinity > @
 
     # Sign of $ (-1.0, 0.0, or 1.0)
     [] > signum
@@ -368,9 +368,9 @@
               ^
               if.
                 (x.as-int.mod 2).eq 0
-                float.positive-infinity
+                ^.^.positive-infinity
                 ^
-            float.nan
+            ^.^.nan
 
       [x] > not-int
         x.as-int > as-integer!
@@ -382,19 +382,19 @@
     [x] > div
       if. > @
         or.
-          x.as-bytes.eq (float.nan.as-bytes)
+          x.as-bytes.eq (^.^.nan.as-bytes)
           x.eq ^
-          x.eq float.positive-infinity
-        float.nan
+          x.eq ^.^.positive-infinity
+        ^.^.nan
         ^
 
     # Remainder of $
     [] > mod
-      float.nan > @
+      ^.^.nan > @
 
     # Absolute value of $ (i.e., with no sign)
     [] > abs
-      float.positive-infinity > @
+      ^.^.positive-infinity > @
 
     # Converts this to bytes
     [] > as-bytes
