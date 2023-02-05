@@ -285,8 +285,8 @@
 
 [] > nan-eq
   and. > @
-    (float.float.nan.eq 42).eq FALSE
-    (float.float.nan.eq float.float.nan).eq FALSE
+    (float.nan.eq 42).eq FALSE
+    (float.nan.eq float.nan).eq FALSE
 
 [] > nan-neq
   and. > @
