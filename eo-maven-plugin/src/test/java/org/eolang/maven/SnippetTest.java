@@ -49,6 +49,7 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.IsEmpty;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
@@ -160,55 +161,6 @@ final class SnippetTest {
             .with("objects", Collections.singletonList("org.eolang.bool"));
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
-
-        final Path home = Paths.get(
-            System.getProperty(
-                "runtime.path",
-                Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
-            )
-        );
-        final OyFake objectionary = new OyFake(
-            name -> {
-                final Input res;
-                if (name.contains("collections")) {
-                    res = new ResourceOf(
-                        String.format("%s.eo", name.replace(".", "/"))
-                    );
-                } else {
-                    res = new InputOf(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    );
-                }
-                return res;
-            },
-            name -> {
-                final boolean res;
-                if (name.contains("collections")) {
-                    res = !new IsEmpty(
-                        new TextOf(
-                            new ResourceOf(
-                                String.format("%s.eo", name.replace(".", "/"))
-                            )
-                        )
-                    ).value();
-                } else {
-                    res = Files.exists(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    );
-                }
-                return res;
-            }
-        );
         new Moja<>(AssembleMojo.class)
             .with("ignoreTransitive", true)
             .with("outputDir", target.resolve("out").toFile())
@@ -216,7 +168,7 @@ final class SnippetTest {
             .with("foreign", foreign.toFile())
             .with("foreignFormat", "json")
             .with("placed", target.resolve("list").toFile())
-            .with("objectionary", objectionary)
+            .with("objectionary", SnippetTest.objectionary())
             .with("central", Central.EMPTY)
             .execute();
         final Path generated = target.resolve("generated");
@@ -275,6 +227,58 @@ final class SnippetTest {
             stdout
         );
         return 0;
+    }
+
+    private static Objectionary objectionary() {
+        final Path home = Paths.get(
+            System.getProperty(
+                "runtime.path",
+                Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
+            )
+        );
+        final OyFake objectionary = new OyFake(
+            name -> {
+                final Input res;
+                if (name.contains("collections")) {
+                    res = new ResourceOf(
+                        String.format("%s.eo", name.replace(".", "/"))
+                    );
+                } else {
+                    res = new InputOf(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
+                        )
+                    );
+                }
+                return res;
+            },
+            name -> {
+                final boolean res;
+                if (name.contains("collections")) {
+                    res = !new IsEmpty(
+                        new TextOf(
+                            new ResourceOf(
+                                String.format("%s.eo", name.replace(".", "/"))
+                            )
+                        )
+                    ).value();
+                } else {
+                    res = Files.exists(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
+                        )
+                    );
+                }
+                return res;
+            }
+        );
+        return objectionary;
     }
 
     /**
