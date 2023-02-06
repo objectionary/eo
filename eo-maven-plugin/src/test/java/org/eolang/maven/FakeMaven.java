@@ -110,7 +110,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    public FakeMaven withProgram(final Input input) throws IOException{
+    public FakeMaven withProgram(final Input input) throws IOException {
         return this.withProgram(new UncheckedText(new TextOf(input)).asString());
     }
 
@@ -224,6 +224,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generateGraphFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
+        this.params.putIfAbsent("generatedDir", this.targetPath().resolve("generated").toFile());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());

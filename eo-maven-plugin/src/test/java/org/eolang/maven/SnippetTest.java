@@ -50,7 +50,6 @@ import org.cactoos.text.IsEmpty;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -114,13 +113,15 @@ final class SnippetTest {
         );
         MatcherAssert.assertThat(
             String.format("'%s' returned wrong exit code", yml),
-            result, Matchers.equalTo(map.get("exit"))
+            result,
+            Matchers.equalTo(map.get("exit"))
         );
-        Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
+        final String actual = new String(stdout.toByteArray(), StandardCharsets.UTF_8);
+        Logger.debug(this, "Stdout: \"%s\"", actual);
         for (final String ptn : (Iterable<String>) map.get("out")) {
             MatcherAssert.assertThat(
                 String.format("'%s' printed something wrong", yml),
-                new String(stdout.toByteArray(), StandardCharsets.UTF_8),
+                actual,
                 Matchers.matchesPattern(
                     Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
                 )
@@ -155,7 +156,6 @@ final class SnippetTest {
             .with("sourcesDir", src.toFile())
             .with("objects", Collections.singletonList("org.eolang.bool"))
             .with("objectionary", SnippetTest.objectionary())
-
             .with("project", new MavenProjectStub())
             .with("generatedDir", generated.toFile())
             .with("transpiled", target.resolve("transpiled.csv").toFile());
@@ -163,10 +163,8 @@ final class SnippetTest {
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
         maven.execute(TranspileMojo.class);
-
         final Path classes = target.resolve("classes");
-        classes.toFile().mkdir();
-        final String cpath = String.format(
+        final String classpath = String.format(
             ".%s%s",
             File.pathSeparatorChar,
             System.getProperty(
@@ -188,7 +186,7 @@ final class SnippetTest {
                     .map(Path::toString)
                     .collect(Collectors.joining(" ")),
                 classes,
-                cpath
+                classpath
             ),
             generated
         );
@@ -200,7 +198,7 @@ final class SnippetTest {
                         SnippetTest.jdkExecutable("java"),
                         "-Dfile.encoding=utf-8",
                         "-cp",
-                        cpath,
+                        classpath,
                         "org.eolang.Main"
                     ),
                     args
