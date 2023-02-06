@@ -66,6 +66,7 @@
       or.
         x.as-bytes.eq (nan.as-bytes)
         x.eq 0.0
+        x.eq 0
       nan
       if.
         x.eq negative-infinity
@@ -93,19 +94,6 @@
   [x] > minus
     ^.plus (x.neg) > @
 
-  # x'th power of $
-  [x] > pow
-    if. > @
-      x.gt 0.0
-      ^
-      if.
-        x.lt 0.0
-        0.0
-        if.
-          x.eq 0.0
-          1.0
-          nan
-
   # Quotient of the division of $ by x
   [x] > div
     if. > @
@@ -115,14 +103,6 @@
         x.eq ^
       nan
       ^
-
-  # Remainder of $
-  [] > mod
-    nan > @
-
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
-    ^ > @
 
   # Converts this to bytes
   [] > as-bytes

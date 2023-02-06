@@ -27,101 +27,93 @@
 +junit
 +version 0.0.0
 
-[] > nan-eq
+[] > nan-eq-is-valid
   assert-that > @
     and.
       (nan.eq 42).eq FALSE
       (nan.eq nan).eq FALSE
     $.equal-to TRUE
 
-[] > nan-neq
+[] > nan-neq-is-valid
   assert-that > @
     and.
       (nan.neq 42).eq TRUE
       (nan.neq nan).eq TRUE
     $.equal-to TRUE
 
-[] > nan-lt
+[] > nan-lt-is-valid
   assert-that > @
     and.
       (nan.lt 42).eq FALSE
       (nan.lt nan).eq FALSE
     $.equal-to TRUE
 
-[] > nan-lte
+[] > nan-lte-is-valid
   assert-that > @
     and.
       (nan.lte 42).eq FALSE
       (nan.lte nan).eq FALSE
     $.equal-to TRUE
 
-[] > nan-gt
+[] > nan-gt-is-valid
   assert-that > @
     and.
       (nan.gt 42).eq FALSE
       (nan.gt nan).eq FALSE
     $.equal-to TRUE
 
-[] > nan-gte
+[] > nan-gte-is-valid
   assert-that > @
     and.
       (nan.gte 42).eq FALSE
       (nan.gte nan).eq FALSE
     $.equal-to TRUE
 
-[] > nan-times
+[] > nan-times-is-valid
   assert-that > @
     and.
       (nan.times 42).as-bytes.eq (nan.as-bytes)
       (nan.times nan).as-bytes.eq (nan.as-bytes)
     $.equal-to TRUE
 
-[] > nan-div
+[] > nan-div-is-valid
   assert-that > @
     and.
       (nan.div 42).as-bytes.eq (nan.as-bytes)
       (nan.div nan).as-bytes.eq (nan.as-bytes)
     $.equal-to TRUE
 
-[] > nan-plus
+[] > nan-plus-is-valid
   assert-that > @
     and.
       (nan.plus 42).as-bytes.eq (nan.as-bytes)
       (nan.plus nan).as-bytes.eq (nan.as-bytes)
     $.equal-to TRUE
 
-[] > nan-minus
+[] > nan-neg-is-nan
+  assert-that > @
+    nan.neg.as-bytes
+    $.equal-to nan.as-bytes
+
+[] > nan-minus-is-valid
   assert-that > @
     and.
       (nan.minus 42).as-bytes.eq (nan.as-bytes)
       (nan.minus nan).as-bytes.eq (nan.as-bytes)
     $.equal-to TRUE
 
-[] > nan-signum
+[] > nan-signum-is-valid
   assert-that > @
     nan.signum.as-bytes
     $.equal-to
       nan.as-bytes
 
-[] > nan-pow
-  assert-that > @
-    and.
-      (nan.pow 2).as-bytes.eq (nan.as-bytes)
-      (nan.pow nan).as-bytes.eq (nan.as-bytes)
-    $.equal-to TRUE
-
-[] > nan-abs
-  assert-that > @
-    nan.abs.as-bytes
-    $.equal-to
-      nan.as-bytes
-
-[] > nan-as-bytes
+[] > nan-as-bytes-is-valid
   assert-that > @
     nan.as-bytes
     $.equal-to 7F-C0-00-00
 
-[] > nan-as-int
+[] > nan-as-int-is-valid
   assert-that > @
     try
       []
@@ -131,7 +123,7 @@
       nop
     $.equal-to "You can't convert NaN to int"
 
-[] > nan-as-string
+[] > nan-as-string-is-valid
   assert-that > @
     nan.as-string
     $.equal-to "NaN"

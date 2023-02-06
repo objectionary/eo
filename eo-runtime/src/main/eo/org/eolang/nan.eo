@@ -83,16 +83,8 @@
   [x] > minus
     ^ > @
 
-  # x'th power of $
-  [x] > pow
-    ^ > @
-
   # Quotient of the division of $ by x
   [x] > div
-    ^ > @
-
-  # Absolute value of $ (i.e., with no sign)
-  [] > abs
     ^ > @
 
   # Converts this to bytes
