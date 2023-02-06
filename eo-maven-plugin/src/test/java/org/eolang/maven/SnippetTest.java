@@ -153,33 +153,24 @@ final class SnippetTest {
         new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
         final Path foreign = target.resolve("eo-foreign.json");
-        final File value = src.toFile();
+        final Path generated = target.resolve("generated");
+
         final FakeMaven maven = new FakeMaven(tmp)
             .with("foreign", target.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
-            .with("sourcesDir", value)
-            .with("objects", Collections.singletonList("org.eolang.bool"));
-        maven.execute(RegisterMojo.class);
-        maven.execute(DemandMojo.class);
-        new Moja<>(AssembleMojo.class)
-            .with("ignoreTransitive", true)
-            .with("outputDir", target.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("placed", target.resolve("list").toFile())
+            .with("sourcesDir", src.toFile())
+            .with("objects", Collections.singletonList("org.eolang.bool"))
             .with("objectionary", SnippetTest.objectionary())
-            .with("central", Central.EMPTY)
-            .execute();
-        final Path generated = target.resolve("generated");
-        new Moja<>(TranspileMojo.class)
+
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
-            .with("foreign", foreign.toFile())
             .with("transpiled", target.resolve("transpiled.csv").toFile())
-            .with("foreignFormat", "json")
-            .execute();
+            ;
+        maven.execute(RegisterMojo.class);
+        maven.execute(DemandMojo.class);
+        maven.execute(AssembleMojo.class);
+        maven.execute(TranspileMojo.class);
         final Path classes = target.resolve("classes");
         classes.toFile().mkdir();
         final String cpath = String.format(
