@@ -195,10 +195,6 @@ public final class FakeMaven {
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         this.params.putIfAbsent("project", new MavenProjectStub());
-        this.params.putIfAbsent(
-            "generatedDir",
-            this.workspace.absolute(Paths.get("generated")).toFile()
-        );
         final Path transpiled = Paths.get("transpiled");
         this.workspace.save(new TextOf(""), transpiled);
         this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
@@ -224,7 +220,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generateGraphFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
-        this.params.putIfAbsent("generatedDir", this.targetPath().resolve("generated").toFile());
+        this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -239,6 +235,14 @@ public final class FakeMaven {
      */
     public Path targetPath() {
         return this.workspace.absolute(Paths.get("target"));
+    }
+
+    /**
+     * Path to generated directory.
+     * @return Path to generated dir.
+     */
+    public Path generatedPath() {
+        return this.targetPath().resolve("generated");
     }
 
     /**

@@ -31,18 +31,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
@@ -118,15 +118,18 @@ final class SnippetTest {
         );
         final String actual = new String(stdout.toByteArray(), StandardCharsets.UTF_8);
         Logger.debug(this, "Stdout: \"%s\"", actual);
-        for (final String ptn : (Iterable<String>) map.get("out")) {
-            MatcherAssert.assertThat(
-                String.format("'%s' printed something wrong", yml),
-                actual,
-                Matchers.matchesPattern(
-                    Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+        MatcherAssert.assertThat(
+            String.format("'%s' printed something wrong", yml),
+            actual,
+            Matchers.allOf(
+                new Mapped<>(
+                    ptn -> Matchers.matchesPattern(
+                        Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+                    ),
+                    (Iterable<String>) map.get("out")
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -149,22 +152,17 @@ final class SnippetTest {
         final Output stdout
     ) throws Exception {
         final Path src = tmp.resolve("src");
-        final Path target = tmp.resolve("target");
-        final Path generated = target.resolve("generated");
         final FakeMaven maven = new FakeMaven(tmp)
             .withProgram(code)
             .with("sourcesDir", src.toFile())
-            .with("objects", Collections.singletonList("org.eolang.bool"))
-            .with("objectionary", SnippetTest.objectionary())
-            .with("project", new MavenProjectStub())
-            .with("generatedDir", generated.toFile())
-            .with("transpiled", target.resolve("transpiled.csv").toFile());
+            .with("objects", Arrays.asList("org.eolang.bool"))
+            .with("objectionary", SnippetTest.objectionary());
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
         maven.execute(TranspileMojo.class);
-        final Path classes = target.resolve("classes");
-        SnippetTest.compileJava(generated, classes);
+        final Path classes = maven.targetPath().resolve("classes");
+        SnippetTest.compileJava(maven.generatedPath(), classes);
         SnippetTest.runJava(args, stdin, stdout, classes);
         return 0;
     }
@@ -198,6 +196,7 @@ final class SnippetTest {
      * @param stdout Where to put stdout
      * @param classes Where to find compiled classes
      * @throws Exception If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static void runJava(
         final List<String> args,
@@ -247,7 +246,6 @@ final class SnippetTest {
      * @param stdout Stdout
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void exec(
         final String cmd,
         final Path dir,
