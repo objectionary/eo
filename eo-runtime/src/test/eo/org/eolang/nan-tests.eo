@@ -104,7 +104,7 @@
 
 [] > nan-pow
   assert-that > @
-    and. > @
+    and.
       (nan.pow 2).as-bytes.eq (nan.as-bytes)
       (nan.pow nan).as-bytes.eq (nan.as-bytes)
     $.equal-to TRUE
