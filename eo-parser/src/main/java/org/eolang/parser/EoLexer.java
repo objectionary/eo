@@ -84,7 +84,8 @@ public final class EoLexer extends ProgramLexer {
      */
     private void lookAhead() {
         final Token token = super.nextToken();
-        if (token.getType() == ProgramParser.EOL) {
+        if (token.getType() == ProgramParser.SEOL
+            || token.getType() == ProgramParser.DEOL) {
             final int tabs = this.getText().replaceAll("[\r\n]", "").length() / 2;
             final int last = this.indent.peekLast();
             final int shift = tabs - last;
@@ -115,7 +116,7 @@ public final class EoLexer extends ProgramLexer {
     private void emitDedent(final int shift) {
         for (int idx = 0; idx < shift; ++idx) {
             this.emitToken(ProgramParser.UNTAB);
-            this.emitToken(ProgramParser.EOL);
+            this.emitToken(ProgramParser.SEOL);
         }
     }
 

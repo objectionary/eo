@@ -302,7 +302,7 @@ final class OptimizeMojoTest {
             .withProgram(
                 "+architect yegor256@gmail.com",
                 "+junit",
-                "+package org.eolang.examples",
+                "+package org.eolang.examples\n",
                 "[] > main",
                 "  [] > @",
                 "    hello > test"
