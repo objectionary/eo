@@ -46,6 +46,7 @@
     and.
       (nan.lt 42).eq FALSE
       (nan.lt nan).eq FALSE
+    $.equal-to TRUE
 
 [] > nan-lte
   assert-that > @
@@ -122,7 +123,12 @@
 
 [] > nan-as-int
   assert-that > @
-    nan.as-int
+    try
+      []
+        nan.as-int > @
+      [e]
+        e > @
+      nop
     $.equal-to "You can't convert NaN to int"
 
 [] > nan-as-string
