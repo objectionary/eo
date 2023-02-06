@@ -148,18 +148,15 @@ final class SnippetTest {
         final Output stdout
     ) throws Exception {
         final Path src = tmp.resolve("src");
-        new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
         final Path generated = target.resolve("generated");
         final FakeMaven maven = new FakeMaven(tmp)
-            .with("foreign", target.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
+            .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Collections.singletonList("org.eolang.bool"))
             .with("objectionary", SnippetTest.objectionary())
 
             .with("project", new MavenProjectStub())
-            .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .with("transpiled", target.resolve("transpiled.csv").toFile());
         maven.execute(RegisterMojo.class);
