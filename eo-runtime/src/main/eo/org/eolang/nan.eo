@@ -101,8 +101,7 @@
 
   # Converts this to int
   [] > as-int
-    [] > @
-      "You can't convert NaN to int" > msg
+    error "You can't convert NaN to int" > @
 
   # Converts this to string
   [] > as-string

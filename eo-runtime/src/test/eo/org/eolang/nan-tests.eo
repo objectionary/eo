@@ -28,81 +28,104 @@
 +version 0.0.0
 
 [] > nan-eq
-  and. > @
-    (nan.eq 42).eq FALSE
-    (nan.eq nan).eq FALSE
+  assert-that > @
+    and.
+      (nan.eq 42).eq FALSE
+      (nan.eq nan).eq FALSE
+    $.equal-to TRUE
 
 [] > nan-neq
-  and. > @
-    (nan.neq 42).eq TRUE
-    (nan.neq nan).eq TRUE
+  assert-that > @
+    and.
+      (nan.neq 42).eq TRUE
+      (nan.neq nan).eq TRUE
+    $.equal-to TRUE
 
 [] > nan-lt
-  and. > @
-    (nan.lt 42).eq FALSE
-    (nan.lt nan).eq FALSE
+  assert-that > @
+    and.
+      (nan.lt 42).eq FALSE
+      (nan.lt nan).eq FALSE
 
 [] > nan-lte
-  and. > @
-    (nan.lte 42).eq FALSE
-    (nan.lte nan).eq FALSE
+  assert-that > @
+    and.
+      (nan.lte 42).eq FALSE
+      (nan.lte nan).eq FALSE
+    $.equal-to TRUE
 
 [] > nan-gt
-  and. > @
-    (nan.gt 42).eq FALSE
-    (nan.gt nan).eq FALSE
+  assert-that > @
+    and.
+      (nan.gt 42).eq FALSE
+      (nan.gt nan).eq FALSE
+    $.equal-to TRUE
 
 [] > nan-gte
-  and. > @
-    (nan.gte 42).eq FALSE
-    (nan.gte nan).eq FALSE
+  assert-that > @
+    and.
+      (nan.gte 42).eq FALSE
+      (nan.gte nan).eq FALSE
+    $.equal-to TRUE
 
 [] > nan-times
-  and. > @
-    (nan.times 42).as-bytes.eq (nan.as-bytes)
-    (nan.times nan).as-bytes.eq (nan.as-bytes)
+  assert-that > @
+    and.
+      (nan.times 42).as-bytes.eq (nan.as-bytes)
+      (nan.times nan).as-bytes.eq (nan.as-bytes)
+    $.equal-to TRUE
 
 [] > nan-div
-  and. > @
-    (nan.div 42).as-bytes.eq (nan.as-bytes)
-    (nan.div nan).as-bytes.eq (nan.as-bytes)
+  assert-that > @
+    and.
+      (nan.div 42).as-bytes.eq (nan.as-bytes)
+      (nan.div nan).as-bytes.eq (nan.as-bytes)
+    $.equal-to TRUE
 
 [] > nan-plus
-  and. > @
-    (nan.plus 42).as-bytes.eq (nan.as-bytes)
-    (nan.plus nan).as-bytes.eq (nan.as-bytes)
+  assert-that > @
+    and.
+      (nan.plus 42).as-bytes.eq (nan.as-bytes)
+      (nan.plus nan).as-bytes.eq (nan.as-bytes)
+    $.equal-to TRUE
 
 [] > nan-minus
-  and. > @
-    (nan.minus 42).as-bytes.eq (nan.as-bytes)
-    (nan.minus nan).as-bytes.eq (nan.as-bytes)
+  assert-that > @
+    and.
+      (nan.minus 42).as-bytes.eq (nan.as-bytes)
+      (nan.minus nan).as-bytes.eq (nan.as-bytes)
+    $.equal-to TRUE
 
 [] > nan-signum
-  eq. > @
+  assert-that > @
     nan.signum.as-bytes
-    nan.as-bytes
+    $.equal-to
+      nan.as-bytes
 
 [] > nan-pow
-  and. > @
-    (nan.pow 2).as-bytes.eq (nan.as-bytes)
-    (nan.pow nan).as-bytes.eq (nan.as-bytes)
+  assert-that > @
+    and. > @
+      (nan.pow 2).as-bytes.eq (nan.as-bytes)
+      (nan.pow nan).as-bytes.eq (nan.as-bytes)
+    $.equal-to TRUE
 
 [] > nan-abs
-  eq. > @
+  assert-that > @
     nan.abs.as-bytes
-    nan.as-bytes
+    $.equal-to
+      nan.as-bytes
 
 [] > nan-as-bytes
-  eq. > @
-    7F-C0-00-00
+  assert-that > @
     nan.as-bytes
+    $.equal-to 7F-C0-00-00
 
 [] > nan-as-int
-  eq. > @
-    "You can't convert NaN to int"
-    nan.as-int.msg
+  assert-that > @
+    nan.as-int
+    $.equal-to "You can't convert NaN to int"
 
 [] > nan-as-string
-  eq. > @
-    "NaN"
+  assert-that > @
     nan.as-string
+    $.equal-to "NaN"
