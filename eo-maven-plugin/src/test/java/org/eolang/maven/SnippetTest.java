@@ -75,8 +75,6 @@ import org.yaml.snakeyaml.Yaml;
  * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
- * @todo #1723:30m Add FakeMojo support for SnippetTest. We have to reuse FakeMojo class in order
- *  to reduce code duplication and increase overall test code readability. {@link FakeMaven}.
  */
 @ExtendWith(OnlineCondition.class)
 final class SnippetTest {
@@ -225,7 +223,7 @@ final class SnippetTest {
                 Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
             )
         );
-        final OyFake objectionary = new OyFake(
+        return new OyFake(
             name -> {
                 final Input res;
                 if (name.contains("collections")) {
@@ -267,7 +265,6 @@ final class SnippetTest {
                 return res;
             }
         );
-        return objectionary;
     }
 
     /**
