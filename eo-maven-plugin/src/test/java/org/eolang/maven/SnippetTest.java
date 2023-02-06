@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -151,16 +152,15 @@ final class SnippetTest {
         new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
         final Path foreign = target.resolve("eo-foreign.json");
-        new Moja<>(RegisterMojo.class)
+        final File value = src.toFile();
+        final FakeMaven maven = new FakeMaven(tmp)
             .with("foreign", target.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
-            .execute();
-        new Moja<>(DemandMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("objects", new ListOf<>("org.eolang.bool"))
-            .execute();
+            .with("sourcesDir", value)
+            .with("objects", Collections.singletonList("org.eolang.bool"));
+        maven.execute(RegisterMojo.class);
+        maven.execute(DemandMojo.class);
+
         final Path home = Paths.get(
             System.getProperty(
                 "runtime.path",
