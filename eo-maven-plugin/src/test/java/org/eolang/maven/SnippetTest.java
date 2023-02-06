@@ -152,9 +152,7 @@ final class SnippetTest {
         final Path src = tmp.resolve("src");
         new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
-        final Path foreign = target.resolve("eo-foreign.json");
         final Path generated = target.resolve("generated");
-
         final FakeMaven maven = new FakeMaven(tmp)
             .with("foreign", target.resolve("eo-foreign.json").toFile())
             .with("foreignFormat", "json")
@@ -165,12 +163,12 @@ final class SnippetTest {
             .with("project", new MavenProjectStub())
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
-            .with("transpiled", target.resolve("transpiled.csv").toFile())
-            ;
+            .with("transpiled", target.resolve("transpiled.csv").toFile());
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
         maven.execute(TranspileMojo.class);
+
         final Path classes = target.resolve("classes");
         classes.toFile().mkdir();
         final String cpath = String.format(
@@ -278,7 +276,7 @@ final class SnippetTest {
      * @param cmd The command
      * @param dir The home dir
      */
-    private static void exec(final String cmd, final Path dir) {
+    private static void exec(final String cmd, final Path dir) throws Exception {
         SnippetTest.exec(
             cmd, dir, new InputOf(""),
             new OutputTo(new ByteArrayOutputStream())
@@ -297,31 +295,26 @@ final class SnippetTest {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void exec(final String cmd, final Path dir,
         final Input stdin, final Output stdout
-    ) {
+    ) throws Exception {
         Logger.debug(SnippetTest.class, "+%s", cmd);
-        try {
-            final Process proc = new ProcessBuilder()
-                .command(cmd.split(" "))
-                .directory(dir.toFile())
-                .redirectErrorStream(true)
-                .start();
+        final Process proc = new ProcessBuilder()
+            .command(cmd.split(" "))
+            .directory(dir.toFile())
+            .redirectErrorStream(true)
+            .start();
+        new LengthOf(
+            new TeeInput(
+                stdin,
+                new OutputTo(proc.getOutputStream())
+            )
+        ).value();
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
             new LengthOf(
                 new TeeInput(
-                    stdin,
-                    new OutputTo(proc.getOutputStream())
+                    new InputOf(vproc.stdout()),
+                    stdout
                 )
             ).value();
-            try (VerboseProcess vproc = new VerboseProcess(proc)) {
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(vproc.stdout()),
-                        stdout
-                    )
-                ).value();
-            }
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            throw new IllegalStateException(ex);
         }
     }
 
