@@ -1,0 +1,108 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2023 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++junit
++version 0.0.0
+
+[] > nan-eq
+  and. > @
+    (nan.eq 42).eq FALSE
+    (nan.eq nan).eq FALSE
+
+[] > nan-neq
+  and. > @
+    (nan.neq 42).eq TRUE
+    (nan.neq nan).eq TRUE
+
+[] > nan-lt
+  and. > @
+    (nan.lt 42).eq FALSE
+    (nan.lt nan).eq FALSE
+
+[] > nan-lte
+  and. > @
+    (nan.lte 42).eq FALSE
+    (nan.lte nan).eq FALSE
+
+[] > nan-gt
+  and. > @
+    (nan.gt 42).eq FALSE
+    (nan.gt nan).eq FALSE
+
+[] > nan-gte
+  and. > @
+    (nan.gte 42).eq FALSE
+    (nan.gte nan).eq FALSE
+
+[] > nan-times
+  and. > @
+    (nan.times 42).as-bytes.eq (nan.as-bytes)
+    (nan.times nan).as-bytes.eq (nan.as-bytes)
+
+[] > nan-div
+  and. > @
+    (nan.div 42).as-bytes.eq (nan.as-bytes)
+    (nan.div nan).as-bytes.eq (nan.as-bytes)
+
+[] > nan-plus
+  and. > @
+    (nan.plus 42).as-bytes.eq (nan.as-bytes)
+    (nan.plus nan).as-bytes.eq (nan.as-bytes)
+
+[] > nan-minus
+  and. > @
+    (nan.minus 42).as-bytes.eq (nan.as-bytes)
+    (nan.minus nan).as-bytes.eq (nan.as-bytes)
+
+[] > nan-signum
+  eq. > @
+    nan.signum.as-bytes
+    nan.as-bytes
+
+[] > nan-pow
+  and. > @
+    (nan.pow 2).as-bytes.eq (nan.as-bytes)
+    (nan.pow nan).as-bytes.eq (nan.as-bytes)
+
+[] > nan-abs
+  eq. > @
+    nan.abs.as-bytes
+    nan.as-bytes
+
+[] > nan-as-bytes
+  eq. > @
+    7F-C0-00-00
+    nan.as-bytes
+
+[] > nan-as-int
+  eq. > @
+    "You can't convert NaN to int"
+    nan.as-int.msg
+
+[] > nan-as-string
+  eq. > @
+    "NaN"
+    nan.as-string

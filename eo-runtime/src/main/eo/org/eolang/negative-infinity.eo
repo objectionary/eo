@@ -27,67 +27,125 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[] > float
+# Negative infinity
+[] > negative-infinity
   # Tests that $ = x
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
+  # Tests that $ ≠ x
+  [x] > neq
+    (^.eq x).not > @
+
   # Tests that $ < x
   [x] > lt
-    gt. > @
-      plus.
-        x
-        neg.
-          ^
-      0.0
+    not. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        ^.eq x
 
   # Tests that $ ≤ x
   [x] > lte
     not. > @
-      ^.gt x
+      eq.
+        x.as-bytes
+        nan.as-bytes
 
   # Tests that $ > x
-  [x] > gt /bool
+  [x] > gt
+    FALSE > @
 
   # Tests that $ ≥ x
   [x] > gte
-    not. > @
-      ^.lt x
+    ^.eq x > @
 
   # Multiplication of $ and x
-  [x...] > times /float
+  [x] > times
+    if. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        x.eq 0.0
+      nan
+      if.
+        x.eq ^
+        positive-infinity
+        ^
 
   # Sum of $ and x
-  [x...] > plus /float
+  [x] > plus
+    if. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        x.eq positive-infinity
+      nan
+      ^
 
   # Negation of $
   [] > neg
-    ^.times -1.0 > @
+    positive-infinity > @
+
+  # Sign of $ (-1.0, 0.0, or 1.0)
+  [] > signum
+    -1.0 > @
 
   # Difference between $ and x
-  [x...] > minus
-    mapped. > x-neg
-      list
-        x
-      [element]
-        neg. > @
-          element
-    ^.plus > @
-      ...x-neg
+  [x] > minus
+    ^.plus (x.neg) > @
+
+  # x'th power of $
+  [x] > pow
+    if. > @
+      x.lt 0.0
+      0.0
+      if.
+        x.eq 0.0
+        1
+        if.
+          x.gt 0.0
+          if.
+            not-int x
+            ^
+            if.
+              (x.as-int.mod 2).eq 0
+              positive-infinity
+              ^
+          nan
+
+    [x] > not-int
+      x.as-int > as-integer!
+      and. > @
+        as-integer.as-float.lt x
+        (as-integer.plus 1).as-float.gt x
 
   # Quotient of the division of $ by x
-  [x...] > div /float
+  [x] > div
+    if. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        x.eq ^
+        x.eq positive-infinity
+      nan
+      ^
+
+  # Remainder of $
+  [] > mod
+    nan > @
+
+  # Absolute value of $ (i.e., with no sign)
+  [] > abs
+    positive-infinity > @
 
   # Converts this to bytes
-  [] > as-bytes /bytes
+  [] > as-bytes
+    FF-80-00-00 > @
 
-  # Converts this to hash
-  [] > as-hash
-    as-int. > @
-      xor.
-        as-bytes
-        right.
-          as-bytes
-          32
+  # Converts this to int
+  [] > as-int
+    [] > @
+      "You can not convert negative infinity to int" > msg
+
+  # Converts this to string
+  [] > as-string
+    "-∞" > @

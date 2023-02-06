@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2023 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,74 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.collections.list
++alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
++junit
 +version 0.0.0
 
-[] > float
-  # Tests that $ = x
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+# @todo #1253:30min. Positive infinity and negative infinity tests are needed.
+#  They were missed for some reason but to aviod potential bugs these objects
+#  has to be tested
+[] > positive-infinity-eq-positive-infinity
+  assert-that > @
+    positive-infinity.eq positive-infinity
+    $.equal-to TRUE
 
-  # Tests that $ < x
-  [x] > lt
-    gt. > @
-      plus.
-        x
-        neg.
-          ^
-      0.0
+[] > positive-infinity-gt-float
+  assert-that > @
+    positive-infinity.gt 10.5
+    $.equal-to TRUE
 
-  # Tests that $ ≤ x
-  [x] > lte
-    not. > @
-      ^.gt x
-
-  # Tests that $ > x
-  [x] > gt /bool
-
-  # Tests that $ ≥ x
-  [x] > gte
-    not. > @
-      ^.lt x
-
-  # Multiplication of $ and x
-  [x...] > times /float
-
-  # Sum of $ and x
-  [x...] > plus /float
-
-  # Negation of $
-  [] > neg
-    ^.times -1.0 > @
-
-  # Difference between $ and x
-  [x...] > minus
-    mapped. > x-neg
-      list
-        x
-      [element]
-        neg. > @
-          element
-    ^.plus > @
-      ...x-neg
-
-  # Quotient of the division of $ by x
-  [x...] > div /float
-
-  # Converts this to bytes
-  [] > as-bytes /bytes
-
-  # Converts this to hash
-  [] > as-hash
-    as-int. > @
-      xor.
-        as-bytes
-        right.
-          as-bytes
-          32
+[] > positive-infinity-not-gt-positive-infinity
+  assert-that > @
+    positive-infinity.gt positive-infinity
+    $.equal-to FALSE
