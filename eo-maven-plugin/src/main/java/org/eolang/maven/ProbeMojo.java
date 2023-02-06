@@ -44,6 +44,7 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
@@ -128,7 +129,7 @@ public final class ProbeMojo extends SafeMojo {
                     new ChNarrow(hash),
                     this.outputPath
                 ),
-                new OyRemote(hash),
+                new OyIndexed(new OyRemote(hash)),
                 this.forceUpdate()
             );
         }
