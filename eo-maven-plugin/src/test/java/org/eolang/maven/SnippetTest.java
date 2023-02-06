@@ -164,19 +164,18 @@ final class SnippetTest {
         maven.execute(AssembleMojo.class);
         maven.execute(TranspileMojo.class);
         final Path classes = target.resolve("classes");
-        final String classpath = String.format(
-            ".%s%s",
-            File.pathSeparatorChar,
-            System.getProperty(
-                "runtime.jar",
-                Paths.get(System.getProperty("user.home")).resolve(
-                    String.format(
-                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                        "1.0-SNAPSHOT"
-                    )
-                ).toString()
-            )
-        );
+        SnippetTest.compileJava(generated, classes);
+        SnippetTest.runJava(args, stdin, stdout, classes);
+        return 0;
+    }
+
+    /**
+     * Compile Java sources.
+     * @param generated Where to find Java sources
+     * @param classes Where to put compiled classes
+     * @throws Exception If fails
+     */
+    private static void compileJava(final Path generated, final Path classes) throws Exception {
         SnippetTest.exec(
             String.format(
                 "%s -encoding utf-8 %s -d %s -cp %s",
@@ -186,10 +185,26 @@ final class SnippetTest {
                     .map(Path::toString)
                     .collect(Collectors.joining(" ")),
                 classes,
-                classpath
+                SnippetTest.classpath()
             ),
             generated
         );
+    }
+
+    /**
+     * Run Java.
+     * @param args Command line arguments
+     * @param stdin The input
+     * @param stdout Where to put stdout
+     * @param classes Where to find compiled classes
+     * @throws Exception If fails
+     */
+    private static void runJava(
+        final List<String> args,
+        final Input stdin,
+        final Output stdout,
+        final Path classes
+    ) throws Exception {
         SnippetTest.exec(
             String.join(
                 " ",
@@ -198,19 +213,95 @@ final class SnippetTest {
                         SnippetTest.jdkExecutable("java"),
                         "-Dfile.encoding=utf-8",
                         "-cp",
-                        classpath,
+                        SnippetTest.classpath(),
                         "org.eolang.Main"
                     ),
                     args
                 )
             ),
-            classes,
-            stdin,
-            stdout
+            classes, stdin, stdout
         );
-        return 0;
     }
 
+    /**
+     * Run some command and print out the output.
+     *
+     * @param cmd The command
+     * @param dir The home dir
+     */
+    private static void exec(final String cmd, final Path dir) throws Exception {
+        SnippetTest.exec(
+            cmd,
+            dir,
+            new InputOf(""),
+            new OutputTo(new ByteArrayOutputStream())
+        );
+    }
+
+    /**
+     * Run some command and print out the output.
+     *
+     * @param cmd The command
+     * @param dir The home dir
+     * @param stdin Stdin
+     * @param stdout Stdout
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private static void exec(
+        final String cmd,
+        final Path dir,
+        final Input stdin,
+        final Output stdout
+    ) throws Exception {
+        Logger.debug(SnippetTest.class, "+%s", cmd);
+        final Process proc = new ProcessBuilder()
+            .command(cmd.split(" "))
+            .directory(dir.toFile())
+            .redirectErrorStream(true)
+            .start();
+        new LengthOf(
+            new TeeInput(
+                stdin,
+                new OutputTo(proc.getOutputStream())
+            )
+        ).value();
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(vproc.stdout()),
+                    stdout
+                )
+            ).value();
+        }
+    }
+
+    /**
+     * Locate executable inside JAVA_HOME.
+     * @param name Name of executable.
+     * @return Path to java executable.
+     */
+    private static String jdkExecutable(final String name) {
+        final String result;
+        final String relative = "%s/bin/%s";
+        final String property = System.getProperty("java.home");
+        if (property == null) {
+            final String environ = System.getenv("JAVA_HOME");
+            if (environ == null) {
+                result = name;
+            } else {
+                result = String.format(relative, environ, name);
+            }
+        } else {
+            result = String.format(relative, property, name);
+        }
+        return result;
+    }
+
+    /**
+     * Fake objectionary.
+     * @return Fake objectionary.
+     */
     private static Objectionary objectionary() {
         final Path home = Paths.get(
             System.getProperty(
@@ -263,73 +354,22 @@ final class SnippetTest {
     }
 
     /**
-     * Run some command and print out the output.
-     *
-     * @param cmd The command
-     * @param dir The home dir
+     * Classpath.
+     * @return Classpath.
      */
-    private static void exec(final String cmd, final Path dir) throws Exception {
-        SnippetTest.exec(
-            cmd, dir, new InputOf(""),
-            new OutputTo(new ByteArrayOutputStream())
+    private static String classpath() {
+        return String.format(
+            ".%s%s",
+            File.pathSeparatorChar,
+            System.getProperty(
+                "runtime.jar",
+                Paths.get(System.getProperty("user.home")).resolve(
+                    String.format(
+                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                        "1.0-SNAPSHOT"
+                    )
+                ).toString()
+            )
         );
     }
-
-    /**
-     * Run some command and print out the output.
-     *
-     * @param cmd The command
-     * @param dir The home dir
-     * @param stdin Stdin
-     * @param stdout Stdout
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private static void exec(final String cmd, final Path dir,
-        final Input stdin, final Output stdout
-    ) throws Exception {
-        Logger.debug(SnippetTest.class, "+%s", cmd);
-        final Process proc = new ProcessBuilder()
-            .command(cmd.split(" "))
-            .directory(dir.toFile())
-            .redirectErrorStream(true)
-            .start();
-        new LengthOf(
-            new TeeInput(
-                stdin,
-                new OutputTo(proc.getOutputStream())
-            )
-        ).value();
-        try (VerboseProcess vproc = new VerboseProcess(proc)) {
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(vproc.stdout()),
-                    stdout
-                )
-            ).value();
-        }
-    }
-
-    /**
-     * Locate executable inside JAVA_HOME.
-     * @param name Name of executable.
-     * @return Path to java executable.
-     */
-    private static String jdkExecutable(final String name) {
-        final String result;
-        final String relative = "%s/bin/%s";
-        final String property = System.getProperty("java.home");
-        if (property == null) {
-            final String environ = System.getenv("JAVA_HOME");
-            if (environ == null) {
-                result = name;
-            } else {
-                result = String.format(relative, environ, name);
-            }
-        } else {
-            result = String.format(relative, property, name);
-        }
-        return result;
-    }
-
 }
