@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,7 +81,7 @@ public final class EOstdinTest {
 
     @StdIo("this is a test input!")
     @Test
-    public void nextLineOneLineTest(final StdIn stdin) {
+    public void dataizesNextLineOneLine(final StdIn stdin) {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
@@ -93,7 +93,7 @@ public final class EOstdinTest {
 
     @StdIo("this is a testing input!")
     @Test
-    public void stdinOneLineTest(final StdIn stdin) {
+    public void dataizesStdinOneLine(final StdIn stdin) {
         final String expected = "this is a testing input!".concat(System.lineSeparator());
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
@@ -105,7 +105,7 @@ public final class EOstdinTest {
 
     @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
-    public void nextLineMultiLineTest(final StdIn stdin) {
+    public void dataizesNextLineMultiLine(final StdIn stdin) {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
@@ -117,7 +117,7 @@ public final class EOstdinTest {
 
     @StdIo("")
     @Test
-    public void nextLineEmptyTest(final StdIn stdin) {
+    public void dataizesNextLineEmpty(final StdIn stdin) {
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
@@ -133,7 +133,7 @@ public final class EOstdinTest {
 
     @StdIo("")
     @Test
-    public void stdinEmptyTest(final StdIn stdin) {
+    public void dataizesEmptyStdin(final StdIn stdin) {
         final String expected = "";
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
@@ -145,7 +145,7 @@ public final class EOstdinTest {
 
     @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
-    public void stdinMultiLineTest(final StdIn stdin) {
+    public void dataizesStdinMultiLine(final StdIn stdin) {
         final String first = "this is a test input!".concat(System.lineSeparator());
         final String second = "another line".concat(System.lineSeparator());
         final String third = "yet another line".concat(System.lineSeparator());
@@ -159,7 +159,7 @@ public final class EOstdinTest {
 
     @StdIo({"first", "second", "third"})
     @Test
-    public void stdinfewOneLineTest(final StdIn stdin) {
+    public void dataizesStdinFewOneLine(final StdIn stdin) {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
@@ -185,7 +185,7 @@ public final class EOstdinTest {
 
     @StdIo({"first", "", "third"})
     @Test
-    public void stdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
+    public void dataizesStdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
         Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -84,7 +84,7 @@ final class PhiTest {
     }
 
     @Test
-    void locationTest() {
+    void getsLocation() {
         MatcherAssert.assertThat(
             new PhWith(
                 new PhLocated(
@@ -93,12 +93,13 @@ final class PhiTest {
                         "x"
                     ),
                     123,
-                    56
+                    56,
+                    "Φ.org.eolang$obj"
                 ),
                 "Δ",
                 new Data.Value<>("aaa")
             ).locator(),
-            Matchers.equalTo("123:56")
+            Matchers.equalTo("Φ.org.eolang$obj:123:56")
         );
     }
 }

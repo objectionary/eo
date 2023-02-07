@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,20 +47,44 @@ final class AtLocated implements Attr {
     private final int position;
 
     /**
+     * The location of the program.
+     */
+    private final String location;
+
+    /**
      * Ctor.
      * @param attr Original
      * @param lne Line
      * @param pos Position
      */
     AtLocated(final Attr attr, final int lne, final int pos) {
+        this(attr, lne, pos, "?");
+    }
+
+    /**
+     * Ctor.
+     * @param attr Original
+     * @param lne Line
+     * @param pos Position
+     * @param loc Location
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    AtLocated(final Attr attr, final int lne, final int pos, final String loc) {
         this.origin = attr;
         this.line = lne;
         this.position = pos;
+        this.location = loc;
     }
 
     @Override
     public String toString() {
-        return String.format("<%d:%d>%s", this.line, this.position, this.origin.toString());
+        return String.format(
+            "<%s:%d:%d>%s",
+            this.location,
+            this.line,
+            this.position,
+            this.origin.toString()
+        );
     }
 
     @Override
@@ -103,9 +127,10 @@ final class AtLocated implements Attr {
      */
     private String label() {
         return String.format(
-            "The object is at the line #%d, position #%d",
+            "The object is at the line #%d, position #%d within `%s`",
             this.line,
-            this.position
+            this.position,
+            this.location
         );
     }
 

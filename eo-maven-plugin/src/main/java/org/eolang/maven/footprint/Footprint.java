@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 package org.eolang.maven.footprint;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import org.cactoos.Scalar;
 
 /**
@@ -48,6 +50,13 @@ public interface Footprint {
      * @param content File content
      * @throws IOException In case of IO issues
      */
-    void save(String program, String ext, Scalar<String> content)
-        throws IOException;
+    void save(String program, String ext, Scalar<String> content) throws IOException;
+
+    /**
+     * Get list of saved regular files with ext.
+     * @param ext File extension
+     * @return List of files
+     * @throws IOException In case of IO issues
+     */
+    List<Path> list(String ext) throws IOException;
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -461,6 +461,24 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 RegisterMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Probe full pipeline.
+     *
+     * @since 0.29
+     */
+    static final class Probe implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                DiscoverMojo.class,
+                ProbeMojo.class
             ).iterator();
         }
     }

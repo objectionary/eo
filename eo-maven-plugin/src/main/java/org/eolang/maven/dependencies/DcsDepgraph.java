@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.dependencies;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -52,7 +52,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  * @see <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
  * @since 0.28.11
  */
-final class DcsDepgraph implements Iterable<Dependency> {
+public final class DcsDepgraph implements Iterable<Dependency> {
 
     /**
      * Maven project.
@@ -89,7 +89,7 @@ final class DcsDepgraph implements Iterable<Dependency> {
      * @param dep Dependency
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    DcsDepgraph(
+    public DcsDepgraph(
         final MavenProject pkt,
         final MavenSession ssn,
         final BuildPluginManager mgr,

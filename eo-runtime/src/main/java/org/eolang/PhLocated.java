@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +47,11 @@ public final class PhLocated implements Phi {
     private final int position;
 
     /**
+     * The location.
+     */
+    private final String location;
+
+    /**
      * Ctor.
      *
      * @param phi The object
@@ -54,9 +59,23 @@ public final class PhLocated implements Phi {
      * @param pos Position
      */
     public PhLocated(final Phi phi, final int lne, final int pos) {
+        this(phi, lne, pos, "?");
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param lne Line
+     * @param pos Position
+     * @param loc Location
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public PhLocated(final Phi phi, final int lne, final int pos, final String loc) {
         this.origin = phi;
         this.line = lne;
         this.position = pos;
+        this.location = loc;
     }
 
     @Override
@@ -71,7 +90,11 @@ public final class PhLocated implements Phi {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return String.format(
+            "<%s>%s",
+            this.locator(),
+            this.origin.toString()
+        );
     }
 
     @Override
@@ -96,7 +119,7 @@ public final class PhLocated implements Phi {
 
     @Override
     public String locator() {
-        return String.format("%d:%d", this.line, this.position);
+        return String.format("%s:%d:%d", this.location, this.line, this.position);
     }
 
 }

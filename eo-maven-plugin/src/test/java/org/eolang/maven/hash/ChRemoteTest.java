@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ChRemoteTest {
 
     @Test
-    void testCommitHashTag() {
+    void getsCommitHashTag() {
         final String hash = new ChRemote("0.26.0").value();
         MatcherAssert.assertThat(
             hash,
@@ -48,7 +48,7 @@ final class ChRemoteTest {
     }
 
     @Test
-    void testCommitHashOldTag() {
+    void getsCommitHashOldTag() {
         final String hash = new ChRemote("0.23.19").value();
         MatcherAssert.assertThat(
             hash,
@@ -57,7 +57,7 @@ final class ChRemoteTest {
     }
 
     @Test
-    void testCommitHashException() {
+    void throwsCommitHashException() {
         Assertions.assertThrows(
             ChText.NotFound.class,
             () -> new ChRemote("nonsense").value()

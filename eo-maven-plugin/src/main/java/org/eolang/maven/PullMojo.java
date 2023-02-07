@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,7 @@ import org.eolang.maven.objectionary.OyCaching;
 import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
@@ -172,7 +173,7 @@ public final class PullMojo extends SafeMojo {
         Objectionary obj;
         try {
             InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyRemote(hash);
+            obj = new OyIndexed(new OyRemote(hash));
         } catch (final IOException ex) {
             obj = new OyEmpty();
         }

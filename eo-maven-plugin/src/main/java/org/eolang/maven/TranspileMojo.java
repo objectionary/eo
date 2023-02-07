@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -191,7 +191,9 @@ public final class TranspileMojo extends SafeMojo {
      * @return List of Paths to generated java file
      * @throws IOException If any issues with I/O
      */
-    private List<Path> transpile(final Path src, final XML input,
+    private List<Path> transpile(
+        final Path src,
+        final XML input,
         final Path target
     ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
@@ -211,19 +213,12 @@ public final class TranspileMojo extends SafeMojo {
         }
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
-            TranspileMojo.TRAIN, place.make(
-            this.targetDir.toPath().resolve(TranspileMojo.PRE),
-            ""
-        )
+            TranspileMojo.TRAIN,
+            place.make(this.targetDir.toPath().resolve(TranspileMojo.PRE), "")
         );
-        final XML out = new Xsline(trn).pass(input);
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        new Home(dir)
-            .save(out.toString(), dir.relativize(target));
-        return new JavaFiles(
-            target,
-            this.generatedDir.toPath()
-        ).save();
+        new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
+        return new JavaFiles(target, this.generatedDir.toPath()).save();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -39,10 +40,13 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.IsEmpty;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
@@ -69,6 +73,8 @@ import org.yaml.snakeyaml.Yaml;
  * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
+ * @todo #1723:30m Add FakeMojo support for SnippetTest. We have to reuse FakeMojo class in order
+ *  to reduce code duplication and increase overall test code readability. {@link FakeMaven}.
  */
 @ExtendWith(OnlineCondition.class)
 final class SnippetTest {
@@ -80,6 +86,17 @@ final class SnippetTest {
     @TempDir
     public Path temp;
 
+    /**
+     * Runs and checks of eo snippets.
+     *
+     * @todo #1723:90m Enable runsAllSpinners test. This test disabled because it requires
+     *  foreign eo objects from the internet. We need to find a way to mock them or to put into
+     *  eo-runtime.jar. You can read more about the problem
+     *  <a href="https://github.com/objectionary/eo/issues/1724">here</a>. Also it's important to
+     *  remove bytes-as-array.eo and list.eo from the test resources.
+     * @param yml Yaml test case.
+     * @throws Exception If fails
+     */
     @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
@@ -123,8 +140,13 @@ final class SnippetTest {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
-    private static int run(final Path tmp, final Input code, final List<String> args,
-        final Input stdin, final Output stdout) throws Exception {
+    private static int run(
+        final Path tmp,
+        final Input code,
+        final List<String> args,
+        final Input stdin,
+        final Output stdout
+    ) throws Exception {
         final Path src = tmp.resolve("src");
         new Home(src).save(code, Paths.get("code.eo"));
         final Path target = tmp.resolve("target");
@@ -145,25 +167,56 @@ final class SnippetTest {
                 Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
             )
         );
-        new Moja<>(AssembleMojo.class)
-            .with("outputDir", target.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("placed", target.resolve("list").toFile())
-            .with(
-                "objectionary",
-                new OyFake(
-                    name -> new InputOf(
+        final OyFake objectionary = new OyFake(
+            name -> {
+                final Input res;
+                if (name.contains("collections")) {
+                    res = new ResourceOf(
+                        String.format("%s.eo", name.replace(".", "/"))
+                    );
+                } else {
+                    res = new InputOf(
                         home.resolve(
                             String.format(
                                 "src/main/eo/%s.eo",
                                 name.replace(".", "/")
                             )
                         )
-                    )
-                )
-            )
+                    );
+                }
+                return res;
+            },
+            name -> {
+                final boolean res;
+                if (name.contains("collections")) {
+                    res = !new IsEmpty(
+                        new TextOf(
+                            new ResourceOf(
+                                String.format("%s.eo", name.replace(".", "/"))
+                            )
+                        )
+                    ).value();
+                } else {
+                    res = Files.exists(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
+                        )
+                    );
+                }
+                return res;
+            }
+        );
+        new Moja<>(AssembleMojo.class)
+            .with("ignoreTransitive", true)
+            .with("outputDir", target.resolve("out").toFile())
+            .with("targetDir", target.toFile())
+            .with("foreign", foreign.toFile())
+            .with("foreignFormat", "json")
+            .with("placed", target.resolve("list").toFile())
+            .with("objectionary", objectionary)
             .with("central", Central.EMPTY)
             .execute();
         final Path generated = target.resolve("generated");
@@ -172,6 +225,7 @@ final class SnippetTest {
             .with("targetDir", target.toFile())
             .with("generatedDir", generated.toFile())
             .with("foreign", foreign.toFile())
+            .with("transpiled", target.resolve("transpiled.csv").toFile())
             .with("foreignFormat", "json")
             .execute();
         final Path classes = target.resolve("classes");
@@ -247,7 +301,8 @@ final class SnippetTest {
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void exec(final String cmd, final Path dir,
-        final Input stdin, final Output stdout) {
+        final Input stdin, final Output stdout
+    ) {
         Logger.debug(SnippetTest.class, "+%s", cmd);
         try {
             final Process proc = new ProcessBuilder()
