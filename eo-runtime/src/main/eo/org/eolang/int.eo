@@ -31,9 +31,20 @@
 
   # Tests that $ = x
   [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+    if. > @
+      and.
+        eq.
+          ^.as-bytes > self-as-bytes!
+          00-00-00-00-00-00-00-00 > zero-as-bytes!
+        eq.
+          x.as-bytes > x-as-bytes!
+          zero-as-bytes
+      eq.
+        ^.neg.as-bytes
+        x.neg.as-bytes
+      eq.
+        self-as-bytes
+        x-as-bytes
 
   # Tests that $ < x
   [x] > lt
