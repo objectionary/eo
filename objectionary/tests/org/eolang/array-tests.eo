@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Objectionary.com
+# Copyright (c) 2016-2023 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.17
++version 0.28.18
 
 [] > makes-array-through-special-syntax
   assert-that > @
@@ -197,3 +197,27 @@
     list a
     $.equal-to
       list (* 1 2 3)
+
+[] > array-with-negative-index-gets-last
+  * 0 1 2 3 4 > arr
+  assert-that > @
+    arr.at -1
+    $.equal-to 4
+
+[] > array-with-negative-index-gets-first
+  * 0 1 2 3 4 > arr
+  assert-that > @
+    arr.at -5
+    $.equal-to 0
+
+[] > array-with-negative-index-out-of-bounds
+  * 0 1 2 3 4 > arr
+  assert-that > @
+    try
+      []
+        arr.at -6 > @
+      [e]
+        e > @
+      nop
+    $.equal-to
+      "Can't #at(-6) the -1th element of the array"
