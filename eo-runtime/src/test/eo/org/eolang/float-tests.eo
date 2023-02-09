@@ -103,6 +103,17 @@
       10.9
     $.equal-to FALSE
 
+[] > float-equal-to-nan-and-infinites-is-false
+  assert-that > @
+    and.
+      (0.0.eq nan).eq FALSE
+      (0.0.eq positive-infinity).eq FALSE
+      (0.0.eq negative-infinity).eq FALSE
+      (42.5.eq nan).eq FALSE
+      (42.5.eq positive-infinity).eq FALSE
+      (42.5.eq negative-infinity).eq FALSE
+    $.equal-to TRUE
+
 [] > zero-eq-to-zero
   assert-that > @
     eq.

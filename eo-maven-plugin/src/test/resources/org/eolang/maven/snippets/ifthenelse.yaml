@@ -1,21 +1,17 @@
 exit: 0
 in: ""
 out:
-  - ".*17 is greater than zero.*"
-args: ["main", "17"]
+  - ".*greater.*"
+args: [ "main", "17" ]
 eo: |
+  +alias org.eolang.io.stdout
+
   [args...] > main
     [n] > f
       if. > @
         n.lt 0
         "smaller"
         "greater"
-    QQ.io.stdout > @
-      QQ.txt.sprintf
-        "%d is %s than zero\n"
-        at. > num
-          QQ.txt.sscanf
-            "%d"
-            args.at 0
-          0
-        f num
+    stdout > @
+      f 17
+

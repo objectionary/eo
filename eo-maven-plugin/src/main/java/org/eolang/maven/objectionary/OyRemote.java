@@ -84,7 +84,7 @@ public final class OyRemote implements Objectionary {
      * Assumes two placeholders in terms of
      * {@link String#format(String, Object...)}: 1st for version hash,
      * 2nd for program name.
-     * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+     * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
      *
      * @since 1.0
      */
@@ -94,7 +94,7 @@ public final class OyRemote implements Objectionary {
          * URL template. Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
          * 2nd for program name.
-         * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+         * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
          */
         private final String template;
 
