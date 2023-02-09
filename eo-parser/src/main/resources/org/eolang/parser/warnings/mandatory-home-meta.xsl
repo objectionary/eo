@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="count(/program/metas/meta[head ='package'])=0">
+      <xsl:if test="count(/program/metas/meta[head ='home'])=0">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>missing-home</xsl:text>
