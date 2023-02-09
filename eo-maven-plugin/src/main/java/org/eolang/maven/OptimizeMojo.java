@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,32 +27,30 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
 import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 
 /**
  * Optimize XML files.
  *
- * @todo #1336:30min Make a number of threads in `exec()` method configurable
- *   via mojo parameter `threads`. Default value should be set to 4.
  * @since 0.1
  */
 @Mojo(
@@ -114,6 +112,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     /**
      * EO cache directory.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.cache")
@@ -121,106 +120,95 @@ public final class OptimizeMojo extends SafeMojo {
     private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final Set<Callable<Object>> tasks = new HashSet<>(0);
-        final AtomicInteger done = new AtomicInteger(0);
-        sources.stream()
-            .map(SynchronizedTojo::new)
-            .forEach(
-                tojo -> {
-                    final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                    if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
-                        final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-                        if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                            Logger.debug(
-                                this, "Already optimized %s to %s",
-                                new Rel(src), new Rel(tgt)
-                            );
-                            return;
-                        }
-                    }
-                    Logger.info(
-                        this, "Adding optimization task for %s",
-                        src
-                    );
-                    tasks.add(
-                        Executors.callable(
-                            () -> {
-                                try {
-                                    final XML optimized = this.optimization(tojo)
-                                        .apply(new XMLDocument(src));
-                                    done.incrementAndGet();
-                                    if (this.shouldPass(optimized)) {
-                                        tojo.set(
-                                            AssembleMojo.ATTR_XMIR2,
-                                            this.make(optimized, src).toAbsolutePath().toString()
-                                        );
-                                    }
-                                } catch (final IOException exception) {
-                                    throw new IllegalStateException(
-                                        String.format(
-                                            "Unable to optimize %s",
-                                            tojo.get(Tojos.KEY)
-                                        ),
-                                        exception
-                                    );
-                                }
-                            }
-                        )
-                    );
-                }
-            );
-        try {
+        final Optimization common = this.optimization();
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    tojo -> this.task(tojo, common),
+                    new Filtered<>(
+                        this::isOptimizationRequired,
+                        sources
+                    )
+                )
+            )
+        ).intValue();
+        if (total > 0) {
             Logger.info(
-                this, "Running %s optimizations in parallel",
-                tasks.size()
+                this,
+                "Optimized %d out of %d XMIR program(s)", total,
+                sources.size()
             );
-            Executors.newFixedThreadPool(4)
-                .invokeAll(tasks)
-                .forEach(
-                    completed -> {
-                        try {
-                            completed.get();
-                        } catch (final InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        } catch (final ExecutionException ex) {
-                            throw new IllegalArgumentException(
-                                ex.getCause().getMessage(),
-                                ex
-                            );
-                        }
-                    }
-                );
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "Interrupted while waiting for %d optimizations to finish",
-                    done.get()
-                ),
-                ex
-            );
-        }
-        if (done.get() > 0) {
-            Logger.info(this, "Optimized %d out of %d XMIR program(s)", done.get(), sources.size());
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
         }
     }
 
     /**
-     * Optimization for specific tojo.
+     * Converts tojo to optimization task.
      *
-     * @param tojo Tojp
-     * @return Optimization for specific Tojo
+     * @param tojo Tojo that should be optimized.
+     * @param common Optimization.
+     * @return Optimization task.
      */
-    private Optimization optimization(final Tojo tojo) {
+    private Scalar<Integer> task(
+        final Tojo tojo,
+        final Optimization common
+    ) {
+        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        Logger.debug(
+            this, "Adding optimization task for %s",
+            src
+        );
+        return () -> {
+            final XML optimized = this.optimization(tojo, common)
+                .apply(new XMLDocument(src));
+            if (this.shouldPass(optimized)) {
+                tojo.set(
+                    AssembleMojo.ATTR_XMIR2,
+                    this.make(optimized, src).toAbsolutePath().toString()
+                );
+            }
+            return 1;
+        };
+    }
+
+    /**
+     * Checks if tojo was already optimized.
+     *
+     * @param tojo Tojo to check
+     * @return True if optimization is required, false otherwise.
+     */
+    private boolean isOptimizationRequired(final Tojo tojo) {
+        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        boolean res = true;
+        if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
+            final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already optimized %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Common optimization for all tojos.
+     *
+     * @return Optimization for all tojos.
+     */
+    private Optimization optimization() {
         Optimization opt;
         if (this.trackOptimizationSteps) {
-            opt = new OptSpy(targetDir.toPath().resolve(OptimizeMojo.STEPS));
+            opt = new OptSpy(this.targetDir.toPath().resolve(OptimizeMojo.STEPS));
         } else {
             opt = new OptTrain();
         }
@@ -230,19 +218,33 @@ public final class OptimizeMojo extends SafeMojo {
         if (this.failOnWarning) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
         }
-        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
-            opt = new OptCached(
-                opt,
-                this.cache.resolve(OptimizeMojo.OPTIMIZED)
-                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
-            );
-        }
         if (this.failOnError) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
         } else {
             opt = new OptTrain(opt, new ParsingTrain().empty());
         }
         return opt;
+    }
+
+    /**
+     * Optimization for specific tojo.
+     *
+     * @param tojo Tojo
+     * @param opt Optimization
+     * @return Optimization for specific Tojo
+     */
+    private Optimization optimization(final Tojo tojo, final Optimization opt) {
+        final Optimization res;
+        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+            res = new OptCached(
+                opt,
+                this.cache.resolve(OptimizeMojo.OPTIMIZED)
+                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
+            );
+        } else {
+            res = opt;
+        }
+        return res;
     }
 
     /**

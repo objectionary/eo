@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Objectionary.com
+# Copyright (c) 2016-2023 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -130,6 +130,17 @@
         10
     $.equal-to TRUE
     "check int.gte.not"
+
+[] > int-equal-to-nan-and-infinites-is-false
+  assert-that > @
+    and.
+      (0.eq nan).eq FALSE
+      (0.eq positive-infinity).eq FALSE
+      (0.eq negative-infinity).eq FALSE
+      (42.eq nan).eq FALSE
+      (42.eq positive-infinity).eq FALSE
+      (42.eq negative-infinity).eq FALSE
+    $.equal-to TRUE
 
 [] > zero-eq-to-zero
   assert-that > @

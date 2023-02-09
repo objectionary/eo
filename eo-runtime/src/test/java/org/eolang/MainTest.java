@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,10 +42,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-public final class MainTest {
+final class MainTest {
 
     @Test
-    public void printsVersion() throws Exception {
+    void printsVersion() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--version"),
             Matchers.allOf(
@@ -56,7 +56,7 @@ public final class MainTest {
     }
 
     @Test
-    public void printsHelp() throws Exception {
+    void printsHelp() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--help"),
             Matchers.containsString("Usage: ")
@@ -64,7 +64,7 @@ public final class MainTest {
     }
 
     @Test
-    public void jvmFullRun() throws Exception {
+    void executesJvmFullRun() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
             Matchers.allOf(
@@ -77,14 +77,44 @@ public final class MainTest {
     }
 
     @Test
-    public void jvmFullRunWithError() throws Exception {
+    void executesJvmFullRunWithDashedObject() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "as-bytes"),
+            Matchers.allOf(
+                Matchers.containsString("Loading class EOas_bytes"),
+                Matchers.containsString("Can not find 'as-bytes' object")
+            )
+        );
+    }
+
+    @Test
+    void executesJvmFullRinWithAttributeCall() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("--verbose", "string$as-bytes"),
+            Matchers.allOf(
+                Matchers.containsString("Loading class EOstring$EOas_bytes"),
+                Matchers.containsString("Can not find 'string$as-bytes' object")
+            )
+        );
+    }
+
+    @Test
+    void executesJvmFullRunWithError() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
         );
     }
 
-    public static String exec(final String... cmds) throws Exception {
+    @Test
+    void executesWithObjectNotFoundException() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("unavailable-name"),
+            Matchers.containsString("Can not find 'unavailable-name' object")
+        );
+    }
+
+    private static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add(MainTest.jdkExecutable("java"));
         args.add("-Dfile.encoding=utf-8");

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.nio.file.Path;
 import org.eolang.maven.Place;
-import org.eolang.maven.Rel;
 import org.eolang.maven.SpyTrain;
+import org.eolang.maven.util.Rel;
 
 /**
  * Optimization that spies.

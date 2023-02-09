@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,15 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.Tojos;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -88,6 +91,50 @@ final class PlaceMojoTest {
         MatcherAssert.assertThat(
             Files.exists(classes.resolve("org/eolang/f/x.a.class")),
             Matchers.is(true)
+        );
+    }
+
+    /**
+     * Test case for {@link PlaceMojo#execute()}.
+     * Since for tests we are using {@link org.eolang.maven.DummyCentral}, then instead of unpacking
+     * of classes from jar it just copies the jar itself to target/classes folder.
+     *
+     * @param temp Temporary directory
+     * @throws IOException If fails
+     */
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        MatcherAssert.assertThat(
+            maven
+                .withHelloWorld()
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            new ContainsFile("**/eo-runtime-*.jar")
+        );
+        MatcherAssert.assertThat(
+            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        MatcherAssert.assertThat(
+            maven
+                .withHelloWorld()
+                .with("withRuntimeDependency", false)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+        );
+        MatcherAssert.assertThat(
+            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
+            Matchers.equalTo(0)
         );
     }
 

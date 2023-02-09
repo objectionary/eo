@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -336,6 +336,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             this.objects.prop("data", "array");
         } else if (ctx.RHO() != null) {
             base = "^";
+        } else if (ctx.VERTEX() != null) {
+            base = "<";
         } else if (ctx.ROOT() != null) {
             base = "Q";
         } else if (ctx.HOME() != null) {
@@ -417,9 +419,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 data = XeListener.bytesToHex((byte) 0x00);
             }
         } else if (ctx.FLOAT() != null) {
-            type = "float";
+            type = "bytes";
             base = "float";
-            data = Double.toString(Double.parseDouble(text));
+            data = XeListener.bytesToHex(
+                ByteBuffer
+                    .allocate(Long.BYTES)
+                    .putDouble(Double.parseDouble(text))
+                    .array()
+            );
         } else if (ctx.INT() != null) {
             type = "bytes";
             base = "int";
@@ -430,15 +437,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.HEX() != null) {
-            type = "int";
+            type = "bytes";
             base = "int";
-            data = Long.toString(
-                Long.parseLong(text.substring(2), 16)
+            data = XeListener.bytesToHex(
+                ByteBuffer
+                    .allocate(Long.BYTES)
+                    .putLong(Long.parseLong(text.substring(2), 16))
+                    .array()
             );
         } else if (ctx.STRING() != null) {
-            type = "string";
+            type = "bytes";
             base = "string";
-            data = text.substring(1, text.length() - 1);
+            data = XeListener.bytesToHex(
+                StringEscapeUtils.unescapeJava(
+                    text.substring(1, text.length() - 1)
+                ).getBytes(StandardCharsets.UTF_8)
+            );
         } else if (ctx.TEXT() != null) {
             type = "bytes";
             base = "string";
@@ -460,11 +474,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         }
         this.objects.prop("data", type);
         this.objects.prop("base", base);
-        this.objects.data(
-            data
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-        );
+        this.objects.data(data);
     }
 
     @Override
@@ -548,10 +558,10 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      * @return Hexadecimal value as string.
      */
     private static String bytesToHex(final byte... bytes) {
-        final StringJoiner str = new StringJoiner(" ");
+        final StringJoiner out = new StringJoiner(" ");
         for (final byte bty : bytes) {
-            str.add(String.format("%02X", bty));
+            out.add(String.format("%02X", bty));
         }
-        return str.toString();
+        return out.toString();
     }
 }

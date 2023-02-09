@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void safeToString() {
+    void convertsSafeToString() {
         MatcherAssert.assertThat(
             new PhMethod(Phi.Φ, "hello").toString(),
             Matchers.endsWith(".hello")
@@ -63,7 +63,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesToLocalJustOnce() {
+    void calculatesLocalJustOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
@@ -74,7 +74,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesThroughPhiOnce() {
+    void calculatesPhiOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
@@ -82,7 +82,7 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesThroughPhiManyTimes() {
+    void calculatesPhiManyTimes() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         final int total = 10;

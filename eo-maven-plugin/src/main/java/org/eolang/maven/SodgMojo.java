@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
@@ -45,11 +46,13 @@ import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -65,6 +68,9 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
+import org.eolang.parser.StXPath;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -124,7 +130,8 @@ public final class SodgMojo extends SafeMojo {
                             )
                         )
                     ).asString(),
-                    new ClasspathSources()
+                    new ClasspathSources(),
+                    "to-xembly.xsl"
                 ).with("testing", "no")
             )
         ),
@@ -156,6 +163,22 @@ public final class SodgMojo extends SafeMojo {
                     "/org/eolang/maven/sodg/pre-clean.xsl",
                     "/org/eolang/maven/sodg/remove-leveled.xsl"
                 ).back(),
+                new TrDefault<>(
+                    new StEndless(
+                        new StXPath(
+                            "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
+                            xml -> {
+                                final String loc = xml.xpath("@loc").get(0);
+                                return new Directives().attr(
+                                    "lambda",
+                                    SodgMojo.locToHex(
+                                        loc.substring(loc.indexOf('.') + 1)
+                                    )
+                                );
+                            }
+                        )
+                    )
+                ),
                 new TrLogged(
                     new TrMapped<>(
                         (Function<String, Shift>) path -> new StBefore(
@@ -167,6 +190,7 @@ public final class SodgMojo extends SafeMojo {
                         ),
                         "/org/eolang/maven/sodg/add-sodg-root.xsl",
                         "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
+                        "/org/eolang/maven/sodg/add-root.xsl",
                         "/org/eolang/maven/sodg/touch-all.xsl",
                         "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
                         "/org/eolang/maven/sodg/pi-copies.xsl",
@@ -447,6 +471,19 @@ public final class SodgMojo extends SafeMojo {
                 sibling.getParent().relativize(sibling)
             );
         }
+    }
+
+    /**
+     * Lambda to HEX.
+     * @param loc The lambda
+     * @return Hexadecimal value as string.
+     */
+    private static String locToHex(final String loc) {
+        final StringJoiner out = new StringJoiner("-");
+        for (final byte bty : loc.getBytes(StandardCharsets.UTF_8)) {
+            out.add(String.format("%02X", bty));
+        }
+        return out.toString();
     }
 
 }

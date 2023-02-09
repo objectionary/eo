@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,18 +35,86 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and @atom and not(@base)]" mode="sodg" priority="1">
+    <xsl:if test="not(@lambda)">
+      <xsl:message terminate="yes">
+        <xsl:text>The @lambda is absent at '</xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text>'</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:if test="@lambda = ''">
+      <xsl:message terminate="yes">
+        <xsl:text>The @lambda is empty at '</xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text>'</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:variable name="v">
+      <xsl:value-of select="@loc"/>
+      <xsl:text>.λ</xsl:text>
+    </xsl:variable>
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'PUT'"/>
+      <xsl:with-param name="name" select="'ADD'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is a lambda vertex for "</xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text>"</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="substring-after(@loc, '.')"/>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>λ</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>This is an atom returning "</xsl:text>
+        <xsl:text>This is an edge for the lambda vertex</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>ρ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is the parent of the lambda vertex</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'PUT'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:variable name="data">
+            <xsl:value-of select="replace(@lambda, ' ', '-')"/>
+          </xsl:variable>
+          <xsl:value-of select="$data"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is a lambda vertex for the atom returning "</xsl:text>
         <xsl:value-of select="@atom"/>
         <xsl:text>"</xsl:text>
       </xsl:with-param>

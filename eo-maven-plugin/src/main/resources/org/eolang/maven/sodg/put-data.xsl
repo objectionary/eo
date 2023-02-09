@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,11 +44,14 @@ SOFTWARE.
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat(replace(text(), ' ', '-'), '-')"/>
+          <xsl:variable name="data">
+            <xsl:value-of select="replace(text(), ' ', '-')"/>
+          </xsl:variable>
+          <xsl:value-of select="$data"/>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>This is a data object of type "</xsl:text>
+        <xsl:text>This is the data of type "</xsl:text>
         <xsl:value-of select="@base"/>
         <xsl:text>"</xsl:text>
       </xsl:with-param>

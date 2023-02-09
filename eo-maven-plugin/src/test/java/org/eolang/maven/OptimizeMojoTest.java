@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,7 +59,7 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void testPacks(final String pack) throws Exception {
+    void checksPacks(final String pack) throws Exception {
         MatcherAssert.assertThat(
             new CheckPack(pack).failures(),
             Matchers.empty()

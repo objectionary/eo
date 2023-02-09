@@ -188,7 +188,11 @@ head
     NAME
     COPY?
     |
-    NAME
+    (
+      NAME
+      |
+      VERTEX
+    )
     DOT
     |
     data
@@ -290,7 +294,7 @@ INT: (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*);
 
 fragment EXPONENT: ('e'|'E') (PLUS | MINUS)? ('0'..'9')+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?;
-HEX: '0x' [0-9a-f]+;
+HEX: '0x' [0-9a-fA-F]+;
 
 NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
 

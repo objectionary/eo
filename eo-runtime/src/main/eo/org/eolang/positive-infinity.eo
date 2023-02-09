@@ -1,0 +1,117 @@
+# The MIT License (MIT)
+#
+#  2016-2022 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.0.0
++version 0.0.0
+
+# Positive infinity
+[] > positive-infinity
+  # Tests that $ = x
+  [x] > eq
+    eq. > @
+      ^.as-bytes
+      x.as-bytes
+
+  # Tests that $ ≠ x
+  [x] > neq
+    (^.eq x).not > @
+
+  # Tests that $ < x
+  [x] > lt
+    FALSE > @
+
+  # Tests that $ ≤ x
+  [x] > lte
+    ^.eq x > @
+
+  # Tests that $ > x
+  [x] > gt
+    not. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        ^.eq x
+
+  # Tests that $ ≥ x
+  [x] > gte
+    not. > @
+      eq.
+        x.as-bytes
+        nan.as-bytes
+
+  # Multiplication of $ and x
+  [x] > times
+    if. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        x.eq 0.0
+        x.eq 0
+      nan
+      if.
+        x.eq negative-infinity
+        negative-infinity
+        ^
+
+  # Sum of $ and x
+  [x] > plus
+    if. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        x.eq negative-infinity
+      nan
+      ^
+
+  # Negation of $
+  [] > neg
+    negative-infinity > @
+
+  # Sign of $ (-1.0, 0.0, or 1.0)
+  [] > signum
+    1.0 > @
+
+  # Difference between $ and x
+  [x] > minus
+    ^.plus (x.neg) > @
+
+  # Quotient of the division of $ by x
+  [x] > div
+    if. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        x.eq negative-infinity
+        x.eq ^
+      nan
+      ^
+
+  # Converts this to bytes
+  [] > as-bytes
+    7F-80-00-00 > @
+
+  # Converts this to int
+  [] > as-int
+    error "You can not convert positive infinity to int" > @
+
+  # Converts this to string
+  [] > as-string
+    "+∞" > @

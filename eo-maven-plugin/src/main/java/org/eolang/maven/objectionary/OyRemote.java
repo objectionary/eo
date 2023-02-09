@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.eolang.maven.objectionary;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
@@ -71,12 +72,19 @@ public final class OyRemote implements Objectionary {
         return new InputOf(url);
     }
 
+    @Override
+    public boolean contains(final String name) throws IOException {
+        final int code = ((HttpURLConnection) this.template.value(name).openConnection())
+            .getResponseCode();
+        return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
+    }
+
     /**
      * Objectionary URL template.
      * Assumes two placeholders in terms of
      * {@link String#format(String, Object...)}: 1st for version hash,
      * 2nd for program name.
-     * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+     * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
      *
      * @since 1.0
      */
@@ -86,7 +94,7 @@ public final class OyRemote implements Objectionary {
          * URL template. Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
          * 2nd for program name.
-         * <br/>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+         * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
          */
         private final String template;
 

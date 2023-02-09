@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,10 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -40,7 +35,15 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Func;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.dependencies.DcsDefault;
+import org.eolang.maven.dependencies.DcsDepgraph;
+import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
+import org.eolang.maven.dependencies.DcsUniquelyVersioned;
+import org.eolang.maven.dependencies.DcsWithRuntime;
+import org.eolang.maven.util.Rel;
+import org.eolang.maven.util.Walk;
 
 /**
  * Find all required runtime dependencies, download
@@ -70,7 +73,7 @@ public final class ResolveMojo extends SafeMojo {
      * @since 0.9.0
      */
     @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    private Boolean skipZeroVersions;
+    private boolean skipZeroVersions;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -101,10 +104,38 @@ public final class ResolveMojo extends SafeMojo {
     private boolean ignoreTransitive;
 
     /**
+     * Add eo-runtime dependency to the classpath.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    private boolean withRuntimeDependency = true;
+
+    /**
      * The central.
      */
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
+
+    /**
+     * Transitive dependency extractor. It's a strategy pattern for extracting transitive
+     * dependencies for a particular artifact.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.transitiveDependencies", required = true, defaultValue = "true")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    private Func<Dependency, Iterable<Dependency>> transitiveStrategy =
+        dependency -> new DcsDepgraph(
+            this.project,
+            this.session,
+            this.manager,
+            this.targetDir.toPath()
+                .resolve(ResolveMojo.DIR)
+                .resolve("dependencies-info"),
+            dependency
+        );
 
     @Override
     public void exec() throws IOException {
@@ -113,9 +144,8 @@ public final class ResolveMojo extends SafeMojo {
         }
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
-            final String coords = ResolveMojo.coords(dep);
             String classifier = dep.getClassifier();
-            if (classifier.isEmpty()) {
+            if (classifier == null || classifier.isEmpty()) {
                 classifier = "-";
             }
             final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
@@ -126,7 +156,7 @@ public final class ResolveMojo extends SafeMojo {
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved to %s",
-                    coords, new Rel(dest)
+                    new Coordinates(dep), new Rel(dest)
                 );
                 continue;
             }
@@ -135,12 +165,12 @@ public final class ResolveMojo extends SafeMojo {
             if (files == 0) {
                 Logger.warn(
                     this, "No new files after unpacking of %s!",
-                    coords
+                    new Coordinates(dep)
                 );
             } else {
                 Logger.info(
                     this, "Found %d new file(s) after unpacking of %s",
-                    files, coords
+                    files, new Coordinates(dep)
                 );
             }
         }
@@ -152,59 +182,48 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Find all deps for all tojos.
+     * Checks if dependency is runtime.
+     * @param dep Dependency
+     * @return True if runtime.
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static boolean isRuntime(final Dependency dep) {
+        return "org.eolang".equals(dep.getGroupId())
+            && "eo-runtime".equals(dep.getArtifactId());
+    }
+
+    /**
+     * Find all deps for all Tojos.
      *
      * @return List of them
-     * @throws IOException If fails
      */
-    private Collection<Dependency> deps() throws IOException {
-        final Collection<Tojo> list = this.scopedTojos().select(
-            t -> t.exists(AssembleMojo.ATTR_XMIR)
-                && t.exists(AssembleMojo.ATTR_VERSION)
-                && !t.exists(AssembleMojo.ATTR_JAR)
+    private Collection<Dependency> deps() {
+        Iterable<Dependency> deps = new DcsDefault(
+            this.scopedTojos(),
+            this.discoverSelf,
+            this.skipZeroVersions
         );
-        Logger.debug(
-            this, "%d suitable tojo(s) found out of %d",
-            list.size(), this.scopedTojos().select(t -> true).size()
-        );
-        final Collection<Dependency> deps = new HashSet<>(0);
-        for (final Tojo tojo : list) {
-            if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
-                && !this.discoverSelf) {
-                Logger.debug(
-                    this, "Program %s/%s skipped due to its zero version",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
+        if (this.withRuntimeDependency) {
+            final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
+            if (runtime.isPresent()) {
+                deps = new DcsWithRuntime(deps, runtime.get());
+                Logger.info(
+                    this,
+                    "Runtime dependency added from pom with version: %s",
+                    runtime.get().getVersion()
                 );
-                continue;
+            } else {
+                deps = new DcsWithRuntime(deps);
             }
-            final Optional<Dependency> dep = ResolveMojo.artifact(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
-            );
-            if (!dep.isPresent()) {
-                Logger.debug(
-                    this, "No dependencies for %s/%s",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
-                );
-                continue;
-            }
-            final Dependency one = dep.get();
-            final String coords = ResolveMojo.coords(one);
-            if (this.skipZeroVersions && ParseMojo.ZERO.equals(one.getVersion())) {
-                Logger.debug(
-                    this, "Zero-version dependency for %s/%s skipped: %s",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
-                    coords
-                );
-                continue;
-            }
-            Logger.info(
-                this, "Dependency found for %s/%s: %s",
-                tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION), coords
-            );
-            deps.add(one);
-            tojo.set(AssembleMojo.ATTR_JAR, coords);
         }
-        return new ListOf<>(this.dependenciesOf(deps)).stream()
+        if (!this.ignoreVersionConflicts) {
+            deps = new DcsUniquelyVersioned(deps);
+        }
+        if (!this.ignoreTransitive) {
+            deps = new DcsEachWithoutTransitive(deps, this.transitiveStrategy);
+        }
+        return new ListOf<>(deps)
+            .stream()
             .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
@@ -213,95 +232,22 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Dependencies object.
+     * Runtime dependency from pom.xml.
      *
-     * @param all Dependencies as a collection
-     * @return Dependencies object with applied decorators.
+     * @return Dependency if found.
      */
-    private Dependencies dependenciesOf(final Collection<Dependency> all) {
-        Dependencies dependencies = new DcsWithRuntime(all::iterator);
-        if (!this.ignoreVersionConflicts) {
-            dependencies = new DcsWithoutConflicts(dependencies);
-        }
-        if (!this.ignoreTransitive) {
-            dependencies = new DcsNoOneHasTransitive(
-                dependencies,
-                dep -> new DcsTransitive(
-                    new DcsDepgraph(
-                        project,
-                        session,
-                        manager,
-                        targetDir.toPath()
-                            .resolve(ResolveMojo.DIR)
-                            .resolve("dependencies-info"),
-                        dep
-                    ),
-                    dep
-                )
-            );
-        }
-        return dependencies;
-    }
-
-    /**
-     * Find the artifact required by this EO XML.
-     *
-     * @param file EO file
-     * @return List of artifact needed
-     * @throws IOException If fails
-     */
-    private static Optional<Dependency> artifact(final Path file) throws IOException {
-        final Collection<String> coords = new XMLDocument(file).xpath(
-            "//meta[head='rt' and part[1]='jvm']/part[2]/text()"
-        );
-        final Optional<Dependency> dep;
-        if (coords.isEmpty()) {
-            dep = Optional.empty();
-        } else if (coords.size() == 1) {
-            final String[] parts = coords.iterator().next().split(":");
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId(parts[0]);
-            dependency.setArtifactId(parts[1]);
-            if (parts.length == 3) {
-                dependency.setVersion(parts[2]);
-                dependency.setClassifier("");
-            } else {
-                dependency.setClassifier(parts[2]);
-                dependency.setVersion(parts[3]);
-            }
-            dependency.setScope("transpile");
-            dep = Optional.of(dependency);
+    private Optional<Dependency> runtimeDependencyFromPom() {
+        final Optional<Dependency> res;
+        if (this.project == null) {
+            res = Optional.empty();
         } else {
-            throw new IllegalStateException(
-                String.format(
-                    "Too many (%d) dependencies at %s",
-                    coords.size(), new Rel(file)
-                )
-            );
+            res = this.project
+                .getDependencies()
+                .stream()
+                .filter(ResolveMojo::isRuntime)
+                .findFirst();
         }
-        return dep;
-    }
-
-    /**
-     * Dep to coords.
-     *
-     * @param dep The dependency
-     * @return Coords
-     */
-    private static String coords(final Dependency dep) {
-        String ret = "";
-        if (dep.getClassifier().isEmpty()) {
-            ret = String.format(
-                "%s:%s:%s",
-                dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
-            );
-        } else {
-            ret = String.format(
-                "%s:%s:%s:%s",
-                dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion()
-            );
-        }
-        return ret;
+        return res;
     }
 
     /**
@@ -320,7 +266,7 @@ public final class ResolveMojo extends SafeMojo {
          *
          * @param dep Dependency
          */
-        private Wrap(final Dependency dep) {
+        Wrap(final Dependency dep) {
             this.dependency = dep;
         }
 
@@ -335,15 +281,15 @@ public final class ResolveMojo extends SafeMojo {
 
         @Override
         public int compareTo(final ResolveMojo.Wrap wrap) {
-            return ResolveMojo.Wrap.toStr(this.dependency).compareTo(
-                ResolveMojo.Wrap.toStr(wrap.dependency)
+            return new Coordinates(this.dependency).compareTo(
+                new Coordinates(wrap.dependency)
             );
         }
 
         @Override
         public boolean equals(final Object wrap) {
-            return ResolveMojo.Wrap.toStr(this.dependency).equals(
-                ResolveMojo.Wrap.toStr(
+            return new Coordinates(this.dependency).equals(
+                new Coordinates(
                     ResolveMojo.Wrap.class.cast(wrap).dependency
                 )
             );
@@ -351,20 +297,7 @@ public final class ResolveMojo extends SafeMojo {
 
         @Override
         public int hashCode() {
-            return ResolveMojo.Wrap.toStr(this.dependency).hashCode();
-        }
-
-        /**
-         * Convert it to string.
-         *
-         * @param dep The dep
-         * @return The text
-         */
-        private static String toStr(final Dependency dep) {
-            return String.format(
-                "%s:%s",
-                dep.getGroupId(), dep.getArtifactId()
-            );
+            return new Coordinates(this.dependency).hashCode();
         }
     }
 }

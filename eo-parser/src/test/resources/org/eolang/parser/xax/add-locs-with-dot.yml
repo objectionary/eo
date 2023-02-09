@@ -1,0 +1,18 @@
+sheets:
+  - /org/eolang/parser/set-locators.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o base=".a" name="a">
+        <o base="b"/>
+        <o base="c"/>
+        <o base="d"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - /program/objects/o[@loc='Φ.a' and @base='.a']
+  - /program/objects/o/o[1][@loc='Φ.a.ρ' and @base='b']
+  - /program/objects/o/o[2][@loc='Φ.a.α0' and @base='c']
+  - /program/objects/o/o[3][@loc='Φ.a.α1' and @base='d']

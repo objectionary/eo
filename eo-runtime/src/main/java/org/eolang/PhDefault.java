@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -210,22 +210,25 @@ public abstract class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        int idx;
-        for (idx = 0; idx < pos; ++idx) {
+        Attr attr = this.attr(this.order.get(0));
+        for (int idx = 0; idx <= pos; ++idx) {
             if (idx >= this.order.size()) {
                 throw new ExFailure(
                     String.format(
-                        "There are just %d attributes here, can't read the %d-th one",
-                        this.order.size(), pos
+                        "%s has just %d attribute(s), can't read the %d-th one",
+                        this,
+                        this.order.size(),
+                        pos
                     )
                 );
             }
             final String name = this.order.get(idx);
+            attr = this.attr(this.order.get(idx));
             if (this.attrs.get(name) instanceof AtVararg) {
                 break;
             }
         }
-        return this.attr(this.order.get(idx));
+        return attr;
     }
 
     @Override
