@@ -53,6 +53,10 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Sheets in the right order.
+     *
+     * @todo #1542:90m Add xsl transformation
+     *  that checks the presence of +version meta.
+     *  The version meta have to be correct.
      */
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
