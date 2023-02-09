@@ -12,21 +12,21 @@ program
 
 license
   :
-  (COMMENT (SEOL | DEOL))+
+  (COMMENT (SINGLE_EOL | DOUBLE_EOL))+
   ;
 
 metas
   :
-  (META SEOL)*
-  META DEOL
+  (META SINGLE_EOL)*
+  META DOUBLE_EOL
   ;
 
 objects
   :
   (
-    (COMMENT (SEOL | DEOL))*
+    (COMMENT (SINGLE_EOL | DOUBLE_EOL))*
     object
-    (SEOL | DEOL)
+    (SINGLE_EOL | DOUBLE_EOL)
   )+
   ;
 
@@ -39,7 +39,7 @@ object
   )
   tail?
   (
-    (SEOL | DEOL)
+    (SINGLE_EOL | DOUBLE_EOL)
     method
     htail?
     suffix?
@@ -49,7 +49,7 @@ object
 
 abstraction
   :
-  (COMMENT (SEOL | DEOL))*
+  (COMMENT (SINGLE_EOL | DOUBLE_EOL))*
   attributes
   (
     (suffix (SPACE SLASH (NAME | QUESTION))?)
@@ -79,9 +79,9 @@ label
 
 tail
   :
-  (SEOL | DEOL)
+  (SINGLE_EOL | DOUBLE_EOL)
   TAB
-  (object (SEOL | DEOL))+
+  (object (SINGLE_EOL | DOUBLE_EOL))+
   UNTAB
   ;
 
@@ -264,13 +264,13 @@ fragment LINEBREAK:
     ('\n' | '\r\n')
     ;
 
-SEOL
+SINGLE_EOL
   :
   LINEBREAK
   INDENT*
   ;
 
-DEOL
+DOUBLE_EOL
   :
   LINEBREAK
   LINEBREAK
@@ -284,7 +284,7 @@ fragment LINE_BYTES : BYTE (MINUS BYTE)+;
 BYTES:
        EMPTY_BYTES
     |  BYTE MINUS
-    |  LINE_BYTES (MINUS (SEOL | DEOL) LINE_BYTES)*;
+    |  LINE_BYTES (MINUS (SINGLE_EOL | DOUBLE_EOL) LINE_BYTES)*;
 
 BOOL: 'TRUE' | 'FALSE';
 STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
