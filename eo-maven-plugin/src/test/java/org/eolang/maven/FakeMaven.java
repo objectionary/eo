@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.Home;
@@ -101,6 +102,16 @@ public final class FakeMaven {
      */
     public FakeMaven withHelloWorld() throws IOException {
         return this.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print");
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param input Program as an input.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    public FakeMaven withProgram(final Input input) throws IOException {
+        return this.withProgram(new UncheckedText(new TextOf(input)).asString());
     }
 
     /**
@@ -184,10 +195,6 @@ public final class FakeMaven {
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         this.params.putIfAbsent("project", new MavenProjectStub());
-        this.params.putIfAbsent(
-            "generatedDir",
-            this.workspace.absolute(Paths.get("generated")).toFile()
-        );
         final Path transpiled = Paths.get("transpiled");
         this.workspace.save(new TextOf(""), transpiled);
         this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
@@ -213,6 +220,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generateGraphFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
+        this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -227,6 +235,14 @@ public final class FakeMaven {
      */
     public Path targetPath() {
         return this.workspace.absolute(Paths.get("target"));
+    }
+
+    /**
+     * Path to generated directory.
+     * @return Path to generated dir.
+     */
+    public Path generatedPath() {
+        return this.targetPath().resolve("generated");
     }
 
     /**
