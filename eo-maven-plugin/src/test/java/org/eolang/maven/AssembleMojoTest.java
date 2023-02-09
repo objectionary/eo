@@ -96,6 +96,7 @@ final class AssembleMojoTest {
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
                 "+package test",
                 "",
                 "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
@@ -106,6 +107,7 @@ final class AssembleMojoTest {
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
                 "+package test",
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
