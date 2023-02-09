@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="correct-home-meta" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="custom-warning" version="2.0">
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/program/errors">
         <xsl:copy>
@@ -41,8 +41,8 @@ SOFTWARE.
                         <xsl:attribute name="severity">
                             <xsl:text>warning</xsl:text>
                         </xsl:attribute>
-                        <xsl:text>Wrong format of home meta"</xsl:text>
-                        <xsl:value-of select="concat(head, ' ', tail)"/>
+                        <xsl:text>Wrong format of architect email "</xsl:text>
+                        <xsl:value-of select="$meta-tail"/>
                         <xsl:text>"</xsl:text>
                     </xsl:element>
                 </xsl:if>
