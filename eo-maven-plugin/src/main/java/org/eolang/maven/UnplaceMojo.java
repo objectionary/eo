@@ -121,15 +121,15 @@ public final class UnplaceMojo extends SafeMojo {
 
     /**
      * Keep those we must keep selectively.
-     * @param tojos All binaries found
+     * @param all All binaries found
      * @return Number of files deleted
      * @throws IOException If fails
      * @todo #1319:30min If all .class files for a dependency are removed then
      *  unplaced attribute should be set to `true` for a dependency jar entry as well.
      */
-    private int killThem(final Iterable<Tojo> tojos) throws IOException {
+    private int killThem(final Iterable<? extends Tojo> all) throws IOException {
         int unplaced = 0;
-        for (final Tojo tojo : tojos) {
+        for (final Tojo tojo : all) {
             final String related = tojo.get(PlaceMojo.ATTR_PLD_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             final String hash = new FileHash(path).toString();
