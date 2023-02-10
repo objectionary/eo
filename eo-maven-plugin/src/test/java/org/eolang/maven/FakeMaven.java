@@ -221,6 +221,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
+        this.params.putIfAbsent("placedFormat", "csv");
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
