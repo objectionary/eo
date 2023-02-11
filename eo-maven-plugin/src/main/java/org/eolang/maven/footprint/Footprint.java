@@ -29,7 +29,8 @@ import java.util.List;
 import org.cactoos.Scalar;
 
 /**
- * Program footprint of EO compilation process.
+ * Program footprint of EO compilation process,
+ * convenient eo program management mechanism.
  * @since 1.0
  */
 public interface Footprint {
@@ -44,7 +45,7 @@ public interface Footprint {
     String load(String program, String ext) throws IOException;
 
     /**
-     * Save content.
+     * Save content. Leaves a "footprint" in the directory.
      * @param program Program name
      * @param ext File extension
      * @param content File content
