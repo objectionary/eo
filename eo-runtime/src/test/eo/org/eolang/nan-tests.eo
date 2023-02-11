@@ -111,7 +111,7 @@
 [] > nan-as-bytes-is-valid
   assert-that > @
     nan.as-bytes
-    $.equal-to 7F-C0-00-00-00-00-00-00
+    $.equal-to 7F-F8-00-00-00-00-00-00
 
 [] > nan-as-int-is-valid
   assert-that > @

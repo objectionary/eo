@@ -149,7 +149,7 @@
 [] > negative-infinity-as-bytes-is-valid
   assert-that > @
     negative-infinity.as-bytes
-    $.equal-to FF-80-00-00-00-00-00-00
+    $.equal-to FF-F0-00-00-00-00-00-00
 
 [] > cannot-convert-negative-infinity-to-int
   assert-that > @

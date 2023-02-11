@@ -258,9 +258,9 @@
 [] > div-by-zero
   assert-that > @
     and.
-      (0.0.div 0.0).as-bytes.eq 7F-F8-00-00-00-00-00-00
-      (42.5.div 0.0).as-bytes.eq 7F-F0-00-00-00-00-00-00
-      (-42.5.div 0.0).as-bytes.eq FF-F0-00-00-00-00-00-00
+      (0.0.div 0.0).as-bytes.eq nan.as-bytes
+      (42.5.div 0.0).eq positive-infinity
+      (-42.5.div 0.0).eq negative-infinity
     $.equal-to TRUE
 
 [] > to-bytes-and-backwards

@@ -112,7 +112,7 @@
 
   # Converts this to bytes
   [] > as-bytes
-    FF-80-00-00-00-00-00-00 > @
+    FF-F0-00-00-00-00-00-00 > @
 
   # Converts this to int
   [] > as-int
