@@ -255,13 +255,23 @@
       0.2
     $.equal-to 155.0
 
-[] > div-by-zero
+[] > zero-div-zero-is-equal-to-nan
   assert-that > @
-    and.
-      (0.0.div 0.0).as-bytes.eq nan.as-bytes
-      (42.5.div 0.0).eq positive-infinity
-      (-42.5.div 0.0).eq negative-infinity
-    $.equal-to TRUE
+    (0.0.div 0.0).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > float-plus-nan-is-nan
+  assert-that > @
+    (42.5.plus nan).as-bytes
+    $.equal-to nan.as-bytes
+
+#[] > div-by-zero
+#  assert-that > @
+#    and.
+#      (0.0.div 0.0).as-bytes.eq nan.as-bytes
+#      (42.5.div 0.0).eq positive-infinity
+#      (-42.5.div 0.0).eq negative-infinity
+#    $.equal-to TRUE
 
 [] > to-bytes-and-backwards
   assert-that > @

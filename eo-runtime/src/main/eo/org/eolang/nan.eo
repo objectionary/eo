@@ -39,6 +39,8 @@
 #  decorated 0.0.div 0.0, 1.0.div 0.0 and -1.0.div 0.0 accordingly
 # Not a number
 [] > nan
+  0.0.div 0.0 > @
+
   # Tests that $ = x
   [x] > eq
     FALSE > @
