@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.28.18" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.29.0" elementFormDefault="qualified">
   <xs:simpleType name="empty">
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
@@ -75,7 +75,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
       <xs:element name="license" type="xs:string" minOccurs="0"/>
-      <xs:element name="metas" minOccurs="0">
+      <xs:element name="metas">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="meta" minOccurs="0" maxOccurs="unbounded">
