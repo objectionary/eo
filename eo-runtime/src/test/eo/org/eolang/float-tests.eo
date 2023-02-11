@@ -260,6 +260,11 @@
     (0.0.div 0.0).as-bytes
     $.equal-to nan.as-bytes
 
+[] > zero-div-zero-as-has-is-equal-to-nan-bytes-hash
+  assert-that > @
+    (0.0.div 0.0).as-bytes.as-hash
+    $.equal-to nan.as-bytes.as-hash
+
 [] > float-plus-nan-is-nan
   assert-that > @
     (42.5.plus nan).as-bytes
