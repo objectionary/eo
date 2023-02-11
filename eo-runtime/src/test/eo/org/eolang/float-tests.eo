@@ -263,13 +263,13 @@
 [] > float-actions-with-nan-are-nan
   42.5 > num!
   nan > cached-nan!
-
+  cached-nan.as-bytes > nan-as-bytes!
   assert-that > @
     and.
-      (num.times cached-nan).as-bytes.eq cached-nan.as-bytes
-      (num.plus cached-nan).as-bytes.eq cached-nan.as-bytes
-      (num.minus cached-nan).as-bytes.eq cached-nan.as-bytes
-      (num.div cached-nan).as-bytes.eq cached-nan.as-bytes
+      (num.times cached-nan).as-bytes.eq nan-as-bytes
+      (num.plus cached-nan).as-bytes.eq nan-as-bytes
+      (num.minus cached-nan).as-bytes.eq nan-as-bytes
+      (num.div cached-nan).as-bytes.eq nan-as-bytes
     $.equal-to TRUE
 
 [] > float-comparings-with-nan-are-false
