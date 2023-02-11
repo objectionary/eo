@@ -149,7 +149,7 @@
 [] > positive-infinity-as-bytes-is-valid
   assert-that > @
     positive-infinity.as-bytes
-    $.equal-to 7F-80-00-00
+    $.equal-to 7F-80-00-00-00-00-00-00
 
 [] > cannot-convert-positive-infinity-to-int
   assert-that > @

@@ -106,7 +106,7 @@
 
   # Converts this to bytes
   [] > as-bytes
-    7F-80-00-00 > @
+    7F-80-00-00-00-00-00-00 > @
 
   # Converts this to int
   [] > as-int
