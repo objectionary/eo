@@ -28,6 +28,8 @@
 
 # Positive infinity
 [] > positive-infinity
+  1.0.div 0.0 > @!
+
   # Tests that $ = x
   [x] > eq
     eq. > @
@@ -106,7 +108,7 @@
 
   # Converts this to bytes
   [] > as-bytes
-    7F-F0-00-00-00-00-00-00 > @
+    ^.@.as-bytes > @
 
   # Converts this to int
   [] > as-int

@@ -260,23 +260,65 @@
     (0.0.div 0.0).as-bytes
     $.equal-to nan.as-bytes
 
-[] > zero-div-zero-as-has-is-equal-to-nan-bytes-hash
-  assert-that > @
-    (0.0.div 0.0).as-bytes.as-hash
-    $.equal-to nan.as-bytes.as-hash
+[] > float-actions-with-nan-are-nan
+  42.5 > num!
+  nan > cached-nan!
 
-[] > float-plus-nan-is-nan
   assert-that > @
-    (42.5.plus nan).as-bytes
-    $.equal-to nan.as-bytes
+    and.
+      (num.times cached-nan).as-bytes.eq cached-nan.as-bytes
+      (num.plus cached-nan).as-bytes.eq cached-nan.as-bytes
+      (num.minus cached-nan).as-bytes.eq cached-nan.as-bytes
+      (num.div cached-nan).as-bytes.eq cached-nan.as-bytes
+    $.equal-to TRUE
 
-#[] > div-by-zero
-#  assert-that > @
-#    and.
-#      (0.0.div 0.0).as-bytes.eq nan.as-bytes
-#      (42.5.div 0.0).eq positive-infinity
-#      (-42.5.div 0.0).eq negative-infinity
-#    $.equal-to TRUE
+[] > float-comparings-with-nan-are-false
+  42.5 > num!
+  nan > cached-nan!
+
+  assert-that > @
+    and.
+      (num.eq cached-nan).eq FALSE
+      (num.lt cached-nan).eq FALSE
+      (num.lte cached-nan).eq FALSE
+      (num.gt cached-nan).eq FALSE
+      (num.gte cached-nan).eq FALSE
+    $.equal-to TRUE
+
+[] > one-div-zero-is-positive-infinity
+  assert-that > @
+    1.0.div 0.0
+    $.equal-to positive-infinity
+
+[] > float-actions-with-positive-infinity
+  42.5 > num!
+  positive-infinity > inf!
+
+  assert-that > @
+    and.
+      (num.plus inf).eq inf
+      (num.minus inf).eq negative-infinity
+      (num.times inf).eq inf
+      (num.div inf).eq 0.0
+    $.equal-to TRUE
+
+[] > float-actions-with-negative-infinity
+  42.5 > num!
+  negative-infinity > inf!
+
+  assert-that > @
+    and.
+      (num.plus inf).eq inf
+      (num.minus inf).eq positive-infinity
+      (num.times inf).eq inf
+      (num.div inf).eq -0.0
+      (num.neg.div inf).eq 0.0
+    $.equal-to TRUE
+
+[] > minus-one-div-zero-is-negative-infinity
+  assert-that > @
+    -1.0.div 0.0
+    @.equal-to negative-infinity
 
 [] > to-bytes-and-backwards
   assert-that > @

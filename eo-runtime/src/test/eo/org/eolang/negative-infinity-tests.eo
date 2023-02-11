@@ -146,10 +146,15 @@
       (negative-infinity.div -42.5).eq negative-infinity
     $.equal-to TRUE
 
+[] > negative-infinity-is-equal-to-one-div-zero
+  assert-that > @
+    negative-infinity
+    $.equal-to (-1.0.div 0.0)
+
 [] > negative-infinity-as-bytes-is-valid
   assert-that > @
     negative-infinity.as-bytes
-    $.equal-to FF-F0-00-00-00-00-00-00
+    $.equal-to (-1.0.div 0.0).as-bytes
 
 [] > cannot-convert-negative-infinity-to-int
   assert-that > @

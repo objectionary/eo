@@ -146,10 +146,15 @@
       (positive-infinity.div -42.5).eq positive-infinity
     $.equal-to TRUE
 
+[] > positive-infinity-is-equal-to-one-div-zero
+  assert-that > @
+    positive-infinity
+    $.equal-to (1.0.div 0.0)
+
 [] > positive-infinity-as-bytes-is-valid
   assert-that > @
     positive-infinity.as-bytes
-    $.equal-to 7F-F0-00-00-00-00-00-00
+    $.equal-to (1.0.div 0.0).as-bytes
 
 [] > cannot-convert-positive-infinity-to-int
   assert-that > @
