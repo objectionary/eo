@@ -24,16 +24,27 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.28.18
-+version 0.28.18
++rt jvm org.eolang:eo-runtime:0.29.0
++version 0.29.0
 
 [] > int
 
   # Tests that $ = x
   [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+    if. > @
+      and.
+        eq.
+          ^.as-bytes > self-as-bytes!
+          00-00-00-00-00-00-00-00 > zero-as-bytes!
+        eq.
+          x.as-bytes > x-as-bytes!
+          zero-as-bytes
+      eq.
+        ^.neg.as-bytes
+        x.neg.as-bytes
+      eq.
+        self-as-bytes
+        x-as-bytes
 
   # Tests that $ < x
   [x] > lt

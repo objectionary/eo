@@ -1,0 +1,167 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2023 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++junit
++version 0.29.0
+
+[] > negative-infinity-eq-is-valid
+  assert-that > @
+    and.
+      negative-infinity.eq negative-infinity
+      (negative-infinity.eq positive-infinity).eq FALSE
+      (negative-infinity.eq nan).eq FALSE
+      (negative-infinity.eq 42).eq FALSE
+      (negative-infinity.eq 42.5).eq FALSE
+    $.equal-to TRUE
+
+[] > negative-infinity-neq-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.neq negative-infinity).eq FALSE
+      negative-infinity.neq positive-infinity
+      negative-infinity.neq nan
+      negative-infinity.neq 42
+      negative-infinity.neq 42.5
+    $.equal-to TRUE
+
+[] > negative-infinity-gt-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.gt negative-infinity).eq FALSE
+      (negative-infinity.gt positive-infinity).eq FALSE
+      (negative-infinity.gt nan).eq FALSE
+      (negative-infinity.gt 42).eq FALSE
+      (negative-infinity.gt 42.5).eq FALSE
+    $.equal-to TRUE
+
+[] > negative-infinity-gte-is-valid
+  assert-that > @
+    and.
+      negative-infinity.gte negative-infinity
+      (negative-infinity.gte positive-infinity).eq FALSE
+      (negative-infinity.gte nan).eq FALSE
+      (negative-infinity.gte 42).eq FALSE
+      (negative-infinity.gte 42.5).eq FALSE
+    $.equal-to TRUE
+
+[] > negative-infinity-lt-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.lt negative-infinity).eq FALSE
+      negative-infinity.lt positive-infinity
+      (negative-infinity.lt nan).eq FALSE
+      negative-infinity.lt 42
+      negative-infinity.lt 42.5
+    $.equal-to TRUE
+
+[] > negative-infinity-lte-is-valid
+  assert-that > @
+    and.
+      negative-infinity.lte negative-infinity
+      negative-infinity.lte positive-infinity
+      (negative-infinity.lte nan).eq FALSE
+      negative-infinity.lte 42
+      negative-infinity.lte 42.5
+    $.equal-to TRUE
+
+[] > negative-infinity-times-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.times 0.0).as-bytes.eq nan.as-bytes
+      (negative-infinity.times 0).as-bytes.eq nan.as-bytes
+      (negative-infinity.times nan).as-bytes.eq nan.as-bytes
+      (negative-infinity.times negative-infinity).eq positive-infinity
+      (negative-infinity.times negative-infinity).eq positive-infinity
+      (negative-infinity.times 42).eq negative-infinity
+      (negative-infinity.times -42).eq negative-infinity
+      (negative-infinity.times 42.5).eq negative-infinity
+      (negative-infinity.times -42.5).eq negative-infinity
+    $.equal-to TRUE
+
+[] > negative-infinity-plus-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.plus positive-infinity).as-bytes.eq nan.as-bytes
+      (negative-infinity.plus nan).as-bytes.eq nan.as-bytes
+      (negative-infinity.plus 0.0).eq negative-infinity
+      (negative-infinity.plus negative-infinity).eq negative-infinity
+      (negative-infinity.plus 42).eq negative-infinity
+      (negative-infinity.plus 42.5).eq negative-infinity
+    $.equal-to TRUE
+
+[] > negative-infinity-neg-is-positive-infinity
+  assert-that > @
+    negative-infinity.neg
+    $.equal-to positive-infinity
+
+[] > negative-infinity-signum-float-minus-one
+  assert-that > @
+    negative-infinity.signum
+    $.equal-to -1.0
+
+[] > negative-infinity-minus-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.minus negative-infinity).as-bytes.eq nan.as-bytes
+      (negative-infinity.minus nan).as-bytes.eq nan.as-bytes
+      (negative-infinity.minus 0.0).eq negative-infinity
+      (negative-infinity.minus positive-infinity).eq negative-infinity
+      (negative-infinity.minus 42).eq negative-infinity
+      (negative-infinity.minus 42.5).eq negative-infinity
+    $.equal-to TRUE
+
+[] > negative-infinity-div-is-valid
+  assert-that > @
+    and.
+      (negative-infinity.div nan).as-bytes.eq nan.as-bytes
+      (negative-infinity.div negative-infinity).as-bytes.eq nan.as-bytes
+      (negative-infinity.div negative-infinity).as-bytes.eq nan.as-bytes
+      (negative-infinity.div 0.0).eq negative-infinity
+      (negative-infinity.div 42).eq negative-infinity
+      (negative-infinity.div -42).eq negative-infinity
+      (negative-infinity.div 42.5).eq negative-infinity
+      (negative-infinity.div -42.5).eq negative-infinity
+    $.equal-to TRUE
+
+[] > negative-infinity-as-bytes-is-valid
+  assert-that > @
+    negative-infinity.as-bytes
+    $.equal-to FF-80-00-00
+
+[] > cannot-convert-negative-infinity-to-int
+  assert-that > @
+    try
+      []
+        negative-infinity.as-int > @
+      [e]
+        e > @
+      nop
+    $.equal-to "You can not convert negative infinity to int"
+
+[] > negative-infinity-as-string-is-valid
+  assert-that > @
+    negative-infinity.as-string
+    $.equal-to "-∞"

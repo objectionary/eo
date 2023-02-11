@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.28.18
++version 0.29.0
 
 [] > calculates-length-of-spaces-only
   assert-that > @
@@ -115,6 +115,18 @@
     "hello".as-hash
     $.equal-to
       "hello".as-hash
+
+[] > compares-string-with-nan-and-infinites
+  assert-that > @
+    and.
+      eq.
+        eq.
+          "друг" > str
+          nan
+        FALSE
+      (str.eq positive-infinity).eq FALSE
+      (str.eq negative-infinity).eq FALSE
+    $.equal-to TRUE
 
 [] > compares-two-strings
   assert-that > @
