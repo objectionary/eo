@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,12 +37,16 @@ import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
+import org.eolang.parser.ParsingException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link ParseMojo}.
@@ -181,6 +186,84 @@ final class ParseMojoTest {
                     ))
             );
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "/user/src/main/obj.eo",
+        "/user/src/test/obj.eo"
+    })
+    void throwsExceptionOnInvalidVersion(final String path) {
+        final ParsingException exception = Assertions.assertThrows(
+            ParsingException.class,
+            () -> new ParseMojo.WithValidVersion(
+                new XMLDocument(
+                    String.join(
+                        "\n",
+                        String.format(
+                            "<program source=\"%s\">",
+                            path
+                        ),
+                        "  <metas>",
+                        "    <meta line=\"12\">",
+                        "      <head>version</head>",
+                        "      <tail>1.2.3</tail>",
+                        "    </meta>",
+                        "  </metas>",
+                        "</program>"
+                    )
+                )
+            ).value()
+        );
+        MatcherAssert.assertThat(
+            exception.getMessage(),
+            Matchers.containsString(
+                String.format(
+                    "Incorrect version '1.2.3' found in %s",
+                    path
+                )
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "/org/eolang/array.eo, 1.2.3",
+        "/org/src/main/eolang/array.eo, 0.0.0"
+    })
+    void doesNotThrowOnValidVersion(final String path, final String ver) throws Exception {
+        MatcherAssert.assertThat(
+            new ParseMojo.WithValidVersion(
+                new XMLDocument(
+                    String.join(
+                        "\n",
+                        String.format("<program source=\"%s\">", path),
+                        "  <metas>",
+                        "    <meta line=\"12\">",
+                        "      <head>version</head>",
+                        String.format("      <tail>%s</tail>", ver),
+                        "    </meta>",
+                        "  </metas>",
+                        "</program>"
+                    )
+                )
+            ).value().xpath("/program/metas/meta/tail/text()").get(0),
+            Matchers.is(ver)
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "<program><metas><meta><head>version</head><tail>0.0.0</tail></meta></metas></program>",
+        "<program source=\"/src/main/aa.eo\"><metas><meta><head>rt</head><tail>jvm org.eolang:eo-runtime:0.0.0</tail></meta></metas></program>"
+    })
+    void doesNotThrowIfNoApplicableVersion(final String source) throws Exception {
+        MatcherAssert.assertThat(
+            new ParseMojo.WithValidVersion(
+                new XMLDocument(source)
+            ).value().nodes("/program").isEmpty(),
+            Matchers.is(false)
+        );
     }
 
     /**
