@@ -28,6 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -35,27 +36,31 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * LENGTH.
+ * WITH.
  *
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "array.length")
-public class EOarray$EOlength extends PhDefault {
+@XmirObject(oname = "tuple.with")
+public class EOtuple$EOwith extends PhDefault {
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOarray$EOlength(final Phi sigma) {
+    public EOtuple$EOwith(final Phi sigma) {
         super(sigma);
+        this.add("x", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> {
-                    final Phi[] array = new Param(rho).strong(Phi[].class);
-                    return new Data.ToPhi((long) array.length);
+                    final Phi[] tuple = new Param(rho).strong(Phi[].class);
+                    final Phi[] dest = new Phi[tuple.length + 1];
+                    System.arraycopy(tuple, 0, dest, 0, tuple.length);
+                    dest[tuple.length] = rho.attr("x").get();
+                    return new Data.ToPhi(dest);
                 }
             )
         );
