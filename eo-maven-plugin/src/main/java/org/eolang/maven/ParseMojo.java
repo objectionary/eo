@@ -32,8 +32,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -186,23 +184,21 @@ public final class ParseMojo extends SafeMojo {
                         new InputOf(source),
                         new OutputTo(baos)
                     ).parse();
-                    final XMLDocument parsed = new ParseMojo.WithValidVersion(
-                        new XMLDocument(
-                            new Xembler(
-                                new Directives().xpath("/program").attr(
-                                    "source",
-                                    source.toAbsolutePath()
-                                )
-                            ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
-                        )
-                    ).value();
+                    final String parsed = new XMLDocument(
+                        new Xembler(
+                            new Directives().xpath("/program").attr(
+                                "source",
+                                source.toAbsolutePath()
+                            )
+                        ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                    ).toString();
                     Logger.debug(
                         this,
                         "Parsed program %s:\n %s",
                         name,
-                        parsed.toString()
+                        parsed
                     );
-                    return parsed.toString();
+                    return parsed;
                 }
             );
         } catch (final ParsingException ex) {
@@ -228,55 +224,5 @@ public final class ParseMojo extends SafeMojo {
             this, "Parsed %s to %s",
             new Rel(source), new Rel(target)
         );
-    }
-
-    /**
-     * Class that validates version meta within XMIR.
-     *
-     * @since 1.0
-     */
-    static final class WithValidVersion implements Scalar<XMLDocument> {
-
-        /**
-         * Source XMIR.
-         */
-        private final XMLDocument xmir;
-
-        /**
-         * Ctor.
-         * @param xmir Source
-         */
-        WithValidVersion(final XMLDocument xmir) {
-            this.xmir = xmir;
-        }
-
-        @Override
-        public XMLDocument value() throws Exception {
-            final List<String> ver =
-                this.xmir.xpath("/program/metas/meta[./head='version']/tail/text()");
-            final List<String> path = this.xmir.xpath("/program/@source");
-            if (!this.xmir.xpath("/program/metas/meta[./head='version']/tail/text()").isEmpty()
-                && !this.xmir.xpath("/program/@source").isEmpty()
-                && Pattern.compile("src/(?:main|test)").matcher(path.get(0)).find()
-                && !ver.get(0).equals("0.0.0")
-            ) {
-                throw new ParsingException(
-                    String.format(
-                        String.join(
-                            "",
-                            "Incorrect version '%s' found in %s: ",
-                            "+version meta must be '0.0.0' during development."
-                        ),
-                        ver.get(0),
-                        path.get(0)
-                    ),
-                    new IllegalArgumentException(),
-                    Integer.parseInt(
-                        this.xmir.xpath("/program/metas/meta[./head='version']/@line").get(0)
-                    )
-                );
-            }
-            return this.xmir;
-        }
     }
 }
