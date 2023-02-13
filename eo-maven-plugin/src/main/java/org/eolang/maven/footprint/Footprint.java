@@ -31,6 +31,9 @@ import org.cactoos.Scalar;
 /**
  * Program footprint of EO compilation process,
  * convenient eo program management mechanism.
+ * Footprint refers to a trace of EO program on
+ * file system which is quite fortunate analogy
+ * with natural meaning of the word.
  * @since 1.0
  */
 public interface Footprint {
