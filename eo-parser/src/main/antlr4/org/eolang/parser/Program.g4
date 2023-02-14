@@ -12,7 +12,8 @@ program
 
 license
   :
-  (COMMENT (SINGLE_EOL | DOUBLE_EOL))+
+  (COMMENT SINGLE_EOL)*
+  COMMENT DOUBLE_EOL
   ;
 
 metas
@@ -24,7 +25,7 @@ metas
 objects
   :
   (
-    (COMMENT (SINGLE_EOL | DOUBLE_EOL))*
+    (COMMENT SINGLE_EOL)*
     object
     (SINGLE_EOL | DOUBLE_EOL)
   )+
@@ -39,7 +40,7 @@ object
   )
   tail?
   (
-    (SINGLE_EOL | DOUBLE_EOL)
+    SINGLE_EOL
     method
     htail?
     suffix?
@@ -49,7 +50,7 @@ object
 
 abstraction
   :
-  (COMMENT (SINGLE_EOL | DOUBLE_EOL))*
+  (COMMENT SINGLE_EOL)*
   attributes
   (
     (suffix (SPACE SLASH (NAME | QUESTION))?)
@@ -79,7 +80,7 @@ label
 
 tail
   :
-  (SINGLE_EOL | DOUBLE_EOL)
+  SINGLE_EOL
   TAB
   (object (SINGLE_EOL | DOUBLE_EOL))+
   UNTAB
@@ -284,7 +285,7 @@ fragment LINE_BYTES : BYTE (MINUS BYTE)+;
 BYTES:
        EMPTY_BYTES
     |  BYTE MINUS
-    |  LINE_BYTES (MINUS (SINGLE_EOL | DOUBLE_EOL) LINE_BYTES)*;
+    |  LINE_BYTES (MINUS (SINGLE_EOL) LINE_BYTES)*;
 
 BOOL: 'TRUE' | 'FALSE';
 STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
