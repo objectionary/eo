@@ -103,3 +103,7 @@
         x.eq positive-infinity
       nan
       ^
+
+  # Converts this to bytes
+  [] > as-bytes
+    ^.@.as-bytes > @
