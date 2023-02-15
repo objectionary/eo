@@ -37,8 +37,16 @@
 # @todo #1253:30min. After allowing division by zero float in EOfloat$EOdiv
 #  make float.nan, float.positive-infinity and float.negative-infinity
 #  decorated 0.0.div 0.0, 1.0.div 0.0 and -1.0.div 0.0 accordingly
+
+# @todo #1791:30min. Remove unwanted objects from nan, +inf and -inf. Since
+#  these are object are float numbers but special - they should not have extra
+#  and unwanted objects that usual float does not have like: neq, signum,
+#  as-int. as-bytes also can be removed because it can be got from the result of
+#  @ object
 # Not a number
 [] > nan
+  0.0.div 0.0 > @!
+
   # Tests that $ = x
   [x] > eq
     FALSE > @
@@ -89,7 +97,7 @@
 
   # Converts this to bytes
   [] > as-bytes
-    7F-C0-00-00 > @
+    ^.@.as-bytes > @
 
   # Converts this to int
   [] > as-int

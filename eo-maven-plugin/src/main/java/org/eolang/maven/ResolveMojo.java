@@ -124,7 +124,6 @@ public final class ResolveMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transitiveDependencies", required = true, defaultValue = "true")
     @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
     private Func<Dependency, Iterable<Dependency>> transitiveStrategy =
         dependency -> new DcsDepgraph(
