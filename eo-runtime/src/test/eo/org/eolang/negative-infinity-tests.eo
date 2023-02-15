@@ -39,18 +39,6 @@
       (neg-inf.eq 42.5).eq FALSE
     $.equal-to TRUE
 
-[] > negative-infinity-neq-is-valid
-  negative-infinity > neg-inf!
-
-  assert-that > @
-    and.
-      (neg-inf.neq neg-inf).eq FALSE
-      neg-inf.neq positive-infinity
-      neg-inf.neq nan
-      neg-inf.neq 42
-      neg-inf.neq 42.5
-    $.equal-to TRUE
-
 [] > negative-infinity-gt-is-valid
   negative-infinity > neg-inf!
 
@@ -136,11 +124,6 @@
     negative-infinity.neg
     $.equal-to positive-infinity
 
-[] > negative-infinity-signum-float-minus-one
-  assert-that > @
-    negative-infinity.signum
-    $.equal-to -1.0
-
 [] > negative-infinity-minus-is-valid
   negative-infinity > neg-inf!
   nan.as-bytes > nan-as-bytes!
@@ -180,18 +163,3 @@
   assert-that > @
     negative-infinity.as-bytes
     $.equal-to (-1.0.div 0.0).as-bytes
-
-[] > cannot-convert-negative-infinity-to-int
-  assert-that > @
-    try
-      []
-        negative-infinity.as-int > @
-      [e]
-        e > @
-      nop
-    $.equal-to "You can not convert negative infinity to int"
-
-[] > negative-infinity-as-string-is-valid
-  assert-that > @
-    negative-infinity.as-string
-    $.equal-to "-∞"

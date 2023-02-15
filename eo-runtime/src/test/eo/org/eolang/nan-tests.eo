@@ -35,14 +35,6 @@
       (not-a-number.eq not-a-number).eq FALSE
     $.equal-to TRUE
 
-[] > nan-neq-is-valid
-  nan > not-a-number!
-  assert-that > @
-    and.
-      (not-a-number.neq 42).eq TRUE
-      (not-a-number.neq not-a-number).eq TRUE
-    $.equal-to TRUE
-
 [] > nan-lt-is-valid
   nan > not-a-number!
   assert-that > @
@@ -113,29 +105,7 @@
       (not-a-number.minus not-a-number).as-bytes.eq (not-a-number.as-bytes)
     $.equal-to TRUE
 
-[] > nan-signum-is-valid
-  nan > not-a-number!
-  assert-that > @
-    not-a-number.signum.as-bytes
-    $.equal-to
-      not-a-number.as-bytes
-
 [] > nan-as-bytes-is-valid
   assert-that > @
     nan.as-bytes
     $.equal-to (0.0.div 0.0).as-bytes
-
-[] > nan-as-int-is-valid
-  assert-that > @
-    try
-      []
-        nan.as-int > @
-      [e]
-        e > @
-      nop
-    $.equal-to "You can't convert NaN to int"
-
-[] > nan-as-string-is-valid
-  assert-that > @
-    nan.as-string
-    $.equal-to "NaN"

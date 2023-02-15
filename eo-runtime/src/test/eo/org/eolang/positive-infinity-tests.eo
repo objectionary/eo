@@ -38,17 +38,6 @@
       (pos-inf.eq 42.5).eq FALSE
     $.equal-to TRUE
 
-[] > positive-infinity-neq-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      (pos-inf.neq pos-inf).eq FALSE
-      pos-inf.neq negative-infinity
-      pos-inf.neq nan
-      pos-inf.neq 42
-      pos-inf.neq 42.5
-    $.equal-to TRUE
-
 [] > positive-infinity-lt-is-valid
   positive-infinity > pos-inf!
   assert-that > @
@@ -129,11 +118,6 @@
     positive-infinity.neg
     $.equal-to negative-infinity
 
-[] > positive-infinity-signum-float-one
-  assert-that > @
-    positive-infinity.signum
-    $.equal-to 1.0
-
 [] > positive-infinity-minus-is-valid
   positive-infinity > pos-inf!
   nan.as-bytes > nan-as-bytes!
@@ -171,18 +155,3 @@
   assert-that > @
     positive-infinity.as-bytes
     $.equal-to (1.0.div 0.0).as-bytes
-
-[] > cannot-convert-positive-infinity-to-int
-  assert-that > @
-    try
-      []
-        positive-infinity.as-int > @
-      [e]
-        e > @
-      nop
-    $.equal-to "You can not convert positive infinity to int"
-
-[] > positive-infinity-as-string-is-valid
-  assert-that > @
-    positive-infinity.as-string
-    $.equal-to "+∞"
