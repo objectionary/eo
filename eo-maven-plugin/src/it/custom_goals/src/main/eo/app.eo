@@ -1,0 +1,34 @@
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
++package sandbox
+
+[dx dy] > vector
+  pow. > length
+    add.
+      dx.pow 2.0
+      dy.pow 2.0
+    0.5
+
+[x y] > point
+  [to] > distance
+    length. > @
+      vector
+        to.x.sub (^.x)
+        to.y.sub (^.y)
+
+[center radius] > circle
+  center > @
+  [p] > is-inside
+    leq. > @
+      ^.distance p
+      ^.radius
+
+[args...] > app
+  stdout > @
+    sprintf
+      "%s\n"
+      is-inside.
+        circle
+          point 1.0 1.0
+          2.0
+        point 1.0 1.0
