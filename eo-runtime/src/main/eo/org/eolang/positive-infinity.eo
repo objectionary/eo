@@ -33,6 +33,12 @@
 [] > positive-infinity
   1.0.div 0.0 > @!
 
+  # Tests that $ = x
+  [x] > eq
+    eq. > @
+      ^.as-bytes
+      x.as-bytes
+
   # Tests that $ < x
   [x] > lt
     FALSE > @
