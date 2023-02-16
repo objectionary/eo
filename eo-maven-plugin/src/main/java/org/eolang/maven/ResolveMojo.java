@@ -42,6 +42,7 @@ import org.eolang.maven.dependencies.DcsDepgraph;
 import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
 import org.eolang.maven.dependencies.DcsUniquelyVersioned;
 import org.eolang.maven.dependencies.DcsWithRuntime;
+import org.eolang.maven.dependencies.DcsWithoutRuntime;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -214,6 +215,8 @@ public final class ResolveMojo extends SafeMojo {
             } else {
                 deps = new DcsWithRuntime(deps);
             }
+        } else {
+            deps = new DcsWithoutRuntime(deps);
         }
         if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
