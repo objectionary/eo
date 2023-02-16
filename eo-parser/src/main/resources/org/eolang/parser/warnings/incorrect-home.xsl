@@ -30,7 +30,7 @@ SOFTWARE.
       <xsl:for-each select="/program/metas/meta">
         <xsl:variable name="meta-head" select="head"/>
         <xsl:variable name="meta-tail" select="tail"/>
-        <xsl:if test="$meta-head='home' and not(matches($meta-tail, '^(?:http(s)?://)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#\[\]@!\$&amp;&apos;'\(\)\*\+,;=.]+$'))">
+        <xsl:if test="$meta-head='home' and not(matches($meta-tail, '^(?:http(s)?://)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#\[\]@!\$&amp;''\(\)\*\+,;=.]+$'))">
           <xsl:element name="error">
             <xsl:attribute name="check">
               <xsl:text>incorrect-home</xsl:text>
