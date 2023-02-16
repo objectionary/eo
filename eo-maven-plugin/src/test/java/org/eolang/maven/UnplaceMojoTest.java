@@ -23,10 +23,13 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Files;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.set.SetOf;
+import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.FileHash;
 import org.eolang.maven.util.Home;
@@ -43,183 +46,133 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class UnplaceMojoTest {
+
     /**
-     * Value for 'class' ATTR_KIND.
+     * Binary glob pattern.
      */
-    private static final String ATTR_KIND_CLASS = "class";
+    private static final Set<String> GLOB_PATTERN = Collections.singleton("**.class");
 
     @Test
-    void cleans(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo.class");
-        final Home home = new Home(temp);
-        home.save("...", temp.relativize(foo));
-        final Path pparent = foo.getParent().getParent();
-        final Path foo2 = temp.resolve("a/b/c/foo2.class");
-        home.save("...", temp.relativize(foo2));
-        final Path foo3 = temp.resolve("a/b/c/d/foo3.class");
-        home.save("...", temp.relativize(foo3));
-        final Path foo4 = temp.resolve("a/b/c/e/foo4.class");
-        home.save("...", temp.relativize(foo4));
-        final Path list = temp.resolve("placed.csv");
-        Catalogs.INSTANCE.make(list)
-            .add(foo.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo));
-        Catalogs.INSTANCE.make(list)
-            .add(foo2.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo2));
-        Catalogs.INSTANCE.make(list)
-            .add(foo3.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo3));
-        Catalogs.INSTANCE.make(list)
-            .add(foo4.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "---")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo4));
-        new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .execute();
+    void cleans(@TempDir final Path temp) throws IOException {
+        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
         MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(foo2),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(foo3),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(foo4),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(Paths.get(String.valueOf(pparent))),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
-    void keepsBinaries(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo5.class");
-        new Home(temp).save("testKeepBinaries", temp.relativize(foo));
-        final Path pparent = foo.getParent().getParent();
-        final Path list = temp.resolve("placed.csv");
-        Catalogs.INSTANCE.make(list)
-            .add(foo.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo5.class")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo));
-        new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .with("keepBinaries", new SetOf<>("**foo5.class"))
-            .execute();
-        MatcherAssert.assertThat(
-            Files.exists(foo),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            Files.exists(Paths.get(String.valueOf(pparent))),
+            new FakeMaven(temp)
+                .with("placed", placed.toFile())
+                .execute(UnplaceMojo.class)
+                .result()
+                .values()
+                .stream()
+                .noneMatch(UnplaceMojoTest::isBinary),
             Matchers.is(true)
         );
     }
 
     @Test
-    void keepsRemoveBinaries(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo6.class");
-        final Home home = new Home(temp);
-        home.save("testKeepRemoveBinaries", temp.relativize(foo));
-        final Path pparent = foo.getParent().getParent();
-        final Path list = temp.resolve("placed.csv");
-        Catalogs.INSTANCE.make(list)
-            .add(foo.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo));
-        new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .with("keepBinaries", new SetOf<>("**foo6.class"))
-            .with("removeBinaries", new SetOf<>("**foo6.class"))
-            .execute();
+    void unplacesWithKeepAndRemoveBinariesParamTogether(@TempDir final Path temp) throws Exception {
+        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Map<String, Path> res = new FakeMaven(temp)
+            .with("placed", placed.toFile())
+            .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
+            .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
+            .execute(UnplaceMojo.class)
+            .result();
         MatcherAssert.assertThat(
-            Files.exists(temp.relativize(foo)),
-            Matchers.is(false)
+            res.values().stream().noneMatch(UnplaceMojoTest::isBinary),
+            Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            Files.exists(Paths.get(String.valueOf(pparent))),
-            Matchers.is(false)
+            new TextOf(res.get(placed.getFileName().toString())).asString(),
+            Matchers.allOf(
+                Matchers.not(Matchers.containsString("false")),
+                Matchers.containsString("true")
+            )
         );
     }
 
     @Test
-    void unplacesRemoveBinaries(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo6.class");
-        new Home().save("testUnplaceRemoveBinaries", foo);
-        final Path list = temp.resolve("placed.csv");
-        Catalogs.INSTANCE.make(list)
-            .add(foo.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo))
-            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
-        new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .with("removeBinaries", new SetOf<>("**foo6.class"))
-            .execute();
+    void unplacesWithRemoveBinariesParam(@TempDir final Path temp) throws Exception {
+        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Map<String, Path> res = new FakeMaven(temp)
+            .with("placed", placed.toFile())
+            .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
+            .execute(UnplaceMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            res.values().stream().noneMatch(UnplaceMojoTest::isBinary),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(placed.getFileName().toString())).asString(),
+            Matchers.allOf(
+                Matchers.not(Matchers.containsString("false")),
+                Matchers.containsString("true")
+            )
+        );
+    }
+
+    @Test
+    void unplacesWithKeepBinariesParam(@TempDir final Path temp) throws Exception {
+        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Map<String, Path> res = new FakeMaven(temp)
+            .with("placed", placed.toFile())
+            .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
+            .execute(UnplaceMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            res.values().stream().anyMatch(UnplaceMojoTest::isBinary),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(placed.getFileName().toString())).asString(),
+            Matchers.allOf(
+                Matchers.containsString("false"),
+                Matchers.not(Matchers.containsString("true"))
+            )
+        );
+    }
+
+    /**
+     * Saves a binary file into the placed tojos file.
+     * @param temp Temporary directory.
+     * @param binary Binary file.
+     * @return Path to the placed tojos file.
+     */
+    private static Path placed(final Path temp, final Path binary) {
         final Path placed = temp.resolve("placed.csv");
-        MatcherAssert.assertThat(
-            new TextOf(placed).asString().contains("false"),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            new TextOf(placed).asString().contains("true"),
-            Matchers.is(true)
-        );
+        Catalogs.INSTANCE.make(placed)
+            .add(binary.toString())
+            .set(PlaceMojo.ATTR_PLD_KIND, "class")
+            .set(PlaceMojo.ATTR_PLD_RELATED, temp.relativize(binary).toString())
+            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
+            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(binary))
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+        return placed;
     }
 
-    @Test
-    void unplacesKeepBinaries(@TempDir final Path temp) throws Exception {
-        final Path foo = temp.resolve("a/b/c/foo6.class");
-        new Home().save("testUnplaceKeepBinaries", foo);
-        final Path list = temp.resolve("placed.csv");
-        Catalogs.INSTANCE.make(list)
-            .add(foo.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, UnplaceMojoTest.ATTR_KIND_CLASS)
-            .set(PlaceMojo.ATTR_PLD_RELATED, "a/b/c/foo6.class")
-            .set(PlaceMojo.ATTR_PLD_ORIGIN, "some-keep-remove.jar")
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(foo))
-            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
-        new Moja<>(UnplaceMojo.class)
-            .with("placed", list.toFile())
-            .with("placedFormat", "csv")
-            .with("keepBinaries", new SetOf<>("**foo6.class"))
-            .execute();
-        final Path placed = temp.resolve("placed.csv");
-        MatcherAssert.assertThat(
-            new TextOf(placed).asString().contains("false"),
-            Matchers.is(true)
+    /**
+     * Creates and saves a binary file.
+     * @param temp Where to save the file.
+     * @return The path to the file.
+     * @throws IOException If fails.
+     */
+    private static Path binary(final Path temp) throws IOException {
+        final Path foo = temp.resolve(
+            String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt())
         );
-        MatcherAssert.assertThat(
-            new TextOf(placed).asString().contains("true"),
-            Matchers.is(false)
-        );
+        new Home().save(() -> UUID.randomUUID().toString(), foo);
+        return foo;
+    }
+
+    /**
+     * Checks if the path is a binary file.
+     * @param path The path to check.
+     * @return True if it is a binary file.
+     */
+    private static boolean isBinary(final Path path) {
+        return path.toString().endsWith(".class");
     }
 }
+

@@ -60,7 +60,7 @@ final class TranspileMojoTest {
     @BeforeEach
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "generated/EOorg/EOeolang/EOexamples/EOmessTest.java";
+        this.compiled = "target/generated/EOorg/EOeolang/EOexamples/EOmessTest.java";
     }
 
     @ParameterizedTest
@@ -132,7 +132,7 @@ final class TranspileMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Transpile())
             .result();
-        final String java = "generated/EOorg/EOeolang/EOarray.java";
+        final String java = "target/generated/EOorg/EOeolang/EOarray.java";
         MatcherAssert.assertThat(
             res, Matchers.hasKey(java)
         );

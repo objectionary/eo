@@ -106,7 +106,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             )
             .add("listing").set(XeListener.sourceText(ctx)).up()
             .add("errors").up()
-            .add("sheets").up();
+            .add("sheets").up()
+            .add("license").up()
+            .add("metas").up();
     }
 
     @Override
@@ -118,7 +120,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterLicense(final ProgramParser.LicenseContext ctx) {
-        this.dirs.add("license").set(
+        this.dirs.addIf("license").set(
             new Joined(
                 "\n",
                 new Mapped<>(
@@ -136,7 +138,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterMetas(final ProgramParser.MetasContext ctx) {
-        this.dirs.add("metas");
+        this.dirs.addIf("metas");
         for (final TerminalNode node : ctx.META()) {
             final String[] pair = node.getText().split(" ", 2);
             this.dirs.add("meta")
