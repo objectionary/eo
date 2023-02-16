@@ -127,6 +127,19 @@ final class ResolveMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-0.22.1.jar")
+        );
+    }
+
+    @Test
+    void resolvesIfRuntimeDependencyComesFromTojosButParamIsFalse(@TempDir final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
             .with("withRuntimeDependency", false)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
