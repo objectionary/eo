@@ -42,6 +42,7 @@ import org.eolang.maven.dependencies.DcsDepgraph;
 import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
 import org.eolang.maven.dependencies.DcsUniquelyVersioned;
 import org.eolang.maven.dependencies.DcsWithRuntime;
+import org.eolang.maven.dependencies.DcsWithoutRuntime;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -105,6 +106,12 @@ public final class ResolveMojo extends SafeMojo {
 
     /**
      * Add eo-runtime dependency to the classpath.
+     *
+     * That property is useful only for eo-runtime library compilation.
+     * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
+     * (since you compile eo-runtime library and classpath will anyway have all required classes)
+     * and in this case you should set this property to false. In any other cases the eo-runtime
+     * dependency will be downloaded and added to the classpath automatically.
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -214,6 +221,8 @@ public final class ResolveMojo extends SafeMojo {
             } else {
                 deps = new DcsWithRuntime(deps);
             }
+        } else {
+            deps = new DcsWithoutRuntime(deps);
         }
         if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
