@@ -107,6 +107,12 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Add eo-runtime dependency to the classpath.
      *
+     * That property is useful only for eo-runtime library compilation.
+     * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
+     * (since you compile eo-runtime library and classpath will anyway have all required classes)
+     * and in this case you should set this property to false. In any other cases the eo-runtime
+     * dependency will be downloaded and added to the classpath automatically.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
