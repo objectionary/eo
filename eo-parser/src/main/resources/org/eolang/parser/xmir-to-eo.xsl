@@ -47,7 +47,9 @@ SOFTWARE.
       <xsl:value-of select="."/>
       <xsl:value-of select="$eol"/>
     </xsl:for-each>
-    <xsl:value-of select="$eol"/>
+    <xsl:if test="text()">
+      <xsl:value-of select="$eol"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="metas">
     <xsl:apply-templates select="meta"/>

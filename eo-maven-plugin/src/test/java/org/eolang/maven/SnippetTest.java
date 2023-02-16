@@ -31,24 +31,25 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.text.IsEmpty;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -73,8 +74,6 @@ import org.yaml.snakeyaml.Yaml;
  * @todo #1107:30m Method `jdkExecutable` is duplicated in eo-runtime.
  *  Find a way to make it reusable (i.e making it part of
  *  VerboseProcess) and remove it from MainTest.
- * @todo #1723:30m Add FakeMojo support for SnippetTest. We have to reuse FakeMojo class in order
- *  to reduce code duplication and increase overall test code readability. {@link FakeMaven}.
  */
 @ExtendWith(OnlineCondition.class)
 final class SnippetTest {
@@ -114,18 +113,23 @@ final class SnippetTest {
         );
         MatcherAssert.assertThat(
             String.format("'%s' returned wrong exit code", yml),
-            result, Matchers.equalTo(map.get("exit"))
+            result,
+            Matchers.equalTo(map.get("exit"))
         );
-        Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
-        for (final String ptn : (Iterable<String>) map.get("out")) {
-            MatcherAssert.assertThat(
-                String.format("'%s' printed something wrong", yml),
-                new String(stdout.toByteArray(), StandardCharsets.UTF_8),
-                Matchers.matchesPattern(
-                    Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+        final String actual = new String(stdout.toByteArray(), StandardCharsets.UTF_8);
+        Logger.debug(this, "Stdout: \"%s\"", actual);
+        MatcherAssert.assertThat(
+            String.format("'%s' printed something wrong", yml),
+            actual,
+            Matchers.allOf(
+                new Mapped<>(
+                    ptn -> Matchers.matchesPattern(
+                        Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+                    ),
+                    (Iterable<String>) map.get("out")
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -148,26 +152,162 @@ final class SnippetTest {
         final Output stdout
     ) throws Exception {
         final Path src = tmp.resolve("src");
-        new Home(src).save(code, Paths.get("code.eo"));
-        final Path target = tmp.resolve("target");
-        final Path foreign = target.resolve("eo-foreign.json");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", target.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
+        final FakeMaven maven = new FakeMaven(tmp)
+            .withProgram(code)
             .with("sourcesDir", src.toFile())
-            .execute();
-        new Moja<>(DemandMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("objects", new ListOf<>("org.eolang.bool"))
-            .execute();
+            .with("objects", Arrays.asList("org.eolang.bool"))
+            .with("objectionary", SnippetTest.objectionary());
+        maven.execute(RegisterMojo.class);
+        maven.execute(DemandMojo.class);
+        maven.execute(AssembleMojo.class);
+        maven.execute(TranspileMojo.class);
+        final Path classes = maven.targetPath().resolve("classes");
+        SnippetTest.compileJava(maven.generatedPath(), classes);
+        SnippetTest.runJava(args, stdin, stdout, classes);
+        return 0;
+    }
+
+    /**
+     * Compile Java sources.
+     * @param generated Where to find Java sources
+     * @param classes Where to put compiled classes
+     * @throws Exception If fails
+     */
+    private static void compileJava(final Path generated, final Path classes) throws Exception {
+        SnippetTest.exec(
+            String.format(
+                "%s -encoding utf-8 %s -d %s -cp %s",
+                SnippetTest.jdkExecutable("javac"),
+                new Walk(generated).stream()
+                    .map(Path::toAbsolutePath)
+                    .map(Path::toString)
+                    .collect(Collectors.joining(" ")),
+                classes,
+                SnippetTest.classpath()
+            ),
+            generated
+        );
+    }
+
+    /**
+     * Run Java.
+     * @param args Command line arguments
+     * @param stdin The input
+     * @param stdout Where to put stdout
+     * @param classes Where to find compiled classes
+     * @throws Exception If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private static void runJava(
+        final List<String> args,
+        final Input stdin,
+        final Output stdout,
+        final Path classes
+    ) throws Exception {
+        SnippetTest.exec(
+            String.join(
+                " ",
+                new Joined<String>(
+                    new ListOf<>(
+                        SnippetTest.jdkExecutable("java"),
+                        "-Dfile.encoding=utf-8",
+                        "-cp",
+                        SnippetTest.classpath(),
+                        "org.eolang.Main"
+                    ),
+                    args
+                )
+            ),
+            classes, stdin, stdout
+        );
+    }
+
+    /**
+     * Run some command and print out the output.
+     *
+     * @param cmd The command
+     * @param dir The home dir
+     */
+    private static void exec(final String cmd, final Path dir) throws Exception {
+        SnippetTest.exec(
+            cmd,
+            dir,
+            new InputOf(""),
+            new OutputTo(new ByteArrayOutputStream())
+        );
+    }
+
+    /**
+     * Run some command and print out the output.
+     *
+     * @param cmd The command
+     * @param dir The home dir
+     * @param stdin Stdin
+     * @param stdout Stdout
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private static void exec(
+        final String cmd,
+        final Path dir,
+        final Input stdin,
+        final Output stdout
+    ) throws Exception {
+        Logger.debug(SnippetTest.class, "+%s", cmd);
+        final Process proc = new ProcessBuilder()
+            .command(cmd.split(" "))
+            .directory(dir.toFile())
+            .redirectErrorStream(true)
+            .start();
+        new LengthOf(
+            new TeeInput(
+                stdin,
+                new OutputTo(proc.getOutputStream())
+            )
+        ).value();
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(vproc.stdout()),
+                    stdout
+                )
+            ).value();
+        }
+    }
+
+    /**
+     * Locate executable inside JAVA_HOME.
+     * @param name Name of executable.
+     * @return Path to java executable.
+     */
+    private static String jdkExecutable(final String name) {
+        final String result;
+        final String relative = "%s/bin/%s";
+        final String property = System.getProperty("java.home");
+        if (property == null) {
+            final String environ = System.getenv("JAVA_HOME");
+            if (environ == null) {
+                result = name;
+            } else {
+                result = String.format(relative, environ, name);
+            }
+        } else {
+            result = String.format(relative, property, name);
+        }
+        return result;
+    }
+
+    /**
+     * Fake objectionary.
+     * @return Fake objectionary.
+     */
+    private static Objectionary objectionary() {
         final Path home = Paths.get(
             System.getProperty(
                 "runtime.path",
                 Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
             )
         );
-        final OyFake objectionary = new OyFake(
+        return new OyFake(
             name -> {
                 final Input res;
                 if (name.contains("collections")) {
@@ -209,28 +349,14 @@ final class SnippetTest {
                 return res;
             }
         );
-        new Moja<>(AssembleMojo.class)
-            .with("ignoreTransitive", true)
-            .with("outputDir", target.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("placed", target.resolve("list").toFile())
-            .with("objectionary", objectionary)
-            .with("central", Central.EMPTY)
-            .execute();
-        final Path generated = target.resolve("generated");
-        new Moja<>(TranspileMojo.class)
-            .with("project", new MavenProjectStub())
-            .with("targetDir", target.toFile())
-            .with("generatedDir", generated.toFile())
-            .with("foreign", foreign.toFile())
-            .with("transpiled", target.resolve("transpiled.csv").toFile())
-            .with("foreignFormat", "json")
-            .execute();
-        final Path classes = target.resolve("classes");
-        classes.toFile().mkdir();
-        final String cpath = String.format(
+    }
+
+    /**
+     * Classpath.
+     * @return Classpath.
+     */
+    private static String classpath() {
+        return String.format(
             ".%s%s",
             File.pathSeparatorChar,
             System.getProperty(
@@ -243,113 +369,5 @@ final class SnippetTest {
                 ).toString()
             )
         );
-        SnippetTest.exec(
-            String.format(
-                "%s -encoding utf-8 %s -d %s -cp %s",
-                SnippetTest.jdkExecutable("javac"),
-                new Walk(generated).stream()
-                    .map(Path::toAbsolutePath)
-                    .map(Path::toString)
-                    .collect(Collectors.joining(" ")),
-                classes,
-                cpath
-            ),
-            generated
-        );
-        SnippetTest.exec(
-            String.join(
-                " ",
-                new Joined<String>(
-                    new ListOf<>(
-                        SnippetTest.jdkExecutable("java"),
-                        "-Dfile.encoding=utf-8",
-                        "-cp",
-                        cpath,
-                        "org.eolang.Main"
-                    ),
-                    args
-                )
-            ),
-            classes,
-            stdin,
-            stdout
-        );
-        return 0;
     }
-
-    /**
-     * Run some command and print out the output.
-     *
-     * @param cmd The command
-     * @param dir The home dir
-     */
-    private static void exec(final String cmd, final Path dir) {
-        SnippetTest.exec(
-            cmd, dir, new InputOf(""),
-            new OutputTo(new ByteArrayOutputStream())
-        );
-    }
-
-    /**
-     * Run some command and print out the output.
-     *
-     * @param cmd The command
-     * @param dir The home dir
-     * @param stdin Stdin
-     * @param stdout Stdout
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private static void exec(final String cmd, final Path dir,
-        final Input stdin, final Output stdout
-    ) {
-        Logger.debug(SnippetTest.class, "+%s", cmd);
-        try {
-            final Process proc = new ProcessBuilder()
-                .command(cmd.split(" "))
-                .directory(dir.toFile())
-                .redirectErrorStream(true)
-                .start();
-            new LengthOf(
-                new TeeInput(
-                    stdin,
-                    new OutputTo(proc.getOutputStream())
-                )
-            ).value();
-            try (VerboseProcess vproc = new VerboseProcess(proc)) {
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(vproc.stdout()),
-                        stdout
-                    )
-                ).value();
-            }
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    /**
-     * Locate executable inside JAVA_HOME.
-     * @param name Name of executable.
-     * @return Path to java executable.
-     */
-    private static String jdkExecutable(final String name) {
-        final String result;
-        final String relative = "%s/bin/%s";
-        final String property = System.getProperty("java.home");
-        if (property == null) {
-            final String environ = System.getenv("JAVA_HOME");
-            if (environ == null) {
-                result = name;
-            } else {
-                result = String.format(relative, environ, name);
-            }
-        } else {
-            result = String.format(relative, property, name);
-        }
-        return result;
-    }
-
 }

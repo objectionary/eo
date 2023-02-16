@@ -56,16 +56,22 @@
 
   # Tests that $ ≤ x
   [x] > lte
-    not. > @
-      ^.gt x
+    if. > @
+      x.as-bytes.eq nan.as-bytes
+      FALSE
+      not.
+        ^.gt x
 
   # Tests that $ > x
   [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > gte
-    not. > @
-      ^.lt x
+    if. > @
+      x.as-bytes.eq nan.as-bytes
+      FALSE
+      not.
+        ^.lt x
 
   # Multiplication of $ and x
   [x...] > times /float

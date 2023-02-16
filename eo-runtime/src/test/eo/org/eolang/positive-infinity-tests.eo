@@ -28,88 +28,100 @@
 +version 0.0.0
 
 [] > positive-infinity-eq-is-valid
+  positive-infinity > pos-inf!
   assert-that > @
     and.
-      positive-infinity.eq positive-infinity
-      (positive-infinity.eq negative-infinity).eq FALSE
-      (positive-infinity.eq nan).eq FALSE
-      (positive-infinity.eq 42).eq FALSE
-      (positive-infinity.eq 42.5).eq FALSE
+      pos-inf.eq pos-inf
+      (pos-inf.eq negative-infinity).eq FALSE
+      (pos-inf.eq nan).eq FALSE
+      (pos-inf.eq 42).eq FALSE
+      (pos-inf.eq 42.5).eq FALSE
     $.equal-to TRUE
 
 [] > positive-infinity-neq-is-valid
+  positive-infinity > pos-inf!
   assert-that > @
     and.
-      (positive-infinity.neq positive-infinity).eq FALSE
-      positive-infinity.neq negative-infinity
-      positive-infinity.neq nan
-      positive-infinity.neq 42
-      positive-infinity.neq 42.5
+      (pos-inf.neq pos-inf).eq FALSE
+      pos-inf.neq negative-infinity
+      pos-inf.neq nan
+      pos-inf.neq 42
+      pos-inf.neq 42.5
     $.equal-to TRUE
 
 [] > positive-infinity-lt-is-valid
+  positive-infinity > pos-inf!
   assert-that > @
     and.
-      (positive-infinity.lt positive-infinity).eq FALSE
-      (positive-infinity.lt negative-infinity).eq FALSE
-      (positive-infinity.lt nan).eq FALSE
-      (positive-infinity.lt 42).eq FALSE
-      (positive-infinity.lt 42.5).eq FALSE
+      (pos-inf.lt pos-inf).eq FALSE
+      (pos-inf.lt negative-infinity).eq FALSE
+      (pos-inf.lt nan).eq FALSE
+      (pos-inf.lt 42).eq FALSE
+      (pos-inf.lt 42.5).eq FALSE
     $.equal-to TRUE
 
 [] > positive-infinity-lte-is-valid
+  positive-infinity > pos-inf!
   assert-that > @
     and.
-      positive-infinity.lte positive-infinity
-      (positive-infinity.lte negative-infinity).eq FALSE
-      (positive-infinity.lte nan).eq FALSE
-      (positive-infinity.lte 42).eq FALSE
-      (positive-infinity.lte 42.5).eq FALSE
+      pos-inf.lte pos-inf
+      (pos-inf.lte negative-infinity).eq FALSE
+      (pos-inf.lte nan).eq FALSE
+      (pos-inf.lte 42).eq FALSE
+      (pos-inf.lte 42.5).eq FALSE
     $.equal-to TRUE
 
 [] > positive-infinity-gt-is-valid
+  positive-infinity > pos-inf!
   assert-that > @
     and.
-      (positive-infinity.gt positive-infinity).eq FALSE
-      positive-infinity.gt negative-infinity
-      (positive-infinity.gt nan).eq FALSE
-      positive-infinity.gt 42
-      positive-infinity.gt 42.5
+      (pos-inf.gt pos-inf).eq FALSE
+      pos-inf.gt negative-infinity
+      (pos-inf.gt nan).eq FALSE
+      pos-inf.gt 42
+      pos-inf.gt 42.5
     $.equal-to TRUE
 
 [] > positive-infinity-gte-is-valid
+  positive-infinity > pos-inf!
   assert-that > @
     and.
-      positive-infinity.gte positive-infinity
-      positive-infinity.gte negative-infinity
-      (positive-infinity.gte nan).eq FALSE
-      positive-infinity.gte 42
-      positive-infinity.gte 42.5
+      pos-inf.gte pos-inf
+      pos-inf.gte negative-infinity
+      (pos-inf.gte nan).eq FALSE
+      pos-inf.gte 42
+      pos-inf.gte 42.5
     $.equal-to TRUE
 
 [] > positive-infinity-times-is-valid
+  positive-infinity > pos-inf!
+  negative-infinity > neg-inf!
+  nan.as-bytes > nan-as-bytes!
   assert-that > @
     and.
-      (positive-infinity.times 0.0).as-bytes.eq nan.as-bytes
-      (positive-infinity.times 0).as-bytes.eq nan.as-bytes
-      (positive-infinity.times nan).as-bytes.eq nan.as-bytes
-      (positive-infinity.times negative-infinity).eq negative-infinity
-      (positive-infinity.times positive-infinity).eq positive-infinity
-      (positive-infinity.times 42).eq positive-infinity
-      (positive-infinity.times -42).eq positive-infinity
-      (positive-infinity.times 42.5).eq positive-infinity
-      (positive-infinity.times -42.5).eq positive-infinity
+      (pos-inf.times 0.0).as-bytes.eq nan-as-bytes
+      (pos-inf.times 0).as-bytes.eq nan-as-bytes
+      (pos-inf.times nan).as-bytes.eq nan-as-bytes
+      (pos-inf.times neg-inf).eq neg-inf
+      (pos-inf.times pos-inf).eq pos-inf
+      (pos-inf.times 42).eq pos-inf
+      (pos-inf.times -42).eq pos-inf
+      (pos-inf.times 42.5).eq pos-inf
+      (pos-inf.times -42.5).eq pos-inf
     $.equal-to TRUE
 
 [] > positive-infinity-plus-is-valid
+  positive-infinity > pos-inf!
+  negative-infinity > neg-inf!
+  nan.as-bytes > nan-as-bytes!
   assert-that > @
     and.
-      (positive-infinity.plus negative-infinity).as-bytes.eq nan.as-bytes
-      (positive-infinity.plus nan).as-bytes.eq nan.as-bytes
-      (positive-infinity.plus 0.0).eq positive-infinity
-      (positive-infinity.plus positive-infinity).eq positive-infinity
-      (positive-infinity.plus 42).eq positive-infinity
-      (positive-infinity.plus 42.5).eq positive-infinity
+      (pos-inf.plus neg-inf).as-bytes.eq nan-as-bytes
+      (pos-inf.plus nan).as-bytes.eq nan-as-bytes
+      (pos-inf.plus 0.0).eq pos-inf
+      (pos-inf.plus positive-infinity).eq pos-inf
+      (pos-inf.plus 42).eq pos-inf
+      (pos-inf.plus 42.5).eq pos-inf
     $.equal-to TRUE
 
 [] > positive-infinity-neg-is-negative-infinity
@@ -123,33 +135,42 @@
     $.equal-to 1.0
 
 [] > positive-infinity-minus-is-valid
+  positive-infinity > pos-inf!
+  nan.as-bytes > nan-as-bytes!
   assert-that > @
     and.
-      (positive-infinity.minus positive-infinity).as-bytes.eq nan.as-bytes
-      (positive-infinity.minus nan).as-bytes.eq nan.as-bytes
-      (positive-infinity.minus 0.0).eq positive-infinity
-      (positive-infinity.minus negative-infinity).eq positive-infinity
-      (positive-infinity.minus 42).eq positive-infinity
-      (positive-infinity.minus 42.5).eq positive-infinity
+      (pos-inf.minus pos-inf).as-bytes.eq nan-as-bytes
+      (pos-inf.minus nan).as-bytes.eq nan-as-bytes
+      (pos-inf.minus 0.0).eq pos-inf
+      (pos-inf.minus negative-infinity).eq pos-inf
+      (pos-inf.minus 42).eq pos-inf
+      (pos-inf.minus 42.5).eq pos-inf
     $.equal-to TRUE
 
 [] > positive-infinity-div-is-valid
+  positive-infinity > pos-inf!
+  nan.as-bytes > nan-as-bytes!
   assert-that > @
     and.
-      (positive-infinity.div nan).as-bytes.eq nan.as-bytes
-      (positive-infinity.div negative-infinity).as-bytes.eq nan.as-bytes
-      (positive-infinity.div positive-infinity).as-bytes.eq nan.as-bytes
-      (positive-infinity.div 0.0).eq positive-infinity
-      (positive-infinity.div 42).eq positive-infinity
-      (positive-infinity.div -42).eq positive-infinity
-      (positive-infinity.div 42.5).eq positive-infinity
-      (positive-infinity.div -42.5).eq positive-infinity
+      (pos-inf.div nan).as-bytes.eq nan-as-bytes
+      (pos-inf.div negative-infinity).as-bytes.eq nan-as-bytes
+      (pos-inf.div pos-inf).as-bytes.eq nan-as-bytes
+      (pos-inf.div 0.0).eq pos-inf
+      (pos-inf.div 42).eq pos-inf
+      (pos-inf.div -42).eq pos-inf
+      (pos-inf.div 42.5).eq pos-inf
+      (pos-inf.div -42.5).eq pos-inf
     $.equal-to TRUE
+
+[] > positive-infinity-is-equal-to-one-div-zero
+  assert-that > @
+    positive-infinity
+    $.equal-to (1.0.div 0.0)
 
 [] > positive-infinity-as-bytes-is-valid
   assert-that > @
     positive-infinity.as-bytes
-    $.equal-to 7F-80-00-00
+    $.equal-to (1.0.div 0.0).as-bytes
 
 [] > cannot-convert-positive-infinity-to-int
   assert-that > @

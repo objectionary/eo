@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.util.FileHash;
 import org.eolang.maven.util.Rel;
@@ -74,9 +75,10 @@ public final class UnplaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.placedTojos.value().select(r -> true).isEmpty()) {
+        if (this.placedTojos.value().select(all -> true).isEmpty()) {
             Logger.info(
-                this, "The list of placed binaries is absent: %s",
+                this,
+                "The list of placed binaries is absent: %s",
                 new Rel(this.placed)
             );
         } else {
@@ -88,9 +90,9 @@ public final class UnplaceMojo extends SafeMojo {
      * Place what's necessary.
      * @throws IOException If fails
      */
-    public void placeThem() throws IOException {
-        final Collection<Tojo> tojos =
-            this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_PLD_KIND)));
+    private void placeThem() throws IOException {
+        final Collection<Tojo> tojos = this.placedTojos
+            .value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_PLD_KIND)));
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(tojos);
@@ -221,14 +223,9 @@ public final class UnplaceMojo extends SafeMojo {
      * @return TRUE if inside this list of globx
      */
     private static boolean inside(final String related, final Iterable<String> globs) {
-        boolean found = false;
-        for (final String glob : globs) {
-            found = UnplaceMojo.matches(related, glob);
-            if (found) {
-                break;
-            }
-        }
-        return found;
+        return new ListOf<>(globs).stream().anyMatch(
+            glob -> UnplaceMojo.matches(related, glob)
+        );
     }
 
     /**

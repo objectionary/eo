@@ -75,7 +75,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
       <xs:element name="license" type="xs:string" minOccurs="0"/>
-      <xs:element name="metas" minOccurs="0">
+      <xs:element name="metas">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="meta" minOccurs="0" maxOccurs="unbounded">
