@@ -36,10 +36,6 @@
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
-
   # Tests that $ < x
   [x] > lt
     not. > @
@@ -88,10 +84,6 @@
   [] > neg
     positive-infinity > @
 
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    -1.0 > @
-
   # Difference between $ and x
   [x] > minus
     ^.plus (x.neg) > @
@@ -114,12 +106,4 @@
 
   # Converts this to bytes
   [] > as-bytes
-    ^.@.as-bytes > @
-
-  # Converts this to int
-  [] > as-int
-    error "You can not convert negative infinity to int" > @
-
-  # Converts this to string
-  [] > as-string
-    "-∞" > @
+    ^.@.as-bytes > @!

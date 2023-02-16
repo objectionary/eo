@@ -27,162 +27,367 @@
 +junit
 +version 0.0.0
 
-[] > positive-infinity-eq-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      pos-inf.eq pos-inf
-      (pos-inf.eq negative-infinity).eq FALSE
-      (pos-inf.eq nan).eq FALSE
-      (pos-inf.eq 42).eq FALSE
-      (pos-inf.eq 42.5).eq FALSE
-    $.equal-to TRUE
-
-[] > positive-infinity-neq-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      (pos-inf.neq pos-inf).eq FALSE
-      pos-inf.neq negative-infinity
-      pos-inf.neq nan
-      pos-inf.neq 42
-      pos-inf.neq 42.5
-    $.equal-to TRUE
-
-[] > positive-infinity-lt-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      (pos-inf.lt pos-inf).eq FALSE
-      (pos-inf.lt negative-infinity).eq FALSE
-      (pos-inf.lt nan).eq FALSE
-      (pos-inf.lt 42).eq FALSE
-      (pos-inf.lt 42.5).eq FALSE
-    $.equal-to TRUE
-
-[] > positive-infinity-lte-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      pos-inf.lte pos-inf
-      (pos-inf.lte negative-infinity).eq FALSE
-      (pos-inf.lte nan).eq FALSE
-      (pos-inf.lte 42).eq FALSE
-      (pos-inf.lte 42.5).eq FALSE
-    $.equal-to TRUE
-
-[] > positive-infinity-gt-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      (pos-inf.gt pos-inf).eq FALSE
-      pos-inf.gt negative-infinity
-      (pos-inf.gt nan).eq FALSE
-      pos-inf.gt 42
-      pos-inf.gt 42.5
-    $.equal-to TRUE
-
-[] > positive-infinity-gte-is-valid
-  positive-infinity > pos-inf!
-  assert-that > @
-    and.
-      pos-inf.gte pos-inf
-      pos-inf.gte negative-infinity
-      (pos-inf.gte nan).eq FALSE
-      pos-inf.gte 42
-      pos-inf.gte 42.5
-    $.equal-to TRUE
-
-[] > positive-infinity-times-is-valid
-  positive-infinity > pos-inf!
-  negative-infinity > neg-inf!
-  nan.as-bytes > nan-as-bytes!
-  assert-that > @
-    and.
-      (pos-inf.times 0.0).as-bytes.eq nan-as-bytes
-      (pos-inf.times 0).as-bytes.eq nan-as-bytes
-      (pos-inf.times nan).as-bytes.eq nan-as-bytes
-      (pos-inf.times neg-inf).eq neg-inf
-      (pos-inf.times pos-inf).eq pos-inf
-      (pos-inf.times 42).eq pos-inf
-      (pos-inf.times -42).eq pos-inf
-      (pos-inf.times 42.5).eq pos-inf
-      (pos-inf.times -42.5).eq pos-inf
-    $.equal-to TRUE
-
-[] > positive-infinity-plus-is-valid
-  positive-infinity > pos-inf!
-  negative-infinity > neg-inf!
-  nan.as-bytes > nan-as-bytes!
-  assert-that > @
-    and.
-      (pos-inf.plus neg-inf).as-bytes.eq nan-as-bytes
-      (pos-inf.plus nan).as-bytes.eq nan-as-bytes
-      (pos-inf.plus 0.0).eq pos-inf
-      (pos-inf.plus positive-infinity).eq pos-inf
-      (pos-inf.plus 42).eq pos-inf
-      (pos-inf.plus 42.5).eq pos-inf
-    $.equal-to TRUE
-
-[] > positive-infinity-neg-is-negative-infinity
-  assert-that > @
-    positive-infinity.neg
-    $.equal-to negative-infinity
-
-[] > positive-infinity-signum-float-one
-  assert-that > @
-    positive-infinity.signum
-    $.equal-to 1.0
-
-[] > positive-infinity-minus-is-valid
-  positive-infinity > pos-inf!
-  nan.as-bytes > nan-as-bytes!
-  assert-that > @
-    and.
-      (pos-inf.minus pos-inf).as-bytes.eq nan-as-bytes
-      (pos-inf.minus nan).as-bytes.eq nan-as-bytes
-      (pos-inf.minus 0.0).eq pos-inf
-      (pos-inf.minus negative-infinity).eq pos-inf
-      (pos-inf.minus 42).eq pos-inf
-      (pos-inf.minus 42.5).eq pos-inf
-    $.equal-to TRUE
-
-[] > positive-infinity-div-is-valid
-  positive-infinity > pos-inf!
-  nan.as-bytes > nan-as-bytes!
-  assert-that > @
-    and.
-      (pos-inf.div nan).as-bytes.eq nan-as-bytes
-      (pos-inf.div negative-infinity).as-bytes.eq nan-as-bytes
-      (pos-inf.div pos-inf).as-bytes.eq nan-as-bytes
-      (pos-inf.div 0.0).eq pos-inf
-      (pos-inf.div 42).eq pos-inf
-      (pos-inf.div -42).eq pos-inf
-      (pos-inf.div 42.5).eq pos-inf
-      (pos-inf.div -42.5).eq pos-inf
-    $.equal-to TRUE
-
+# Equal to
 [] > positive-infinity-is-equal-to-one-div-zero
   assert-that > @
     positive-infinity
     $.equal-to (1.0.div 0.0)
 
+[] > positive-infinity-eq-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf
+    $.equal-to pos-inf
+
+[] > positive-infinity-not-eq-negative-infinity
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to negative-infinity
+
+[] > positive-infinity-not-eq-nan
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to nan
+
+[] > positive-infinity-not-eq-int
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to 42
+
+[] > positive-infinity-not-eq-float
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to 42.5
+
+# Less than
+[] > positive-infinity-lt-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf
+    $.not
+      $.less-than pos-inf
+
+[] > positive-infinity-not-lt-negative-infinity
+  assert-that > @
+    positive-infinity
+    $.not
+      $.less-than negative-infinity
+
+[] > positive-infinity-not-lt-nan
+  assert-that > @
+    positive-infinity
+    $.not
+      $.less-than nan
+
+[] > positive-infinity-not-lt-int
+  assert-that > @
+    positive-infinity
+    $.not
+      $.less-than 42
+
+[] > positive-infinity-not-lt-float
+  assert-that > @
+    positive-infinity
+    $.not
+      $.less-than 42.5
+
+# Less or equal than
+[] > positive-infinity-lte-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.lte pos-inf
+    $.equal-to TRUE
+
+[] > positive-infinity-not-lte-negative-infinity
+  assert-that > @
+    positive-infinity.lte negative-infinity
+    $.equal-to FALSE
+
+[] > positive-infinity-not-lte-nan
+  assert-that > @
+    positive-infinity.lte nan
+    $.equal-to FALSE
+
+[] > positive-infinity-not-lte-int
+  assert-that > @
+    positive-infinity.lte 42
+    $.equal-to FALSE
+
+[] > positive-infinity-not-lte-float
+  assert-that > @
+    positive-infinity.lte 42.5
+    $.equal-to FALSE
+
+# Greater than
+[] > positive-infinity-gt-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf
+    $.not
+      $.greater-than pos-inf
+
+[] > positive-infinity-gt-negative-infinity
+  assert-that > @
+    positive-infinity
+    $.greater-than negative-infinity
+
+[] > positive-infinity-not-gt-nan
+  assert-that > @
+    positive-infinity
+    $.not
+      $.greater-than nan
+
+[] > positive-infinity-gt-int
+  assert-that > @
+    positive-infinity
+    $.greater-than 42
+
+[] > positive-infinity-gt-float
+  assert-that > @
+    positive-infinity
+    $.greater-than 42.5
+
+# Greater or equal than
+[] > positive-infinity-gte-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.gte pos-inf
+    $.equal-to TRUE
+
+[] > positive-infinity-gte-negative-infinity
+  assert-that > @
+    positive-infinity.gte negative-infinity
+    $.equal-to TRUE
+
+[] > positive-infinity-not-gte-nan
+  assert-that > @
+    positive-infinity.gte nan
+    $.equal-to FALSE
+
+[] > positive-infinity-gte-int
+  assert-that > @
+    positive-infinity.gte 42
+    $.equal-to TRUE
+
+[] > positive-infinity-gte-float
+  assert-that > @
+    positive-infinity.gte 42.5
+    $.equal-to TRUE
+
+# Times
+[] > positive-infinity-times-float-zero
+  assert-that > @
+    as-bytes.
+      positive-infinity.times 0.0
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-times-int-zero
+  assert-that > @
+    as-bytes.
+      positive-infinity.times 0
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-times-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      positive-infinity.times not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-times-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    positive-infinity.times neg-inf
+    $.equal-to neg-inf
+
+[] > positive-infinity-times-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.times pos-inf
+    $.equal-to pos-inf
+
+[] > positive-infinity-times-positive-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.times 42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-times-positive-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.times 42
+    $.equal-to pos-inf
+
+[] > positive-infinity-times-negative-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.times -42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-times-negative-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.times -42
+    $.equal-to pos-inf
+
+# Plus
+[] > positive-infinity-plus-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      positive-infinity.plus not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-plus-negative-infinity
+  assert-that > @
+    as-bytes.
+      positive-infinity.plus negative-infinity
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-plus-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.plus pos-inf
+    $.equal-to pos-inf
+
+[] > positive-infinity-plus-positive-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.plus 42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-plus-positive-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.plus 42
+    $.equal-to pos-inf
+
+[] > positive-infinity-plus-negative-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.plus -42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-plus-negative-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.plus -42
+    $.equal-to pos-inf
+
+# Negation
+[] > positive-infinity-neg-is-negative-infinity
+  assert-that > @
+    positive-infinity.neg
+    $.equal-to negative-infinity
+
+# Minus
+[] > positive-infinity-minus-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      positive-infinity.minus not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-minus-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    as-bytes.
+      pos-inf.minus pos-inf
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-minus-negative-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus negative-infinity
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-positive-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus 42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-positive-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus 42
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-negative-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus -42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-negative-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus -42
+    $.equal-to pos-inf
+
+# Division
+[] > positive-infinity-div-float-zero
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div 0.0
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-int-zero
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div 0
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      positive-infinity.div not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-div-negative-infinity
+  assert-that > @
+    as-bytes.
+      positive-infinity.div negative-infinity
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-div-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    as-bytes.
+      pos-inf.div pos-inf
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-div-positive-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div 42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-positive-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div 42
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-negative-float
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div -42.5
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-negative-int
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div -42
+    $.equal-to pos-inf
+
+# Bytes
 [] > positive-infinity-as-bytes-is-valid
   assert-that > @
     positive-infinity.as-bytes
     $.equal-to (1.0.div 0.0).as-bytes
-
-[] > cannot-convert-positive-infinity-to-int
-  assert-that > @
-    try
-      []
-        positive-infinity.as-int > @
-      [e]
-        e > @
-      nop
-    $.equal-to "You can not convert positive infinity to int"
-
-[] > positive-infinity-as-string-is-valid
-  assert-that > @
-    positive-infinity.as-string
-    $.equal-to "+∞"
