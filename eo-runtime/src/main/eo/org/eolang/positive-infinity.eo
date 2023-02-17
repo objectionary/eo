@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.collections.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
@@ -30,6 +29,12 @@
 # Positive infinity
 [] > positive-infinity
   1.0.div 0.0 > @!
+
+  # Tests that $ = x
+  [x] > eq
+    eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Tests that $ < x
   [x] > lt
