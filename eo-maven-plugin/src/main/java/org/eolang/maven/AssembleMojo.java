@@ -251,6 +251,7 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(ResolveMojo.class),
             new Moja<>(MarkMojo.class),
             new Moja<>(PlaceMojo.class),
+            new Moja<>(BinarizeMojo.class),
         };
         while (true) {
             final long start = System.nanoTime();

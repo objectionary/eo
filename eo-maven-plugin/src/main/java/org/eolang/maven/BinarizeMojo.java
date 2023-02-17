@@ -26,10 +26,17 @@ package org.eolang.maven;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+
+import com.yegor256.tojos.Tojo;
+import com.yegor256.xsline.Xsline;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.util.Home;
 
 /**
  * Compile binaries.
@@ -61,9 +68,25 @@ public final class BinarizeMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
+    /**
+     * The directory where to binarize to.
+     */
+    public static final String DIR = "binarize";
+
     @Override
     public void exec() throws IOException {
-        throw new UnsupportedEncodingException("NYI");
+        //throw new UnsupportedEncodingException("NYI");
+        System.out.println("\nHello from BinarizeMojo");
+        final Collection<Tojo> sources = this.scopedTojos().select(
+                row -> row.exists(AssembleMojo.ATTR_XMIR)
+        );
+        for (Tojo tojo: sources) {
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+
+        }
+
+        final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + ".rs");
+        new Home(dir).save("I am rust file", dir);
     }
 
 }
