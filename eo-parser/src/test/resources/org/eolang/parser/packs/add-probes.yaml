@@ -11,6 +11,7 @@ tests:
 eo: |
   +home https://github.com/objectionary/eo
   +package org.eolang.custom
+  +version 0.0.0
 
   [] > app
     QQ.txt.sprintf > @

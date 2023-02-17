@@ -4,6 +4,7 @@ tests:
 eo: |
   +home https://github.com/objectionary/eo
   +package org.eolang.priority
+  +version 0.0.0
 
   [] > x
     1.times 2 (1.plus other.value)
