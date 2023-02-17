@@ -71,7 +71,7 @@ public final class BinarizeMojo extends SafeMojo {
     /**
      * The directory where to binarize to.
      */
-    public static final String DIR = "binarize";
+    public static final String DIR = "binarize/";
 
     @Override
     public void exec() throws IOException {
@@ -82,11 +82,17 @@ public final class BinarizeMojo extends SafeMojo {
         );
         for (Tojo tojo: sources) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+            System.out.println("src = " + src);
+
+            if (src.toString().contains("rust")) {
+                final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + src.hashCode() + ".rs");
+                System.out.println("dir = " + dir);
+                new Home(dir).save("I am rust file from src = " + src, dir);
+            }
 
         }
 
-        final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + ".rs");
-        new Home(dir).save("I am rust file", dir);
+        System.out.println("Bye from BinarizeMojo\n");
     }
 
 }
