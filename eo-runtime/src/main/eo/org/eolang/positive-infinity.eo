@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.collections.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
@@ -29,16 +30,6 @@
 # Positive infinity
 [] > positive-infinity
   1.0.div 0.0 > @!
-
-  # Tests that $ = x
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
-
-  # Tests that $ ≠ x
-  [x] > neq
-    (^.eq x).not > @
 
   # Tests that $ < x
   [x] > lt
@@ -63,57 +54,149 @@
         nan.as-bytes
 
   # Multiplication of $ and x
-  [x] > times
+  [x...] > times
+    ^.as-bytes > pos-inf-as-bytes!
+
+    negative-infinity > neg-inf!
+    neg-inf.as-bytes > neg-inf-as-bytes!
+
+    nan > not-a-number!
+    not-a-number.as-bytes > nan-as-bytes!
+
+    0.0.as-bytes > zero-as-bytes!
+
+    reduced. > res-bytes!
+      list
+        x
+      pos-inf-as-bytes
+      [acc-as-bytes num]
+        if. > @
+          or.
+            acc-as-bytes.eq nan-as-bytes
+            eq.
+              num.as-bytes > num-as-bytes!
+              zero-as-bytes
+            num-as-bytes.eq nan-as-bytes
+          nan-as-bytes
+          if.
+            acc-as-bytes.eq neg-inf-as-bytes
+            if.
+              num-as-bytes.eq neg-inf-as-bytes
+              pos-inf-as-bytes
+              neg-inf-as-bytes
+            if.
+              num-as-bytes.eq neg-inf-as-bytes
+              neg-inf-as-bytes
+              pos-inf-as-bytes
+
     if. > @
-      or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq 0.0
-        x.eq 0
-      nan
+      res-bytes.eq nan-as-bytes
+      not-a-number
       if.
-        x.eq negative-infinity
-        negative-infinity
+        res-bytes.eq pos-inf-as-bytes
         ^
+        neg-inf
 
   # Sum of $ and x
-  [x] > plus
+  [x...] > plus
+    ^ > pos-inf!
+    pos-inf.as-bytes > pos-inf-as-bytes!
+
+    negative-infinity.as-bytes > neg-inf-as-bytes!
+
+    nan > not-a-number!
+    not-a-number.as-bytes > nan-as-bytes!
+
+    x.length > x-length!
+
+    [acc-as-bytes nums index] > rec-plus
+      if. > @
+        index.eq x-length
+        acc-as-bytes
+        []
+          (nums.at index).as-bytes > num-as-bytes!
+          if. > @
+            or.
+              acc-as-bytes.eq nan-as-bytes
+              num-as-bytes.eq nan-as-bytes
+              num-as-bytes.eq neg-inf-as-bytes
+            nan-as-bytes
+            rec-plus
+              pos-inf-as-bytes
+              nums
+              index.plus 1
+
     if. > @
-      or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq negative-infinity
-      nan
-      ^
+      eq.
+        rec-plus
+          pos-inf-as-bytes
+          x
+          0
+        nan-as-bytes
+      not-a-number
+      pos-inf
 
   # Negation of $
   [] > neg
     negative-infinity > @
 
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    1.0 > @
-
   # Difference between $ and x
-  [x] > minus
-    ^.plus (x.neg) > @
+  [x...] > minus
+    ^ > pos-inf!
+    pos-inf.as-bytes > pos-inf-as-bytes!
 
-  # Quotient of the division of $ by x
-  [x] > div
+    negative-infinity.as-bytes > neg-inf-as-bytes!
+
+    nan > not-a-number!
+    not-a-number.as-bytes > nan-as-bytes!
+
+    reduced. > res-bytes!
+      list
+        x
+      pos-inf-as-bytes
+      [acc-as-bytes num]
+        if. > @
+          or.
+            acc-as-bytes.eq nan-as-bytes
+            eq.
+              num.neg.as-bytes > num-neg-as-bytes!
+              neg-inf-as-bytes
+            num-neg-as-bytes.eq nan-as-bytes
+          nan-as-bytes
+          pos-inf-as-bytes
+
     if. > @
-      or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq negative-infinity
-        x.eq ^
-      nan
+      res-bytes.eq nan-as-bytes
+      not-a-number
       ^
 
-  # Converts this to bytes
-  [] > as-bytes
-    ^.@.as-bytes > @
+  # Quotient of the division of $ by x
+  [x...] > div
+    ^ > pos-inf!
+    pos-inf.as-bytes > pos-inf-as-bytes!
 
-  # Converts this to int
-  [] > as-int
-    error "You can not convert positive infinity to int" > @
+    negative-infinity.as-bytes > neg-inf-as-bytes!
 
-  # Converts this to string
-  [] > as-string
-    "+∞" > @
+    nan > not-a-number!
+    not-a-number.as-bytes > nan-as-bytes!
+
+    reduced. > res-bytes!
+      list
+        x
+      pos-inf-as-bytes
+      [acc-as-bytes num]
+        if. > @
+          or.
+            acc-as-bytes.eq nan-as-bytes
+            eq.
+              num.as-bytes > num-as-bytes!
+              pos-inf-as-bytes
+            num-as-bytes.eq neg-inf-as-bytes
+            num-as-bytes.eq nan-as-bytes
+          nan-as-bytes
+          pos-inf-as-bytes
+
+    if. > @
+      res-bytes.eq nan-as-bytes
+      not-a-number
+      ^
