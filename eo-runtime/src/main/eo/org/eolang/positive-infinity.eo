@@ -58,150 +58,91 @@
         x.as-bytes
         nan.as-bytes
 
+  # @todo #1806:30min. Make positive-infinity.times and negative-infinity.times
+  #  worked with multiple arguments without using objects from eo-collections.
+  #  See positive-infinity.plus and negative-infinity.plus as an example
   # Multiplication of $ and x
   [x...] > times
-    ^.as-bytes > pos-inf-as-bytes!
-
-    negative-infinity > neg-inf!
-    neg-inf.as-bytes > neg-inf-as-bytes!
-
-    nan > not-a-number!
-    not-a-number.as-bytes > nan-as-bytes!
-
-    0.0.as-bytes > zero-as-bytes!
-
-    reduced. > res-bytes!
-      list
-        x
-      pos-inf-as-bytes
-      [acc-as-bytes num]
-        if. > @
-          or.
-            acc-as-bytes.eq nan-as-bytes
-            eq.
-              num.as-bytes > num-as-bytes!
-              zero-as-bytes
-            num-as-bytes.eq nan-as-bytes
-          nan-as-bytes
-          if.
-            acc-as-bytes.eq neg-inf-as-bytes
-            if.
-              num-as-bytes.eq neg-inf-as-bytes
-              pos-inf-as-bytes
-              neg-inf-as-bytes
-            if.
-              num-as-bytes.eq neg-inf-as-bytes
-              neg-inf-as-bytes
-              pos-inf-as-bytes
-
+    x.at 0 > first!
     if. > @
-      res-bytes.eq nan-as-bytes
-      not-a-number
+      or.
+        first.as-bytes.eq (nan.as-bytes)
+        first.eq 0.0
+        first.eq 0
+      nan
       if.
-        res-bytes.eq pos-inf-as-bytes
+        first.eq negative-infinity
+        negative-infinity
         ^
-        neg-inf
 
   # Sum of $ and x
   [x...] > plus
-    ^ > pos-inf!
-    pos-inf.as-bytes > pos-inf-as-bytes!
-
     negative-infinity.as-bytes > neg-inf-as-bytes!
 
-    nan > not-a-number!
-    not-a-number.as-bytes > nan-as-bytes!
-
-    x.length > x-length!
-
-    [acc-as-bytes nums index] > rec-plus
+    [acc index terms check-term] > plus-rec
       if. > @
-        index.eq x-length
-        acc-as-bytes
-        []
-          (nums.at index).as-bytes > num-as-bytes!
-          if. > @
-            or.
-              acc-as-bytes.eq nan-as-bytes
-              num-as-bytes.eq nan-as-bytes
-              num-as-bytes.eq neg-inf-as-bytes
-            nan-as-bytes
-            rec-plus
-              pos-inf-as-bytes
-              nums
-              index.plus 1
+        index.eq terms.length
+        acc
+        if.
+          check-term
+            terms.at index
+          nan
+          plus-rec
+            acc
+            index.plus 1
+            terms
+            check-term
+
+    [term] > check-term
+      term > t!
+      or. > @
+        not.
+          t.eq t
+        t.as-bytes.eq neg-inf-as-bytes
 
     if. > @
       eq.
-        rec-plus
-          pos-inf-as-bytes
-          x
+        x.length > terms-count!
+        0
+      ^
+      if.
+        terms-count.gt 1
+        plus-rec
+          ^
           0
-        nan-as-bytes
-      not-a-number
-      pos-inf
+          x
+          check-term
+        if.
+          check-term
+            x.at 0
+          nan
+          ^
 
   # Negation of $
   [] > neg
     negative-infinity > @
 
+  # @todo #1806:30min. Make positive-infinity.minus and negative-infinity.minus
+  #  worked with multiple arguments without using objects from eo-collections.
+  #  See positive-infinity.plus and negative-infinity.plus as an example
   # Difference between $ and x
   [x...] > minus
-    ^ > pos-inf!
-    pos-inf.as-bytes > pos-inf-as-bytes!
+    ^.plus ((x.at 0).neg) > @
 
-    negative-infinity.as-bytes > neg-inf-as-bytes!
-
-    nan > not-a-number!
-    not-a-number.as-bytes > nan-as-bytes!
-
-    reduced. > res-bytes!
-      list
-        x
-      pos-inf-as-bytes
-      [acc-as-bytes num]
-        if. > @
-          or.
-            acc-as-bytes.eq nan-as-bytes
-            eq.
-              num.neg.as-bytes > num-neg-as-bytes!
-              neg-inf-as-bytes
-            num-neg-as-bytes.eq nan-as-bytes
-          nan-as-bytes
-          pos-inf-as-bytes
-
-    if. > @
-      res-bytes.eq nan-as-bytes
-      not-a-number
-      ^
-
+  # @todo #1806:30min. Make positive-infinity.div and negative-infinity.div
+  #  worked with multiple arguments without using objects from eo-collections.
+  #  See positive-infinity.plus and negative-infinity.plus as an example
   # Quotient of the division of $ by x
   [x...] > div
-    ^ > pos-inf!
-    pos-inf.as-bytes > pos-inf-as-bytes!
-
-    negative-infinity.as-bytes > neg-inf-as-bytes!
-
-    nan > not-a-number!
-    not-a-number.as-bytes > nan-as-bytes!
-
-    reduced. > res-bytes!
-      list
-        x
-      pos-inf-as-bytes
-      [acc-as-bytes num]
-        if. > @
-          or.
-            acc-as-bytes.eq nan-as-bytes
-            eq.
-              num.as-bytes > num-as-bytes!
-              pos-inf-as-bytes
-            num-as-bytes.eq neg-inf-as-bytes
-            num-as-bytes.eq nan-as-bytes
-          nan-as-bytes
-          pos-inf-as-bytes
-
+    x.at 0 > first!
     if. > @
-      res-bytes.eq nan-as-bytes
-      not-a-number
+      or.
+        first.as-bytes.eq (nan.as-bytes)
+        first.eq negative-infinity
+        first.eq ^
+      nan
       ^
+
+  # Converts this to bytes
+  [] > as-bytes
+    ^.@.as-bytes > @

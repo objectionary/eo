@@ -260,6 +260,29 @@
     neg-inf.plus 42.5
     $.equal-to neg-inf
 
+[] > negative-infinity-plus-multiple-floats
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus 42.5 22.2 51.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-multiple-number
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus 42.5 -22 11 -1.2
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    (negative-infinity.plus 42 not-a-number 30).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-plus-multiple-numbers-with-positive-infinity
+  assert-that > @
+    (negative-infinity.plus 42 positive-infinity 30).as-bytes
+    $.equal-to nan.as-bytes
+
 [] > negative-infinity-plus-positive-int
   negative-infinity > neg-inf!
   assert-that > @
