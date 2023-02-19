@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Xsline;
@@ -36,6 +37,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 
 /**
@@ -73,6 +75,8 @@ public final class BinarizeMojo extends SafeMojo {
      */
     public static final String DIR = "binarize/";
 
+    private static Pattern pattern;
+
     @Override
     public void exec() throws IOException {
         //throw new UnsupportedEncodingException("NYI");
@@ -84,10 +88,14 @@ public final class BinarizeMojo extends SafeMojo {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
             System.out.println("src = " + src);
 
+            String content = new TextOf(src).toString();
+
             if (src.toString().contains("rust")) {
                 final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + src.hashCode() + ".rs");
                 System.out.println("dir = " + dir);
                 new Home(dir).save("I am rust file from src = " + src, dir);
+                System.out.println("Content: ");
+                System.out.println(content);
             }
 
         }
