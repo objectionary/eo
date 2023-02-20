@@ -27,23 +27,9 @@ SOFTWARE.
   <groupId>org.eolang</groupId>
   <artifactId>not.all.goals</artifactId>
   <version>@project.version@</version>
-  <dependencies>
-    <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version>@project.version@</version>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <plugin>
-        <dependencies>
-          <dependency>
-            <groupId>org.eolang</groupId>
-            <artifactId>eo-runtime</artifactId>
-            <version>@project.version@</version>
-          </dependency>
-        </dependencies>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
         <version>@project.version@</version>
@@ -63,9 +49,6 @@ SOFTWARE.
               <goal>pull</goal>
               <goal>resolve</goal>
             </goals>
-            <configuration>
-              <eo.home>/Users/lombrozo/Workspace/EOlang/eo/eo-runtime/src/main/eo</eo.home>
-            </configuration>
           </execution>
         </executions>
       </plugin>

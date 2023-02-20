@@ -31,17 +31,39 @@ SOFTWARE.
   </parent>
   <artifactId>eo-integration-tests</artifactId>
   <name>eo-integration-tests</name>
-  <description>EO-to-Java Maven Plugin</description>
+  <description>Integration tests module</description>
   <version>1.0-SNAPSHOT</version>
-  <dependencies>
-    <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
+      <!-- @todo #1821:30min After the new version of the eo-runtime library, which includes 'tuple' classes, is deployed to Maven Central, we should remove the plugin from the pom.xml file.-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <skipInstallation>true</skipInstallation>
+          <skipInvocation>true</skipInvocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M8</version>
+        <configuration>
+          <failIfNoTests>
+            false
+          </failIfNoTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>project-validate</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -51,31 +73,6 @@ SOFTWARE.
             <goals>
               <goal>properties</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-        <executions>
-          <execution>
-            <id>pre-copy-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>project-validate</id>
-            <phase>none</phase>
           </execution>
         </executions>
       </plugin>
