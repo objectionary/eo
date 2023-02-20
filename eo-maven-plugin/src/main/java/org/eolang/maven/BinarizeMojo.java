@@ -83,7 +83,6 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         //throw new UnsupportedEncodingException("NYI");
-        System.out.println("\nHello from BinarizeMojo");
         final Collection<Tojo> sources = this.scopedTojos().select(
                 row -> row.exists(AssembleMojo.ATTR_XMIR)
         );
