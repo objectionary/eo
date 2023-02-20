@@ -1,4 +1,4 @@
-package it.custom_goals
+package it.resolve
 /**
  * The MIT License (MIT)
  *
