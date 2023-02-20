@@ -89,7 +89,6 @@ public final class BinarizeMojo extends SafeMojo {
         );
         for (Tojo tojo: sources) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-            System.out.println("src = " + src);
 
             String content = new TextOf(src).toString();
             final Matcher matcher = INSERT.matcher(content);
@@ -103,7 +102,7 @@ public final class BinarizeMojo extends SafeMojo {
                 final int end = matcher.end();
                 final String insert = content.substring(start, end);
                 final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + insert.hashCode() + ".rs");
-                new Home(dir).save("I am rust file from src = " + src + "\n" + insert, dir);
+                new Home(dir).save("\t" + insert, dir);
 
             }
 
