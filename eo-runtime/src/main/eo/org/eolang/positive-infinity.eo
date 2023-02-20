@@ -58,10 +58,10 @@
         x.as-bytes
         nan.as-bytes
 
+  # Multiplication of $ and x
   # @todo #1806:30min. Make positive-infinity.times and negative-infinity.times
   #  worked with multiple arguments without using objects from eo-collections.
   #  See positive-infinity.plus and negative-infinity.plus as an example
-  # Multiplication of $ and x
   [x...] > times
     x.at 0 > first!
     if. > @
@@ -122,17 +122,17 @@
   [] > neg
     negative-infinity > @
 
+  # Difference between $ and x
   # @todo #1806:30min. Make positive-infinity.minus and negative-infinity.minus
   #  worked with multiple arguments without using objects from eo-collections.
   #  See positive-infinity.plus and negative-infinity.plus as an example
-  # Difference between $ and x
   [x...] > minus
     ^.plus ((x.at 0).neg) > @
 
+  # Quotient of the division of $ by x
   # @todo #1806:30min. Make positive-infinity.div and negative-infinity.div
   #  worked with multiple arguments without using objects from eo-collections.
   #  See positive-infinity.plus and negative-infinity.plus as an example
-  # Quotient of the division of $ by x
   [x...] > div
     x.at 0 > first!
     if. > @
