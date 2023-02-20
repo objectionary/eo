@@ -24,34 +24,58 @@ SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.eolang</groupId>
-  <artifactId>not.all.goals</artifactId>
-  <version>@project.version@</version>
+  <parent>
+    <groupId>org.eolang</groupId>
+    <artifactId>eo-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>eo-integration-tests</artifactId>
+  <name>eo-integration-tests</name>
+  <description>EO-to-Java Maven Plugin</description>
+  <version>1.0-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
-        <groupId>org.eolang</groupId>
-        <artifactId>eo-maven-plugin</artifactId>
-        <version>@project.version@</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
         <configuration>
-          <foreign>${project.basedir}/target/eo/foreign.csv</foreign>
-          <foreignFormat>csv</foreignFormat>
-          <hash>master</hash>
+          <encoding>UTF-8</encoding>
         </configuration>
         <executions>
           <execution>
+            <id>pre-copy-resources</id>
+            <phase>validate</phase>
             <goals>
-              <goal>register</goal>
-              <goal>parse</goal>
-              <goal>optimize</goal>
-              <goal>discover-foreign</goal>
-              <goal>probe</goal>
-              <goal>pull</goal>
-              <goal>resolve</goal>
+              <goal>resources</goal>
             </goals>
-            <configuration>
-              <withRuntimeDependency>false</withRuntimeDependency>
-            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>project-validate</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>
