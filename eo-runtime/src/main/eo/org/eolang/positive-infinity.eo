@@ -26,9 +26,6 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# @todo #1799:30min. Make "+inf" and "-inf" looked like float. Refactor objects
-#  plus, minus, times, div in +inf and -inf so they are able to process multiple
-#  arguments
 # Positive infinity
 [] > positive-infinity
   1.0.div 0.0 > @!
@@ -62,42 +59,87 @@
         nan.as-bytes
 
   # Multiplication of $ and x
-  [x] > times
+  # @todo #1806:30min. Make positive-infinity.times and negative-infinity.times
+  #  worked with multiple arguments without using objects from eo-collections.
+  #  See positive-infinity.plus and negative-infinity.plus as an example
+  [x...] > times
+    x.at 0 > first!
     if. > @
       or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq 0.0
-        x.eq 0
+        first.as-bytes.eq (nan.as-bytes)
+        first.eq 0.0
+        first.eq 0
       nan
       if.
-        x.eq negative-infinity
+        first.eq negative-infinity
         negative-infinity
         ^
 
   # Sum of $ and x
-  [x] > plus
+  [x...] > plus
+    negative-infinity.as-bytes > neg-inf-as-bytes!
+
+    [acc index terms check-term] > plus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          check-term
+            terms.at index
+          nan
+          plus-rec
+            acc
+            index.plus 1
+            terms
+            check-term
+
+    [term] > check-term
+      term > t!
+      or. > @
+        not.
+          t.eq t
+        t.as-bytes.eq neg-inf-as-bytes
+
     if. > @
-      or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq negative-infinity
-      nan
+      eq.
+        x.length > terms-count!
+        0
       ^
+      if.
+        terms-count.gt 1
+        plus-rec
+          ^
+          0
+          x
+          check-term
+        if.
+          check-term
+            x.at 0
+          nan
+          ^
 
   # Negation of $
   [] > neg
     negative-infinity > @
 
   # Difference between $ and x
-  [x] > minus
-    ^.plus (x.neg) > @
+  # @todo #1806:30min. Make positive-infinity.minus and negative-infinity.minus
+  #  worked with multiple arguments without using objects from eo-collections.
+  #  See positive-infinity.plus and negative-infinity.plus as an example
+  [x...] > minus
+    ^.plus ((x.at 0).neg) > @
 
   # Quotient of the division of $ by x
-  [x] > div
+  # @todo #1806:30min. Make positive-infinity.div and negative-infinity.div
+  #  worked with multiple arguments without using objects from eo-collections.
+  #  See positive-infinity.plus and negative-infinity.plus as an example
+  [x...] > div
+    x.at 0 > first!
     if. > @
       or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq negative-infinity
-        x.eq ^
+        first.as-bytes.eq (nan.as-bytes)
+        first.eq negative-infinity
+        first.eq ^
       nan
       ^
 
