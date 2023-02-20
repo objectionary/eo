@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.yegor256.tojos.Tojo;
@@ -75,7 +76,9 @@ public final class BinarizeMojo extends SafeMojo {
      */
     public static final String DIR = "binarize/";
 
-    private static Pattern pattern;
+    private static final Pattern INSERT = Pattern.compile(
+        "\"{3}[\\s\\S]*pub fn foo\\(uni: &amp;mut Universe, v: u32\\) -&gt; Result&lt;u32&gt[\\s\\S]*\"{3}"
+    );
 
     @Override
     public void exec() throws IOException {
@@ -89,13 +92,19 @@ public final class BinarizeMojo extends SafeMojo {
             System.out.println("src = " + src);
 
             String content = new TextOf(src).toString();
-
-            if (src.toString().contains("rust")) {
-                final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + src.hashCode() + ".rs");
-                System.out.println("dir = " + dir);
-                new Home(dir).save("I am rust file from src = " + src, dir);
-                System.out.println("Content: ");
+            final Matcher matcher = INSERT.matcher(content);
+            if (src.toString().equals("/home/tardis3/eo/eo-runtime/target/eo-test/01-parse/org/eolang/rust-tests.xmir")) {
+                System.out.println("\nrust-test\n");
                 System.out.println(content);
+            }
+            while (matcher.find()) {
+                final int start = matcher.start();
+                System.out.println("start = " + start);
+                final int end = matcher.end();
+                final String insert = content.substring(start, end);
+                final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + insert.hashCode() + ".rs");
+                new Home(dir).save("I am rust file from src = " + src + "\n" + insert, dir);
+
             }
 
         }
