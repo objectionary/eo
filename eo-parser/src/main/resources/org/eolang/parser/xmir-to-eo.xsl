@@ -132,7 +132,7 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:text>]</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@data='array']" mode="head">
+  <xsl:template match="o[@data='tuple']" mode="head">
     <xsl:text>*</xsl:text>
   </xsl:template>
   <xsl:template match="o[@data='string']" mode="head">
@@ -143,7 +143,7 @@ SOFTWARE.
   <xsl:template match="o[@data='bool']" mode="head">
     <xsl:value-of select="upper-case(text())"/>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool' and @data!='bytes']" mode="head">
+  <xsl:template match="o[@data and @data!='string' and @data!='tuple' and @data!='bool' and @data!='bytes']" mode="head">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="o[@data='bytes']" mode="head">

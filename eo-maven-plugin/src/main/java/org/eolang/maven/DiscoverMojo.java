@@ -123,7 +123,7 @@ public final class DiscoverMojo extends SafeMojo {
             )
         );
         if (!xml.nodes("//o[@vararg]").isEmpty()) {
-            names.add("org.eolang.array");
+            names.add("org.eolang.tuple");
         }
         if (names.isEmpty()) {
             Logger.debug(

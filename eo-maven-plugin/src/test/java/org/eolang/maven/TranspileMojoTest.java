@@ -127,18 +127,18 @@ final class TranspileMojoTest {
 
     @Test
     void transpilesSimpleEoProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo");
+        final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo");
         final Map<String, Path> res = new FakeMaven(temp)
             .withProgram(src)
             .execute(new FakeMaven.Transpile())
             .result();
-        final String java = "target/generated/EOorg/EOeolang/EOarray.java";
+        final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
             res, Matchers.hasKey(java)
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(java)).asString(),
-            Matchers.containsString("class EOarray")
+            Matchers.containsString("class EOtuple")
         );
     }
 }
