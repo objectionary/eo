@@ -41,6 +41,9 @@
 #     "this value will be skipped"
 #
 # This object returns value of only first truly statement.
+# @todo #1812:30min. Remake "switch" without using "QQ.collections.list".
+#  eo-runtime must be independent of other packages so need to implement switch
+#  using recursion not "QQ.collectioins.list". See "float.minus" as an example
 [cases...] > switch
   if. > @
     not.
