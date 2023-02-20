@@ -4,8 +4,8 @@ locators:
   - .boom
   - .foo
   - .bar
-  - .simple .φ .ρ .φ .σ .φ .α0 .α0 δ=01 .π >bool
-  - .simple .φ .α1 δ=00-00-00-00-00-00-00-2A .π >int
+  - .simple .φ .ρ .φ .σ .φ .α0 .α0 .Δ δ=01 .ρ .π >bool
+  - .simple .φ .α1 .Δ δ=00-00-00-00-00-00-00-2A .ρ .π >int
   - .simple .φ .α2 >boom
 eo: |
   +alias foo

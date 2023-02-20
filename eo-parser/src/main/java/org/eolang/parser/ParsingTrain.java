@@ -53,11 +53,6 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Sheets in the right order.
-     *
-     * @todo #1542:90m Add xsl transformation
-     *  that checks the presence of +version meta.
-     *  The version meta have to be correct.
-     *  It can be divided by 2 xsl checks.
      */
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
@@ -78,6 +73,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/unsorted-metas.xsl",
         "/org/eolang/parser/warnings/incorrect-architect.xsl",
         "/org/eolang/parser/warnings/incorrect-home.xsl",
+        "/org/eolang/parser/warnings/incorrect-version.xsl",
         "/org/eolang/parser/expand-aliases.xsl",
         "/org/eolang/parser/resolve-aliases.xsl",
         "/org/eolang/parser/synthetic-references.xsl",
@@ -89,6 +85,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/duplicate-metas.xsl",
         "/org/eolang/parser/warnings/mandatory-package-meta.xsl",
         "/org/eolang/parser/warnings/mandatory-home-meta.xsl",
+        "/org/eolang/parser/warnings/mandatory-version-meta.xsl",
         "/org/eolang/parser/warnings/correct-package-meta.xsl",
         "/org/eolang/parser/errors/unused-aliases.xsl",
         "/org/eolang/parser/errors/data-objects.xsl",
