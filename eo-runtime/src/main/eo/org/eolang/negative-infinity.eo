@@ -28,7 +28,7 @@
 
 # Negative infinity
 [] > negative-infinity
-  -1.0.div 0.0 > @
+  -1.0.div 0.0 > @!
 
   # Tests that $ = x
   [x] > eq
@@ -136,3 +136,6 @@
         first.eq positive-infinity
       nan
       ^
+
+  [] > as-bytes
+    ^.@.as-bytes > @
