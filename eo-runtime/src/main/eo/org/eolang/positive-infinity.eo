@@ -28,7 +28,7 @@
 
 # Positive infinity
 [] > positive-infinity
-  1.0.div 0.0 > @!
+  1.0.div 0.0 > @
 
   # Tests that $ = x
   [x] > eq
@@ -66,13 +66,16 @@
     x.at 0 > first!
     if. > @
       or.
-        first.as-bytes.eq (nan.as-bytes)
+        not.
+          first.eq first
         first.eq 0.0
         first.eq 0
       nan
       if.
-        first.eq negative-infinity
-        negative-infinity
+        eq.
+          first
+          negative-infinity
+        first
         ^
 
   # Sum of $ and x
@@ -137,12 +140,9 @@
     x.at 0 > first!
     if. > @
       or.
-        first.as-bytes.eq (nan.as-bytes)
+        not.
+          first.eq first
         first.eq negative-infinity
         first.eq ^
       nan
       ^
-
-  # Converts this to bytes
-  [] > as-bytes
-    ^.@.as-bytes > @

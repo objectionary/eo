@@ -28,7 +28,7 @@
 
 # Not a number
 [] > nan
-  0.0.div 0.0 > @!
+  0.0.div 0.0 > @
 
   # Tests that $ = x
   [x] > eq
@@ -69,7 +69,3 @@
   # Quotient of the division of $ by x
   [x...] > div
     ^ > @
-
-  # Converts this to bytes
-  [] > as-bytes
-    ^.@.as-bytes > @
