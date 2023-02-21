@@ -91,13 +91,8 @@ public final class BinarizeMojo extends SafeMojo {
 
             String content = new TextOf(src).toString();
             final Matcher matcher = INSERT.matcher(content);
-            if (src.toString().equals("/home/tardis3/eo/eo-runtime/target/eo-test/01-parse/org/eolang/rust-tests.xmir")) {
-                System.out.println("\nrust-test\n");
-                System.out.println(content);
-            }
             while (matcher.find()) {
                 final int start = matcher.start();
-                System.out.println("start = " + start);
                 final int end = matcher.end();
                 final String insert = content.substring(start, end);
                 final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + insert.hashCode() + ".rs");
