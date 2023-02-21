@@ -267,7 +267,7 @@ attribute is either a named reference to an object (if the attribute is bound,
 such as \ff{length}), or a name without a reference (if it is free,
 such as \ff{dx} and \ff{dy}).
 
-\subsection{Data Objects and Arrays}
+\subsection{Data Objects and Tuples}
 
 There are a few abstract objects which can't be directly copied, such as
 \ff{float} and \ff{int}. They are created by the compiler when it meets
@@ -321,28 +321,28 @@ UTF-8 is the encoding used in \ff{string} object.}
 \label{tab:types}
 \end{table}
 
-The \ff{array} is yet another data, which can't be copied
-directly. There is a special syntax for making arrays,
+The \ff{tuple} is yet another data, which can't be copied
+directly. There is a special syntax for making tuples,
 which looks similar to object copying:
 
 \begin{ffcode}
-* "Lucy" "Jeff" 3.14 |$\label{ln:array-1}$|
-* > a |$\label{ln:array-2a}$|
+* "Lucy" "Jeff" 3.14 |$\label{ln:tuple-1}$|
+* > a |$\label{ln:tuple-2a}$|
   (* "a")
-  TRUE |$\label{ln:array-2b}$|
-* > b |$\label{ln:array-3}$|
+  TRUE |$\label{ln:tuple-2b}$|
+* > b |$\label{ln:tuple-3}$|
 \end{ffcode}
 
-The code at \lref{array-1} makes an array of three elements: two strings
-and one float. The code at \lrefs{array-2a}{array-2b} makes an array named \ff{a} with another
-array as its first element and \ff{TRUE} as the second item.
-The code at \lref{array-3} is an empty array with the name \ff{b}.
+The code at \lref{tuple-1} makes a tuple of three elements: two strings
+and one float. The code at \lrefs{tuple-2a}{tuple-2b} makes a tuple named \ff{a} with another
+tuple as its first element and \ff{TRUE} as the second item.
+The code at \lref{tuple-3} is an empty tuple with the name \ff{b}.
 
 \subsection{Varargs}
 
 The last free attribute in an abstract object may be a \emph{vararg},
 meaning that any number or zero arguments may be provided. All of them
-will be packaged in an array by the compiler, for example:
+will be packaged in a tuple by the compiler, for example:
 
 \begin{ffcode}
 [x...] > sum |$\label{ln:sum-def}$|
@@ -352,10 +352,10 @@ sum 8 13 -9 |$\label{ln:sum-instance}$|
 Here, at the first line the abstract object \ff{sum} is defined
 with a free vararg attribute \ff{x}. At the second line a copy of the
 abstract object is made with three arguments. The internals of
-the \ff{sum} will see \ff{x} as an \ff{array} with three
+the \ff{sum} will see \ff{x} as an \ff{tuple} with three
 elements inside.
 
-It is possible to provide an array as a parameter for vararg attribute
+It is possible to provide a tuple as a parameter for vararg attribute
 (both variants are semantically equivalent):
 
 \begin{ffcode}
@@ -490,7 +490,7 @@ making a copy of it, for example:
 \end{ffcode}
 
 Here the object \ff{walk} is copied with a single argument:
-the one-item array, which is an
+the one-item tuple, which is an
 abstract object with a single free attribute \ff{f}. The \ff{walk}
 will use this abstract object, which doesn't have a name, in order
 to filter out files while traversing the tree of directories. It will
@@ -498,7 +498,7 @@ make a copy of the abstract object and then treat it as a boolean
 value in order to make a decision about each file.
 
 The syntax may be simplified and the abstract object may be inlined
-(the array is also inlined):
+(the tuple is also inlined):
 
 \begin{ffcode}
 (dir "/tmp").walk
@@ -647,7 +647,7 @@ Atoms in \eo{} are similar to ``native'' methods in Java and ``\nospell{extern}'
 
 An instance of an abstact object may need to have access to the
 object where the abstract was defined, for example this is
-how object \ff{array.map} is implemented in Objectionary:
+how object \ff{tuple.map} is implemented in Objectionary:
 
 \begin{ffcode}
 [] > list |$\label{ln:list-parent}$|
@@ -661,7 +661,7 @@ how object \ff{array.map} is implemented in Objectionary:
 The object \ff{mapi} at \lref{list-map} is an atom:
 it iterates through list of items and makes
 a copy of the provided two-arguments abstract object \ff{f} applying the next
-item to it and the index in the array (that is why the name with the ``i'' suffix).
+item to it and the index in the tuple (that is why the name with the ``i'' suffix).
 
 The object \ff{map} does exactly the same, but doesn't provide the
 index of each element to the inner abstract object.
