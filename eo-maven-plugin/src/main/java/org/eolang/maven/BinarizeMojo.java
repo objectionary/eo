@@ -104,10 +104,7 @@ public final class BinarizeMojo extends SafeMojo {
                 new Home(dir).save("\t" + insert, dir);
 
             }
-
         }
-
-        System.out.println("Bye from BinarizeMojo\n");
     }
 
 }
