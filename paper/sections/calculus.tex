@@ -308,14 +308,14 @@ For example, the atom at \lref{sum-def} would be represented as
 \end{split}
 \end{equation}
 where the function calculates an arithmetic sum of all items
-in the array \ff{x} and returns the result as a data. The argument of
+in the tuple \ff{x} and returns the result as a data. The argument of
 the function is a vector $s$ where the first element is the object under
 consideration, the second element is its parent object, the third element
 is the parent of the parent, and so on. Thus, $s[0]$ is the object
 \ff{sum} itself, while $s[0].\ff{x}$ is its inner object \ff{x},
-and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it is an array.
-It is expected that the array has an attribute \ff{size} representing
-the total number of elements in the array.
+and $s[0].\ff{x}.\ff{get}(0)$ is the first element of it, if it is a tuple.
+It is expected that the tuple has an attribute \ff{size} representing
+the total number of elements in the tuple.
 
 Atoms may have their $\lambda$-terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
