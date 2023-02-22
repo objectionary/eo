@@ -59,7 +59,6 @@ where `N` is an integer representing desired nesting level to log.
 
 Here is some steps to release eo-runtime:
 
-
 1.To run `.rultor.yml` script in `objectionary/eo`. It is better to do it by [rultor](https://www.yegor256.com/2014/07/24/rultor-automated-merging.html) command in any github comment:
    ```
    @rultor release, tag is `{new-version}`
