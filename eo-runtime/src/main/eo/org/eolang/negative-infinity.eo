@@ -69,10 +69,9 @@
         first.eq 0
       nan
       if.
-        not.
-          first.eq ^
-        ^
+        first.eq ^
         positive-infinity
+        ^
 
   # Sum of $ and x
   [x...] > plus
