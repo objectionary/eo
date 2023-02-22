@@ -54,3 +54,17 @@ By default, dataization will be logged up until nesting level 3.
 If for some reason deeper dataization log is required it can be
 achieved by jvm property `-Dmax.dataization.log=<N>`
 where `N` is an integer representing desired nesting level to log.
+
+## How to release eo-runtime
+
+Two things are needed to release eo-runtime:
+
+
+1. The first is the successful result of the .rultor.yml script in `objectionary/eo`.
+   Running this script will update the `gh-pages` git branch. Which contains only `.eo` objects from the `eo-runtime` package.
+   And this script will create several files in Maven central repository (eg `.jar`, `.pom` etc.).
+
+
+2. The second is to create a pull request in `objectionary/home` using the `pull.sh` script in a separate git branch.
+   This will update all `.eo` files in `gh-pages` from `objectionary/eo`. It will also change the corresponding versions of the eo objects (e.g. from the `+version` metadata) in the `objectionary/home` repository.
+   Finally, all changes with `@todo` must be removed manually.
