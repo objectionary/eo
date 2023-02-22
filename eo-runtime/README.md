@@ -60,7 +60,7 @@ where `N` is an integer representing desired nesting level to log.
 Two things are needed to release eo-runtime:
 
 
-1. The first is the successful result of the .rultor.yml script in `objectionary/eo`.
+1. The first is the successful result of the `.rultor.yml` script in `objectionary/eo`.
    Running this script will update the `gh-pages` git branch. Which contains only `.eo` objects from the `eo-runtime` package.
    And this script will create several files in Maven central repository (eg `.jar`, `.pom` etc.).
 
