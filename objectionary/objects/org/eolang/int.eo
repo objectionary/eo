@@ -20,15 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.collections.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.0
-+version 0.29.0
++rt jvm org.eolang:eo-runtime:0.29.1
++version 0.29.1
 
 [] > int
-
   # Tests that $ = x
   [x] > eq
     if. > @
@@ -77,14 +75,23 @@
 
   # Subtract from the current one
   [x...] > minus
-    mapped. > x-neg
-      list
-        x
-      [element]
-        neg. > @
-          element
+    [acc index terms] > rec-terms
+      if. > @
+        index.eq terms.length
+        acc
+        rec-terms
+          acc.with
+            (terms.at index).neg
+          index.plus 1
+          terms
+
+    rec-terms > neg-terms
+      *
+      0
+      x
+
     ^.plus > @
-      ...x-neg
+      ...neg-terms
 
   # Multiplication this one by another int
   [x...] > times /int

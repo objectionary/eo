@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +junit
-+version 0.29.0
++version 0.29.1
 
 [] > less-true
   assert-that > @
@@ -255,18 +255,70 @@
       0.2
     $.equal-to 155.0
 
-[] > div-by-zero-test
+[] > zero-div-zero-is-equal-to-nan
   assert-that > @
-    try
-      []
-        div. > @
-          15.5
-          0.5
-          0.0
-      [e]
-        e > @
-      nop
-    $.equal-to "The 2th argument of 'float.div' is invalid: division by zero is infinity"
+    (0.0.div 0.0).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > float-actions-with-nan-are-nan
+  42.5 > num!
+  nan > cached-nan!
+  cached-nan.as-bytes > nan-as-bytes!
+  assert-that > @
+    and.
+      (num.times cached-nan).as-bytes.eq nan-as-bytes
+      (num.plus cached-nan).as-bytes.eq nan-as-bytes
+      (num.minus cached-nan).as-bytes.eq nan-as-bytes
+      (num.div cached-nan).as-bytes.eq nan-as-bytes
+    $.equal-to TRUE
+
+[] > float-comparings-with-nan-are-false
+  42.5 > num!
+  nan > cached-nan!
+
+  assert-that > @
+    and.
+      (num.eq cached-nan).eq FALSE
+      (num.lt cached-nan).eq FALSE
+      (num.lte cached-nan).eq FALSE
+      (num.gt cached-nan).eq FALSE
+      (num.gte cached-nan).eq FALSE
+    $.equal-to TRUE
+
+[] > one-div-zero-is-positive-infinity
+  assert-that > @
+    1.0.div 0.0
+    $.equal-to positive-infinity
+
+[] > float-actions-with-positive-infinity
+  42.5 > num!
+  positive-infinity > inf!
+
+  assert-that > @
+    and.
+      (num.plus inf).eq inf
+      (num.minus inf).eq negative-infinity
+      (num.times inf).eq inf
+      (num.div inf).eq 0.0
+    $.equal-to TRUE
+
+[] > float-actions-with-negative-infinity
+  42.5 > num!
+  negative-infinity > inf!
+
+  assert-that > @
+    and.
+      (num.plus inf).eq inf
+      (num.minus inf).eq positive-infinity
+      (num.times inf).eq inf
+      (num.div inf).eq -0.0
+      (num.neg.div inf).eq 0.0
+    $.equal-to TRUE
+
+[] > minus-one-div-zero-is-negative-infinity
+  assert-that > @
+    -1.0.div 0.0
+    @.equal-to negative-infinity
 
 [] > to-bytes-and-backwards
   assert-that > @

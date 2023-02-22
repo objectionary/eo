@@ -26,46 +26,46 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.29.0
++version 0.29.1
 
-[] > makes-array-through-special-syntax
+[] > makes-tuple-through-special-syntax
   assert-that > @
     (* 1 2).length
     $.equal-to 2
 
-[] > gets-lengths-of-empty-array-through-special-syntax
+[] > gets-lengths-of-empty-tuple-through-special-syntax
   assert-that > @
     *.length
     $.equal-to 0
 
-# check that an empty array's .length equals to zero
-[] > empty-array-length
+# check that an empty tuples .length equals to zero
+[] > empty-tuple-length
   [elements...] > arr
   assert-that > @
     arr.elements.length
     $.equal-to 0
 
-# check that array.length works properly for non-empty arrays
-[] > non-empty-array-length-test
+# check that tuple.length works properly for non-empty tuples
+[] > non-empty-tuple-length-test
   [elements...] > arr
   assert-that > @
     (arr "a" "b" "c" "d" "e").elements.length
     $.equal-to 5
 
-[] > array-as-a-bound-attribute-size-0
+[] > tuple-as-a-bound-attribute-size-0
   * > anArray
   assert-that > @
     anArray.length
     $.equal-to 0
 
-[] > array-as-a-bound-attribute-size-1
+[] > tuple-as-a-bound-attribute-size-1
   * > anArray
     100
   assert-that > @
     anArray.at 0
     $.equal-to 100
 
-[] > array-as-a-bound-attribute-size-2
+[] > tuple-as-a-bound-attribute-size-2
   * > anArray
     1
     2
@@ -75,7 +75,7 @@
       $.equal-to 1
       $.equal-to 2
 
-[] > array-with-in-seq
+[] > tuple-with-in-seq
   [a] > foo
     seq > @
       a.with "hi" > t
@@ -85,7 +85,7 @@
       * 1 2 3
     TRUE
 
-[] > array-with
+[] > tuple-with
   assert-that > @
     with.
       * 1 2 3
@@ -94,7 +94,7 @@
       list
         * 1 2 3 "with"
 
-[] > array-at-with-error
+[] > tuple-at-with-error
   assert-that > @
     try
       []
@@ -106,9 +106,9 @@
       nop
     $.is
       $.equal-to
-        "Can't #at(20) the 21th element of the array, there are just 4 of them"
+        "Can't #at(20) the 21th element of the tuple, there are just 4 of them"
 
-[] > concat-array-with-empty-array-1
+[] > concat-tuple-with-empty-tuple-1
   * 1 2 3 > a
   * > b
   concat. > res
@@ -118,7 +118,7 @@
     res.length
     $.equal-to 3
 
-[] > concat-array-with-empty-array-2
+[] > concat-tuple-with-empty-tuple-2
   * > a
   * 1 2 3 > b
   concat. > res
@@ -128,7 +128,7 @@
     res.length
     $.equal-to 3
 
-[] > concat-array-with-empty-array-3
+[] > concat-tuple-with-empty-tuple-3
   * > a
   * > b
   concat. > res
@@ -138,7 +138,7 @@
     res.length
     $.equal-to 0
 
-[] > concat-arrays
+[] > concat-tuples
   * 1 2 3 > a
   * 100 200 > b
   concat. > res
@@ -150,7 +150,7 @@
       res.at 4
     $.equal-to 203
 
-[] > concat-three-arrays
+[] > concat-three-tuples
   * 0 1 2 > a
   * 3 4 > b
   * (* "five" "six") (* "siven") > c
@@ -165,14 +165,14 @@
       list
         * 7 "six"
 
-[] > array-fluent-with
+[] > tuple-fluent-with
   assert-that > @
     ((*.with 1).with 2).with 3
     $.equal-to
       list
         * 1 2 3
 
-[] > array-fluent-with-indented
+[] > tuple-fluent-with-indented
   *
   .with 1
   .with 2
@@ -183,13 +183,13 @@
       list
         * 1 2 3
 
-[] > gets-lengths-of-empty-array-keyword
+[] > gets-lengths-of-empty-tuple-keyword
   assert-that > @
-    array.empty.length
+    tuple.empty.length
     $.equal-to 0
 
-[] > array-fluent-with-indented-keyword
-  array.empty
+[] > tuple-fluent-with-indented-keyword
+  tuple.empty
   .with 1
   .with 2
   .with 3 > a
@@ -198,19 +198,19 @@
     $.equal-to
       list (* 1 2 3)
 
-[] > array-with-negative-index-gets-last
+[] > tuple-with-negative-index-gets-last
   * 0 1 2 3 4 > arr
   assert-that > @
     arr.at -1
     $.equal-to 4
 
-[] > array-with-negative-index-gets-first
+[] > tuple-with-negative-index-gets-first
   * 0 1 2 3 4 > arr
   assert-that > @
     arr.at -5
     $.equal-to 0
 
-[] > array-with-negative-index-out-of-bounds
+[] > tuple-with-negative-index-out-of-bounds
   * 0 1 2 3 4 > arr
   assert-that > @
     try
@@ -220,4 +220,4 @@
         e > @
       nop
     $.equal-to
-      "Can't #at(-6) the -1th element of the array"
+      "Can't #at(-6) the -1th element of the tuple"

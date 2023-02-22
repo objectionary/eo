@@ -25,105 +25,87 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +junit
-+version 0.29.0
++version 0.29.1
 
 [] > nan-eq-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.eq 42).eq FALSE
-      (nan.eq nan).eq FALSE
-    $.equal-to TRUE
-
-[] > nan-neq-is-valid
-  assert-that > @
-    and.
-      (nan.neq 42).eq TRUE
-      (nan.neq nan).eq TRUE
+      (not-a-number.eq 42).eq FALSE
+      (not-a-number.eq not-a-number).eq FALSE
     $.equal-to TRUE
 
 [] > nan-lt-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.lt 42).eq FALSE
-      (nan.lt nan).eq FALSE
+      (not-a-number.lt 42).eq FALSE
+      (not-a-number.lt not-a-number).eq FALSE
     $.equal-to TRUE
 
 [] > nan-lte-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.lte 42).eq FALSE
-      (nan.lte nan).eq FALSE
+      (not-a-number.lte 42).eq FALSE
+      (not-a-number.lte not-a-number).eq FALSE
     $.equal-to TRUE
 
 [] > nan-gt-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.gt 42).eq FALSE
-      (nan.gt nan).eq FALSE
+      (not-a-number.gt 42).eq FALSE
+      (not-a-number.gt not-a-number).eq FALSE
     $.equal-to TRUE
 
 [] > nan-gte-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.gte 42).eq FALSE
-      (nan.gte nan).eq FALSE
+      (not-a-number.gte 42).eq FALSE
+      (not-a-number.gte not-a-number).eq FALSE
     $.equal-to TRUE
 
 [] > nan-times-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.times 42).as-bytes.eq (nan.as-bytes)
-      (nan.times nan).as-bytes.eq (nan.as-bytes)
+      (not-a-number.times 42).as-bytes.eq (not-a-number.as-bytes)
+      (not-a-number.times not-a-number).as-bytes.eq (not-a-number.as-bytes)
     $.equal-to TRUE
 
 [] > nan-div-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.div 42).as-bytes.eq (nan.as-bytes)
-      (nan.div nan).as-bytes.eq (nan.as-bytes)
+      (not-a-number.div 42).as-bytes.eq (not-a-number.as-bytes)
+      (not-a-number.div not-a-number).as-bytes.eq (not-a-number.as-bytes)
     $.equal-to TRUE
 
 [] > nan-plus-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.plus 42).as-bytes.eq (nan.as-bytes)
-      (nan.plus nan).as-bytes.eq (nan.as-bytes)
+      (not-a-number.plus 42).as-bytes.eq (not-a-number.as-bytes)
+      (not-a-number.plus not-a-number).as-bytes.eq (not-a-number.as-bytes)
     $.equal-to TRUE
 
 [] > nan-neg-is-nan
+  nan > not-a-number!
   assert-that > @
-    nan.neg.as-bytes
-    $.equal-to nan.as-bytes
+    not-a-number.neg.as-bytes
+    $.equal-to not-a-number.as-bytes
 
 [] > nan-minus-is-valid
+  nan > not-a-number!
   assert-that > @
     and.
-      (nan.minus 42).as-bytes.eq (nan.as-bytes)
-      (nan.minus nan).as-bytes.eq (nan.as-bytes)
+      (not-a-number.minus 42).as-bytes.eq (not-a-number.as-bytes)
+      (not-a-number.minus not-a-number).as-bytes.eq (not-a-number.as-bytes)
     $.equal-to TRUE
-
-[] > nan-signum-is-valid
-  assert-that > @
-    nan.signum.as-bytes
-    $.equal-to
-      nan.as-bytes
 
 [] > nan-as-bytes-is-valid
   assert-that > @
     nan.as-bytes
-    $.equal-to 7F-C0-00-00
-
-[] > nan-as-int-is-valid
-  assert-that > @
-    try
-      []
-        nan.as-int > @
-      [e]
-        e > @
-      nop
-    $.equal-to "You can't convert NaN to int"
-
-[] > nan-as-string-is-valid
-  assert-that > @
-    nan.as-string
-    $.equal-to "NaN"
+    $.equal-to (0.0.div 0.0).as-bytes
