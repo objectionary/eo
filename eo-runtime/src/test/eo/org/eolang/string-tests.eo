@@ -58,6 +58,24 @@
     $.not
       $.equal-to 42
 
+[] > compares-string-with-nan
+  assert-that > @
+    nan
+    $.not
+      $.equal-to "друг"
+
+[] > compares-string-with-positive-infinity
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to "друг"
+
+[] > compares-string-with-negative-infinity
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to "друг"
+
 [] > text-block-one-line
   assert-that > @
     """

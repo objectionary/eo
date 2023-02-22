@@ -64,10 +64,15 @@
   #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > times
     x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        not.
-          first.eq first
+        check-nan first
         first.eq 0.0
         first.eq 0
       nan
@@ -138,10 +143,15 @@
   #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > div
     x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        not.
-          first.eq first
+        check-nan first
         first.eq negative-infinity
         first.eq ^
       nan
