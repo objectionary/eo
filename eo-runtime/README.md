@@ -68,7 +68,7 @@ Here is some steps to release eo-runtime:
    This script also will create several files in Maven central repository (eg `.jar`, `.pom` etc.).
 
 
-2. To create a pull request in `objectionary/home` by `pull.sh` script in a separate git branch (the name of the branch is doesn't matter):
+2. To create a pull request in `objectionary/home` by `pull.sh` script in a separate git branch (the name of the branch doesn't matter):
    ```shell
    ./pull.sh objectionary/eo
    ```
