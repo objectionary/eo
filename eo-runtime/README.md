@@ -57,14 +57,28 @@ where `N` is an integer representing desired nesting level to log.
 
 ## How to release eo-runtime
 
-Two things are needed to release eo-runtime:
+Here is some steps to release eo-runtime:
 
 
-1. The first is the successful result of the `.rultor.yml` script in `objectionary/eo`.
-   Running this script will update the `gh-pages` git branch. Which contains only `.eo` objects from the `eo-runtime` package.
-   And this script will create several files in Maven central repository (eg `.jar`, `.pom` etc.).
+1. To run `.rultor.yml` script in `objectionary/eo`. It is better to do it by [rultor](https://www.yegor256.com/2014/07/24/rultor-automated-merging.html) command in any github comment:
+   ```
+   @rultor release, tag is `{new-version}`
+   ```
+   Running this script will update the `gh-pages` git branch. Which contains only `.eo` objects from the `eo-runtime` package and the file required by the script: [objectionary.lst](https://github.com/objectionary/eo/blob/gh-pages/objectionary.lst).
+   This script also will create several files in Maven central repository (eg `.jar`, `.pom` etc.).
 
 
-2. The second is to create a pull request in `objectionary/home` using the `pull.sh` script in a separate git branch.
+2. To create a pull request in `objectionary/home` by `pull.sh` script in a separate git branch (the name of the branch is doesn't matter):
+   ```shell
+   ./pull.sh objectionary/eo
+   ```
    This will update all `.eo` files in `gh-pages` from `objectionary/eo`. It will also change the corresponding versions of the eo objects (e.g. from the `+version` metadata) in the `objectionary/home` repository.
-   Finally, all changes with `@todo` must be removed manually.
+
+
+4. To check and to remove manually either unused or old files. Script didn't do it.
+
+
+5. To update `eo.version` in `pom.xml` in `objectionary/home`.
+
+
+6. Finally, all `todo` must be removed manually.
