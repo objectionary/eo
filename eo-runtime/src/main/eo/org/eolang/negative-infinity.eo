@@ -61,9 +61,15 @@
   # Multiplication of $ and x
   [x...] > times
     x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        first.as-bytes.eq (nan.as-bytes)
+        check-nan first
         first.eq 0.0
         first.eq 0
       nan
@@ -126,14 +132,16 @@
   # Quotient of the division of $ by x
   [x...] > div
     x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        first.as-bytes.eq (nan.as-bytes)
+        check-nan first
         first.eq ^
         first.eq positive-infinity
       nan
       ^
-
-  # Converts this to bytes
-  [] > as-bytes
-    ^.@.as-bytes > @!

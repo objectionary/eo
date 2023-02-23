@@ -64,15 +64,23 @@
   #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > times
     x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        first.as-bytes.eq (nan.as-bytes)
+        check-nan first
         first.eq 0.0
         first.eq 0
       nan
       if.
-        first.eq negative-infinity
-        negative-infinity
+        eq.
+          first
+          negative-infinity
+        first
         ^
 
   # Sum of $ and x
@@ -135,14 +143,16 @@
   #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > div
     x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        first.as-bytes.eq (nan.as-bytes)
+        check-nan first
         first.eq negative-infinity
         first.eq ^
       nan
       ^
-
-  # Converts this to bytes
-  [] > as-bytes
-    ^.@.as-bytes > @
