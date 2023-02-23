@@ -40,6 +40,7 @@ public interface Footprint {
 
     /**
      * Get program content of a specific type.
+     * That is, if the file contains "hello", it will return the string "hello".
      * @param program Program name
      * @param ext File extension which defines the type
      * @return Content of a file
@@ -49,6 +50,8 @@ public interface Footprint {
 
     /**
      * Save content. Leaves a "footprint" in the directory.
+     * So it can create a new file in the file system.
+     * Where it will create this file depends on the implementation.
      * @param program Program name
      * @param ext File extension
      * @param content File content
