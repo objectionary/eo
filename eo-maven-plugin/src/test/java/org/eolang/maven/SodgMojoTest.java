@@ -184,7 +184,9 @@ final class SodgMojoTest {
 
         @Override
         public void describeTo(final Description desc) {
-            desc.appendText(this.failure);
+            desc.appendText(this.failure)
+                .appendText(" in this XML:\n")
+                .appendText(this.graph.toString());
         }
 
         @Override

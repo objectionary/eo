@@ -163,13 +163,13 @@ public final class ProbeMojo extends SafeMojo {
                 Logger.info(this, "Nothing to probe, all programs checked already");
             }
         } else if (probed.isEmpty()) {
-            Logger.info(
+            Logger.debug(
                 this, "No probes found in %d programs",
                 tojos.size()
             );
         } else {
             Logger.info(
-                this, "Found %d probes in %d programs: %s",
+                this, "Found %d probe(s) in %d program(s): %s",
                 probed.size(), tojos.size(), probed
             );
         }
