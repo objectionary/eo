@@ -48,10 +48,10 @@ SOFTWARE.
         <xsl:sequence>
           <xsl:choose>
             <xsl:when test="count(o) &gt; 1">
-              <xsl:value-of select="concat('ω/', @base)"/>
+              <xsl:value-of select="concat('π/', @base)"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="concat('ξ/', @base)"/>
+              <xsl:value-of select="concat('ε/', @base)"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:sequence>
