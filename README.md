@@ -176,17 +176,11 @@ This code will print this:
 
 Got the idea?
 
-EO symbols meaning:
-```
-$ THIS
-@ Decorate
-> Name an object
-! Make an object a constant
-```
-
 ## What's Next?
 
 Join [our Telegram group](https://t.me/polystat_org).
+
+Watch [video](https://www.youtube.com/watch?v=QaKIw1Bh3Oc) with EOLANG basics.
 
 Read [our blog](https://news.eolang.org), especially the section with
 [recently published papers](https://news.eolang.org/papers.html).
