@@ -135,7 +135,46 @@
   #  worked with multiple arguments without using objects from eo-collections.
   #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > minus
-    ^.plus ((x.at 0).neg) > @
+    ^.as-bytes > pos-inf-as-bytes!
+
+    [acc index terms check-term] > minus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          check-term
+            terms.at index
+          nan
+          minus-rec
+            acc
+            index.plus 1
+            terms
+            check-term
+
+    [term] > check-term
+      term > t!
+      or. > @
+        not.
+          t.eq t
+        t.as-bytes.eq pos-inf-as-bytes
+
+    if. > @
+      eq.
+        x.length > terms-count!
+        0
+      ^
+      if.
+        terms-count.gt 1
+        minus-rec
+          ^
+          0
+          x
+          check-term
+        if.
+          check-term
+            x.at 0
+          nan
+          ^
 
   # Quotient of the division of $ by x
   # @todo #1806:30min. Make positive-infinity.div and negative-infinity.div
