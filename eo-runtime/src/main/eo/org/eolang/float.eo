@@ -65,6 +65,9 @@
   [x] > gt /bool
 
   # Tests that $ ≥ x
+  # @todo #1824:30min. "float.gte nan", "float.lte nan", "int.gte nan" and
+  #  "int.lte nan" must be equal to FALSE. Need to add extra check if "x" is NaN
+  #  and relevant tests
   [x] > gte
     if. > @
       x.as-bytes.eq nan.as-bytes
