@@ -82,7 +82,7 @@
           term.gt 0 > @
         [e]
           term.gt 0.0 > @
-        nop
+        FALSE
 
     # @todo #1824:30min. Pass "is-nan-or-zero" to "times-rec" here and in
     #  negative-infinity. Now for some reason it's not possible to pass two or
@@ -118,7 +118,7 @@
                     is-term-gt-zero term > term-gt-zero
                     acc
                     neg-inf
-                  index.plus 1
+                  index.plus 1 > next-index
                   terms
                 * acc neg-inf
                 is-term-gt-zero
@@ -128,7 +128,7 @@
                     term-gt-zero
                     acc
                     pos-inf
-                  index.plus 1
+                  next-index
                   terms
                 * pos-inf acc
                 is-term-gt-zero

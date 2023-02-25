@@ -185,6 +185,12 @@
       negative-infinity.times 0.0
     $.equal-to nan.as-bytes
 
+[] > negative-infinity-times-neg-float-zero
+  assert-that > @
+    as-bytes.
+      negative-infinity.times -0.0
+    $.equal-to nan.as-bytes
+
 [] > negative-infinity-times-int-zero
   assert-that > @
     as-bytes.
@@ -223,16 +229,59 @@
     $.equal-to neg-inf
 
 [] > negative-infinity-times-negative-float
-  negative-infinity > neg-inf!
   assert-that > @
-    neg-inf.times -42.5
-    $.equal-to neg-inf
+    negative-infinity.times -42.5
+    $.equal-to positive-infinity
 
 [] > negative-infinity-times-negative-int
+  assert-that > @
+    negative-infinity.times -42
+    $.equal-to positive-infinity
+
+[] > negative-infinity-times-multiple-positive-numbers
   negative-infinity > neg-inf!
   assert-that > @
-    neg-inf.times -42
+    neg-inf.times 25 11.2 51
     $.equal-to neg-inf
+
+[] > negative-infinity-times-two-negative-numbers
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times -11.2 -5
+    $.equal-to neg-inf
+
+[] > negative-infinity-times-three-negative-numbers
+  assert-that > @
+    negative-infinity.times -11.2 -5 -3
+    $.equal-to positive-infinity
+
+[] > negative-infinity-times-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    (negative-infinity.times -25 not-a-number 51).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-times-multiple-numbers-with-float-zero
+  assert-that > @
+    (negative-infinity.times -25 0.0 51).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-multiple-numbers-with-neg-float-zero
+  assert-that > @
+    (negative-infinity.times -25 -0.0 51).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-multiple-numbers-with-int-zero
+  assert-that > @
+    (negative-infinity.times -25 0 51).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-multiple-infinites
+  negative-infinity > neg-inf!
+  positive-infinity > pos-inf!
+  assert-that > @
+    neg-inf.times pos-inf neg-inf pos-inf pos-inf
+    $.equal-to pos-inf
 
 # Plus
 [] > negative-infinity-plus-nan

@@ -185,6 +185,12 @@
       positive-infinity.times 0.0
     $.equal-to nan.as-bytes
 
+[] > positive-infinity-times-neg-float-zero
+  assert-that > @
+    as-bytes.
+      positive-infinity.times -0.0
+    $.equal-to nan.as-bytes
+
 [] > positive-infinity-times-int-zero
   assert-that > @
     as-bytes.
@@ -260,12 +266,17 @@
     (positive-infinity.times -25 0.0 51).as-bytes
     $.equal-to nan.as-bytes
 
+[] > positive-infinity-times-multiple-numbers-with-neg-float-zero
+  assert-that > @
+    (positive-infinity.times -25 -0.0 51).as-bytes
+    $.equal-to nan.as-bytes
+
 [] > positive-infinity-times-multiple-numbers-with-int-zero
   assert-that > @
     (positive-infinity.times -25 0 51).as-bytes
     $.equal-to nan.as-bytes
 
-[] > positive-infinity-times-multiple-numbers-with-infinites
+[] > positive-infinity-times-multiple-infinites
   positive-infinity > pos-inf!
   negative-infinity > neg-inf!
   assert-that > @
