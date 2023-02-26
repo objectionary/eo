@@ -28,7 +28,7 @@
 
 # Positive infinity
 [] > positive-infinity
-  1.0.div 0.0 > @!
+  1.0.div 0.0 > @
 
   # Tests that $ = x
   [x] > eq
@@ -181,17 +181,94 @@
   #  worked with multiple arguments without using objects from eo-collections.
   #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > div
-    x.at 0 > first!
+    negative-infinity > neg-inf!
+    ^ > pos-inf!
+    0 > zero!
 
     # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
-    [num] > check-nan
+    [num] > is-nan
       not. > @
         num.eq num
 
+    [term] > is-nan-or-infinite
+      or. > @
+        is-nan
+          term > t!
+        t.eq pos-inf
+        t.eq neg-inf
+
+    [term] > is-term-gte-zero
+      try > @
+        []
+          term.gte 0 > @
+        [e]
+          term.gte 0.0 > @
+        FALSE
+
+    # @todo #1824:30min. Pass "is-nan-or-infinite" to "div-rec" here and in
+    #  negative-infinity. Now for some reason it's not possible to pass two or
+    #  more objects-functions to another object. To avoid code duplication
+    #  "is-nan-or-infinite" object should be passed to "times-rec" as well as
+    #  "is-term-gte-infinite"
+    [acc-index-terms infs is-term-gte-zero] > times-rec
+      acc-index-terms.at 0 > acc!
+      acc-index-terms.at 1 > index!
+      acc-index-terms.at 2 > terms
+      infs.at 0 > pos-inf
+      infs.at 1 > neg-inf
+
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          or.
+            not.
+              eq.
+                terms.at index > term!
+                term
+            term.eq pos-inf
+            term.eq neg-inf
+          nan
+          []
+            if. > @
+              acc.gt 0.0
+              times-rec
+                *
+                  if.
+                    is-term-gte-zero term > term-gte-zero
+                    acc
+                    neg-inf
+                  index.plus 1 > next-index
+                  terms
+                * acc neg-inf
+                is-term-gte-zero
+              times-rec
+                *
+                  if.
+                    term-gte-zero
+                    acc
+                    pos-inf
+                  next-index
+                  terms
+                * pos-inf acc
+                is-term-gte-zero
+
     if. > @
-      or.
-        check-nan first
-        first.eq negative-infinity
-        first.eq ^
-      nan
-      ^
+      eq.
+        x.length > terms-count!
+        zero
+      pos-inf
+      if.
+        terms-count.gt 1
+        times-rec
+          * pos-inf zero x
+          * pos-inf neg-inf
+          is-term-gte-zero
+        if.
+          is-nan-or-infinite
+            x.at zero > first!
+          nan
+          if.
+            is-term-gte-zero first
+            pos-inf
+            neg-inf
