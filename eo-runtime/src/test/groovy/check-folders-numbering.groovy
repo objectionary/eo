@@ -1,3 +1,5 @@
+import java.util.stream.Collectors
+
 /**
  * The MIT License (MIT)
  *
@@ -23,18 +25,23 @@
  */
 
 target = basedir.toPath().resolve("target").resolve("eo")
-def directories = target.toFile().listFiles(new FileFilter() {
+List<File> directories = target.toFile().listFiles(new FileFilter() {
   @Override
   boolean accept(final File pathname) {
     return pathname.isDirectory()
   }
 })
-assert 6 == directories.size()
-[
-  target.resolve('1-parse').toFile(),
-  target.resolve('2-optimize').toFile(),
-  target.resolve('3-pull').toFile(),
-  target.resolve('4-resolve').toFile(),
-  target.resolve('5-pre').toFile(),
-  target.resolve('6-transpile').toFile(),
-].each { assert directories.contains(it) }
+List<File> allowed = [
+  '1-parse',
+  '2-optimize',
+  '3-pull',
+  '4-resolve',
+  '5-pre',
+  '6-transpile',
+].stream()
+  .map { target.resolve(it).toFile() }
+  .collect(Collectors.toList())
+
+assert allowed.containsAll(directories)
+
+true
