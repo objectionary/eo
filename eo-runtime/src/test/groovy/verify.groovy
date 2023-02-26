@@ -28,9 +28,13 @@
  * to the list below.
  */
 [
-  'src/test/groovy/check-folders-numbering.groovy',
-  'src/test/groovy/check-all-java-classes-compiled.groovy'
+  'check-folders-numbering.groovy',
+  'check-all-java-classes-compiled.groovy'
 ].each {
-  evaluate(new File(it, basedir))
+  evaluate(basedir.toPath()
+    .resolve("src")
+    .resolve("test")
+    .resolve("groovy")
+    .resolve(it).toFile())
   println String.format('Verified with %s - OK', it)
 }

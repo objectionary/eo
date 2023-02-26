@@ -4,7 +4,7 @@
  * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation directories (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -22,19 +22,19 @@
  * SOFTWARE.
  */
 
-target = basedir.toPath().resolve("target").resolve("eo").toFile()
-def files = target.listFiles(new FileFilter() {
+target = basedir.toPath().resolve("target").resolve("eo")
+def directories = target.toFile().listFiles(new FileFilter() {
   @Override
   boolean accept(final File pathname) {
     return pathname.isDirectory()
   }
 })
-assert 6 == files.size()
+assert 6 == directories.size()
 [
-  new File('1-parse', target),
-  new File('2-optimize', target),
-  new File('3-pull', target),
-  new File('4-resolve', target),
-  new File('5-pre', target),
-  new File('6-transpile', target),
-].each { assert files.contains(it) }
+  target.resolve('1-parse').toFile(),
+  target.resolve('2-optimize').toFile(),
+  target.resolve('3-pull').toFile(),
+  target.resolve('4-resolve').toFile(),
+  target.resolve('5-pre').toFile(),
+  target.resolve('6-transpile').toFile(),
+].each { assert directories.contains(it) }
