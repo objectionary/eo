@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-target = new File('eo-runtime/target/eo');
+target = basedir.toPath().resolve("target").resolve("eo").toFile()
 def files = target.listFiles(new FileFilter() {
   @Override
   boolean accept(final File pathname) {
