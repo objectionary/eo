@@ -1,3 +1,5 @@
+import groovy.io.FileType
+
 /**
  * The MIT License (MIT)
  *
@@ -22,18 +24,19 @@
  * SOFTWARE.
  */
 
-/**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
- */
+target = new File('eo-runtime/target/eo');
+def files = target.listFiles(new FileFilter() {
+  @Override
+  boolean accept(final File pathname) {
+    return pathname.isDirectory()
+  }
+})
+assert 6 == files.size()
 [
-  'src/test/groovy/check-folders-numbering.groovy',
-  'src/test/groovy/check-xsl-id.groovy',
-  'src/test/groovy/check-xsl-version.groovy'
-].each {
-  evaluate(new File(it))
-  println String.format('Verified with %s - OK', it)
-}
-
-
+  new File('1-parse', target),
+  new File('2-optimize', target),
+  new File('3-pull', target),
+  new File('4-pre', target),
+  new File('5-resolve', target),
+  new File('6-transpile', target),
+].each { assert files.contains(it) }
