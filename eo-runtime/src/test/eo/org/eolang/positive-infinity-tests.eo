@@ -380,7 +380,8 @@
 # @todo #1826:30min. Unwrap the test when `0.0.gte -0.0` will return TRUE.
 #  According to IEEE +inf / -0.0 should be -inf but current implementation of
 #  `float.gte` does not allow to implement it for now. See also test
-#  `positive-infinity-div-multiple-numbers-with-neg-float-zero` below
+#  `positive-infinity-div-multiple-numbers-with-neg-float-zero` below and
+#  similar tests in "negative-infinity-tests.eo"
 [] > positive-infinity-div-neg-float-zero
   nop > @
     assert-that

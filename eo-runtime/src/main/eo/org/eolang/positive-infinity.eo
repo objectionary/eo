@@ -210,7 +210,7 @@
     #  more objects-functions to another object. To avoid code duplication
     #  "is-nan-or-infinite" object should be passed to "times-rec" as well as
     #  "is-term-gte-infinite"
-    [acc-index-terms infs is-term-gte-zero] > times-rec
+    [acc-index-terms infs is-term-gte-zero] > div-rec
       acc-index-terms.at 0 > acc!
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
@@ -232,7 +232,7 @@
           []
             if. > @
               acc.gt 0.0
-              times-rec
+              div-rec
                 *
                   if.
                     is-term-gte-zero term > term-gte-zero
@@ -242,7 +242,7 @@
                   terms
                 * acc neg-inf
                 is-term-gte-zero
-              times-rec
+              div-rec
                 *
                   if.
                     term-gte-zero
@@ -260,7 +260,7 @@
       pos-inf
       if.
         terms-count.gt 1
-        times-rec
+        div-rec
           * pos-inf zero x
           * pos-inf neg-inf
           is-term-gte-zero
