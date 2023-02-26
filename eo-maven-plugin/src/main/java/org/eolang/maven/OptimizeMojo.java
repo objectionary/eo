@@ -60,7 +60,6 @@ import org.eolang.parser.ParsingTrain;
 )
 public final class OptimizeMojo extends SafeMojo implements CompilationStep {
 
-
     /**
      * The directory where to transpile to.
      */

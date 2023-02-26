@@ -69,11 +69,6 @@ public final class TranspileMojo extends SafeMojo implements CompilationStep {
     public static final String DIR = "6-transpile";
 
     /**
-     * The directory where to put pre-transpile files.
-     */
-    private static final String PRE = "5-pre";
-
-    /**
      * Extension for compiled sources in XMIR format (XML).
      */
     static final String EXT = "xmir";
@@ -98,6 +93,11 @@ public final class TranspileMojo extends SafeMojo implements CompilationStep {
             "/org/eolang/maven/pre/to-java.xsl"
         )
     ).back().back();
+
+    /**
+     * The directory where to put pre-transpile files.
+     */
+    private static final String PRE = "5-pre";
 
     /**
      * Target directory.
