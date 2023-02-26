@@ -1,5 +1,3 @@
-import groovy.io.FileType
-
 /**
  * The MIT License (MIT)
  *
@@ -36,7 +34,7 @@ assert 6 == files.size()
   new File('1-parse', target),
   new File('2-optimize', target),
   new File('3-pull', target),
-  new File('4-pre', target),
-  new File('5-resolve', target),
+  new File('4-resolve', target),
+  new File('5-pre', target),
   new File('6-transpile', target),
 ].each { assert files.contains(it) }

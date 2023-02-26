@@ -61,22 +61,22 @@ import org.eolang.parser.StUnhex;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class TranspileMojo extends SafeMojo {
-
-    /**
-     * Extension for compiled sources in XMIR format (XML).
-     */
-    public static final String EXT = "xmir";
+public final class TranspileMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "06-transpile";
+    public static final String DIR = "6-transpile";
 
     /**
      * The directory where to put pre-transpile files.
      */
-    public static final String PRE = "05-pre";
+    private static final String PRE = "5-pre";
+
+    /**
+     * Extension for compiled sources in XMIR format (XML).
+     */
+    static final String EXT = "xmir";
 
     /**
      * Parsing train with XSLs.

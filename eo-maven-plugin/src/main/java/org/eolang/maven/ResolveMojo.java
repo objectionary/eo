@@ -60,12 +60,12 @@ import org.eolang.maven.util.Walk;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class ResolveMojo extends SafeMojo {
+public final class ResolveMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to resolve to.
      */
-    public static final String DIR = "06-resolve";
+    public static final String DIR = "4-resolve";
 
     /**
      * Skip artifact with the version 0.0.0.
