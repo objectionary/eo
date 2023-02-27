@@ -84,7 +84,7 @@
           term.gt 0.0 > @
         FALSE
 
-    [acc-index-terms infs is-term-gt-zero] > times-rec
+    [acc-index-terms infs is-nan-or-zero is-term-gt-zero] > times-rec
       acc-index-terms.at 0 > acc!
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
@@ -95,14 +95,8 @@
         index.eq terms.length
         acc
         if.
-          or.
-            not.
-              eq.
-                terms.at index > term!
-                term
-            term.eq -0.0
-            term.eq 0.0
-            term.eq 0
+          is-nan-or-zero
+            terms.at index > term!
           nan
           []
             if. > @
@@ -115,7 +109,8 @@
                     neg-inf
                   index.plus 1 > next-index
                   terms
-                * neg-inf acc
+                infs
+                is-nan-or-zero
                 is-term-gt-zero
               times-rec
                 *
@@ -125,7 +120,8 @@
                     pos-inf
                   next-index
                   terms
-                * acc pos-inf
+                infs
+                is-nan-or-zero
                 is-term-gt-zero
 
     if. > @
@@ -138,6 +134,7 @@
         times-rec
           * ^ zero x
           * ^ pos-inf
+          is-nan-or-zero
           is-term-gt-zero
         if.
           is-nan-or-zero
