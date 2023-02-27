@@ -84,12 +84,7 @@
           term.gt 0.0 > @
         FALSE
 
-    # @todo #1824:30min. Pass "is-nan-or-zero" to "times-rec" here and in
-    #  negative-infinity. Now for some reason it's not possible to pass two or
-    #  more objects-functions to another object. To avoid code duplication
-    #  "is-nan-or-zero" object should be passed to "times-rec" as well as
-    #  "is-term-gt-zero"
-    [acc-index-terms infs is-term-gt-zero] > times-rec
+    [acc-index-terms infs is-nan-or-zero is-term-gt-zero] > times-rec
       acc-index-terms.at 0 > acc!
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
@@ -100,14 +95,8 @@
         index.eq terms.length
         acc
         if.
-          or.
-            not.
-              eq.
-                terms.at index > term!
-                term
-            term.eq -0.0
-            term.eq 0.0
-            term.eq 0
+          is-nan-or-zero
+            terms.at index > term!
           nan
           []
             if. > @
@@ -120,7 +109,8 @@
                     neg-inf
                   index.plus 1 > next-index
                   terms
-                * acc neg-inf
+                infs
+                is-nan-or-zero
                 is-term-gt-zero
               times-rec
                 *
@@ -130,7 +120,8 @@
                     pos-inf
                   next-index
                   terms
-                * pos-inf acc
+                infs
+                is-nan-or-zero
                 is-term-gt-zero
 
     if. > @
@@ -143,6 +134,7 @@
         times-rec
           * ^ zero x
           * ^ neg-inf
+          is-nan-or-zero
           is-term-gt-zero
         if.
           is-nan-or-zero
