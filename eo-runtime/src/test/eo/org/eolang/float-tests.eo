@@ -138,6 +138,62 @@
       0.0
     $.equal-to TRUE
 
+[] > zero-not-equal-to-neg-zero
+  assert-that > @
+    0.0
+    $.not
+      $.equal-to -0.0
+
+[] > neg-zero-not-equal-to-zero
+  assert-that > @
+    -0.0
+    $.not
+      $.equal-to 0.0
+
+[] > zero-not-greater-that-neg-zero
+  assert-that > @
+    0.0
+    $.not
+      $.greater-than -0.0
+
+[] > neg-zero-not-greater-that-zero
+  assert-that > @
+    -0.0
+    $.not
+      $.greater-than 0.0
+
+[] > zero-not-less-that-neg-zero
+  assert-that > @
+    0.0
+    $.not
+      $.less-than -0.0
+
+[] > neg-zero-not-less-that-zero
+  assert-that > @
+    -0.0
+    $.not
+      $.less-than 0.0
+
+[] > zero-not-gte-neg-zero
+  assert-that > @
+    0.0.gte -0.0
+    $.equal-to FALSE
+
+[] > neg-zero-not-gte-zero
+  assert-that > @
+    -0.0.gte 0.0
+    $.equal-to FALSE
+
+[] > zero-not-lte-neg-zero
+  assert-that > @
+    0.0.lte -0.0
+    $.equal-to FALSE
+
+[] > neg-zero-not-lte-zero
+  assert-that > @
+    -0.0.lte 0.0
+    $.equal-to FALSE
+
 [] > float-zero-not-eq-to-int-zero
   assert-that > @
     eq.
