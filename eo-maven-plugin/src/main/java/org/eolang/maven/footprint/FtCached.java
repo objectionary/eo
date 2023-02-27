@@ -151,6 +151,6 @@ public final class FtCached implements Footprint {
      * @return Path
      */
     private Path path(final String program, final String ext) {
-        return new Place(program).make(this.version.cache(), ext);
+        return new Place(program).make(this.version.path(), ext);
     }
 }

@@ -29,8 +29,11 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Cache version.
- *
+ * Version of the eo-maven-plugin cache.
+ * The version consists of two main components: the version of the eo-maven-plugin
+ * and the hash of tag from the objectionary/home.
+ * CacheVersion could be also not cacheable, if the version of the eo-maven-plugin is development
+ * see {@link CacheVersion#NOT_CACHEABLE} versions.
  * @since 0.30
  */
 final class CacheVersion {
@@ -41,19 +44,24 @@ final class CacheVersion {
     private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
 
     /**
-     * Version of the eo-maven-plugin.
+     * Version of the eo-maven-plugin which currently builds a program.
+     * Version could be:
+     *  - 0.0.0 - if the version is not set in the pom.xml
+     *  - 0.30.0 - if the version is set in the pom.xml
+     *  - 1.0-SNAPSHOT - if the not stable development version is set in the pom.xml
+     *  By some reason, the version could also be empty.
      */
     private final String version;
 
     /**
-     * Hash of the object.
+     * Hash of tag from the objectionary/home.
      */
     private final String hash;
 
     /**
      * Ctor.
-     * @param ver Version of the eo-maven-plugin
-     * @param hsh Hash of the object
+     * @param ver Version of the eo-maven-plugin which currently builds a program.
+     * @param hsh Hash of the objectionary tag.
      */
     CacheVersion(final String ver, final String hsh) {
         this.version = ver;
@@ -75,7 +83,7 @@ final class CacheVersion {
      * Get cache path.
      * @return Path.
      */
-    Path cache() {
+    Path path() {
         return Paths.get(Objects.toString(this.version, ""))
             .resolve(Objects.toString(this.hash, ""));
     }

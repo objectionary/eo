@@ -81,7 +81,7 @@ class CacheVersionTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            new CacheVersion(version, hash).cache(),
+            new CacheVersion(version, hash).path(),
             Matchers.equalTo(Paths.get(expected.replace("|", File.separator)))
         );
     }
