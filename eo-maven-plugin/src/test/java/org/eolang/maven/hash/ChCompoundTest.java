@@ -37,16 +37,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link ChResolve}.
+ * Test case for {@link ChCompound}.
  * @since 0.28.14
  */
-final class ChResolveTest {
+final class ChCompoundTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
     void getsCommitHashValueFromRemoteTag() {
         MatcherAssert.assertThat(
-            new ChResolve(
+            new ChCompound(
                 null,
                 null,
                 "0.26.0"
@@ -58,7 +58,7 @@ final class ChResolveTest {
     @Test
     void getsCommitHashValueFromPattern() {
         MatcherAssert.assertThat(
-            new ChResolve(
+            new ChCompound(
                 null,
                 "master:m23ss3h,3.1.*:abc2sd3",
                 "master"
@@ -72,7 +72,7 @@ final class ChResolveTest {
         final Path file = temp.resolve("tags.txt");
         new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), file);
         MatcherAssert.assertThat(
-            new ChResolve(
+            new ChCompound(
                 file,
                 null,
                 "master"
@@ -86,7 +86,7 @@ final class ChResolveTest {
     void catchesAnExceptionWhenNoArguments() {
         Assertions.assertThrows(
             NullPointerException.class,
-            () -> new ChResolve(null, null, null).value()
+            () -> new ChCompound(null, null, null).value()
         );
     }
 
