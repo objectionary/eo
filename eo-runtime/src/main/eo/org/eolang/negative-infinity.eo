@@ -194,7 +194,7 @@
           term.gte 0.0 > @
         FALSE
 
-    [acc-index-terms infs is-term-gte-zero] > div-rec
+    [acc-index-terms infs is-nan-or-infinite is-term-gte-zero] > div-rec
       acc-index-terms.at 0 > acc!
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
@@ -205,13 +205,8 @@
         index.eq terms.length
         acc
         if.
-          or.
-            not.
-              eq.
-                terms.at index > term!
-                term
-            term.eq pos-inf
-            term.eq neg-inf
+          is-nan-or-infinite
+            terms.at index > term!
           nan
           []
             if. > @
@@ -224,7 +219,8 @@
                     neg-inf
                   index.plus 1 > next-index
                   terms
-                * acc neg-inf
+                infs
+                is-nan-or-infinite
                 is-term-gte-zero
               div-rec
                 *
@@ -234,7 +230,8 @@
                     pos-inf
                   next-index
                   terms
-                * pos-inf acc
+                infs
+                is-nan-or-infinite
                 is-term-gte-zero
 
     if. > @
@@ -247,6 +244,7 @@
         div-rec
           * neg-inf zero x
           * pos-inf neg-inf
+          is-nan-or-infinite
           is-term-gte-zero
         if.
           is-nan-or-infinite

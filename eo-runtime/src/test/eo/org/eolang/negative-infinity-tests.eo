@@ -390,10 +390,9 @@
     $.equal-to neg-inf
 
 [] > negative-infinity-div-neg-float-zero
-  nop > @
-    assert-that
-      negative-infinity.div 0.0
-      $.equal-to positive-infinity
+  assert-that > @
+    negative-infinity.div -0.0
+    $.equal-to positive-infinity
 
 [] > negative-infinity-div-int-zero
   negative-infinity > neg-inf!
@@ -462,10 +461,9 @@
 
 [] > negative-infinity-div-multiple-numbers-with-neg-float-zero
   negative-infinity > neg-inf!
-  nop > @
-    assert-that
-      neg-inf.div 43.2 -0.0 -13.2
-      $.equal-to neg-inf
+  assert-that > @
+    neg-inf.div 43.2 -0.0 -13.2
+    $.equal-to neg-inf
 
 [] > negative-infinity-div-multiple-infinities
   negative-infinity > neg-inf!

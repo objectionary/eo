@@ -177,9 +177,6 @@
           ^
 
   # Quotient of the division of $ by x
-  # @todo #1806:30min. Make positive-infinity.div and negative-infinity.div
-  #  worked with multiple arguments without using objects from eo-collections.
-  #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > div
     negative-infinity > neg-inf!
     ^ > pos-inf!
@@ -205,12 +202,7 @@
           term.gte 0.0 > @
         FALSE
 
-    # @todo #1824:30min. Pass "is-nan-or-infinite" to "div-rec" here and in
-    #  negative-infinity. Now for some reason it's not possible to pass two or
-    #  more objects-functions to another object. To avoid code duplication
-    #  "is-nan-or-infinite" object should be passed to "times-rec" as well as
-    #  "is-term-gte-infinite"
-    [acc-index-terms infs is-term-gte-zero] > div-rec
+    [acc-index-terms infs is-nan-or-infinite is-term-gte-zero] > div-rec
       acc-index-terms.at 0 > acc!
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
@@ -221,13 +213,8 @@
         index.eq terms.length
         acc
         if.
-          or.
-            not.
-              eq.
-                terms.at index > term!
-                term
-            term.eq pos-inf
-            term.eq neg-inf
+          is-nan-or-infinite
+            terms.at index > term!
           nan
           []
             if. > @
@@ -240,7 +227,8 @@
                     neg-inf
                   index.plus 1 > next-index
                   terms
-                * acc neg-inf
+                infs
+                is-nan-or-infinite
                 is-term-gte-zero
               div-rec
                 *
@@ -250,7 +238,8 @@
                     pos-inf
                   next-index
                   terms
-                * pos-inf acc
+                infs
+                is-nan-or-infinite
                 is-term-gte-zero
 
     if. > @
@@ -263,6 +252,7 @@
         div-rec
           * pos-inf zero x
           * pos-inf neg-inf
+          is-nan-or-infinite
           is-term-gte-zero
         if.
           is-nan-or-infinite
