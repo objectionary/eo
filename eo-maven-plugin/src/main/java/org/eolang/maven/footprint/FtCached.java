@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
@@ -39,7 +38,7 @@ import org.eolang.maven.util.Home;
 /**
  * Program footprint of EO compilation process.
  * <p>The footprint optionally cached in {@link #cache} folder.</p>
- * Caching is applied if {@link #hash} is not empty otherwise caching is ignored.
+ * Caching is applied if {@link #version} is not empty otherwise caching is ignored.
  *
  * @since 1.0
  */
@@ -48,7 +47,7 @@ public final class FtCached implements Footprint {
     /**
      * Version tag.
      */
-    private final String hash;
+    private final CacheVersion version;
 
     /**
      * Path to cache root.
@@ -71,15 +70,32 @@ public final class FtCached implements Footprint {
         final Path cache,
         final Footprint origin
     ) {
-        this.hash = hash;
+        this("", hash, cache, origin);
+    }
+
+    /**
+     * Ctor.
+     * @param ver Version of eo-maven-plugin
+     * @param hash Version hash
+     * @param cache Cache root
+     * @param origin Origin
+     */
+    private FtCached(
+        final String ver,
+        final String hash,
+        final Path cache,
+        final Footprint origin
+    ) {
+        this.version = new CacheVersion(ver, hash);
         this.cache = cache;
         this.origin = origin;
     }
 
+
     @Override
     public String load(final String program, final String ext) throws IOException {
         final String content;
-        if (this.isCached(program, ext)) {
+        if (this.version.cacheable() && this.isCached(program, ext)) {
             content = new IoCheckedText(
                 new TextOf(
                     this.cache.resolve(this.path(program, ext))
@@ -95,7 +111,7 @@ public final class FtCached implements Footprint {
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
         final String text;
-        if (this.isCached(program, ext)) {
+        if (this.version.cacheable() && this.isCached(program, ext)) {
             text = this.load(program, ext);
         } else {
             text = new IoChecked<>(content).value();
@@ -138,6 +154,6 @@ public final class FtCached implements Footprint {
      * @return Path
      */
     private Path path(final String program, final String ext) {
-        return new Place(program).make(Paths.get(this.hash), ext);
+        return new Place(program).make(this.version.cache(), ext);
     }
 }
