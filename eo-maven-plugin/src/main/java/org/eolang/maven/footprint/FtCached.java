@@ -61,7 +61,7 @@ public final class FtCached implements Footprint {
 
     /**
      * Ctor.
-     * @param hash Version tag
+     * @param hash Version tag or hash
      * @param cache Cache root
      * @param origin Origin
      */
@@ -70,27 +70,24 @@ public final class FtCached implements Footprint {
         final Path cache,
         final Footprint origin
     ) {
-        this("", hash, cache, origin);
+        this(new CacheVersion("", hash), cache, origin);
     }
 
     /**
      * Ctor.
-     * @param ver Version of eo-maven-plugin
-     * @param hash Version hash
+     * @param ver Version
      * @param cache Cache root
      * @param origin Origin
      */
-    private FtCached(
-        final String ver,
-        final String hash,
+    FtCached(
+        final CacheVersion ver,
         final Path cache,
         final Footprint origin
     ) {
-        this.version = new CacheVersion(ver, hash);
+        this.version = ver;
         this.cache = cache;
         this.origin = origin;
     }
-
 
     @Override
     public String load(final String program, final String ext) throws IOException {

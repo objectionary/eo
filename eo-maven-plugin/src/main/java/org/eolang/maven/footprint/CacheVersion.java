@@ -39,6 +39,7 @@ final class CacheVersion {
      * Not cacheable versions.
      */
     private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
+
     /**
      * Version of the eo-maven-plugin.
      */
