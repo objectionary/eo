@@ -58,12 +58,12 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojo {
+public final class PullMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to process to.
      */
-    public static final String DIR = "04-pull";
+    public static final String DIR = "3-pull";
 
     /**
      * The Git hash to pull objects from, in objectionary.

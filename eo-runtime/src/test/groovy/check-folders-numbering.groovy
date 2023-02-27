@@ -1,10 +1,12 @@
+import java.util.stream.Collectors
+
 /**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation directories (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -22,15 +24,24 @@
  * SOFTWARE.
  */
 
-/**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
- */
-[
-  'src/test/groovy/check-xsl-id.groovy',
-  'src/test/groovy/check-xsl-version.groovy'
-].each {
-  evaluate(new File(it))
-  println String.format('Verified with %s - OK', it)
-}
+target = basedir.toPath().resolve("target").resolve("eo")
+List<File> directories = target.toFile().listFiles(new FileFilter() {
+  @Override
+  boolean accept(final File pathname) {
+    return pathname.isDirectory()
+  }
+})
+List<File> allowed = [
+  '1-parse',
+  '2-optimize',
+  '3-pull',
+  '4-resolve',
+  '5-pre',
+  '6-transpile',
+].stream()
+  .map { target.resolve(it).toFile() }
+  .collect(Collectors.toList())
+
+assert allowed.containsAll(directories)
+
+true

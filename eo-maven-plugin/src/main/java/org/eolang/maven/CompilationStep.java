@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
 /**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
+ * The compilation step may generate artifacts or files on the filesystem.
+ *
+ * @since 0.30
+ * @todo #1842:90min We can add method 'outputDirectory()' in order to replace hardcoded static
+ *  variables like ParseMojo.DIR, ResolveMojo.DIR, OptimizeMojo.DIR, CopyMojo.DIR,
+ *  TranspileMojo.DIR, etc. The CompilationStep interface could also define other common behaviors
+ *  shared among different Mojos.
  */
-[
-  'src/test/groovy/check-xsl-id.groovy',
-  'src/test/groovy/check-xsl-version.groovy'
-].each {
-  evaluate(new File(it))
-  println String.format('Verified with %s - OK', it)
+interface CompilationStep {
 }
