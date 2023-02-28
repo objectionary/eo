@@ -199,7 +199,7 @@ final class UnplaceMojoTest {
             .add(binary.toString())
             .set(PlaceMojo.ATTR_PLD_KIND, "class")
             .set(PlaceMojo.ATTR_PLD_RELATED, temp.relativize(binary).toString())
-            .set(PlaceMojo.ATTR_PLD_DEP, String.format("%s.jar", UnplaceMojoTest.DEFAULT_DEP))
+            .set(PlaceMojo.ATTR_PLD_DEP, UnplaceMojoTest.DEFAULT_DEP)
             .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(binary))
             .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
         return placed;

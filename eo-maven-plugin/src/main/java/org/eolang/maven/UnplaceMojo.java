@@ -95,10 +95,11 @@ public final class UnplaceMojo extends SafeMojo {
     private void unplaceDependencies() {
         final Set<String> used = this.classes()
             .stream()
+            .filter(tojo -> tojo.exists(PlaceMojo.ATTR_PLD_DEP))
             .map(tojo -> tojo.get(PlaceMojo.ATTR_PLD_DEP))
             .collect(Collectors.toSet());
         this.binaries("jar").stream()
-            .filter(tojo -> used.contains(tojo.get(PlaceMojo.ATTR_PLD_DEP)))
+            .filter(dep -> used.contains(dep.get(Tojos.KEY)))
             .forEach(dep -> dep.set(PlaceMojo.ATTR_PLD_UNPLACED, "true"));
     }
 
