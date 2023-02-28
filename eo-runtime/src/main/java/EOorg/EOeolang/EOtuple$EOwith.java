@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,15 +22,48 @@
  * SOFTWARE.
  */
 
-/**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
+/*
+ * @checkstyle PackageNameCheck (4 lines)
  */
-[
-  'src/test/groovy/check-xsl-id.groovy',
-  'src/test/groovy/check-xsl-version.groovy'
-].each {
-  evaluate(new File(it))
-  println String.format('Verified with %s - OK', it)
+package EOorg.EOeolang;
+
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.XmirObject;
+
+/**
+ * WITH.
+ *
+ * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
+ */
+@XmirObject(oname = "tuple.with")
+public class EOtuple$EOwith extends PhDefault {
+
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
+    public EOtuple$EOwith(final Phi sigma) {
+        super(sigma);
+        this.add("x", new AtFree());
+        this.add(
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final Phi[] tuple = new Param(rho).strong(Phi[].class);
+                    final Phi[] dest = new Phi[tuple.length + 1];
+                    System.arraycopy(tuple, 0, dest, 0, tuple.length);
+                    dest[tuple.length] = rho.attr("x").get();
+                    return new Data.ToPhi(dest);
+                }
+            )
+        );
+    }
+
 }

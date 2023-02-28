@@ -59,51 +59,128 @@
     ^.eq x > @
 
   # Multiplication of $ and x
-  [x] > times
+  [x...] > times
+    x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq 0.0
-        x.eq 0
+        check-nan first
+        first.eq 0.0
+        first.eq 0
       nan
       if.
-        x.eq ^
+        first.eq ^
         positive-infinity
         ^
 
   # Sum of $ and x
-  [x] > plus
+  [x...] > plus
+    positive-infinity.as-bytes > pos-inf-as-bytes!
+
+    [acc index terms check-term] > plus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          check-term
+            terms.at index
+          nan
+          plus-rec
+            acc
+            index.plus 1
+            terms
+            check-term
+
+    [term] > check-term
+      term > t!
+      or. > @
+        not.
+          t.eq t
+        t.as-bytes.eq pos-inf-as-bytes
+
     if. > @
-      or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq positive-infinity
-      nan
+      eq.
+        x.length > terms-count!
+        0
       ^
+      if.
+        terms-count.gt 1
+        plus-rec
+          ^
+          0
+          x
+          check-term
+        if.
+          check-term
+            x.at 0
+          nan
+          ^
 
   # Negation of $
   [] > neg
     positive-infinity > @
 
   # Difference between $ and x
-  [x] > minus
-    ^.plus (x.neg) > @
+  [x...] > minus
+    ^.as-bytes > neg-inf-as-bytes!
 
-    [x] > not-int
-      x.as-int > as-integer!
-      and. > @
-        as-integer.as-float.lt x
-        (as-integer.plus 1).as-float.gt x
+    [acc index terms check-term] > minus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          check-term
+            terms.at index
+          nan
+          minus-rec
+            acc
+            index.plus 1
+            terms
+            check-term
+
+    [term] > check-term
+      term > t!
+      or. > @
+        not.
+          t.eq t
+        t.as-bytes.eq neg-inf-as-bytes
+
+    if. > @
+      eq.
+        x.length > terms-count!
+        0
+      ^
+      if.
+        terms-count.gt 1
+        minus-rec
+          ^
+          0
+          x
+          check-term
+        if.
+          check-term
+            x.at 0
+          nan
+          ^
 
   # Quotient of the division of $ by x
-  [x] > div
+  [x...] > div
+    x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
     if. > @
       or.
-        x.as-bytes.eq (nan.as-bytes)
-        x.eq ^
-        x.eq positive-infinity
+        check-nan first
+        first.eq ^
+        first.eq positive-infinity
       nan
       ^
-
-  # Converts this to bytes
-  [] > as-bytes
-    ^.@.as-bytes > @!

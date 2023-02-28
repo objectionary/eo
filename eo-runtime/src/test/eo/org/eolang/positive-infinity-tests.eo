@@ -260,23 +260,34 @@
     pos-inf.plus 42.5
     $.equal-to pos-inf
 
+[] > positive-infinity-plus-multiple-floats
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.plus 42.5 -22.5 12.2
+    $.equal-to pos-inf
+
 [] > positive-infinity-plus-positive-int
   positive-infinity > pos-inf!
   assert-that > @
     pos-inf.plus 42
     $.equal-to pos-inf
 
-[] > positive-infinity-plus-negative-float
+[] > positive-infinity-plus-multiple-numbers
   positive-infinity > pos-inf!
   assert-that > @
-    pos-inf.plus -42.5
+    pos-inf.plus 42 -22.1 30
     $.equal-to pos-inf
 
-[] > positive-infinity-plus-negative-int
-  positive-infinity > pos-inf!
+[] > positive-infinity-plus-multiple-numbers-with-nan
+  nan > not-a-number!
   assert-that > @
-    pos-inf.plus -42
-    $.equal-to pos-inf
+    (positive-infinity.plus 42 not-a-number 30).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-plus-multiple-numbers-with-negative-infinity
+  assert-that > @
+    (positive-infinity.plus 42 negative-infinity 30).as-bytes
+    $.equal-to nan.as-bytes
 
 # Negation
 [] > positive-infinity-neg-is-negative-infinity
@@ -328,6 +339,36 @@
   assert-that > @
     pos-inf.minus -42
     $.equal-to pos-inf
+
+[] > positive-infinity-minus-multiple-floats
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus 42.5 -22.5 12.2
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-multiple-numbers
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus 42 -22.1 30
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    (positive-infinity.minus 42 not-a-number 30).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-minus-multiple-numbers-with-negative-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.minus 42 negative-infinity 30
+    $.equal-to pos-inf
+
+[] > positive-infinity-minus-multiple-numbers-with-positive-infinity
+  positive-infinity > pos-inf!
+  assert-that > @
+    (pos-inf.minus 42 pos-inf 30).as-bytes
+    $.equal-to nan.as-bytes
 
 # Division
 [] > positive-infinity-div-float-zero
