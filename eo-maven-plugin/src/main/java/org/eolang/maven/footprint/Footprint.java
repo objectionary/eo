@@ -29,11 +29,20 @@ import java.util.List;
 import org.cactoos.Scalar;
 
 /**
- * Program footprint of EO compilation process,
- * convenient eo program management mechanism.
- * Footprint refers to a trace of EO program on
- * file system which is quite fortunate analogy
- * with natural meaning of the word.
+ * Footprint is a term used to refer to a trace of an EO program on the file system.
+ * It's a fitting analogy with the word's natural meaning, and what it essentially does is trace
+ * files that have a specific extension. Footprint enables you to do the following:
+ * - Save files that have a specific extension
+ * - Load files that have a specific extension
+ * - Get a complete list of files that have a specific extension
+ * You can find a full list of available methods below.
+ * Since Footprint can leave traces on the file system, each Footprint instance will have its
+ * own unique way of saving and loading files, and it will have its own place to do so.
+ * For instance, {@link FtDefault} will save files directly to a specific location on the file
+ * system, while {@link FtCached} will first check the cache directory before delegating
+ * the behavior.
+ * In other words, Footprint provides useful functionality for working with files that
+ * have different extensions.
  * @since 1.0
  */
 public interface Footprint {
