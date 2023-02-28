@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xi-binds" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="epsilon-bindings" version="2.0">
   <!--
   Here we add xi-edges to objects that ARE other objects.
   -->
@@ -45,7 +45,7 @@ SOFTWARE.
           <xsl:value-of select="eo:var(eo:base-to-loc(.))"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:text>ξ</xsl:text>
+          <xsl:text>ε</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

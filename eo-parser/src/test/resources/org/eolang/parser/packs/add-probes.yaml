@@ -9,7 +9,9 @@ tests:
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine' and part/text()='Q.org.eolang.car.engine']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start' and part/text()='Q.org.eolang.car.engine.start']
 eo: |
+  +home https://github.com/objectionary/eo
   +package org.eolang.custom
+  +version 0.0.0
 
   [] > app
     QQ.txt.sprintf > @

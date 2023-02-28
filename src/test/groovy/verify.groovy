@@ -34,5 +34,3 @@
   evaluate(new File(it))
   println String.format('Verified with %s - OK', it)
 }
-
-

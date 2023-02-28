@@ -64,7 +64,7 @@ import org.xembly.Xembler;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends SafeMojo {
+public final class ParseMojo extends SafeMojo implements CompilationStep {
 
     /**
      * Zero version.
@@ -74,7 +74,7 @@ public final class ParseMojo extends SafeMojo {
     /**
      * The directory where to parse to.
      */
-    public static final String DIR = "01-parse";
+    public static final String DIR = "1-parse";
 
     /**
      * Subdirectory for parsed cache.

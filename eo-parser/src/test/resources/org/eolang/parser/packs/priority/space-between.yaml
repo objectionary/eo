@@ -3,7 +3,9 @@ tests:
   - //o[@base='.plus']/o[@base='.a']/o[@base='^']
   - //o[@base='.plus']/o[@base='.b']/o[@base='^']
 eo: |
+  +home https://github.com/objectionary/eo
   +package org.eolang.priority
+  +version 0.0.0
 
   [] > sum
     ^.a.plus ^.b > @

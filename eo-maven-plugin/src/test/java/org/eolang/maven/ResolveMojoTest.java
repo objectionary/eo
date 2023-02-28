@@ -45,7 +45,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @ExtendWith(OnlineCondition.class)
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class ResolveMojoTest {
 
     @Test
@@ -67,7 +67,7 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);
-        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.7.0");
+        final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path.resolve("eo-runtime-0.7.0.jar").toFile(),
@@ -92,7 +92,7 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);
-        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/");
+        final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,
@@ -114,6 +114,32 @@ final class ResolveMojoTest {
     void resolvesWithoutEoRuntimeDependency(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
+            .with("withRuntimeDependency", false)
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+        );
+    }
+
+    @Test
+    void resolvesIfRuntimeDependencyComesFromTojos(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-0.22.1.jar")
+        );
+    }
+
+    @Test
+    void resolvesIfRuntimeDependencyComesFromTojosButParamIsFalse(@TempDir final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
             .with("withRuntimeDependency", false)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
