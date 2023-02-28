@@ -23,36 +23,37 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-
 /**
- * Test case for {@link TranspileMojo}.
+ * Test case for {@link BinarizeMojo}.
  *
  * @since 0.1
  */
-public class BinarizeMojoTest {
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+final class BinarizeMojoTest {
+
     @Test
-    void binarizeSimpleEoProgram(@TempDir final Path temp) throws Exception {
-        /*final Path src = Paths.get("../eo-runtime/src/test/eo/org/eolang/rust-test.eo");
+    void binarizesSimpleEoProgram(@TempDir final Path temp) throws Exception {
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
         final Map<String, Path> res = new FakeMaven(temp)
-                .withProgram(src)
-                .execute(new FakeMaven.Transpile())
-                .result();
-        final String java = "target/generated/EOorg/EOeolang/EOarray.java";
+            .withProgram(src)
+            .execute(new FakeMaven.Binarize())
+            .result();
+        final String lib = "target/binarize/simple-rust-lib.so";
         MatcherAssert.assertThat(
-                res, Matchers.hasKey(java)
-        );*/
+            res, Matchers.hasKey(lib)
+        );
         MatcherAssert.assertThat(
-                true,
-                Matchers.equalTo(true)
+            new TextOf(res.get(lib)).asString(),
+            Matchers.containsString("content")
         );
     }
 

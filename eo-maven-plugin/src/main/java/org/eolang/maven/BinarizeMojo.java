@@ -25,20 +25,11 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.yegor256.tojos.Tojo;
-import com.yegor256.xsline.Xsline;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 
 /**
@@ -61,6 +52,11 @@ import org.eolang.maven.util.Home;
 public final class BinarizeMojo extends SafeMojo {
 
     /**
+     * The directory where to binarize to.
+     */
+    public static final String DIR = "binarize/";
+
+    /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -71,35 +67,12 @@ public final class BinarizeMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
-    /**
-     * The directory where to binarize to.
-     */
-    public static final String DIR = "binarize/";
-
-    private static final Pattern INSERT = Pattern.compile(
-        "\"{3}[\\s\\S]*pub fn foo\\(uni: &amp;mut Universe, v: u32\\) -&gt; Result&lt;u32&gt[\\s\\S]*\"{3}"
-    );
-
     @Override
     public void exec() throws IOException {
-        //throw new UnsupportedEncodingException("NYI");
-        final Collection<Tojo> sources = this.scopedTojos().select(
-                row -> row.exists(AssembleMojo.ATTR_XMIR)
+        final Path dir = this.targetDir.toPath().resolve(
+            String.format("%s%s", BinarizeMojo.DIR, "/simple-rust-lib.so")
         );
-        for (Tojo tojo: sources) {
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-
-            String content = new TextOf(src).toString();
-            final Matcher matcher = INSERT.matcher(content);
-            while (matcher.find()) {
-                final int start = matcher.start();
-                final int end = matcher.end();
-                final String insert = content.substring(start, end);
-                final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR + "/lib" + insert.hashCode() + ".rs");
-                new Home(dir).save("\t" + insert, dir);
-
-            }
-        }
+        new Home(this.targetDir.toPath().resolve(BinarizeMojo.DIR)).save("content", dir);
     }
 
 }

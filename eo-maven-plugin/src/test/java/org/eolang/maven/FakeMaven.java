@@ -418,6 +418,23 @@ public final class FakeMaven {
     }
 
     /**
+     * Binarize full pipeline.
+     *
+     * @since 0.29.0
+     */
+    static final class Binarize implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                BinarizeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
      * Resolve all eo dependencies.
      *
      * @since 0.29.0
