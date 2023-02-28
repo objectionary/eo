@@ -1,0 +1,14 @@
+sheets:
+  - /org/eolang/parser/errors/zero-version.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program source="user/src/main/ttt.eo">
+    <errors/>
+    <objects>
+      <o name="a" line="4">
+        <o base="a"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - /program/errors[count(error)=0]

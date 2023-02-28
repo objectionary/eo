@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,43 +22,21 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+[
+  'target/eo/foreign.csv',
+  'target/eo/01-parse',
+  'target/eo/03-optimize',
+  'target/eo/04-pull',
+].each { assert new File(basedir, it).exists() }
 
 /**
- * LENGTH.
- *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * Check that the pre and resolve goals had no effect.
+ * The reason is that on the first cycle, the plugin only parses the source code
+ * and only on the next step it starts to resolve the dependencies.
  */
-@XmirObject(oname = "array.length")
-public class EOarray$EOlength extends PhDefault {
+[
+  'target/eo/05-pre',
+  'target/eo/06-resolve',
+].each { assert !new File(basedir, it).exists() }
 
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOarray$EOlength(final Phi sigma) {
-        super(sigma);
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    final Phi[] array = new Param(rho).strong(Phi[].class);
-                    return new Data.ToPhi((long) array.length);
-                }
-            )
-        );
-    }
-
-}
+true

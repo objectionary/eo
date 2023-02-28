@@ -51,7 +51,7 @@ SOFTWARE.
               <xsl:value-of select="concat('π/', @base)"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="concat('ξ/', @base)"/>
+              <xsl:value-of select="concat('ε/', @base)"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:sequence>

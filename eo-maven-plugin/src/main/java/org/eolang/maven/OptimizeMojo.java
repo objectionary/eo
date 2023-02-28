@@ -58,22 +58,22 @@ import org.eolang.parser.ParsingTrain;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class OptimizeMojo extends SafeMojo {
-
-    /**
-     * The directory where to place intermediary files.
-     */
-    public static final String STEPS = "02-steps";
+public final class OptimizeMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "03-optimize";
+    public static final String DIR = "2-optimize";
 
     /**
      * Subdirectory for optimized cache.
      */
-    public static final String OPTIMIZED = "optimized";
+    static final String OPTIMIZED = "optimized";
+
+    /**
+     * The directory where to place intermediary files.
+     */
+    static final String STEPS = "2-optimization-steps";
 
     /**
      * Track optimization steps into intermediate XML files?

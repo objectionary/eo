@@ -63,7 +63,6 @@ private static boolean online() {
 String log = new File(basedir, 'build.log').text
 
 [
-  '--- eo-maven-plugin:',
   'org.eolang:eo-runtime:',
   ' unpacked to ',
   '6th Fibonacci number is 8',

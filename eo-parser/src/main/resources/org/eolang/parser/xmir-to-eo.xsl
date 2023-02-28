@@ -47,7 +47,9 @@ SOFTWARE.
       <xsl:value-of select="."/>
       <xsl:value-of select="$eol"/>
     </xsl:for-each>
-    <xsl:value-of select="$eol"/>
+    <xsl:if test="text()">
+      <xsl:value-of select="$eol"/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="metas">
     <xsl:apply-templates select="meta"/>
@@ -130,7 +132,7 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:text>]</xsl:text>
   </xsl:template>
-  <xsl:template match="o[@data='array']" mode="head">
+  <xsl:template match="o[@data='tuple']" mode="head">
     <xsl:text>*</xsl:text>
   </xsl:template>
   <xsl:template match="o[@data='string']" mode="head">
@@ -141,7 +143,7 @@ SOFTWARE.
   <xsl:template match="o[@data='bool']" mode="head">
     <xsl:value-of select="upper-case(text())"/>
   </xsl:template>
-  <xsl:template match="o[@data and @data!='string' and @data!='array' and @data!='bool' and @data!='bytes']" mode="head">
+  <xsl:template match="o[@data and @data!='string' and @data!='tuple' and @data!='bool' and @data!='bytes']" mode="head">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="o[@data='bytes']" mode="head">
