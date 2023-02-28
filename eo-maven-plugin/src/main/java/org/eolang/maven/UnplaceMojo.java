@@ -139,21 +139,21 @@ public final class UnplaceMojo extends SafeMojo {
                 if (hash.isEmpty()) {
                     Logger.debug(
                         this, "The binary %s of %s is gone, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                        related, tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                     );
                     continue;
                 }
                 if (!UnplaceMojo.inside(related, this.removeBinaries)) {
                     Logger.warn(
                         this, "The binary %s of %s looks different, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                        related, tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                     );
                     continue;
                 }
                 Logger.info(
                     this,
                     "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
-                    related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    related, tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
             }
             if (UnplaceMojo.inside(related, this.keepBinaries)
@@ -165,12 +165,12 @@ public final class UnplaceMojo extends SafeMojo {
                 tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true");
                 Logger.debug(
                     this, "Binary %s of %s deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
             }
         }
@@ -199,12 +199,12 @@ public final class UnplaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                    related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    related, tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
             }
         }

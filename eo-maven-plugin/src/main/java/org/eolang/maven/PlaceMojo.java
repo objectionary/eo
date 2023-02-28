@@ -76,7 +76,7 @@ public final class PlaceMojo extends SafeMojo {
     /**
      * Where the binary is coming from (JAR name).
      */
-    public static final String ATTR_PLD_ORIGIN = "dependency";
+    public static final String ATTR_PLD_DEPENDENCY = "dependency";
 
     /**
      * Attr in CSV.
@@ -190,7 +190,7 @@ public final class PlaceMojo extends SafeMojo {
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
                 continue;
             }
@@ -201,7 +201,7 @@ public final class PlaceMojo extends SafeMojo {
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEPENDENCY)
                 );
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
@@ -214,7 +214,7 @@ public final class PlaceMojo extends SafeMojo {
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set(PlaceMojo.ATTR_PLD_ORIGIN, dep)
+                .set(PlaceMojo.ATTR_PLD_DEPENDENCY, dep)
                 .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
             ++copied;
         }
