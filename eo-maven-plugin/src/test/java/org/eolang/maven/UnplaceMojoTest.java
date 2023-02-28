@@ -23,10 +23,13 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -52,12 +55,17 @@ final class UnplaceMojoTest {
      */
     private static final Set<String> GLOB_PATTERN = Collections.singleton("**.class");
 
+    /**
+     * Default dependency name.
+     */
+    private static final String DEFAULT_DEP = "dependency";
+
     @Test
     void cleansBinaries(@TempDir final Path temp) throws IOException {
-        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
-        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
-        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
-        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        final Path placed = UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .with("placed", placed.toFile())
@@ -72,28 +80,52 @@ final class UnplaceMojoTest {
 
     @Test
     void cleansBinariesWithDependency(@TempDir final Path temp) throws IOException {
-        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
-        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
-        UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
-        UnplaceMojoTest.placed("jar", temp, UnplaceMojoTest.dependency(temp));
-        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeDependency(temp, UnplaceMojoTest.DEFAULT_DEP);
+        final Path placed = UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        final List<Tojo> tojos = Catalogs.INSTANCE.make(placed).select(all -> true);
+        new FakeMaven(temp)
+            .with("placed", placed.toFile())
+            .execute(UnplaceMojo.class);
         MatcherAssert.assertThat(
-            new FakeMaven(temp)
-                .with("placed", placed.toFile())
-                .execute(UnplaceMojo.class)
-                .result()
-                .values()
-                .stream()
-                .noneMatch(
-                    path -> UnplaceMojoTest.isBinary(path) || UnplaceMojoTest.isDependency(path)
-                ),
+            tojos.size(),
+            Matchers.equalTo(5)
+        );
+        MatcherAssert.assertThat(
+            tojos.stream().allMatch(tojo -> tojo.get(PlaceMojo.ATTR_PLD_UNPLACED).equals("true")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void keepsDependencyBecauseItIsStillInUse(@TempDir final Path temp) throws IOException {
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        final String other = "other-dependency";
+        UnplaceMojoTest.placeDependency(temp, other);
+        final Path placed = UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
+        final List<Tojo> tojos = Catalogs.INSTANCE.make(placed).select(all -> true);
+        new FakeMaven(temp)
+            .with("placed", placed.toFile())
+            .execute(UnplaceMojo.class);
+        MatcherAssert.assertThat(
+            tojos.size(),
+            Matchers.equalTo(5)
+        );
+        MatcherAssert.assertThat(
+            tojos.stream()
+                .filter(tojo -> tojo.get(Tojos.KEY).equals(other))
+                .allMatch(tojo -> tojo.get(PlaceMojo.ATTR_PLD_UNPLACED).equals("false")),
             Matchers.is(true)
         );
     }
 
     @Test
     void unplacesWithKeepAndRemoveBinariesParamTogether(@TempDir final Path temp) throws Exception {
-        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Path placed = UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
         final Map<String, Path> res = new FakeMaven(temp)
             .with("placed", placed.toFile())
             .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
@@ -115,7 +147,7 @@ final class UnplaceMojoTest {
 
     @Test
     void unplacesWithRemoveBinariesParam(@TempDir final Path temp) throws Exception {
-        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Path placed = UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
         final Map<String, Path> res = new FakeMaven(temp)
             .with("placed", placed.toFile())
             .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
@@ -136,7 +168,7 @@ final class UnplaceMojoTest {
 
     @Test
     void unplacesWithKeepBinariesParam(@TempDir final Path temp) throws Exception {
-        final Path placed = UnplaceMojoTest.placed(temp, UnplaceMojoTest.binary(temp));
+        final Path placed = UnplaceMojoTest.placeBinary(temp, UnplaceMojoTest.binary(temp));
         final Map<String, Path> res = new FakeMaven(temp)
             .with("placed", placed.toFile())
             .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
@@ -161,27 +193,39 @@ final class UnplaceMojoTest {
      * @param binary Binary file.
      * @return Path to the placed tojos file.
      */
-    private static Path placed(final Path temp, final Path binary) {
-        return UnplaceMojoTest.placed("class", temp, binary);
-    }
-
-    /**
-     * Saves a binary file into the placed tojos file.
-     * @param kind Kind of the binary.
-     * @param temp Temporary directory.
-     * @param binary Binary file.
-     * @return Path to the placed tojos file.
-     */
-    private static Path placed(final String kind, final Path temp, final Path binary) {
-        final Path placed = temp.resolve("placed.csv");
+    private static Path placeBinary(final Path temp, final Path binary) {
+        final Path placed = UnplaceMojoTest.placedFile(temp);
         Catalogs.INSTANCE.make(placed)
             .add(binary.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, kind)
+            .set(PlaceMojo.ATTR_PLD_KIND, "class")
             .set(PlaceMojo.ATTR_PLD_RELATED, temp.relativize(binary).toString())
-            .set(PlaceMojo.ATTR_PLD_DEPENDENCY, "dependency.jar")
+            .set(PlaceMojo.ATTR_PLD_DEP, String.format("%s.jar", UnplaceMojoTest.DEFAULT_DEP))
             .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(binary))
             .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
         return placed;
+    }
+
+    /**
+     * Saves a dependency into the placed tojos file.
+     * @param temp Temporary directory.
+     * @param name Name of the dependency.
+     * @return Path to the placed tojos file.
+     */
+    private static void placeDependency(final Path temp, final String name) {
+        Catalogs.INSTANCE.make(UnplaceMojoTest.placedFile(temp))
+            .add(name)
+            .set(PlaceMojo.ATTR_PLD_KIND, "jar")
+            .set(PlaceMojo.ATTR_PLD_DEP, String.format("%s.jar", name))
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+    }
+
+    /**
+     * Creates a path to the placed tojos file.
+     * @param temp Temporary directory.
+     * @return Path to the placed tojos file.
+     */
+    private static Path placedFile(final Path temp) {
+        return temp.resolve("placed.csv");
     }
 
     /**
@@ -191,17 +235,11 @@ final class UnplaceMojoTest {
      * @throws IOException If fails.
      */
     private static Path binary(final Path temp) throws IOException {
-        final Path foo = temp.resolve(
+        final Path path = temp.resolve(
             String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt())
         );
-        new Home().save(() -> UUID.randomUUID().toString(), foo);
-        return foo;
-    }
-
-    private static Path dependency(final Path temp) throws IOException {
-        final Path dependency = temp.resolve("dependency.jar");
-        new Home().save(() -> UUID.randomUUID().toString(), dependency);
-        return dependency;
+        new Home().save(() -> UUID.randomUUID().toString(), path);
+        return path;
     }
 
     /**
@@ -211,15 +249,6 @@ final class UnplaceMojoTest {
      */
     private static boolean isBinary(final Path path) {
         return path.toString().endsWith(".class");
-    }
-
-    /**
-     * Checks if the path is a dependency file.
-     * @param path The path to check.
-     * @return True if it is a dependency file.
-     */
-    private static boolean isDependency(final Path path) {
-        return path.toString().endsWith(".jar");
     }
 }
 

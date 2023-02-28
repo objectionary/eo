@@ -26,8 +26,6 @@ package org.eolang.maven.util;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Md5DigestOf;
 import org.cactoos.bytes.UncheckedBytes;
