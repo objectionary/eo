@@ -1,0 +1,21 @@
++package org.eolang.custom
++version 0.0.0
+
+[] > creates-object
+  QQ.rust > r
+    """
+    use reo::universe::Universe;
+    use reo::data::Data;
+    use rand::rand;
+
+    pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {
+      print("Hello world");
+      let i = copy!(find!("org.eolang.int"));
+      uni.data(i, Data::from_int(random::<i64>()))?;
+      Ok(i)
+    }
+    """
+    *
+      "reo: 0.0.2"
+      "rand: 0.5.5"
+  TRUE > @
