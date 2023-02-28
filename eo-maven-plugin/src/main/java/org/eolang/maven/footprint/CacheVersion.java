@@ -29,11 +29,14 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Version of the eo-maven-plugin cache.
- * The version consists of two main components: the version of the eo-maven-plugin
- * and the hash of tag from the objectionary/home.
- * CacheVersion could be also not cacheable, if the version of the eo-maven-plugin is development
- * see {@link CacheVersion#NOT_CACHEABLE} versions.
+ * Version of the cache.
+ * The version consists of two main components:
+ *  1) Base, which is maven-style version string
+ *  2) Hash string, containing git hash.
+ * The two parts define the cacheable location by method {@link #path}.
+ * If base is empty or contains '0.0.0' or 'SNAPSHOT' (see {@link CacheVersion#NOT_CACHEABLE}
+ * versions) the version is considered non-cacheable.
+ *
  * @since 0.30
  */
 final class CacheVersion {
