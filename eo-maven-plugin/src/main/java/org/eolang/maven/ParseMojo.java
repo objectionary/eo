@@ -157,6 +157,9 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
      *
      * @param tojo The tojo
      * @throws IOException If fails
+     * @todo #1226:30min new FtCached(hash, cache, origin) should be replaced with a new constructor
+     *  that uses the current eo-maven-plugin version - new FtCached(CacheVersion, cache, origin).
+     *  This will allow us to invalidate the cache when the plugin version changes.
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private void parse(final Tojo tojo) throws IOException {
