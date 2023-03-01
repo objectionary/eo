@@ -84,15 +84,15 @@ public final class UnplaceMojo extends SafeMojo {
                 new Rel(this.placed)
             );
         } else {
-            this.unplaceBinaries();
-            this.unplaceDependencies();
+            this.unplaceClasses();
+            this.unplaceJars();
         }
     }
 
     /**
      * Mark dependencies as unplaced if all related binaries are unplaced.
      */
-    private void unplaceDependencies() {
+    private void unplaceJars() {
         final Set<String> used = this.classes()
             .stream()
             .filter(tojo -> tojo.exists(PlaceMojo.ATTR_PLD_DEP))
@@ -107,14 +107,14 @@ public final class UnplaceMojo extends SafeMojo {
      * Place what's necessary.
      * @throws IOException If fails
      */
-    private void unplaceBinaries() throws IOException {
-        final Collection<Tojo> binaries = this.classes();
+    private void unplaceClasses() throws IOException {
+        final Collection<Tojo> classes = this.classes();
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
-            deleted += this.keepThem(binaries);
+            deleted += this.keepThem(classes);
         }
-        deleted += this.killThem(binaries);
-        if (binaries.isEmpty()) {
+        deleted += this.killThem(classes);
+        if (classes.isEmpty()) {
             Logger.info(
                 this, "No binaries were placed into %s, nothing to uplace",
                 new Rel(this.placed)
@@ -122,17 +122,17 @@ public final class UnplaceMojo extends SafeMojo {
         } else if (deleted == 0) {
             Logger.info(
                 this, "No binaries out of %d deleted in %s",
-                binaries.size(), new Rel(this.placed)
+                classes.size(), new Rel(this.placed)
             );
-        } else if (deleted == binaries.size()) {
+        } else if (deleted == classes.size()) {
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",
-                binaries.size(), new Rel(this.placed)
+                classes.size(), new Rel(this.placed)
             );
         } else {
             Logger.info(
                 this, "Just %d binari(es) out of %d deleted in %s",
-                deleted, binaries.size(), new Rel(this.placed)
+                deleted, classes.size(), new Rel(this.placed)
             );
         }
     }
