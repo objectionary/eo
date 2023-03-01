@@ -69,9 +69,9 @@ public final class BinarizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Path dir = this.targetDir.toPath().resolve(
-            String.format("%s%s%s", BinarizeMojo.DIR, File.separator, "simple-rust-lib.so")
-        );
+        final Path dir = this.targetDir.toPath()
+            .resolve(BinarizeMojo.DIR)
+            .resolve("simple-rust-lib.so");
         new Home(this.targetDir.toPath().resolve(BinarizeMojo.DIR)).save("content", dir);
     }
 
