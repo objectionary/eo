@@ -54,7 +54,7 @@ public final class BinarizeMojo extends SafeMojo {
     /**
      * The directory where to binarize to.
      */
-    public static final String DIR = "binarize/";
+    public static final String DIR = "binarize";
 
     /**
      * Target directory.
@@ -70,7 +70,7 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Path dir = this.targetDir.toPath().resolve(
-            String.format("%s%s", BinarizeMojo.DIR, "/simple-rust-lib.so")
+            String.format("%s%s%s", BinarizeMojo.DIR, File.separator, "simple-rust-lib.so")
         );
         new Home(this.targetDir.toPath().resolve(BinarizeMojo.DIR)).save("content", dir);
     }
