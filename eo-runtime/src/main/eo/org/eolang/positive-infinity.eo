@@ -182,7 +182,7 @@
     ^ > pos-inf!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
         num.eq num
