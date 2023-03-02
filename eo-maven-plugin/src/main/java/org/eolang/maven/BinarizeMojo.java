@@ -26,11 +26,24 @@ package org.eolang.maven;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.xsline.*;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
+import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.StUnhex;
 
 /**
  * Compile binaries.
@@ -49,7 +62,7 @@ import org.eolang.maven.util.Home;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class BinarizeMojo extends SafeMojo {
+public final class BinarizeMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to binarize to.
@@ -67,12 +80,71 @@ public final class BinarizeMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
+    /**
+     * Parsing train with XSLs.
+     */
+    static final Train<Shift> TRAIN = new TrBulk<>(
+            new TrClasspath<>(
+                    new ParsingTrain()
+                            .empty()
+                            .with(new StUnhex())
+            ),
+            Arrays.asList(
+                    "/org/eolang/maven/add_rust/nothing.xsl"
+            )
+    ).back().back();
+
     @Override
     public void exec() throws IOException {
         final Path dir = this.targetDir.toPath()
             .resolve(BinarizeMojo.DIR)
             .resolve("simple-rust-lib.so");
         new Home(this.targetDir.toPath().resolve(BinarizeMojo.DIR)).save("content", dir);
+
+
+        final Collection<Tojo> sources = this.tojos.value().select(
+                row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                        && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
+        );
+        int saved = 0;
+        for (final Tojo tojo : sources) {
+            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final XML input = new XMLDocument(file);
+            final String name = input.xpath("/program/@name").get(0);
+            final Place place = new Place(name);
+            final Path target = place.make(
+                    this.targetDir.toPath().resolve(BinarizeMojo.DIR),
+                    TranspileMojo.EXT
+            );
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+            if (
+                target.toFile().exists()
+                    && target.toFile().lastModified() >= file.toFile().lastModified()
+                    && target.toFile().lastModified() >= src.toFile().lastModified()
+            ) {
+                Logger.info(
+                        this, "XMIR %s (%s) were already transpiled to %s",
+                        new Rel(file), name, new Rel(target)
+                );
+            } else {
+                this.transpile(src, input, target);
+            }
+        }
     }
 
+    private void transpile(
+            final Path src,
+            final XML input,
+            final Path target
+    ) throws IOException {
+        final String name = input.xpath("/program/@name").get(0);
+        final Place place = new Place(name);
+        final Train<Shift> trn = new SpyTrain(
+                BinarizeMojo.TRAIN,
+                place.make(this.targetDir.toPath().resolve("4.5-rust"), "")
+        );
+        System.out.println("\nIn BinarizeMojo.transpile\n");
+        final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
+        new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
+    }
 }
