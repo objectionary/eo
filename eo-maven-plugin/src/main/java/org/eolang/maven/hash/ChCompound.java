@@ -33,7 +33,7 @@ import java.nio.file.Path;
  * @todo #1569:30min Now, this class is a configurable. This is not
  *  a good practice. More technically, encapsulated properties must not
  *  be used to change the behavior of an object.
- *  Need to use composable decorators to make this class
+ *  It is required to use composable decorators to make this class
  *  not configurable.
  */
 public final class ChCompound implements CommitHash {
