@@ -39,7 +39,7 @@ import java.util.Objects;
  *
  * @since 0.30
  */
-final class CacheVersion {
+public final class CacheVersion {
 
     /**
      * Not cacheable versions.
@@ -66,7 +66,7 @@ final class CacheVersion {
      * @param ver Version of the eo-maven-plugin which currently builds a program.
      * @param hsh Hash of the objectionary tag.
      */
-    CacheVersion(final String ver, final String hsh) {
+    public CacheVersion(final String ver, final String hsh) {
         this.version = ver;
         this.hash = hsh;
     }
