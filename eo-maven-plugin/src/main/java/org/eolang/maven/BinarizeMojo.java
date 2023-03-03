@@ -37,10 +37,9 @@ import org.eolang.maven.util.Home;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #1161:30m Extract Rust code & parameters
- *  from org.eolang.rust objects here.
- *  Call rustc with provided dependencies and
- *  put binary *.so files to target directory.
+ * @todo #1327:30m Now the implementation is unsuitable for solving
+ *  real problems. It is necessary to pull out the rust code.
+ *  This can be done in much the same way as TranspileMojo.
  */
 @Mojo(
     name = "binarize",
