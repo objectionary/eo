@@ -67,7 +67,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     /**
      * The directory where to binarize to.
      */
-    public static final String DIR = "binarize";
+    public static final String DIR = "7-rust";
 
     /**
      * Target directory.
@@ -96,12 +96,6 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
 
     @Override
     public void exec() throws IOException {
-        final Path dir = this.targetDir.toPath()
-            .resolve(BinarizeMojo.DIR)
-            .resolve("simple-rust-lib.so");
-        new Home(this.targetDir.toPath().resolve(BinarizeMojo.DIR)).save("content", dir);
-
-
         final Collection<Tojo> sources = this.tojos.value().select(
                 row -> row.exists(AssembleMojo.ATTR_XMIR2)
                         && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
@@ -141,7 +135,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
                 BinarizeMojo.TRAIN,
-                place.make(this.targetDir.toPath().resolve("4.5-rust"), "")
+                place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
         );
         System.out.println("\nIn BinarizeMojo.transpile\n");
         final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
