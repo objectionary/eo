@@ -1,3 +1,5 @@
+import java.nio.file.Path
+
 /**
  * The MIT License (MIT)
  *
@@ -27,14 +29,9 @@
  * To add new validation create new script in this folder and add it
  * to the list below.
  */
-[
-  'check-folders-numbering.groovy',
-  'check-all-java-classes-compiled.groovy'
-].each {
-  evaluate(basedir.toPath()
-    .resolve("src")
-    .resolve("test")
-    .resolve("groovy")
-    .resolve(it).toFile())
-  println String.format('Verified with %s - OK', it)
+Path tests = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
+for (it in ['check-folders-numbering.groovy', 'check-all-java-classes-compiled.groovy']) {
+  def res = evaluate tests.resolve(it).toFile()
+  println String.format('Verified with %s - OK. Result: %s', it, res)
 }
+true

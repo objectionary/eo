@@ -1,4 +1,5 @@
 import java.util.stream.Collectors
+import java.util.stream.Stream
 
 /**
  * The MIT License (MIT)
@@ -31,20 +32,20 @@ List<File> directories = target.toFile().listFiles(new FileFilter() {
     return pathname.isDirectory()
   }
 })
-List<File> allowed = [
+List<String> allowed = [
   '1-parse',
   '2-optimize',
   '3-pull',
   '4-resolve',
   '5-pre',
   '6-transpile',
-].stream()
+]
+List<File> allowedDirs = allowed.stream()
   .map { target.resolve(it).toFile() }
   .collect(Collectors.toList())
-
-try {
-  assert allowed.containsAll(directories)
-} catch (AssertionError e) {
-  fail(e);
+for (dir in directories) {
+  if (!allowedDirs.contains(dir)) {
+    fail(String.format("The directory '%s' is not expected to be here. Allowed directories %s", dir.name, allowed));
+  }
 }
 true
