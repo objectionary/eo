@@ -23,10 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="nothing" version="2.0">
-  <!--
-  This stylesheet will set the package name for each
-  <class> element, using the information from the +package meta.
-  -->
   <xsl:template match="class[not(@package)]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
