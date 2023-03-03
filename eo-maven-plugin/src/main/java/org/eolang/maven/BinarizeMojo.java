@@ -40,6 +40,7 @@ import org.eolang.maven.util.Home;
  * @todo #1327:30m Now the implementation is unsuitable for solving
  *  real problems. It is necessary to pull out the rust code.
  *  This can be done in much the same way as TranspileMojo.
+ *  Rust code should then be compiled into a shared library.
  */
 @Mojo(
     name = "binarize",
