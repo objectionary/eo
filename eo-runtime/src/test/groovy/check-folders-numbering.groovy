@@ -42,6 +42,9 @@ List<File> allowed = [
   .map { target.resolve(it).toFile() }
   .collect(Collectors.toList())
 
-assert allowed.containsAll(directories)
-
+try {
+  assert allowed.containsAll(directories)
+} catch (AssertionError e) {
+  fail(e);
+}
 true
