@@ -49,7 +49,7 @@ SOFTWARE.
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>This is a copy</xsl:text>
+        <xsl:text>This is a hard reference</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
