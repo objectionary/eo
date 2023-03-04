@@ -67,8 +67,12 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     /**
      * The directory where to binarize to.
      */
-    public static final String DIR = "7-rust";
+    public static final String DIR = "binarize";
 
+    /**
+     * Extension for compiled sources in XMIR format (XML).
+     */
+    static final String EXT = "xmir";
     /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
@@ -79,36 +83,35 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
-
     /**
      * Parsing train with XSLs.
      */
     static final Train<Shift> TRAIN = new TrBulk<>(
-            new TrClasspath<>(
-                    new ParsingTrain()
-                            .empty()
-                            .with(new StUnhex())
+        new TrClasspath<>(
+            new ParsingTrain()
+                .empty()
+                .with(new StUnhex())
             ),
             Arrays.asList(
-                    "/org/eolang/maven/add_rust/nothing.xsl"
+                "/org/eolang/maven/add_rust/add_rust.xsl"
             )
     ).back().back();
+
 
     @Override
     public void exec() throws IOException {
         final Collection<Tojo> sources = this.tojos.value().select(
-                row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                        && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
-        int saved = 0;
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);
             final String name = input.xpath("/program/@name").get(0);
             final Place place = new Place(name);
             final Path target = place.make(
-                    this.targetDir.toPath().resolve(BinarizeMojo.DIR),
-                    TranspileMojo.EXT
+                this.targetDir.toPath().resolve(BinarizeMojo.DIR),
+                "rs"
             );
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
             if (
@@ -117,28 +120,28 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
                     && target.toFile().lastModified() >= src.toFile().lastModified()
             ) {
                 Logger.info(
-                        this, "XMIR %s (%s) were already transpiled to %s",
-                        new Rel(file), name, new Rel(target)
+                    this, "XMIR %s (%s) were already binarized to %s",
+                    new Rel(file), name, new Rel(target)
                 );
             } else {
-                this.transpile(src, input, target);
+                new Home(target).save(this.transpile(input, target), target);
             }
         }
     }
 
-    private void transpile(
-            final Path src,
-            final XML input,
-            final Path target
+    private String transpile(
+        final XML input,
+        final Path target
     ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
-                BinarizeMojo.TRAIN,
-                place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
+            BinarizeMojo.TRAIN,
+            place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
         );
-        System.out.println("\nIn BinarizeMojo.transpile\n");
         final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
-        new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
+        final XML passed = new Xsline(trn).pass(input);
+        new Home(dir).save(passed.toString(), dir.relativize(target));
+        return passed.xpath("/program/@rust").get(0);
     }
 }

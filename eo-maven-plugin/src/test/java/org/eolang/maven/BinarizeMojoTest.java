@@ -42,19 +42,18 @@ import org.junit.jupiter.api.io.TempDir;
 final class BinarizeMojoTest {
 
     @Test
-    @Disabled
     void binarizesSimpleEoProgram(@TempDir final Path temp) throws Exception {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
         final Map<String, Path> res = new FakeMaven(temp)
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String lib = "target/binarize/simple-rust-lib.so";
+        final String rust = "target/binarize/foo/x/main.rs";
         MatcherAssert.assertThat(
-            res, Matchers.hasKey(lib)
+            res, Matchers.hasKey(rust)
         );
         MatcherAssert.assertThat(
-            new TextOf(res.get(lib)).asString(),
+            new TextOf(res.get(rust)).asString(),
             Matchers.containsString("content")
         );
     }
