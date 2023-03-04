@@ -23,19 +23,21 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-
-import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.xsline.*;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -50,10 +52,16 @@ import org.eolang.parser.StUnhex;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #1327:30m Now the implementation is unsuitable for solving
- *  real problems. It is necessary to pull out the rust code.
- *  This can be done in much the same way as TranspileMojo.
- *  Rust code should then be compiled into a shared library.
+ *
+ * @todo #1864:90m Implement add_rust.xsl
+ *  Now the implementation is unsuitable for solving real
+ *  problems because just adds a rust section to all xmirs.
+ *  It is necessary to pull out the rust code and put it to rust section.
+ *
+ * @todo #1864:90m Extract rust code from rust section
+ *  BinarizeMojo firstly put the code into rust section in xmir.
+ *  Then it must be compiled to shared library. It can be
+ *  implemented via cargo.
  */
 @Mojo(
     name = "binarize",
@@ -70,9 +78,24 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     public static final String DIR = "binarize";
 
     /**
+     * Parsing train with XSLs.
+     */
+    static final Train<Shift> TRAIN = new TrBulk<>(
+        new TrClasspath<>(
+            new ParsingTrain()
+                .empty()
+                .with(new StUnhex())
+        ),
+        Arrays.asList(
+            "/org/eolang/maven/add_rust/add_rust.xsl"
+        )
+    ).back().back();
+
+    /**
      * Extension for compiled sources in XMIR format (XML).
      */
     static final String EXT = "xmir";
+
     /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
@@ -83,20 +106,6 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
-    /**
-     * Parsing train with XSLs.
-     */
-    static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(
-            new ParsingTrain()
-                .empty()
-                .with(new StUnhex())
-            ),
-            Arrays.asList(
-                "/org/eolang/maven/add_rust/add_rust.xsl"
-            )
-    ).back().back();
-
 
     @Override
     public void exec() throws IOException {
@@ -124,12 +133,19 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
                     new Rel(file), name, new Rel(target)
                 );
             } else {
-                new Home(target).save(this.transpile(input, target), target);
+                new Home(target).save(this.addRust(input, target), target);
             }
         }
     }
 
-    private String transpile(
+    /**
+     * Creates a "rust" section in xml file and returns its content.
+     * @param input The .xmir file
+     * @param target The path to put the result file
+     * @return The content of rust section
+     * @throws IOException If any issues with I/O
+     */
+    private String addRust(
         final XML input,
         final Path target
     ) throws IOException {
