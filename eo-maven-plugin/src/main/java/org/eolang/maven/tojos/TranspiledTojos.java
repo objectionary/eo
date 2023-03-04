@@ -54,10 +54,18 @@ public final class TranspiledTojos implements Closeable {
     }
 
     /**
+     * Ctor.
+     * @param tojos Tojos source.
+     */
+    TranspiledTojos(final Tojos tojos) {
+        this(new Sticky<>(() -> tojos));
+    }
+
+    /**
      * The main constructor.
      * @param tojos Tojos source.
      */
-    private TranspiledTojos(final Unchecked<? extends Tojos> tojos) {
+    TranspiledTojos(final Unchecked<? extends Tojos> tojos) {
         this.all = tojos;
     }
 
