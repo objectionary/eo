@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.collections.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.1
-+version 0.29.1
++rt jvm org.eolang:eo-runtime:0.29.2
++version 0.29.2
 
 # Allow to choose right options according to cases conditions.
 # Parameter cases is the array of two dimensional array, which
@@ -41,29 +40,21 @@
 #     "this value will be skipped"
 #
 # This object returns value of only first truly statement.
-# @todo #1812:30min. Remake "switch" without using "QQ.collections.list".
-#  eo-runtime must be independent of other packages so need to implement switch
-#  using recursion not "QQ.collectioins.list". See "float.minus" as an example
 [cases...] > switch
-  if. > @
-    not.
-      eq.
-        cases.length
-        0
-    if.
-      gt.
-        length.
-          [] > arr
-            reduced. > @
-              list
-                cases
-              *
-              [acc case]
-                if. > @
-                  case.at 0
-                  acc.with (case.at 1)
-                  acc
-        0
-      arr.at 0
+  [index cases] > check-case-at
+    if. > @
+      index.eq cases.length
       TRUE
+      if.
+        (cases.at index).at 0
+        (cases.at index).at 1
+        check-case-at
+          index.plus 1
+          cases
+
+  if. > @
+    cases.length.eq 0
     error "switch cases are empty"
+    check-case-at
+      0
+      cases

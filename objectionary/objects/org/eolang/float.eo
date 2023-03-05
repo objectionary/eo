@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.1
-+version 0.29.1
++rt jvm org.eolang:eo-runtime:0.29.2
++version 0.29.2
 
 [] > float
   # Tests that $ = x
@@ -55,22 +55,18 @@
 
   # Tests that $ ≤ x
   [x] > lte
-    if. > @
-      x.as-bytes.eq nan.as-bytes
-      FALSE
-      not.
-        ^.gt x
+    or. > @
+      ^.eq x
+      ^.lt x
 
   # Tests that $ > x
   [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > gte
-    if. > @
-      x.as-bytes.eq nan.as-bytes
-      FALSE
-      not.
-        ^.lt x
+    or. > @
+      ^.eq x
+      ^.gt x
 
   # Multiplication of $ and x
   [x...] > times /float

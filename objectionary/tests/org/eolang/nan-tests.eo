@@ -25,71 +25,104 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +junit
-+version 0.29.1
++version 0.29.2
 
-[] > nan-eq-is-valid
+[] > nan-not-eq-number
+  assert-that > @
+    nan
+    $.not
+      $.equal-to 42
+
+[] > nan-not-eq-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.eq 42).eq FALSE
-      (not-a-number.eq not-a-number).eq FALSE
-    $.equal-to TRUE
+    not-a-number
+    $.not
+      $.equal-to not-a-number
 
-[] > nan-lt-is-valid
+[] > nan-not-lt-number
+  assert-that > @
+    nan
+    $.not
+      $.less-than 42
+
+[] > nan-not-lt-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.lt 42).eq FALSE
-      (not-a-number.lt not-a-number).eq FALSE
-    $.equal-to TRUE
+    not-a-number
+    $.not
+      $.less-than not-a-number
 
-[] > nan-lte-is-valid
+[] > nan-not-lte-number
+  assert-that > @
+    nan.lte 42
+    $.equal-to FALSE
+
+[] > nan-not-lte-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.lte 42).eq FALSE
-      (not-a-number.lte not-a-number).eq FALSE
-    $.equal-to TRUE
+    not-a-number.lte not-a-number
+    $.equal-to FALSE
 
-[] > nan-gt-is-valid
+[] > nan-not-gt-number
+  assert-that > @
+    nan
+    $.not
+      $.greater-than 42
+
+[] > nan-not-gt-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.gt 42).eq FALSE
-      (not-a-number.gt not-a-number).eq FALSE
-    $.equal-to TRUE
+    not-a-number
+    $.not
+      $.greater-than not-a-number
 
-[] > nan-gte-is-valid
+[] > nan-not-gte-number
+  assert-that > @
+    nan.gte 42
+    $.equal-to FALSE
+
+[] > nan-not-gte-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.gte 42).eq FALSE
-      (not-a-number.gte not-a-number).eq FALSE
-    $.equal-to TRUE
+    not-a-number.gte not-a-number
+    $.equal-to FALSE
 
-[] > nan-times-is-valid
+[] > nan-times-number-is-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.times 42).as-bytes.eq (not-a-number.as-bytes)
-      (not-a-number.times not-a-number).as-bytes.eq (not-a-number.as-bytes)
-    $.equal-to TRUE
+    (not-a-number.times 42).as-bytes
+    $.equal-to not-a-number.as-bytes
 
-[] > nan-div-is-valid
+[] > nan-times-nan-is-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.div 42).as-bytes.eq (not-a-number.as-bytes)
-      (not-a-number.div not-a-number).as-bytes.eq (not-a-number.as-bytes)
-    $.equal-to TRUE
+    (not-a-number.times not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
 
-[] > nan-plus-is-valid
+[] > nan-div-number-is-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.plus 42).as-bytes.eq (not-a-number.as-bytes)
-      (not-a-number.plus not-a-number).as-bytes.eq (not-a-number.as-bytes)
-    $.equal-to TRUE
+    (not-a-number.div 42).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-div-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.div not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-plus-number-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.plus 42).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-plus-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.plus not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
 
 [] > nan-neg-is-nan
   nan > not-a-number!
@@ -97,15 +130,19 @@
     not-a-number.neg.as-bytes
     $.equal-to not-a-number.as-bytes
 
-[] > nan-minus-is-valid
+[] > nan-minus-number-is-nan
   nan > not-a-number!
   assert-that > @
-    and.
-      (not-a-number.minus 42).as-bytes.eq (not-a-number.as-bytes)
-      (not-a-number.minus not-a-number).as-bytes.eq (not-a-number.as-bytes)
-    $.equal-to TRUE
+    (not-a-number.minus 42).as-bytes
+    $.equal-to not-a-number.as-bytes
 
-[] > nan-as-bytes-is-valid
+[] > nan-minus-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.minus not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-as-bytes-is-bytes-of-zero-div-zero
   assert-that > @
     nan.as-bytes
     $.equal-to (0.0.div 0.0).as-bytes
