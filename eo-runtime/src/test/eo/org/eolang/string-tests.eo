@@ -49,8 +49,8 @@
 
 [] > reads-the-length
   assert-that > @
-    "Hello, друг!".length
-    $.equal-to 12
+    "Hello, друг !".length
+    $.equal-to 13
 
 [] > compares-two-different-types
   assert-that > @
