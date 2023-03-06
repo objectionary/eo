@@ -47,12 +47,12 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String lib = "target/binarize/simple-rust-lib.so";
+        final String rust = "target/binarize/foo/x/main.rs";
         MatcherAssert.assertThat(
-            res, Matchers.hasKey(lib)
+            res, Matchers.hasKey(rust)
         );
         MatcherAssert.assertThat(
-            new TextOf(res.get(lib)).asString(),
+            new TextOf(res.get(rust)).asString(),
             Matchers.containsString("content")
         );
     }
