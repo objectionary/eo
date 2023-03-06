@@ -138,7 +138,7 @@ final class SodgMojoTest {
             .withProgram(code)
             .execute(new FakeMaven.Sodg())
             .result();
-        Logger.debug(
+        Logger.info(
             SodgMojoTest.class,
             "XML: %s",
             new TextOf(

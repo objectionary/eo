@@ -35,7 +35,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and starts-with(@base, '.')]" mode="sodg" priority="1">
+  <xsl:template match="o[@base and not(@level) and starts-with(@base, '.')]" mode="sodg" priority="1">
     <xsl:variable name="v">
       <xsl:value-of select="@loc"/>
       <xsl:text>.β</xsl:text>

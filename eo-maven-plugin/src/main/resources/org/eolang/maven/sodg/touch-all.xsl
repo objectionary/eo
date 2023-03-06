@@ -54,7 +54,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <xsl:template match="o" mode="sodg" priority="1">
+  <xsl:template match="o[not(@level)]" mode="sodg" priority="1">
     <xsl:call-template name="touch">
       <xsl:with-param name="o" select="."/>
       <xsl:with-param name="loc" select="@loc"/>

@@ -179,8 +179,7 @@ public final class SodgMojo extends SafeMojo {
         new TrFast(
             new TrJoined<>(
                 new TrClasspath<>(
-                    "/org/eolang/maven/sodg/pre-clean.xsl",
-                    "/org/eolang/maven/sodg/remove-leveled.xsl"
+                    "/org/eolang/maven/sodg/pre-clean.xsl"
                 ).back(),
                 new TrDefault<>(
                     new StEndless(
@@ -211,6 +210,8 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
                         "/org/eolang/maven/sodg/add-root.xsl",
                         "/org/eolang/maven/sodg/append-xi.xsl",
+                        "/org/eolang/maven/sodg/unroll-refs.xsl",
+                        "/org/eolang/maven/sodg/remove-leveled.xsl",
                         "/org/eolang/maven/sodg/touch-all.xsl",
                         "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
                         "/org/eolang/maven/sodg/pi-copies.xsl",

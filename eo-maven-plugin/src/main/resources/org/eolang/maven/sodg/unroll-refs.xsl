@@ -22,27 +22,53 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="append-xi" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="unroll-refs" version="2.0">
   <!--
-  Here we find all objects that have @base as '&' or '^' and
-  convert them to `$.&` and '$.^` respectively, by adding new
-  <o> elements.
+  Here we find all objects refer to other objects through @ref
+  attributes. Then, we replace them with composite XML structures
+  that denote a chain of dot notation calls.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[not(@level) and @base='^' or @base='&amp;']">
+  <xsl:template match="o[@base and @ref=//o[@level]/@line]">
+    <xsl:variable name="o" select="."/>
     <xsl:copy>
-      <xsl:apply-templates select="node()|@* except @base"/>
       <xsl:attribute name="base">
         <xsl:text>.</xsl:text>
         <xsl:value-of select="./@base"/>
       </xsl:attribute>
-      <o base="$">
-        <xsl:attribute name="loc">
-          <xsl:value-of select="./@loc"/>
-          <xsl:text>.ρ</xsl:text>
-        </xsl:attribute>
-      </o>
+      <xsl:apply-templates select="node()|@* except @base"/>
+      <xsl:variable name="ref" select="//o[@line = $o/@ref]"/>
+      <xsl:call-template name="up">
+        <xsl:with-param name="level" select="$ref/@level"/>
+        <xsl:with-param name="loc" select="$o/@loc"/>
+      </xsl:call-template>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template name="up">
+    <xsl:param name="level"/>
+    <xsl:param name="loc"/>
+    <o>
+      <xsl:attribute name="loc">
+        <xsl:value-of select="$loc"/>
+        <xsl:text>.ρ</xsl:text>
+      </xsl:attribute>
+      <xsl:attribute name="base">
+        <xsl:choose>
+          <xsl:when test="$level = 0">
+            <xsl:text>$</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>.^</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:if test="$level &gt; 0">
+        <xsl:call-template name="up">
+          <xsl:with-param name="level" select="$level - 1"/>
+          <xsl:with-param name="loc" select="concat($loc, '.ρ')"/>
+        </xsl:call-template>
+      </xsl:if>
+    </o>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
