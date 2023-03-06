@@ -239,6 +239,9 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * The current version of eo-maven-plugin.
      * Maven 3 only.
+     * It is the predefined maven property as  MavenProject, MavenSession, MojoExecution, etc.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
