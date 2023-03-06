@@ -161,7 +161,7 @@ public final class SodgMojo extends SafeMojo {
             new TrClasspath<>(
                 "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
                 "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
-                "/org/eolang/maven/sodg-to/catch-crowded-epsilons.xsl",
+                "/org/eolang/maven/sodg-to/catch-singleton-greeks.xsl",
                 "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
                 "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
                 "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
