@@ -1,6 +1,4 @@
-import java.nio.file.Path
-
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -23,15 +21,12 @@ import java.nio.file.Path
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 /**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
+ * Package for domain tojos.
+ * @since 0.30
+ * The same way as {@link org.eolang.maven.tojos.TranspiledTojos} we can implement
+ *  - placed tojos
+ *  - foreign tojos
+ *  By that we can achieve grater encapsulation and better readability.
  */
-Path tests = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
-for (it in ['check-folders-numbering.groovy', 'check-all-java-classes-compiled.groovy']) {
-  def res = evaluate tests.resolve(it).toFile()
-  println String.format('Verified with %s - OK. Result: %s', it, res)
-}
-true
+package org.eolang.maven.tojos;

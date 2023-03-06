@@ -1,6 +1,4 @@
-import java.nio.file.Path
-
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -23,15 +21,40 @@ import java.nio.file.Path
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
+ * Test case for {@link BinarizeMojo}.
+ *
+ * @since 0.1
  */
-Path tests = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
-for (it in ['check-folders-numbering.groovy', 'check-all-java-classes-compiled.groovy']) {
-  def res = evaluate tests.resolve(it).toFile()
-  println String.format('Verified with %s - OK. Result: %s', it, res)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+final class BinarizeMojoTest {
+
+    @Test
+    void binarizesSimpleEoProgram(@TempDir final Path temp) throws Exception {
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withProgram(src)
+            .execute(new FakeMaven.Binarize())
+            .result();
+        final String rust = "target/binarize/foo/x/main.rs";
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(rust)
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(rust)).asString(),
+            Matchers.containsString("content")
+        );
+    }
+
 }
-true

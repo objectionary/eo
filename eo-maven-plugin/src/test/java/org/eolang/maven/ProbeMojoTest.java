@@ -46,6 +46,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.28.11
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
 
     @Test

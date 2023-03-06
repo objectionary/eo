@@ -47,10 +47,6 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
- * @todo #348:30min Make changes to store INT as bytes.
- *  After that update this todo. When all data types
- *  are stored as bytes, remove data attribute from XML
- *  and XSLT templates.
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class XeListener implements ProgramListener, Iterable<Directive> {

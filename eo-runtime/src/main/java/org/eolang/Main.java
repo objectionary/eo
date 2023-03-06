@@ -177,7 +177,7 @@ public final class Main {
         final String path = new JavaPath(opts.get(0)).toString();
         final Phi app;
         try {
-            Main.LOGGER.info(String.format("Loading class %s", path));
+            Main.LOGGER.fine(String.format("Loading class %s...", path));
             app = Phi.class.cast(
                 Class.forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)

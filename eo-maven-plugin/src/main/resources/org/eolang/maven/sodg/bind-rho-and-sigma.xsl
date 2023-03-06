@@ -35,18 +35,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.')]" mode="sodg" priority="2">
-    <xsl:if test="not(@loc)">
-      <xsl:message terminate="yes">
-        <xsl:text>The object doesn't have @loc, how come?</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:call-template name="bind">
-      <xsl:with-param name="kid" select="@loc"/>
-      <xsl:with-param name="parent" select="o[1]/@loc"/>
-    </xsl:call-template>
-  </xsl:template>
-  <xsl:template match="o[o or @abstract or (not(@base) and @name)]" mode="sodg" priority="1">
+  <xsl:template match="o[not(starts-with(@base, '.')) and o or @abstract or (not(@base) and @name)]" mode="sodg" priority="1">
     <xsl:if test="not(@loc)">
       <xsl:message terminate="yes">
         <xsl:text>The object doesn't have @loc, how come?</xsl:text>

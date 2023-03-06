@@ -1,0 +1,16 @@
+sheets:
+  - /org/eolang/maven/sodg/append-xi.xsl
+document:
+  <program>
+    <objects loc="Φ">
+      <o loc="Φ.x" abstract="">
+        <o base="^" loc="Φ.x.a" name="a"/>
+        <o base="&amp;" loc="Φ.x.b" name="b"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - //o[@base='$' and @loc='Φ.x.a.ρ' and not(@name)]
+  - //o[@base='.^' and @loc='Φ.x.a' and @name='a']
+  - //o[@base='$' and @loc='Φ.x.b.ρ' and not(@name)]
+  - //o[@base='.&' and @loc='Φ.x.b' and @name='b']
