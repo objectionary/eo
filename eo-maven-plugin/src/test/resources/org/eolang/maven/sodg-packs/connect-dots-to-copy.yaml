@@ -12,5 +12,5 @@ document:
   </program>
 asserts:
   - //sodg[count(i)=4]
-  - //i[@name='BIND' and a='$Φ.x' and a='$Φ.x.link' and a='π']
-  - //i[@name='BIND' and a='$Φ.x.link' and a='$Φ.x.ρ' and a='times']
+  - //i[@name='BIND' and a='$Φ.x' and a='$Φ.x.β' and a='π']
+  - //i[@name='BIND' and a='$Φ.x.β' and a='$Φ.x.ρ' and a='times']

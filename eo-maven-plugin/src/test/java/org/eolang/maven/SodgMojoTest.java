@@ -23,17 +23,21 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.Description;
@@ -128,14 +132,21 @@ final class SodgMojoTest {
      * @return The graph
      * @throws IOException If fails
      */
-    private static XML toGraph(final String code, final String inclusion) throws IOException {
+    private static XML toGraph(final String code, final String inclusion) throws Exception {
+        final Map<String, Path> res = new FakeMaven(Files.createTempDirectory("eo"))
+            .with("sodgIncludes", new SetOf<>(inclusion))
+            .withProgram(code)
+            .execute(new FakeMaven.Sodg())
+            .result();
+        Logger.debug(
+            SodgMojoTest.class,
+            "XML: %s",
+            new TextOf(
+                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)))
+            ).asString()
+        );
         return new XMLDocument(
-            new FakeMaven(Files.createTempDirectory("eo"))
-                .with("sodgIncludes", new SetOf<>(inclusion))
-                .withProgram(code)
-                .execute(new FakeMaven.Sodg())
-                .result()
-                .get(String.format("target/%s/foo/x/main.sodg.graph.xml", SodgMojo.DIR))
+            res.get(String.format("target/%s/foo/x/main.sodg.graph.xml", SodgMojo.DIR))
         );
     }
 

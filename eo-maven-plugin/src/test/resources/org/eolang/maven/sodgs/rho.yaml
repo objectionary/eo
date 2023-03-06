@@ -1,0 +1,8 @@
+locators:
+  - .foo .bar .a .b .π .c .ε .β .ε .ρ
+eo: |
+  +package foo.bar
+  
+  [] > a
+    [] > b
+      ^ > c

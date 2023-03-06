@@ -22,43 +22,39 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="pi-copies" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-conflicting-greeks" version="2.0">
   <!--
-  Here we add pi-edges to objects that are copies of others.
+  Here we catch vertices that have departing edges labeled with greek letters
+  conflicting with each other, for example "lambda" and "epsilon" at the same time.
   -->
-  <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/sodg">
+  <xsl:template match="/graph/v">
+    <xsl:variable name="greeks" select="('λ', 'β', 'ε', 'π', 'γ')"/>
+    <xsl:variable name="v" select="."/>
+    <xsl:for-each select="$greeks">
+      <xsl:variable name="left" select="."/>
+      <xsl:for-each select="$greeks">
+        <xsl:variable name="right" select="."/>
+        <xsl:if test="$left != $right and $v/e[@title=$left] and $v/e[@title=$right]">
+          <xsl:message terminate="yes">
+            <xsl:text>The edges departing from '</xsl:text>
+            <xsl:value-of select="$v/@id"/>
+            <xsl:text>' conflict with each other, we can't have '</xsl:text>
+            <xsl:value-of select="$left"/>
+            <xsl:text>' and '</xsl:text>
+            <xsl:value-of select="$right"/>
+            <xsl:text>' at the same time</xsl:text>
+          </xsl:message>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:for-each>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and (o or @data or @abstract)]" mode="sodg" priority="1">
-    <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'BIND'"/>
-      <xsl:with-param name="args" as="item()*">
-        <xsl:sequence>
-          <xsl:value-of select="eo:var(@loc)"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:value-of select="eo:var(eo:base-to-loc(.))"/>
-        </xsl:sequence>
-        <xsl:sequence>
-          <xsl:text>π</xsl:text>
-        </xsl:sequence>
-      </xsl:with-param>
-      <xsl:with-param name="comment">
-        <xsl:text>This is a copy</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  <xsl:template match="o" mode="sodg">
-    <!-- ignore them -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*" mode="#current"/>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

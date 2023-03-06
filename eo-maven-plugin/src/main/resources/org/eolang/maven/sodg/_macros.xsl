@@ -58,6 +58,9 @@ SOFTWARE.
         <xsl:when test="$o/@base = 'Q'">
           <xsl:text>Φ</xsl:text>
         </xsl:when>
+        <xsl:when test="$o/@base = '$'">
+          <xsl:value-of select="$o/ancestor::o[@abstract][1]/@loc"/>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:text>Φ.</xsl:text>
           <xsl:if test="not(contains($o/@base, '.')) and $program/metas/meta[head='package']">
