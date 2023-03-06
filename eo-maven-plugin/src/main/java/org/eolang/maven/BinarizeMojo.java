@@ -92,11 +92,6 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     ).back().back();
 
     /**
-     * Extension for compiled sources in XMIR format (XML).
-     */
-    static final String EXT = "xmir";
-
-    /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
