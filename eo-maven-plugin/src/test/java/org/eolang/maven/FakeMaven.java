@@ -160,6 +160,20 @@ public final class FakeMaven {
     }
 
     /**
+     * Sets placed tojo attribute.
+     *
+     * @param binary Binary as class file or jar.
+     * @return The same maven instance.
+     */
+    public FakeMaven withPlacedBinary(final String binary) {
+        this.placed()
+            .add(binary)
+            .set(PlaceMojo.ATTR_PLD_DEP, "test.jar")
+            .set(PlaceMojo.ATTR_PLD_KIND, binary.substring(binary.lastIndexOf('.') + 1));
+        return this;
+    }
+
+    /**
      * Executes mojos in the workspace.
      * You can use utility classes to run predefined maven pipelines:
      *  - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
