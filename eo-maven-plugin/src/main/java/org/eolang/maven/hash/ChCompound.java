@@ -39,7 +39,7 @@ import java.nio.file.Path;
  *  The correct one name will consist of prefix "Ch" and a noun or
  *  adjective.
  */
-public final class ChResolve implements CommitHash {
+public final class ChCompound implements CommitHash {
 
     /**
      * Read hashes from local file.
@@ -65,7 +65,7 @@ public final class ChResolve implements CommitHash {
      * @param text Hash by pattern
      * @param label The Git hash to pull objects from
      */
-    public ChResolve(final Path data, final String text, final String label) {
+    public ChCompound(final Path data, final String text, final String label) {
         this.file = data;
         this.hash = text;
         this.tag = label;
