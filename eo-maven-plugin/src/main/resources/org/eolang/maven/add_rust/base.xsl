@@ -29,13 +29,10 @@ SOFTWARE.
     -->
     <xsl:template match="o">
         <xsl:copy>
-            <xsl:apply-templates select="@*"/>
-           <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
+            <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
+                <xsl:variable name="rust" select="text()"/>
                 <xsl:attribute name="rust">
-                    <xsl:value-of select= "text()"/>
-                </xsl:attribute>
-                <xsl:attribute name="base-base">
-                    <xsl:value-of select= "../attribute(base)"/>
+                    <xsl:value-of select= "$rust"/>
                 </xsl:attribute>
             </xsl:if>
             <xsl:apply-templates select="node()|@*"/>
