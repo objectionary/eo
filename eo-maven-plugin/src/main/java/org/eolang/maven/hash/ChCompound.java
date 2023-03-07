@@ -35,9 +35,6 @@ import java.nio.file.Path;
  *  be used to change the behavior of an object.
  *  Need to use composable decorators to make this class
  *  not configurable.
- * @todo #1569:30min Need to rename this class to a more correct one.
- *  The correct one name will consist of prefix "Ch" and a noun or
- *  adjective.
  */
 public final class ChCompound implements CommitHash {
 
