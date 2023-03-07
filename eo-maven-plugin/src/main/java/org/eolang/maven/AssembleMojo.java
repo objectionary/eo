@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -234,6 +235,17 @@ public final class AssembleMojo extends SafeMojo {
     @Parameter(property = "eo.unrollExitError")
     @SuppressWarnings("PMD.ImmutableField")
     private boolean unrollExitError = true;
+
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * It is the predefined maven property as  MavenProject, MavenSession, MojoExecution, etc.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
 
     @Override
     public void exec() throws IOException {

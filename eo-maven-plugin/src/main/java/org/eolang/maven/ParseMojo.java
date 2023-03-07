@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -43,6 +44,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
@@ -99,6 +101,16 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
         property = "eo.failOnError",
         defaultValue = "true")
     private boolean failOnError = true;
+
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
 
     @Override
     public void exec() throws IOException {
@@ -157,9 +169,6 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
      *
      * @param tojo The tojo
      * @throws IOException If fails
-     * @todo #1226:30min new FtCached(hash, cache, origin) should be replaced with a new constructor
-     *  that uses the current eo-maven-plugin version - new FtCached(CacheVersion, cache, origin).
-     *  This will allow us to invalidate the cache when the plugin version changes.
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private void parse(final Tojo tojo) throws IOException {
@@ -171,7 +180,7 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
         );
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
             footprint = new FtCached(
-                tojo.get(AssembleMojo.ATTR_HASH),
+                new CacheVersion(this.plugin.getVersion(), tojo.get(AssembleMojo.ATTR_HASH)),
                 this.cache.resolve(ParseMojo.PARSED),
                 footprint
             );
