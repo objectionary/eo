@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.UUID;
+import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -95,7 +96,7 @@ final class PlaceMojoTest {
         final String binary = "org/eolang/f/x.a.class";
         PlaceMojoTest.saveBinary(temp, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, binary);
-        final long before = PlaceMojoTest.pathOfAlreadyPlacedBinary(
+        final long before = PlaceMojoTest.pathToAlreadyPlacedBinary(
             temp,
             binary
         ).toFile().lastModified();
@@ -114,12 +115,12 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void rewritesAlreadyPlacedBinaries(@TempDir final Path temp) throws IOException {
+    void rewritesAlreadyPlacedBinaries(@TempDir final Path temp) throws Exception {
         final String binary = "org/eolang/f/y.a.class";
-        PlaceMojoTest.saveBinary(temp, "some new content", binary);
+        final String content = "some new content";
+        PlaceMojoTest.saveBinary(temp, content, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, "old content", binary);
-        final Path path = PlaceMojoTest.pathOfAlreadyPlacedBinary(temp, binary);
-        final long before = path.toFile().lastModified();
+        final Path path = PlaceMojoTest.pathToAlreadyPlacedBinary(temp, binary);
         final Map<String, Path> res = new FakeMaven(temp)
             .withPlacedBinary(path.toString())
             .execute(PlaceMojo.class)
@@ -129,8 +130,8 @@ final class PlaceMojoTest {
             Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
-            path.toFile().lastModified(),
-            Matchers.not(Matchers.equalTo(before))
+            content,
+            Matchers.is(new TextOf(path).asString())
         );
     }
 
@@ -167,11 +168,11 @@ final class PlaceMojoTest {
             .result();
         MatcherAssert.assertThat(
             res,
-            Matchers.hasValue(PlaceMojoTest.pathOfAlreadyPlacedBinary(temp, first))
+            Matchers.hasValue(PlaceMojoTest.pathToAlreadyPlacedBinary(temp, first))
         );
         MatcherAssert.assertThat(
             res,
-            Matchers.hasValue(PlaceMojoTest.pathOfAlreadyPlacedBinary(temp, second))
+            Matchers.hasValue(PlaceMojoTest.pathToAlreadyPlacedBinary(temp, second))
         );
     }
 
@@ -288,7 +289,7 @@ final class PlaceMojoTest {
      * @param binary Binary name.
      * @return Path to the placed binary.
      */
-    private static Path pathOfAlreadyPlacedBinary(final Path temp, final String binary) {
+    private static Path pathToAlreadyPlacedBinary(final Path temp, final String binary) {
         final Home home = new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES));
         return home.absolute(Paths.get(binary));
     }
