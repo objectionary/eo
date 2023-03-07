@@ -70,6 +70,7 @@ final class AssembleMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
@@ -134,6 +135,7 @@ final class AssembleMojoTest {
             .with("failOnError", false)
             .with("central", Central.EMPTY)
             .with("ignoreTransitive", true)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .with(
                 "objectionary",
                 new OyFake()

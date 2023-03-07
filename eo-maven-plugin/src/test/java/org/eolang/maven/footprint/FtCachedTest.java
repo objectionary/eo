@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import org.cactoos.Scalar;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -42,31 +43,69 @@ final class FtCachedTest {
      */
     private static final Scalar<String> CONTENT = () -> "content";
 
+    /**
+     * Default extension.
+     */
+    private static final String EXTENSION = "xmir";
+
+    /**
+     * Default target folder.
+     */
+    private static final String TARGET = "target";
+
+    /**
+     * Default cache folder.
+     */
+    private static final String CACHE = "parsed";
+
     @Test
     void loadsContentOfCachedFile(@TempDir final Path temp) throws Exception {
-        final Path target = temp.resolve("target");
-        final Path parsed = temp.resolve("parsed");
-        final Footprint cached = new FtCached("abcde123", parsed, new FtDefault(target));
+        final Footprint cached = FtCachedTest.footprint("0.29.1", temp);
         final String program = "org.eolang.txt.format";
-        cached.save(program, "xmir", FtCachedTest.CONTENT);
+        cached.save(program, FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
-            cached.load(program, "xmir"),
+            cached.load(program, FtCachedTest.EXTENSION),
             Matchers.equalTo(FtCachedTest.CONTENT.value())
+        );
+        MatcherAssert.assertThat(
+            temp.resolve(FtCachedTest.CACHE).toFile(),
+            FileMatchers.anExistingDirectory()
+        );
+    }
+
+    @Test
+    void loadsContentOfRealFileCachingDoesNotWork(@TempDir final Path temp) throws Exception {
+        final Footprint cached = FtCachedTest.footprint("0.0.0", temp);
+        final String program = "org.eolang.txt.regex";
+        cached.save(program, FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
+        MatcherAssert.assertThat(
+            cached.load(program, FtCachedTest.EXTENSION),
+            Matchers.equalTo(FtCachedTest.CONTENT.value())
+        );
+        MatcherAssert.assertThat(
+            temp.resolve(FtCachedTest.CACHE).toFile(),
+            Matchers.not(FileMatchers.anExistingFileOrDirectory())
         );
     }
 
     @Test
     void returnsListOfSavedFilesFromDelegate(@TempDir final Path temp) throws IOException {
-        final Path target = temp.resolve("target");
-        final Footprint footprint = new FtCached(
-            "abcde123",
-            temp.resolve("parsed"),
-            new FtDefault(target)
-        );
-        footprint.save("prog", "xmir", FtCachedTest.CONTENT);
+        final Footprint footprint = FtCachedTest.footprint("0.22.1", temp);
+        footprint.save("prog", FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
-            footprint.list("xmir"),
-            Matchers.hasItem(target.resolve("prog.xmir"))
+            footprint.list(FtCachedTest.EXTENSION),
+            Matchers.hasItem(temp.resolve(FtCachedTest.TARGET).resolve("prog.xmir"))
+        );
+    }
+
+    private static Footprint footprint(
+        final String eover,
+        final Path temp
+    ) {
+        return new FtCached(
+            new CacheVersion(eover, "abcde123"),
+            temp.resolve(FtCachedTest.CACHE),
+            new FtDefault(temp.resolve(FtCachedTest.TARGET))
         );
     }
 }
