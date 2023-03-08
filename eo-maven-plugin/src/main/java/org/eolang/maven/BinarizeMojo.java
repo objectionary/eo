@@ -59,8 +59,7 @@ import org.eolang.parser.ParsingTrain;
  * @todo #1876:90m Expand add-rust.xsl. Now
  *  it creates a section 'program/rusts' with nodes
  *  'rust' with attribute 'code'. It is also necessary
- *  to add a 'loc' attribute and dependencies to every
- *  'rust'
+ *  to add dependencies to every 'rust'
  *
  * @todo #1864:90m Extract rust code from rust section
  *  BinarizeMojo firstly put the code into rust section in xmir.

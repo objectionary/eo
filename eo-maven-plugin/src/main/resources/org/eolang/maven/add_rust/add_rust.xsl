@@ -34,6 +34,9 @@ SOFTWARE.
               <xsl:attribute name="code">
                 <xsl:value-of select="text()"/>
               </xsl:attribute>
+              <xsl:attribute name="loc">
+                <xsl:value-of select="../attribute(loc)"/>
+              </xsl:attribute>
             </rust>
           </xsl:if>
         </xsl:for-each>
