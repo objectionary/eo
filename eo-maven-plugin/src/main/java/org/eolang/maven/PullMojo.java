@@ -34,8 +34,8 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
@@ -128,7 +128,7 @@ public final class PullMojo extends SafeMojo implements CompilationStep {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final CommitHash hash = new ChResolve(
+        final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
         if (this.objectionary == null) {

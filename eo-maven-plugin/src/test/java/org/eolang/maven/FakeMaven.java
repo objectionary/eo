@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
@@ -96,46 +97,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Adds correct 'Hello world' program to workspace.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    public FakeMaven withHelloWorld() throws IOException {
-        return this.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print");
-    }
-
-    /**
-     * Adds eo program to a workspace.
-     * @param input Program as an input.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    public FakeMaven withProgram(final Input input) throws IOException {
-        return this.withProgram(new UncheckedText(new TextOf(input)).asString());
-    }
-
-    /**
-     * Adds eo program to a workspace.
-     * @param program Program as a raw string.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    public FakeMaven withProgram(final String... program) throws IOException {
-        return this.withProgram(String.join("\n", program));
-    }
-
-    /**
-     * Adds eo program to a workspace.
-     *
-     * @param path Path to the program
-     * @return The same maven instance
-     * @throws IOException If fails
-     */
-    public FakeMaven withProgram(final Path path) throws IOException {
-        return this.withProgram(new UncheckedText(new TextOf(path)).asString());
-    }
-
-    /**
      * Sets parameter for execution.
      *
      * @param param Parameter name
@@ -144,18 +105,6 @@ public final class FakeMaven {
      */
     public FakeMaven with(final String param, final Object value) {
         this.params.put(param, value);
-        return this;
-    }
-
-    /**
-     * Sets tojo attribute.
-     *
-     * @param attribute Tojo attribute.
-     * @param value Attribute value.
-     * @return The same maven instance.
-     */
-    public FakeMaven withTojoAttribute(final String attribute, final Object value) {
-        this.attributes.put(attribute, value);
         return this;
     }
 
@@ -175,6 +124,17 @@ public final class FakeMaven {
             this.execute(clazz);
         }
         return this;
+    }
+
+    /**
+     * Tojo for eo-foreign.* file.
+     *
+     * @return TjSmart of the current eo-foreign.file.
+     */
+    public TjSmart foreign() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.foreignPath())
+        );
     }
 
     /**
@@ -222,6 +182,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generateDotFiles", true);
         this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
         this.params.putIfAbsent("placedFormat", "csv");
+        this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -231,10 +192,76 @@ public final class FakeMaven {
     }
 
     /**
+     * Sets placed tojo attribute.
+     *
+     * @param binary Binary as class file or jar.
+     * @return The same maven instance.
+     */
+    FakeMaven withPlacedBinary(final String binary) {
+        this.placed()
+            .add(binary)
+            .set(PlaceMojo.ATTR_PLD_DEP, "test.jar")
+            .set(PlaceMojo.ATTR_PLD_KIND, binary.substring(binary.lastIndexOf('.') + 1));
+        return this;
+    }
+
+    /**
+     * Adds correct 'Hello world' program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withHelloWorld() throws IOException {
+        return this.withProgram("+package f", "[args] > main", "  (stdout \"Hello!\").print");
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param input Program as an input.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withProgram(final Input input) throws IOException {
+        return this.withProgram(new UncheckedText(new TextOf(input)).asString());
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param program Program as a raw string.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withProgram(final String... program) throws IOException {
+        return this.withProgram(String.join("\n", program));
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     *
+     * @param path Path to the program
+     * @return The same maven instance
+     * @throws IOException If fails
+     */
+    FakeMaven withProgram(final Path path) throws IOException {
+        return this.withProgram(new UncheckedText(new TextOf(path)).asString());
+    }
+
+    /**
+     * Sets tojo attribute.
+     *
+     * @param attribute Tojo attribute.
+     * @param value Attribute value.
+     * @return The same maven instance.
+     */
+    FakeMaven withTojoAttribute(final String attribute, final Object value) {
+        this.attributes.put(attribute, value);
+        return this;
+    }
+
+    /**
      * Path to compilation target directory.
      * @return Path to target dir.
      */
-    public Path targetPath() {
+    Path targetPath() {
         return this.workspace.absolute(Paths.get("target"));
     }
 
@@ -242,7 +269,7 @@ public final class FakeMaven {
      * Path to generated directory.
      * @return Path to generated dir.
      */
-    public Path generatedPath() {
+    Path generatedPath() {
         return this.targetPath().resolve("generated");
     }
 
@@ -250,19 +277,8 @@ public final class FakeMaven {
      * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
      * @return Path to eo-foreign.* file.
      */
-    public Path foreignPath() {
+    Path foreignPath() {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
-    }
-
-    /**
-     * Tojo for eo-foreign.* file.
-     *
-     * @return TjSmart of the current eo-foreign.file.
-     */
-    public TjSmart foreign() {
-        return new TjSmart(
-            Catalogs.INSTANCE.make(this.foreignPath())
-        );
     }
 
     /**
@@ -270,7 +286,7 @@ public final class FakeMaven {
      *
      * @return TjSmart of the current placed.json file.
      */
-    public TjSmart placed() {
+    TjSmart placed() {
         return new TjSmart(
             Catalogs.INSTANCE.make(this.workspace.absolute(Paths.get("placed.json")))
         );
@@ -283,7 +299,7 @@ public final class FakeMaven {
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
      */
-    public Map<String, Path> result() throws IOException {
+    Map<String, Path> result() throws IOException {
         final Path root = this.workspace.absolute(Paths.get(""));
         return Files.walk(root).collect(
             Collectors.toMap(
@@ -294,6 +310,14 @@ public final class FakeMaven {
                 Function.identity()
             )
         );
+    }
+
+    /**
+     * The version of eo-maven-plugin for tests.
+     * @return Version.
+     */
+    static String pluginVersion() {
+        return "1.0-TEST";
     }
 
     /**
@@ -312,6 +336,18 @@ public final class FakeMaven {
             suffix = String.format("_%d", index);
         }
         return suffix;
+    }
+
+    /**
+     * Plugin descriptor with test version.
+     * @return Plugin descriptor.
+     */
+    static PluginDescriptor pluginDescriptor() {
+        final PluginDescriptor descriptor = new PluginDescriptor();
+        descriptor.setGroupId("org.eolang");
+        descriptor.setArtifactId("eo-maven-plugin");
+        descriptor.setVersion(FakeMaven.pluginVersion());
+        return descriptor;
     }
 
     /**
