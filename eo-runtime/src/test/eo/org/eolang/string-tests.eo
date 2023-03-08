@@ -54,7 +54,7 @@
 
 [] > compares-two-different-types
   assert-that > @
-    "Hello"
+    "Hello lol"
     $.not
       $.equal-to 42
 
