@@ -221,7 +221,7 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/put-atoms.xsl"
                     ).back(),
                     SodgMojo.class,
-                    Level.FINEST
+                    Level.INFO
                 ),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
