@@ -34,12 +34,13 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -129,8 +130,8 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
                     new Rel(file), name, new Rel(target)
                 );
             } else {
-                for (String rust: this.addRust(input, target)){
-                    new Home(target).save(Unhex(rust), target);
+                for (final String rust: this.addRust(input, target)) {
+                    new Home(target).save(unhex(rust), target);
                 }
             }
         }
@@ -156,26 +157,30 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
         final XML passed = new Xsline(trn).pass(input);
         new Home(dir).save(passed.toString(), dir.relativize(target));
-        List<String> strings = passed.xpath("/program/rusts/rust/@code");
-        System.out.println(strings);
-        return strings;
+        return passed.xpath("/program/rusts/rust/@code");
     }
 
-    private static String Unhex(final String txt) {
-        final StringBuilder hexString = new StringBuilder(txt.length());
+    /**
+     * Makes a text from Hexed text.
+     * @param txt Hexed chars separated by backspace.
+     * @return Normal text.
+     */
+    private static String unhex(final String txt) {
+        final StringBuilder hex = new StringBuilder(txt.length());
         for (final char chr : txt.toCharArray()) {
             if (chr == ' ') {
                 continue;
             }
-            hexString.append(chr);
+            hex.append(chr);
         }
-        String result;
+        final String result;
         try {
-            byte[] bytes = Hex.decodeHex(String.valueOf(hexString).toCharArray());
+            final byte[] bytes = Hex.decodeHex(String.valueOf(hex).toCharArray());
             result = new String(bytes, "UTF-8");
-        } catch (Exception exception) {
+        } catch (final DecoderException | UnsupportedEncodingException exception) {
             throw new IllegalArgumentException(
-                String.format("Invalid String %s, cannot unhex", txt)
+                String.format("Invalid String %s, cannot unhex", txt),
+                exception
             );
         }
         return result;

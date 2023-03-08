@@ -29,7 +29,6 @@ import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -52,7 +51,6 @@ final class BinarizeMojoTest {
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
         );
-        System.out.println(new TextOf(res.get(rust)).asString());
         MatcherAssert.assertThat(
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
