@@ -29,6 +29,7 @@ import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -51,9 +52,20 @@ final class BinarizeMojoTest {
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
         );
+        System.out.println(new TextOf(res.get(rust)).asString());
         MatcherAssert.assertThat(
             new TextOf(res.get(rust)).asString(),
-            Matchers.containsString("content")
+            Matchers.stringContainsInOrder(
+                "use reo::universe::Universe;",
+                    "use reo::data::Data;",
+                    "use rand::rand;",
+                    "pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {",
+                    "  print(\"Hello world\");",
+                    "  let i = copy!(find!(\"org.eolang.int\"));",
+                    "  uni.data(i, Data::from_int(random::<i64>()))?;",
+                    "  Ok(i)",
+                    "}"
+            )
         );
     }
 

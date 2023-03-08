@@ -34,10 +34,14 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.codec.DecoderException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -46,6 +50,8 @@ import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 import org.eolang.parser.StUnhex;
+import org.apache.commons.codec.binary.Hex;
+import org.w3c.dom.NodeList;
 
 /**
  * Compile binaries.
@@ -84,7 +90,6 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         new TrClasspath<>(
             new ParsingTrain()
                 .empty()
-                .with(new StUnhex())
         ),
         Arrays.asList(
             "/org/eolang/maven/add_rust/add_rust.xsl"
@@ -128,7 +133,9 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
                     new Rel(file), name, new Rel(target)
                 );
             } else {
-                new Home(target).save(this.addRust(input, target), target);
+                for (String rust: this.addRust(input, target)){
+                    new Home(target).save(Unhex(rust), target);
+                }
             }
         }
     }
@@ -140,7 +147,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
      * @return The content of rust section
      * @throws IOException If any issues with I/O
      */
-    private String addRust(
+    private List<String> addRust(
         final XML input,
         final Path target
     ) throws IOException {
@@ -153,6 +160,28 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
         final XML passed = new Xsline(trn).pass(input);
         new Home(dir).save(passed.toString(), dir.relativize(target));
-        return passed.xpath("/program/@rust").get(0);
+        List<String> strings = passed.xpath("/program/rusts/rust/@code");
+        System.out.println(strings);
+        return strings;
+    }
+
+    private static String Unhex(final String txt) {
+        final StringBuilder hexString = new StringBuilder(txt.length());
+        for (final char chr : txt.toCharArray()) {
+            if (chr == ' ') {
+                continue;
+            }
+            hexString.append(chr);
+        }
+        String result;
+        try {
+            byte[] bytes = Hex.decodeHex(String.valueOf(hexString).toCharArray());
+            result = new String(bytes, "UTF-8");
+        } catch (Exception exception) {
+            throw new IllegalArgumentException(
+                String.format("Invalid String %s, cannot unhex", txt)
+            );
+        }
+        return result;
     }
 }

@@ -28,7 +28,15 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
       <rusts>
         <xsl:comment>"Rust inserts"</xsl:comment>
-        <xsl:for-each select="//o"><xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'"><rust><xsl:value-of select="text()"/></rust></xsl:if></xsl:for-each>\n
+        <xsl:for-each select="//o">
+          <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
+            <rust>
+              <xsl:attribute name="code">
+                <xsl:value-of select="text()"/>
+              </xsl:attribute>
+            </rust>
+          </xsl:if>
+        </xsl:for-each>
       </rusts>
     </xsl:copy>
   </xsl:template>
