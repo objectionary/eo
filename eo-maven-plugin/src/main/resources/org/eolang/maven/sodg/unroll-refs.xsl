@@ -47,7 +47,7 @@ SOFTWARE.
   <xsl:template name="up">
     <xsl:param name="level"/>
     <xsl:param name="loc"/>
-    <o>
+    <xsl:element name="o">
       <xsl:attribute name="loc">
         <xsl:value-of select="$loc"/>
         <xsl:text>.ρ</xsl:text>
@@ -68,7 +68,7 @@ SOFTWARE.
           <xsl:with-param name="loc" select="concat($loc, '.ρ')"/>
         </xsl:call-template>
       </xsl:if>
-    </o>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
