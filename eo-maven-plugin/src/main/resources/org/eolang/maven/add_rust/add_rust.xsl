@@ -23,11 +23,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add_rust" version="2.0">
-  <xsl:template match="program">
+  <xsl:template match="/">
     <xsl:copy>
-      <xsl:attribute name="rust">
-        <xsl:value-of>content</xsl:value-of>
-      </xsl:attribute>
+    <rusts>
+      <xsl:for-each select="//o">
+        <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
+        <rust><xsl:value-of select="text()"></xsl:value-of></rust>
+        </xsl:if>
+      </xsl:for-each>
+    </rusts>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
