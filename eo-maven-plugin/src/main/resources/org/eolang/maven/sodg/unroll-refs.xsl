@@ -38,6 +38,15 @@ SOFTWARE.
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
       <xsl:variable name="ref" select="//o[@line = $o/@ref]"/>
+      <xsl:if test="count($ref) != 1">
+        <xsl:message terminate="yes">
+          <xsl:text>Exactly one ref is expected for </xsl:text>
+          <xsl:value-of select="$o/@ref"/>
+          <xsl:text> but </xsl:text>
+          <xsl:value-of select="count($ref)"/>
+          <xsl:text>found</xsl:text>
+        </xsl:message>
+      </xsl:if>
       <xsl:call-template name="up">
         <xsl:with-param name="level" select="$ref/@level"/>
         <xsl:with-param name="loc" select="$o/@loc"/>
