@@ -121,12 +121,12 @@ final class PlaceMojoTest {
         PlaceMojoTest.saveBinary(temp, content, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, "old content", binary);
         final Path path = PlaceMojoTest.pathToPlacedBinary(temp, binary);
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withPlacedBinary(path.toString())
-            .execute(PlaceMojo.class)
-            .result();
+        final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path.toString());
+        maven.placed().select(all -> true).forEach(
+            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true")
+        );
         MatcherAssert.assertThat(
-            res,
+            maven.execute(PlaceMojo.class).result(),
             Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
@@ -243,7 +243,7 @@ final class PlaceMojoTest {
         final String binary = "some.class";
         PlaceMojoTest.saveBinary(temp, "with old content", binary);
         maven.execute(PlaceMojo.class).result();
-        final String updated = "with new content";
+        final String updated = "with some new content";
         PlaceMojoTest.saveBinary(temp, updated, binary);
         maven.placed().select(all -> true).forEach(
             tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true")

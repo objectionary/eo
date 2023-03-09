@@ -48,7 +48,7 @@ import org.eolang.maven.util.Walk;
  * copy to target/classes.
  *
  * @since 0.11
- * @see <a herf="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
+ * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  */
 @Mojo(
     name = "place",
@@ -203,6 +203,13 @@ public final class PlaceMojo extends SafeMojo {
                     new Rel(target), target.toFile().length(),
                     before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
                 );
+            }
+            if (!before.isEmpty() && Files.exists(target)) {
+                final Tojo tojo = before.iterator().next();
+                if (tojo.exists(PlaceMojo.ATTR_PLD_UNPLACED)
+                    && "false".equals(tojo.get(PlaceMojo.ATTR_PLD_UNPLACED))) {
+                    continue;
+                }
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             this.placedTojos.value().add(target.toString())
