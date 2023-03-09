@@ -220,7 +220,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void doesNotPlacesAgainIfWasNotUnplaced(@TempDir Path temp) throws Exception {
+    void doesNotPlacesAgainIfWasNotUnplaced(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final String binary = "some.class";
         final String old = "some old content";
@@ -238,7 +238,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesAgainIfWasUnplaced(@TempDir Path temp) throws Exception {
+    void placesAgainIfWasUnplaced(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final String binary = "some.class";
         PlaceMojoTest.saveBinary(temp, "with old content", binary);
