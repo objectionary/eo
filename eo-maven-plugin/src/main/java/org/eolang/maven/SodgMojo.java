@@ -34,6 +34,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEndless;
+import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
@@ -51,6 +52,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
@@ -158,15 +160,35 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> FINISH = new TrLogged(
         new TrFast(
-            new TrClasspath<>(
-                "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
-                "/org/eolang/maven/sodg-to/catch-duplicate-vertices.xsl",
-                "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
-                "/org/eolang/maven/sodg-to/catch-singleton-greeks.xsl",
-                "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
-                "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
-                "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
-            ).back(),
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+                    "/org/eolang/maven/sodg-to/catch-duplicate-vertices.xsl",
+                    "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+                    "/org/eolang/maven/sodg-to/catch-singleton-greeks.xsl",
+                    "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
+                    "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
+                    "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
+                ).back(),
+                new TrDefault<>(
+                    new StLambda(
+                        input -> {
+                            final Set<String> seen = new HashSet<>();
+                            SodgMojo.traverse(input, "ν0", seen);
+                            final int total = input.nodes("//v").size();
+                            if (total != seen.size()) {
+                                throw new IllegalStateException(
+                                    String.format(
+                                        "Not all vertices are in the tree, only %d out of %d",
+                                        seen.size(), total
+                                    )
+                                );
+                            }
+                            return input;
+                        }
+                    )
+                )
+            ),
             SodgMojo.class
         ),
         SodgMojo.class,
@@ -521,6 +543,24 @@ public final class SodgMojo extends SafeMojo {
             lvl = Level.INFO;
         }
         return lvl;
+    }
+
+    /**
+     * Go through the graph recursively and visit all vertices.
+     * @param graph The XML graph
+     * @param root The vertex to start from
+     * @param seen List of <code>@id</code> attributes already seen
+     */
+    private static void traverse(final XML graph, final String root,
+        final Set<String> seen) {
+        for (final XML edge : graph.nodes(String.format("//v[@id='%s']/e", root))) {
+            final String kid = edge.xpath("@to").get(0);
+            if (seen.contains(kid)) {
+                continue;
+            }
+            seen.add(kid);
+            SodgMojo.traverse(graph, kid, seen);
+        }
     }
 
 }
