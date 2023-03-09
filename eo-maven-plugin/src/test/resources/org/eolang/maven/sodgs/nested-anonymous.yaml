@@ -1,7 +1,8 @@
-skip: true
 locators:
-  - .a .α0 .π .φ
+  - .a .x .π
+  - .a .x .α0 .ε .φ .ε .ρ .t
 eo: |
-  foo > a
-    [x]
-      x > @
+  [] > a
+    foo > x
+      [t]
+        t > @
