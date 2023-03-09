@@ -47,7 +47,7 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String rust = "target/binarize/foo/x/main.rs";
+        final String rust = "target/binarize/codes/Φ$org$eolang$custom$creates-object$r.rs";
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
         );
@@ -58,7 +58,7 @@ final class BinarizeMojoTest {
                     "use reo::data::Data;",
                     "use rand::rand;",
                     "pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {",
-                    "  print(\"Hello world\");",
+                    "  print!(\"Hello world\");",
                     "  let i = copy!(find!(\"org.eolang.int\"));",
                     "  uni.data(i, Data::from_int(random::<i64>()))?;",
                     "  Ok(i)",

@@ -78,7 +78,12 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
     /**
      * The directory where to binarize to.
      */
-    public static final String DIR = "binarize";
+    public static final Path DIR = Paths.get("binarize");
+
+    /**
+     * The directory with generated .rs files.
+     */
+    public static final Path CODES = Paths.get("codes");
 
     /**
      * Parsing train with XSLs.
@@ -114,57 +119,64 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);
             final String name = input.xpath("/program/@name").get(0);
-            final Place place = new Place(name);
-            final Path target = place.make(
-                this.targetDir.toPath().resolve(BinarizeMojo.DIR),
-                "rs"
-            );
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-            if (
-                target.toFile().exists()
-                    && target.toFile().lastModified() >= file.toFile().lastModified()
-                    && target.toFile().lastModified() >= src.toFile().lastModified()
-            ) {
-                Logger.info(
-                    this, "XMIR %s (%s) were already binarized to %s",
-                    new Rel(file), name, new Rel(target)
+
+            final List<XML> nodes = addRust(input).nodes("/program/rusts/rust");
+            for (final XML node: nodes) {
+
+                final Path target = this.targetDir.toPath();
+
+                System.out.println("target = " + target.toAbsolutePath());
+                new Home(this.targetDir.toPath()).save(
+                    unhex(node.xpath("@code").get(0)),
+                    DIR.resolve(CODES).resolve(
+                    Paths.get(String.format(
+                        "%s%s", node.xpath("@loc").get(0).replace('.', '$'),
+                        ".rs")))
                 );
-            } else {
-                for (final String rust: this.addRust(input, target)) {
-                    new Home(target).save(unhex(rust), target);
-                }
+                System.out.println(String.format(
+                    "loc = %s\ncode:\n%s",
+                    node.xpath("@loc").get(0).replace('.', '$'),
+                    unhex(node.xpath("@code").get(0))
+                ));
             }
+
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+//            if (
+//                target.toFile().exists()
+//                    && target.toFile().lastModified() >= file.toFile().lastModified()
+//                    && target.toFile().lastModified() >= src.toFile().lastModified()
+//            ) {
+//                Logger.info(
+//                    this, "XMIR %s (%s) were already binarized to %s",
+//                    new Rel(file), name, new Rel(target)
+//                );
+//            } else {
+//                for (final String rust: this.addRust(input)) {
+//                    new Home(target).save(unhex(rust), target);
+//                }
+//            }
         }
     }
 
     /**
-     * Creates a "rust" section in xml file and returns its content.
+     * Creates a "rust" section in xml file and returns the resulting XML.
      * @param input The .xmir file
-     * @param target The path to put the result file
      * @return The content of rust section
      * @throws IOException If any issues with I/O
      */
-    private List<String> addRust(
-        final XML input,
-        final Path target
-    ) throws IOException {
+    private XML addRust(
+        final XML input
+    ) {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
             BinarizeMojo.TRAIN,
             place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
         );
-        final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
         final XML passed = new Xsline(trn).pass(input);
-        new Home(dir).save(passed.toString(), dir.relativize(target));
 
         final List<XML> nodes = passed.nodes("/program/rusts/rust");
-        System.out.println("Printing nodes' @code, nodes len = " + nodes.size());
-        for (final XML node: nodes) {
-            System.out.println(node.xpath("@code"));
-        }
-
-        return passed.xpath("/program/rusts/rust/@code");
+        return passed;
     }
 
     /**
