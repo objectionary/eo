@@ -157,6 +157,13 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         final Path dir = this.targetDir.toPath().resolve(BinarizeMojo.DIR);
         final XML passed = new Xsline(trn).pass(input);
         new Home(dir).save(passed.toString(), dir.relativize(target));
+
+        final List<XML> nodes = passed.nodes("/program/rusts/rust");
+        System.out.println("Printing nodes' @code, nodes len = " + nodes.size());
+        for (final XML node: nodes) {
+            System.out.println(node.xpath("@code"));
+        }
+
         return passed.xpath("/program/rusts/rust/@code");
     }
 
