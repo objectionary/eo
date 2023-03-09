@@ -90,7 +90,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
-      <xsl:apply-templates select="@*[name()!='base']"/>
+      <xsl:apply-templates select="@* except @base except @abstract"/>
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>

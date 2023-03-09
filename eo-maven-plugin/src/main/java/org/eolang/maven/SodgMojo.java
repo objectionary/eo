@@ -150,7 +150,7 @@ public final class SodgMojo extends SafeMojo {
             SodgMojo.class
         ),
         SodgMojo.class,
-        Level.FINEST
+        SodgMojo.loggingLevel()
     );
 
     /**
@@ -160,6 +160,7 @@ public final class SodgMojo extends SafeMojo {
         new TrFast(
             new TrClasspath<>(
                 "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+                "/org/eolang/maven/sodg-to/catch-duplicate-vertices.xsl",
                 "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
                 "/org/eolang/maven/sodg-to/catch-singleton-greeks.xsl",
                 "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
@@ -169,35 +170,35 @@ public final class SodgMojo extends SafeMojo {
             SodgMojo.class
         ),
         SodgMojo.class,
-        Level.FINEST
+        SodgMojo.loggingLevel()
     );
 
     /**
      * The train that generates SODG.
      */
-    private static final Train<Shift> TRAIN = new TrWith(
-        new TrFast(
-            new TrJoined<>(
-                new TrClasspath<>(
-                    "/org/eolang/maven/sodg/pre-clean.xsl"
-                ).back(),
-                new TrDefault<>(
-                    new StEndless(
-                        new StXPath(
-                            "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
-                            xml -> {
-                                final String loc = xml.xpath("@loc").get(0);
-                                return new Directives().attr(
-                                    "lambda",
-                                    SodgMojo.locToHex(
-                                        loc.substring(loc.indexOf('.') + 1)
-                                    )
-                                );
-                            }
+    private static final Train<Shift> TRAIN = new TrLogged(
+        new TrWith(
+            new TrFast(
+                new TrJoined<>(
+                    new TrClasspath<>(
+                        "/org/eolang/maven/sodg/pre-clean.xsl"
+                    ).back(),
+                    new TrDefault<>(
+                        new StEndless(
+                            new StXPath(
+                                "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
+                                xml -> {
+                                    final String loc = xml.xpath("@loc").get(0);
+                                    return new Directives().attr(
+                                        "lambda",
+                                        SodgMojo.locToHex(
+                                            loc.substring(loc.indexOf('.') + 1)
+                                        )
+                                    );
+                                }
+                            )
                         )
-                    )
-                ),
-                new TrLogged(
+                    ),
                     new TrMapped<>(
                         (Function<String, Shift>) path -> new StBefore(
                             new StClasspath(path),
@@ -220,17 +221,17 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/put-data.xsl",
                         "/org/eolang/maven/sodg/put-atoms.xsl"
                     ).back(),
-                    SodgMojo.class,
-                    Level.FINEST
+                    new TrClasspath<>(
+                        "/org/eolang/maven/sodg/focus.xsl",
+                        "/org/eolang/maven/sodg/add-license.xsl"
+                    ).back()
                 ),
-                new TrClasspath<>(
-                    "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl"
-                ).back()
+                SodgMojo.class
             ),
-            SodgMojo.class
+            new StSchema("/org/eolang/maven/sodg/after.xsd")
         ),
-        new StSchema("/org/eolang/maven/sodg/after.xsd")
+        SodgMojo.class,
+        SodgMojo.loggingLevel()
     );
 
     /**
@@ -504,6 +505,22 @@ public final class SodgMojo extends SafeMojo {
             out.add(String.format("%02X", bty));
         }
         return out.toString();
+    }
+
+    /**
+     * We are in IntelliJ IDEA at the moment?
+     *
+     * This is for testing purposes, to enable higher visibility of logs inside
+     * tests being executed interactively in the IDE.
+     *
+     * @return TRUE if inside IDE
+     */
+    private static Level loggingLevel() {
+        Level lvl = Level.FINEST;
+        if (System.getProperty("java.class.path").contains("idea_rt.jar")) {
+            lvl = Level.INFO;
+        }
+        return lvl;
     }
 
 }

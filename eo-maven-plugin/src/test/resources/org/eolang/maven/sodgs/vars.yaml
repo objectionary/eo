@@ -1,7 +1,7 @@
 locators:
   - .foo .x .a .π
-  - .foo .x .y .π .b .π
-  - .foo .x .y .π .z .π .c .ε .a .ε .ρ .ε .ρ .ε .d
+  - .foo .x .y .ε .b .π
+  - .foo .x .y .ε .z .ε .c .ε .a .ε .ρ .ε .ρ .ε .d
 eo: |
   +package foo
   
