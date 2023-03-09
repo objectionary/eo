@@ -47,7 +47,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -118,43 +117,27 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);
-            final String name = input.xpath("/program/@name").get(0);
-
-            final List<XML> nodes = addRust(input).nodes("/program/rusts/rust");
+            final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
-
-                final Path target = this.targetDir.toPath();
-
-                System.out.println("target = " + target.toAbsolutePath());
+                final String filename = String.format(
+                    "%s%s",
+                    node.xpath("@loc").get(0).replace('.', '$'),
+                    ".rs"
+                );
+                final Path target = BinarizeMojo.DIR
+                    .resolve(BinarizeMojo.CODES)
+                    .resolve(filename);
                 new Home(this.targetDir.toPath()).save(
                     unhex(node.xpath("@code").get(0)),
-                    DIR.resolve(CODES).resolve(
-                    Paths.get(String.format(
-                        "%s%s", node.xpath("@loc").get(0).replace('.', '$'),
-                        ".rs")))
+                    target
                 );
-                System.out.println(String.format(
-                    "loc = %s\ncode:\n%s",
-                    node.xpath("@loc").get(0).replace('.', '$'),
-                    unhex(node.xpath("@code").get(0))
-                ));
+                Logger.info(
+                    this,
+                    "Binarized %s from %s",
+                    filename,
+                    input.xpath("/program/@name").get(0)
+                );
             }
-
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-//            if (
-//                target.toFile().exists()
-//                    && target.toFile().lastModified() >= file.toFile().lastModified()
-//                    && target.toFile().lastModified() >= src.toFile().lastModified()
-//            ) {
-//                Logger.info(
-//                    this, "XMIR %s (%s) were already binarized to %s",
-//                    new Rel(file), name, new Rel(target)
-//                );
-//            } else {
-//                for (final String rust: this.addRust(input)) {
-//                    new Home(target).save(unhex(rust), target);
-//                }
-//            }
         }
     }
 
@@ -173,10 +156,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             BinarizeMojo.TRAIN,
             place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
         );
-        final XML passed = new Xsline(trn).pass(input);
-
-        final List<XML> nodes = passed.nodes("/program/rusts/rust");
-        return passed;
+        return new Xsline(trn).pass(input);
     }
 
     /**

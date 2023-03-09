@@ -67,4 +67,30 @@ final class BinarizeMojoTest {
         );
     }
 
+    @Test
+    void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo");
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withProgram(src)
+            .execute(new FakeMaven.Binarize())
+            .result();
+        final String one = "target/binarize/codes/Φ$org$eolang$custom$hello-world-1$r.rs";
+        final String two = "target/binarize/codes/Φ$org$eolang$custom$hello-world-2$r.rs";
+        MatcherAssert.assertThat(
+            new TextOf(res.get(one)).asString(),
+            Matchers.stringContainsInOrder(
+                "use reo::universe::Universe;",
+                "pub fn foo(uni: &mut Universe, v: u32) {",
+                "print!(\"Hello world 1\");"
+            )
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(two)).asString(),
+            Matchers.stringContainsInOrder(
+                "use reo::universe::Universe;",
+                "pub fn foo(uni: &mut Universe, v: u32) {",
+                "print!(\"Hello world 2\");"
+                )
+        );
+    }
 }
