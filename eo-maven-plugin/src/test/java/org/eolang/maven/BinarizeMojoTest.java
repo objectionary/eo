@@ -47,7 +47,7 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String rust = "target/binarize/codes/Φ$org$eolang$custom$creates-object$r.rs";
+        final String rust = "target/binarize/codes/Φ_org_eolang_custom_creates_object_r.rs";
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
         );
@@ -74,8 +74,14 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String one = "target/binarize/codes/Φ$org$eolang$custom$hello-world-1$r.rs";
-        final String two = "target/binarize/codes/Φ$org$eolang$custom$hello-world-2$r.rs";
+        final String one = "target/binarize/codes/Φ_org_eolang_custom_hello_world_1_r.rs";
+        final String two = "target/binarize/codes/Φ_org_eolang_custom_hello_world_2_r.rs";
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(one)
+        );
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(two)
+        );
         MatcherAssert.assertThat(
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(

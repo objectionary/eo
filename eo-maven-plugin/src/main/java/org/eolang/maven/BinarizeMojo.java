@@ -121,7 +121,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             for (final XML node: nodes) {
                 final String filename = String.format(
                     "%s%s",
-                    node.xpath("@loc").get(0).replace('.', '$'),
+                    node.xpath("@loc").get(0).replaceAll("[-.]", "_"),
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
