@@ -13,6 +13,5 @@ document:
     <sodg/>
   </program>
 asserts:
-  - //sodg[count(i)=2]
+  - //sodg[count(i)=1]
   - //i[@name='BIND' and a='$Φ.f' and a='ν0' and a='ρ']
-  - //i[@name='BIND' and a='$Φ.f' and a='ν0' and a='σ']

@@ -246,6 +246,14 @@ final class SodgMojoTest {
                             )
                         );
                     }
+                    if (!opts.isEmpty() && inverse) {
+                        throw new IllegalArgumentException(
+                            String.format(
+                                "The path '%s' must not exist at %s, but it does",
+                                sub, vertex
+                            )
+                        );
+                    }
                     if (!inverse) {
                         vertex = opts.get(0);
                     }

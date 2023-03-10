@@ -35,7 +35,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[not(starts-with(@base, '.')) and not(@level) and o or @abstract or (not(@base) and @name)]" mode="sodg" priority="1">
+  <xsl:template match="o[not(@level) and @abstract]" mode="sodg" priority="1">
     <xsl:variable name="o" select="."/>
     <xsl:if test="not(@loc)">
       <xsl:message terminate="yes">

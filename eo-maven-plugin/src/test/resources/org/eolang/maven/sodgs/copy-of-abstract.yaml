@@ -2,7 +2,8 @@ locators:
   - .foo .a .π
   - .foo .b .α0
   - .foo .b .π
-#  - .a .x .α0 .ε .σ .x
+  - .foo .b !.σ
+  - .foo .b .π .φ .π .plus .ε .a .ε
 eo: |
   [] > foo
     5 > a
