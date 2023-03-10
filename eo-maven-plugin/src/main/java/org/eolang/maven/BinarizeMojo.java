@@ -64,6 +64,11 @@ import org.eolang.parser.ParsingTrain;
  *  BinarizeMojo firstly put the code into rust section in xmir.
  *  Then it must be compiled to shared library. It can be
  *  implemented via cargo.
+ *
+ * @todo #1876: 90m EO to rust Naming convention.
+ *  Come up with such a method of converting "loc" into a name
+ *  into the legal name of the "rust" function to eliminate
+ *  the possibility of a collision.
  */
 @Mojo(
     name = "binarize",
