@@ -29,7 +29,7 @@ SOFTWARE.
   that denote a chain of dot notation calls.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base and @ref=//o[@level]/@line]">
+  <xsl:template match="o[@base=//o[@level]/@name and @ref=//o[@level]/@line]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
@@ -37,10 +37,12 @@ SOFTWARE.
         <xsl:value-of select="./@base"/>
       </xsl:attribute>
       <xsl:apply-templates select="@* except @base"/>
-      <xsl:variable name="ref" select="//o[@line = $o/@ref]"/>
+      <xsl:variable name="ref" select="//o[@line = $o/@ref and @name=$o/@base]"/>
       <xsl:if test="count($ref) != 1">
         <xsl:message terminate="yes">
-          <xsl:text>Exactly one object with @line equal to '</xsl:text>
+          <xsl:text>Exactly one object named '</xsl:text>
+          <xsl:value-of select="$o/@base"/>
+          <xsl:text>' with @line equal to '</xsl:text>
           <xsl:value-of select="$o/@ref"/>
           <xsl:text>' is expected in the document, but </xsl:text>
           <xsl:value-of select="count($ref)"/>
