@@ -36,7 +36,7 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
         <xsl:value-of select="./@base"/>
       </xsl:attribute>
-      <xsl:apply-templates select="node()|@* except @base"/>
+      <xsl:apply-templates select="@* except @base"/>
       <xsl:variable name="ref" select="//o[@line = $o/@ref]"/>
       <xsl:if test="count($ref) != 1">
         <xsl:message terminate="yes">
@@ -51,6 +51,7 @@ SOFTWARE.
         <xsl:with-param name="level" select="$ref/@level"/>
         <xsl:with-param name="loc" select="$o/@loc"/>
       </xsl:call-template>
+      <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template name="up">

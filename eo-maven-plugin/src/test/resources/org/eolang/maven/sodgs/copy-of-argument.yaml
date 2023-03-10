@@ -1,0 +1,11 @@
+locators:
+  - .foo .bar .ρ .f
+  - .foo .f .ρ .bar
+  - .foo .bar .π
+  - .foo .bar .α0 .ε .a .π
+eo: |
+  [f] > foo
+    x > bar
+      []
+        f 1 > a
+

@@ -1,0 +1,16 @@
+sheets:
+  - /org/eolang/maven/sodg/unroll-refs.xsl
+document:
+  <program>
+    <objects loc="Φ">
+      <o loc="Φ.x" abstract="">
+        <o base="a" loc="Φ.x.a" name="xx" ref="55">
+          <o name="b" loc="Φ.x.a.b" line="66"/>
+        </o>
+        <o level="2" loc="Φ.foo" name="a" line="55"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - //o[@base='.a']/o[1][@base='.^']
+  - //o[@base='.a']/o[2][@name='b']
