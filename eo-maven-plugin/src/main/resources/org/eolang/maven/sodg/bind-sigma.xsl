@@ -42,39 +42,27 @@ SOFTWARE.
         <xsl:text>The object doesn't have @loc, how come?</xsl:text>
       </xsl:message>
     </xsl:if>
-    <xsl:call-template name="bind">
-      <xsl:with-param name="kid" select="@loc"/>
-      <xsl:with-param name="parent">
-        <xsl:choose>
-          <xsl:when test="@parent">
-            <xsl:value-of select="//o[@name=$o/@parent]/@loc"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="ancestor::*[@abstract or name()='objects'][1]/@loc"/>
-          </xsl:otherwise>
-        </xsl:choose>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:choose>
+            <xsl:when test="@parent">
+              <xsl:value-of select="eo:var(//o[@name=$o/@parent]/@loc)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="eo:var(ancestor::*[@abstract or name()='objects'][1]/@loc)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>σ</xsl:text>
+        </xsl:sequence>
       </xsl:with-param>
     </xsl:call-template>
-  </xsl:template>
-  <xsl:template name="bind">
-    <xsl:param name="kid" as="xs:string"/>
-    <xsl:param name="parent" as="xs:string"/>
-    <xsl:for-each select="('ρ', 'σ')">
-      <xsl:call-template name="i">
-        <xsl:with-param name="name" select="'BIND'"/>
-        <xsl:with-param name="args" as="item()*">
-          <xsl:sequence>
-            <xsl:value-of select="eo:var($kid)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:var($parent)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="."/>
-          </xsl:sequence>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:for-each>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
     <!-- ignore it -->
