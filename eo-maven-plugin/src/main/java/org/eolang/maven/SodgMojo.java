@@ -53,6 +53,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
@@ -172,15 +173,24 @@ public final class SodgMojo extends SafeMojo {
                 ).back(),
                 new TrDefault<>(
                     new StLambda(
+                        "graph-is-a-tree",
                         input -> {
                             final Set<String> seen = new HashSet<>();
                             SodgMojo.traverse(input, "ν0", seen);
-                            final int total = input.nodes("//v").size();
-                            if (total != seen.size()) {
+                            final List<String> ids = input.xpath("//v/@id");
+                            if (ids.size() != seen.size()) {
+                                for (final String vid : ids) {
+                                    if (!seen.contains(vid)) {
+                                        Logger.error(
+                                            SodgMojo.class,
+                                            "Vertex is not in the tree: %s", vid
+                                        );
+                                    }
+                                }
                                 throw new IllegalStateException(
                                     String.format(
-                                        "Not all vertices are in the tree, only %d out of %d",
-                                        seen.size(), total
+                                        "Not all vertices are in the tree, only %d out of %d, see log above",
+                                        seen.size(), ids.size()
                                     )
                                 );
                             }
