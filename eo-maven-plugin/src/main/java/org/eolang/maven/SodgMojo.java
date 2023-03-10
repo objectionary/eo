@@ -488,6 +488,8 @@ public final class SodgMojo extends SafeMojo {
                         new Directives()
                             .append(Collections.singleton(comment))
                             .append(directives)
+                            .xpath("/graph")
+                            .attr("sodg-path", sodg)
                     ).domQuietly()
                 )
             );
