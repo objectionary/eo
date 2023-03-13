@@ -58,6 +58,24 @@
     $.not
       $.equal-to 42
 
+[] > compares-string-with-nan
+  assert-that > @
+    nan
+    $.not
+      $.equal-to "друг"
+
+[] > compares-string-with-positive-infinity
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to "друг"
+
+[] > compares-string-with-negative-infinity
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to "друг"
+
 [] > text-block-one-line
   assert-that > @
     """
@@ -115,18 +133,6 @@
     "hello".as-hash
     $.equal-to
       "hello".as-hash
-
-[] > compares-string-with-nan-and-infinites
-  assert-that > @
-    and.
-      eq.
-        eq.
-          "друг" > str
-          nan
-        FALSE
-      (str.eq positive-infinity).eq FALSE
-      (str.eq negative-infinity).eq FALSE
-    $.equal-to TRUE
 
 [] > compares-two-strings
   assert-that > @

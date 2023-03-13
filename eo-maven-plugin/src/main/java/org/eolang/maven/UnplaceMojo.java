@@ -32,10 +32,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.util.FileHash;
 import org.eolang.maven.util.Rel;
@@ -74,29 +77,44 @@ public final class UnplaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.placedTojos.value().select(r -> true).isEmpty()) {
+        if (this.placedTojos.value().select(all -> true).isEmpty()) {
             Logger.info(
-                this, "The list of placed binaries is absent: %s",
+                this,
+                "The list of placed binaries is absent: %s",
                 new Rel(this.placed)
             );
         } else {
-            this.placeThem();
+            this.unplaceClasses();
+            this.unplaceJars();
         }
+    }
+
+    /**
+     * Mark dependencies as unplaced if all related binaries are unplaced.
+     */
+    private void unplaceJars() {
+        final Set<String> used = this.classes()
+            .stream()
+            .filter(tojo -> tojo.exists(PlaceMojo.ATTR_PLD_DEP))
+            .map(tojo -> tojo.get(PlaceMojo.ATTR_PLD_DEP))
+            .collect(Collectors.toSet());
+        this.binaries("jar").stream()
+            .filter(dep -> used.contains(dep.get(Tojos.KEY)))
+            .forEach(dep -> dep.set(PlaceMojo.ATTR_PLD_UNPLACED, "true"));
     }
 
     /**
      * Place what's necessary.
      * @throws IOException If fails
      */
-    public void placeThem() throws IOException {
-        final Collection<Tojo> tojos =
-            this.placedTojos.value().select(t -> "class".equals(t.get(PlaceMojo.ATTR_PLD_KIND)));
+    private void unplaceClasses() throws IOException {
+        final Collection<Tojo> classes = this.classes();
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
-            deleted += this.keepThem(tojos);
+            deleted += this.keepThem(classes);
         }
-        deleted += this.killThem(tojos);
-        if (tojos.isEmpty()) {
+        deleted += this.killThem(classes);
+        if (classes.isEmpty()) {
             Logger.info(
                 this, "No binaries were placed into %s, nothing to uplace",
                 new Rel(this.placed)
@@ -104,32 +122,30 @@ public final class UnplaceMojo extends SafeMojo {
         } else if (deleted == 0) {
             Logger.info(
                 this, "No binaries out of %d deleted in %s",
-                tojos.size(), new Rel(this.placed)
+                classes.size(), new Rel(this.placed)
             );
-        } else if (deleted == tojos.size()) {
+        } else if (deleted == classes.size()) {
             Logger.info(
                 this, "All %d binari(es) deleted, which were found in %s",
-                tojos.size(), new Rel(this.placed)
+                classes.size(), new Rel(this.placed)
             );
         } else {
             Logger.info(
                 this, "Just %d binari(es) out of %d deleted in %s",
-                deleted, tojos.size(), new Rel(this.placed)
+                deleted, classes.size(), new Rel(this.placed)
             );
         }
     }
 
     /**
      * Keep those we must keep selectively.
-     * @param tojos All binaries found
+     * @param all All binaries found
      * @return Number of files deleted
      * @throws IOException If fails
-     * @todo #1319:30min If all .class files for a dependency are removed then
-     *  unplaced attribute should be set to `true` for a dependency jar entry as well.
      */
-    private int killThem(final Iterable<Tojo> tojos) throws IOException {
+    private int killThem(final Iterable<? extends Tojo> all) throws IOException {
         int unplaced = 0;
-        for (final Tojo tojo : tojos) {
+        for (final Tojo tojo : all) {
             final String related = tojo.get(PlaceMojo.ATTR_PLD_RELATED);
             final Path path = Paths.get(tojo.get(Tojos.KEY));
             final String hash = new FileHash(path).toString();
@@ -137,21 +153,21 @@ public final class UnplaceMojo extends SafeMojo {
                 if (hash.isEmpty()) {
                     Logger.debug(
                         this, "The binary %s of %s is gone, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                        related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
                     );
                     continue;
                 }
                 if (!UnplaceMojo.inside(related, this.removeBinaries)) {
                     Logger.warn(
                         this, "The binary %s of %s looks different, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                        related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
                     );
                     continue;
                 }
                 Logger.info(
                     this,
                     "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
-                    related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
                 );
             }
             if (UnplaceMojo.inside(related, this.keepBinaries)
@@ -163,12 +179,12 @@ public final class UnplaceMojo extends SafeMojo {
                 tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true");
                 Logger.debug(
                     this, "Binary %s of %s deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEP)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEP)
                 );
             }
         }
@@ -197,12 +213,12 @@ public final class UnplaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                    related, tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEP)
                 );
             }
         }
@@ -221,14 +237,9 @@ public final class UnplaceMojo extends SafeMojo {
      * @return TRUE if inside this list of globx
      */
     private static boolean inside(final String related, final Iterable<String> globs) {
-        boolean found = false;
-        for (final String glob : globs) {
-            found = UnplaceMojo.matches(related, glob);
-            if (found) {
-                break;
-            }
-        }
-        return found;
+        return new ListOf<>(globs).stream().anyMatch(
+            glob -> UnplaceMojo.matches(related, glob)
+        );
     }
 
     /**
@@ -267,6 +278,25 @@ public final class UnplaceMojo extends SafeMojo {
             );
         }
         return deleted;
+    }
+
+    /**
+     * Retrieve tojos class binaries.
+     * @return List of tojos
+     */
+    private List<Tojo> classes() {
+        return this.binaries("class");
+    }
+
+    /**
+     * Retrieve tojos binaries of the given kind (jar, class, etc).
+     * @param kind Kind of binary
+     * @return List of tojos
+     */
+    private List<Tojo> binaries(final String kind) {
+        return this.placedTojos.value().select(
+            t -> kind.equals(t.get(PlaceMojo.ATTR_PLD_KIND))
+        );
     }
 
 }

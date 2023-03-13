@@ -38,8 +38,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFallbackSwap;
@@ -120,7 +120,7 @@ public final class ProbeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && !row.exists(AssembleMojo.ATTR_PROBED)
         );
-        final CommitHash hash = new ChResolve(
+        final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
         if (this.objectionary == null) {
@@ -137,7 +137,9 @@ public final class ProbeMojo extends SafeMojo {
         for (final Tojo tojo : tojos) {
             final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final Collection<String> names = this.probes(src);
-            Logger.info(this, "Probing %s objects ", names);
+            if (!names.isEmpty()) {
+                Logger.info(this, "Probing object(s): %s", names);
+            }
             int count = 0;
             for (final String name : names) {
                 if (!this.objectionary.contains(name)) {
@@ -161,13 +163,13 @@ public final class ProbeMojo extends SafeMojo {
                 Logger.info(this, "Nothing to probe, all programs checked already");
             }
         } else if (probed.isEmpty()) {
-            Logger.info(
+            Logger.debug(
                 this, "No probes found in %d programs",
                 tojos.size()
             );
         } else {
             Logger.info(
-                this, "Found %d probes in %d programs: %s",
+                this, "Found %d probe(s) in %d program(s): %s",
                 probed.size(), tojos.size(), probed
             );
         }

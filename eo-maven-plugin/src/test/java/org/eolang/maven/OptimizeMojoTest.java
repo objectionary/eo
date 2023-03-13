@@ -311,7 +311,7 @@ final class OptimizeMojoTest {
             "org/eolang/maven/set-warning-severity.xsl",
             maven.execute(ParseMojo.class)
                 .result()
-                .get("target/01-parse/foo/x/main.xmir")
+                .get("target/1-parse/foo/x/main.xmir")
         );
         Assertions.assertThrows(
             IllegalStateException.class,

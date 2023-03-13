@@ -35,11 +35,8 @@ import java.nio.file.Path;
  *  be used to change the behavior of an object.
  *  Need to use composable decorators to make this class
  *  not configurable.
- * @todo #1569:30min Need to rename this class to a more correct one.
- *  The correct one name will consist of prefix "Ch" and a noun or
- *  adjective.
  */
-public final class ChResolve implements CommitHash {
+public final class ChCompound implements CommitHash {
 
     /**
      * Read hashes from local file.
@@ -65,7 +62,7 @@ public final class ChResolve implements CommitHash {
      * @param text Hash by pattern
      * @param label The Git hash to pull objects from
      */
-    public ChResolve(final Path data, final String text, final String label) {
+    public ChCompound(final Path data, final String text, final String label) {
         this.file = data;
         this.hash = text;
         this.tag = label;

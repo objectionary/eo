@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -43,6 +44,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
@@ -64,7 +66,7 @@ import org.xembly.Xembler;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends SafeMojo {
+public final class ParseMojo extends SafeMojo implements CompilationStep {
 
     /**
      * Zero version.
@@ -74,7 +76,7 @@ public final class ParseMojo extends SafeMojo {
     /**
      * The directory where to parse to.
      */
-    public static final String DIR = "01-parse";
+    public static final String DIR = "1-parse";
 
     /**
      * Subdirectory for parsed cache.
@@ -99,6 +101,16 @@ public final class ParseMojo extends SafeMojo {
         property = "eo.failOnError",
         defaultValue = "true")
     private boolean failOnError = true;
+
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
 
     @Override
     public void exec() throws IOException {
@@ -168,7 +180,7 @@ public final class ParseMojo extends SafeMojo {
         );
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
             footprint = new FtCached(
-                tojo.get(AssembleMojo.ATTR_HASH),
+                new CacheVersion(this.plugin.getVersion(), tojo.get(AssembleMojo.ATTR_HASH)),
                 this.cache.resolve(ParseMojo.PARSED),
                 footprint
             );

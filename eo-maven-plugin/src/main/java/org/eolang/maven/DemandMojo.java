@@ -52,9 +52,7 @@ public final class DemandMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        for (final String obj : this.objects) {
-            this.scopedTojos().add(obj);
-        }
+        this.objects.forEach(this.scopedTojos()::add);
         Logger.info(
             this, "Added %d objects to foreign catalog at %s",
             this.objects.size(), new Rel(this.foreign)

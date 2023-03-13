@@ -1,10 +1,11 @@
-skip: true
 locators:
-  - .test
+  - .org .eolang .test
   - .org .eolang .int
-  - .arrays .z .α0 .π >test
-  - .arrays .z .α1 .α0 δ=2A .π >int
-  - .arrays .z .α1 .α1 δ=2B .π >int
+  - .arrays .z .π >tuple
+  - .arrays .z .α0 .ε >test
+  - .arrays .z .α1 .π >tuple
+  - .arrays .z .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2A
+  - .arrays .z .α1 .α1 .Δ δ=00-00-00-00-00-00-00-2B
 eo: |
   [] > arrays
     * > z

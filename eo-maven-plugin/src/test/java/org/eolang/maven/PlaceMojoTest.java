@@ -23,11 +23,13 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.UUID;
+import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,57 +42,137 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.11
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PlaceMojoTest {
+
+    /**
+     * The default folder for placed binaries.
+     */
+    private static final String TARGET_CLASSES = "target/classes";
+
+    /**
+     * Test library for all binaries.
+     */
+    private static final String LIBRARY = "foo/hello/-/0.1";
 
     @Test
     void placesBinaries(@TempDir final Path temp) throws Exception {
-        final Path bins = temp.resolve(ResolveMojo.DIR);
-        final Path classes = temp.resolve("classes");
-        new Home(bins).save("x1", Paths.get("foo/hello/-/0.1/EObar/x.bin"));
-        new Home(bins).save("x2", Paths.get("foo/hello/-/0.1/org/eolang/f/x.a.class"));
-        new Home(bins).save("x3", Paths.get("foo/hello/-/0.1/org/eolang/t.txt"));
-        new Moja<>(PlaceMojo.class)
-            .with("targetDir", temp.toFile())
-            .with("outputDir", classes.toFile())
-            .with("placed", temp.resolve("placed.json").toFile())
-            .execute();
+        PlaceMojoTest.saveBinary(temp, "EObar/x.bin");
+        PlaceMojoTest.saveBinary(temp, "org/eolang/f/x.a.class");
+        PlaceMojoTest.saveBinary(temp, "org/eolang/t.txt");
+        final Map<String, Path> res = new FakeMaven(temp)
+            .execute(PlaceMojo.class)
+            .result();
         MatcherAssert.assertThat(
-            new Home(classes).exists(Paths.get("EObar/x.bin")),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey("target/classes/EObar/x.bin")
         );
         MatcherAssert.assertThat(
-            new Home(classes).exists(classes.resolve("org/eolang/f/x.a.class")),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey("target/classes/org/eolang/f/x.a.class")
         );
         MatcherAssert.assertThat(
-            new Home(classes).exists(classes.resolve("org/eolang/t.txt")),
-            Matchers.is(true)
+            res,
+            Matchers.hasKey("target/classes/org/eolang/t.txt")
         );
     }
 
     @Test
-    void placesMissing(@TempDir final Path temp) throws Exception {
-        final Path bins = temp.resolve(ResolveMojo.DIR);
-        final Path classes = temp.resolve("classes");
-        final Path placed = temp.resolve("placed.json");
-        new Home(bins).save("x1", Paths.get("foo/hello/-/0.1/EObar/x.bin"));
-        new Home(classes).save("x1", Paths.get("EObar/x.bin"));
-        new Home(bins).save("x2", Paths.get("foo/hello/-/0.1/org/eolang/f/x.a.class"));
-        new Moja<>(PlaceMojo.class)
-            .with("targetDir", temp.toFile())
-            .with("outputDir", classes.toFile())
-            .with("placed", placed.toFile())
-            .execute();
-        final Tojos tojos = Catalogs.INSTANCE.make(placed, "csv");
-        tojos.add("foo/hello/-/0.1/EObar/x.bin");
-        tojos.add("foo/hello/-/0.1/org/eolang/f/x.a.class");
+    void skipsEoSources(@TempDir final Path temp) throws IOException {
+        final String expected = String.format("%s/EObar/x.bin", CopyMojo.DIR);
+        PlaceMojoTest.saveBinary(temp, expected);
         MatcherAssert.assertThat(
-            Files.exists(classes.resolve("EObar/x.bin")),
-            Matchers.is(true)
+            new FakeMaven(temp)
+                .execute(PlaceMojo.class)
+                .result(),
+            Matchers.not(
+                Matchers.hasKey(String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, expected))
+            )
+        );
+    }
+
+    @Test
+    void skipsAlreadyPlacedBinaries(@TempDir final Path temp) throws IOException {
+        final String binary = "org/eolang/f/x.a.class";
+        PlaceMojoTest.saveBinary(temp, binary);
+        PlaceMojoTest.saveAlreadyPlacedBinary(temp, binary);
+        final long before = PlaceMojoTest.pathToAlreadyPlacedBinary(
+            temp,
+            binary
+        ).toFile().lastModified();
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .withPlacedBinary(
+                    temp.resolve(PlaceMojoTest.TARGET_CLASSES).resolve(binary).toString()
+                )
+                .execute(PlaceMojo.class)
+                .result()
+                .get("target/classes/org/eolang/f/x.a.class")
+                .toFile()
+                .lastModified(),
+            Matchers.equalTo(before)
+        );
+    }
+
+    @Test
+    void rewritesAlreadyPlacedBinaries(@TempDir final Path temp) throws Exception {
+        final String binary = "org/eolang/f/y.a.class";
+        final String content = "some new content";
+        PlaceMojoTest.saveBinary(temp, content, binary);
+        PlaceMojoTest.saveAlreadyPlacedBinary(temp, "old content", binary);
+        final Path path = PlaceMojoTest.pathToAlreadyPlacedBinary(temp, binary);
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withPlacedBinary(path.toString())
+            .execute(PlaceMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
-            Files.exists(classes.resolve("org/eolang/f/x.a.class")),
-            Matchers.is(true)
+            content,
+            Matchers.is(new TextOf(path).asString())
+        );
+    }
+
+    @Test
+    void placesWithoutBinaries(@TempDir final Path temp) throws IOException {
+        Files.createDirectories(temp.resolve("target").resolve(ResolveMojo.DIR));
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .execute(PlaceMojo.class)
+                .result(),
+            Matchers.not(Matchers.hasKey(PlaceMojoTest.TARGET_CLASSES))
+        );
+    }
+
+    @Test
+    void placesWithoutResolveDirectory(@TempDir final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .execute(PlaceMojo.class)
+                .result(),
+            Matchers.not(Matchers.hasKey(PlaceMojoTest.TARGET_CLASSES))
+        );
+    }
+
+    @Test
+    void placesMissing(@TempDir final Path temp) throws IOException {
+        final String first = "EObar/x.bin";
+        final String second = "org/eolang/f/x.a.class";
+        PlaceMojoTest.saveBinary(temp, first);
+        PlaceMojoTest.saveBinary(temp, second);
+        PlaceMojoTest.saveAlreadyPlacedBinary(temp, first);
+        final Map<String, Path> res = new FakeMaven(temp)
+            .execute(PlaceMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasValue(PlaceMojoTest.pathToAlreadyPlacedBinary(temp, first))
+        );
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasValue(PlaceMojoTest.pathToAlreadyPlacedBinary(temp, second))
         );
     }
 
@@ -107,16 +189,15 @@ final class PlaceMojoTest {
     void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            maven
-                .withHelloWorld()
+            maven.withHelloWorld()
                 .execute(new FakeMaven.Place())
                 .result()
-                .get("target/classes"),
+                .get(PlaceMojoTest.TARGET_CLASSES),
             new ContainsFile("**/eo-runtime-*.jar")
         );
         MatcherAssert.assertThat(
             maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
-            Matchers.equalTo(1)
+            Matchers.is(1)
         );
     }
 
@@ -124,18 +205,92 @@ final class PlaceMojoTest {
     void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            maven
-                .withHelloWorld()
+            maven.withHelloWorld()
                 .with("withRuntimeDependency", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get("target/classes"),
+                .get(PlaceMojoTest.TARGET_CLASSES),
             Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
         );
         MatcherAssert.assertThat(
-            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
-            Matchers.equalTo(0)
+            maven.placed()
+                .select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).isEmpty(),
+            Matchers.is(true)
         );
     }
 
+    /**
+     * Save binary to {@link ResolveMojo#DIR} folder.
+     * The method emulates the situation when we have some resolved binaries.
+     *
+     * @param temp Temp test directory.
+     * @param binary Binary name.
+     * @throws IOException In case of error.
+     */
+    private static void saveBinary(final Path temp, final String binary) throws IOException {
+        PlaceMojoTest.saveBinary(temp, UUID.randomUUID().toString(), binary);
+    }
+
+    /**
+     * Save binary to {@link ResolveMojo#DIR} folder.
+     * The method emulates the situation when we have some resolved binaries.
+     *
+     * @param temp Temp test directory.
+     * @param content Content of the binary.
+     * @param binary Binary name.
+     * @throws IOException In case of error.
+     */
+    private static void saveBinary(
+        final Path temp,
+        final String content,
+        final String binary
+    ) throws IOException {
+        new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
+            content,
+            Paths.get(String.format("%s/%s", PlaceMojoTest.LIBRARY, binary))
+        );
+    }
+
+    /**
+     * Save binary to classes folder.
+     * The method emulates the situation when we already have some placed binaries.
+     *
+     * @param temp Temp test directory.
+     * @param binary Binary name.
+     * @throws IOException In case of error.
+     */
+    private static void saveAlreadyPlacedBinary(
+        final Path temp,
+        final String binary
+    ) throws IOException {
+        PlaceMojoTest.saveAlreadyPlacedBinary(temp, UUID.randomUUID().toString(), binary);
+    }
+
+    /**
+     * Save binary to classes folder.
+     * The method emulates the situation when we already have some placed binaries.
+     *
+     * @param temp Temp test directory.
+     * @param content Content of the binary.
+     * @param binary Binary name.
+     * @throws IOException In case of error.
+     */
+    private static void saveAlreadyPlacedBinary(
+        final Path temp,
+        final String content,
+        final String binary
+    ) throws IOException {
+        new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES)).save(content, Paths.get(binary));
+    }
+
+    /**
+     * Path to the placed binary.
+     * @param temp Temp test directory
+     * @param binary Binary name.
+     * @return Path to the placed binary.
+     */
+    private static Path pathToAlreadyPlacedBinary(final Path temp, final String binary) {
+        final Home home = new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES));
+        return home.absolute(Paths.get(binary));
+    }
 }

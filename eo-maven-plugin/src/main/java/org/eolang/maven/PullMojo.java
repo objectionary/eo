@@ -34,8 +34,8 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
@@ -58,12 +58,12 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojo {
+public final class PullMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to process to.
      */
-    public static final String DIR = "04-pull";
+    public static final String DIR = "3-pull";
 
     /**
      * The Git hash to pull objects from, in objectionary.
@@ -128,7 +128,7 @@ public final class PullMojo extends SafeMojo {
             row -> !row.exists(AssembleMojo.ATTR_EO)
                 && !row.exists(AssembleMojo.ATTR_XMIR)
         );
-        final CommitHash hash = new ChResolve(
+        final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
         if (this.objectionary == null) {

@@ -38,15 +38,14 @@
 # @todo #1253:30min. After allowing division by zero float in EOfloat$EOdiv
 #  make float.nan, float.positive-infinity and float.negative-infinity
 #  decorated 0.0.div 0.0, 1.0.div 0.0 and -1.0.div 0.0 accordingly
+#
 # Not a number
 [] > nan
+  0.0.div 0.0 > @
+
   # Tests that $ = x
   [x] > eq
     FALSE > @
-
-  # Tests that $ ≠ x
-  [x] > neq
-    TRUE > @
 
   # Tests that $ < x
   [x] > lt
@@ -65,37 +64,21 @@
     FALSE > @
 
   # Multiplication of $ and x
-  [x] > times
+  [x...] > times
     ^ > @
 
   # Sum of $ and x
-  [x] > plus
+  [x...] > plus
     ^ > @
 
   # Negation of $
   [] > neg
     ^ > @
 
-  # Sign of $ (-1.0, 0.0, or 1.0)
-  [] > signum
-    ^ > @
-
   # Difference between $ and x
-  [x] > minus
+  [x...] > minus
     ^ > @
 
   # Quotient of the division of $ by x
-  [x] > div
+  [x...] > div
     ^ > @
-
-  # Converts this to bytes
-  [] > as-bytes
-    7F-C0-00-00 > @
-
-  # Converts this to int
-  [] > as-int
-    error "You can't convert NaN to int" > @
-
-  # Converts this to string
-  [] > as-string
-    "NaN" > @

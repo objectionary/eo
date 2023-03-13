@@ -1,3 +1,5 @@
+import java.nio.file.Path
+
 /**
  * The MIT License (MIT)
  *
@@ -22,44 +24,14 @@
  * SOFTWARE.
  */
 
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.stream.Collectors
-
-println 'Verify that all java classes were compiled successfully'
-Path binaries = basedir.toPath()
-  .resolve("target")
-  .resolve("classes")
-  .resolve("org")
-  .resolve("eolang");
-Path classes = basedir.toPath()
-  .resolve("src")
-  .resolve("main")
-  .resolve("java")
-  .resolve("org")
-  .resolve("eolang");
-Set<String> expected = Files.walk(classes)
-  .filter(it -> {
-    it.toString().endsWith(".java")
-  })
-  .map(Path::getFileName)
-  .map(Path::toString)
-  .map(it -> {
-    return it.replace(".java", ".class")
-  }).collect(Collectors.toSet())
-Set<String> actual = Files.walk(binaries)
-  .filter(it -> {
-    it.toString().endsWith(".class")
-  })
-  .map(Path::getFileName)
-  .map(Path::toString)
-  .collect(Collectors.toSet())
-if (!actual.containsAll(expected)) {
-  throw new IllegalStateException(
-    String.format(
-      "Not all classes are compiled\nExpected %s\nActual %s",
-      expected,
-      actual
-    )
-  )
+/**
+ * Entry point for running validation scripts.
+ * To add new validation create new script in this folder and add it
+ * to the list below.
+ */
+Path tests = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
+for (it in ['check-folders-numbering.groovy', 'check-all-java-classes-compiled.groovy']) {
+  def res = evaluate tests.resolve(it).toFile()
+  println String.format('Verified with %s - OK. Result: %s', it, res)
 }
+true

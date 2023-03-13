@@ -154,6 +154,25 @@ public final class SodgMojo extends SafeMojo {
     );
 
     /**
+     * Graph modification right after it's generated from Xembly.
+     */
+    private static final Train<Shift> FINISH = new TrLogged(
+        new TrFast(
+            new TrClasspath<>(
+                "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+                "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+                "/org/eolang/maven/sodg-to/catch-crowded-epsilons.xsl",
+                "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
+                "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
+                "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
+            ).back(),
+            SodgMojo.class
+        ),
+        SodgMojo.class,
+        Level.FINEST
+    );
+
+    /**
      * The train that generates SODG.
      */
     private static final Train<Shift> TRAIN = new TrWith(
@@ -191,10 +210,11 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/add-sodg-root.xsl",
                         "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
                         "/org/eolang/maven/sodg/add-root.xsl",
+                        "/org/eolang/maven/sodg/append-xi.xsl",
                         "/org/eolang/maven/sodg/touch-all.xsl",
                         "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
                         "/org/eolang/maven/sodg/pi-copies.xsl",
-                        "/org/eolang/maven/sodg/xi-binds.xsl",
+                        "/org/eolang/maven/sodg/epsilon-bindings.xsl",
                         "/org/eolang/maven/sodg/connect-dots.xsl",
                         "/org/eolang/maven/sodg/put-data.xsl",
                         "/org/eolang/maven/sodg/put-atoms.xsl"
@@ -204,10 +224,7 @@ public final class SodgMojo extends SafeMojo {
                 ),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl",
-                    "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
-                    "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
-                    "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
+                    "/org/eolang/maven/sodg/add-license.xsl"
                 ).back()
             ),
             SodgMojo.class
@@ -431,12 +448,14 @@ public final class SodgMojo extends SafeMojo {
             );
             final ListOf<Directive> directives = new ListOf<>(all);
             final Directive comment = directives.remove(0);
-            final XML graph = new XMLDocument(
-                new Xembler(
-                    new Directives()
-                        .append(Collections.singleton(comment))
-                        .append(directives)
-                ).domQuietly()
+            final XML graph = new Xsline(SodgMojo.FINISH).pass(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives()
+                            .append(Collections.singleton(comment))
+                            .append(directives)
+                    ).domQuietly()
+                )
             );
             final Path sibling = sodg.resolveSibling(
                 String.format("%s.graph.xml", sodg.getFileName())

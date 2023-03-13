@@ -24,12 +24,12 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOarray;
 import EOorg.EOeolang.EObool;
 import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
+import EOorg.EOeolang.EOtuple;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -218,7 +218,7 @@ public interface Data<T> {
             } else if (obj instanceof Double) {
                 phi = new EOfloat(Phi.Φ);
             } else if (obj instanceof Phi[]) {
-                phi = new EOarray(Phi.Φ);
+                phi = new EOtuple(Phi.Φ);
             } else {
                 throw new IllegalArgumentException(
                     String.format(

@@ -36,19 +36,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOarray}.
+ * Test case for {@link EOtuple}.
  *
  * @since 0.1
  */
-public final class EOarrayEOatTest {
+public final class EOtupleEOatTest {
 
     @Test
     public void pushesAndGetsBack() {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
-        final Phi array = new Data.ToPhi(new Phi[] {str});
+        final Phi tuple = new Data.ToPhi(new Phi[] {str});
         final Phi idx = new Data.ToPhi(0L);
-        final Phi get = array.attr("at").get();
+        final Phi get = tuple.attr("at").get();
         get.attr(0).put(idx);
         MatcherAssert.assertThat(
             new Dataized(get).take(String.class),

@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
@@ -61,22 +60,17 @@ import org.eolang.parser.StUnhex;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class TranspileMojo extends SafeMojo {
-
-    /**
-     * Extension for compiled sources in XMIR format (XML).
-     */
-    public static final String EXT = "xmir";
+public final class TranspileMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "06-transpile";
+    public static final String DIR = "6-transpile";
 
     /**
-     * The directory where to put pre-transpile files.
+     * Extension for compiled sources in XMIR format (XML).
      */
-    public static final String PRE = "05-pre";
+    static final String EXT = "xmir";
 
     /**
      * Parsing train with XSLs.
@@ -98,6 +92,11 @@ public final class TranspileMojo extends SafeMojo {
             "/org/eolang/maven/pre/to-java.xsl"
         )
     ).back().back();
+
+    /**
+     * The directory where to put pre-transpile files.
+     */
+    private static final String PRE = "5-pre";
 
     /**
      * Target directory.
@@ -155,11 +154,7 @@ public final class TranspileMojo extends SafeMojo {
                 );
             } else {
                 final List<Path> paths = this.transpile(src, input, target);
-                for (final Path path : paths) {
-                    this.transpiledTojos.value()
-                        .add(String.valueOf(path))
-                        .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2));
-                }
+                paths.forEach(p -> this.transpiledTojos.add(p, tojo.get(AssembleMojo.ATTR_XMIR2)));
                 saved += paths.size();
             }
         }
@@ -233,16 +228,7 @@ public final class TranspileMojo extends SafeMojo {
         );
         int count = 0;
         for (final Tojo exist : existed) {
-            final List<Tojo> removable = this.transpiledTojos.value().select(
-                row -> row.get(AssembleMojo.ATTR_XMIR2)
-                    .equals(exist.get(AssembleMojo.ATTR_XMIR2))
-            );
-            for (final Tojo remove : removable) {
-                final File file = new File(remove.get(Tojos.KEY));
-                if (file.delete()) {
-                    count += 1;
-                }
-            }
+            count += this.transpiledTojos.remove(exist.get(AssembleMojo.ATTR_XMIR2));
         }
         return count;
     }

@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.28.18</version>
+      <version>0.29.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -103,7 +103,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.7.1</version>
+      <version>3.8.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -415,7 +415,8 @@ SOFTWARE.
                 <exclude>pmd:/src/it.*</exclude>
                 <exclude>pmd:/src/test/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
-                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
+                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml
+                </exclude>
               </excludes>
             </configuration>
           </plugin>

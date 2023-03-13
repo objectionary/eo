@@ -8,5 +8,8 @@ document:
     <sodg/>
   </program>
 asserts:
-  - //sodg[count(i)=1]
-  - //i[@name='PUT' and a='$Φ.a.b.x' and a='01']
+  - //sodg[count(i)=4]
+  - //i[@name='ADD' and a='$Φ.a.b.x.Δ']
+  - //i[@name='BIND' and a='$Φ.a.b.x' and a='$Φ.a.b.x.Δ' and a='Δ']
+  - //i[@name='BIND' and a='$Φ.a.b.x.Δ' and a='$Φ.a.b.x' and a='ρ']
+  - //i[@name='PUT' and a='$Φ.a.b.x.Δ' and a='01']

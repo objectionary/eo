@@ -36,6 +36,71 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@base and starts-with(@base, '.')]" mode="sodg" priority="1">
+    <xsl:variable name="v">
+      <xsl:value-of select="@loc"/>
+      <xsl:text>.β</xsl:text>
+    </xsl:variable>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'ADD'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>Linking point</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(o[1]/@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:variable name="attr">
+            <xsl:value-of select="substring(@base, 2)"/>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="$attr='^'">
+              <xsl:text>ρ</xsl:text>
+            </xsl:when>
+            <xsl:when test="$attr='&amp;'">
+              <xsl:text>σ</xsl:text>
+            </xsl:when>
+            <xsl:when test="$attr='&lt;'">
+              <xsl:text>ν</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$attr"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is a dot-notation</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(o[1]/@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>β</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is a dot-notation</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
@@ -43,15 +108,15 @@ SOFTWARE.
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:var(o[1]/@loc)"/>
+          <xsl:value-of select="eo:var($v)"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:choose>
             <xsl:when test="count(o) &gt; 1">
-              <xsl:value-of select="concat('π/', @base)"/>
+              <xsl:text>π</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="concat('ξ/', @base)"/>
+              <xsl:text>ε</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:sequence>

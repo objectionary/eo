@@ -46,6 +46,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.tojos.TranspiledTojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -134,8 +135,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    protected String placedFormat = "csv";
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
+    protected String placedFormat = "json";
 
     /**
      * The path to a text file where paths of generated java files per EO program.
@@ -202,10 +203,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Unchecked<Tojos> transpiledTojos = new Unchecked<>(
-        new Sticky<>(
-            () -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat)
-        )
+    protected final TranspiledTojos transpiledTojos = new TranspiledTojos(
+        new Sticky<>(() -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat))
     );
 
     /**
@@ -265,7 +264,7 @@ abstract class SafeMojo extends AbstractMojo {
                     SafeMojo.closeTojos(this.placedTojos.value());
                 }
                 if (this.transpiled != null) {
-                    SafeMojo.closeTojos(this.transpiledTojos.value());
+                    SafeMojo.closeTojos(this.transpiledTojos);
                 }
             }
         }

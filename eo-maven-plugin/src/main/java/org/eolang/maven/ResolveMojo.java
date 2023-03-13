@@ -42,6 +42,7 @@ import org.eolang.maven.dependencies.DcsDepgraph;
 import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
 import org.eolang.maven.dependencies.DcsUniquelyVersioned;
 import org.eolang.maven.dependencies.DcsWithRuntime;
+import org.eolang.maven.dependencies.DcsWithoutRuntime;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -59,12 +60,12 @@ import org.eolang.maven.util.Walk;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class ResolveMojo extends SafeMojo {
+public final class ResolveMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to resolve to.
      */
-    public static final String DIR = "06-resolve";
+    public static final String DIR = "4-resolve";
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -106,6 +107,12 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Add eo-runtime dependency to the classpath.
      *
+     * That property is useful only for eo-runtime library compilation.
+     * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
+     * (since you compile eo-runtime library and classpath will anyway have all required classes)
+     * and in this case you should set this property to false. In any other cases the eo-runtime
+     * dependency will be downloaded and added to the classpath automatically.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
@@ -124,7 +131,6 @@ public final class ResolveMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transitiveDependencies", required = true, defaultValue = "true")
     @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
     private Func<Dependency, Iterable<Dependency>> transitiveStrategy =
         dependency -> new DcsDepgraph(
@@ -215,6 +221,8 @@ public final class ResolveMojo extends SafeMojo {
             } else {
                 deps = new DcsWithRuntime(deps);
             }
+        } else {
+            deps = new DcsWithoutRuntime(deps);
         }
         if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);

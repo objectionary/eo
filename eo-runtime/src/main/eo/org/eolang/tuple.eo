@@ -27,22 +27,22 @@
 +version 0.0.0
 
 # @todo #1060:30min The method .empty is not nessesary.
-#  Make the create of array possible just by using
-#  the object name, i.e `array > a` and remove this
+#  Make the create of tuple possible just by using
+#  the object name, i.e `tuple > a` and remove this
 #  method.
-[] > array
-  # Create empty array
+[] > tuple
+  # Create empty tuple
   [] > empty
     * > @
 
   # Obtain the length of the array.
   [] > length /int
 
-  # Take one element from the array, at the
+  # Take one element from the tuple, at the
   # given position.
   [i] > at /?
 
-  # Create a new array with this element added to
+  # Create a new tuple with this element added to
   # the end of it.
-  [x] > with /array
+  [x] > with /tuple
 

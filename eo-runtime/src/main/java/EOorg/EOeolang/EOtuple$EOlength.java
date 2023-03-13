@@ -28,50 +28,34 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.ExFailure;
+import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * AT.
+ * LENGTH.
  *
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "array.at")
-public class EOarray$EOat extends PhDefault {
+@XmirObject(oname = "tuple.length")
+public class EOtuple$EOlength extends PhDefault {
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOarray$EOat(final Phi sigma) {
+    public EOtuple$EOlength(final Phi sigma) {
         super(sigma);
-        this.add("i", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
                 rho -> {
                     final Phi[] array = new Param(rho).strong(Phi[].class);
-                    int idx = new Param(rho, "i").strong(Long.class).intValue();
-                    if (idx >= 0 && array.length <= idx) {
-                        throw new ExFailure(
-                            "Can't #at(%d) the %dth element of the array, there are just %d of them",
-                            idx, idx + 1, array.length
-                        );
-                    } else if (idx < 0 && array.length < Math.abs(idx)) {
-                        throw new ExFailure(
-                            "Can't #at(%d) the %dth element of the array",
-                            idx, array.length + idx
-                        );
-                    } else if (idx < 0) {
-                        idx = array.length + idx;
-                    }
-                    return array[idx];
+                    return new Data.ToPhi((long) array.length);
                 }
             )
         );

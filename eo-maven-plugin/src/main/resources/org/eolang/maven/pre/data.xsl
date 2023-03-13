@@ -27,12 +27,12 @@ SOFTWARE.
   <xsl:template match="o[@data]">
     <xsl:copy>
       <xsl:apply-templates select="@* except @data"/>
-      <xsl:if test="@data='array'">
-        <xsl:element name="array">
+      <xsl:if test="@data='tuple'">
+        <xsl:element name="tuple">
           <xsl:apply-templates select="node()"/>
         </xsl:element>
       </xsl:if>
-      <xsl:if test="@data!='array'">
+      <xsl:if test="@data!='tuple'">
         <xsl:attribute name="primitive" select="@data"/>
         <xsl:element name="value">
           <xsl:choose>
