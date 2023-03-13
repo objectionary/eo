@@ -28,7 +28,6 @@
 
 # Emulation of random-access memory (RAM).
 [size] > heap
-
   # Allocates a block in memory of "s" bytes,
   # and returns a pointer to it.
   # The "length" attribute of the pointer won't be bound.
