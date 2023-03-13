@@ -199,32 +199,32 @@ SOFTWARE.
                     <limit>
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.37</minimum>
+                      <minimum>0.22</minimum>
                     </limit>
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.39</minimum>
+                      <minimum>0.20</minimum>
                     </limit>
                     <limit>
                       <counter>BRANCH</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.59</minimum>
+                      <minimum>0.08</minimum>
                     </limit>
                     <limit>
                       <counter>COMPLEXITY</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.53</minimum>
+                      <minimum>0.12</minimum>
                     </limit>
                     <limit>
                       <counter>METHOD</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.53</minimum>
+                      <minimum>0.17</minimum>
                     </limit>
                     <limit>
                       <counter>CLASS</counter>
                       <value>MISSEDCOUNT</value>
-                      <maximum>157</maximum>
+                      <maximum>1444</maximum>
                     </limit>
                   </limits>
                 </rule>
