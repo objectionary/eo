@@ -92,6 +92,9 @@ SOFTWARE.
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
     <stack-size>8M</stack-size>
+    <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
+    <sonar.organization>objectionary</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
   <dependencyManagement>
     <dependencies>
