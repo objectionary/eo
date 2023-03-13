@@ -197,7 +197,7 @@
 
 [] > slice-foreign-literals
   assert-that > @
-    "привет".slice
+    "привет ".slice
       0
       1
     $.equal-to "п"
