@@ -45,7 +45,14 @@ SOFTWARE.
           <xsl:value-of select="eo:var(eo:base-to-loc(.))"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:text>ε</xsl:text>
+          <xsl:choose>
+            <xsl:when test="@base = '$'">
+              <xsl:text>ξ</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>ε</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
